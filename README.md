@@ -22,6 +22,10 @@ This list may be incomplete. All instructions and package names are for Ubuntu 1
 - libXext (package libxext-dev)
 - libXfixes (package libxfixes-dev)
 
+Everything combined:
+
+    sudo apt-get install qt4-qmake libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev
+
 To compile the 32-bit GLInject library, you will also need g++-multilib and ia32-libs.
 If the 32-bit version of libGL and libX11 isn't found during linking, but 64-bit works fine, try this:
 
@@ -37,7 +41,7 @@ Compiling
 
 First compile GLInject. Go to the glinject directory and run both 'compile32' and 'compile64'.
 
-For now, I recommend using Qt Creator to compile the main program. Running 'qmake' followed by 'make' should work too I think, but I haven't tested it.
+You can compile the main program by running 'qmake' followed by 'make. Alternatively you can use Qt Creator (just open the project file).
 
 Other files you may want to read
 --------------------------------
