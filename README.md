@@ -24,10 +24,12 @@ This list may be incomplete. All instructions and package names are for Ubuntu 1
 
 To compile the 32-bit GLInject library, you will also need g++-multilib and ia32-libs.
 If the 32-bit version of libGL and libX11 isn't found during linking, but 64-bit works fine, try this:
+
     cd /usr/lib/i386-linux-gnu/
-    sudo ln -s libGL.so.1.2.0 mesa/libGL.so       (replace 1.2.0 with the highest version you have)
+    sudo ln -s libGL.so.1.2.0 mesa/libGL.so    (replace 1.2.0 with the highest version you have)
     sudo ln -s mesa/libGL.so libGL.so
     sudo ln -s libX11.so.6 libX11.so
+
 I don't know whether this is the right way to do it, but it works for me.
 
 Compiling
