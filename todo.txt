@@ -1,0 +1,28 @@
+Testing:
+
+In progress:
+
+Todo:
+
+Wishlist:
+- Fixed cursor position when using 'follow cursor'
+- Built-in re-encoding after recording
+- Audio latency correction.
+- Separate file for each clip.
+- clean up StdAfx.h
+- move codec installation tests to MainWindow, not static
+- Show cursor for GLInject, move required X11 code from X11Input to a separate file.
+- QuickLZ-based codec. (-> QuickLZ beta?)
+- Better support for multiple GLInject windows.
+- Real ALSA+PulseAudio support (instead of using libav) (or built-in QT audio?).
+- Easier GLInject application selection (as an alternative to entering the command).
+- Timelapse recording, i.e. recording at a slow speed but playing it back faster (without sound obviously).
+- Show preview image and sound level during recording.
+- Force fixed fps and/or size on OpenGL applications. Also, different frame rate strategies.
+- Show codec/container support matrix somewhere?
+- maybe rewrite YUVConverter in assembly instead of using GCC vector extensions
+- optionally show rectangle during recording
+- limit size of the muxer queues
+- tray icon
+- start/stop sound
+- skip microphone startup click?

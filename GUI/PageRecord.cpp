@@ -1,0 +1,619 @@
+/*
+Copyright (c) 2012 Maarten Baert <maarten-baert@hotmail.com>
+
+This file is part of SimpleScreenRecorder.
+
+SimpleScreenRecorder is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+SimpleScreenRecorder is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "StdAfx.h"
+#include "PageRecord.h"
+
+#include "MainWindow.h"
+#include "PageInput.h"
+#include "PageOutput.h"
+
+#include "HotkeyListener.h"
+
+#include "Muxer.h"
+#include "VideoEncoder.h"
+#include "AudioEncoder.h"
+#include "Synchronizer.h"
+#include "X11Input.h"
+#include "GLInjectLauncher.h"
+#include "GLInjectInput.h"
+#include "AudioInput.h"
+
+#include <X11/keysym.h>
+#include <X11/keysymdef.h>
+
+class QTextEditSmall : public QTextEdit {
+
+public:
+	QTextEditSmall(QWidget *parent) : QTextEdit(parent) {}
+	QTextEditSmall(const QString& text, QWidget *parent) : QTextEdit(text, parent) {}
+	virtual QSize sizeHint() const { return QSize(-1, 100); }
+
+};
+
+PageRecord::PageRecord(MainWindow* main_window)
+	: QWidget(main_window->centralWidget()) {
+
+	m_main_window = main_window;
+
+	m_started = false;
+	m_encoders_started = false;
+	m_recording = false;
+
+	QGroupBox *group_recording = new QGroupBox("Recording", this);
+	{
+		m_pushbutton_start_pause = new QPushButton("Start recording", group_recording);
+
+		m_checkbox_hotkey_enable = new QCheckBox("Enable recording hotkey", group_recording);
+		QLabel *label_hotkey = new QLabel("Hotkey:", group_recording);
+		m_checkbox_hotkey_ctrl = new QCheckBox("Ctrl +", group_recording);
+		m_checkbox_hotkey_shift = new QCheckBox("Shift +", group_recording);
+		m_checkbox_hotkey_alt = new QCheckBox("Alt +", group_recording);
+		m_checkbox_hotkey_super = new QCheckBox("Super +", group_recording);
+		m_combobox_hotkey_key = new QComboBox(group_recording);
+		m_combobox_hotkey_key->setToolTip("The key that you have to press (combined with the given modifiers) to start or pause recording. The program that you are\n"
+										  "recording will not receive the key press.\n\n"
+										  "Note: The choice of keys is currently rather limited, because capturing key presses session-wide is a bit harder than it looks. For\n"
+										  "example, applications are not allowed to capture the F1-F12 keys (on Ubuntu at least). The A-Z keys don't have this limitation apparently.");
+		QLabel *label_hint_workspace = new QLabel("Hint: If you don't want to hide this program completely, move it to a different workspace.", group_recording);
+		label_hint_workspace->setWordWrap(true);
+		for(unsigned int i = 0; i < 26; ++i) {
+			m_combobox_hotkey_key->addItem(QString('A' + i));
+		}
+
+		connect(m_pushbutton_start_pause, SIGNAL(clicked()), this, SLOT(RecordStartPause()));
+		connect(&g_hotkey_listener, SIGNAL(Triggered()), this, SLOT(RecordStartPause()));
+		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(UpdateHotkeyFields()));
+		connect(m_checkbox_hotkey_ctrl, SIGNAL(clicked()), this, SLOT(UpdateHotkey()));
+		connect(m_checkbox_hotkey_shift, SIGNAL(clicked()), this, SLOT(UpdateHotkey()));
+		connect(m_checkbox_hotkey_alt, SIGNAL(clicked()), this, SLOT(UpdateHotkey()));
+		connect(m_checkbox_hotkey_super, SIGNAL(clicked()), this, SLOT(UpdateHotkey()));
+		connect(m_combobox_hotkey_key, SIGNAL(activated(int)), this, SLOT(UpdateHotkey()));
+
+		QVBoxLayout *layout = new QVBoxLayout(group_recording);
+		layout->addWidget(m_pushbutton_start_pause);
+		layout->addWidget(m_checkbox_hotkey_enable);
+		{
+			QHBoxLayout *layout2 = new QHBoxLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(label_hotkey);
+			layout2->addWidget(m_checkbox_hotkey_ctrl);
+			layout2->addWidget(m_checkbox_hotkey_shift);
+			layout2->addWidget(m_checkbox_hotkey_alt);
+			layout2->addWidget(m_checkbox_hotkey_super);
+			layout2->addWidget(m_combobox_hotkey_key);
+		}
+		layout->addWidget(label_hint_workspace);
+	}
+	QGroupBox *group_information = new QGroupBox("Information", this);
+	{
+		QLabel *label_total_time = new QLabel("Total time:", group_information);
+		m_label_total_time = new QLabel(group_information);
+		QLabel *label_video_frame_rate = new QLabel("Video frame rate:", group_information);
+		m_label_video_frame_rate = new QLabel(group_information);
+		QLabel *label_video_size = new QLabel("Video size:", group_information);
+		m_label_video_size = new QLabel(group_information);
+		QLabel *label_file_name = new QLabel("File name:", group_information);
+		m_label_file_name = new QLabel(group_information);
+		QLabel *label_file_size = new QLabel("File size:", group_information);
+		m_label_file_size = new QLabel(group_information);
+		QLabel *label_file_bit_rate = new QLabel("File bit rate:", group_information);
+		m_label_file_bit_rate = new QLabel(group_information);
+
+		QGridLayout *layout = new QGridLayout(group_information);
+		layout->addWidget(label_total_time, 0, 0);
+		layout->addWidget(m_label_total_time, 0, 1);
+		layout->addWidget(label_video_frame_rate, 1, 0);
+		layout->addWidget(m_label_video_frame_rate, 1, 1);
+		layout->addWidget(label_video_size, 2, 0);
+		layout->addWidget(m_label_video_size, 2, 1);
+		layout->addWidget(label_file_name, 3, 0);
+		layout->addWidget(m_label_file_name, 3, 1);
+		layout->addWidget(label_file_size, 4, 0);
+		layout->addWidget(m_label_file_size, 4, 1);
+		layout->addWidget(label_file_bit_rate, 5, 0);
+		layout->addWidget(m_label_file_bit_rate, 5, 1);
+	}
+	QGroupBox *group_log = new QGroupBox("Log", this);
+	{
+		m_textedit_log = new QTextEditSmall(group_log);
+		m_textedit_log->setReadOnly(true);
+
+		QVBoxLayout *layout = new QVBoxLayout(group_log);
+		layout->addWidget(m_textedit_log);
+	}
+	QPushButton *button_cancel = new QPushButton("Cancel recording", this);
+	QPushButton *button_save = new QPushButton("Save recording", this);
+
+	connect(button_cancel, SIGNAL(clicked()), this, SLOT(Cancel()));
+	connect(button_save, SIGNAL(clicked()), this, SLOT(Save()));
+
+	QVBoxLayout *layout_page = new QVBoxLayout(this);
+	layout_page->addWidget(group_recording);
+	layout_page->addWidget(group_information);
+	layout_page->addWidget(group_log);
+	layout_page->addStretch();
+	{
+		QHBoxLayout *layout = new QHBoxLayout();
+		layout->addWidget(button_cancel);
+		layout->addWidget(button_save);
+		layout_page->addLayout(layout);
+	}
+
+	m_info_timer = new QTimer(this);
+	connect(m_info_timer, SIGNAL(timeout()), this, SLOT(UpdateInformation()));
+
+	m_log_timer = new QTimer(this);
+	connect(m_log_timer, SIGNAL(timeout()), this, SLOT(UpdateLog()));
+	m_log_timer->start(100);
+
+}
+
+PageRecord::~PageRecord() {
+
+	Stop(false);
+
+}
+
+bool PageRecord::ShouldBlockClose() {
+
+	if(m_encoders_started) {
+		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION,
+								"You have not saved the current recording yet, if you quit now it will be lost.\n"
+								"Are you sure you want to quit?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+			return true;
+		}
+	}
+
+	return false;
+
+}
+
+void PageRecord::LoadSettings(QSettings *settings) {
+	SetHotkeyEnabled(settings->value("input/hotkey/enable", true).toBool());
+	SetHotkeyCtrlEnabled(settings->value("input/hotkey/ctrl", true).toBool());
+	SetHotkeyShiftEnabled(settings->value("input/hotkey/shift", false).toBool());
+	SetHotkeyAltEnabled(settings->value("input/hotkey/alt", false).toBool());
+	SetHotkeySuperEnabled(settings->value("input/hotkey/super", false).toBool());
+	SetHotkeyKey(settings->value("input/hotkey/key", 'r' - 'a').toUInt());
+	UpdateHotkeyFields();
+}
+
+void PageRecord::SaveSettings(QSettings *settings) {
+	settings->setValue("input/hotkey/enable", IsHotkeyEnabled());
+	settings->setValue("input/hotkey/ctrl", IsHotkeyCtrlEnabled());
+	settings->setValue("input/hotkey/shift", IsHotkeyShiftEnabled());
+	settings->setValue("input/hotkey/alt", IsHotkeyAltEnabled());
+	settings->setValue("input/hotkey/super", IsHotkeySuperEnabled());
+	settings->setValue("input/hotkey/key", GetHotkeyKey());
+}
+
+void PageRecord::Start() {
+
+	if(m_started)
+		return;
+
+	m_logger.GetLines();
+	m_textedit_log->clear();
+
+	m_logger.LogInfo("[PageRecord::Start] Starting ...");
+
+	PageInput *page_input = m_main_window->GetPageInput();
+	PageOutput *page_output = m_main_window->GetPageOutput();
+
+	// get the type of video recording
+	m_video_show_cursor = page_input->GetVideoShowCursor();
+	m_video_follow_cursor = (page_input->GetVideoArea() == PageInput::VIDEO_AREA_CURSOR);
+	m_video_glinject = (page_input->GetVideoArea() == PageInput::VIDEO_AREA_GLINJECT);
+
+	// get the video recording area
+	m_video_x = page_input->GetVideoX();
+	m_video_y = page_input->GetVideoY();
+	m_video_width = page_input->GetVideoW();
+	m_video_height = page_input->GetVideoH();
+	m_video_scaling = page_input->GetVideoScalingEnabled();
+	m_video_out_width = page_input->GetVideoScaledW();
+	m_video_out_height = page_input->GetVideoScaledH();
+	m_video_frame_rate = page_input->GetVideoFrameRate();
+	m_audio_sample_rate = 44100;
+
+	// get the audio input settings
+	m_audio_enabled = page_input->GetAudioEnabled();
+	m_audio_source = page_input->GetAudioSource();
+
+	// get the glinject settings
+	QString glinject_command = page_input->GetGLInjectCommand();
+	unsigned int glinject_megapixels = page_input->GetGLInjectMaxMegaPixels();
+	bool glinject_run_command = page_input->GetGLInjectRunCommand();
+
+	// get the output settings
+	m_file = page_output->GetFile();
+	m_container = page_output->GetContainer();
+	m_video_codec = page_output->GetVideoCodec();
+	m_audio_codec = page_output->GetAudioCodec();
+	m_container_avname = PageOutput::GetContainerAVName(m_container);
+	m_video_avname = PageOutput::GetVideoCodecAVName(m_video_codec);
+	m_audio_avname = PageOutput::GetAudioCodecAVName(m_audio_codec);
+	m_video_kbit_rate = page_output->GetVideoKBitRate();
+	m_audio_kbit_rate = page_output->GetAudioKBitRate();
+	m_video_options.clear();
+	m_audio_options.clear();
+
+	// some codec-specific things
+	// you can get more information about all these options by running 'avconv -h' from a terminal
+	// I'm not setting any options for the audio encoder yet, but it can be added here if it's ever needed.
+	switch(m_video_codec) {
+		case PageOutput::VIDEO_CODEC_H264: {
+			// x264 has a 'constant quality' mode, where the bit rate is simply set to whatever is needed to keep a certain quality. The quality is set
+			// with the 'crf' option. 'preset' changes the encoding speed (and hence the efficiency of the compression) but doesn't really influence the quality,
+			// which is great because it means you don't have to experiment with different bit rates and different speeds to get good results.
+			m_video_options.push_back(std::make_pair(QString("crf"), QString::number(page_output->GetH264CRF())));
+			m_video_options.push_back(std::make_pair(QString("preset"), QString(page_output->GetH264PresetName(page_output->GetH264Preset()))));
+			break;
+		}
+		case PageOutput::VIDEO_CODEC_VP8: {
+			// The names of there parameters are very unintuitive. The two options we care about (because they change the speed) are 'deadline' and 'cpu-used'.
+			// 'deadline'='best' is unusably slow. 'deadline'='good' is the normal setting, it tells the encoder to use the speed set with 'cpu-used'. Higher
+			// numbers will use *less* CPU, confusingly, so a higher number is faster. I haven't done much testing with 'realtime' so I'm not sure if it's a good idea here.
+			// It sounds useful, but I think it will use so much CPU that it will slow down the program that is being recorded.
+			m_video_options.push_back(std::make_pair(QString("deadline"), QString("good")));
+			m_video_options.push_back(std::make_pair(QString("cpu-used"), QString::number(page_output->GetVP8CPUUsed())));
+			break;
+		}
+		default: break; // to keep GCC happy
+	}
+
+	// for OpenGL recording, allocate shared memory and start the program now
+	if(m_video_glinject) {
+		try {
+			m_gl_inject_launcher.reset(new GLInjectLauncher(&m_logger, glinject_command, glinject_megapixels * 1024 * 1024, glinject_run_command));
+		} catch(...) {
+			m_logger.LogError("[PageRecord::Start] Error: Something went wrong during GLInject initialization.");
+			m_gl_inject_launcher.reset();
+			return;
+		}
+	}
+
+	m_logger.LogInfo("[PageRecord::Start] Started ...");
+
+	m_started = true;
+	m_encoders_started = false;
+	m_info_first_time = true;
+	UpdateHotkey();
+	UpdateInformation();
+	m_info_timer->start(1000);
+
+}
+
+void PageRecord::Stop(bool save) {
+
+	if(!m_started)
+		return;
+
+	RecordPause();
+
+	m_logger.LogInfo("[PageRecord::Stop] Stopping ...");
+
+	// stop the synchronizer
+	Q_ASSERT(m_x11_input == NULL);
+	Q_ASSERT(m_gl_inject_input == NULL);
+	Q_ASSERT(m_audio_input == NULL);
+	m_synchronizer.reset();
+
+	// If we want to save the file, we have to wait for the encoders to finish or else the file will be corrupted.
+	// This can take some time depending on how many frames were buffered, so maybe a progress dialog would make sense here.
+	if(save && m_muxer != NULL && m_muxer->IsStarted()) {
+		if(m_video_encoder != NULL)
+			m_video_encoder->Finish();
+		if(m_audio_encoder != NULL)
+			m_audio_encoder->Finish();
+		while(!m_muxer->IsDone() && !m_muxer->HasErrorOccurred()) {
+			usleep(10000);
+		}
+	}
+
+	// stop the encoders and muxer
+	m_video_encoder.reset();
+	m_audio_encoder.reset();
+	m_muxer.reset();
+
+	// free the shared memory for OpenGL recording
+	// This doesn't stop the program, and the memory is only actually freed when the recorded program stops too.
+	m_gl_inject_launcher.reset();
+
+	// delete the file if it isn't needed
+	if(!save && m_encoders_started) {
+		if(QFileInfo(m_file).exists())
+			QFile(m_file).remove();
+	}
+
+	m_logger.LogInfo("[PageRecord::Stop] Stopped.");
+
+	m_started = false;
+	m_encoders_started = false;
+	UpdateHotkey();
+	UpdateInformation();
+	m_info_timer->stop();
+
+}
+
+void PageRecord::RecordStart() {
+
+	if(m_recording || !m_started)
+		return;
+
+	m_logger.LogInfo("[PageRecord::RecordStart] Starting ...");
+
+	// start the encoders if they weren't started already
+	if(!m_encoders_started) {
+
+		try {
+
+			// for OpenGL recording, detect the application size
+			if(m_video_glinject) {
+				m_gl_inject_launcher->GetCurrentSize(&m_video_width, &m_video_height);
+				if(m_video_width == 0 && m_video_height == 0) {
+					m_logger.LogError("[PageRecord::RecordStart] Error: Could not get the size of the OpenGL application. Either the "
+									  "application wasn't started correctly, or the application hasn't created an OpenGL window yet.");
+					throw GLInjectException();
+				}
+			}
+
+			// calculate the output width and height
+			if(m_video_scaling) {
+				// Only even width and height is allowed because the final images are encoded as YUV.
+				m_video_out_width = m_video_out_width / 2 * 2;
+				m_video_out_height = m_video_out_height / 2 * 2;
+			} else if(m_video_glinject) {
+				// The input size is the size of the OpenGL application and can't be changed. The output size is set to the current size of the application.
+				m_video_out_width = m_video_width / 2 * 2;
+				m_video_out_height = m_video_height / 2 * 2;
+			} else {
+				// If the user did not explicitly select scaling, then don't force scaling just because the recording area is one pixel too large.
+				// One missing row/column of pixels is probably better than a blurry video (and scaling is SLOW).
+				m_video_width = m_video_width / 2 * 2;
+				m_video_height = m_video_height / 2 * 2;
+				m_video_out_width = m_video_width;
+				m_video_out_height = m_video_height;
+			}
+
+			// prepare everything for recording
+			m_muxer.reset(new Muxer(&m_logger, m_container_avname, m_file));
+			m_video_encoder.reset(new VideoEncoder(&m_logger, m_muxer.get(), m_video_avname, m_video_options, m_video_kbit_rate * 1024, m_video_out_width, m_video_out_height, m_video_frame_rate));
+			if(m_audio_enabled)
+				m_audio_encoder.reset(new AudioEncoder(&m_logger, m_muxer.get(), m_audio_avname, m_audio_options, m_audio_kbit_rate * 1024, m_audio_sample_rate));
+			m_muxer->Start();
+			m_synchronizer.reset(new Synchronizer(&m_logger, m_video_encoder.get(), m_audio_encoder.get()));
+
+		} catch(...) {
+			m_logger.LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
+			m_synchronizer.reset();
+			m_video_encoder.reset();
+			m_audio_encoder.reset();
+			m_muxer.reset();
+			return;
+		}
+
+		m_encoders_started = true;
+
+	}
+
+	try {
+
+		// start a new segment
+		m_synchronizer->NewSegment();
+
+		// start the video input
+		if(m_video_glinject) {
+			m_gl_inject_input.reset(new GLInjectInput(&m_logger, m_synchronizer.get(), m_gl_inject_launcher.get()));
+		} else {
+			m_x11_input.reset(new X11Input(&m_logger, m_synchronizer.get(), m_video_x, m_video_y, m_video_width, m_video_height, m_video_show_cursor, m_video_follow_cursor));
+		}
+
+		// start the audio input
+		if(m_audio_enabled)
+			m_audio_input.reset(new AudioInput(&m_logger, m_synchronizer.get(), m_audio_source));
+
+	} catch(...) {
+		m_logger.LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
+		m_x11_input.reset();
+		m_gl_inject_input.reset();
+		m_audio_input.reset();
+		return;
+	}
+
+	m_logger.LogInfo("[PageRecord::RecordStart] Started.");
+
+	m_recording = true;
+	m_pushbutton_start_pause->setText("Pause recording");
+
+}
+
+void PageRecord::RecordPause() {
+
+	if(!m_recording || !m_started)
+		return;
+
+	m_logger.LogInfo("[PageRecord::RecordPause] Pausing ...");
+
+	m_x11_input.reset();
+	m_gl_inject_input.reset();
+	m_audio_input.reset();
+
+	m_logger.LogInfo("[PageRecord::RecordPause] Paused.");
+
+	m_recording = false;
+	m_pushbutton_start_pause->setText("Start recording");
+
+}
+
+void PageRecord::UpdateHotkeyFields() {
+
+	bool enabled = IsHotkeyEnabled();
+	m_checkbox_hotkey_ctrl->setEnabled(enabled);
+	m_checkbox_hotkey_shift->setEnabled(enabled);
+	m_checkbox_hotkey_alt->setEnabled(enabled);
+	m_checkbox_hotkey_super->setEnabled(enabled);
+	m_combobox_hotkey_key->setEnabled(enabled);
+
+	UpdateHotkey();
+
+}
+
+void PageRecord::UpdateHotkey() {
+
+	if(m_started && IsHotkeyEnabled()) {
+
+		unsigned int modifiers = 0;
+		if(IsHotkeyCtrlEnabled()) modifiers |= ControlMask;
+		if(IsHotkeyShiftEnabled()) modifiers |= ShiftMask;
+		if(IsHotkeyAltEnabled()) modifiers |= Mod1Mask;
+		if(IsHotkeySuperEnabled()) modifiers |= Mod4Mask;
+		g_hotkey_listener.EnableHotkey(XK_A + GetHotkeyKey(), modifiers);
+
+	} else {
+
+		g_hotkey_listener.DisableHotkey();
+
+	}
+
+}
+
+void PageRecord::RecordStartPause() {
+	if(m_recording) {
+		RecordPause();
+	} else {
+		RecordStart();
+	}
+}
+
+void PageRecord::Cancel() {
+	if(m_encoders_started) {
+		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, "Are you sure you want to cancel this recording?",
+								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+			return;
+		}
+	}
+	Stop(false);
+	m_main_window->GoPageOutput();
+}
+
+void PageRecord::Save() {
+	if(!m_encoders_started) {
+		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION,
+							  "You haven't recorded anything, there is nothing to save.", QMessageBox::Ok);
+		return;
+	}
+	Stop(true);
+	m_main_window->GoPageDone();
+}
+
+static QString ReadableSize(uint64_t size, const QString& suffix) {
+	if(size < (uint64_t) 10 * 1024)
+		return QString::number(size) + " " + suffix;
+	if(size < (uint64_t) 10 * 1024 * 1024)
+		return QString::number((size + 512) / 1024) + " k" + suffix;
+	if(size < (uint64_t) 10 * 1024 * 1024 * 1024)
+		return QString::number((size / 1024 + 512) / 1024) + " M" + suffix;
+	return QString::number((size / 1024 / 1024 + 512) / 1024) + " G" + suffix;
+}
+static QString ReadableTime(int64_t time_micro) {
+	unsigned int time = time_micro / 1000000;
+	return QString("%1:%2:%3")
+			.arg(time / 3600)
+			.arg((time / 60) % 60, 2, 10, QLatin1Char('0'))
+			.arg(time % 60, 2, 10, QLatin1Char('0'));
+}
+
+void PageRecord::UpdateInformation() {
+
+	if(m_started) {
+
+		int64_t total_time = 0;
+		double fps = 0.0, bit_rate = 0.0;
+		uint64_t current_bytes = 0;
+
+		if(m_encoders_started) {
+
+			total_time = m_synchronizer->GetTotalTime();
+			current_bytes = m_muxer->GetTotalBytes();
+
+			// calculate the number of frames recorded per second
+			int64_t current_time = hrt_time_micro();
+			unsigned int current_frames = m_video_encoder->GetTotalFrames();
+			if(!m_info_first_time && current_time - m_info_last_time > 1000) {
+				double t = (double) (current_time - m_info_last_time) * 0.000001;
+				fps = (double) (current_frames - m_info_last_frames) / t;
+				bit_rate =  (double) (current_bytes - m_info_last_bytes) * 8.0 / t;
+			}
+			m_info_first_time = false;
+			m_info_last_time = current_time;
+			m_info_last_frames = current_frames;
+			m_info_last_bytes = current_bytes;
+
+		}
+
+		// for OpenGL recording, detect the application size
+		if(m_video_glinject) {
+			m_gl_inject_launcher->GetCurrentSize(&m_video_width, &m_video_height);
+		}
+
+		m_label_total_time->setText(ReadableTime(total_time));
+		m_label_video_frame_rate->setText(QString::number(fps, 'f', 2));
+		if(m_encoders_started && (m_video_width != m_video_out_width || m_video_height != m_video_out_height))
+			m_label_video_size->setText(QString::number(m_video_width) + "x" + QString::number(m_video_height) + " -> " +
+										QString::number(m_video_out_width) + "x" + QString::number(m_video_out_height));
+		else
+			m_label_video_size->setText(QString::number(m_video_width) + "x" + QString::number(m_video_height));
+		m_label_file_name->setText(QFileInfo(m_file).fileName());
+		m_label_file_size->setText(ReadableSize(current_bytes, "B"));
+		m_label_file_bit_rate->setText(ReadableSize((uint64_t) (bit_rate + 0.5), "bps"));
+
+	} else {
+
+		m_label_total_time->clear();
+		m_label_video_frame_rate->clear();
+		m_label_video_size->clear();
+		m_label_file_name->clear();
+		m_label_file_size->clear();
+		m_label_file_bit_rate->clear();
+
+	}
+
+}
+
+void PageRecord::UpdateLog() {
+	auto lines = m_logger.GetLines();
+	for(auto it = lines.begin(); it != lines.end(); ++it) {
+		QTextCursor cursor = m_textedit_log->textCursor();
+		QTextCharFormat format;
+		bool should_scroll = (m_textedit_log->verticalScrollBar()->value() >= m_textedit_log->verticalScrollBar()->maximum());
+		switch(it->first) {
+			case Logger::TYPE_INFO:     format.setForeground(Qt::black);       break;
+			case Logger::TYPE_WARNING:  format.setForeground(Qt::darkYellow);  break;
+			case Logger::TYPE_ERROR:    format.setForeground(Qt::red);         break;
+		}
+		cursor.movePosition(QTextCursor::End);
+		if(cursor.position() != 0)
+			cursor.insertBlock();
+		cursor.insertText(it->second, format);
+		if(should_scroll)
+			m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
+	}
+}

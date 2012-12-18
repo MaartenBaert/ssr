@@ -1,0 +1,515 @@
+/*
+Copyright (c) 2012 Maarten Baert <maarten-baert@hotmail.com>
+
+This file is part of SimpleScreenRecorder.
+
+SimpleScreenRecorder is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+SimpleScreenRecorder is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "StdAfx.h"
+#include "PageInput.h"
+
+#include "MainWindow.h"
+
+#include <QX11Info>
+#include <X11/Xlib.h>
+
+PageInput::PageInput(MainWindow* main_window)
+	: QWidget(main_window->centralWidget()) {
+
+	m_main_window = main_window;
+
+	m_grabbing = false;
+	m_selecting_window = false;
+
+	m_glinject_command = "";
+	m_glinject_max_megapixels = 0;
+
+	QGroupBox *group_video = new QGroupBox("Video input", this);
+	{
+		m_buttongroup_video_area = new QButtonGroup(group_video);
+		QRadioButton *radio_area_screen = new QRadioButton("Record the entire screen", group_video);
+		QRadioButton *radio_area_fixed = new QRadioButton("Record a fixed rectangle", group_video);
+		QRadioButton *radio_area_cursor = new QRadioButton("Follow the cursor", group_video);
+		QRadioButton *radio_area_glinject = new QRadioButton("Record OpenGL (experimental)", group_video);
+		m_buttongroup_video_area->addButton(radio_area_screen, VIDEO_AREA_SCREEN);
+		m_buttongroup_video_area->addButton(radio_area_fixed, VIDEO_AREA_FIXED);
+		m_buttongroup_video_area->addButton(radio_area_cursor, VIDEO_AREA_CURSOR);
+		m_buttongroup_video_area->addButton(radio_area_glinject, VIDEO_AREA_GLINJECT);
+		m_combobox_screens = new QComboBox(group_video);
+		m_combobox_screens->setToolTip("This settings allows you to select what monitor should be recorded in a multi-monitor configuration.");
+		m_pushbutton_video_select_rectangle = new QPushButton("Select rectangle...", group_video);
+		m_pushbutton_video_select_rectangle->setToolTip("Use the mouse to select the recorded rectangle.");
+		m_pushbutton_video_select_window = new QPushButton("Select window...", group_video);
+		m_pushbutton_video_select_window->setToolTip("Use the mouse to select a window to record.");
+		m_pushbutton_video_select_program = new QPushButton("Select program...", group_video);
+		m_pushbutton_video_select_program->setToolTip("Select the program for OpenGL recording.");
+		QLabel *label_x = new QLabel("Left:", group_video);
+		m_lineedit_video_x = new QLineEdit(group_video);
+		m_lineedit_video_x->setToolTip("The x coordinate of the upper-left corner of the recorded rectangle.");
+		QLabel *label_y = new QLabel("Top:", group_video);
+		m_lineedit_video_y = new QLineEdit(group_video);
+		m_lineedit_video_y->setToolTip("The y coordinate of the upper-left corner of the recorded rectangle.");
+		QLabel *label_w = new QLabel("Width:", group_video);
+		m_lineedit_video_w = new QLineEdit(group_video);
+		m_lineedit_video_w->setToolTip("The width of the recorded rectangle.");
+		QLabel *label_h = new QLabel("Height:", group_video);
+		m_lineedit_video_h = new QLineEdit(group_video);
+		m_lineedit_video_h->setToolTip("The height of the recorded rectangle.");
+		QLabel *label_frame_rate = new QLabel("Frame rate:", group_video);
+		m_lineedit_video_frame_rate = new QLineEdit(group_video);
+		m_checkbox_scale = new QCheckBox("Scale video", group_video);
+		m_checkbox_scale->setToolTip("Enable or disable scaling. Scaling uses more CPU, but if the scaled video is smaller, it could make the encoding faster.");
+		QLabel *label_scaled_w = new QLabel("Scaled width:", group_video);
+		m_lineedit_video_scaled_w = new QLineEdit(group_video);
+		QLabel *label_scaled_h = new QLabel("Scaled height:", group_video);
+		m_lineedit_video_scaled_h = new QLineEdit(group_video);
+		m_checkbox_show_cursor = new QCheckBox("Show cursor", group_video);
+
+		connect(m_buttongroup_video_area, SIGNAL(buttonClicked(int)), this, SLOT(UpdateVideoAreaFields()));
+		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(UpdateVideoAreaFields()));
+		connect(m_pushbutton_video_select_rectangle, SIGNAL(clicked()), this, SLOT(StartSelectRectangle()));
+		connect(m_pushbutton_video_select_window, SIGNAL(clicked()), this, SLOT(StartSelectWindow()));
+		connect(m_pushbutton_video_select_program, SIGNAL(clicked()), this, SLOT(SelectProgramDialog()));
+		connect(m_checkbox_scale, SIGNAL(clicked()), this, SLOT(UpdateVideoScaleFields()));
+
+		QVBoxLayout *layout = new QVBoxLayout(group_video);
+		{
+			QHBoxLayout *layout2 = new QHBoxLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(radio_area_screen);
+			layout2->addWidget(m_combobox_screens);
+		}
+		layout->addWidget(radio_area_fixed);
+		layout->addWidget(radio_area_cursor);
+		layout->addWidget(radio_area_glinject);
+		{
+			QHBoxLayout *layout2 = new QHBoxLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(m_pushbutton_video_select_rectangle);
+			layout2->addWidget(m_pushbutton_video_select_window);
+			layout2->addWidget(m_pushbutton_video_select_program);
+			layout2->addStretch();
+		}
+		{
+			QGridLayout *layout2 = new QGridLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(label_x, 0, 0);
+			layout2->addWidget(m_lineedit_video_x, 0, 1);
+			layout2->addWidget(label_y, 0, 2);
+			layout2->addWidget(m_lineedit_video_y, 0, 3);
+			layout2->addWidget(label_w, 1, 0);
+			layout2->addWidget(m_lineedit_video_w, 1, 1);
+			layout2->addWidget(label_h, 1, 2);
+			layout2->addWidget(m_lineedit_video_h, 1, 3);
+		}
+		{
+			QGridLayout *layout2 = new QGridLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(label_frame_rate, 0, 0);
+			layout2->addWidget(m_lineedit_video_frame_rate, 0, 1);
+		}
+		layout->addWidget(m_checkbox_scale);
+		{
+			QGridLayout *layout2 = new QGridLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(label_scaled_w, 0, 0);
+			layout2->addWidget(m_lineedit_video_scaled_w, 0, 1);
+			layout2->addWidget(label_scaled_h, 0, 2);
+			layout2->addWidget(m_lineedit_video_scaled_h, 0, 3);
+		}
+		layout->addWidget(m_checkbox_show_cursor);
+	}
+	QGroupBox *group_audio = new QGroupBox("Audio input", this);
+	{
+		m_checkbox_audio_enable = new QCheckBox("Record microphone", group_audio);
+		QLabel *label_source = new QLabel("Audio source:", group_audio);
+		m_lineedit_audio_source = new QLineEdit(group_audio);
+		m_lineedit_audio_source->setToolTip("The ALSA audio source. Normally this should be 'default'.\n"
+											"If you are using PulseAudio (the default for ubuntu), you should use PulseAudio Volume Control to select the correct input. PulseAudio can also\n"
+											"do more advanced things like recording the sound of other programs instead of recording the microphone."
+											"If you are using ALSA directly, you can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).\n");
+
+		connect(m_checkbox_audio_enable, SIGNAL(clicked(bool)), this, SLOT(UpdateAudioFields()));
+
+		QVBoxLayout *layout = new QVBoxLayout(group_audio);
+		layout->addWidget(m_checkbox_audio_enable);
+		{
+			QGridLayout *layout2 = new QGridLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(label_source, 0, 0);
+			layout2->addWidget(m_lineedit_audio_source, 0, 1);
+		}
+	}
+	QPushButton *button_back = new QPushButton("Back", this);
+	QPushButton *button_continue = new QPushButton("Continue", this);
+
+	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(UpdateScreenConfiguration()));
+	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(UpdateScreenConfiguration()));
+	UpdateScreenConfiguration();
+
+	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageWelcome()));
+	connect(button_continue, SIGNAL(clicked()), this, SLOT(Continue()));
+
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(group_video);
+	layout->addWidget(group_audio);
+	layout->addStretch();
+	{
+		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout->addLayout(layout2);
+		layout2->addWidget(button_back);
+		layout2->addWidget(button_continue);
+	}
+
+}
+
+void PageInput::LoadSettings(QSettings* settings) {
+	SetVideoArea((enum_video_area) settings->value("input/video/area", VIDEO_AREA_SCREEN).toUInt());
+	SetVideoAreaScreen(settings->value("input/video/area_screen", 0).toUInt());
+	SetVideoX(settings->value("input/video/x", 0).toUInt());
+	SetVideoY(settings->value("input/video/y", 0).toUInt());
+	SetVideoW(settings->value("input/video/w", 800).toUInt());
+	SetVideoH(settings->value("input/video/h", 600).toUInt());
+	SetVideoFrameRate(settings->value("input/video/frame_rate", 30).toUInt());
+	SetVideoScalingEnabled(settings->value("input/video/scale", false).toBool());
+	SetVideoScaledW(settings->value("input/video/scaled_w", 800).toUInt());
+	SetVideoScaledH(settings->value("input/video/scaled_h", 600).toUInt());
+	SetVideoShowCursor(settings->value("input/video/show_cursor", true).toBool());
+	SetAudioEnabled(settings->value("input/audio/enable", true).toBool());
+	SetAudioSource(settings->value("input/audio/source", "default").toString());
+	SetGLInjectCommand(settings->value("input/glinject/command", "").toString());
+	SetGLInjectRunCommand(settings->value("input/glinject/run_command", true).toBool());
+	SetGLInjectMaxMegaPixels(settings->value("input/glinject/max_megapixels", 2).toUInt());
+	UpdateVideoAreaFields();
+	UpdateVideoScaleFields();
+	UpdateAudioFields();
+}
+
+void PageInput::SaveSettings(QSettings* settings) {
+	settings->setValue("input/video/area", GetVideoArea());
+	settings->setValue("input/video/area_screen", GetVideoAreaScreen());
+	settings->setValue("input/video/x", GetVideoX());
+	settings->setValue("input/video/y", GetVideoY());
+	settings->setValue("input/video/w", GetVideoW());
+	settings->setValue("input/video/h", GetVideoH());
+	settings->setValue("input/video/frame_rate", GetVideoFrameRate());
+	settings->setValue("input/video/scale", GetVideoScalingEnabled());
+	settings->setValue("input/video/scaled_w", GetVideoScaledW());
+	settings->setValue("input/video/scaled_h", GetVideoScaledH());
+	settings->setValue("input/video/show_cursor", GetVideoShowCursor());
+	settings->setValue("input/audio/enable", GetAudioEnabled());
+	settings->setValue("input/audio/source", GetAudioSource());
+	settings->setValue("input/glinject/command", GetGLInjectCommand());
+	settings->setValue("input/glinject/run_command", GetGLInjectRunCommand());
+	settings->setValue("input/glinject/max_megapixels", GetGLInjectMaxMegaPixels());
+}
+
+void PageInput::mousePressEvent(QMouseEvent* event) {
+	if(m_grabbing) {
+		if(event->button() == Qt::LeftButton) {
+			if(m_selecting_window) {
+				// As expected, Qt does not provide any functions to find the window at a specific position, so I have to use Xlib directly.
+				// I'm not completely sure whether this is the best way to do this, but it appears to work. XQueryPointer returns the window
+				// currently below the mouse along with the mouse position, but apparently this may not work correctly when the mouse pointer
+				// is also grabbed (even though it works fine in my test), so I use XTranslateCoordinates instead. Originally I wanted to
+				// show the rubber band when the mouse hovers over a window (instead of having to click it), but this doesn't work correctly
+				// since X will simply return a handle the rubber band itself (even though it should be transparent to mouse events).
+				Window child;
+				int x, y;
+				if(XTranslateCoordinates(QX11Info::display(), QX11Info::appRootWindow(), QX11Info::appRootWindow(), event->globalX(), event->globalY(), &x, &y, &child)) {
+					XWindowAttributes attributes;
+					if(child != None && XGetWindowAttributes(QX11Info::display(), child, &attributes)) {
+						m_rubber_band_rect = QRect(attributes.x, attributes.y, attributes.width + 2 * attributes.border_width, attributes.height + 2 * attributes.border_width);
+						m_rubber_band.reset(new QRubberBand(QRubberBand::Rectangle));
+						m_rubber_band->setGeometry(m_rubber_band_rect.normalized());
+						m_rubber_band->show();
+					}
+				}
+			} else {
+				m_rubber_band_rect = QRect(event->globalPos(), QSize(0, 0));
+				m_rubber_band.reset(new QRubberBand(QRubberBand::Rectangle));
+				m_rubber_band->setGeometry(m_rubber_band_rect.normalized());
+				m_rubber_band->show();
+			}
+			return;
+		} else {
+			StopGrabbing();
+			return;
+		}
+	}
+	event->ignore();
+}
+
+void PageInput::mouseReleaseEvent(QMouseEvent* event) {
+	if(m_grabbing) {
+		if(event->button() == Qt::LeftButton) {
+			if(m_rubber_band != NULL) {
+				SetVideoAreaFromRubberBand();
+			}
+		}
+		StopGrabbing();
+		return;
+	}
+	event->ignore();
+}
+
+void PageInput::mouseMoveEvent(QMouseEvent* event) {
+	if(m_grabbing) {
+		if(!m_selecting_window) {
+			if(m_rubber_band != NULL) {
+				m_rubber_band_rect.setBottomRight(event->globalPos());
+				m_rubber_band->setGeometry(m_rubber_band_rect.normalized());
+			}
+		}
+		return;
+	}
+	event->ignore();
+}
+
+void PageInput::keyPressEvent(QKeyEvent* event) {
+	if(event->key() == Qt::Key_Escape) {
+		StopGrabbing();
+		return;
+	}
+	event->ignore();
+}
+
+void PageInput::StartGrabbing() {
+	// Grab the mouse and keyboard, and hide the window. Grabbing the keyboard isn't required, but if we don't grab it the user could still alt-tab
+	// to other windows, switch workspaces, ... which would be very confusing. Grabbing doesn't work if the window is actually hidden or minimized,
+	// so instead I just lower the window below all other windows (this is probably less confusing too). Grabbing stops as soon as the escape key
+	// or any mouse button is pressed (or released in the case of the left mouse button).
+	m_grabbing = true;
+	if(m_selecting_window)
+		m_pushbutton_video_select_window->setDown(true);
+	else
+		m_pushbutton_video_select_rectangle->setDown(true);
+	m_main_window->lower();
+	grabMouse(Qt::CrossCursor);
+	grabKeyboard();
+	setMouseTracking(true);
+}
+
+void PageInput::StopGrabbing() {
+	m_rubber_band.reset();
+	setMouseTracking(false);
+	releaseKeyboard();
+	releaseMouse();
+	m_main_window->raise();
+	m_main_window->activateWindow();
+	if(m_selecting_window)
+		m_pushbutton_video_select_window->setDown(false);
+	else
+		m_pushbutton_video_select_rectangle->setDown(false);
+	m_grabbing = false;
+}
+
+void PageInput::SetVideoAreaFromRubberBand() {
+	QRect r = m_rubber_band_rect.normalized();
+	if(GetVideoArea() == VIDEO_AREA_CURSOR) {
+		SetVideoX(0);
+		SetVideoY(0);
+	} else {
+		SetVideoX(r.x());
+		SetVideoY(r.y());
+	}
+	SetVideoW(r.width());
+	SetVideoH(r.height());
+}
+
+void PageInput::UpdateVideoAreaFields() {
+	switch(GetVideoArea()) {
+		case VIDEO_AREA_SCREEN: {
+			m_combobox_screens->setEnabled(true);
+			m_pushbutton_video_select_rectangle->setEnabled(false);
+			m_pushbutton_video_select_window->setEnabled(false);
+			m_pushbutton_video_select_program->setEnabled(false);
+			m_lineedit_video_x->setEnabled(false);
+			m_lineedit_video_y->setEnabled(false);
+			m_lineedit_video_w->setEnabled(false);
+			m_lineedit_video_h->setEnabled(false);
+			int sc = m_combobox_screens->currentIndex();
+			QRect rect;
+			if(sc == 0) {
+				rect = QApplication::desktop()->screenGeometry(0);
+				for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
+					rect |= QApplication::desktop()->screenGeometry(i);
+				}
+			} else {
+				rect = QApplication::desktop()->screenGeometry(sc - 1);
+			}
+			SetVideoX(rect.left());
+			SetVideoY(rect.top());
+			SetVideoW(rect.width());
+			SetVideoH(rect.height());
+			break;
+		}
+		case VIDEO_AREA_FIXED: {
+			m_combobox_screens->setEnabled(false);
+			m_pushbutton_video_select_rectangle->setEnabled(true);
+			m_pushbutton_video_select_window->setEnabled(true);
+			m_pushbutton_video_select_program->setEnabled(false);
+			m_lineedit_video_x->setEnabled(true);
+			m_lineedit_video_y->setEnabled(true);
+			m_lineedit_video_w->setEnabled(true);
+			m_lineedit_video_h->setEnabled(true);
+			break;
+		}
+		case VIDEO_AREA_CURSOR: {
+			m_combobox_screens->setEnabled(false);
+			m_pushbutton_video_select_rectangle->setEnabled(true);
+			m_pushbutton_video_select_window->setEnabled(true);
+			m_pushbutton_video_select_program->setEnabled(false);
+			m_lineedit_video_x->setEnabled(false);
+			m_lineedit_video_y->setEnabled(false);
+			m_lineedit_video_w->setEnabled(true);
+			m_lineedit_video_h->setEnabled(true);
+			SetVideoX(0);
+			SetVideoY(0);
+			break;
+		}
+		case VIDEO_AREA_GLINJECT: {
+			m_combobox_screens->setEnabled(false);
+			m_pushbutton_video_select_rectangle->setEnabled(false);
+			m_pushbutton_video_select_window->setEnabled(false);
+			m_pushbutton_video_select_program->setEnabled(true);
+			m_lineedit_video_x->setEnabled(false);
+			m_lineedit_video_y->setEnabled(false);
+			m_lineedit_video_w->setEnabled(false);
+			m_lineedit_video_h->setEnabled(false);
+			SetVideoX(0);
+			SetVideoY(0);
+			break;
+		}
+		default: break;
+	}
+}
+
+void PageInput::UpdateVideoScaleFields() {
+	bool enabled = GetVideoScalingEnabled();
+	m_lineedit_video_scaled_w->setEnabled(enabled);
+	m_lineedit_video_scaled_h->setEnabled(enabled);
+}
+
+void PageInput::UpdateAudioFields() {
+	bool enabled = GetAudioEnabled();
+	m_lineedit_audio_source->setEnabled(enabled);
+}
+
+void PageInput::UpdateScreenConfiguration() {
+	m_combobox_screens->clear();
+	QRect rect = QApplication::desktop()->screenGeometry(0);
+	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
+		rect |= QApplication::desktop()->screenGeometry(i);
+	}
+	m_combobox_screens->addItem("All screens: " + QString::number(rect.width()) + "x" + QString::number(rect.height()));
+	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
+		rect = QApplication::desktop()->screenGeometry(i);
+		m_combobox_screens->addItem("Screen " + QString::number(i + 1) + ": " + QString::number(rect.width()) + "x" + QString::number(rect.height())
+									+ " at (" + QString::number(rect.left()) + "," + QString::number(rect.top()) + ")");
+	}
+	// update the video x/y/w/h in case the position or size of the selected screen changed
+	UpdateVideoAreaFields();
+}
+
+void PageInput::StartSelectRectangle() {
+	m_selecting_window = false;
+	StartGrabbing();
+}
+
+void PageInput::StartSelectWindow() {
+	m_selecting_window = true;
+	StartGrabbing();
+}
+
+void PageInput::SelectProgramDialog() {
+	DialogGLInject dialog(this);
+	dialog.exec();
+}
+
+void PageInput::Continue() {
+	if(GetVideoArea() == VIDEO_AREA_GLINJECT && GetGLInjectCommand().isEmpty()) {
+		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION,
+							  "You did not enter a command to start the OpenGL application that you want to record.\n"
+							  "Press the 'Select program' button and enter a command.", QMessageBox::Ok);
+		return;
+	}
+	m_main_window->GoPageOutput();
+}
+
+DialogGLInject::DialogGLInject(PageInput* parent)
+	: QDialog(parent) {
+
+	m_parent = parent;
+
+	QLabel *label_info = new QLabel("Warning: OpenGL recording works by injecting a library into the program that will be recorded. "
+									"This library will override some system functions in order to capture the frames before they are "
+									"displayed on the screen. If you are trying to record a game that tries to detect hacking attempts "
+									"on the client side, it's (theoretically) possible that the game will consider this as a hack. This "
+									"might even get you banned, so it's a good idea to make sure that the program you want to record "
+									"won't ban you, *before* you try to record it. You've been warned :).\n\n"
+									"Another warning: OpenGL recording is experimental, it may not work or even crash the program you "
+									"are recording. If you are worried about losing program data, make a backup first!", this);
+	label_info->setWordWrap(true);
+	QLabel *label_command = new QLabel("Command:", this);
+	m_lineedit_command = new QLineEdit(m_parent->GetGLInjectCommand(), this);
+	m_lineedit_command->setToolTip("This command will be executed to start the program that should be recorded.");
+	m_lineedit_command->setMinimumWidth(300);
+	m_checkbox_run_command = new QCheckBox("Start the OpenGL application automatically", this);
+	m_checkbox_run_command->setToolTip("If checked, the above command will be executed automatically (combined with some environment variables). If not checked,\n"
+									   "you have to start the OpenGL application yourself (the full command, including the required environment variables, is shown in the log).");
+	m_checkbox_run_command->setChecked(m_parent->GetGLInjectRunCommand());
+	QLabel *label_max_pixels = new QLabel("Maximum image size (megapixels):", this);
+	m_lineedit_max_megapixels = new QLineEdit(QString::number(m_parent->GetGLInjectMaxMegaPixels()), this);
+	m_lineedit_max_megapixels->setToolTip("This setting changes the amount of shared memory that will be allocated to send frames back to the main program.\n"
+										  "The size of the shared memory can't be changed anymore once the program has been started, so if the program you\n"
+										  "are trying to record is too large, recording won't work. 2 megapixels should be enough in almost all cases. Be careful,\n"
+										  "high values will use a lot of memory!");
+
+	QPushButton *pushbutton_close = new QPushButton("Close", this);
+
+	connect(pushbutton_close, SIGNAL(clicked()), this, SLOT(accept()));
+	connect(this, SIGNAL(accepted()), this, SLOT(OnAccept()));
+
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(label_info);
+	{
+		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout2->addWidget(label_command);
+		layout2->addWidget(m_lineedit_command);
+		layout->addLayout(layout2);
+	}
+	layout->addWidget(m_checkbox_run_command);
+	{
+		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout2->addWidget(label_max_pixels);
+		layout2->addWidget(m_lineedit_max_megapixels);
+		layout->addLayout(layout2);
+	}
+	{
+		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout2->addStretch();
+		layout2->addWidget(pushbutton_close);
+		layout2->addStretch();
+		layout->addLayout(layout2);
+	}
+
+}
+
+void DialogGLInject::OnAccept() {
+	m_parent->SetGLInjectCommand(m_lineedit_command->text());
+	m_parent->SetGLInjectRunCommand(m_checkbox_run_command->isChecked());
+	m_parent->SetGLInjectMaxMegaPixels(m_lineedit_max_megapixels->text().toUInt());
+}

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>glinject/libssr-glinject32.so</file>
+        <file>glinject/libssr-glinject64.so</file>
+    </qresource>
+</RCC>

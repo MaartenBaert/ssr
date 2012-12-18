@@ -1,0 +1,66 @@
+In this text file I keep notes about design decisions and issues I came across while writing this program, so I don't make the same mistakes twice. This should also make it easier to understand the code later.
+
+#### Keep the front-end and back-end completely separated ####
+
+The front-end (GUI) calls the back-end, not the other way around. This way the front-end can easily be replaced with something else (e.g. command-line). The back-end can use Qt Core classes like QString and QThread, but not GUI classes.
+
+Logging is done with the 'Logger' class. This should become an abstract class, in order to make it easier to show log results in different places (e.g. stderr for the command-line interface, and a text area for the GUI).
+
+#### Back-end design ####
+
+The back-end uses a 'push' pipeline design. Classes push their results to the next stage, and the next stage doesn't need to know where these results came from (only where they are supposed to go). This makes it very easy to use the same output class with different input classes. It should also be possible to use the same input class with different output classes by making the output class abstract, but I haven't done this yet because it wasn't needed so far. A push design is a better idea than a pull design in this case, because it makes switching inputs while recording trivial.
+
+The pipeline:
+
++---------------+                            +--------------+
+|   X11Input    |      +--------------+      |              |      +-------+
+|      or       | ---> |              | ===> | VideoEncoder | ===> |       |
+| GLInjectInput |      |              |      |              |      |       |
++---------------+      | Synchronizer |      +--------------+      | Muxer |
+|               |      |              |      |              |      |       |
+|  AudioInput   | ---> |              | ===> | AudioEncoder | ===> |       |
+|               |      +--------------+      |              |      +-------+
++---------------+                            +--------------+
+
+"--->" means the result is sent to the next stage and processed immediately.
+"===>" means the result is stored in a queue, and will be processed by the next stage later.
+
+- X11Input: Captures the screen, or a part of it. Originally I used the 'x11grab' device from libav, but this added overhead and was less flexible.
+
+- GLInjectInput: Captures frames from an OpenGL program (which was launched with GLInjectLauncher).
+
+- AudioInput: Records audio using the 'alsa' device from libav. I intend to replace this with a real ALSA input because this should be more flexible. Real PulseAudio support along with ALSA support would be nice too (not a priority though).
+
+- Synchronizer: Synchronizes audio and video based on the timestamps of the frames. This class is needed even if there is no audio, because it still has to translate the timestamps to 'pts' values (which are not the same). I've hijacked the AVFrame::pkt_dts field to store the timestamps because it wasn't used (and because I want to avoid confusion with AVFrame::pts which has a very different meaning). The synchronizer drops or inserts frames of video/audio to make sure both have the same length. The synchronizer also stitches together separate segments (when the recording is paused and resumed later). This is more complex than it sounds, trust me :).
+
+- VideoEncoder/AudioEncoder: Encodes the video/audio frames and generates packets. Inherits BaseEncoder. All the hard work is done by libav, this is basically a wrapper.
+
+- Muxer: Combines video and audio packets with the required metadata and writes it to a file. Again, all the hard work is done by libav.
+
+#### Avoiding deadlocks ####
+
+When you write a multithreaded application, you have to think about deadlocks. A simple and reliable way to avoid deadlocks is to give all mutexes a strict (partial) order, and only ever lock them in that order (the order of unlocking is irrelevant but is usually the reverse of the order of locking). This is automatically accomplished by using a 'push' pipeline design where each class only has pointers to successive stages, because this makes it impossible to lock mutexes in the wrong order, as long as all mutexes are private and locks are never held after a function call returns.
+
+#### OpenGL recording ####
+
+OpenGL recording is usually called 'GLInject' in the code. It consists of three parts:
+
+- A small library that is injected into the program that will be recorded. The library overrides some system functions (most importantly glXSwapBuffers) so it can capture the frames before they are displayed on the screen. It should be relatively easy to draw extra things using OpenGL (such as the frame rate), but the program doesn't do that right now. Frames are sent to the main program using shared memory.
+
+- The GLInjectLauncher class, which creates the shared memory circular buffer that is used for communication with the injected library. It can also launch the program that will be recorded, or alternatively just print the command to do so.
+
+- The GLInjectInput class, which reads frames from the shared memory circular buffer, scales them to the correct output size, flips them vertically (because OpenGL returns images upside-down), and sends them to the synchronizer. The timestamp is also read from shared memory, which is more accurate than using the time the frame was received.
+
+#### Video corruption ####
+
+If the video is corrupted after some change to the back-end, check the timestamps. In most of the cases I've seen, the muxer was simply messing up the interleaving of the video and audio frames. The typical result is video that starts fine, then gets corrupted, and then freezes after a few seconds.
+
+#### GUI ####
+
+The GUI uses a wizard-like layout to show all the settings, rather than separate settings windows. This makes all settings immediately visible, so you're less likely to waste an hour of time because you forgot to turn on the microphone, for example. It also means all settings are easily discoverable. Yes, it means the user has to press 'continue' a few times. But I assume that many of these settings will be changed very often, if not every time. Opening separate windows to change settings, or just to check if they are still correct, would take a far more time.
+
+#### Capturing hotkeys ####
+
+Capturing key presses system-wide is a lot more annoying than I expected. I'm using XGrabKey because this appears to be the right way to do it. But with this function you can't capture all keys, apparently. Function keys are blocked. Ubuntu 12.04 only blocked function keys with no modifiers (and since X considers Num Lock a modifier, it wasn't really blocking anything), but Xubuntu 12.10 appears to block them completely. So for now I'm just relying on the letter keys.
+
+An unexpected but useful side-effect of XGrabKey is that will capture key presses *without* sending the actual key press to the program that you are recording (or any other program actually). This means conflicts are less likely - instead of choosing a hotkey that isn't used by anything, the user can now simply choose any hotkey that he doesn't currently need. And how often do you really *need* something like Ctrl+R to use a program?
