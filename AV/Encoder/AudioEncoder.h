@@ -28,6 +28,10 @@ private:
 	unsigned int m_bit_rate;
 	unsigned int m_sample_rate;
 
+#if SSR_USE_OLD_ENCODE_AUDIO
+	std::vector<uint8_t> m_temp_buffer;
+#endif
+
 public:
 	AudioEncoder(Logger* logger, Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 				 unsigned int bit_rate, unsigned int sample_rate);

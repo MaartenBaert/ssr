@@ -86,6 +86,7 @@ void AudioInput::ReadFrame(AVFrame* frame) {
 			m_partial_frame->linesize[0] = m_required_frame_size * 4;
 			m_partial_frame->nb_samples = 0;
 			m_partial_frame->pkt_dts = frame->pkt_dts - (int64_t) frame_samples_left * (int64_t) 1000000 / (int64_t) m_sample_rate;
+			m_partial_frame->format = AV_SAMPLE_FMT_S16;
 		}
 
 		// read samples until either the partial frame is full or the recorded frame is empty

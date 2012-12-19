@@ -140,7 +140,7 @@ void BaseEncoder::run() {
 						m_logger->LogInfo("[BaseEncoder::run] Flushing encoder ...");
 						for( ; ; ) {
 							if(m_should_stop)
-								return;
+								break;
 							if(!EncodeFrame(NULL))
 								break;
 						}
@@ -150,7 +150,6 @@ void BaseEncoder::run() {
 
 					// tell the others that we're done
 					m_is_done = true;
-					m_muxer->EndStream(m_stream_index);
 
 					break;
 				}
@@ -163,13 +162,18 @@ void BaseEncoder::run() {
 
 		}
 
+		// tell the muxer that there are no more packets
+		m_muxer->EndStream(m_stream_index);
+
 		m_logger->LogInfo("[BaseEncoder::run] Encoder thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
+		m_muxer->EndStream(m_stream_index);
 		m_logger->LogError(QString("[BaseEncoder::run] Exception '") + e.what() + "' in encoder thread.");
 	} catch(...) {
 		m_error_occurred = true;
+		m_muxer->EndStream(m_stream_index);
 		m_logger->LogError("[BaseEncoder::run] Unknown exception in encoder thread.");
 	}
 }

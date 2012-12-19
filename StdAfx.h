@@ -46,6 +46,13 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
+// when using libavcodec >= 53.34, use the new audio API, otherwise use the old one
+#if LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 34)
+#define SSR_USE_OLD_ENCODE_AUDIO 0
+#else
+#define SSR_USE_OLD_ENCODE_AUDIO 1
+#endif
+
 // simple function to do n-byte alignment
 inline size_t grow_align8(size_t size) {
 	return (size_t) (size + 7) & ~((size_t) 7);

@@ -44,10 +44,19 @@ AudioEncoder::AudioEncoder(Logger* logger, Muxer* muxer, const QString& codec_na
 		throw;
 	}
 
+#if SSR_USE_OLD_ENCODE_AUDIO
+	// allocate a temporary buffer
+	m_temp_buffer.resize(256 * 1024);
+#endif
+
 }
 
 unsigned int AudioEncoder::GetRequiredFrameSize() {
+#if SSR_USE_OLD_ENCODE_AUDIO
+	return GetCodecContext()->frame_size;
+#else
 	return (GetCodecContext()->codec->capabilities & CODEC_CAP_VARIABLE_FRAME_SIZE)? 1024 : GetCodecContext()->frame_size;
+#endif
 }
 
 void AudioEncoder::FillCodecContext() {
@@ -60,6 +69,40 @@ void AudioEncoder::FillCodecContext() {
 }
 
 bool AudioEncoder::EncodeFrame(AVFrame* frame) {
+
+#if SSR_USE_OLD_ENCODE_AUDIO
+
+	// check the format
+	if(frame->format != AV_SAMPLE_FMT_S16) {
+		GetLogger()->LogError("[AudioEncoder::EncodeFrame] Error: Audio frame uses format " + QString::number(frame->format) + " instead of " + QString::number(AV_SAMPLE_FMT_S16) + " (AV_SAMPLE_FMT_S16)!");
+		throw LibavException();
+	}
+
+	// encode the frame
+	int bytes_encoded = avcodec_encode_audio(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), (short*) frame->data[0]);
+	if(bytes_encoded < 0) {
+		GetLogger()->LogError("[AudioEncoder::EncodeFrame] Error: Encoding of audio frame failed!");
+		throw LibavException();
+	}
+
+	// do we have a packet?
+	if(bytes_encoded > 0) {
+
+		// allocate a packet
+		std::unique_ptr<AVPacketWrapper> packet(new AVPacketWrapper(bytes_encoded));
+
+		// copy the data
+		memcpy(packet->data, m_temp_buffer.data(), bytes_encoded);
+
+		// send the packet to the muxer
+		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));
+		return true;
+
+	} else {
+		return false;
+	}
+
+#else
 
 	// allocate a packet
 	std::unique_ptr<AVPacketWrapper> packet(new AVPacketWrapper());
@@ -81,6 +124,8 @@ bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 	} else {
 		return false;
 	}
+
+#endif
 
 }
 
