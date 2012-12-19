@@ -104,6 +104,9 @@ AVStream* Muxer::CreateStream(AVCodec* codec) {
 #else
 	AVStream *stream = av_new_stream(m_format_context, m_format_context->nb_streams);
 	avcodec_get_context_defaults3(stream->codec, codec);
+	stream->codec->codec = codec;
+	stream->codec->codec_id = codec->id;
+	stream->codec->codec_type = codec->type;
 #endif
 	if(stream == NULL) {
 		m_logger->LogError("[Muxer::AddStream] Error: Can't create new stream!");
