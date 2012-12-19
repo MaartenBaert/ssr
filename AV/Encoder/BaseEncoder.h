@@ -58,7 +58,7 @@ protected:
 
 	// Called by the encoder thread to encode a single frame. Frame can be NULL if the encoder uses delayed packets.
 	// Returns whether a packet was received.
-	virtual bool EncodeFrame(AVFrame* frame) = 0;
+	virtual bool EncodeFrame(AVFrameWrapper* frame) = 0;
 
 	inline Logger* GetLogger() { return m_logger; }
 	inline Muxer* GetMuxer() { return m_muxer; }
@@ -67,11 +67,14 @@ protected:
 
 public:
 
-	// Tells the encoder to stop. It can still take some time before the encoder is actually done.
+	// Tells the encoder to stop. It can still take some time before the encoder is actually done. When all encoders are done, the muxer will finish too.
+	// Note: If an error occurs during encoding, this function has no effect. As a result the muxer will never finish. If you are waiting for the muxer
+	//       to end, you should periodically call HasErrorOccurred on all encoders, and stop waiting if it returns true for any of them.
 	// This function is thread-safe.
 	void Finish();
 
 	// Returns whether the encoding is done. If this returns true, the object can be deleted.
+	// Note: If an error occurred during encoding, this function will return false.
 	// This function is thread-safe.
 	bool IsDone();
 

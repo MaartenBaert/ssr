@@ -46,6 +46,7 @@ private:
 	QString m_container_name, m_output_file;
 
 	AVFormatContext *m_format_context;
+	bool m_started;
 
 	VPair<StreamData> m_stream_data[MUXER_MAX_STREAMS];
 	VPair<SharedData> m_shared_data;
@@ -58,19 +59,15 @@ public:
 	// Starts the muxer. You can't create new encoders after calling this function.
 	void Start();
 
-	// Returns whether the muxer was started.
+	// Returns whether the muxer is running.
 	bool IsStarted();
-
-	/*// Returns the total number of bytes produced by the encoders. This does not include the overhead
-	// added by the muxer, so the actual file may be slightly larger.
-	// This function is thread-safe.
-	uint64_t GetTotalBytes();*/
 
 	// Returns the total number of bytes written to the output file.
 	// This function is thread-safe.
 	uint64_t GetTotalBytes();
 
 	// Returns whether the muxing is done. If this returns true, the object can be deleted.
+	// Note: If an error occurred in one of the encoders or the muxer itself, this function will return false.
 	// This function is thread-safe.
 	bool IsDone();
 

@@ -5,6 +5,7 @@ A screen recorder for Linux. Despite the name, this program is actually quite co
 
 License
 -------
+
 GNU GPL v3 - read 'COPYING' for more info.
 
 Build dependencies

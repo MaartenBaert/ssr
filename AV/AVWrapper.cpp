@@ -41,10 +41,12 @@ public:
 } g_av_global;
 
 AVFrameWrapper::AVFrameWrapper() {
+	m_free_on_destruct = true;
 	avcodec_get_frame_defaults(this);
 }
 
 AVFrameWrapper::AVFrameWrapper(size_t size) {
+	m_free_on_destruct = true;
 	avcodec_get_frame_defaults(this);
 	data[0] = (uint8_t*) av_malloc(size);
 	if(data[0] == NULL) {
@@ -53,22 +55,26 @@ AVFrameWrapper::AVFrameWrapper(size_t size) {
 }
 
 AVFrameWrapper::~AVFrameWrapper() {
-	av_free(data[0]);
+	if(m_free_on_destruct)
+		av_free(data[0]);
 }
 
 AVPacketWrapper::AVPacketWrapper() {
+	m_free_on_destruct = true;
 	av_init_packet(this);
 	data = NULL;
 	size = 0;
 }
 
 AVPacketWrapper::AVPacketWrapper(size_t size) {
+	m_free_on_destruct = true;
 	if(av_new_packet(this, size) != 0) {
 		throw std::bad_alloc();
 	}
 }
 
 AVPacketWrapper::~AVPacketWrapper() {
-	av_free_packet(this);
+	if(m_free_on_destruct)
+		av_free_packet(this);
 }
 

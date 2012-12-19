@@ -63,17 +63,19 @@ AudioInput::~AudioInput() {
 
 }
 
-void AudioInput::ReadFrame(AVFrame* frame) {
+void AudioInput::ReadFrame(AVFrameWrapper* frame) {
 
 	// sanity check
 	if(frame->nb_samples == 0)
 		return;
 
+#if SSR_USE_AVFRAME_FORMAT
 	// check the format
 	if(frame->format != AV_SAMPLE_FMT_S16) {
 		GetLogger()->LogError("[AudioInput::ReadFrame] Error: Audio frame uses format " + QString::number(frame->format) + " instead of " + QString::number(AV_SAMPLE_FMT_S16) + " (AV_SAMPLE_FMT_S16)!");
 		throw LibavException();
 	}
+#endif
 
 	// fill partial frame
 	unsigned int current_position = 0;
@@ -86,7 +88,9 @@ void AudioInput::ReadFrame(AVFrame* frame) {
 			m_partial_frame->linesize[0] = m_required_frame_size * 4;
 			m_partial_frame->nb_samples = 0;
 			m_partial_frame->pkt_dts = frame->pkt_dts - (int64_t) frame_samples_left * (int64_t) 1000000 / (int64_t) m_sample_rate;
+#if SSR_USE_AVFRAME_FORMAT
 			m_partial_frame->format = AV_SAMPLE_FMT_S16;
+#endif
 		}
 
 		// read samples until either the partial frame is full or the recorded frame is empty

@@ -290,7 +290,7 @@ void PageRecord::Start() {
 		}
 	}
 
-	m_logger.LogInfo("[PageRecord::Start] Started ...");
+	m_logger.LogInfo("[PageRecord::Start] Started.");
 
 	m_started = true;
 	m_encoders_started = false;
@@ -323,7 +323,13 @@ void PageRecord::Stop(bool save) {
 			m_video_encoder->Finish();
 		if(m_audio_encoder != NULL)
 			m_audio_encoder->Finish();
-		while(!m_muxer->IsDone() && !m_muxer->HasErrorOccurred()) {
+		while(!m_muxer->IsDone()) {
+			if(m_muxer->HasErrorOccurred())
+				break;
+			if(m_video_encoder != NULL && m_video_encoder->HasErrorOccurred())
+				break;
+			if(m_audio_encoder != NULL && m_audio_encoder->HasErrorOccurred())
+				break;
 			usleep(10000);
 		}
 	}

@@ -55,6 +55,12 @@ OpenGL recording is usually called 'GLInject' in the code. It consists of three 
 
 If the video is corrupted after some change to the back-end, check the timestamps. In most of the cases I've seen, the muxer was simply messing up the interleaving of the video and audio frames. The typical result is video that starts fine, then gets corrupted, and then freezes after a few seconds.
 
+#### Dealing with old versions of libav ####
+
+This is very annoying. Libav likes to change its API a lot. The API is usually backwards compatible, but the old functions often have some disadvantages. So for now I'm supporting both old and new versions of the API, based on the preprocessor definitions from the libav headers.
+
+libav has a very useful document that keeps track of all API changes, it's located in 'doc/APIchanges'. The best way to find out how the old API actually worked is to search for the commit that removed the function (just search for the function name), go back one commit, go to the corresponding tree, and look at the example code (e.g. output-example.c for libavformat).
+
 #### GUI ####
 
 The GUI uses a wizard-like layout to show all the settings, rather than separate settings windows. This makes all settings immediately visible, so you're less likely to waste an hour of time because you forgot to turn on the microphone, for example. It also means all settings are easily discoverable. Yes, it means the user has to press 'continue' a few times. But I assume that many of these settings will be changed very often, if not every time. Opening separate windows to change settings, or just to check if they are still correct, would take a far more time.

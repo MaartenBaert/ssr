@@ -40,6 +40,6 @@ public:
 
 private:
 	virtual void FillCodecContext();
-	virtual bool EncodeFrame(AVFrame* frame);
+	virtual bool EncodeFrame(AVFrameWrapper* frame);
 
 };

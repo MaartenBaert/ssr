@@ -24,6 +24,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 class Logger;
 class Synchronizer;
+class AVFrameWrapper;
 
 class BaseInput : private QThread {
 
@@ -53,13 +54,12 @@ protected:
 	virtual int64_t GetReadDelay();
 
 	// Called by the input thread for each frame that is read.
-	virtual void ReadFrame(AVFrame* frame) = 0;
+	virtual void ReadFrame(AVFrameWrapper* frame) = 0;
 
 	inline Logger* GetLogger() { return m_logger; }
 	inline Synchronizer* GetSynchronizer() { return m_synchronizer; }
-	/*inline AVFormatContext* GetFormatContext() { return m_format_context; }
+	inline AVFormatContext* GetFormatContext() { return m_format_context; }
 	inline AVCodecContext* GetCodecContext() { return m_codec_context; }
-	inline unsigned int GetStreamIndex() { return m_stream_index; }*/
 
 public:
 	// Returns whether an error has occurred in the input thread.

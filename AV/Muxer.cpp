@@ -33,6 +33,7 @@ Muxer::Muxer(Logger* logger, const QString& container_name, const QString& outpu
 	m_output_file = output_file;
 
 	m_format_context = NULL;
+	m_started = false;
 
 	// initialize stream data
 	for(int i = 0; i < MUXER_MAX_STREAMS; ++i) {
@@ -75,12 +76,13 @@ Muxer::~Muxer() {
 }
 
 void Muxer::Start() {
-	Q_ASSERT(!isRunning());
+	Q_ASSERT(!m_started);
+	m_started = true;
 	start();
 }
 
 bool Muxer::IsStarted() {
-	return isRunning();
+	return m_started;
 }
 
 uint64_t Muxer::GetTotalBytes() {
@@ -93,11 +95,16 @@ bool Muxer::IsDone() {
 }
 
 AVStream* Muxer::CreateStream(AVCodec* codec) {
-	Q_ASSERT(!isRunning());
+	Q_ASSERT(!m_started);
 	Q_ASSERT(m_format_context->nb_streams < MUXER_MAX_STREAMS);
 
 	// create a new stream
+#if SSR_USE_AVFORMAT_NEW_STREAM
 	AVStream *stream = avformat_new_stream(m_format_context, codec);
+#else
+	AVStream *stream = av_new_stream(m_format_context, m_format_context->nb_streams);
+	avcodec_get_context_defaults3(stream->codec, codec);
+#endif
 	if(stream == NULL) {
 		m_logger->LogError("[Muxer::AddStream] Error: Can't create new stream!");
 		throw LibavException();
@@ -213,25 +220,32 @@ void Muxer::run() {
 
 			}
 
-			// write the packet (frame?)
+			// get the packet
 			std::unique_ptr<AVPacketWrapper> packet;
 			{
 				StreamLock lock(&m_stream_data[oldest_stream]);
 				packet = std::move(lock->m_packet_queue.front());
 				lock->m_packet_queue.pop_front();
 			}
-			/*{
-				SharedLock lock(&m_shared_data);
-				lock->m_total_bytes += packet->size;
-			}*/
 			AVStream *st = m_format_context->streams[oldest_stream];
 			packet->stream_index = oldest_stream;
-			if(packet->pts != (int64_t) AV_NOPTS_VALUE)
-				packet->pts = (int64_t) ((double) packet->pts * ToDouble(st->codec->time_base) / ToDouble(st->time_base) + 0.5);
-			if(av_write_frame(m_format_context, packet.get()) != 0) {
+			if(packet->pts != (int64_t) AV_NOPTS_VALUE) {
+				//packet->pts =  (int64_t) ((double) packet->pts * ToDouble(st->codec->time_base) / ToDouble(st->time_base) + 0.5);
+				packet->pts = av_rescale_q(packet->pts, st->codec->time_base, st->time_base);
+			}
+
+			// write the packet (again, why does libav call this a frame?)
+			// The packet should already be interleaved now, but containers can have custom interleaving specifications,
+			// so it's a good idea to call av_interleaved_write_frame anyway.
+			if(av_interleaved_write_frame(m_format_context, packet.get()) != 0) {
 				m_logger->LogError("[Muxer::run] Error: Can't write frame to muxer!");
 				throw LibavException();
 			}
+
+			// the data is now owned by libav, so don't free it
+			packet->m_free_on_destruct = false;
+
+			// update the byte counter
 			{
 				SharedLock lock(&m_shared_data);
 				lock->m_total_bytes = m_format_context->pb->pos + (m_format_context->pb->buf_ptr - m_format_context->pb->buffer);

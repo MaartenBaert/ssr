@@ -13,7 +13,7 @@ QMAKE_CXXFLAGS += -std=c++0x -D__STDC_CONSTANT_MACROS -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavdevice -lavutil -lswscale -lX11 -lXext -lXfixes
 
 QMAKE_CXXFLAGS_RELEASE -= -O1 -O2 -O3
-QMAKE_CXXFLAGS_RELEASE += -O3
+QMAKE_CXXFLAGS_RELEASE += -O3 -g
 QMAKE_LFLAGS_RELEASE -= -Wl,-O1 -Wl,-O2 -Wl,-O3
 QMAKE_LFLAGS_RELEASE += -Wl,-O3
 

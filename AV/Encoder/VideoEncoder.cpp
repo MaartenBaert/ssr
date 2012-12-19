@@ -46,15 +46,6 @@ VideoEncoder::VideoEncoder(Logger* logger, Muxer* muxer, const QString& codec_na
 		throw LibavException();
 	}
 
-	// allocate a temporary buffer
-	// Apparently libav completely ignores the size of the buffer, and if it's too small it just crashes.
-	// Originally it was 256k, which is large enough for about 99.9% of the packets, but it still occasionally crashes.
-	// So now I'm using a buffer that's always at least large enough to hold a 256k header and *two* completely uncompressed frames.
-	// (one YUV frame takes w * h * 1.5 bytes)
-	// Newer versions of libav have deprecated avcodec_encode_video and added a new function which does the allocation
-	// automatically, just like avcodec_encode_audio2, but that function isn't available in Ubuntu 12.04 yet.
-	m_temp_buffer.resize(256 * 1024 + m_width * m_height * 3);
-
 	// start the encoder
 	AVDictionary *options = NULL;
 	try {
@@ -67,6 +58,15 @@ VideoEncoder::VideoEncoder(Logger* logger, Muxer* muxer, const QString& codec_na
 		av_dict_free(&options);
 		throw;
 	}
+
+	// allocate a temporary buffer
+	// Apparently libav completely ignores the size of the buffer, and if it's too small it just crashes.
+	// Originally it was 256k, which is large enough for about 99.9% of the packets, but it still occasionally crashes.
+	// So now I'm using a buffer that's always at least large enough to hold a 256k header and *two* completely uncompressed frames.
+	// (one YUV frame takes w * h * 1.5 bytes)
+	// Newer versions of libav have deprecated avcodec_encode_video and added a new function which does the allocation
+	// automatically, just like avcodec_encode_audio2, but that function isn't available in Ubuntu 12.04 yet.
+	m_temp_buffer.resize(std::max<unsigned int>(FF_MIN_BUFFER_SIZE, 256 * 1024 + m_width * m_height * 3));
 
 }
 
@@ -125,7 +125,7 @@ void VideoEncoder::FillCodecContext() {
 
 }
 
-bool VideoEncoder::EncodeFrame(AVFrame* frame) {
+bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
 
 	// encode the frame
 	int bytes_encoded = avcodec_encode_video(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), frame);
@@ -144,8 +144,9 @@ bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 		memcpy(packet->data, m_temp_buffer.data(), bytes_encoded);
 
 		// set the timestamp and flags
-		packet->pts = GetCodecContext()->coded_frame->pts;
-		//packet.pts = av_rescale_q(GetCodecContext()->coded_frame->pts, GetCodecContext()->time_base, st->time_base);
+		// note: pts will be rescaled and stream_index will be set by Muxer
+		if(GetCodecContext()->coded_frame != NULL && GetCodecContext()->coded_frame->pts != (int64_t) AV_NOPTS_VALUE)
+			packet->pts = GetCodecContext()->coded_frame->pts;
 		if(GetCodecContext()->coded_frame->key_frame)
 			packet->flags |= AV_PKT_FLAG_KEY;
 

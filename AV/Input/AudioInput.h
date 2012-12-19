@@ -37,6 +37,6 @@ public:
 	~AudioInput();
 
 private:
-	virtual void ReadFrame(AVFrame* frame);
+	virtual void ReadFrame(AVFrameWrapper* frame);
 
 };

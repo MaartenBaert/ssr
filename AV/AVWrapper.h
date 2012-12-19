@@ -22,6 +22,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 class AVFrameWrapper : public AVFrame {
 public:
+	bool m_free_on_destruct;
+#if !SSR_USE_AVFRAME_NB_SAMPLES
+	int nb_samples; // we need this even if libav doesn't use it
+#endif
+public:
 	AVFrameWrapper();
 	AVFrameWrapper(size_t size);
 	AVFrameWrapper(const AVFrameWrapper& other) = delete;
@@ -30,6 +35,8 @@ public:
 };
 
 class AVPacketWrapper : public AVPacket {
+public:
+	bool m_free_on_destruct;
 public:
 	AVPacketWrapper();
 	AVPacketWrapper(size_t size);

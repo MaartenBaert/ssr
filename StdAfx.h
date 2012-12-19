@@ -46,12 +46,18 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-// when using libavcodec >= 53.34, use the new audio API, otherwise use the old one
-#if LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 34)
-#define SSR_USE_OLD_ENCODE_AUDIO 0
-#else
-#define SSR_USE_OLD_ENCODE_AUDIO 1
-#endif
+// avformat_close_input requires libavformat >= 53.17
+#define SSR_USE_AVFORMAT_CLOSE_INPUT   (LIBAVFORMAT_VERSION_MAJOR > 53 || (LIBAVFORMAT_VERSION_MAJOR == 53 && LIBAVFORMAT_VERSION_MINOR >= 17))
+// avformat_new_stream requires libavformat >= 53.10
+#define SSR_USE_AVFORMAT_NEW_STREAM    (LIBAVFORMAT_VERSION_MAJOR > 53 || (LIBAVFORMAT_VERSION_MAJOR == 53 && LIBAVFORMAT_VERSION_MINOR >= 10))
+
+// avcodec_encode_audio2 requires libavcodec >= 53.34
+#define SSR_USE_AVCODEC_ENCODE_AUDIO2  (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 34))
+// AVFrame::format requires libavcodec >= 53.31
+#define SSR_USE_AVFRAME_FORMAT         (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 31))
+// AVFrame::nb_samples and avcodec_decode_audio4 requires libavcodec >= 53.25
+#define SSR_USE_AVFRAME_NB_SAMPLES     (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 25))
+#define SSR_USE_AVCODEC_DECODE_AUDIO4  (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 25))
 
 // simple function to do n-byte alignment
 inline size_t grow_align8(size_t size) {

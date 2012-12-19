@@ -44,7 +44,11 @@ BaseInput::~BaseInput() {
 		m_codec_context = NULL;
 	}
 	if(m_format_context != NULL) {
+#if SSR_USE_AVFORMAT_CLOSE_INPUT
 		avformat_close_input(&m_format_context);
+#else
+		av_close_input_file(m_format_context);
+#endif
 		m_format_context = NULL;
 	}
 
@@ -136,7 +140,7 @@ void BaseInput::run() {
 				}
 			}
 
-			// read a packet
+			// read a packet (not sure why libav calls it a frame)
 			AVPacketWrapper packet;
 			if(av_read_frame(m_format_context, &packet) < 0) {
 				m_logger->LogError("[BaseInput::run] Error: Can't read packet!");
@@ -154,18 +158,34 @@ void BaseInput::run() {
 				while(current_position < packet.size) {
 
 					// get a temporary frame
-					// We don't need to free the data in this frame, so use AVFrame instead of AVFrameWrapper.
-					AVFrame temp_frame;
+					AVFrameWrapper temp_frame;
 
 					// decode
 					AVPacket temp_packet = packet;
 					temp_packet.data += current_position;
 					temp_packet.size -= current_position;
 					int got_frame, bytes_decoded;
-					if(m_stream_type == AVMEDIA_TYPE_VIDEO)
+					if(m_stream_type == AVMEDIA_TYPE_VIDEO) {
+						temp_frame.m_free_on_destruct = false;
 						bytes_decoded = avcodec_decode_video2(m_codec_context, &temp_frame, &got_frame, &temp_packet);
-					else
+					} else {
+#if SSR_USE_AVCODEC_DECODE_AUDIO4
+						temp_frame.m_free_on_destruct = false;
 						bytes_decoded = avcodec_decode_audio4(m_codec_context, &temp_frame, &got_frame, &temp_packet);
+#else
+						int temp_frame_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+						temp_frame.data[0] = (uint8_t*) av_malloc(temp_frame_size);
+						if(temp_frame.data[0] == NULL) {
+							throw std::bad_alloc();
+						}
+						bytes_decoded = avcodec_decode_audio3(m_codec_context, (short*) temp_frame.data[0], &temp_frame_size, &temp_packet);
+						got_frame = (temp_frame_size > 0)? 1 : 0;
+						temp_frame.nb_samples = temp_frame_size / (2 * m_codec_context->channels);
+#if SSR_USE_AVFRAME_FORMAT
+						temp_frame.format = AV_SAMPLE_FMT_S16;
+#endif
+#endif
+					}
 					if(bytes_decoded < 0) {
 						m_logger->LogError("[BaseInput::run] Error: Decoding of packet failed!");
 						throw LibavException();

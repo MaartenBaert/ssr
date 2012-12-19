@@ -28,7 +28,7 @@ private:
 	unsigned int m_bit_rate;
 	unsigned int m_sample_rate;
 
-#if SSR_USE_OLD_ENCODE_AUDIO
+#if !SSR_USE_AVCODEC_ENCODE_AUDIO2
 	std::vector<uint8_t> m_temp_buffer;
 #endif
 
@@ -44,6 +44,6 @@ public:
 
 private:
 	virtual void FillCodecContext();
-	virtual bool EncodeFrame(AVFrame* frame);
+	virtual bool EncodeFrame(AVFrameWrapper* frame);
 
 };

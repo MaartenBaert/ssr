@@ -79,6 +79,9 @@ void Synchronizer::NewSegment() {
 				std::unique_ptr<AVFrameWrapper> frame(new AVFrameWrapper(m_required_frame_size * 4));
 				frame->linesize[0] = m_required_frame_size * 4;
 				frame->nb_samples = m_required_frame_size;
+#if SSR_USE_AVFRAME_FORMAT
+				frame->format = AV_SAMPLE_FMT_S16;
+#endif
 				memset(frame->data[0], 0, m_required_frame_size * 4);
 
 				// increase the sample count

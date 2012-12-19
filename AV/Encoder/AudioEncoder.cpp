@@ -44,18 +44,24 @@ AudioEncoder::AudioEncoder(Logger* logger, Muxer* muxer, const QString& codec_na
 		throw;
 	}
 
-#if SSR_USE_OLD_ENCODE_AUDIO
+#if !SSR_USE_AVCODEC_ENCODE_AUDIO2
 	// allocate a temporary buffer
-	m_temp_buffer.resize(256 * 1024);
+	if(GetCodecContext()->frame_size == 0) {
+		// This is really weird, the old API uses the size of the *output* buffer to determine the number of
+		// input samples if the number of input samples (i.e. frame_size) is not fixed (i.e. frame_size == 0).
+		m_temp_buffer.resize(1024 * GetCodecContext()->channels * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
+	} else {
+		m_temp_buffer.resize(std::max(FF_MIN_BUFFER_SIZE, 256 * 1024));
+	}
 #endif
 
 }
 
 unsigned int AudioEncoder::GetRequiredFrameSize() {
-#if SSR_USE_OLD_ENCODE_AUDIO
-	return GetCodecContext()->frame_size;
-#else
+#if SSR_USE_AVCODEC_ENCODE_AUDIO2
 	return (GetCodecContext()->codec->capabilities & CODEC_CAP_VARIABLE_FRAME_SIZE)? 1024 : GetCodecContext()->frame_size;
+#else
+	return (GetCodecContext()->frame_size == 0)? 1024 : GetCodecContext()->frame_size;
 #endif
 }
 
@@ -68,18 +74,44 @@ void AudioEncoder::FillCodecContext() {
 
 }
 
-bool AudioEncoder::EncodeFrame(AVFrame* frame) {
+bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 
-#if SSR_USE_OLD_ENCODE_AUDIO
+#if SSR_USE_AVCODEC_ENCODE_AUDIO2
 
-	// check the format
-	if(frame->format != AV_SAMPLE_FMT_S16) {
-		GetLogger()->LogError("[AudioEncoder::EncodeFrame] Error: Audio frame uses format " + QString::number(frame->format) + " instead of " + QString::number(AV_SAMPLE_FMT_S16) + " (AV_SAMPLE_FMT_S16)!");
+	// allocate a packet
+	std::unique_ptr<AVPacketWrapper> packet(new AVPacketWrapper());
+
+	// encode the frame
+	int got_packet;
+	if(avcodec_encode_audio2(GetCodecContext(), packet.get(), frame, &got_packet) < 0) {
+		GetLogger()->LogError("[AudioEncoder::EncodeFrame] Error: Encoding of audio frame failed!");
 		throw LibavException();
 	}
 
+	// do we have a packet?
+	if(got_packet) {
+
+		// send the packet to the muxer
+		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));
+		return true;
+
+	} else {
+		return false;
+	}
+
+#else
+
+#if SSR_USE_AVFRAME_FORMAT
+	// check the format
+	if(frame != NULL && frame->format != AV_SAMPLE_FMT_S16) {
+		GetLogger()->LogError("[AudioEncoder::EncodeFrame] Error: Audio frame uses format " + QString::number(frame->format) + " instead of " + QString::number(AV_SAMPLE_FMT_S16) + " (AV_SAMPLE_FMT_S16)!");
+		throw LibavException();
+	}
+#endif
+
 	// encode the frame
-	int bytes_encoded = avcodec_encode_audio(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), (short*) frame->data[0]);
+	short *data = (frame == NULL)? NULL : (short*) frame->data[0];
+	int bytes_encoded = avcodec_encode_audio(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), data);
 	if(bytes_encoded < 0) {
 		GetLogger()->LogError("[AudioEncoder::EncodeFrame] Error: Encoding of audio frame failed!");
 		throw LibavException();
@@ -94,28 +126,12 @@ bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 		// copy the data
 		memcpy(packet->data, m_temp_buffer.data(), bytes_encoded);
 
-		// send the packet to the muxer
-		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));
-		return true;
-
-	} else {
-		return false;
-	}
-
-#else
-
-	// allocate a packet
-	std::unique_ptr<AVPacketWrapper> packet(new AVPacketWrapper());
-
-	// encode the frame
-	int got_packet;
-	if(avcodec_encode_audio2(GetCodecContext(), packet.get(), frame, &got_packet) < 0) {
-		GetLogger()->LogError("[AudioEncoder::EncodeFrame] Error: Encoding of audio frame failed!");
-		throw LibavException();
-	}
-
-	// do we have a packet?
-	if(got_packet) {
+		// set the timestamp and flags
+		// note: pts will be rescaled and stream_index will be set by Muxer
+		if(GetCodecContext()->coded_frame != NULL && GetCodecContext()->coded_frame->pts != (int64_t) AV_NOPTS_VALUE)
+			packet->pts = GetCodecContext()->coded_frame->pts;
+		if(GetCodecContext()->coded_frame->key_frame)
+			packet->flags |= AV_PKT_FLAG_KEY;
 
 		// send the packet to the muxer
 		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));
