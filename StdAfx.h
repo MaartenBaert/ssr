@@ -58,6 +58,12 @@ extern "C" {
 // AVFrame::nb_samples and avcodec_decode_audio4 requires libavcodec >= 53.25
 #define SSR_USE_AVFRAME_NB_SAMPLES     (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 25))
 #define SSR_USE_AVCODEC_DECODE_AUDIO4  (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 25))
+// the 'preset' private option requires libavcodec >= 53.10
+// https://git.libav.org/?p=libav.git;a=commit;f=libavcodec/libx264.c;h=07a227b432e49f4c0f35bbef48009f4d8438b32e
+#define SSR_USE_AVCODEC_OPT_PRESET     (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 10))
+// the 'crf' private option requires libavcodec >= 53.8
+// https://git.libav.org/?p=libav.git;a=commit;f=libavcodec/libx264.c;h=d5dc8cc2974c816ba964692b75c9f17f40830414
+#define SSR_USE_AVCODEC_OPT_CRF        (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 8))
 
 // simple function to do n-byte alignment
 inline size_t grow_align8(size_t size) {

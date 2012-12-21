@@ -3,6 +3,7 @@ Testing:
 In progress:
 
 Todo:
+- 'About' dialog.
 
 Wishlist:
 - Fixed cursor position when using 'follow cursor'

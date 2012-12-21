@@ -94,9 +94,12 @@ void VideoEncoder::FillCodecContext(AVCodec* codec) {
 		Q_ASSERT(m_opt_crf != (unsigned int) -1);
 		Q_ASSERT(m_opt_preset != "");
 
-		//TODO// libav version
+#if !SSR_USE_AVCODEC_OPT_CRF
 		GetCodecContext()->crf = m_opt_crf;
+#endif
+#if !SSR_USE_AVCODEC_OPT_PRESET
 		X264Preset(GetCodecContext(), qPrintable(m_opt_preset));
+#endif
 
 		/*
 		The code below is needed for variable frame rate video. Variable frame rate essentially means setting the time base to 1us.
