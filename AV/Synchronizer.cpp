@@ -112,12 +112,12 @@ void Synchronizer::NewSegment() {
 
 int64_t Synchronizer::GetTotalTime() {
 	SharedLock lock(&m_shared_data);
-	int64_t audio_time = lock->m_time_offset + (int64_t) lock->m_sample_count * (int64_t) 1000000 / (int64_t) m_sample_rate;;
-	if(lock->m_last_video_pts != (int64_t) AV_NOPTS_VALUE) {
-		int64_t video_time = (lock->m_last_video_pts + 1) * (int64_t) 1000000 / (int64_t) m_frame_rate;
-		return std::max(video_time, audio_time);
-	}
-	return audio_time;
+	int64_t audio_time = 0, video_time = 0;
+	if(m_audio_encoder != NULL)
+		audio_time = lock->m_time_offset + (int64_t) lock->m_sample_count * (int64_t) 1000000 / (int64_t) m_sample_rate;
+	if(lock->m_last_video_pts != (int64_t) AV_NOPTS_VALUE)
+		video_time = (lock->m_last_video_pts + 1) * (int64_t) 1000000 / (int64_t) m_frame_rate;
+	return std::max(video_time, audio_time);
 }
 
 void Synchronizer::AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame) {

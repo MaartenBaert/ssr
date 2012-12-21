@@ -137,8 +137,8 @@ PageInput::PageInput(MainWindow* main_window)
 		QLabel *label_source = new QLabel("Audio source:", group_audio);
 		m_lineedit_audio_source = new QLineEdit(group_audio);
 		m_lineedit_audio_source->setToolTip("The ALSA audio source. Normally this should be 'default'.\n"
-											"If you are using PulseAudio (the default for ubuntu), you should use PulseAudio Volume Control to select the correct input. PulseAudio can also\n"
-											"do more advanced things like recording the sound of other programs instead of recording the microphone."
+											"If you are using PulseAudio (the default for ubuntu), you should use PulseAudio Volume Control to select the correct input.\n"
+											"PulseAudio can also do more advanced things like recording the sound of other programs instead of recording the microphone.\n"
 											"If you are using ALSA directly, you can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).\n");
 
 		connect(m_checkbox_audio_enable, SIGNAL(clicked(bool)), this, SLOT(UpdateAudioFields()));

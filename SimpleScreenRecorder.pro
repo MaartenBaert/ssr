@@ -26,6 +26,7 @@ SOURCES += \
 	AV/Encoder/AudioEncoder.cpp \
     AV/Encoder/BaseEncoder.cpp \
     AV/Encoder/VideoEncoder.cpp \
+    AV/Encoder/X264Presets.cpp \
     AV/Input/AudioInput.cpp \
     AV/Input/BaseInput.cpp \
     AV/Input/GLInjectInput.cpp \
@@ -49,6 +50,7 @@ HEADERS  += \
 	AV/Encoder/AudioEncoder.h \
     AV/Encoder/BaseEncoder.h \
     AV/Encoder/VideoEncoder.h \
+    AV/Encoder/X264Presets.h \
     AV/Input/AudioInput.h \
     AV/Input/BaseInput.h \
     AV/Input/GLInjectInput.h \

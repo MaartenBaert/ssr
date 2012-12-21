@@ -28,6 +28,9 @@ private:
 	unsigned int m_bit_rate;
 	unsigned int m_width, m_height, m_frame_rate;
 
+	unsigned int m_opt_crf;
+	QString m_opt_preset;
+
 	std::vector<uint8_t> m_temp_buffer;
 
 public:
@@ -39,7 +42,7 @@ public:
 	inline unsigned int GetFrameRate() { return m_frame_rate; }
 
 private:
-	virtual void FillCodecContext();
+	virtual void FillCodecContext(AVCodec* codec);
 	virtual bool EncodeFrame(AVFrameWrapper* frame);
 
 };

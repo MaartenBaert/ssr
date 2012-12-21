@@ -71,7 +71,7 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 	m_stream_index = stream->index;
 
 	// set things like image size, frame rate, sample rate, bit rate ...
-	FillCodecContext();
+	FillCodecContext(codec);
 	stream->sample_aspect_ratio = m_codec_context->sample_aspect_ratio;
 
 	// open codec

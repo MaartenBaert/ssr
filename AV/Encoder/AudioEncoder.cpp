@@ -46,7 +46,7 @@ AudioEncoder::AudioEncoder(Logger* logger, Muxer* muxer, const QString& codec_na
 
 #if !SSR_USE_AVCODEC_ENCODE_AUDIO2
 	// allocate a temporary buffer
-	if(GetCodecContext()->frame_size == 0) {
+	if(GetCodecContext()->frame_size <= 1) {
 		// This is really weird, the old API uses the size of the *output* buffer to determine the number of
 		// input samples if the number of input samples (i.e. frame_size) is not fixed (i.e. frame_size == 0).
 		m_temp_buffer.resize(1024 * GetCodecContext()->channels * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
@@ -61,12 +61,15 @@ unsigned int AudioEncoder::GetRequiredFrameSize() {
 #if SSR_USE_AVCODEC_ENCODE_AUDIO2
 	return (GetCodecContext()->codec->capabilities & CODEC_CAP_VARIABLE_FRAME_SIZE)? 1024 : GetCodecContext()->frame_size;
 #else
-	return (GetCodecContext()->frame_size == 0)? 1024 : GetCodecContext()->frame_size;
+	return (GetCodecContext()->frame_size <= 1)? 1024 : GetCodecContext()->frame_size;
 #endif
 }
 
-void AudioEncoder::FillCodecContext() {
+void AudioEncoder::FillCodecContext(AVCodec* codec) {
+	Q_UNUSED(codec);
 
+	GetCodecContext()->time_base.num = 1;
+	GetCodecContext()->time_base.den = m_sample_rate;
 	GetCodecContext()->bit_rate = m_bit_rate;
 	GetCodecContext()->sample_rate = m_sample_rate;
 	GetCodecContext()->channels = 2;

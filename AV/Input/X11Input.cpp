@@ -257,11 +257,16 @@ X11Input::~X11Input() {
 void X11Input::Init() {
 
 	// do the X11 stuff
-	m_x11_display = QX11Info::display();
-	m_x11_screen = QX11Info::appScreen();
-	m_x11_root = QX11Info::appRootWindow(m_x11_screen);
-	m_x11_visual = (Visual*) QX11Info::appVisual(m_x11_screen);
-	m_x11_depth = QX11Info::appDepth(m_x11_screen);
+	// we need a separate display because the existing one would interfere with what Qt is doing in some cases
+	m_x11_display = XOpenDisplay(NULL); //QX11Info::display();
+	if(m_x11_display == NULL) {
+		m_logger->LogError("[X11Input::Init] Error: Can't open X display!");
+		throw X11Exception();
+	}
+	m_x11_screen = DefaultScreen(m_x11_display); //QX11Info::appScreen();
+	m_x11_root = RootWindow(m_x11_display, m_x11_screen); //QX11Info::appRootWindow(m_x11_screen);
+	m_x11_visual = DefaultVisual(m_x11_display, m_x11_screen); //(Visual*) QX11Info::appVisual(m_x11_screen);
+	m_x11_depth = DefaultDepth(m_x11_display, m_x11_screen); //QX11Info::appDepth(m_x11_screen);
 	m_x11_use_shm = XShmQueryExtension(m_x11_display);
 	if(m_x11_use_shm) {
 		m_logger->LogInfo("[X11Input::Init] Using X11 shared memory.");
@@ -331,6 +336,10 @@ void X11Input::Free() {
 	if(m_x11_image != NULL) {
 		XDestroyImage(m_x11_image);
 		m_x11_image = NULL;
+	}
+	if(m_x11_display != NULL) {
+		XCloseDisplay(m_x11_display);
+		m_x11_display = NULL;
 	}
 	if(m_sws_context != NULL) {
 		sws_freeContext(m_sws_context);

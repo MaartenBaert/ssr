@@ -114,9 +114,8 @@ AVStream* Muxer::CreateStream(AVCodec* codec) {
 		m_logger->LogError("[Muxer::AddStream] Error: Can't get codec context defaults!");
 		throw LibavException();
 	}
-	/*stream->codec->codec = codec;
 	stream->codec->codec_id = codec->id;
-	stream->codec->codec_type = codec->type;*/
+	stream->codec->codec_type = codec->type;
 #endif
 
 	// not sure why this is needed, but it's in the example code and it doesn't work without this

@@ -54,7 +54,7 @@ protected:
 	void CreateCodec(const QString& codec_name, AVDictionary** options);
 
 	// Called by CreateCodec after the codec context has been created but before the codec is opened.
-	virtual void FillCodecContext() = 0;
+	virtual void FillCodecContext(AVCodec* codec) = 0;
 
 	// Called by the encoder thread to encode a single frame. Frame can be NULL if the encoder uses delayed packets.
 	// Returns whether a packet was received.

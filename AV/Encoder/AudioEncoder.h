@@ -43,7 +43,7 @@ public:
 	inline unsigned int GetSampleRate() { return m_sample_rate; }
 
 private:
-	virtual void FillCodecContext();
+	virtual void FillCodecContext(AVCodec* codec);
 	virtual bool EncodeFrame(AVFrameWrapper* frame);
 
 };

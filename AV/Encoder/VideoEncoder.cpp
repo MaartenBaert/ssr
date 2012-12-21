@@ -23,6 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "AVWrapper.h"
 #include "Muxer.h"
+#include "X264Presets.h"
 
 VideoEncoder::VideoEncoder(Logger* logger, Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 						   unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate)
@@ -32,6 +33,9 @@ VideoEncoder::VideoEncoder(Logger* logger, Muxer* muxer, const QString& codec_na
 	m_width = width;
 	m_height = height;
 	m_frame_rate = frame_rate;
+
+	m_opt_crf = (unsigned int) -1;
+	m_opt_preset = "";
 
 	if(m_width == 0 || m_height == 0) {
 		GetLogger()->LogError("[VideoEncoder::Init] Error: Width or height is zero.");
@@ -50,6 +54,10 @@ VideoEncoder::VideoEncoder(Logger* logger, Muxer* muxer, const QString& codec_na
 	AVDictionary *options = NULL;
 	try {
 		for(unsigned int i = 0; i < codec_options.size(); ++i) {
+			if(codec_options[i].first == "crf")
+				m_opt_crf = codec_options[i].second.toUInt();
+			if(codec_options[i].first == "preset")
+				m_opt_preset = codec_options[i].second;
 			av_dict_set(&options, qPrintable(codec_options[i].first), qPrintable(codec_options[i].second), 0);
 		}
 		CreateCodec(qPrintable(codec_name), &options);
@@ -70,7 +78,7 @@ VideoEncoder::VideoEncoder(Logger* logger, Muxer* muxer, const QString& codec_na
 
 }
 
-void VideoEncoder::FillCodecContext() {
+void VideoEncoder::FillCodecContext(AVCodec* codec) {
 
 	GetCodecContext()->width = m_width;
 	GetCodecContext()->height = m_height;
@@ -82,7 +90,14 @@ void VideoEncoder::FillCodecContext() {
 	GetCodecContext()->flags |= CODEC_FLAG_LOOP_FILTER;
 	GetCodecContext()->thread_count = std::max(1, ::QThread::idealThreadCount());
 
-	if(strcmp(GetCodecContext()->codec->name, "libx264") == 0) {
+	if(strcmp(codec->name, "libx264") == 0) {
+		Q_ASSERT(m_opt_crf != (unsigned int) -1);
+		Q_ASSERT(m_opt_preset != "");
+
+		//TODO// libav version
+		GetCodecContext()->crf = m_opt_crf;
+		X264Preset(GetCodecContext(), qPrintable(m_opt_preset));
+
 		/*
 		The code below is needed for variable frame rate video. Variable frame rate essentially means setting the time base to 1us.
 		This causes a few other problems though, not just with encoders but also with playback, so I stopped using it.
