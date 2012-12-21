@@ -26,7 +26,7 @@ This list may be incomplete. All instructions and package names are for Ubuntu 1
 
 Everything combined:
 
-    sudo apt-get install qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
+    sudo apt-get install qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
 
 If the 32-bit version of libGL and libX11 isn't found during linking, but 64-bit works fine, try this:
 
@@ -42,7 +42,7 @@ Compiling
 
 First compile GLInject. Go to the glinject directory and run both 'compile32' and 'compile64'.
 
-You can compile the main program by running 'qmake' followed by 'make. Alternatively you can use Qt Creator (just open the project file).
+You can compile the main program by running 'qmake' followed by 'make'. Alternatively you can use Qt Creator (just open the project file).
 
 Other files you may want to read
 --------------------------------
