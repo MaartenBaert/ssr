@@ -34,37 +34,12 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 
 	m_warn_max_pixels = true;
 
-	m_log = NULL;
-
 	fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] created.\n", m_x11_display, m_x11_window, m_glx_drawable);
-
-	try {
-		Init();
-	} catch(...) {
-		Free();
-		throw;
-	}
-
-}
-
-GLFrameGrabber::~GLFrameGrabber() {
-
-	Free();
-
-	fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] destroyed.\n", m_x11_display, m_x11_window, m_glx_drawable);
-
-}
-
-#define DUMMY_W 1920
-#define DUMMY_H 1080
-uint8_t dummy_buffer[DUMMY_W * DUMMY_H * 4];
-
-void GLFrameGrabber::Init() {
 
 	const char *id_str = getenv("SSR_GLINJECT_SHM");
 	if(id_str == NULL) {
 		fprintf(stderr, "[SSR-GLInject] Error: Shared memory id is missing!\n");
-		throw 0;
+		exit(-181818181);
 	}
 	
 	// get main shared memory
@@ -72,7 +47,7 @@ void GLFrameGrabber::Init() {
 	m_shm_main_ptr = (char*) shmat(shm_main_id, NULL, SHM_RND);
 	if(m_shm_main_ptr == (char*) -1) {
 		fprintf(stderr, "[SSR-GLInject] Error: Can't attach to main shared memory (id = %d)!\n", shm_main_id);
-		throw 0;
+		exit(-181818181);
 	}
 	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
 	
@@ -88,18 +63,13 @@ void GLFrameGrabber::Init() {
 		m_shm_frame_ptrs.back() = (char*) shmat(id, NULL, SHM_RND);
 		if(m_shm_frame_ptrs.back() == (char*) -1) {
 			fprintf(stderr, "[GLInjectLauncher::Init] Error: Can't attach to frame shared memory!\n");
-			throw 0;
+			exit(-181818181);
 		}
 	}
 
-	/*m_log = fopen("ssr-glinject-time.txt", "w");
-	if(m_log == NULL) {
-		throw 0;
-	}*/
-
 }
 
-void GLFrameGrabber::Free() {
+GLFrameGrabber::~GLFrameGrabber() {
 
 	// release frame shared memory
 	while(!m_shm_frame_ptrs.empty()) {
@@ -115,10 +85,7 @@ void GLFrameGrabber::Free() {
 		m_shm_main_ptr = (char*) -1;
 	}
 
-	if(m_log != NULL) {
-		fclose(m_log);
-		m_log = NULL;
-	}
+	fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] destroyed.\n", m_x11_display, m_x11_window, m_glx_drawable);
 
 }
 
@@ -164,7 +131,7 @@ void GLFrameGrabber::GrabFrame() {
 		uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];
 
 		// capture the frame
-		glReadPixels(0, 0, std::min(m_width, (unsigned int) DUMMY_W), std::min(m_height, (unsigned int) DUMMY_H), GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data);
+		glReadPixels(0, 0, m_width, m_height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data);
 
 		// go to the next frame
 		((GLInjectHeader*) m_shm_main_ptr)->write_pos = (header.write_pos + 1) % (m_cbuffer_size * 2);
@@ -178,127 +145,3 @@ void GLFrameGrabber::GrabFrame() {
 	//fprintf(m_log, "%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\n", t2 - t1, t3 - t2, t4 - t3, t5 - t4);
 
 }
-
-/*m_first_frame = true;
-m_current_buffer = 0;
-for(unsigned int i = 0; i < BUFFER_COUNT; ++i) {
-	m_buffers[i] = 0;
-}*/
-
-/*// save any existing binding so we can restore it later
-unsigned int old_bind;
-glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING, (int*) &old_bind);
-
-// initialize GLEW
-GLenum res = glewInit();
-if(res != GLEW_OK) {
-	fprintf(stderr, "[SSR-GLInject] Error: Can't initialize GLEW! (%s)\n", glewGetErrorString(res));
-	throw 0;
-}
-
-// make sure ARB_pixel_buffer_object is available
-if(!GLEW_ARB_pixel_buffer_object) {
-	fprintf(stderr, "[SSR-GLInject] Error: ARB_pixel_buffer_object is not supported!\n");
-	throw 0;
-}
-
-// create buffers
-glGenBuffersARB(BUFFER_COUNT, m_buffers);
-
-// allocate memory for the buffers
-for(unsigned int i = 0; i < BUFFER_COUNT; ++i) {
-
-	// make sure the buffer was actually created
-	if(m_buffers[i] == 0) {
-		fprintf(stderr, "[SSR-GLInject] Error: Creating buffers failed!\n");
-		throw 0;
-	}
-
-	// bind the buffer
-	glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_buffers[i]);
-
-	// allocate memory
-	glBufferDataARB(GL_PIXEL_PACK_BUFFER_ARB, sizeof(dummy_buffer), NULL, GL_STREAM_READ);
-
-}
-
-// restore the original binding
-glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, old_bind);*/
-
-/*// free the buffers
-glDeleteBuffersARB(BUFFER_COUNT, m_buffers);
-for(unsigned int i = 0; i < BUFFER_COUNT; ++i) {
-	m_buffers[i] = 0;
-}*/
-
-/*unsigned int b1 = m_buffers[m_current_buffer];
-m_current_buffer = (m_current_buffer + 1) % BUFFER_COUNT;
-unsigned int b2 = m_buffers[m_current_buffer];
-
-uint64_t t1 = hrt_gettime();
-
-// save any existing binding so we can restore it later
-unsigned int old_bind;
-glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING, (int*) &old_bind);
-glPushAttrib(GL_PIXEL_MODE_BIT);
-glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
-glPixelStorei(GL_PACK_ALIGNMENT, 8);
-glReadBuffer(GL_BACK);
-
-uint64_t t2 = hrt_gettime();
-
-// should we read the previous frame?
-uint64_t t3 = 0, t4 = 0, t5 = 0;
-if(!m_first_frame) {
-
-	// bind the buffer
-	glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, b1);
-
-	t3 = hrt_gettime();
-
-	// map the buffer data to memory
-	uint8_t *data = (uint8_t*) glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY);
-	if(data == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Error: Mapping buffer to memory failed! GL error = %d.\n", glGetError());
-		throw 0;
-	}
-
-	t4 = hrt_gettime();
-
-	// use the data
-	//fprintf(stderr, "[SSR-GLInject] Success! ptr = %p | First pixel = %08x\n", data, *((unsigned int*) data));
-	memcpy(dummy_buffer, data, sizeof(dummy_buffer));
-
-	t5 = hrt_gettime();
-
-	// unmap the buffer
-	glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
-
-}
-
-uint64_t t6 = hrt_gettime();
-
-// bind the buffer
-glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, b2);
-
-uint64_t t7 = hrt_gettime();
-
-// capture the frame, read it next time
-glReadPixels(0, 0, DUMMY_W, DUMMY_H, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);
-
-uint64_t t8 = hrt_gettime();
-
-// restore the original binding
-//glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
-//glReadPixels(0, 0, DUMMY_W, DUMMY_H, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, dummy_buffer);
-glPopClientAttrib();
-glPopAttrib();
-glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, old_bind);
-
-uint64_t t9 = hrt_gettime();
-
-if(!m_first_frame) {
-	fprintf(m_log, "%lu\t%lu\t%lu\t%lu\t%lu\t%lu\t%lu\t%lu\n", t2 - t1, t3 - t2, t4 - t3, t5 - t4, t6 - t5, t7 - t6, t8 - t7, t9 - t8);
-}
-
-m_first_frame = false;*/

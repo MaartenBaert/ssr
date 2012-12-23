@@ -10,9 +10,9 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include "GLInject.h"
 
 #include "GLFrameGrabber.h"
-#include "elfhacks.h"
 
 GLInject g_glinject;
+int g_glinject_ready = 0;
 
 GLInject::GLInject() {
 
@@ -22,40 +22,7 @@ GLInject::GLInject() {
 	fprintf(stderr, "[SSR-GLInject] Library loaded (32-bit).\n");
 #endif
 
-	eh_obj_t libdl;
-	if(eh_find_obj(&libdl, "*/libdl.so*")) {
-		fprintf(stderr, "[SSR-GLInject] Can't open libdl.so!\n");
-		throw 0;
-	}
-	if(eh_find_sym(&libdl, "dlsym", (void **) &m_real_dlsym)) {
-		fprintf(stderr, "[SSR-GLInject] Can't get dlsym address!\n");
-		eh_destroy_obj(&libdl);
-		throw 0;
-	}
-	if(eh_find_sym(&libdl, "dlvsym", (void **) &m_real_dlvsym)) {
-		fprintf(stderr, "[SSR-GLInject] Can't get dlvsym address!\n");
-		eh_destroy_obj(&libdl);
-		throw 0;
-	}
-	eh_destroy_obj(&libdl);
-
-	//void *libgl_handle = dlopen("libGL.so.1", RTLD_LAZY);
-	m_real_glXCreateWindow = (GLXWindow (*)(Display*, GLXFBConfig, Window, const int*)) m_real_dlsym(RTLD_NEXT, "glXCreateWindow");
-	if(m_real_glXCreateWindow == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get glXCreateWindow address!\n");
-		throw 0;
-	}
-	m_real_glXSwapBuffers = (void (*)(Display*, GLXDrawable)) m_real_dlsym(RTLD_NEXT, "glXSwapBuffers");
-	if(m_real_glXSwapBuffers == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get glXSwapBuffers address!\n");
-		throw 0;
-	}
-	m_real_glXGetProcAddressARB = (GLXextFuncPtr (*)(const GLubyte*)) m_real_dlsym(RTLD_NEXT, "glXGetProcAddressARB");
-	if(m_real_glXGetProcAddressARB == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get glXGetProcAddressARB address!\n");
-		throw 0;
-	}
-
+	g_glinject_ready = 1;
 	fprintf(stderr, "[SSR-GLInject] Library successfully initialized.\n");
 
 }
@@ -72,6 +39,10 @@ GLInject::~GLInject() {
 }
 
 GLFrameGrabber* GLInject::NewGrabber(Display* display, Window window, GLXDrawable drawable) {
+	if(!g_glinject_ready) {
+		fprintf(stderr, "[SSR-GLInject] Error: NewGrabber called before GLInject was initialized.\n");
+		exit(-181818181);
+	}
 	GLFrameGrabber *fg = FindGrabber(display, drawable);
 	if(fg != NULL)
 		return fg;
@@ -81,6 +52,10 @@ GLFrameGrabber* GLInject::NewGrabber(Display* display, Window window, GLXDrawabl
 }
 
 GLFrameGrabber* GLInject::FindGrabber(Display* display, GLXDrawable drawable) {
+	if(!g_glinject_ready) {
+		fprintf(stderr, "[SSR-GLInject] Error: FindGrabber called before GLInject was initialized.\n");
+		exit(-181818181);
+	}
 	for(unsigned int i = 0; i < m_frame_grabbers.size(); ++i) {
 		if(m_frame_grabbers[i]->GetX11Display() == display && m_frame_grabbers[i]->GetGLXDrawable() == drawable)
 			return m_frame_grabbers[i];

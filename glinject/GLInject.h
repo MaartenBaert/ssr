@@ -14,12 +14,8 @@ class GLFrameGrabber;
 class GLInject {
 
 public:
-	void *(*m_real_dlsym)(void*, const char*);
-	void *(*m_real_dlvsym)(void*, const char*, const char*);
-	GLXWindow (*m_real_glXCreateWindow)(Display*, GLXFBConfig, Window, const int*);
-	void (*m_real_glXSwapBuffers)(Display*, GLXDrawable);
-	GLXextFuncPtr (*m_real_glXGetProcAddressARB)(const GLubyte*);
 
+private:
 	std::vector<GLFrameGrabber*> m_frame_grabbers;
 
 public:

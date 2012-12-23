@@ -32,17 +32,9 @@ private:
 	
 	bool m_warn_max_pixels;
 
-	//bool m_first_frame;
-	//unsigned int m_current_buffer;
-	//unsigned int m_buffers[BUFFER_COUNT];
-
-	FILE *m_log;
-
 public:
 	GLFrameGrabber(Display* display, Window window, GLXDrawable drawable);
 	~GLFrameGrabber();
-	void Init();
-	void Free();
 
 	void GrabFrame();
 

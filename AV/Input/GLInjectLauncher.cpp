@@ -100,21 +100,21 @@ void GLInjectLauncher::Init() {
 
 	// put the glinject libraries in the .ssr directory
 	QString dir = QDir::homePath() + "/.ssr";
-	if(!QDir(dir).exists()) {
-		if(!QDir::root().mkpath(dir)) {
-			m_logger->LogError("[GLInjectLauncher::Init] Error: Can't create .ssr directory!");
-			throw GLInjectException();
-		}
+	if(!QDir::root().mkpath(dir)) {
+		m_logger->LogError("[GLInjectLauncher::Init] Error: Can't create .ssr directory!");
+		throw GLInjectException();
 	}
-	if(!QFileInfo(dir + "/libssr-glinject32.so").exists()) {
+	{
 		QFile f(":/glinject/libssr-glinject32.so");
+		QFile(dir + "/libssr-glinject32.so").remove();
 		if(!f.copy(dir + "/libssr-glinject32.so")) {
 			m_logger->LogError("[GLInjectLauncher::Init] Error: Can't save libssr-glinject32.so!");
 			throw GLInjectException();
 		}
 	}
-	if(!QFileInfo(dir + "/libssr-glinject64.so").exists()) {
+	{
 		QFile f(":/glinject/libssr-glinject64.so");
+		QFile(dir + "/libssr-glinject64.so").remove();
 		if(!f.copy(dir + "/libssr-glinject64.so")) {
 			m_logger->LogError("[GLInjectLauncher::Init] Error: Can't save libssr-glinject64.so!");
 			throw GLInjectException();

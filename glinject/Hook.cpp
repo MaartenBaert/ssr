@@ -10,79 +10,134 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #include "GLInject.h"
 #include "GLFrameGrabber.h"
+#include "elfhacks.h"
 
-GLXWindow my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list);
-void my_glXSwapBuffers(Display* dpy, GLXDrawable drawable);
-GLXextFuncPtr my_glXGetProcAddressARB(const GLubyte *proc_name);
+GLXWindow glinject_my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list);
+void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable);
+GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name);
+
+void *(*g_glinject_real_dlsym)(void*, const char*) = NULL;
+void *(*g_glinject_real_dlvsym)(void*, const char*, const char*) = NULL;
+GLXWindow (*g_glinject_real_glXCreateWindow)(Display*, GLXFBConfig, Window, const int*) = NULL;
+void (*g_glinject_real_glXSwapBuffers)(Display*, GLXDrawable) = NULL;
+GLXextFuncPtr (*g_glinject_real_glXGetProcAddressARB)(const GLubyte*) = NULL;
+
+int g_glinject_hooks_initialized = 0;
+
+void glinject_init_hooks() {
+
+	if(g_glinject_hooks_initialized)
+		return;
+
+	// part 1: get dlsym and dlvsym
+	eh_obj_t libdl;
+	if(eh_find_obj(&libdl, "*/libdl.so*")) {
+		fprintf(stderr, "[SSR-GLInject] Can't open libdl.so!\n");
+		exit(-181818181);
+	}
+	if(eh_find_sym(&libdl, "dlsym", (void **) &g_glinject_real_dlsym)) {
+		fprintf(stderr, "[SSR-GLInject] Can't get dlsym address!\n");
+		eh_destroy_obj(&libdl);
+		exit(-181818181);
+	}
+	if(eh_find_sym(&libdl, "dlvsym", (void **) &g_glinject_real_dlvsym)) {
+		fprintf(stderr, "[SSR-GLInject] Can't get dlvsym address!\n");
+		eh_destroy_obj(&libdl);
+		exit(-181818181);
+	}
+	eh_destroy_obj(&libdl);
+
+	// part 2: get everything else
+	g_glinject_real_glXCreateWindow = (GLXWindow (*)(Display*, GLXFBConfig, Window, const int*)) g_glinject_real_dlsym(RTLD_NEXT, "glXCreateWindow");
+	if(g_glinject_real_glXCreateWindow == NULL) {
+		fprintf(stderr, "[SSR-GLInject] Can't get glXCreateWindow address!\n");
+		exit(-181818181);
+	}
+	g_glinject_real_glXSwapBuffers = (void (*)(Display*, GLXDrawable)) g_glinject_real_dlsym(RTLD_NEXT, "glXSwapBuffers");
+	if(g_glinject_real_glXSwapBuffers == NULL) {
+		fprintf(stderr, "[SSR-GLInject] Can't get glXSwapBuffers address!\n");
+		exit(-181818181);
+	}
+	g_glinject_real_glXGetProcAddressARB = (GLXextFuncPtr (*)(const GLubyte*)) g_glinject_real_dlsym(RTLD_NEXT, "glXGetProcAddressARB");
+	if(g_glinject_real_glXGetProcAddressARB == NULL) {
+		fprintf(stderr, "[SSR-GLInject] Can't get glXGetProcAddressARB address!\n");
+		exit(-181818181);
+	}
+
+	g_glinject_hooks_initialized = 1;
+}
 
 struct Hook {
 	const char* name;
 	void* address;
 };
 Hook hook_table[] = {
-	{"glXCreateWindow", (void*) &my_glXCreateWindow},
-	{"glXSwapBuffers", (void*) &my_glXSwapBuffers},
-	{"glXGetProcAddressARB", (void*) &my_glXGetProcAddressARB},
+	{"glXCreateWindow", (void*) &glinject_my_glXCreateWindow},
+	{"glXSwapBuffers", (void*) &glinject_my_glXSwapBuffers},
+	{"glXGetProcAddressARB", (void*) &glinject_my_glXGetProcAddressARB},
 };
 
-GLXWindow my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
-	GLXWindow res = g_glinject.m_real_glXCreateWindow(dpy, config, win, attrib_list);
+GLXWindow glinject_my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
+	GLXWindow res = g_glinject_real_glXCreateWindow(dpy, config, win, attrib_list);
 	if(res == 0)
 		return 0;
 	g_glinject.NewGrabber(dpy, win, res);
 	return res;
 }
 
-void my_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
+void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
 	GLFrameGrabber *fg = g_glinject.FindGrabber(dpy, drawable);
 	if(fg == NULL) {
 		fprintf(stderr, "[SSR-GLInject] Warning: glXSwapBuffers called without existing frame grabber, creating one assuming window == drawable.\n");
 		fg = g_glinject.NewGrabber(dpy, drawable, drawable);
 	}
 	fg->GrabFrame();
-	g_glinject.m_real_glXSwapBuffers(dpy, drawable);
+	g_glinject_real_glXSwapBuffers(dpy, drawable);
 }
 
-GLXextFuncPtr my_glXGetProcAddressARB(const GLubyte *proc_name) {
+GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name) {
+	glinject_init_hooks();
 	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
 		if(strcmp(hook_table[i].name, (const char*) proc_name) == 0) {
 			fprintf(stderr, "[SSR-GLInject] Hooked: glXGetProcAddressARB(%s).\n", proc_name);
 			return (GLXextFuncPtr) hook_table[i].address;
 		}
 	}
-	return g_glinject.m_real_glXGetProcAddressARB(proc_name);
+	return g_glinject_real_glXGetProcAddressARB(proc_name);
 }
 
 // override existing functions
 
 extern "C" GLXWindow glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
-	return my_glXCreateWindow(dpy, config, win, attrib_list);
+	return glinject_my_glXCreateWindow(dpy, config, win, attrib_list);
 }
 
 extern "C" void glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
-	my_glXSwapBuffers(dpy, drawable);
+	glinject_my_glXSwapBuffers(dpy, drawable);
 }
 
 extern "C" GLXextFuncPtr glXGetProcAddressARB(const GLubyte *proc_name) {
-	return my_glXGetProcAddressARB(proc_name);
+	return glinject_my_glXGetProcAddressARB(proc_name);
 }
 
 extern "C" void* dlsym(void* handle, const char* symbol) {
+	glinject_init_hooks();
 	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
 		if(strcmp(hook_table[i].name, symbol) == 0) {
 			fprintf(stderr, "[SSR-GLInject] Hooked: dlsym(%s).\n", symbol);
 			return hook_table[i].address;
 		}
 	}
-	return g_glinject.m_real_dlsym(handle, symbol);
+	return g_glinject_real_dlsym(handle, symbol);
 }
 
 extern "C" void* dlvsym(void* handle, const char* symbol, const char* version) {
+	glinject_init_hooks();
 	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
 		if(strcmp(hook_table[i].name, symbol) == 0) {
 			fprintf(stderr, "[SSR-GLInject] Hooked: dlvsym(%s,%s).\n", symbol, version);
 			return hook_table[i].address;
 		}
 	}
-	return g_glinject.m_real_dlvsym(handle, symbol, version);
+	return g_glinject_real_dlvsym(handle, symbol, version);
 }
