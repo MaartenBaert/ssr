@@ -40,7 +40,7 @@ I don't know whether this is the right way to do it, but it works for me.
 Compiling
 ---------
 
-First compile GLInject. Go to the glinject directory and run both 'compile32' and 'compile64'.
+First compile GLInject. Go to the glinject directory and run both 'compile32' and 'compile64'. If compile32 fails but compile64 works, read the instructions above again :).
 
 You can compile the main program by running 'qmake' followed by 'make'. Alternatively you can use Qt Creator (just open the project file).
 
