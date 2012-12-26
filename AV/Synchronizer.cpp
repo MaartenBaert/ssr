@@ -30,10 +30,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 // may get weird frame rate fluctuations caused by the limited accuracy of the recording timestamps.
 const double Synchronizer::CORRECTION_SPEED = 0.1;
 
-Synchronizer::Synchronizer(Logger* logger, VideoEncoder* video_encoder, AudioEncoder* audio_encoder) {
+Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder) {
 	Q_ASSERT(video_encoder != NULL || audio_encoder != NULL);
 
-	m_logger = logger;
 	m_video_encoder = video_encoder;
 	m_audio_encoder = audio_encoder;
 
@@ -73,7 +72,7 @@ void Synchronizer::NewSegment() {
 				if(video_time < audio_time)
 					break;
 
-				//m_logger->LogInfo("[Synchronizer::NewSegment] Inserting audio frame (size = " + QString::number(m_required_frame_size) + ").");
+				//Logger::LogInfo("[Synchronizer::NewSegment] Inserting audio frame (size = " + QString::number(m_required_frame_size) + ").");
 
 				// if the audio segment is shorter, add an empty frame
 				std::unique_ptr<AVFrameWrapper> frame(new AVFrameWrapper(m_required_frame_size * 4));
@@ -123,7 +122,7 @@ int64_t Synchronizer::GetTotalTime() {
 void Synchronizer::AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame) {
 	Q_ASSERT(m_video_encoder != NULL);
 	SharedLock lock(&m_shared_data);
-	//m_logger->LogInfo("1 " + QString::number(frame->pkt_dts));
+	//Logger::LogInfo("1 " + QString::number(frame->pkt_dts));
 
 	// if this is the first frame, use this as the start time,
 	// or drop the frame when synchronizing with audio
@@ -146,7 +145,7 @@ void Synchronizer::AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame) {
 	lock->m_last_video_pts = frame->pts;
 
 	// send the frame to the encoder
-	//m_logger->LogInfo("[Synchronizer::AddVideoFrame] Video pts = " + QString::number(frame->pts));
+	//Logger::LogInfo("[Synchronizer::AddVideoFrame] Video pts = " + QString::number(frame->pts));
 	m_video_encoder->AddFrame(std::move(frame));
 
 }
@@ -154,7 +153,7 @@ void Synchronizer::AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame) {
 void Synchronizer::AddAudioFrame(std::unique_ptr<AVFrameWrapper> frame) {
 	Q_ASSERT(m_audio_encoder != NULL);
 	SharedLock lock(&m_shared_data);
-	//m_logger->LogInfo("2 " + QString::number(frame->pkt_dts));
+	//Logger::LogInfo("2 " + QString::number(frame->pkt_dts));
 
 	// if this is the first frame, use this as the start time
 	if(lock->m_segment_begin_time == (int64_t) AV_NOPTS_VALUE)
@@ -179,7 +178,7 @@ void Synchronizer::AddAudioFrame(std::unique_ptr<AVFrameWrapper> frame) {
 	lock->m_sample_count += frame->nb_samples;
 
 	// send the frame to the encoder
-	//m_logger->LogInfo("[Synchronizer::AddAudioFrame] Audio pts = " + QString::number(frame->pts));
+	//Logger::LogInfo("[Synchronizer::AddAudioFrame] Audio pts = " + QString::number(frame->pts));
 	m_audio_encoder->AddFrame(std::move(frame));
 
 }

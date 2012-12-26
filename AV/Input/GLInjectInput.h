@@ -22,7 +22,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "YUVConverter.h"
 
-class Logger;
 class Synchronizer;
 class GLInjectLauncher;
 
@@ -32,7 +31,6 @@ public:
 	static const size_t THROTTLE_THRESHOLD;
 
 private:
-	Logger *m_logger;
 	Synchronizer *m_synchronizer;
 	GLInjectLauncher *m_launcher;
 
@@ -49,7 +47,7 @@ private:
 	volatile bool m_should_stop, m_error_occurred;
 
 public:
-	GLInjectInput(Logger* logger, Synchronizer* synchronizer, GLInjectLauncher* launcher);
+	GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launcher);
 	~GLInjectInput();
 
 	// Returns whether an error has occurred in the input thread.

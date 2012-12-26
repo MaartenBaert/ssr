@@ -209,10 +209,10 @@ void PageRecord::Start() {
 	if(m_started)
 		return;
 
-	m_logger.GetLines();
+	Logger::GetLines();
 	m_textedit_log->clear();
 
-	m_logger.LogInfo("[PageRecord::Start] Starting ...");
+	Logger::LogInfo("[PageRecord::Start] Starting ...");
 
 	PageInput *page_input = m_main_window->GetPageInput();
 	PageOutput *page_output = m_main_window->GetPageOutput();
@@ -282,15 +282,15 @@ void PageRecord::Start() {
 	// for OpenGL recording, allocate shared memory and start the program now
 	if(m_video_glinject) {
 		try {
-			m_gl_inject_launcher.reset(new GLInjectLauncher(&m_logger, glinject_command, glinject_megapixels * 1024 * 1024, glinject_run_command));
+			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_megapixels * 1024 * 1024, glinject_run_command));
 		} catch(...) {
-			m_logger.LogError("[PageRecord::Start] Error: Something went wrong during GLInject initialization.");
+			Logger::LogError("[PageRecord::Start] Error: Something went wrong during GLInject initialization.");
 			m_gl_inject_launcher.reset();
 			return;
 		}
 	}
 
-	m_logger.LogInfo("[PageRecord::Start] Started.");
+	Logger::LogInfo("[PageRecord::Start] Started.");
 
 	m_started = true;
 	m_encoders_started = false;
@@ -308,7 +308,7 @@ void PageRecord::Stop(bool save) {
 
 	RecordPause();
 
-	m_logger.LogInfo("[PageRecord::Stop] Stopping ...");
+	Logger::LogInfo("[PageRecord::Stop] Stopping ...");
 
 	// stop the synchronizer
 	Q_ASSERT(m_x11_input == NULL);
@@ -349,7 +349,7 @@ void PageRecord::Stop(bool save) {
 			QFile(m_file).remove();
 	}
 
-	m_logger.LogInfo("[PageRecord::Stop] Stopped.");
+	Logger::LogInfo("[PageRecord::Stop] Stopped.");
 
 	m_started = false;
 	m_encoders_started = false;
@@ -364,7 +364,7 @@ void PageRecord::RecordStart() {
 	if(m_recording || !m_started)
 		return;
 
-	m_logger.LogInfo("[PageRecord::RecordStart] Starting ...");
+	Logger::LogInfo("[PageRecord::RecordStart] Starting ...");
 
 	// start the encoders if they weren't started already
 	if(!m_encoders_started) {
@@ -375,7 +375,7 @@ void PageRecord::RecordStart() {
 			if(m_video_glinject) {
 				m_gl_inject_launcher->GetCurrentSize(&m_video_width, &m_video_height);
 				if(m_video_width == 0 && m_video_height == 0) {
-					m_logger.LogError("[PageRecord::RecordStart] Error: Could not get the size of the OpenGL application. Either the "
+					Logger::LogError("[PageRecord::RecordStart] Error: Could not get the size of the OpenGL application. Either the "
 									  "application wasn't started correctly, or the application hasn't created an OpenGL window yet. If "
 									  "you want to start recording before starting the application, you have to enable scaling and enter "
 									  "the video size manually.");
@@ -402,15 +402,15 @@ void PageRecord::RecordStart() {
 			}
 
 			// prepare everything for recording
-			m_muxer.reset(new Muxer(&m_logger, m_container_avname, m_file));
-			m_video_encoder.reset(new VideoEncoder(&m_logger, m_muxer.get(), m_video_avname, m_video_options, m_video_kbit_rate * 1024, m_video_out_width, m_video_out_height, m_video_frame_rate));
+			m_muxer.reset(new Muxer(m_container_avname, m_file));
+			m_video_encoder.reset(new VideoEncoder(m_muxer.get(), m_video_avname, m_video_options, m_video_kbit_rate * 1024, m_video_out_width, m_video_out_height, m_video_frame_rate));
 			if(m_audio_enabled)
-				m_audio_encoder.reset(new AudioEncoder(&m_logger, m_muxer.get(), m_audio_avname, m_audio_options, m_audio_kbit_rate * 1024, m_audio_sample_rate));
+				m_audio_encoder.reset(new AudioEncoder(m_muxer.get(), m_audio_avname, m_audio_options, m_audio_kbit_rate * 1024, m_audio_sample_rate));
 			m_muxer->Start();
-			m_synchronizer.reset(new Synchronizer(&m_logger, m_video_encoder.get(), m_audio_encoder.get()));
+			m_synchronizer.reset(new Synchronizer(m_video_encoder.get(), m_audio_encoder.get()));
 
 		} catch(...) {
-			m_logger.LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
+			Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
 			m_synchronizer.reset();
 			m_video_encoder.reset();
 			m_audio_encoder.reset();
@@ -429,24 +429,24 @@ void PageRecord::RecordStart() {
 
 		// start the video input
 		if(m_video_glinject) {
-			m_gl_inject_input.reset(new GLInjectInput(&m_logger, m_synchronizer.get(), m_gl_inject_launcher.get()));
+			m_gl_inject_input.reset(new GLInjectInput(m_synchronizer.get(), m_gl_inject_launcher.get()));
 		} else {
-			m_x11_input.reset(new X11Input(&m_logger, m_synchronizer.get(), m_video_x, m_video_y, m_video_width, m_video_height, m_video_show_cursor, m_video_follow_cursor));
+			m_x11_input.reset(new X11Input(m_synchronizer.get(), m_video_x, m_video_y, m_video_width, m_video_height, m_video_show_cursor, m_video_follow_cursor));
 		}
 
 		// start the audio input
 		if(m_audio_enabled)
-			m_audio_input.reset(new AudioInput(&m_logger, m_synchronizer.get(), m_audio_source));
+			m_audio_input.reset(new AudioInput(m_synchronizer.get(), m_audio_source));
 
 	} catch(...) {
-		m_logger.LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
+		Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
 		m_x11_input.reset();
 		m_gl_inject_input.reset();
 		m_audio_input.reset();
 		return;
 	}
 
-	m_logger.LogInfo("[PageRecord::RecordStart] Started.");
+	Logger::LogInfo("[PageRecord::RecordStart] Started.");
 
 	m_recording = true;
 	m_pushbutton_start_pause->setText("Pause recording");
@@ -458,13 +458,13 @@ void PageRecord::RecordPause() {
 	if(!m_recording || !m_started)
 		return;
 
-	m_logger.LogInfo("[PageRecord::RecordPause] Pausing ...");
+	Logger::LogInfo("[PageRecord::RecordPause] Pausing ...");
 
 	m_x11_input.reset();
 	m_gl_inject_input.reset();
 	m_audio_input.reset();
 
-	m_logger.LogInfo("[PageRecord::RecordPause] Paused.");
+	Logger::LogInfo("[PageRecord::RecordPause] Paused.");
 
 	m_recording = false;
 	m_pushbutton_start_pause->setText("Start recording");
@@ -607,7 +607,7 @@ void PageRecord::UpdateInformation() {
 }
 
 void PageRecord::UpdateLog() {
-	auto lines = m_logger.GetLines();
+	auto lines = Logger::GetLines();
 	for(auto it = lines.begin(); it != lines.end(); ++it) {
 		QTextCursor cursor = m_textedit_log->textCursor();
 		QTextCharFormat format;

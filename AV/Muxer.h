@@ -24,7 +24,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #define MUXER_MAX_STREAMS 2
 
-class Logger;
 class AVPacketWrapper;
 
 class Muxer : private QThread {
@@ -41,8 +40,6 @@ private:
 	typedef VPair<SharedData>::Lock SharedLock;
 
 private:
-	Logger *m_logger;
-
 	QString m_container_name, m_output_file;
 
 	AVFormatContext *m_format_context;
@@ -53,7 +50,7 @@ private:
 	volatile bool m_should_stop, m_is_done, m_error_occurred;
 
 public:
-	Muxer(Logger* logger, const QString& container_name, const QString& output_file);
+	Muxer(const QString& container_name, const QString& output_file);
 	~Muxer();
 
 	// Starts the muxer. You can't create new encoders after calling this function.

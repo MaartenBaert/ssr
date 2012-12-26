@@ -33,7 +33,7 @@ private:
 #endif
 
 public:
-	AudioEncoder(Logger* logger, Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
+	AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 				 unsigned int bit_rate, unsigned int sample_rate);
 
 	// Returns the required frame size, i.e. the number of samples. A sample means 2 bytes for mono

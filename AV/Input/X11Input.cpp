@@ -58,7 +58,7 @@ I am doing the recording myself instead of just using x11grab (as I originally p
 */
 
 // Converts a X11 image format to a format that libav understands.
-static PixelFormat X11ImageGetPixelFormat(Logger* logger, XImage* image) {
+static PixelFormat X11ImageGetPixelFormat(XImage* image) {
 	switch(image->bits_per_pixel) {
 		case 8: return PIX_FMT_PAL8;
 		case 16: {
@@ -75,7 +75,7 @@ static PixelFormat X11ImageGetPixelFormat(Logger* logger, XImage* image) {
 			return PIX_FMT_RGB32;
 		}
 	}
-	logger->LogError("[X11Input::GetImagePixelFormat] Error: Unsupported X11 image pixel format!"
+	Logger::LogError("[X11Input::GetImagePixelFormat] Error: Unsupported X11 image pixel format!"
 					 "\n    bits_per_pixel = " + QString::number(image->bits_per_pixel) + ", red_mask = 0x" + QString::number(image->red_mask, 16)
 					 + ", green_mask = 0x" + QString::number(image->green_mask, 16) + ", blue_mask = 0x" + QString::number(image->blue_mask, 16));
 	throw X11Exception();
@@ -197,11 +197,9 @@ static void X11ImageDrawCursor(Display* dpy, XImage* image, int recording_area_x
 
 const size_t X11Input::THROTTLE_THRESHOLD = 20;
 
-X11Input::X11Input(Logger* logger, Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool show_cursor, bool follow_cursor)
-	: m_yuv_converter(logger) {
+X11Input::X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool show_cursor, bool follow_cursor) {
 	Q_ASSERT(synchronizer->GetVideoEncoder() != NULL);
 
-	m_logger = logger;
 	m_synchronizer = synchronizer;
 
 	m_x = x;
@@ -223,11 +221,11 @@ X11Input::X11Input(Logger* logger, Synchronizer* synchronizer, unsigned int x, u
 	m_sws_context = NULL;
 
 	if(m_width == 0 || m_height == 0) {
-		m_logger->LogError("[X11Input::Init] Error: Width or height is zero.");
+		Logger::LogError("[X11Input::Init] Error: Width or height is zero.");
 		throw X11Exception();
 	}
 	if(m_width > 10000 || m_height > 10000) {
-		m_logger->LogError("[X11Input::Init] Error: Width or height is too large, the maximum width and height is 10000.");
+		Logger::LogError("[X11Input::Init] Error: Width or height is too large, the maximum width and height is 10000.");
 		throw X11Exception();
 	}
 
@@ -244,7 +242,7 @@ X11Input::~X11Input() {
 
 	// tell the thread to stop
 	if(isRunning()) {
-		m_logger->LogInfo("[X11Input::~X11Input] Telling input thread to stop ...");
+		Logger::LogInfo("[X11Input::~X11Input] Telling input thread to stop ...");
 		m_should_stop = true;
 		wait();
 	}
@@ -260,7 +258,7 @@ void X11Input::Init() {
 	// we need a separate display because the existing one would interfere with what Qt is doing in some cases
 	m_x11_display = XOpenDisplay(NULL); //QX11Info::display();
 	if(m_x11_display == NULL) {
-		m_logger->LogError("[X11Input::Init] Error: Can't open X display!");
+		Logger::LogError("[X11Input::Init] Error: Can't open X display!");
 		throw X11Exception();
 	}
 	m_x11_screen = DefaultScreen(m_x11_display); //QX11Info::appScreen();
@@ -269,40 +267,40 @@ void X11Input::Init() {
 	m_x11_depth = DefaultDepth(m_x11_display, m_x11_screen); //QX11Info::appDepth(m_x11_screen);
 	m_x11_use_shm = XShmQueryExtension(m_x11_display);
 	if(m_x11_use_shm) {
-		m_logger->LogInfo("[X11Input::Init] Using X11 shared memory.");
+		Logger::LogInfo("[X11Input::Init] Using X11 shared memory.");
 		m_x11_image = XShmCreateImage(m_x11_display, m_x11_visual, m_x11_depth, ZPixmap, NULL, &m_x11_shm_info, m_width, m_height);
 		if(m_x11_image == NULL) {
-			m_logger->LogError("[X11Input::Init] Error: Can't create shared image!");
+			Logger::LogError("[X11Input::Init] Error: Can't create shared image!");
 			throw X11Exception();
 		}
 		m_x11_shm_info.shmid = shmget(IPC_PRIVATE, m_x11_image->bytes_per_line * m_x11_image->height, IPC_CREAT | 0777);
 		if(m_x11_shm_info.shmid == -1) {
-			m_logger->LogError("[X11Input::Init] Error: Can't get shared memory!");
+			Logger::LogError("[X11Input::Init] Error: Can't get shared memory!");
 			throw X11Exception();
 		}
 		m_x11_shm_info.shmaddr = m_x11_image->data = (char*) shmat(m_x11_shm_info.shmid, NULL, SHM_RND);
 		if(m_x11_shm_info.shmaddr == (char*) -1) {
-			m_logger->LogError("[X11Input::Init] Error: Can't attach to shared memory!");
+			Logger::LogError("[X11Input::Init] Error: Can't attach to shared memory!");
 			throw X11Exception();
 		}
 		m_x11_shm_info.readOnly = false;
 		// the server will attach later
 	} else {
-		m_logger->LogInfo("[X11Input::Init] Not using X11 shared memory.");
+		Logger::LogInfo("[X11Input::Init] Not using X11 shared memory.");
 		// the simplest way to create an image with the correct format and alignment is to do a pointless normal screen grab
 		m_x11_image = XGetImage(m_x11_display, m_x11_root, m_x, m_y, m_width, m_height, AllPlanes, ZPixmap);
 		if(m_x11_image == NULL) {
-			m_logger->LogError("[X11Input::Init] Error: Can't create image!");
+			Logger::LogError("[X11Input::Init] Error: Can't create image!");
 			throw X11Exception();
 		}
 	}
-	m_x11_image_format = X11ImageGetPixelFormat(m_logger, m_x11_image);
+	m_x11_image_format = X11ImageGetPixelFormat(m_x11_image);
 
 	// showing the cursor requires XFixes (which should be supported on any modern X server, but let's check it anyway)
 	if(m_show_cursor) {
 		int event, error;
 		if(!XFixesQueryExtension(m_x11_display, &event, &error)) {
-			m_logger->LogWarning("[X11Input::Init] Warning: XFixes is not supported by server, the cursor has been hidden.");
+			Logger::LogWarning("[X11Input::Init] Warning: XFixes is not supported by server, the cursor has been hidden.");
 			m_show_cursor = false;
 		}
 	}
@@ -368,7 +366,7 @@ void X11Input::UpdateScreenConfiguration() {
 	lock->m_screen_bbox = region.boundingRect();
 
 	if(lock->m_screen_bbox.x() < 0 || lock->m_screen_bbox.y() < 0 || lock->m_screen_bbox.width() <= 0 || lock->m_screen_bbox.height() <= 0) {
-		m_logger->LogError("[X11Input::UpdateScreenConfiguration] Error: Invalid screen bounding box!\n"
+		Logger::LogError("[X11Input::UpdateScreenConfiguration] Error: Invalid screen bounding box!\n"
 						   "    x = " + QString::number(lock->m_screen_bbox.x()) + ", y = " + QString::number(lock->m_screen_bbox.y())
 						   + ", width = " + QString::number(lock->m_screen_bbox.width()) + ", height = " + QString::number(lock->m_screen_bbox.height()));
 		throw X11Exception();
@@ -384,7 +382,7 @@ void X11Input::UpdateScreenConfiguration() {
 void X11Input::run() {
 	try {
 
-		m_logger->LogInfo("[X11Input::run] Input thread started.");
+		Logger::LogInfo("[X11Input::run] Input thread started.");
 
 		unsigned int grab_x = m_x, grab_y = m_y;
 
@@ -424,19 +422,19 @@ void X11Input::run() {
 			if(m_x11_use_shm) {
 				if(!m_x11_shm_server_attached) {
 					if(!XShmAttach(m_x11_display, &m_x11_shm_info)) {
-						m_logger->LogError("[X11Input::Init] Error: Can't attach server to shared memory!");
+						Logger::LogError("[X11Input::Init] Error: Can't attach server to shared memory!");
 						throw X11Exception();
 					}
 					m_x11_shm_server_attached = true;
 				}
 				if(!XShmGetImage(m_x11_display, m_x11_root, m_x11_image, grab_x, grab_y, AllPlanes)) {
-					m_logger->LogError("[X11Input::run] Error: Can't get image (using shared memory)!"
+					Logger::LogError("[X11Input::run] Error: Can't get image (using shared memory)!"
 									   "\n    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?");
 					throw X11Exception();
 				}
 			} else {
 				if(!X11ImageGetWithoutSHM(m_x11_display, m_x11_root, m_x11_image, grab_x, grab_y)) {
-					m_logger->LogError("[X11Input::run] Error: Can't get image (not using shared memory)!"
+					Logger::LogError("[X11Input::run] Error: Can't get image (not using shared memory)!"
 									   "\n    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?");
 					throw X11Exception();
 				}
@@ -482,9 +480,9 @@ void X11Input::run() {
 				if(m_warn_swscale) {
 					m_warn_swscale = false;
 					if(scaling)
-						m_logger->LogInfo("[X11Input::run] Using swscale for scaling.");
+						Logger::LogInfo("[X11Input::run] Using swscale for scaling.");
 					else
-						m_logger->LogWarning("[X11Input::run] Warning: Pixel format is " + QString::number(m_x11_image_format) + " instead of "
+						Logger::LogWarning("[X11Input::run] Warning: Pixel format is " + QString::number(m_x11_image_format) + " instead of "
 											 + QString::number(PIX_FMT_BGRA) + " (PIX_FMT_BGRA), falling back to swscale.");
 				}
 
@@ -494,7 +492,7 @@ void X11Input::run() {
 													 m_out_width, m_out_height, PIX_FMT_YUV420P,
 													 SWS_BILINEAR, NULL, NULL, NULL);
 				if(m_sws_context == NULL) {
-					m_logger->LogError("[X11Input::run] Error: Can't get swscale context!");
+					Logger::LogError("[X11Input::run] Error: Can't get swscale context!");
 					throw LibavException();
 				}
 				sws_scale(m_sws_context, &image_data, &image_linesize, 0, m_height, converted_frame->data, converted_frame->linesize);
@@ -509,13 +507,13 @@ void X11Input::run() {
 
 		}
 
-		m_logger->LogInfo("[X11Input::run] Input thread stopped.");
+		Logger::LogInfo("[X11Input::run] Input thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		m_logger->LogError(QString("[X11Input::run] Exception '") + e.what() + "' in input thread.");
+		Logger::LogError(QString("[X11Input::run] Exception '") + e.what() + "' in input thread.");
 	} catch(...) {
 		m_error_occurred = true;
-		m_logger->LogError("[X11Input::run] Unknown exception in input thread.");
+		Logger::LogError("[X11Input::run] Unknown exception in input thread.");
 	}
 }

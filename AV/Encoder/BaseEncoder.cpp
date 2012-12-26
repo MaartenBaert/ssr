@@ -24,9 +24,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AVWrapper.h"
 #include "Muxer.h"
 
-BaseEncoder::BaseEncoder(Logger* logger, Muxer* muxer) {
+BaseEncoder::BaseEncoder(Muxer* muxer) {
 
-	m_logger = logger;
 	m_muxer = muxer;
 
 	m_codec_context = NULL;
@@ -42,7 +41,7 @@ BaseEncoder::~BaseEncoder() {
 
 	// tell the thread to stop
 	if(isRunning()) {
-		m_logger->LogInfo("[BaseEncoder::~BaseEncoder] Telling encoder thread to stop ...");
+		Logger::LogInfo("[BaseEncoder::~BaseEncoder] Telling encoder thread to stop ...");
 		m_should_stop = true;
 		wait();
 	}
@@ -60,7 +59,7 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 	// get the codec we want
 	AVCodec *codec = avcodec_find_encoder_by_name(qPrintable(codec_name));
 	if(codec == NULL) {
-		m_logger->LogError("[BaseEncoder::CreateCodec] Error: Can't find codec!");
+		Logger::LogError("[BaseEncoder::CreateCodec] Error: Can't find codec!");
 		throw LibavException();
 	}
 	m_delayed_packets = ((codec->capabilities & CODEC_CAP_DELAY) != 0);
@@ -76,11 +75,11 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 
 	// open codec
 	if(avcodec_open2(m_codec_context, codec, options) < 0) {
-		m_logger->LogError("[BaseEncoder::CreateCodec] Error: Can't open codec!");
+		Logger::LogError("[BaseEncoder::CreateCodec] Error: Can't open codec!");
 		throw LibavException();
 	}
 
-	m_logger->LogInfo(QString("[BaseEncoder::CreateCodec] Using codec ") + codec->name + " (" + codec->long_name + ").");
+	Logger::LogInfo(QString("[BaseEncoder::CreateCodec] Using codec ") + codec->name + " (" + codec->long_name + ").");
 
 	// start encoder thread
 	m_should_stop = false;
@@ -118,7 +117,7 @@ void BaseEncoder::AddFrame(std::unique_ptr<AVFrameWrapper> frame) {
 void BaseEncoder::run() {
 	try {
 
-		m_logger->LogInfo("[BaseEncoder::run] Encoder thread started.");
+		Logger::LogInfo("[BaseEncoder::run] Encoder thread started.");
 
 		// normal encoding
 		while(!m_should_stop) {
@@ -144,7 +143,7 @@ void BaseEncoder::run() {
 
 		}
 
-		m_logger->LogInfo("[BaseEncoder::run] Flushing encoder ...");
+		Logger::LogInfo("[BaseEncoder::run] Flushing encoder ...");
 
 		// flush the encoder
 		while(!m_should_stop) {
@@ -158,13 +157,13 @@ void BaseEncoder::run() {
 			}
 		}
 
-		m_logger->LogInfo("[BaseEncoder::run] Encoder thread stopped.");
+		Logger::LogInfo("[BaseEncoder::run] Encoder thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		m_logger->LogError(QString("[BaseEncoder::run] Exception '") + e.what() + "' in encoder thread.");
+		Logger::LogError(QString("[BaseEncoder::run] Exception '") + e.what() + "' in encoder thread.");
 	} catch(...) {
 		m_error_occurred = true;
-		m_logger->LogError("[BaseEncoder::run] Unknown exception in encoder thread.");
+		Logger::LogError("[BaseEncoder::run] Unknown exception in encoder thread.");
 	}
 }

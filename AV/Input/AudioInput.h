@@ -33,7 +33,7 @@ private:
 	std::unique_ptr<AVFrameWrapper> m_partial_frame;
 
 public:
-	AudioInput(Logger* logger, Synchronizer* synchronizer, const QString& alsa_device);
+	AudioInput(Synchronizer* synchronizer, const QString& alsa_device);
 	~AudioInput();
 
 private:

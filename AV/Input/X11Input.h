@@ -23,7 +23,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VPair.h"
 #include "YUVConverter.h"
 
-class Logger;
 class Synchronizer;
 
 class X11Input : private QThread {
@@ -40,7 +39,6 @@ private:
 	typedef VPair<SharedData>::Lock SharedLock;
 
 private:
-	Logger *m_logger;
 	Synchronizer *m_synchronizer;
 
 	unsigned int m_x, m_y, m_width, m_height;
@@ -66,7 +64,7 @@ private:
 	volatile bool m_should_stop, m_error_occurred;
 
 public:
-	X11Input(Logger* logger, Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool show_cursor, bool follow_cursor);
+	X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool show_cursor, bool follow_cursor);
 	~X11Input();
 
 	// Returns whether an error has occurred in the input thread.

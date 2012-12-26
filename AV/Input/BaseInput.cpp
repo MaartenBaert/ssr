@@ -25,9 +25,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 static const unsigned int INVALID_STREAM = std::numeric_limits<unsigned int>::max();
 
-BaseInput::BaseInput(Logger* logger, Synchronizer* synchronizer) {
+BaseInput::BaseInput(Synchronizer* synchronizer) {
 
-	m_logger = logger;
 	m_synchronizer = synchronizer;
 
 	m_format_context = NULL;
@@ -60,7 +59,7 @@ void BaseInput::Start(const char* name, AVInputFormat* format, AVDictionary** op
 	// open device
 	m_format_context = NULL;
 	if(avformat_open_input(&m_format_context, name, format, options) < 0) {
-		m_logger->LogError("[BaseInput::Start] Error: Can't open input!");
+		Logger::LogError("[BaseInput::Start] Error: Can't open input!");
 		throw LibavException();
 	}
 
@@ -74,7 +73,7 @@ void BaseInput::Start(const char* name, AVInputFormat* format, AVDictionary** op
 		}
 	}
 	if(m_stream_index == INVALID_STREAM) {
-		m_logger->LogError("[BaseInput::Start] Error: Can't find a stream of the right type!");
+		Logger::LogError("[BaseInput::Start] Error: Can't find a stream of the right type!");
 		throw LibavException();
 	}
 
@@ -82,7 +81,7 @@ void BaseInput::Start(const char* name, AVInputFormat* format, AVDictionary** op
 	m_codec_context = m_format_context->streams[m_stream_index]->codec;
 	AVCodec *codec = avcodec_find_decoder(m_codec_context->codec_id);
 	if(codec == NULL) {
-		m_logger->LogError("[BaseInput::Start] Error: Can't find codec!");
+		Logger::LogError("[BaseInput::Start] Error: Can't find codec!");
 		throw LibavException();
 	}
 	if(codec->capabilities & CODEC_CAP_TRUNCATED)
@@ -90,11 +89,11 @@ void BaseInput::Start(const char* name, AVInputFormat* format, AVDictionary** op
 
 	// open codec
 	if(avcodec_open2(m_codec_context, codec, NULL) < 0) {
-		m_logger->LogError("[BaseInput::Start] Error: Can't open codec!");
+		Logger::LogError("[BaseInput::Start] Error: Can't open codec!");
 		throw LibavException();
 	}
 
-	m_logger->LogInfo(QString("[BaseInput::Start] Using codec ") + codec->name + " (" + codec->long_name + ").");
+	Logger::LogInfo(QString("[BaseInput::Start] Using codec ") + codec->name + " (" + codec->long_name + ").");
 
 	// start input thread
 	m_should_stop = false;
@@ -107,7 +106,7 @@ void BaseInput::Stop() {
 
 	// tell the thread to stop
 	if(isRunning()) {
-		m_logger->LogInfo("[BaseInput::~BaseInput] Telling input thread to stop ...");
+		Logger::LogInfo("[BaseInput::~BaseInput] Telling input thread to stop ...");
 		m_should_stop = true;
 		wait();
 	}
@@ -121,7 +120,7 @@ int64_t BaseInput::GetReadDelay() {
 void BaseInput::run() {
 	try {
 
-		m_logger->LogInfo("[BaseInput::run] Input thread started.");
+		Logger::LogInfo("[BaseInput::run] Input thread started.");
 
 		int64_t last_packet_time = hrt_time_micro();
 
@@ -143,7 +142,7 @@ void BaseInput::run() {
 			// read a packet (not sure why libav calls it a frame)
 			AVPacketWrapper packet;
 			if(av_read_frame(m_format_context, &packet) < 0) {
-				m_logger->LogError("[BaseInput::run] Error: Can't read packet!");
+				Logger::LogError("[BaseInput::run] Error: Can't read packet!");
 				throw LibavException();
 			}
 
@@ -187,7 +186,7 @@ void BaseInput::run() {
 #endif
 					}
 					if(bytes_decoded < 0) {
-						m_logger->LogError("[BaseInput::run] Error: Decoding of packet failed!");
+						Logger::LogError("[BaseInput::run] Error: Decoding of packet failed!");
 						throw LibavException();
 					}
 					current_position += bytes_decoded;
@@ -211,13 +210,13 @@ void BaseInput::run() {
 
 		}
 
-		m_logger->LogInfo("[BaseInput::run] Input thread stopped.");
+		Logger::LogInfo("[BaseInput::run] Input thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		m_logger->LogError(QString("[BaseInput::run] Exception '") + e.what() + "' in input thread.");
+		Logger::LogError(QString("[BaseInput::run] Exception '") + e.what() + "' in input thread.");
 	} catch(...) {
 		m_error_occurred = true;
-		m_logger->LogError("[BaseInput::run] Unknown exception in input thread.");
+		Logger::LogError("[BaseInput::run] Unknown exception in input thread.");
 	}
 }

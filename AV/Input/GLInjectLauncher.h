@@ -20,8 +20,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "StdAfx.h"
 
-class Logger;
-
 // Explicit padding is needed here to keep the 32-bit and 64-bit code compatible.
 // I could also disable padding of course, but this is easier :)
 struct GLInjectHeader {
@@ -48,8 +46,6 @@ private:
 	};
 
 private:
-	Logger *m_logger;
-
 	QString m_command;
 	unsigned int m_max_pixels;
 	bool m_run_command;
@@ -59,7 +55,7 @@ private:
 	std::vector<ShmFrame> m_shm_frames;
 
 public:
-	GLInjectLauncher(Logger* logger, const QString& command, unsigned int max_pixels, bool run_command);
+	GLInjectLauncher(const QString& command, unsigned int max_pixels, bool run_command);
 	~GLInjectLauncher();
 
 	// Reads the current size of the OpenGL application. If the application hasn't been started yet, this will be 0x0.

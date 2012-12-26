@@ -68,11 +68,9 @@ static void VFlipYUV(AVFrameWrapper* frame, unsigned int height) {
 
 const size_t GLInjectInput::THROTTLE_THRESHOLD = 20;
 
-GLInjectInput::GLInjectInput(Logger* logger, Synchronizer* synchronizer, GLInjectLauncher* launcher)
-	: m_yuv_converter(logger) {
+GLInjectInput::GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launcher) {
 	Q_ASSERT(synchronizer->GetVideoEncoder() != NULL);
 
-	m_logger = logger;
 	m_synchronizer = synchronizer;
 	m_launcher = launcher;
 
@@ -98,7 +96,7 @@ GLInjectInput::~GLInjectInput() {
 
 	// tell the thread to stop
 	if(isRunning()) {
-		m_logger->LogInfo("[GLInjectInput::~GLInjectInput] Telling input thread to stop ...");
+		Logger::LogInfo("[GLInjectInput::~GLInjectInput] Telling input thread to stop ...");
 		m_should_stop = true;
 		wait();
 	}
@@ -145,7 +143,7 @@ int64_t GLInjectInput::GetReadDelay() {
 void GLInjectInput::run() {
 	try {
 
-		m_logger->LogInfo("[GLInjectInput::run] Input thread started.");
+		Logger::LogInfo("[GLInjectInput::run] Input thread started.");
 
 		int64_t last_frame_time = hrt_time_micro();
 		while(!m_should_stop) {
@@ -162,7 +160,7 @@ void GLInjectInput::run() {
 			unsigned int current_frame = header.read_pos % m_cbuffer_size;
 			GLInjectFrameInfo frameinfo = *(GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
 			if(frameinfo.width > 10000 || frameinfo.height > 10000 || frameinfo.width * frameinfo.height > m_max_pixels) {
-				m_logger->LogInfo("[GLInjectInput::run] Error: Image is supposedly larger than the maximum size!");
+				Logger::LogInfo("[GLInjectInput::run] Error: Image is supposedly larger than the maximum size!");
 				throw GLInjectException();
 			}
 			if(frameinfo.timestamp < last_frame_time) {
@@ -198,7 +196,7 @@ void GLInjectInput::run() {
 
 				if(m_warn_swscale) {
 					m_warn_swscale = false;
-					m_logger->LogInfo("[GLInjectInput::run] Using swscale for scaling.");
+					Logger::LogInfo("[GLInjectInput::run] Using swscale for scaling.");
 				}
 
 				// get sws context
@@ -207,7 +205,7 @@ void GLInjectInput::run() {
 													 m_out_width, m_out_height, PIX_FMT_YUV420P,
 													 SWS_BILINEAR, NULL, NULL, NULL);
 				if(m_sws_context == NULL) {
-					m_logger->LogError("[GLInjectInput::run] Error: Can't get swscale context!");
+					Logger::LogError("[GLInjectInput::run] Error: Can't get swscale context!");
 					throw LibavException();
 				}
 				sws_scale(m_sws_context, &image_data, &image_linesize, 0, frameinfo.height, converted_frame->data, converted_frame->linesize);
@@ -229,14 +227,14 @@ void GLInjectInput::run() {
 
 		}
 
-		m_logger->LogInfo("[GLInjectInput::run] Input thread stopped.");
+		Logger::LogInfo("[GLInjectInput::run] Input thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		m_logger->LogError(QString("[GLInjectInput::run] Exception '") + e.what() + "' in input thread.");
+		Logger::LogError(QString("[GLInjectInput::run] Exception '") + e.what() + "' in input thread.");
 	} catch(...) {
 		m_error_occurred = true;
-		m_logger->LogError("[GLInjectInput::run] Unknown exception in input thread.");
+		Logger::LogError("[GLInjectInput::run] Unknown exception in input thread.");
 	}
 }
 

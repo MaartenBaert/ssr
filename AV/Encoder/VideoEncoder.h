@@ -34,7 +34,7 @@ private:
 	std::vector<uint8_t> m_temp_buffer;
 
 public:
-	VideoEncoder(Logger* logger, Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
+	VideoEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 				 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate);
 
 	inline unsigned int GetWidth() { return m_width; }

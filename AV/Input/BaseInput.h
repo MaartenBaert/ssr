@@ -22,14 +22,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "VPair.h"
 
-class Logger;
 class Synchronizer;
 class AVFrameWrapper;
 
 class BaseInput : private QThread {
 
 private:
-	Logger *m_logger;
 	Synchronizer *m_synchronizer;
 
 	AVFormatContext *m_format_context;
@@ -40,7 +38,7 @@ private:
 	volatile bool m_should_stop, m_error_occurred;
 
 protected:
-	BaseInput(Logger* logger, Synchronizer* synchronizer);
+	BaseInput(Synchronizer* synchronizer);
 	~BaseInput();
 
 	// Called by the constructor of derived classes to open the input and start the input thread.
@@ -56,7 +54,6 @@ protected:
 	// Called by the input thread for each frame that is read.
 	virtual void ReadFrame(AVFrameWrapper* frame) = 0;
 
-	inline Logger* GetLogger() { return m_logger; }
 	inline Synchronizer* GetSynchronizer() { return m_synchronizer; }
 	inline AVFormatContext* GetFormatContext() { return m_format_context; }
 	inline AVCodecContext* GetCodecContext() { return m_codec_context; }

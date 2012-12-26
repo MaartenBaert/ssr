@@ -22,7 +22,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "VPair.h"
 
-class Logger;
 class VideoEncoder;
 class AudioEncoder;
 class AVFrameWrapper;
@@ -42,7 +41,6 @@ private:
 	static const double CORRECTION_SPEED;
 
 private:
-	Logger *m_logger;
 	VideoEncoder *m_video_encoder;
 	AudioEncoder *m_audio_encoder;
 
@@ -53,7 +51,7 @@ private:
 
 public:
 	// The arguments 'video_encoder' and 'audio_encoder' can be NULL to disable video or audio.
-	Synchronizer(Logger* logger, VideoEncoder* video_encoder, AudioEncoder* audio_encoder);
+	Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder);
 
 	// This function tells the synchronizer to end the current segment and reset the synchronization system
 	// in preparation for a new segment. This is required for pausing and continuing a recording.

@@ -25,8 +25,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Synchronizer.h"
 #include "AudioEncoder.h"
 
-AudioInput::AudioInput(Logger* logger, Synchronizer* synchronizer, const QString& alsa_device)
-	: BaseInput(logger, synchronizer) {
+AudioInput::AudioInput(Synchronizer* synchronizer, const QString& alsa_device)
+	: BaseInput(synchronizer) {
 	Q_ASSERT(GetSynchronizer()->GetAudioEncoder() != NULL);
 
 	m_sample_rate = GetSynchronizer()->GetAudioEncoder()->GetSampleRate();
@@ -72,7 +72,7 @@ void AudioInput::ReadFrame(AVFrameWrapper* frame) {
 #if SSR_USE_AVFRAME_FORMAT
 	// check the format
 	if(frame->format != AV_SAMPLE_FMT_S16) {
-		GetLogger()->LogError("[AudioInput::ReadFrame] Error: Audio frame uses format " + QString::number(frame->format) + " instead of " + QString::number(AV_SAMPLE_FMT_S16) + " (AV_SAMPLE_FMT_S16)!");
+		Logger::LogError("[AudioInput::ReadFrame] Error: Audio frame uses format " + QString::number(frame->format) + " instead of " + QString::number(AV_SAMPLE_FMT_S16) + " (AV_SAMPLE_FMT_S16)!");
 		throw LibavException();
 	}
 #endif

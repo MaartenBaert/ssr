@@ -25,9 +25,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Muxer.h"
 #include "X264Presets.h"
 
-VideoEncoder::VideoEncoder(Logger* logger, Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
+VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 						   unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate)
-	: BaseEncoder(logger, muxer) {
+	: BaseEncoder(muxer) {
 
 	m_bit_rate = bit_rate;
 	m_width = width;
@@ -38,15 +38,15 @@ VideoEncoder::VideoEncoder(Logger* logger, Muxer* muxer, const QString& codec_na
 	m_opt_preset = "";
 
 	if(m_width == 0 || m_height == 0) {
-		GetLogger()->LogError("[VideoEncoder::Init] Error: Width or height is zero.");
+		Logger::LogError("[VideoEncoder::Init] Error: Width or height is zero.");
 		throw LibavException();
 	}
 	if(m_width > 10000 || m_height > 10000) {
-		GetLogger()->LogError("[VideoEncoder::Init] Error: Width or height is too large, the maximum width and height is 10000.");
+		Logger::LogError("[VideoEncoder::Init] Error: Width or height is too large, the maximum width and height is 10000.");
 		throw LibavException();
 	}
 	if(m_width % 2 != 0 || m_height % 2 != 0) {
-		GetLogger()->LogError("[VideoEncoder::Init] Error: Width or height is not an even number.");
+		Logger::LogError("[VideoEncoder::Init] Error: Width or height is not an even number.");
 		throw LibavException();
 	}
 
@@ -148,7 +148,7 @@ bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
 	// encode the frame
 	int bytes_encoded = avcodec_encode_video(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), frame);
 	if(bytes_encoded < 0) {
-		GetLogger()->LogError("[VideoEncoder::EncodeFrame] Error: Encoding of video frame failed!");
+		Logger::LogError("[VideoEncoder::EncodeFrame] Error: Encoding of video frame failed!");
 		throw LibavException();
 	}
 

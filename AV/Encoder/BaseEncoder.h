@@ -22,7 +22,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "VPair.h"
 
-class Logger;
 class Muxer;
 class AVFrameWrapper;
 
@@ -36,7 +35,6 @@ private:
 	typedef VPair<SharedData>::Lock SharedLock;
 
 private:
-	Logger *m_logger;
 	Muxer *m_muxer;
 
 	AVCodecContext *m_codec_context;
@@ -47,7 +45,7 @@ private:
 	volatile bool m_should_stop, m_should_finish, m_is_done, m_error_occurred;
 
 protected:
-	BaseEncoder(Logger* logger, Muxer* muxer);
+	BaseEncoder(Muxer* muxer);
 	~BaseEncoder();
 
 	// Called by the constructor of derived classes to create the codec.
@@ -60,7 +58,6 @@ protected:
 	// Returns whether a packet was received.
 	virtual bool EncodeFrame(AVFrameWrapper* frame) = 0;
 
-	inline Logger* GetLogger() { return m_logger; }
 	inline Muxer* GetMuxer() { return m_muxer; }
 	inline AVCodecContext* GetCodecContext() { return m_codec_context; }
 	inline unsigned int GetStreamIndex() { return m_stream_index; }

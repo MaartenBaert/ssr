@@ -39,16 +39,21 @@ private:
 private:
 	VPair<SharedData> m_shared_data;
 
+	static Logger *g_instance;
+
 public:
-	// This function is thread-safe.
-	void Log(enum_type type, const QString& str);
+	Logger();
+	~Logger();
 
 	// This function is thread-safe.
-	std::vector<std::pair<enum_type, QString> > GetLines();
+	static void Log(enum_type type, const QString& str);
+
+	// This function is thread-safe.
+	static std::vector<std::pair<enum_type, QString> > GetLines();
 
 	// Some convenience functions.
-	inline void LogInfo(const QString& str) { Log(TYPE_INFO, str); }
-	inline void LogWarning(const QString& str) { Log(TYPE_WARNING, str); }
-	inline void LogError(const QString& str) { Log(TYPE_ERROR, str); }
+	inline static void LogInfo(const QString& str) { Log(TYPE_INFO, str); }
+	inline static void LogWarning(const QString& str) { Log(TYPE_WARNING, str); }
+	inline static void LogError(const QString& str) { Log(TYPE_ERROR, str); }
 
 };

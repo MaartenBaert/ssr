@@ -40,8 +40,6 @@ class PageRecord : public QWidget {
 private:
 	MainWindow *m_main_window;
 
-	Logger m_logger;
-
 	bool m_started, m_encoders_started, m_recording;
 	bool m_video_show_cursor, m_video_follow_cursor, m_video_glinject;
 	unsigned int m_video_x, m_video_y, m_video_width, m_video_height;

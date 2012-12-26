@@ -44,18 +44,16 @@ http://software.intel.com/en-us/forums/topic/305798
 static void Convert_Fallback(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]);
 static void Convert_SSSE3(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]) __attribute__((__target__("sse2,ssse3")));
 
-YUVConverter::YUVConverter(Logger* logger) {
-	m_logger = logger;
+YUVConverter::YUVConverter() {
 	{
 		unsigned int a, b, c, d;
 		CPUID(1, a, b, c, d);
 		m_use_sse = ((d & SSE2_FLAG) != 0 && (c & SSSE3_FLAG) != 0);
 	}
-	if(m_use_sse) {
-		m_logger->LogInfo("[YUVConverter::YUVConverter] Using SSSE3 converter.");
-	} else {
-		m_logger->LogInfo("[YUVConverter::YUVConverter] Using fallback converter.");
-	}
+	if(m_use_sse)
+		Logger::LogInfo("[YUVConverter::YUVConverter] Using SSSE3 converter.");
+	else
+		Logger::LogInfo("[YUVConverter::YUVConverter] Using fallback converter.");
 	m_warn_alignment = true;
 }
 
@@ -75,7 +73,7 @@ void YUVConverter::Convert(unsigned int w, unsigned int h, uint8_t* in_data, int
 		} else {
 			if(m_warn_alignment) {
 				m_warn_alignment = false;
-				m_logger->LogWarning("[YUVConverter::Convert] Warning: Memory is not properly aligned, using fallback converter instead."
+				Logger::LogWarning("[YUVConverter::Convert] Warning: Memory is not properly aligned, using fallback converter instead."
 									 "\n    in_data = 0x" + QString::number((uintptr_t) in_data, 16) + ", in_stride = 0x" + QString::number(in_stride, 16) +
 									 "\n    out_data[0] = 0x" + QString::number((uintptr_t) out_data[0], 16) + ", out_stride[0] = 0x" + QString::number(out_stride[0], 16) +
 									 "\n    out_data[1] = 0x" + QString::number((uintptr_t) out_data[1], 16) + ", out_stride[1] = 0x" + QString::number(out_stride[1], 16) +

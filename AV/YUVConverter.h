@@ -20,15 +20,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "StdAfx.h"
 
-class Logger;
-
 // Faster BGRA to YUV converter.
 // Note: this code assumes little-endianness.
 class YUVConverter {
 private:
-	Logger *m_logger;
 	bool m_use_sse, m_warn_alignment;
 public:
-	YUVConverter(Logger* logger);
+	YUVConverter();
 	void Convert(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]);
 };

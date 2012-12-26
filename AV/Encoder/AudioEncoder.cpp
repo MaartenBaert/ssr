@@ -24,9 +24,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AVWrapper.h"
 #include "Muxer.h"
 
-AudioEncoder::AudioEncoder(Logger* logger, Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
+AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 						   unsigned int bit_rate, unsigned int sample_rate)
-	: BaseEncoder(logger, muxer) {
+	: BaseEncoder(muxer) {
 
 	m_bit_rate = bit_rate;
 	m_sample_rate = sample_rate;
@@ -87,7 +87,7 @@ bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 	// encode the frame
 	int got_packet;
 	if(avcodec_encode_audio2(GetCodecContext(), packet.get(), frame, &got_packet) < 0) {
-		GetLogger()->LogError("[AudioEncoder::EncodeFrame] Error: Encoding of audio frame failed!");
+		Logger::LogError("[AudioEncoder::EncodeFrame] Error: Encoding of audio frame failed!");
 		throw LibavException();
 	}
 
@@ -107,7 +107,7 @@ bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 #if SSR_USE_AVFRAME_FORMAT
 	// check the format
 	if(frame != NULL && frame->format != AV_SAMPLE_FMT_S16) {
-		GetLogger()->LogError("[AudioEncoder::EncodeFrame] Error: Audio frame uses format " + QString::number(frame->format) + " instead of " + QString::number(AV_SAMPLE_FMT_S16) + " (AV_SAMPLE_FMT_S16)!");
+		Logger::LogError("[AudioEncoder::EncodeFrame] Error: Audio frame uses format " + QString::number(frame->format) + " instead of " + QString::number(AV_SAMPLE_FMT_S16) + " (AV_SAMPLE_FMT_S16)!");
 		throw LibavException();
 	}
 #endif
@@ -116,7 +116,7 @@ bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 	short *data = (frame == NULL)? NULL : (short*) frame->data[0];
 	int bytes_encoded = avcodec_encode_audio(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), data);
 	if(bytes_encoded < 0) {
-		GetLogger()->LogError("[AudioEncoder::EncodeFrame] Error: Encoding of audio frame failed!");
+		Logger::LogError("[AudioEncoder::EncodeFrame] Error: Encoding of audio frame failed!");
 		throw LibavException();
 	}
 
