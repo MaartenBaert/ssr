@@ -164,7 +164,10 @@ void Muxer::Free() {
 			av_freep(&m_format_context->streams[i]->codec);
 			av_freep(&m_format_context->streams[i]);
 		}
-		avio_close(m_format_context->pb);
+		if(m_format_context->pb != NULL) {
+			avio_close(m_format_context->pb);
+			m_format_context->pb = NULL;
+		}
 		av_free(m_format_context);
 		m_format_context = NULL;
 	}

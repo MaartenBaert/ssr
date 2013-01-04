@@ -276,7 +276,7 @@ void PageOutput::UpdateVideoCodecFields() {
 
 void PageOutput::UpdateAudioCodecFields() {
 	enum_audio_codec codec = GetAudioCodec();
-	m_lineedit_audio_kbit_rate->setEnabled(codec != AUDIO_CODEC_UNCOMPRESSED);
+	m_lineedit_audio_kbit_rate->setVisible(codec != AUDIO_CODEC_UNCOMPRESSED);
 }
 
 void PageOutput::Browse() {

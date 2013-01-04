@@ -33,13 +33,52 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 									   "Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.\n\n"
 									   "This program is still in beta. If you find a bug, please report it. You can contact me at maarten-baert@hotmail.com.", this);
 	label_welcome->setWordWrap(true);
+	QPushButton *button_about = new QPushButton("About SimpleScreenRecorder", this);
 	QPushButton *button_continue = new QPushButton("Continue", this);
 
+	connect(button_about, SIGNAL(clicked()), this, SLOT(AboutDialog()));
 	connect(button_continue, SIGNAL(clicked()), m_main_window, SLOT(GoPageInput()));
 
-	QVBoxLayout *layout_page = new QVBoxLayout(this);
-	layout_page->addWidget(label_welcome);
-	layout_page->addStretch();
-	layout_page->addWidget(button_continue);
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(label_welcome);
+	{
+		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout->addLayout(layout2);
+		layout2->addWidget(button_about);
+		layout2->addStretch();
+	}
+	layout->addStretch();
+	layout->addWidget(button_continue);
+
+}
+
+void PageWelcome::AboutDialog() {
+	DialogAbout dialog(this);
+	dialog.exec();
+}
+
+DialogAbout::DialogAbout(PageWelcome* parent)
+	: QDialog(parent) {
+
+	setWindowTitle("About SimpleScreenRecorder");
+
+	QTextBrowser *textbrowser = new QTextBrowser(this);
+	textbrowser->setSource(QUrl("qrc:/about.htm"));
+	textbrowser->setOpenExternalLinks(true);
+	textbrowser->setMinimumSize(700, 500);
+
+	QPushButton *pushbutton_close = new QPushButton("Close", this);
+
+	connect(pushbutton_close, SIGNAL(clicked()), this, SLOT(accept()));
+
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(textbrowser);
+	{
+		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout->addLayout(layout2);
+		layout2->addStretch();
+		layout2->addWidget(pushbutton_close);
+		layout2->addStretch();
+	}
 
 }

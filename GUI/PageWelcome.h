@@ -31,4 +31,17 @@ private:
 public:
 	PageWelcome(MainWindow* main_window);
 
+private slots:
+	void AboutDialog();
+
+};
+
+class DialogAbout : public QDialog {
+	Q_OBJECT
+
+private:
+
+public:
+	DialogAbout(PageWelcome* parent);
+
 };

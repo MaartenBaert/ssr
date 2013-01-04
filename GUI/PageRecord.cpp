@@ -209,6 +209,7 @@ void PageRecord::Start() {
 	if(m_started)
 		return;
 
+	// clear the log
 	Logger::GetLines();
 	m_textedit_log->clear();
 

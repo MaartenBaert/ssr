@@ -31,6 +31,7 @@ void HotkeyListener::EnableHotkey(unsigned int keysym, unsigned int modifiers) {
 	DisableHotkey();
 	m_keycode = XKeysymToKeycode(QX11Info::display(), keysym);
 	m_modifiers = modifiers;
+	// ignore state of caps lock (LockMask) and num lock (Mod2Mask)
 	unsigned int masks[] = {0, LockMask, Mod2Mask, LockMask | Mod2Mask};
 	for(unsigned int i = 0; i < sizeof(masks) / sizeof(masks[0]); ++i) {
 		unsigned int m = masks[i] | m_modifiers;

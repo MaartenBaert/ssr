@@ -118,7 +118,7 @@ private slots:
 	void UpdateScreenConfiguration();
 	void StartSelectRectangle();
 	void StartSelectWindow();
-	void SelectProgramDialog();
+	void GLInjectDialog();
 	void Continue();
 
 };
@@ -137,6 +137,6 @@ public:
 	DialogGLInject(PageInput* parent);
 
 private slots:
-	void OnAccept();
+	void WriteBack();
 
 };

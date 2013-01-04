@@ -53,8 +53,8 @@ PageInput::PageInput(MainWindow* main_window)
 		m_pushbutton_video_select_rectangle->setToolTip("Use the mouse to select the recorded rectangle.");
 		m_pushbutton_video_select_window = new QPushButton("Select window...", group_video);
 		m_pushbutton_video_select_window->setToolTip("Use the mouse to select a window to record.");
-		m_pushbutton_video_select_program = new QPushButton("Select program...", group_video);
-		m_pushbutton_video_select_program->setToolTip("Select the program for OpenGL recording.");
+		m_pushbutton_video_select_program = new QPushButton("OpenGL settings...", group_video);
+		m_pushbutton_video_select_program->setToolTip("Change the settings for OpenGL recording.");
 		QLabel *label_x = new QLabel("Left:", group_video);
 		m_lineedit_video_x = new QLineEdit(group_video);
 		m_lineedit_video_x->setToolTip("The x coordinate of the upper-left corner of the recorded rectangle.");
@@ -81,7 +81,7 @@ PageInput::PageInput(MainWindow* main_window)
 		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(UpdateVideoAreaFields()));
 		connect(m_pushbutton_video_select_rectangle, SIGNAL(clicked()), this, SLOT(StartSelectRectangle()));
 		connect(m_pushbutton_video_select_window, SIGNAL(clicked()), this, SLOT(StartSelectWindow()));
-		connect(m_pushbutton_video_select_program, SIGNAL(clicked()), this, SLOT(SelectProgramDialog()));
+		connect(m_pushbutton_video_select_program, SIGNAL(clicked()), this, SLOT(GLInjectDialog()));
 		connect(m_checkbox_scale, SIGNAL(clicked()), this, SLOT(UpdateVideoScaleFields()));
 
 		QVBoxLayout *layout = new QVBoxLayout(group_video);
@@ -434,7 +434,7 @@ void PageInput::StartSelectWindow() {
 	StartGrabbing();
 }
 
-void PageInput::SelectProgramDialog() {
+void PageInput::GLInjectDialog() {
 	DialogGLInject dialog(this);
 	dialog.exec();
 }
@@ -443,7 +443,7 @@ void PageInput::Continue() {
 	if(GetVideoArea() == VIDEO_AREA_GLINJECT && GetGLInjectCommand().isEmpty()) {
 		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION,
 							  "You did not enter a command to start the OpenGL application that you want to record.\n"
-							  "Press the 'Select program' button and enter a command.", QMessageBox::Ok);
+							  "Press the 'OpenGL settings' button and enter a command.", QMessageBox::Ok);
 		return;
 	}
 	m_main_window->GoPageOutput();
@@ -453,6 +453,8 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	: QDialog(parent) {
 
 	m_parent = parent;
+
+	setWindowTitle("OpenGL Settings");
 
 	QLabel *label_info = new QLabel("Warning: OpenGL recording works by injecting a library into the program that will be recorded. "
 									"This library will override some system functions in order to capture the frames before they are "
@@ -481,34 +483,35 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	QPushButton *pushbutton_close = new QPushButton("Close", this);
 
 	connect(pushbutton_close, SIGNAL(clicked()), this, SLOT(accept()));
-	connect(this, SIGNAL(accepted()), this, SLOT(OnAccept()));
+	connect(this, SIGNAL(accepted()), this, SLOT(WriteBack()));
+	connect(this, SIGNAL(rejected()), this, SLOT(WriteBack()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(label_info);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout->addLayout(layout2);
 		layout2->addWidget(label_command);
 		layout2->addWidget(m_lineedit_command);
-		layout->addLayout(layout2);
 	}
 	layout->addWidget(m_checkbox_run_command);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout->addLayout(layout2);
 		layout2->addWidget(label_max_pixels);
 		layout2->addWidget(m_lineedit_max_megapixels);
-		layout->addLayout(layout2);
 	}
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout->addLayout(layout2);
 		layout2->addStretch();
 		layout2->addWidget(pushbutton_close);
 		layout2->addStretch();
-		layout->addLayout(layout2);
 	}
 
 }
 
-void DialogGLInject::OnAccept() {
+void DialogGLInject::WriteBack() {
 	m_parent->SetGLInjectCommand(m_lineedit_command->text());
 	m_parent->SetGLInjectRunCommand(m_checkbox_run_command->isChecked());
 	m_parent->SetGLInjectMaxMegaPixels(m_lineedit_max_megapixels->text().toUInt());
