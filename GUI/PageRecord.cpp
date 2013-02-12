@@ -71,7 +71,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 										  "recording will not receive the key press.\n\n"
 										  "Note: The choice of keys is currently rather limited, because capturing key presses session-wide is a bit harder than it looks. For\n"
 										  "example, applications are not allowed to capture the F1-F12 keys (on Ubuntu at least). The A-Z keys don't have this limitation apparently.");
-		QLabel *label_hint_workspace = new QLabel("Hint: If you don't want to hide this program completely, move it to a different workspace.", group_recording);
+		QLabel *label_hint_workspace = new QLabel("Hint: If you want to hide this program completely, move it to a different workspace.", group_recording);
 		label_hint_workspace->setWordWrap(true);
 		for(unsigned int i = 0; i < 26; ++i) {
 			m_combobox_hotkey_key->addItem(QString('A' + i));
