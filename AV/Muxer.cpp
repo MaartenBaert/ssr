@@ -75,6 +75,13 @@ Muxer::~Muxer() {
 
 void Muxer::Start() {
 	Q_ASSERT(!m_started);
+
+	// write header
+	if(avformat_write_header(m_format_context, NULL) != 0) {
+		Logger::LogError("[Muxer::run] Error: Can't write header!");
+		throw LibavException();
+	}
+
 	m_started = true;
 	start();
 }
@@ -160,16 +167,30 @@ void Muxer::Init() {
 
 void Muxer::Free() {
 	if(m_format_context != NULL) {
-		for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
-			av_freep(&m_format_context->streams[i]->codec);
-			av_freep(&m_format_context->streams[i]);
+
+		// write trailer (needed to free private muxer data)
+		if(m_started) {
+			if(av_write_trailer(m_format_context) != 0) {
+				// we can't throw exceptions here because this is called from the destructor
+				Logger::LogError("[Muxer::Free] Error: Can't write trailer, continuing anyway.");
+			}
+			m_started = false;
 		}
+
+		// close file
 		if(m_format_context->pb != NULL) {
 			avio_close(m_format_context->pb);
 			m_format_context->pb = NULL;
 		}
+
+		// free everything
+		for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
+			av_freep(&m_format_context->streams[i]->codec);
+			av_freep(&m_format_context->streams[i]);
+		}
 		av_free(m_format_context);
 		m_format_context = NULL;
+
 	}
 }
 
@@ -177,12 +198,6 @@ void Muxer::run() {
 	try {
 
 		Logger::LogInfo("[Muxer::run] Muxer thread started.");
-
-		// write header
-		if(avformat_write_header(m_format_context, NULL) != 0) {
-			Logger::LogError("[Muxer::run] Error: Can't write header!");
-			throw LibavException();
-		}
 
 		// start muxing
 		while(!m_should_stop) {
@@ -215,18 +230,8 @@ void Muxer::run() {
 
 			// if there are no packets left and we don't have to wait for more, we're done
 			if(oldest_stream == INVALID_STREAM) {
-
-				Logger::LogInfo("[Muxer::run] Finished muxing, writing trailer ...");
-
-				// write trailer and tell the others that we're done
-				if(av_write_trailer(m_format_context) != 0) {
-					Logger::LogError("[Muxer::run] Error: Can't write trailer!");
-					throw LibavException();
-				}
 				m_is_done = true;
-
 				break;
-
 			}
 
 			// get the packet
@@ -241,6 +246,10 @@ void Muxer::run() {
 			if(packet->pts != (int64_t) AV_NOPTS_VALUE) {
 				//packet->pts =  (int64_t) ((double) packet->pts * ToDouble(st->codec->time_base) / ToDouble(st->time_base) + 0.5);
 				packet->pts = av_rescale_q(packet->pts, st->codec->time_base, st->time_base);
+			}
+			if(packet->dts != (int64_t) AV_NOPTS_VALUE) {
+				//packet->dts =  (int64_t) ((double) packet->dts * ToDouble(st->codec->time_base) / ToDouble(st->time_base) + 0.5);
+				packet->dts = av_rescale_q(packet->dts, st->codec->time_base, st->time_base);
 			}
 
 			// write the packet (again, why does libav call this a frame?)

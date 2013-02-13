@@ -30,10 +30,10 @@ class Synchronizer {
 
 private:
 	struct SharedData {
-		int64_t m_time_offset;
-		int64_t m_segment_begin_time, m_last_video_pts;
-		uint64_t m_sample_count;
-		double m_time_correction_factor, m_correction_speed;
+		int64_t m_time_offset; // the length of all previous segments combined (in microseconds)
+		int64_t m_last_video_pts, m_total_samples; // the last video frame pts and the total number of audio samples
+		int64_t m_segment_begin_time, m_segment_sample_count; // the begin time of the segment (real-time, in microseconds) and the number of audio samples in the segment
+		double m_time_correction_factor, m_correction_speed; // correction factor used to synchronize video and audio time
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 

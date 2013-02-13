@@ -48,7 +48,7 @@ AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::v
 	// allocate a temporary buffer
 	if(GetCodecContext()->frame_size <= 1) {
 		// This is really weird, the old API uses the size of the *output* buffer to determine the number of
-		// input samples if the number of input samples (i.e. frame_size) is not fixed (i.e. frame_size == 0).
+		// input samples if the number of input samples (i.e. frame_size) is not fixed (i.e. frame_size <= 1).
 		m_temp_buffer.resize(1024 * GetCodecContext()->channels * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
 	} else {
 		m_temp_buffer.resize(std::max(FF_MIN_BUFFER_SIZE, 256 * 1024));
@@ -73,7 +73,7 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 	GetCodecContext()->bit_rate = m_bit_rate;
 	GetCodecContext()->sample_rate = m_sample_rate;
 	GetCodecContext()->channels = 2;
-	GetCodecContext()->sample_fmt = AV_SAMPLE_FMT_S16;
+	GetCodecContext()->sample_fmt = AV_SAMPLE_FMT_S16; //TODO// float?
 
 }
 
@@ -129,12 +129,10 @@ bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 		// copy the data
 		memcpy(packet->data, m_temp_buffer.data(), bytes_encoded);
 
-		// set the timestamp and flags
+		// set the timestamp
 		// note: pts will be rescaled and stream_index will be set by Muxer
 		if(GetCodecContext()->coded_frame != NULL && GetCodecContext()->coded_frame->pts != (int64_t) AV_NOPTS_VALUE)
 			packet->pts = GetCodecContext()->coded_frame->pts;
-		if(GetCodecContext()->coded_frame->key_frame)
-			packet->flags |= AV_PKT_FLAG_KEY;
 
 		// send the packet to the muxer
 		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));

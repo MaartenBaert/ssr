@@ -51,11 +51,13 @@ extern "C" {
 // avformat_new_stream requires libavformat >= 53.10
 #define SSR_USE_AVFORMAT_NEW_STREAM    (LIBAVFORMAT_VERSION_MAJOR > 53 || (LIBAVFORMAT_VERSION_MAJOR == 53 && LIBAVFORMAT_VERSION_MINOR >= 10))
 
+// avcodec_encode_video2 requires libavcodec >= 54.1
+#define SSR_USE_AVCODEC_ENCODE_VIDEO2  (LIBAVCODEC_VERSION_MAJOR > 54 || (LIBAVCODEC_VERSION_MAJOR == 54 && LIBAVCODEC_VERSION_MINOR >= 1))
 // avcodec_encode_audio2 requires libavcodec >= 53.34
 #define SSR_USE_AVCODEC_ENCODE_AUDIO2  (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 34))
 // AVFrame::format requires libavcodec >= 53.31
 #define SSR_USE_AVFRAME_FORMAT         (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 31))
-// AVFrame::nb_samples and avcodec_decode_audio4 requires libavcodec >= 53.25
+// AVFrame::nb_samples and avcodec_decode_audio4 require libavcodec >= 53.25
 #define SSR_USE_AVFRAME_NB_SAMPLES     (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 25))
 #define SSR_USE_AVCODEC_DECODE_AUDIO4  (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 25))
 // the 'preset' private option requires libavcodec >= 53.10

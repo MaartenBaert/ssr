@@ -87,13 +87,13 @@ void BaseInput::Start(const char* name, AVInputFormat* format, AVDictionary** op
 	if(codec->capabilities & CODEC_CAP_TRUNCATED)
 		m_codec_context->flags |= CODEC_FLAG_TRUNCATED;
 
+	Logger::LogInfo(QString("[BaseInput::Start] Using codec ") + codec->name + " (" + codec->long_name + ").");
+
 	// open codec
 	if(avcodec_open2(m_codec_context, codec, NULL) < 0) {
 		Logger::LogError("[BaseInput::Start] Error: Can't open codec!");
 		throw LibavException();
 	}
-
-	Logger::LogInfo(QString("[BaseInput::Start] Using codec ") + codec->name + " (" + codec->long_name + ").");
 
 	// start input thread
 	m_should_stop = false;

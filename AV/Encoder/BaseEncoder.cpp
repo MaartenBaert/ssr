@@ -64,6 +64,8 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 	}
 	m_delayed_packets = ((codec->capabilities & CODEC_CAP_DELAY) != 0);
 
+	Logger::LogInfo(QString("[BaseEncoder::CreateCodec] Using codec ") + codec->name + " (" + codec->long_name + ").");
+
 	// create stream and get codec context
 	AVStream *stream = m_muxer->CreateStream(codec);
 	m_codec_context = stream->codec;
@@ -78,8 +80,6 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 		Logger::LogError("[BaseEncoder::CreateCodec] Error: Can't open codec!");
 		throw LibavException();
 	}
-
-	Logger::LogInfo(QString("[BaseEncoder::CreateCodec] Using codec ") + codec->name + " (" + codec->long_name + ").");
 
 	// start encoder thread
 	m_should_stop = false;

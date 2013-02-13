@@ -94,6 +94,7 @@ private:
 	QComboBox *m_combobox_h264_preset;
 	QComboBox *m_combobox_vp8_cpu_used;
 	QComboBox *m_combobox_audio_codec;
+    QLabel *m_label_audio_kbit_rate;
 	QLineEdit *m_lineedit_audio_kbit_rate;
 
 public:

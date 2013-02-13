@@ -158,7 +158,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 										   "- AAC is a good codec, but the implementation used here (libvo_aacenc) is pretty bad. Only use it if you\n"
 										   "  have no other choice.\n"
 										   "- Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it's very fast.");
-		QLabel *label_audio_bitrate = new QLabel("Bit rate (in kbps):", m_group_audio);
+		m_label_audio_kbit_rate = new QLabel("Bit rate (in kbps):", m_group_audio);
 		m_lineedit_audio_kbit_rate = new QLineEdit(m_group_audio);
 		m_lineedit_audio_kbit_rate->setToolTip("The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.");
 
@@ -167,7 +167,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		QGridLayout *layout = new QGridLayout(m_group_audio);
 		layout->addWidget(label_audiocodec, 0, 0);
 		layout->addWidget(m_combobox_audio_codec, 0, 1);
-		layout->addWidget(label_audio_bitrate, 1, 0);
+		layout->addWidget(m_label_audio_kbit_rate, 1, 0);
 		layout->addWidget(m_lineedit_audio_kbit_rate, 1, 1);
 	}
 	QPushButton *button_back = new QPushButton("Back", this);
@@ -276,6 +276,7 @@ void PageOutput::UpdateVideoCodecFields() {
 
 void PageOutput::UpdateAudioCodecFields() {
 	enum_audio_codec codec = GetAudioCodec();
+	m_label_audio_kbit_rate->setVisible(codec != AUDIO_CODEC_UNCOMPRESSED);
 	m_lineedit_audio_kbit_rate->setVisible(codec != AUDIO_CODEC_UNCOMPRESSED);
 }
 

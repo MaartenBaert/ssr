@@ -47,9 +47,10 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_time_offset = 0;
-		lock->m_segment_begin_time = AV_NOPTS_VALUE;
 		lock->m_last_video_pts = AV_NOPTS_VALUE;
-		lock->m_sample_count = 0;
+		lock->m_total_samples = 0;
+		lock->m_segment_begin_time = AV_NOPTS_VALUE;
+		lock->m_segment_sample_count = 0;
 		lock->m_time_correction_factor = 1.0;
 		double audio_frame_interval = (double) m_required_frame_size / (double) m_sample_rate;
 		lock->m_correction_speed = 1.0 - pow(1.0 - CORRECTION_SPEED, audio_frame_interval);
@@ -68,13 +69,11 @@ void Synchronizer::NewSegment() {
 
 				// compare the length of the video and audio segment
 				int64_t video_time = (lock->m_last_video_pts + 1) * (int64_t) 1000000 / (int64_t) m_frame_rate;
-				int64_t audio_time = lock->m_time_offset + (int64_t) lock->m_sample_count * (int64_t) 1000000 / (int64_t) m_sample_rate;
-				if(video_time < audio_time)
+				int64_t audio_time = lock->m_total_samples * (int64_t) 1000000 / (int64_t) m_sample_rate;
+				if(audio_time >= video_time)
 					break;
 
-				//Logger::LogInfo("[Synchronizer::NewSegment] Inserting audio frame (size = " + QString::number(m_required_frame_size) + ").");
-
-				// if the audio segment is shorter, add an empty frame
+				// if the audio ends before the video, insert silence
 				std::unique_ptr<AVFrameWrapper> frame(new AVFrameWrapper(m_required_frame_size * 4));
 				frame->linesize[0] = m_required_frame_size * 4;
 				frame->nb_samples = m_required_frame_size;
@@ -83,9 +82,13 @@ void Synchronizer::NewSegment() {
 #endif
 				memset(frame->data[0], 0, m_required_frame_size * 4);
 
-				// increase the sample count
-				//frame->pts = lock->m_pts_offset + (int64_t) lock->m_sample_count * (int64_t) 1000000 / (int64_t) m_sample_rate;
-				lock->m_sample_count += frame->nb_samples;
+				// set the timestamp
+				frame->pts = lock->m_total_samples;
+				frame->pkt_dts = AV_NOPTS_VALUE;
+
+				// increase the sample counters
+				lock->m_total_samples += frame->nb_samples;
+				lock->m_segment_sample_count += frame->nb_samples;
 
 				// send the frame to the encoder
 				m_audio_encoder->AddFrame(std::move(frame));
@@ -94,7 +97,7 @@ void Synchronizer::NewSegment() {
 		}
 
 		// set the new offset
-		lock->m_time_offset += (int64_t) lock->m_sample_count * (int64_t) 1000000 / (int64_t) m_sample_rate;
+		lock->m_time_offset = lock->m_total_samples * (int64_t) 1000000 / (int64_t) m_sample_rate;
 
 	} else {
 
@@ -105,17 +108,17 @@ void Synchronizer::NewSegment() {
 
 	// reset the counters
 	lock->m_segment_begin_time = AV_NOPTS_VALUE;
-	lock->m_sample_count = 0;
+	lock->m_segment_sample_count = 0;
 
 }
 
 int64_t Synchronizer::GetTotalTime() {
 	SharedLock lock(&m_shared_data);
 	int64_t audio_time = 0, video_time = 0;
-	if(m_audio_encoder != NULL)
-		audio_time = lock->m_time_offset + (int64_t) lock->m_sample_count * (int64_t) 1000000 / (int64_t) m_sample_rate;
 	if(lock->m_last_video_pts != (int64_t) AV_NOPTS_VALUE)
 		video_time = (lock->m_last_video_pts + 1) * (int64_t) 1000000 / (int64_t) m_frame_rate;
+	if(m_audio_encoder != NULL)
+		audio_time = lock->m_total_samples * (int64_t) 1000000 / (int64_t) m_sample_rate;
 	return std::max(video_time, audio_time);
 }
 
@@ -142,6 +145,7 @@ void Synchronizer::AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame) {
 			return;
 		frame->pts = std::max(pts, lock->m_last_video_pts + 1);
 	}
+	frame->pkt_dts = AV_NOPTS_VALUE;
 	lock->m_last_video_pts = frame->pts;
 
 	// send the frame to the encoder
@@ -165,7 +169,7 @@ void Synchronizer::AddAudioFrame(std::unique_ptr<AVFrameWrapper> frame) {
 	// seconds too early or too late at the end of a one hour video. This problem doesn't occur on all computer though (I'm not sure why).
 	// Speed correction only starts after at least 5 seconds of audio have been recorded, because otherwise the timestamps are too inaccurate.
 	// The speed correction factor is also clamped to 95% .. 105% to limit the potential damage if this code produces wrong results :).
-	double sample_length = (double) lock->m_sample_count / (double) m_sample_rate;
+	double sample_length = (double) lock->m_segment_sample_count / (double) m_sample_rate;
 	double time_length = (double)(frame->pkt_dts - lock->m_segment_begin_time) * 0.000001;
 	if(time_length > 5.0) {
 		double time_correction_factor = sample_length / time_length;
@@ -173,9 +177,13 @@ void Synchronizer::AddAudioFrame(std::unique_ptr<AVFrameWrapper> frame) {
 				+ (time_correction_factor - lock->m_time_correction_factor) * lock->m_correction_speed);
 	}
 
-	// increase the sample count
-	//frame->pts = lock->m_pts_offset + (int64_t) lock->m_sample_count * (int64_t) 1000000 / (int64_t) m_sample_rate;
-	lock->m_sample_count += frame->nb_samples;
+	// set the timestamp
+	frame->pts = lock->m_total_samples;
+	frame->pkt_dts = AV_NOPTS_VALUE;
+
+	// increase the sample counters
+	lock->m_total_samples += frame->nb_samples;
+	lock->m_segment_sample_count += frame->nb_samples;
 
 	// send the frame to the encoder
 	//Logger::LogInfo("[Synchronizer::AddAudioFrame] Audio pts = " + QString::number(frame->pts));

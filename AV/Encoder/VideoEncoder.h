@@ -31,7 +31,9 @@ private:
 	unsigned int m_opt_crf;
 	QString m_opt_preset;
 
+#if !SSR_USE_AVCODEC_ENCODE_VIDEO2
 	std::vector<uint8_t> m_temp_buffer;
+#endif
 
 public:
 	VideoEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
