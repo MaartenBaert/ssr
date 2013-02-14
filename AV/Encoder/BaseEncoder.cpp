@@ -71,6 +71,10 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 	m_codec_context = stream->codec;
 	m_stream_index = stream->index;
 
+	// if the codec is experimental, allow it
+	if(codec->capabilities & CODEC_CAP_EXPERIMENTAL)
+		m_codec_context->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
+
 	// set things like image size, frame rate, sample rate, bit rate ...
 	FillCodecContext(codec);
 	stream->sample_aspect_ratio = m_codec_context->sample_aspect_ratio;

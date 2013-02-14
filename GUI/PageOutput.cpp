@@ -61,6 +61,12 @@ PageOutput::PageOutput(MainWindow* main_window)
 		s_audio_codec_data[i].installed = (avcodec_find_encoder_by_name(s_audio_codec_data[i].avname) != NULL);
 	}
 
+	// alternative aac codec
+	if(!s_audio_codec_data[AUDIO_CODEC_AAC].installed) {
+		s_audio_codec_data[AUDIO_CODEC_AAC].avname = "aac";
+		s_audio_codec_data[AUDIO_CODEC_AAC].installed = (avcodec_find_encoder_by_name(s_audio_codec_data[AUDIO_CODEC_AAC].avname) != NULL);
+	}
+
 	QGroupBox *groupbox_file = new QGroupBox("File", this);
 	{
 		m_old_container = (enum_container) 0;
@@ -155,8 +161,8 @@ PageOutput::PageOutput(MainWindow* main_window)
 										   "And if you're only recording your own voice (i.e. no music), the quality won't matter that much anyway.\n"
 										   "- Vorbis (libvorbis) is great, this is the recommended codec.\n"
 										   "- MP3 (libmp3lame) is reasonably good.\n"
-										   "- AAC is a good codec, but the implementation used here (libvo_aacenc) is pretty bad. Only use it if you\n"
-										   "  have no other choice.\n"
+										   "- AAC is a good codec, but the implementations used here (libvo_aacenc or the experimental ffmpeg aac encoder)\n"
+										   "   are pretty bad. Only use it if you have no other choice.\n"
 										   "- Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it's very fast.");
 		m_label_audio_kbit_rate = new QLabel("Bit rate (in kbps):", m_group_audio);
 		m_lineedit_audio_kbit_rate = new QLineEdit(m_group_audio);

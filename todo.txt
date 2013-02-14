@@ -1,10 +1,10 @@
 Testing:
+- Use experimental ffmpeg AAC encoder if libvo_aacenc is missing.
 
 In progress:
 
 Todo:
 - Fix libvorbis in arch/ffmpeg. (floating point sample format?)
-- Use experimental ffmpeg AAC encoder if libvo_aacenc is missing.
 
 Wishlist:
 - Fixed cursor position when using 'follow cursor'
