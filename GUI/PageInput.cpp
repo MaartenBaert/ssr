@@ -47,14 +47,14 @@ PageInput::PageInput(MainWindow* main_window)
 		m_buttongroup_video_area->addButton(radio_area_fixed, VIDEO_AREA_FIXED);
 		m_buttongroup_video_area->addButton(radio_area_cursor, VIDEO_AREA_CURSOR);
 		m_buttongroup_video_area->addButton(radio_area_glinject, VIDEO_AREA_GLINJECT);
-		m_combobox_screens = new QComboBox(group_video);
+		m_combobox_screens = new QComboBoxWithSignal(group_video);
 		m_combobox_screens->setToolTip("This settings allows you to select what monitor should be recorded in a multi-monitor configuration.");
 		m_pushbutton_video_select_rectangle = new QPushButton("Select rectangle...", group_video);
 		m_pushbutton_video_select_rectangle->setToolTip("Use the mouse to select the recorded rectangle.");
 		m_pushbutton_video_select_window = new QPushButton("Select window...", group_video);
 		m_pushbutton_video_select_window->setToolTip("Use the mouse to select a window to record.");
-		m_pushbutton_video_select_program = new QPushButton("OpenGL settings...", group_video);
-		m_pushbutton_video_select_program->setToolTip("Change the settings for OpenGL recording.");
+		m_pushbutton_video_opengl_settings = new QPushButton("OpenGL settings...", group_video);
+		m_pushbutton_video_opengl_settings->setToolTip("Change the settings for OpenGL recording.");
 		QLabel *label_x = new QLabel("Left:", group_video);
 		m_lineedit_video_x = new QLineEdit(group_video);
 		m_lineedit_video_x->setToolTip("The x coordinate of the upper-left corner of the recorded rectangle.");
@@ -79,9 +79,11 @@ PageInput::PageInput(MainWindow* main_window)
 
 		connect(m_buttongroup_video_area, SIGNAL(buttonClicked(int)), this, SLOT(UpdateVideoAreaFields()));
 		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(UpdateVideoAreaFields()));
+		connect(m_combobox_screens, SIGNAL(popupShown()), this, SLOT(IdentifyScreens()));
+		connect(m_combobox_screens, SIGNAL(popupHidden()), this, SLOT(StopIdentifyScreens()));
 		connect(m_pushbutton_video_select_rectangle, SIGNAL(clicked()), this, SLOT(StartSelectRectangle()));
 		connect(m_pushbutton_video_select_window, SIGNAL(clicked()), this, SLOT(StartSelectWindow()));
-		connect(m_pushbutton_video_select_program, SIGNAL(clicked()), this, SLOT(GLInjectDialog()));
+		connect(m_pushbutton_video_opengl_settings, SIGNAL(clicked()), this, SLOT(GLInjectDialog()));
 		connect(m_checkbox_scale, SIGNAL(clicked()), this, SLOT(UpdateVideoScaleFields()));
 
 		QVBoxLayout *layout = new QVBoxLayout(group_video);
@@ -99,7 +101,7 @@ PageInput::PageInput(MainWindow* main_window)
 			layout->addLayout(layout2);
 			layout2->addWidget(m_pushbutton_video_select_rectangle);
 			layout2->addWidget(m_pushbutton_video_select_window);
-			layout2->addWidget(m_pushbutton_video_select_program);
+			layout2->addWidget(m_pushbutton_video_opengl_settings);
 			layout2->addStretch();
 		}
 		{
@@ -335,7 +337,7 @@ void PageInput::UpdateVideoAreaFields() {
 			m_combobox_screens->setEnabled(true);
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
-			m_pushbutton_video_select_program->setEnabled(false);
+			m_pushbutton_video_opengl_settings->setEnabled(false);
 			m_lineedit_video_x->setEnabled(false);
 			m_lineedit_video_y->setEnabled(false);
 			m_lineedit_video_w->setEnabled(false);
@@ -360,7 +362,7 @@ void PageInput::UpdateVideoAreaFields() {
 			m_combobox_screens->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
-			m_pushbutton_video_select_program->setEnabled(false);
+			m_pushbutton_video_opengl_settings->setEnabled(false);
 			m_lineedit_video_x->setEnabled(true);
 			m_lineedit_video_y->setEnabled(true);
 			m_lineedit_video_w->setEnabled(true);
@@ -371,7 +373,7 @@ void PageInput::UpdateVideoAreaFields() {
 			m_combobox_screens->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
-			m_pushbutton_video_select_program->setEnabled(false);
+			m_pushbutton_video_opengl_settings->setEnabled(false);
 			m_lineedit_video_x->setEnabled(false);
 			m_lineedit_video_y->setEnabled(false);
 			m_lineedit_video_w->setEnabled(true);
@@ -384,7 +386,7 @@ void PageInput::UpdateVideoAreaFields() {
 			m_combobox_screens->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
-			m_pushbutton_video_select_program->setEnabled(true);
+			m_pushbutton_video_opengl_settings->setEnabled(true);
 			m_lineedit_video_x->setEnabled(false);
 			m_lineedit_video_y->setEnabled(false);
 			m_lineedit_video_w->setEnabled(false);
@@ -424,6 +426,25 @@ void PageInput::UpdateScreenConfiguration() {
 	UpdateVideoAreaFields();
 }
 
+void PageInput::IdentifyScreens() {
+	StopIdentifyScreens();
+	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
+		QRect rect = QApplication::desktop()->screenGeometry(i);
+		WidgetScreenLabel *label = new WidgetScreenLabel(this, "Screen " + QString::number(i + 1));
+		label->move(rect.left(), rect.top());
+		label->show();
+		m_screen_labels.push_back(label);
+	}
+}
+
+void PageInput::StopIdentifyScreens() {
+	for(unsigned int i = 0; i < m_screen_labels.size(); ++i) {
+		delete m_screen_labels[i];
+		m_screen_labels[i] = NULL;
+	}
+	m_screen_labels.clear();
+}
+
 void PageInput::StartSelectRectangle() {
 	m_selecting_window = false;
 	StartGrabbing();
@@ -447,6 +468,40 @@ void PageInput::Continue() {
 		return;
 	}
 	m_main_window->GoPageOutput();
+}
+
+QComboBoxWithSignal::QComboBoxWithSignal(QWidget* parent)
+	: QComboBox(parent) {
+
+}
+
+void QComboBoxWithSignal::showPopup() {
+	emit popupShown();
+	QComboBox::showPopup();
+}
+
+void QComboBoxWithSignal::hidePopup() {
+	emit popupHidden();
+	QComboBox::hidePopup();
+}
+
+WidgetScreenLabel::WidgetScreenLabel(QWidget* parent, const QString &text)
+	: QWidget(parent, Qt::Window | Qt::X11BypassWindowManagerHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint) {
+	m_text = text;
+}
+
+QSize WidgetScreenLabel::sizeHint() const {
+	return QSize(180, 60);
+}
+
+void WidgetScreenLabel::paintEvent(QPaintEvent* event) {
+	Q_UNUSED(event);
+	QPainter painter(this);
+	painter.setPen(QColor(0, 0, 0));
+	painter.setBrush(QColor(255, 192, 128));
+	painter.drawRect(0, 0, width() - 1, height() - 1);
+	painter.setFont(QFont("Sans", 18, QFont::Bold));
+	painter.drawText(0, 0, width(), height(), Qt::AlignHCenter | Qt::AlignVCenter, m_text);
 }
 
 DialogGLInject::DialogGLInject(PageInput* parent)

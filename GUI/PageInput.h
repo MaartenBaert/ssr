@@ -20,7 +20,23 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "StdAfx.h"
 
+class QComboBoxWithSignal : public QComboBox {
+	Q_OBJECT
+
+public:
+	QComboBoxWithSignal(QWidget* parent);
+
+	virtual void showPopup();
+	virtual void hidePopup();
+
+signals:
+	void popupShown();
+	void popupHidden();
+
+};
+
 class MainWindow;
+class WidgetScreenLabel;
 
 class PageInput : public QWidget {
 	Q_OBJECT
@@ -46,8 +62,8 @@ private:
 	unsigned int m_glinject_max_megapixels;
 
 	QButtonGroup *m_buttongroup_video_area;
-	QComboBox *m_combobox_screens;
-	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window, *m_pushbutton_video_select_program;
+	QComboBoxWithSignal *m_combobox_screens;
+	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window, *m_pushbutton_video_opengl_settings;
 	QLineEdit *m_lineedit_video_x, *m_lineedit_video_y, *m_lineedit_video_w, *m_lineedit_video_h;
 	QLineEdit *m_lineedit_video_frame_rate;
 	QCheckBox *m_checkbox_scale;
@@ -56,6 +72,8 @@ private:
 
 	QCheckBox *m_checkbox_audio_enable;
 	QLineEdit *m_lineedit_audio_source;
+
+	std::vector<WidgetScreenLabel*> m_screen_labels;
 
 public:
 	PageInput(MainWindow* main_window);
@@ -116,10 +134,27 @@ public slots:
 
 private slots:
 	void UpdateScreenConfiguration();
+	void IdentifyScreens();
+	void StopIdentifyScreens();
 	void StartSelectRectangle();
 	void StartSelectWindow();
 	void GLInjectDialog();
 	void Continue();
+
+};
+
+class WidgetScreenLabel : public QWidget {
+	Q_OBJECT
+
+private:
+	QString m_text;
+
+public:
+	WidgetScreenLabel(QWidget* parent, const QString& text);
+
+protected:
+	virtual QSize sizeHint() const;
+	virtual void paintEvent(QPaintEvent* event);
 
 };
 
