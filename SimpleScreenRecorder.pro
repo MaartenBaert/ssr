@@ -44,7 +44,8 @@ SOURCES += \
     GUI/PageRecord.cpp \
     GUI/PageWelcome.cpp \
     Logger.cpp \
-    Main.cpp
+    Main.cpp \
+    ByteQueue.cpp
 
 HEADERS  += \
 	AV/Encoder/AudioEncoder.h \
@@ -70,7 +71,8 @@ HEADERS  += \
     Logger.h \
     StdAfx.h \
 	VPair.h \
-    Main.h
+    Main.h \
+    ByteQueue.h
 
 RESOURCES += \
     resources.qrc

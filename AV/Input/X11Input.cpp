@@ -499,11 +499,8 @@ void X11Input::run() {
 
 			}
 
-			// set the timestamp
-			converted_frame->pkt_dts = last_frame_time;
-
 			// save the frame
-			m_synchronizer->AddVideoFrame(std::move(converted_frame));
+			m_synchronizer->AddVideoFrame(std::move(converted_frame), last_frame_time);
 
 		}
 

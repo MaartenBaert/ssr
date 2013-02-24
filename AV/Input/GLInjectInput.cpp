@@ -219,11 +219,10 @@ void GLInjectInput::run() {
 			VFlipYUV(converted_frame.get(), m_out_height);
 
 			// set the timestamp
-			converted_frame->pkt_dts = frameinfo.timestamp;
 			last_frame_time = std::max(last_frame_time + GetReadDelay(), frameinfo.timestamp);
 
 			// save the frame
-			m_synchronizer->AddVideoFrame(std::move(converted_frame));
+			m_synchronizer->AddVideoFrame(std::move(converted_frame), frameinfo.timestamp);
 
 		}
 

@@ -36,9 +36,11 @@ public:
 	AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 				 unsigned int bit_rate, unsigned int sample_rate);
 
-	// Returns the required frame size, i.e. the number of samples. A sample means 2 bytes for mono
-	// or 4 bytes for stereo. Currently only stereo is supported.
+	// Returns the required frame size, i.e. the number of samples (for each channel).
 	unsigned int GetRequiredFrameSize();
+
+	// Returns the required sample format.
+	AVSampleFormat GetRequiredSampleFormat();
 
 	inline unsigned int GetSampleRate() { return m_sample_rate; }
 

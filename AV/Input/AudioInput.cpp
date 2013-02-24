@@ -30,7 +30,6 @@ AudioInput::AudioInput(Synchronizer* synchronizer, const QString& alsa_device)
 	Q_ASSERT(GetSynchronizer()->GetAudioEncoder() != NULL);
 
 	m_sample_rate = GetSynchronizer()->GetAudioEncoder()->GetSampleRate();
-	m_required_frame_size = GetSynchronizer()->GetAudioEncoder()->GetRequiredFrameSize();
 
 	// get alsa device
 	// options: alsa-audio-dec.c line 153
@@ -53,14 +52,6 @@ AudioInput::~AudioInput() {
 
 	Stop();
 
-	// is there a partial frame?
-	if(m_partial_frame != NULL) {
-		int samples_left = m_required_frame_size - m_partial_frame->nb_samples;
-		memset(m_partial_frame->data[0] + m_partial_frame->nb_samples * 4, 0, samples_left * 4);
-		m_partial_frame->nb_samples = m_required_frame_size;
-		GetSynchronizer()->AddAudioFrame(std::move(m_partial_frame));
-	}
-
 }
 
 void AudioInput::ReadFrame(AVFrameWrapper* frame) {
@@ -77,33 +68,6 @@ void AudioInput::ReadFrame(AVFrameWrapper* frame) {
 	}
 #endif
 
-	// fill partial frame
-	unsigned int current_position = 0;
-	while(current_position < (unsigned int) frame->nb_samples) {
-
-		// create a frame if it doesn't exist already
-		if(m_partial_frame == NULL) {
-			unsigned int frame_samples_left = (unsigned int) frame->nb_samples - current_position;
-			m_partial_frame.reset(new AVFrameWrapper(m_required_frame_size * 4));
-			m_partial_frame->linesize[0] = m_required_frame_size * 4;
-			m_partial_frame->nb_samples = 0;
-			m_partial_frame->pkt_dts = frame->pkt_dts - (int64_t) frame_samples_left * (int64_t) 1000000 / (int64_t) m_sample_rate;
-#if SSR_USE_AVFRAME_FORMAT
-			m_partial_frame->format = AV_SAMPLE_FMT_S16;
-#endif
-		}
-
-		// read samples until either the partial frame is full or the recorded frame is empty
-		unsigned int samples_left = std::min((unsigned int) frame->nb_samples - current_position, m_required_frame_size - (unsigned int) m_partial_frame->nb_samples);
-		memcpy(m_partial_frame->data[0] + (unsigned int) m_partial_frame->nb_samples * 4, frame->data[0] + current_position * 4, samples_left * 4);
-		current_position += samples_left;
-		m_partial_frame->nb_samples += samples_left;
-
-		// is the partial frame full?
-		if((unsigned int) m_partial_frame->nb_samples == m_required_frame_size) {
-			GetSynchronizer()->AddAudioFrame(std::move(m_partial_frame));
-		}
-
-	}
+	GetSynchronizer()->AddAudioSamples((char*) frame->data[0], frame->nb_samples, frame->pkt_dts - (int64_t) frame->nb_samples * (int64_t) 1000000 / (int64_t) m_sample_rate);
 
 }

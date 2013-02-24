@@ -65,6 +65,11 @@ unsigned int AudioEncoder::GetRequiredFrameSize() {
 #endif
 }
 
+AVSampleFormat AudioEncoder::GetRequiredSampleFormat() {
+	return GetCodecContext()->sample_fmt;
+}
+
+
 void AudioEncoder::FillCodecContext(AVCodec* codec) {
 	Q_UNUSED(codec);
 

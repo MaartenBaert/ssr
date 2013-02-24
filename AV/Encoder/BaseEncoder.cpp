@@ -136,8 +136,10 @@ void BaseEncoder::run() {
 				}
 			}
 			if(frame == NULL) {
-				if(m_should_finish)
+				if(m_should_finish) {
+					Logger::LogInfo("[BaseEncoder::run] Flushing encoder ...");
 					break;
+				}
 				usleep(10000);
 				continue;
 			}
@@ -146,8 +148,6 @@ void BaseEncoder::run() {
 			EncodeFrame(frame.get());
 
 		}
-
-		Logger::LogInfo("[BaseEncoder::run] Flushing encoder ...");
 
 		// flush the encoder
 		while(!m_should_stop) {

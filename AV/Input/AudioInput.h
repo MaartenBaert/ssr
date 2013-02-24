@@ -28,9 +28,6 @@ class AudioInput : public BaseInput {
 
 private:
 	unsigned int m_sample_rate;
-	unsigned int m_required_frame_size;
-
-	std::unique_ptr<AVFrameWrapper> m_partial_frame;
 
 public:
 	AudioInput(Synchronizer* synchronizer, const QString& alsa_device);

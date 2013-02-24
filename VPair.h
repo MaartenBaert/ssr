@@ -34,6 +34,7 @@ public:
 		}
 		inline T* operator->() { return m_data; }
 		inline T& operator*() { return *m_data; }
+		inline T* get() { return m_data; }
 	};
 
 private:
