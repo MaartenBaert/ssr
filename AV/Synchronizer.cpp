@@ -35,6 +35,7 @@ const size_t Synchronizer::MAX_VIDEO_FRAMES_BUFFERED = 30;
 
 Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder) {
 	Q_ASSERT(video_encoder != NULL || audio_encoder != NULL);
+	//TODO// support channel counts other than 2
 
 	m_video_encoder = video_encoder;
 	m_audio_encoder = audio_encoder;
@@ -47,6 +48,14 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 		m_audio_sample_size = 4;
 		m_audio_required_frame_size = m_audio_encoder->GetRequiredFrameSize();
 		m_audio_required_sample_format = m_audio_encoder->GetRequiredSampleFormat();
+		switch(m_audio_required_sample_format) {
+			case AV_SAMPLE_FMT_S16: case AV_SAMPLE_FMT_S16P: m_audio_required_sample_size = 4; break;
+			case AV_SAMPLE_FMT_FLT: case AV_SAMPLE_FMT_FLTP: m_audio_required_sample_size = 8; break;
+			default: Q_ASSERT(false); break;
+		}
+		if(m_audio_required_sample_format != AV_SAMPLE_FMT_S16) {
+			m_temp_audio_buffer.resize(m_audio_required_frame_size * m_audio_sample_size);
+		}
 	}
 	m_warn_drop_frame = true;
 
@@ -233,18 +242,39 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 
 			// create a partial frame if it doesn't exist already
 			if(lock->m_partial_audio_frame == NULL) {
-				lock->m_partial_audio_frame.reset(new AVFrameWrapper(m_audio_required_frame_size * m_audio_sample_size));
-				lock->m_partial_audio_frame->linesize[0] = m_audio_required_frame_size * m_audio_sample_size; //TODO// float
+				lock->m_partial_audio_frame.reset(new AVFrameWrapper(m_audio_required_frame_size * m_audio_required_sample_size));
+				switch(m_audio_required_sample_format) {
+					case AV_SAMPLE_FMT_S16:
+					case AV_SAMPLE_FMT_FLT: {
+						lock->m_partial_audio_frame->linesize[0] = m_audio_required_frame_size * m_audio_required_sample_size;
+						break;
+					}
+					case AV_SAMPLE_FMT_S16P:
+					case AV_SAMPLE_FMT_FLTP: {
+						lock->m_partial_audio_frame->linesize[0] = m_audio_required_frame_size * m_audio_required_sample_size / 2;
+						lock->m_partial_audio_frame->linesize[1] = m_audio_required_frame_size * m_audio_required_sample_size / 2;
+						lock->m_partial_audio_frame->data[1] = lock->m_partial_audio_frame->data[0] + lock->m_partial_audio_frame->linesize[0];
+						break;
+					}
+					default: {
+						Q_ASSERT(false);
+						break;
+					}
+				}
 				lock->m_partial_audio_frame->nb_samples = 0;
 				lock->m_partial_audio_frame->pts = lock->m_audio_samples;
 #if SSR_USE_AVFRAME_FORMAT
-				lock->m_partial_audio_frame->format = AV_SAMPLE_FMT_S16; //TODO// float
+				lock->m_partial_audio_frame->format = m_audio_required_sample_format;
 #endif
 			}
 
 			// copy samples until either the partial frame is full or there are no samples left
 			int64_t n = std::min((int64_t) m_audio_required_frame_size - lock->m_partial_audio_frame->nb_samples, samples_left);
-			lock->m_audio_buffer.Read((char*) lock->m_partial_audio_frame->data[0] + lock->m_partial_audio_frame->nb_samples * m_audio_sample_size, n * m_audio_sample_size);
+			if(m_audio_required_sample_format == AV_SAMPLE_FMT_S16) {
+				lock->m_audio_buffer.Read((char*) lock->m_partial_audio_frame->data[0] + lock->m_partial_audio_frame->nb_samples * m_audio_sample_size, n * m_audio_sample_size);
+			} else {
+				lock->m_audio_buffer.Read(m_temp_audio_buffer.data() + lock->m_partial_audio_frame->nb_samples * m_audio_sample_size, n * m_audio_sample_size);
+			}
 			lock->m_segment_audio_samples_read += n;
 			lock->m_partial_audio_frame->nb_samples += n;
 			lock->m_audio_samples += n;
@@ -252,6 +282,41 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 
 			// is the partial frame full?
 			if(lock->m_partial_audio_frame->nb_samples == (int) m_audio_required_frame_size) {
+				int16_t *data_in = (int16_t*) m_temp_audio_buffer.data();
+				switch(m_audio_required_sample_format) {
+					case AV_SAMPLE_FMT_S16: {
+						break;
+					}
+					case AV_SAMPLE_FMT_S16P: {
+						int16_t *data_out1 = (int16_t*) lock->m_partial_audio_frame->data[0];
+						int16_t *data_out2 = (int16_t*) lock->m_partial_audio_frame->data[1];
+						for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
+							*(data_out1++) = *(data_in++);
+							*(data_out2++) = *(data_in++);
+						}
+						break;
+					}
+					case AV_SAMPLE_FMT_FLT: {
+						float *data_out = (float*) lock->m_partial_audio_frame->data[0];
+						for(unsigned int i = 0; i < m_audio_required_frame_size * 2; ++i) {
+							*(data_out++) = (double) *(data_in++) / 32768.0;
+						}
+						break;
+					}
+					case AV_SAMPLE_FMT_FLTP: {
+						float *data_out1 = (float*) lock->m_partial_audio_frame->data[0];
+						float *data_out2 = (float*) lock->m_partial_audio_frame->data[1];
+						for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
+							*(data_out1++) = (double) *(data_in++) / 32768.0;
+							*(data_out2++) = (double) *(data_in++) / 32768.0;
+						}
+						break;
+					}
+					default: {
+						Q_ASSERT(false);
+						break;
+					}
+				}
 				//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded audio frame [" + QString::number(lock->m_partial_audio_frame->pts) + "].");
 				m_audio_encoder->AddFrame(std::move(lock->m_partial_audio_frame));
 			}

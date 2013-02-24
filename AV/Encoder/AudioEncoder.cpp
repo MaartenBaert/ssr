@@ -24,6 +24,18 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AVWrapper.h"
 #include "Muxer.h"
 
+static bool CheckSampleFormat(AVCodec* codec, AVSampleFormat sample_fmt) {
+	const AVSampleFormat *p = codec->sample_fmts;
+	while(*p != AV_SAMPLE_FMT_NONE) {
+		if(*p == sample_fmt)
+			return true;
+		++p;
+	}
+	return false;
+}
+
+static AVSampleFormat allowed_sample_formats[] = {AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_FLTP};
+
 AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 						   unsigned int bit_rate, unsigned int sample_rate)
 	: BaseEncoder(muxer) {
@@ -78,7 +90,17 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 	GetCodecContext()->bit_rate = m_bit_rate;
 	GetCodecContext()->sample_rate = m_sample_rate;
 	GetCodecContext()->channels = 2;
-	GetCodecContext()->sample_fmt = AV_SAMPLE_FMT_S16; //TODO// float?
+	GetCodecContext()->sample_fmt = AV_SAMPLE_FMT_NONE;
+	for(size_t i = 0; i < sizeof(allowed_sample_formats) / sizeof(AVSampleFormat); ++i) {
+		if(CheckSampleFormat(codec, allowed_sample_formats[i])) {
+			GetCodecContext()->sample_fmt = allowed_sample_formats[i];
+			break;
+		}
+	}
+	if(GetCodecContext()->sample_fmt == AV_SAMPLE_FMT_NONE) {
+		Logger::LogError("[AudioEncoder::FillCodecContext] Error: Encoder requires an unsupported sample format (" + QString::number(*codec->sample_fmts) + ")!");
+		throw LibavException();
+	}
 
 }
 

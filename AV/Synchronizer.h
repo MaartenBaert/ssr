@@ -57,9 +57,12 @@ private:
 	AudioEncoder *m_audio_encoder;
 
 	unsigned int m_video_frame_rate;
-	unsigned int m_audio_sample_rate, m_audio_sample_size, m_audio_required_frame_size;
+	unsigned int m_audio_sample_rate, m_audio_sample_size;
+	unsigned int m_audio_required_frame_size, m_audio_required_sample_size;
 	AVSampleFormat m_audio_required_sample_format;
 	bool m_warn_drop_frame;
+
+	std::vector<char> m_temp_audio_buffer; // stores the original samples for a partial frame with a different sample format
 
 	VPair<SharedData> m_shared_data;
 
