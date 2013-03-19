@@ -156,7 +156,7 @@ void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int6
 	double time_length = (double)(timestamp - lock->m_segment_audio_start_time) * 1.0e-6;
 	if(time_length > 5.0) {
 		double time_correction_factor = sample_length / time_length;
-		lock->m_time_correction_factor = clamp(0.95, 1.05, lock->m_time_correction_factor //TODO//
+		lock->m_time_correction_factor = clamp(0.95, 1.05, lock->m_time_correction_factor
 				+ (time_correction_factor - lock->m_time_correction_factor) * lock->m_correction_speed);
 	}
 

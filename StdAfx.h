@@ -37,6 +37,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QX11Info>
 #include <X11/Xlib.h>
 #include <X11/extensions/XShm.h>
+#include <alsa/asoundlib.h>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -100,6 +101,12 @@ class GLInjectException : public std::exception {
 public:
 	inline virtual const char* what() const throw() {
 		return "GLInjectException";
+	}
+};
+class ALSAException : public std::exception {
+public:
+	inline virtual const char* what() const throw() {
+		return "ALSAException";
 	}
 };
 

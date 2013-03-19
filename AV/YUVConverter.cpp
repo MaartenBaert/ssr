@@ -73,7 +73,7 @@ void YUVConverter::Convert(unsigned int w, unsigned int h, uint8_t* in_data, int
 		} else {
 			if(m_warn_alignment) {
 				m_warn_alignment = false;
-				Logger::LogWarning("[YUVConverter::Convert] Warning: Memory is not properly aligned, using fallback converter instead."
+				Logger::LogWarning("[YUVConverter::Convert] Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem but performance will be worse."
 									 "\n    in_data = 0x" + QString::number((uintptr_t) in_data, 16) + ", in_stride = 0x" + QString::number(in_stride, 16) +
 									 "\n    out_data[0] = 0x" + QString::number((uintptr_t) out_data[0], 16) + ", out_stride[0] = 0x" + QString::number(out_stride[0], 16) +
 									 "\n    out_data[1] = 0x" + QString::number((uintptr_t) out_data[1], 16) + ", out_stride[1] = 0x" + QString::number(out_stride[1], 16) +

@@ -403,7 +403,7 @@ void X11Input::run() {
 			}
 
 			// save the current time
-			last_frame_time = hrt_time_micro(); //hrt_time_micro();
+			last_frame_time = hrt_time_micro();
 
 			SharedLock lock(&m_shared_data);
 

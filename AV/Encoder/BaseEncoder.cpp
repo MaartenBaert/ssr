@@ -72,8 +72,10 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 	m_stream_index = stream->index;
 
 	// if the codec is experimental, allow it
-	if(codec->capabilities & CODEC_CAP_EXPERIMENTAL)
+	if(codec->capabilities & CODEC_CAP_EXPERIMENTAL) {
+		Logger::LogWarning("[BaseEncoder::CreateCodec] Warning: This codec is considered experimental by libav/ffmpeg.");
 		m_codec_context->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
+	}
 
 	// set things like image size, frame rate, sample rate, bit rate ...
 	FillCodecContext(codec);
