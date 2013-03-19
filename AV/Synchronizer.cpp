@@ -24,10 +24,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoEncoder.h"
 #include "AudioEncoder.h"
 
-// It should be a value between 0 and 1. The value changes how fast the synchronizer adjusts the time correction factor.
+// This value changes how fast the synchronizer adjusts the time correction factor. It should be a value between 0 and 1.
 // If this value is too low, the error will not be corrected fast enough. But if the value is too high, the video
 // may get weird frame rate fluctuations caused by the limited accuracy of the recording timestamps.
-const double Synchronizer::CORRECTION_SPEED = 0.1;
+const double Synchronizer::CORRECTION_SPEED = 0.002;
 
 // The maximum number of video frames that will be buffered. This should be enough to cope with the fact that video and
 // audio don't arrive at the same time, but not too high because that would cause memory problems if the audio input fails.
@@ -64,8 +64,6 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 		lock->m_video_pts = 0;
 		lock->m_audio_samples = 0;
 		lock->m_time_correction_factor = 1.0;
-		double audio_frame_interval = (double) m_audio_required_frame_size / (double) m_audio_sample_rate;
-		lock->m_correction_speed = 1.0 - pow(1.0 - CORRECTION_SPEED, audio_frame_interval);
 		lock->m_time_offset = 0;
 		lock->m_segment_video_started = (m_video_encoder == NULL);
 		lock->m_segment_audio_started = (m_audio_encoder == NULL);
@@ -157,7 +155,7 @@ void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int6
 	if(time_length > 5.0) {
 		double time_correction_factor = sample_length / time_length;
 		lock->m_time_correction_factor = clamp(0.95, 1.05, lock->m_time_correction_factor
-				+ (time_correction_factor - lock->m_time_correction_factor) * lock->m_correction_speed);
+				+ (time_correction_factor - lock->m_time_correction_factor) * CORRECTION_SPEED);
 	}
 
 	// store the samples

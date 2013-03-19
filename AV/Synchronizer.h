@@ -36,7 +36,7 @@ private:
 		ByteQueue m_audio_buffer;
 		std::unique_ptr<AVFrameWrapper> m_partial_audio_frame;
 		int64_t m_video_pts, m_audio_samples; // video and audio position in the final stream (encoded frames and samples in the partial audio frame)
-		double m_time_correction_factor, m_correction_speed; // correction factor used to synchronize video and audio time
+		double m_time_correction_factor; // correction factor used to synchronize video and audio time
 
 		int64_t m_time_offset; // the length of all previous segments combined (in microseconds)
 		bool m_segment_video_started, m_segment_audio_started; // whether video and audio have started
