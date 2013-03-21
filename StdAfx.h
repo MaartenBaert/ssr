@@ -42,7 +42,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
-#include <libavdevice/avdevice.h>
 #include <libavutil/mathematics.h>
 #include <libswscale/swscale.h>
 }

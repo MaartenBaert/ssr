@@ -75,7 +75,7 @@ static PixelFormat X11ImageGetPixelFormat(XImage* image) {
 			return PIX_FMT_RGB32;
 		}
 	}
-	Logger::LogError("[X11Input::GetImagePixelFormat] Error: Unsupported X11 image pixel format!"
+	Logger::LogError("[X11ImageGetPixelFormat] Error: Unsupported X11 image pixel format!"
 					 "\n    bits_per_pixel = " + QString::number(image->bits_per_pixel) + ", red_mask = 0x" + QString::number(image->red_mask, 16)
 					 + ", green_mask = 0x" + QString::number(image->green_mask, 16) + ", blue_mask = 0x" + QString::number(image->blue_mask, 16));
 	throw X11Exception();

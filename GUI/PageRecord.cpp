@@ -33,7 +33,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "X11Input.h"
 #include "GLInjectLauncher.h"
 #include "GLInjectInput.h"
-#include "AudioInput.h"
+#include "ALSAInput.h"
 
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
@@ -148,7 +148,6 @@ PageRecord::PageRecord(MainWindow* main_window)
 	layout_page->addWidget(group_recording);
 	layout_page->addWidget(group_information);
 	layout_page->addWidget(group_log);
-	layout_page->addStretch();
 	{
 		QHBoxLayout *layout = new QHBoxLayout();
 		layout->addWidget(button_cancel);
@@ -314,7 +313,7 @@ void PageRecord::Stop(bool save) {
 	// stop the synchronizer
 	Q_ASSERT(m_x11_input == NULL);
 	Q_ASSERT(m_gl_inject_input == NULL);
-	Q_ASSERT(m_audio_input == NULL);
+	Q_ASSERT(m_alsa_input == NULL);
 	m_synchronizer.reset();
 
 	// If we want to save the file, we have to wait for the encoders to finish or else the file will be corrupted.
@@ -437,13 +436,13 @@ void PageRecord::RecordStart() {
 
 		// start the audio input
 		if(m_audio_enabled)
-			m_audio_input.reset(new AudioInput(m_synchronizer.get(), m_audio_source));
+			m_alsa_input.reset(new ALSAInput(m_synchronizer.get(), m_audio_source));
 
 	} catch(...) {
 		Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
 		m_x11_input.reset();
 		m_gl_inject_input.reset();
-		m_audio_input.reset();
+		m_alsa_input.reset();
 		return;
 	}
 
@@ -463,7 +462,7 @@ void PageRecord::RecordPause() {
 
 	m_x11_input.reset();
 	m_gl_inject_input.reset();
-	m_audio_input.reset();
+	m_alsa_input.reset();
 
 	Logger::LogInfo("[PageRecord::RecordPause] Paused.");
 

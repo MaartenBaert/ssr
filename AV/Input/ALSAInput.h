@@ -31,7 +31,6 @@ private:
 	unsigned int m_sample_rate, m_channels;
 
 	snd_pcm_t *m_alsa_pcm;
-	snd_pcm_hw_params_t *m_alsa_hw_params;
 	unsigned int m_alsa_periods, m_alsa_period_size;
 
 	volatile bool m_should_stop, m_error_occurred;

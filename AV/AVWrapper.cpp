@@ -35,7 +35,6 @@ class AVGlobal {
 public:
 	AVGlobal() {
 		av_register_all();
-		avdevice_register_all();
 		av_lockmgr_register(&lock_manager);
 	}
 } g_av_global;

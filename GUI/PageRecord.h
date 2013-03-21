@@ -32,7 +32,8 @@ class Synchronizer;
 class X11Input;
 class GLInjectLauncher;
 class GLInjectInput;
-class AudioInput;
+//class AudioInput;
+class ALSAInput;
 
 class PageRecord : public QWidget {
 	Q_OBJECT
@@ -70,7 +71,7 @@ private:
 	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
-	std::unique_ptr<AudioInput> m_audio_input;
+	std::unique_ptr<ALSAInput> m_alsa_input;
 
 	QPushButton *m_pushbutton_start_pause;
 

@@ -1,9 +1,7 @@
 Testing:
-- Use experimental ffmpeg AAC encoder if libvo_aacenc is missing.
-- Fix libvorbis in arch/ffmpeg. (floating point sample format?)
+- ALSA input
 
 In progress:
-- ALSA input
 
 Todo:
 - move THROTTLE_THRESHOLD so there is only one
@@ -32,3 +30,4 @@ Wishlist:
 - play start/stop sound
 - skip microphone startup click?
 - redesigned interface (https://github.com/swick/glc2/issues/1)
+- equalizer?

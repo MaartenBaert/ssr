@@ -10,7 +10,7 @@ TARGET = SimpleScreenRecorder
 TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++0x -D__STDC_CONSTANT_MACROS -flax-vector-conversions
-LIBS += -lavformat -lavcodec -lavdevice -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
+LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
 QMAKE_CXXFLAGS_RELEASE -= -O1 -O2 -O3
 QMAKE_CXXFLAGS_RELEASE += -O3 -g
@@ -27,8 +27,6 @@ SOURCES += \
 	AV/Encoder/BaseEncoder.cpp \
 	AV/Encoder/VideoEncoder.cpp \
 	AV/Encoder/X264Presets.cpp \
-	AV/Input/AudioInput.cpp \
-	AV/Input/BaseInput.cpp \
 	AV/Input/GLInjectInput.cpp \
 	AV/Input/GLInjectLauncher.cpp \
 	AV/Input/X11Input.cpp \
@@ -53,8 +51,6 @@ HEADERS  += \
 	AV/Encoder/BaseEncoder.h \
 	AV/Encoder/VideoEncoder.h \
 	AV/Encoder/X264Presets.h \
-	AV/Input/AudioInput.h \
-	AV/Input/BaseInput.h \
 	AV/Input/GLInjectInput.h \
 	AV/Input/GLInjectLauncher.h \
 	AV/Input/X11Input.h \
