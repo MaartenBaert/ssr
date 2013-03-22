@@ -35,6 +35,7 @@ private:
 public:
 	AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 				 unsigned int bit_rate, unsigned int sample_rate);
+	~AudioEncoder();
 
 	// Returns the required frame size, i.e. the number of samples (for each channel).
 	unsigned int GetRequiredFrameSize();

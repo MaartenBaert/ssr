@@ -35,6 +35,7 @@ private:
 	typedef VPair<SharedData>::Lock SharedLock;
 
 private:
+	bool m_destructed;
 	Muxer *m_muxer;
 
 	AVCodecContext *m_codec_context;
@@ -46,7 +47,12 @@ private:
 
 protected:
 	BaseEncoder(Muxer* muxer);
-	~BaseEncoder();
+	void Destruct(); // important: call this in the destructor of the derived class
+
+public:
+	virtual ~BaseEncoder(); // encoders will be deleted by Muxer, don't delete them yourself!
+
+protected:
 
 	// Called by the constructor of derived classes to create the codec.
 	void CreateCodec(const QString& codec_name, AVDictionary** options);
@@ -64,21 +70,6 @@ protected:
 
 public:
 
-	// Tells the encoder to stop. It can still take some time before the encoder is actually done. When all encoders are done, the muxer will finish too.
-	// Note: If an error occurs during encoding, this function has no effect. As a result the muxer will never finish. If you are waiting for the muxer
-	//       to end, you should periodically call HasErrorOccurred on all encoders, and stop waiting if it returns true for any of them.
-	// This function is thread-safe.
-	void Finish();
-
-	// Returns whether the encoding is done. If this returns true, the object can be deleted.
-	// Note: If an error occurred during encoding, this function will return false.
-	// This function is thread-safe.
-	bool IsDone();
-
-	// Returns whether an error has occurred in the input thread.
-	// This function is thread-safe.
-	inline bool HasErrorOccurred() { return m_error_occurred; }
-
 	// Returns the total number of added frames.
 	// This function is thread-safe.
 	unsigned int GetTotalFrames();
@@ -92,6 +83,24 @@ public: // internal
 	// Adds a frame to the frame queue. Called by the synchronizer.
 	// This function is thread-safe.
 	void AddFrame(std::unique_ptr<AVFrameWrapper> frame);
+
+	// Tells the encoder to stop. It can still take some time before the encoder is actually done. Called by the mixer.
+	// After calling this function, the mixer will wait until either IsDone or HasErrorOccurred returns true.
+	// This function is thread-safe.
+	void Finish();
+
+	// Same as finish, except that queued frames will be dropped and the encoder won't be flushed. Called by the mixer.
+	// This function is thread-safe.
+	void Stop();
+
+	// Returns whether the encoding is done. If this returns true, the object can be deleted. Called by the mixer.
+	// Note: If an error occurred during encoding, this function will return false.
+	// This function is thread-safe and lock-free.
+	inline bool IsDone() { return m_is_done; }
+
+	// Returns whether an error has occurred in the input thread. Called by the mixer.
+	// This function is thread-safe and lock-free.
+	inline bool HasErrorOccurred() { return m_error_occurred; }
 
 private:
 	virtual void run();

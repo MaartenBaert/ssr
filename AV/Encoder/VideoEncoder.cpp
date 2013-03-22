@@ -78,6 +78,12 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 	m_temp_buffer.resize(std::max<unsigned int>(FF_MIN_BUFFER_SIZE, 256 * 1024 + m_width * m_height * 3));
 #endif
 
+	GetMuxer()->RegisterEncoder(GetStreamIndex(), this);
+
+}
+
+VideoEncoder::~VideoEncoder() {
+	Destruct(); // destruct the base class first
 }
 
 void VideoEncoder::FillCodecContext(AVCodec* codec) {

@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.h"
 #include "AVWrapper.h"
+#include "BaseEncoder.h"
 
 static const unsigned int INVALID_STREAM = std::numeric_limits<unsigned int>::max();
 
@@ -37,6 +38,7 @@ Muxer::Muxer(const QString& container_name, const QString& output_file) {
 	for(int i = 0; i < MUXER_MAX_STREAMS; ++i) {
 		StreamLock lock(&m_stream_data[i]);
 		lock->m_is_done = false;
+		m_encoders[i] = NULL;
 	}
 
 	// initialize shared data
@@ -46,7 +48,6 @@ Muxer::Muxer(const QString& container_name, const QString& output_file) {
 	}
 
 	// initialize thread signals
-	m_should_stop = false;
 	m_is_done = false;
 	m_error_occurred = false;
 
@@ -61,11 +62,18 @@ Muxer::Muxer(const QString& container_name, const QString& output_file) {
 
 Muxer::~Muxer() {
 
-	// tell the thread to stop
-	if(isRunning()) {
-		Logger::LogInfo("[Muxer::~Muxer] Telling muxer thread to stop ...");
-		m_should_stop = true;
+	if(m_started) {
+
+		// stop the encoders
+		Logger::LogInfo("[Muxer::~Muxer] Stopping encoders ...");
+		for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
+			m_encoders[i]->Stop(); // no deadlock: nothing in Muxer is locked in this thread (and BaseEncoder::Stop is lock-free, but that could change)
+		}
+
+		// wait for the thread to stop
+		Logger::LogInfo("[Muxer::~Muxer] Waiting muxer thread to stop by itself ...");
 		wait();
+
 	}
 
 	// free everything
@@ -76,6 +84,11 @@ Muxer::~Muxer() {
 void Muxer::Start() {
 	Q_ASSERT(!m_started);
 
+	// make sure all encoders have registered
+	for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
+		Q_ASSERT(m_encoders[i] != NULL);
+	}
+
 	// write header
 	if(avformat_write_header(m_format_context, NULL) != 0) {
 		Logger::LogError("[Muxer::run] Error: Can't write header!");
@@ -84,6 +97,15 @@ void Muxer::Start() {
 
 	m_started = true;
 	start();
+
+}
+
+void Muxer::Finish() {
+	Q_ASSERT(m_started);
+	for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
+		Q_ASSERT(m_encoders[i] != NULL);
+		m_encoders[i]->Finish(); // no deadlock: nothing in Muxer is locked in this thread (and BaseEncoder::Finish is lock-free, but that could change)
+	}
 }
 
 bool Muxer::IsStarted() {
@@ -93,10 +115,6 @@ bool Muxer::IsStarted() {
 uint64_t Muxer::GetTotalBytes() {
 	SharedLock lock(&m_shared_data);
 	return lock->m_total_bytes;
-}
-
-bool Muxer::IsDone() {
-	return m_is_done;
 }
 
 AVStream* Muxer::CreateStream(AVCodec* codec) {
@@ -130,12 +148,22 @@ AVStream* Muxer::CreateStream(AVCodec* codec) {
 	return stream;
 }
 
+void Muxer::RegisterEncoder(unsigned int stream_index, BaseEncoder* encoder) {
+	Q_ASSERT(!m_started);
+	Q_ASSERT(stream_index < m_format_context->nb_streams);
+	Q_ASSERT(m_encoders[stream_index] == NULL);
+	m_encoders[stream_index] = encoder;
+}
+
 void Muxer::EndStream(unsigned int stream_index) {
+	Q_ASSERT(stream_index < m_format_context->nb_streams);
 	StreamLock lock(&m_stream_data[stream_index]);
 	lock->m_is_done = true;
 }
 
 void Muxer::AddPacket(unsigned int stream_index, std::unique_ptr<AVPacketWrapper> packet) {
+	Q_ASSERT(m_started);
+	Q_ASSERT(stream_index < m_format_context->nb_streams);
 	StreamLock lock(&m_stream_data[stream_index]);
 	lock->m_packet_queue.push_back(std::move(packet));
 }
@@ -177,6 +205,14 @@ void Muxer::Free() {
 			m_started = false;
 		}
 
+		// destroy the encoders
+		for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
+			if(m_encoders[i] != NULL) {
+				delete m_encoders[i]; // no deadlock: nothing in Muxer is locked in this thread
+				m_encoders[i] = NULL;
+			}
+		}
+
 		// close file
 		if(m_format_context->pb != NULL) {
 			avio_close(m_format_context->pb);
@@ -200,18 +236,17 @@ void Muxer::run() {
 		Logger::LogInfo("[Muxer::run] Muxer thread started.");
 
 		// start muxing
-		while(!m_should_stop) {
+		for( ; ; ) {
 
 			// find the oldest packet
-			bool shouldwait = false;
+			bool should_wait = false;
 			unsigned int oldest_stream = INVALID_STREAM;
 			double oldest_pts = std::numeric_limits<double>::max();
 			for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 				StreamLock lock(&m_stream_data[i]);
 				if(lock->m_packet_queue.empty()) {
 					if(!lock->m_is_done) {
-						shouldwait = true;
-						break;
+						should_wait = true;
 					}
 				} else {
 					double pts = ToDouble(m_format_context->streams[i]->pts) * ToDouble(m_format_context->streams[i]->time_base);
@@ -223,14 +258,13 @@ void Muxer::run() {
 			}
 
 			// should we wait for more packets?
-			if(shouldwait) {
+			if(should_wait) {
 				usleep(10000);
 				continue;
 			}
 
 			// if there are no packets left and we don't have to wait for more, we're done
 			if(oldest_stream == INVALID_STREAM) {
-				m_is_done = true;
 				break;
 			}
 
@@ -270,6 +304,9 @@ void Muxer::run() {
 			}
 
 		}
+
+		// tell the others that we're done
+		m_is_done = true;
 
 		Logger::LogInfo("[Muxer::run] Muxer thread stopped.");
 

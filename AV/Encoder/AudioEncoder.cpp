@@ -67,6 +67,12 @@ AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::v
 	}
 #endif
 
+	GetMuxer()->RegisterEncoder(GetStreamIndex(), this);
+
+}
+
+AudioEncoder::~AudioEncoder() {
+	Destruct(); // destruct the base class first
 }
 
 unsigned int AudioEncoder::GetRequiredFrameSize() {
@@ -130,14 +136,6 @@ bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 	}
 
 #else
-
-#if SSR_USE_AVFRAME_FORMAT
-	// check the format
-	if(frame != NULL && frame->format != AV_SAMPLE_FMT_S16) {
-		Logger::LogError("[AudioEncoder::EncodeFrame] Error: Audio frame uses format " + QString::number(frame->format) + " instead of " + QString::number(AV_SAMPLE_FMT_S16) + " (AV_SAMPLE_FMT_S16)!");
-		throw LibavException();
-	}
-#endif
 
 	// encode the frame
 	short *data = (frame == NULL)? NULL : (short*) frame->data[0];

@@ -26,9 +26,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 BaseEncoder::BaseEncoder(Muxer* muxer) {
 
+	m_destructed = false;
 	m_muxer = muxer;
 
 	m_codec_context = NULL;
+
+	// initialize thread signals
+	m_should_stop = false;
+	m_should_finish = false;
+	m_is_done = false;
+	m_error_occurred = false;
 
 	{
 		SharedLock lock(&m_shared_data);
@@ -38,10 +45,18 @@ BaseEncoder::BaseEncoder(Muxer* muxer) {
 }
 
 BaseEncoder::~BaseEncoder() {
+	Q_ASSERT(m_destructed);
+}
+
+// Why not a real destructor? The problem is that a real destructor gets called *after* the derived class has already been destructed.
+// This means virtual function calls, like EncodeFrame, will fail. This is a problem since the encoder thread doesn't know that the derived class is gone.
+// To fix this, the derived class should call Destruct() in its destructor.
+void BaseEncoder::Destruct() {
 
 	// tell the thread to stop
+	// normally the muxer should have stopped the thread already, unless the muxer wasn't actually started
 	if(isRunning()) {
-		Logger::LogInfo("[BaseEncoder::~BaseEncoder] Telling encoder thread to stop ...");
+		Logger::LogInfo("[BaseEncoder::Stop] Telling encoder thread to stop ...");
 		m_should_stop = true;
 		wait();
 	}
@@ -51,6 +66,8 @@ BaseEncoder::~BaseEncoder() {
 		avcodec_close(m_codec_context);
 		m_codec_context = NULL;
 	}
+
+	m_destructed = true;
 
 }
 
@@ -88,20 +105,8 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 	}
 
 	// start encoder thread
-	m_should_stop = false;
-	m_should_finish = false;
-	m_is_done = false;
-	m_error_occurred = false;
 	start();
 
-}
-
-void BaseEncoder::Finish() {
-	m_should_finish = true;
-}
-
-bool BaseEncoder::IsDone() {
-	return m_is_done;
 }
 
 unsigned int BaseEncoder::GetTotalFrames() {
@@ -115,12 +120,22 @@ unsigned int BaseEncoder::GetQueuedFrameCount() {
 }
 
 void BaseEncoder::AddFrame(std::unique_ptr<AVFrameWrapper> frame) {
+	Q_ASSERT(m_muxer->IsStarted());
 	SharedLock lock(&m_shared_data);
 	lock->m_frame_queue.push_back(std::move(frame));
 	++lock->m_total_frames;
 }
 
+void BaseEncoder::Finish() {
+	m_should_finish = true;
+}
+
+void BaseEncoder::Stop() {
+	m_should_stop = true;
+}
+
 void BaseEncoder::run() {
+
 	try {
 
 		Logger::LogInfo("[BaseEncoder::run] Encoder thread started.");
@@ -139,7 +154,6 @@ void BaseEncoder::run() {
 			}
 			if(frame == NULL) {
 				if(m_should_finish) {
-					Logger::LogInfo("[BaseEncoder::run] Flushing encoder ...");
 					break;
 				}
 				usleep(10000);
@@ -152,16 +166,13 @@ void BaseEncoder::run() {
 		}
 
 		// flush the encoder
-		while(!m_should_stop) {
-			if(!m_delayed_packets || !EncodeFrame(NULL)) {
-
-				// tell the others that we're done
-				m_muxer->EndStream(m_stream_index);
-				m_is_done = true;
-
-				break;
-			}
+		if(!m_should_stop && m_delayed_packets) {
+			Logger::LogInfo("[BaseEncoder::run] Flushing encoder ...");
+			while(!m_should_stop && EncodeFrame(NULL));
 		}
+
+		// tell the others that we're done
+		m_is_done = true;
 
 		Logger::LogInfo("[BaseEncoder::run] Encoder thread stopped.");
 
@@ -172,4 +183,8 @@ void BaseEncoder::run() {
 		m_error_occurred = true;
 		Logger::LogError("[BaseEncoder::run] Unknown exception in encoder thread.");
 	}
+
+	// always end the stream, even if there was an error, otherwise the muxer will wait forever
+	m_muxer->EndStream(m_stream_index);
+
 }

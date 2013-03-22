@@ -18,28 +18,63 @@ The pipeline:
 | GLInjectInput |      |              |      |              |      |       |
 +---------------+      | Synchronizer |      +--------------+      | Muxer |
 |               |      |              |      |              |      |       |
-|  AudioInput   | ---> |              | ===> | AudioEncoder | ===> |       |
+|   ALSAInput   | ---> |              | ===> | AudioEncoder | ===> |       |
 |               |      +--------------+      |              |      +-------+
 +---------------+                            +--------------+
 
 "--->" means the result is sent to the next stage and processed immediately.
 "===>" means the result is stored in a queue, and will be processed by the next stage later.
 
-- X11Input: Captures the screen, or a part of it. Originally I used the 'x11grab' device from libav, but this added overhead and was less flexible.
+- X11Input: Captures the screen, or a part of it. Originally I used the 'x11grab' device from libav/ffmpeg, but this added overhead and was less flexible.
 
 - GLInjectInput: Captures frames from an OpenGL program (which was launched with GLInjectLauncher).
 
-- AudioInput: Records audio using the 'alsa' device from libav. I intend to replace this with a real ALSA input because this should be more flexible. Real PulseAudio support along with ALSA support would be nice too (not a priority though).
+- ALSAInput: Records audio using ALSA. Real PulseAudio support would be nice too (not a priority though).
 
-- Synchronizer: Synchronizes audio and video based on the timestamps of the frames. This class is needed even if there is no audio, because it still has to translate the timestamps to 'pts' values (which are not the same). I've hijacked the AVFrame::pkt_dts field to store the timestamps because it wasn't used (and because I want to avoid confusion with AVFrame::pts which has a very different meaning). The synchronizer drops or inserts frames of video/audio to make sure both have the same length. The synchronizer also stitches together separate segments (when the recording is paused and resumed later). This is more complex than it sounds, trust me :).
+- Synchronizer: Synchronizes audio and video based on the timestamps of the frames. This class is needed even if there is no audio, because it still has to translate the timestamps to 'pts' values (which are not the same). I've hijacked the AVFrame::pkt_dts field to store the timestamps because it wasn't used (and because I want to avoid confusion with AVFrame::pts which has a very different meaning). The synchronizer drops or inserts frames of video/audio to make sure both have the same length. The synchronizer also stitches together separate segments (when the recording is paused and resumed later). This is more complex than it sounds, trust me :). The synchronizer will also do sample format conversions if needed.
 
-- VideoEncoder/AudioEncoder: Encodes the video/audio frames and generates packets. Inherits BaseEncoder. All the hard work is done by libav, this is basically a wrapper.
+- VideoEncoder/AudioEncoder: Encodes the video/audio frames and generates packets. Inherits BaseEncoder. All the hard work is done by libav/ffmpeg, this is basically a wrapper.
 
-- Muxer: Combines video and audio packets with the required metadata and writes it to a file. Again, all the hard work is done by libav.
+- Muxer: Combines video and audio packets with the required metadata and writes it to a file. Again, all the hard work is done by libav/ffmpeg.
+
+#### How to use libav/ffmpeg ####
+
+Libav/ffmpeg is very confusing and the documentation doesn't really help either. It took a long time to figure out how it all works. The list below describes how I *think* libav/ffmpeg should be used. Note that the order of the function calls is very important. For example, calling avcodec_close before av_write_trailer appears to cause segfaults inside libav/ffmpeg.
+
+Create muxer:
+- av_guess_format: get AVOutputFormat pointer
+- avformat_alloc_context: get format context
+- avio_open: open output file
+
+Create encoders:
+- avcodec_find_encoder_by_name: get AVCodec pointer
+- avformat_new_stream: create stream for codec
+- avcodec_open2: open codec
+
+Start muxer:
+- avformat_write_header: write the header
+
+Actual encoding (flushing is optional):
+- avcodec_encode_video2/avcodec_encode_audio2: encode a frame
+- av_interleaved_write_frame: write a packet (i.e. a frame)
+
+Stop muxer:
+- av_write_trailer: write the trailer and free internal data
+
+Destroy encoders:
+- avcodec_close: close codec
+
+Destroy muxer:
+- avio_close: close output file
+- av_freep(formatcontext->stream[i]->codec): free codec context
+- av_freep(formatcontext->stream[i]): free stream
+- av_free(formatcontext): free format context
 
 #### Avoiding deadlocks ####
 
 When you write a multithreaded application, you have to think about deadlocks. A simple and reliable way to avoid deadlocks is to give all mutexes a strict (partial) order, and only ever lock them in that order (the order of unlocking is irrelevant but is usually the reverse of the order of locking). This is automatically accomplished by using a 'push' pipeline design where each class only has pointers to successive stages, because this makes it impossible to lock mutexes in the wrong order, as long as all mutexes are private and locks are never held after a function call returns.
+
+There's one exception in my pipeline: Muxer has a pointer to VideoEncoder/AudioEncoder which it uses to tell them to stop, and to delete them. This seems to be unavoidable because of the design of libav/ffmpeg. Special care has to be taken here to avoid deadlocks: BaseEncoder::Stop and 'delete BaseEncoder' are called while no locks in Muxer are held by the thread.
 
 #### OpenGL recording ####
 
@@ -55,11 +90,11 @@ OpenGL recording is usually called 'GLInject' in the code. It consists of three 
 
 If the video is corrupted after some change to the back-end, check the timestamps. In most of the cases I've seen, the muxer was simply messing up the interleaving of the video and audio frames. The typical result is video that starts fine, then gets corrupted, and then freezes after a few seconds.
 
-#### Dealing with old versions of libav ####
+#### Dealing with old versions of libav/ffmpeg ####
 
-This is very annoying. Libav likes to change its API a lot. The API is usually backwards compatible, but the old functions often have some disadvantages. So for now I'm supporting both old and new versions of the API, based on the preprocessor definitions from the libav headers.
+This is very annoying. Libav likes to change its API a lot. The API is usually backwards compatible, but the old functions often have some disadvantages. So for now I'm supporting both old and new versions of the API, based on the preprocessor definitions from the libav/ffmpeg headers.
 
-libav has a very useful document that keeps track of all API changes, it's located in 'doc/APIchanges'. The best way to find out how the old API actually worked is to search for the commit that removed the function (just search for the function name), go back one commit, go to the corresponding tree, and look at the example code (e.g. output-example.c for libavformat).
+libav/ffmpeg has a very useful document that keeps track of all API changes, it's located in 'doc/APIchanges'. The best way to find out how the old API actually worked is to search for the commit that removed the function (just search for the function name), go back one commit, go to the corresponding tree, and look at the example code (e.g. output-example.c for libavformat).
 
 #### GUI ####
 

@@ -38,6 +38,7 @@ private:
 public:
 	VideoEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 				 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate);
+	~VideoEncoder();
 
 	inline unsigned int GetWidth() { return m_width; }
 	inline unsigned int GetHeight() { return m_height; }

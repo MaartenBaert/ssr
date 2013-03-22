@@ -52,7 +52,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 	m_main_window = main_window;
 
-	m_started = false;
+	m_page_started = false;
 	m_encoders_started = false;
 	m_recording = false;
 
@@ -166,7 +166,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 PageRecord::~PageRecord() {
 
-	Stop(false);
+	PageStop(false);
 
 }
 
@@ -203,16 +203,16 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	settings->setValue("input/hotkey/key", GetHotkeyKey());
 }
 
-void PageRecord::Start() {
+void PageRecord::PageStart() {
 
-	if(m_started)
+	if(m_page_started)
 		return;
 
 	// clear the log
 	Logger::GetLines();
 	m_textedit_log->clear();
 
-	Logger::LogInfo("[PageRecord::Start] Starting ...");
+	Logger::LogInfo("[PageRecord::PageStart] Starting page ...");
 
 	PageInput *page_input = m_main_window->GetPageInput();
 	PageOutput *page_output = m_main_window->GetPageOutput();
@@ -284,31 +284,34 @@ void PageRecord::Start() {
 		try {
 			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_megapixels * 1024 * 1024, glinject_run_command));
 		} catch(...) {
-			Logger::LogError("[PageRecord::Start] Error: Something went wrong during GLInject initialization.");
+			Logger::LogError("[PageRecord::PageStart] Error: Something went wrong during GLInject initialization.");
 			m_gl_inject_launcher.reset();
 			return;
 		}
 	}
 
-	Logger::LogInfo("[PageRecord::Start] Started.");
+	Logger::LogInfo("[PageRecord::PageStart] Started page.");
 
-	m_started = true;
+	m_page_started = true;
 	m_encoders_started = false;
 	m_info_first_time = true;
+	m_video_encoder = NULL;
+	m_audio_encoder = NULL;
+
 	UpdateHotkey();
 	UpdateInformation();
 	m_info_timer->start(1000);
 
 }
 
-void PageRecord::Stop(bool save) {
+void PageRecord::PageStop(bool save) {
 
-	if(!m_started)
+	if(!m_page_started)
 		return;
 
 	RecordPause();
 
-	Logger::LogInfo("[PageRecord::Stop] Stopping ...");
+	Logger::LogInfo("[PageRecord::PageStop] Stopping page ...");
 
 	// stop the synchronizer
 	Q_ASSERT(m_x11_input == NULL);
@@ -316,42 +319,35 @@ void PageRecord::Stop(bool save) {
 	Q_ASSERT(m_alsa_input == NULL);
 	m_synchronizer.reset();
 
-	// If we want to save the file, we have to wait for the encoders to finish or else the file will be corrupted.
+	// If we want to save the file, we have to wait for the encoders and mixer to finish or else the file will be corrupted.
 	// This can take some time depending on how many frames were buffered, so maybe a progress dialog would make sense here.
 	if(save && m_muxer != NULL && m_muxer->IsStarted()) {
-		if(m_video_encoder != NULL)
-			m_video_encoder->Finish();
-		if(m_audio_encoder != NULL)
-			m_audio_encoder->Finish();
-		while(!m_muxer->IsDone()) {
-			if(m_muxer->HasErrorOccurred())
-				break;
-			if(m_video_encoder != NULL && m_video_encoder->HasErrorOccurred())
-				break;
-			if(m_audio_encoder != NULL && m_audio_encoder->HasErrorOccurred())
-				break;
+		m_muxer->Finish();
+		while(!m_muxer->IsDone() && !m_muxer->HasErrorOccurred()) {
 			usleep(10000);
 		}
 	}
 
-	// stop the encoders and muxer
-	m_video_encoder.reset();
-	m_audio_encoder.reset();
+	// delete the muxer (it will also delete the encoders)
 	m_muxer.reset();
+	m_video_encoder = NULL;
+	m_audio_encoder = NULL;
 
 	// free the shared memory for OpenGL recording
 	// This doesn't stop the program, and the memory is only actually freed when the recorded program stops too.
 	m_gl_inject_launcher.reset();
 
 	// delete the file if it isn't needed
+	// First make sure it's actually *our* file - the user might have pressed Cancel after realising he was about to overwrite an
+	// important file, in that case we definitely shouldn't delete the file. If the encoders have already been started, it's too late.
 	if(!save && m_encoders_started) {
 		if(QFileInfo(m_file).exists())
 			QFile(m_file).remove();
 	}
 
-	Logger::LogInfo("[PageRecord::Stop] Stopped.");
+	Logger::LogInfo("[PageRecord::PageStop] Stopped page.");
 
-	m_started = false;
+	m_page_started = false;
 	m_encoders_started = false;
 	UpdateHotkey();
 	UpdateInformation();
@@ -361,13 +357,18 @@ void PageRecord::Stop(bool save) {
 
 void PageRecord::RecordStart() {
 
-	if(m_recording || !m_started)
+	if(m_recording || !m_page_started)
 		return;
 
-	Logger::LogInfo("[PageRecord::RecordStart] Starting ...");
+	Logger::LogInfo("[PageRecord::RecordStart] Starting recording ...");
 
 	// start the encoders if they weren't started already
 	if(!m_encoders_started) {
+
+		Q_ASSERT(m_muxer == NULL);
+		Q_ASSERT(m_video_encoder == NULL);
+		Q_ASSERT(m_audio_encoder == NULL);
+		Q_ASSERT(m_synchronizer == NULL);
 
 		try {
 
@@ -403,24 +404,28 @@ void PageRecord::RecordStart() {
 
 			// prepare everything for recording
 			m_muxer.reset(new Muxer(m_container_avname, m_file));
-			m_video_encoder.reset(new VideoEncoder(m_muxer.get(), m_video_avname, m_video_options, m_video_kbit_rate * 1024, m_video_out_width, m_video_out_height, m_video_frame_rate));
+			m_video_encoder = new VideoEncoder(m_muxer.get(), m_video_avname, m_video_options, m_video_kbit_rate * 1024, m_video_out_width, m_video_out_height, m_video_frame_rate);
 			if(m_audio_enabled)
-				m_audio_encoder.reset(new AudioEncoder(m_muxer.get(), m_audio_avname, m_audio_options, m_audio_kbit_rate * 1024, m_audio_sample_rate));
+				m_audio_encoder = new AudioEncoder(m_muxer.get(), m_audio_avname, m_audio_options, m_audio_kbit_rate * 1024, m_audio_sample_rate);
 			m_muxer->Start();
-			m_synchronizer.reset(new Synchronizer(m_video_encoder.get(), m_audio_encoder.get()));
+			m_synchronizer.reset(new Synchronizer(m_video_encoder, m_audio_encoder));
 
 		} catch(...) {
 			Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
 			m_synchronizer.reset();
-			m_video_encoder.reset();
-			m_audio_encoder.reset();
 			m_muxer.reset();
+			m_video_encoder = NULL;
+			m_audio_encoder = NULL;
 			return;
 		}
 
 		m_encoders_started = true;
 
 	}
+
+	Q_ASSERT(m_x11_input == NULL);
+	Q_ASSERT(m_gl_inject_input == NULL);
+	Q_ASSERT(m_alsa_input == NULL);
 
 	try {
 
@@ -446,7 +451,7 @@ void PageRecord::RecordStart() {
 		return;
 	}
 
-	Logger::LogInfo("[PageRecord::RecordStart] Started.");
+	Logger::LogInfo("[PageRecord::RecordStart] Started recording.");
 
 	m_recording = true;
 	m_pushbutton_start_pause->setText("Pause recording");
@@ -455,16 +460,16 @@ void PageRecord::RecordStart() {
 
 void PageRecord::RecordPause() {
 
-	if(!m_recording || !m_started)
+	if(!m_recording || !m_page_started)
 		return;
 
-	Logger::LogInfo("[PageRecord::RecordPause] Pausing ...");
+	Logger::LogInfo("[PageRecord::RecordPause] Pausing recording ...");
 
 	m_x11_input.reset();
 	m_gl_inject_input.reset();
 	m_alsa_input.reset();
 
-	Logger::LogInfo("[PageRecord::RecordPause] Paused.");
+	Logger::LogInfo("[PageRecord::RecordPause] Paused recording.");
 
 	m_recording = false;
 	m_pushbutton_start_pause->setText("Start recording");
@@ -486,7 +491,7 @@ void PageRecord::UpdateHotkeyFields() {
 
 void PageRecord::UpdateHotkey() {
 
-	if(m_started && IsHotkeyEnabled()) {
+	if(m_page_started && IsHotkeyEnabled()) {
 
 		unsigned int modifiers = 0;
 		if(IsHotkeyCtrlEnabled()) modifiers |= ControlMask;
@@ -518,17 +523,17 @@ void PageRecord::Cancel() {
 			return;
 		}
 	}
-	Stop(false);
+	PageStop(false);
 	m_main_window->GoPageOutput();
 }
 
 void PageRecord::Save() {
 	if(!m_encoders_started) {
-		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION,
-							  "You haven't recorded anything, there is nothing to save.", QMessageBox::Ok);
+		QMessageBox::information(this, MainWindow::WINDOW_CAPTION, "You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;).",
+								 QMessageBox::Ok);
 		return;
 	}
-	Stop(true);
+	PageStop(true);
 	m_main_window->GoPageDone();
 }
 
@@ -551,7 +556,7 @@ static QString ReadableTime(int64_t time_micro) {
 
 void PageRecord::UpdateInformation() {
 
-	if(m_started) {
+	if(m_page_started) {
 
 		int64_t total_time = 0;
 		double fps = 0.0, bit_rate = 0.0;

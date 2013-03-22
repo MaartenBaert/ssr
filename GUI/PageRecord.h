@@ -41,7 +41,7 @@ class PageRecord : public QWidget {
 private:
 	MainWindow *m_main_window;
 
-	bool m_started, m_encoders_started, m_recording;
+	bool m_page_started, m_encoders_started, m_recording;
 	bool m_video_show_cursor, m_video_follow_cursor, m_video_glinject;
 	unsigned int m_video_x, m_video_y, m_video_width, m_video_height;
 	bool m_video_scaling;
@@ -65,8 +65,8 @@ private:
 	uint64_t m_info_last_bytes;
 
 	std::unique_ptr<Muxer> m_muxer;
-	std::unique_ptr<VideoEncoder> m_video_encoder;
-	std::unique_ptr<AudioEncoder> m_audio_encoder;
+	VideoEncoder *m_video_encoder;
+	AudioEncoder *m_audio_encoder;
 	std::unique_ptr<Synchronizer> m_synchronizer;
 	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
@@ -88,14 +88,14 @@ public:
 	~PageRecord();
 
 	// Called when the user tries to close the program. If this function returns true, the command will be blocked.
-	// This is used to
+	// This is used to display a warning if the user is about to close the program during a recording.
 	bool ShouldBlockClose();
 
 	void LoadSettings(QSettings* settings);
 	void SaveSettings(QSettings* settings);
 
-	void Start();
-	void Stop(bool save);
+	void PageStart();
+	void PageStop(bool save);
 	void RecordStart();
 	void RecordPause();
 
