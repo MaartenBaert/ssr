@@ -20,18 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "StdAfx.h"
 
-// Explicit padding is needed here to keep the 32-bit and 64-bit code compatible.
-// I could also disable padding of course, but this is easier :)
-struct GLInjectHeader {
-	uint32_t cbuffer_size, max_pixels;
-	uint32_t read_pos, write_pos;
-	uint32_t current_width, current_height;
-};
-struct GLInjectFrameInfo {
-	int32_t shm_id, padding1;
-	int64_t timestamp;
-	uint32_t width, height;
-};
+#include "glinject/ShmStructs.h"
 
 class GLInjectLauncher {
 

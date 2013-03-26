@@ -53,7 +53,8 @@ int main(int argc, char* argv[]) {
 		QString file3 = dir + "/log3.txt";
 		rename(qPrintable(file2), qPrintable(file3));
 		rename(qPrintable(file1), qPrintable(file2));
-		freopen(qPrintable(file1), "w", stderr);
+		FILE *f = freopen(qPrintable(file1), "w", stderr);
+		Q_UNUSED(f);
 		dup2(2, 1); // this redirects stdout to stderr
 	}
 

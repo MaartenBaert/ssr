@@ -9,18 +9,25 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include "StdAfx.h"
 #include "GLFrameGrabber.h"
 
-// Explicit padding is needed here to keep the 32-bit and 64-bit code compatible.
-// I could also disable padding of course, but this is easier :)
-struct GLInjectHeader {
-	uint32_t cbuffer_size, max_pixels;
-	uint32_t read_pos, write_pos;
-	uint32_t current_width, current_height;
-};
-struct GLInjectFrameInfo {
-	int32_t shm_id, padding1;
-	int64_t timestamp;
-	uint32_t width, height;
-};
+#include "ShmStructs.h"
+
+#define CGLE(code) \
+	code; \
+	CheckGLError(#code);
+
+static void CheckGLError(const char* at) {
+	GLenum error = glGetError();
+	if(error != GL_NO_ERROR) {
+		fprintf(stderr, "[SSR-GLInject] Warning: OpenGL error in %s: %s\n", at, gluErrorString(error));
+	}
+}
+
+static size_t shmsize(int shmid) {
+	shmid_ds buf;
+	if(shmctl(shmid, IPC_STAT, &buf) < 0)
+		return 0;
+	return buf.shm_segsz;
+}
 
 GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable drawable) {
 
@@ -41,7 +48,7 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 		fprintf(stderr, "[SSR-GLInject] Error: Shared memory id is missing!\n");
 		exit(-181818181);
 	}
-	
+
 	// get main shared memory
 	int shm_main_id = atoi(id_str);
 	m_shm_main_ptr = (char*) shmat(shm_main_id, NULL, SHM_RND);
@@ -49,20 +56,40 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 		fprintf(stderr, "[SSR-GLInject] Error: Can't attach to main shared memory (id = %d)!\n", shm_main_id);
 		exit(-181818181);
 	}
+	size_t shm_main_size = shmsize(shm_main_id);
+	if(shm_main_size < sizeof(GLInjectHeader)) {
+		fprintf(stderr, "[SSR-GLInject] Error: Main shared memory is too small!\n");
+		exit(-181818181);
+	}
 	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
-	
 	m_cbuffer_size = header.cbuffer_size;
 	m_max_pixels = header.max_pixels;
+	if(m_cbuffer_size <= 0 || m_cbuffer_size > 1000000) {
+		fprintf(stderr, "[SSR-GLInject] Error: Circular buffer size %u is invalid!\n", m_cbuffer_size);
+		exit(-181818181);
+	}
+	if(m_max_pixels > 500 * 1024 * 1024) {
+		fprintf(stderr, "[SSR-GLInject] Error: Maximum pixel count %u is invalid!\n", m_cbuffer_size);
+		exit(-181818181);
+	}
+	if(shm_main_size < sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * m_cbuffer_size) {
+		fprintf(stderr, "[SSR-GLInject] Error: Main shared memory is too small to contain %u frames!\n", m_cbuffer_size);
+		exit(-181818181);
+	}
 
 	// get frame shared memory
-	m_cbuffer_size = header.cbuffer_size;
-	m_cbuffer_size = header.cbuffer_size;
-	for(unsigned int i = 0; i < header.cbuffer_size; ++i) {
+	for(unsigned int i = 0; i < m_cbuffer_size; ++i) {
 		m_shm_frame_ptrs.push_back((char*) -1);
-		int id = ((GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * i))->shm_id;
-		m_shm_frame_ptrs.back() = (char*) shmat(id, NULL, SHM_RND);
+		GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * i);
+		int shm_frame_id = frameinfo->shm_id;
+		m_shm_frame_ptrs.back() = (char*) shmat(shm_frame_id, NULL, SHM_RND);
 		if(m_shm_frame_ptrs.back() == (char*) -1) {
-			fprintf(stderr, "[GLInjectLauncher::Init] Error: Can't attach to frame shared memory!\n");
+			fprintf(stderr, "[GLInjectLauncher::Init] Error: Can't attach to frame shared memory (id = %d)!\n", shm_frame_id);
+			exit(-181818181);
+		}
+		size_t shm_frame_size = shmsize(shm_frame_id);
+		if(shm_frame_size < m_max_pixels * 4) {
+			fprintf(stderr, "[SSR-GLInject] Error: Frame shared memory is too small!\n");
 			exit(-181818181);
 		}
 	}
@@ -107,11 +134,27 @@ void GLFrameGrabber::GrabFrame() {
 		return;
 	}
 
+	CheckGLError("<external code>");
+
 	// save settings
-	glPushAttrib(GL_PIXEL_MODE_BIT);
-	glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
-	glReadBuffer(GL_BACK);
-	glPixelStorei(GL_PACK_ALIGNMENT, 8);
+	CGLE(glPushAttrib(GL_PIXEL_MODE_BIT));
+	CGLE(glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT));
+	int old_pbo, old_fbo_draw, old_fbo_read;
+	CGLE(glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING, &old_pbo));
+	CGLE(glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &old_fbo_draw));
+	CGLE(glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &old_fbo_read));
+
+	// change settings
+	CGLE(glBindBuffer(GL_PIXEL_PACK_BUFFER, 0));
+	CGLE(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+	CGLE(glPixelStorei(GL_PACK_SWAP_BYTES, 0));
+	CGLE(glPixelStorei(GL_PACK_ROW_LENGTH, 0));
+	CGLE(glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0));
+	CGLE(glPixelStorei(GL_PACK_SKIP_PIXELS, 0));
+	CGLE(glPixelStorei(GL_PACK_SKIP_ROWS, 0));
+	CGLE(glPixelStorei(GL_PACK_SKIP_IMAGES, 0));
+	CGLE(glPixelStorei(GL_PACK_ALIGNMENT, 8));
+	CGLE(glReadBuffer(GL_BACK));
 
 	// write the current size to shared memory
 	((GLInjectHeader*) m_shm_main_ptr)->current_width = m_width;
@@ -131,7 +174,7 @@ void GLFrameGrabber::GrabFrame() {
 		uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];
 
 		// capture the frame
-		glReadPixels(0, 0, m_width, m_height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data);
+		CGLE(glReadPixels(0, 0, m_width, m_height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data));
 
 		// go to the next frame
 		((GLInjectHeader*) m_shm_main_ptr)->write_pos = (header.write_pos + 1) % (m_cbuffer_size * 2);
@@ -139,8 +182,11 @@ void GLFrameGrabber::GrabFrame() {
 	}
 
 	// restore settings
-	glPopClientAttrib();
-	glPopAttrib();
+	CGLE(glBindBuffer(GL_PIXEL_PACK_BUFFER, old_pbo));
+	CGLE(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, old_fbo_draw));
+	CGLE(glBindFramebuffer(GL_READ_FRAMEBUFFER, old_fbo_read));
+	CGLE(glPopClientAttrib());
+	CGLE(glPopAttrib());
 
 	//fprintf(m_log, "%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\n", t2 - t1, t3 - t2, t4 - t3, t5 - t4);
 

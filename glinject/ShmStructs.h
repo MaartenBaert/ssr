@@ -6,44 +6,21 @@ Permission to use, copy, modify, and/or distribute this software for any purpose
 THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifndef STDAFX_H
-#define STDAFX_H
+#pragma once
+#include "StdAfx.h"
 
-#define __STDC_FORMAT_MACROS
-#define GL_GLEXT_PROTOTYPES
+// Disable padding to make sure the 32-bit and 64-bit libs are compatible.
+#pragma pack(push, 1)
 
-//#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
-#include <GL/glx.h>
-#include <X11/X.h>
+struct GLInjectHeader {
+	uint32_t cbuffer_size, max_pixels;
+	uint32_t read_pos, write_pos;
+	uint32_t current_width, current_height;
+};
+struct GLInjectFrameInfo {
+	int32_t shm_id;
+	int64_t timestamp;
+	uint32_t width, height;
+};
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <stdint.h>
-#include <inttypes.h>
-#include <dlfcn.h>
-#include <sys/shm.h>
-
-#include <memory>
-#include <vector>
-
-typedef void (*GLXextFuncPtr)(void);
-
-// high resolution timer
-inline int64_t hrt_time_micro() {
-	timespec ts;
-	clock_gettime(CLOCK_MONOTONIC, &ts);
-	return (uint64_t) ts.tv_sec * (uint64_t) 1000000 + (uint64_t) (ts.tv_nsec / 1000);
-}
-
-template<typename T>
-T positive_mod(T x, T y) {
-	T z = x % y;
-	return (z < 0)? z + y : z;
-}
-
-#endif // STDAFX_H
+#pragma pack(pop)
