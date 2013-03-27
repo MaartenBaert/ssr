@@ -25,11 +25,14 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 const unsigned int GLInjectLauncher::CBUFFER_SIZE = 5;
 
-GLInjectLauncher::GLInjectLauncher(const QString& command, unsigned int max_pixels, bool run_command) {
+GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, unsigned int max_bytes, bool show_cursor, bool capture_front) {
 
 	m_command = command;
-	m_max_pixels = max_pixels;
 	m_run_command = run_command;
+	m_relax_permissions = relax_permissions;
+	m_max_bytes = max_bytes;
+	m_show_cursor = show_cursor;
+	m_capture_front = capture_front;
 
 	m_shm_main_id = -1;
 	m_shm_main_ptr = (char*) -1;
@@ -59,7 +62,7 @@ void GLInjectLauncher::GetCurrentSize(unsigned int* width, unsigned int* height)
 void GLInjectLauncher::Init() {
 
 	// allocate main shared memory
-	m_shm_main_id = shmget(IPC_PRIVATE, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * CBUFFER_SIZE, IPC_CREAT | 0777);
+	m_shm_main_id = shmget(IPC_PRIVATE, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * CBUFFER_SIZE, IPC_CREAT | ((m_relax_permissions)? 0777 : 0700));
 	if(m_shm_main_id == -1) {
 		Logger::LogError("[GLInjectLauncher::Init] Error: Can't get main shared memory!");
 		throw GLInjectException();
@@ -74,7 +77,7 @@ void GLInjectLauncher::Init() {
 	// allocate frame shared memory
 	for(unsigned int i = 0; i < CBUFFER_SIZE; ++i) {
 		m_shm_frames.push_back(ShmFrame());
-		m_shm_frames.back().id = shmget(IPC_PRIVATE, m_max_pixels * 4, IPC_CREAT | 0777);
+		m_shm_frames.back().id = shmget(IPC_PRIVATE, m_max_bytes, IPC_CREAT | ((m_relax_permissions)? 0777 : 0700));
 		if(m_shm_frames.back().id == -1) {
 			Logger::LogError("[GLInjectLauncher::Init] Error: Can't get frame shared memory!");
 			throw GLInjectException();
@@ -85,13 +88,14 @@ void GLInjectLauncher::Init() {
 			throw GLInjectException();
 		}
 		((GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * i))->shm_id = m_shm_frames.back().id;
-		memset((void*) m_shm_frames.back().ptr, 0, m_max_pixels * 4);
+		memset((void*) m_shm_frames.back().ptr, 0, m_max_bytes);
 	}
 
 	// initialize the memory
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	header->cbuffer_size = CBUFFER_SIZE;
-	header->max_pixels = m_max_pixels;
+	header->max_bytes = m_max_bytes;
+	header->flags = ((m_show_cursor)? GLINJECT_FLAG_SHOW_CURSOR : 0) | ((m_capture_front)? GLINJECT_FLAG_CAPTURE_FRONT : 0);
 	header->read_pos = 0;
 	header->write_pos = 0;
 	header->current_width = 0;

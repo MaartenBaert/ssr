@@ -239,8 +239,10 @@ void PageRecord::PageStart() {
 
 	// get the glinject settings
 	QString glinject_command = page_input->GetGLInjectCommand();
-	unsigned int glinject_megapixels = page_input->GetGLInjectMaxMegaPixels();
 	bool glinject_run_command = page_input->GetGLInjectRunCommand();
+	bool glinject_relax_permissions = page_input->GetGLInjectRelaxPermissions();
+	unsigned int glinject_megapixels = page_input->GetGLInjectMaxMegaPixels();
+	bool glinject_capture_front = page_input->GetGLInjectCaptureFront();
 
 	// get the output settings
 	m_file = page_output->GetFile();
@@ -282,7 +284,8 @@ void PageRecord::PageStart() {
 	// for OpenGL recording, allocate shared memory and start the program now
 	if(m_video_glinject) {
 		try {
-			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_megapixels * 1024 * 1024, glinject_run_command));
+			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_run_command, glinject_relax_permissions,
+															glinject_megapixels * 4 * 1024 * 1024, m_video_show_cursor, glinject_capture_front));
 		} catch(...) {
 			Logger::LogError("[PageRecord::PageStart] Error: Something went wrong during GLInject initialization.");
 			m_gl_inject_launcher.reset();

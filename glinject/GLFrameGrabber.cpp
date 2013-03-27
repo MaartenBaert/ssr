@@ -39,7 +39,7 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 
 	m_shm_main_ptr = (char*) -1;
 
-	m_warn_max_pixels = true;
+	m_warn_max_bytes = true;
 
 	fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] created.\n", m_x11_display, m_x11_window, m_glx_drawable);
 
@@ -63,13 +63,14 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 	}
 	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
 	m_cbuffer_size = header.cbuffer_size;
-	m_max_pixels = header.max_pixels;
+	m_max_bytes = header.max_bytes;
+	m_flags = header.flags;
 	if(m_cbuffer_size <= 0 || m_cbuffer_size > 1000000) {
 		fprintf(stderr, "[SSR-GLInject] Error: Circular buffer size %u is invalid!\n", m_cbuffer_size);
 		exit(-181818181);
 	}
-	if(m_max_pixels > 500 * 1024 * 1024) {
-		fprintf(stderr, "[SSR-GLInject] Error: Maximum pixel count %u is invalid!\n", m_cbuffer_size);
+	if(m_max_bytes > 1024 * 1024 * 1024) {
+		fprintf(stderr, "[SSR-GLInject] Error: Maximum byte count %u is invalid!\n", m_max_bytes);
 		exit(-181818181);
 	}
 	if(shm_main_size < sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * m_cbuffer_size) {
@@ -88,7 +89,7 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 			exit(-181818181);
 		}
 		size_t shm_frame_size = shmsize(shm_frame_id);
-		if(shm_frame_size < m_max_pixels * 4) {
+		if(shm_frame_size != m_max_bytes) {
 			fprintf(stderr, "[SSR-GLInject] Error: Frame shared memory is too small!\n");
 			exit(-181818181);
 		}
@@ -126,9 +127,12 @@ void GLFrameGrabber::GrabFrame() {
 	if(m_width != old_width || m_height != old_height) {
 		fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] frame size = %ux%u\n", m_x11_display, m_x11_window, m_glx_drawable, m_width, m_height);
 	}
-	if(m_width > 10000 || m_height > 10000 || m_width * m_height > m_max_pixels) {
-		if(m_warn_max_pixels) {
-			m_warn_max_pixels = false;
+
+	// check image size
+	unsigned int image_stride = grow_align16(m_width * 4);
+	if(m_width > 10000 || m_height > 10000 || image_stride * m_height > m_max_bytes) {
+		if(m_warn_max_bytes) {
+			m_warn_max_bytes = false;
 			fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] frame is too large to capture!\n", m_x11_display, m_x11_window, m_glx_drawable);
 		}
 		return;
@@ -148,13 +152,13 @@ void GLFrameGrabber::GrabFrame() {
 	CGLE(glBindBuffer(GL_PIXEL_PACK_BUFFER, 0));
 	CGLE(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 	CGLE(glPixelStorei(GL_PACK_SWAP_BYTES, 0));
-	CGLE(glPixelStorei(GL_PACK_ROW_LENGTH, 0));
+	CGLE(glPixelStorei(GL_PACK_ROW_LENGTH, image_stride / 4));
 	CGLE(glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0));
 	CGLE(glPixelStorei(GL_PACK_SKIP_PIXELS, 0));
 	CGLE(glPixelStorei(GL_PACK_SKIP_ROWS, 0));
 	CGLE(glPixelStorei(GL_PACK_SKIP_IMAGES, 0));
 	CGLE(glPixelStorei(GL_PACK_ALIGNMENT, 8));
-	CGLE(glReadBuffer(GL_BACK));
+	CGLE(glReadBuffer((m_flags & GLINJECT_FLAG_CAPTURE_FRONT)? GL_FRONT : GL_BACK));
 
 	// write the current size to shared memory
 	((GLInjectHeader*) m_shm_main_ptr)->current_width = m_width;

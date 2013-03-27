@@ -193,7 +193,9 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetAudioSource(settings->value("input/audio/source", "default").toString());
 	SetGLInjectCommand(settings->value("input/glinject/command", "").toString());
 	SetGLInjectRunCommand(settings->value("input/glinject/run_command", true).toBool());
+	SetGLInjectRelaxPermissions(settings->value("input/glinject/relax_permissions", false).toBool());
 	SetGLInjectMaxMegaPixels(settings->value("input/glinject/max_megapixels", 2).toUInt());
+	SetGLInjectCaptureFront(settings->value("input/glinject/capture_front", false).toBool());
 	UpdateVideoAreaFields();
 	UpdateVideoScaleFields();
 	UpdateAudioFields();
@@ -215,7 +217,9 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/audio/source", GetAudioSource());
 	settings->setValue("input/glinject/command", GetGLInjectCommand());
 	settings->setValue("input/glinject/run_command", GetGLInjectRunCommand());
+	settings->setValue("input/glinject/relax_permissions", GetGLInjectRelaxPermissions());
 	settings->setValue("input/glinject/max_megapixels", GetGLInjectMaxMegaPixels());
+	settings->setValue("input/glinject/capture_front", GetGLInjectCaptureFront());
 }
 
 void PageInput::mousePressEvent(QMouseEvent* event) {
@@ -528,12 +532,21 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	m_checkbox_run_command->setToolTip("If checked, the above command will be executed automatically (combined with some environment variables). If not checked,\n"
 									   "you have to start the OpenGL application yourself (the full command, including the required environment variables, is shown in the log).");
 	m_checkbox_run_command->setChecked(m_parent->GetGLInjectRunCommand());
+	m_checkbox_relax_permissions = new QCheckBox("Relax shared memory permissions (insecure)", this);
+	m_checkbox_relax_permissions->setToolTip("If checked, other users on the same machine will be able to attach to the shared memory that's used for communication with the OpenGL program.\n"
+											 "This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.\n"
+											 "This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user.");
+	m_checkbox_relax_permissions->setChecked(m_parent->GetGLInjectRelaxPermissions());
 	QLabel *label_max_pixels = new QLabel("Maximum image size (megapixels):", this);
 	m_lineedit_max_megapixels = new QLineEdit(QString::number(m_parent->GetGLInjectMaxMegaPixels()), this);
 	m_lineedit_max_megapixels->setToolTip("This setting changes the amount of shared memory that will be allocated to send frames back to the main program.\n"
 										  "The size of the shared memory can't be changed anymore once the program has been started, so if the program you\n"
 										  "are trying to record is too large, recording won't work. 2 megapixels should be enough in almost all cases. Be careful,\n"
 										  "high values will use a lot of memory!");
+	m_checkbox_capture_front = new QCheckBox("Capture front buffer instead of back buffer", this);
+	m_checkbox_capture_front->setToolTip("If checked, the injected library will read the front buffer (the frame that's currently on the screen) rather than the back buffer\n"
+										 "(the new frame). This may be useful for some special applications that draw directly to the screen.");
+	m_checkbox_capture_front->setChecked(m_parent->GetGLInjectCaptureFront());
 
 	QPushButton *pushbutton_close = new QPushButton("Close", this);
 
@@ -550,12 +563,14 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 		layout2->addWidget(m_lineedit_command);
 	}
 	layout->addWidget(m_checkbox_run_command);
+	layout->addWidget(m_checkbox_relax_permissions);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
 		layout->addLayout(layout2);
 		layout2->addWidget(label_max_pixels);
 		layout2->addWidget(m_lineedit_max_megapixels);
 	}
+	layout->addWidget(m_checkbox_capture_front);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
 		layout->addLayout(layout2);
@@ -569,5 +584,7 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 void DialogGLInject::WriteBack() {
 	m_parent->SetGLInjectCommand(m_lineedit_command->text());
 	m_parent->SetGLInjectRunCommand(m_checkbox_run_command->isChecked());
+	m_parent->SetGLInjectRelaxPermissions(m_checkbox_relax_permissions->isChecked());
 	m_parent->SetGLInjectMaxMegaPixels(m_lineedit_max_megapixels->text().toUInt());
+	m_parent->SetGLInjectCaptureFront(m_checkbox_capture_front->isChecked());
 }

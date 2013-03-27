@@ -36,22 +36,23 @@ private:
 
 private:
 	QString m_command;
-	unsigned int m_max_pixels;
-	bool m_run_command;
+	bool m_run_command, m_relax_permissions;
+	unsigned int m_max_bytes;
+	bool m_show_cursor, m_capture_front;
 
 	int m_shm_main_id;
 	volatile char *m_shm_main_ptr;
 	std::vector<ShmFrame> m_shm_frames;
 
 public:
-	GLInjectLauncher(const QString& command, unsigned int max_pixels, bool run_command);
+	GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, unsigned int max_pixels, bool show_cursor, bool capture_front);
 	~GLInjectLauncher();
 
 	// Reads the current size of the OpenGL application. If the application hasn't been started yet, this will be 0x0.
 	void GetCurrentSize(unsigned int* width, unsigned int* height);
 
-	// Returns the maximum number of pixels.
-	inline unsigned int GetMaxPixels() { return m_max_pixels; }
+	// Returns the maximum number of bytes.
+	inline unsigned int GetMaxBytes() { return m_max_bytes; }
 
 	// Returns the number of frames in the circular buffer.
 	inline unsigned int GetCBufferSize() { return CBUFFER_SIZE; }

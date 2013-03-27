@@ -68,9 +68,6 @@ extern "C" {
 #define SSR_USE_AVCODEC_OPT_CRF        (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 8))
 
 // simple function to do n-byte alignment
-inline size_t grow_align8(size_t size) {
-	return (size_t) (size + 7) & ~((size_t) 7);
-}
 inline size_t grow_align16(size_t size) {
 	return (size_t) (size + 15) & ~((size_t) 15);
 }

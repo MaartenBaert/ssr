@@ -33,6 +33,11 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 typedef void (*GLXextFuncPtr)(void);
 
+// simple function to do n-byte alignment
+inline size_t grow_align16(size_t size) {
+	return (size_t) (size + 15) & ~((size_t) 15);
+}
+
 // high resolution timer
 inline int64_t hrt_time_micro() {
 	timespec ts;

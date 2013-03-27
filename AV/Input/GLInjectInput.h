@@ -34,7 +34,7 @@ private:
 	Synchronizer *m_synchronizer;
 	GLInjectLauncher *m_launcher;
 
-	unsigned int m_cbuffer_size, m_max_pixels;
+	unsigned int m_cbuffer_size, m_max_bytes;
 	unsigned int m_frame_rate, m_out_width, m_out_height;
 
 	volatile char *m_shm_main_ptr;

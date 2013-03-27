@@ -25,12 +25,14 @@ private:
 	Window m_x11_window;
 	GLXDrawable m_glx_drawable;
 	unsigned int m_width, m_height;
-	
-	unsigned int m_cbuffer_size, m_max_pixels;
+
+	unsigned int m_cbuffer_size, m_max_bytes;
+	unsigned int m_flags;
+
 	volatile char *m_shm_main_ptr;
 	std::vector<volatile char*> m_shm_frame_ptrs;
 	
-	bool m_warn_max_pixels;
+	bool m_warn_max_bytes;
 
 public:
 	GLFrameGrabber(Display* display, Window window, GLXDrawable drawable);

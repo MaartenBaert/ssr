@@ -12,8 +12,12 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 // Disable padding to make sure the 32-bit and 64-bit libs are compatible.
 #pragma pack(push, 1)
 
+#define GLINJECT_FLAG_SHOW_CURSOR    0x0001
+#define GLINJECT_FLAG_CAPTURE_FRONT  0x0002
+
 struct GLInjectHeader {
-	uint32_t cbuffer_size, max_pixels;
+	uint32_t cbuffer_size, max_bytes;
+	uint32_t flags;
 	uint32_t read_pos, write_pos;
 	uint32_t current_width, current_height;
 };

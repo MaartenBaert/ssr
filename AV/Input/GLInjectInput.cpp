@@ -75,7 +75,7 @@ GLInjectInput::GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launc
 	m_launcher = launcher;
 
 	m_cbuffer_size = m_launcher->GetCBufferSize();
-	m_max_pixels = m_launcher->GetMaxPixels();
+	m_max_bytes = m_launcher->GetMaxBytes();
 	m_frame_rate = m_synchronizer->GetVideoEncoder()->GetFrameRate();
 	m_out_width = m_synchronizer->GetVideoEncoder()->GetWidth();
 	m_out_height = m_synchronizer->GetVideoEncoder()->GetHeight();
@@ -159,8 +159,8 @@ void GLInjectInput::run() {
 			// get the frame info
 			unsigned int current_frame = header.read_pos % m_cbuffer_size;
 			GLInjectFrameInfo frameinfo = *(GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
-			if(frameinfo.width > 10000 || frameinfo.height > 10000 || frameinfo.width * frameinfo.height > m_max_pixels) {
-				Logger::LogInfo("[GLInjectInput::run] Error: Image is supposedly larger than the maximum size!");
+			if(frameinfo.width > 10000 || frameinfo.height > 10000) {
+				Logger::LogInfo("[GLInjectInput::run] Error: Image is too large!");
 				throw GLInjectException();
 			}
 			if(frameinfo.timestamp < last_frame_time) {
@@ -170,7 +170,11 @@ void GLInjectInput::run() {
 
 			// get the image
 			uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];
-			int image_linesize = grow_align8(frameinfo.width * 4);
+			int image_stride = grow_align16(frameinfo.width * 4);
+			if(image_stride * frameinfo.height > m_max_bytes) {
+				Logger::LogInfo("[GLInjectInput::run] Error: Image is supposedly larger than the maximum size!");
+				throw GLInjectException();
+			}
 
 			// allocate the converted frame, with proper alignment
 			// Y = 1 byte per pixel, U or V = 1 byte per 2x2 pixels
@@ -190,7 +194,7 @@ void GLInjectInput::run() {
 			if(!scaling) {
 
 				// use my faster converter
-				m_yuv_converter.Convert(frameinfo.width, frameinfo.height, image_data, image_linesize, converted_frame->data, converted_frame->linesize);
+				m_yuv_converter.Convert(frameinfo.width, frameinfo.height, image_data, image_stride, converted_frame->data, converted_frame->linesize);
 
 			} else {
 
@@ -208,7 +212,7 @@ void GLInjectInput::run() {
 					Logger::LogError("[GLInjectInput::run] Error: Can't get swscale context!");
 					throw LibavException();
 				}
-				sws_scale(m_sws_context, &image_data, &image_linesize, 0, frameinfo.height, converted_frame->data, converted_frame->linesize);
+				sws_scale(m_sws_context, &image_data, &image_stride, 0, frameinfo.height, converted_frame->data, converted_frame->linesize);
 
 			}
 
