@@ -55,7 +55,7 @@ private:
 
 	bool m_grabbing, m_selecting_window;
 	std::unique_ptr<QRubberBand> m_rubber_band;
-	QRect m_rubber_band_rect;
+	QRect m_rubber_band_rect, m_select_window_outer_rect, m_select_window_inner_rect;
 
 	QString m_glinject_command;
 	bool m_glinject_run_command, m_glinject_relax_permissions;

@@ -11,6 +11,8 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #include "ShmStructs.h"
 
+#include <X11/extensions/Xfixes.h>
+
 #define CGLE(code) \
 	code; \
 	CheckGLError(#code);
@@ -27,6 +29,51 @@ static size_t shmsize(int shmid) {
 	if(shmctl(shmid, IPC_STAT, &buf) < 0)
 		return 0;
 	return buf.shm_segsz;
+}
+
+static void GLImageDrawCursor(Display* dpy, uint8_t* image_data, size_t image_stride, int image_width, int image_height, int recording_area_x, int recording_area_y) {
+
+	// get the cursor
+	XFixesCursorImage *xcim = XFixesGetCursorImage(dpy);
+	if(xcim == NULL)
+		return;
+
+	// calculate the position of the cursor
+	int x = xcim->x - xcim->xhot - recording_area_x;
+	int y = xcim->y - xcim->yhot - recording_area_y;
+
+	// calculate the part of the cursor that's visible
+	int cursor_left = std::max(0, -x), cursor_right = std::min((int) xcim->width, image_width - x);
+	int cursor_top = std::max(0, -y), cursor_bottom = std::min((int) xcim->height, image_height - y);
+
+	// draw the cursor
+	// XFixesCursorImage uses 'long' instead of 'int' to store the cursor images, which is a bit weird since
+	// 'long' is 64-bit on 64-bit systems and only 32 bits are actually used. The image uses premultiplied alpha.
+	for(int j = cursor_top; j < cursor_bottom; ++j) {
+		unsigned long *cursor_row = xcim->pixels + xcim->width * j;
+		uint8_t *image_row = image_data + image_stride * (image_height - 1 - y - j);
+		for(int i = cursor_left; i < cursor_right; ++i) {
+			unsigned long cursor_pixel = cursor_row[i];
+			uint8_t *image_pixel = image_row + 4 * (x + i);
+			int cursor_a = (uint8_t) (cursor_pixel >> 24);
+			int cursor_r = (uint8_t) (cursor_pixel >> 16);
+			int cursor_g = (uint8_t) (cursor_pixel >> 8);
+			int cursor_b = (uint8_t) (cursor_pixel >> 0);
+			if(cursor_a == 255) {
+				image_pixel[2] = cursor_r;
+				image_pixel[1] = cursor_g;
+				image_pixel[0] = cursor_b;
+			} else {
+				image_pixel[2] = (image_pixel[2] * (255 - cursor_a) + 127) / 255 + cursor_r;
+				image_pixel[1] = (image_pixel[1] * (255 - cursor_a) + 127) / 255 + cursor_g;
+				image_pixel[0] = (image_pixel[0] * (255 - cursor_a) + 127) / 255 + cursor_b;
+			}
+		}
+	}
+
+	// free the cursor
+	XFree(xcim);
+
 }
 
 GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable drawable) {
@@ -120,10 +167,10 @@ GLFrameGrabber::~GLFrameGrabber() {
 void GLFrameGrabber::GrabFrame() {
 
 	// get size
-	Window window;
+	Window unused_window;
 	int unused;
 	unsigned int old_width = m_width, old_height = m_height;
-	XGetGeometry(m_x11_display, m_x11_window, &window, &unused, &unused, &m_width, &m_height, (unsigned int*) &unused, (unsigned int*) &unused);
+	XGetGeometry(m_x11_display, m_x11_window, &unused_window, &unused, &unused, &m_width, &m_height, (unsigned int*) &unused, (unsigned int*) &unused);
 	if(m_width != old_width || m_height != old_height) {
 		fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] frame size = %ux%u\n", m_x11_display, m_x11_window, m_glx_drawable, m_width, m_height);
 	}
@@ -179,6 +226,14 @@ void GLFrameGrabber::GrabFrame() {
 
 		// capture the frame
 		CGLE(glReadPixels(0, 0, m_width, m_height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data));
+
+		// draw the cursor
+		if(m_flags & GLINJECT_FLAG_SHOW_CURSOR) {
+			int inner_x, inner_y;
+			if(XTranslateCoordinates(m_x11_display, m_x11_window, DefaultRootWindow(m_x11_display), 0, 0, &inner_x, &inner_y, &unused_window)) {
+				GLImageDrawCursor(m_x11_display, image_data, image_stride, m_width, m_height, inner_x, inner_y);
+			}
+		}
 
 		// go to the next frame
 		((GLInjectHeader*) m_shm_main_ptr)->write_pos = (header.write_pos + 1) % (m_cbuffer_size * 2);

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-g++ -m64 -shared -s -fPIC -Wall -O3 -Wl,-O3 *.c *.cpp -o libssr-glinject64.so -lGL -lGLU -ldl -lrt -lX11
+g++ -m64 -shared -s -fPIC -Wall -O3 -Wl,-O3 *.c *.cpp -o libssr-glinject64.so -lGL -lGLU -ldl -lrt -lX11 -lXfixes
