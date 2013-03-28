@@ -1,11 +1,10 @@
 Testing:
-- ALSA input
+- fix GLInject upside-down bug (and improve performance?)
 
 In progress:
 
 Todo:
 - move THROTTLE_THRESHOLD so there is only one
-- fix GLInject upside-down bug (and improve performance?)
 
 Wishlist:
 - PulseAudio input
@@ -16,7 +15,6 @@ Wishlist:
 - clean up StdAfx.h
 - move codec installation tests to MainWindow, not static
 - Show codec/container support matrix somewhere?
-- Show cursor for GLInject, move required X11 code from X11Input to a separate file.
 - QuickLZ-based codec. (-> QuickLZ beta?)
 - Better support for multiple GLInject windows.
 - Easier GLInject application selection (as an alternative to entering the command).

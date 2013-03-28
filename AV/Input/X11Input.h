@@ -43,7 +43,7 @@ private:
 
 	unsigned int m_x, m_y, m_width, m_height;
 	unsigned int m_frame_rate, m_out_width, m_out_height;
-	bool m_show_cursor, m_follow_cursor;
+	bool m_record_cursor, m_follow_cursor;
 
 	Display *m_x11_display;
 	int m_x11_screen;
@@ -64,7 +64,7 @@ private:
 	volatile bool m_should_stop, m_error_occurred;
 
 public:
-	X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool show_cursor, bool follow_cursor);
+	X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor);
 	~X11Input();
 
 	// Returns whether an error has occurred in the input thread.

@@ -69,10 +69,10 @@ private:
 	QLineEdit *m_lineedit_video_frame_rate;
 	QCheckBox *m_checkbox_scale;
 	QLineEdit *m_lineedit_video_scaled_w, *m_lineedit_video_scaled_h;
-	QCheckBox *m_checkbox_show_cursor;
+	QCheckBox *m_checkbox_record_cursor;
 
 	QCheckBox *m_checkbox_audio_enable;
-	QLineEdit *m_lineedit_audio_source;
+	QLineEdit *m_lineedit_alsa_device;
 
 	std::vector<WidgetScreenLabel*> m_screen_labels;
 
@@ -93,9 +93,9 @@ public:
 	inline bool GetVideoScalingEnabled() { return m_checkbox_scale->isChecked(); }
 	inline unsigned int GetVideoScaledW() { return m_lineedit_video_scaled_w->text().toUInt(); }
 	inline unsigned int GetVideoScaledH() { return m_lineedit_video_scaled_h->text().toUInt(); }
-	inline bool GetVideoShowCursor() { return m_checkbox_show_cursor->isChecked(); }
+	inline bool GetVideoRecordCursor() { return m_checkbox_record_cursor->isChecked(); }
 	inline bool GetAudioEnabled() { return m_checkbox_audio_enable->isChecked(); }
-	inline QString GetAudioSource() { return m_lineedit_audio_source->text(); }
+	inline QString GetALSADevice() { return m_lineedit_alsa_device->text(); }
 	inline QString GetGLInjectCommand() { return m_glinject_command; }
 	inline bool GetGLInjectRunCommand() { return m_glinject_run_command; }
 	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
@@ -112,9 +112,9 @@ public:
 	inline void SetVideoScalingEnabled(bool enable) { m_checkbox_scale->setChecked(enable); }
 	inline void SetVideoScaledW(unsigned int scaled_w) { m_lineedit_video_scaled_w->setText(QString::number(scaled_w)); }
 	inline void SetVideoScaledH(unsigned int scaled_h) { m_lineedit_video_scaled_h->setText(QString::number(scaled_h)); }
-	inline void SetVideoShowCursor(bool show) { m_checkbox_show_cursor->setChecked(show); }
+	inline void SetVideoRecordCursor(bool show) { m_checkbox_record_cursor->setChecked(show); }
 	inline void SetAudioEnabled(bool enable) { m_checkbox_audio_enable->setChecked(enable); }
-	inline void SetAudioSource(const QString& source) { m_lineedit_audio_source->setText(source); }
+	inline void SetALSADevice(const QString& source) { m_lineedit_alsa_device->setText(source); }
 	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
 	inline void SetGLInjectRunCommand(bool run_command) { m_glinject_run_command = run_command; }
 	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }

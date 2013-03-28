@@ -197,7 +197,7 @@ static void X11ImageDrawCursor(Display* dpy, XImage* image, int recording_area_x
 
 const size_t X11Input::THROTTLE_THRESHOLD = 20;
 
-X11Input::X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool show_cursor, bool follow_cursor) {
+X11Input::X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor) {
 	Q_ASSERT(synchronizer->GetVideoEncoder() != NULL);
 
 	m_synchronizer = synchronizer;
@@ -209,7 +209,7 @@ X11Input::X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, u
 	m_frame_rate = m_synchronizer->GetVideoEncoder()->GetFrameRate();
 	m_out_width = m_synchronizer->GetVideoEncoder()->GetWidth();
 	m_out_height = m_synchronizer->GetVideoEncoder()->GetHeight();
-	m_show_cursor = show_cursor;
+	m_record_cursor = record_cursor;
 	m_follow_cursor = follow_cursor;
 
 	m_x11_shm_info.shmid = -1;
@@ -297,11 +297,11 @@ void X11Input::Init() {
 	m_x11_image_format = X11ImageGetPixelFormat(m_x11_image);
 
 	// showing the cursor requires XFixes (which should be supported on any modern X server, but let's check it anyway)
-	if(m_show_cursor) {
+	if(m_record_cursor) {
 		int event, error;
 		if(!XFixesQueryExtension(m_x11_display, &event, &error)) {
 			Logger::LogWarning("[X11Input::Init] Warning: XFixes is not supported by server, the cursor has been hidden.");
-			m_show_cursor = false;
+			m_record_cursor = false;
 		}
 	}
 
@@ -451,7 +451,7 @@ void X11Input::run() {
 			}
 
 			// draw the cursor
-			if(m_show_cursor) {
+			if(m_record_cursor) {
 				X11ImageDrawCursor(m_x11_display, m_x11_image, grab_x, grab_y);
 			}
 

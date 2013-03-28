@@ -228,7 +228,7 @@ void GLFrameGrabber::GrabFrame() {
 		CGLE(glReadPixels(0, 0, m_width, m_height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data));
 
 		// draw the cursor
-		if(m_flags & GLINJECT_FLAG_SHOW_CURSOR) {
+		if(m_flags & GLINJECT_FLAG_RECORD_CURSOR) {
 			int inner_x, inner_y;
 			if(XTranslateCoordinates(m_x11_display, m_x11_window, DefaultRootWindow(m_x11_display), 0, 0, &inner_x, &inner_y, &unused_window)) {
 				GLImageDrawCursor(m_x11_display, image_data, image_stride, m_width, m_height, inner_x, inner_y);

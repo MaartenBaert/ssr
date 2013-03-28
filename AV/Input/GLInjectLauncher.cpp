@@ -25,13 +25,13 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 const unsigned int GLInjectLauncher::CBUFFER_SIZE = 5;
 
-GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, unsigned int max_bytes, bool show_cursor, bool capture_front) {
+GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, unsigned int max_bytes, bool record_cursor, bool capture_front) {
 
 	m_command = command;
 	m_run_command = run_command;
 	m_relax_permissions = relax_permissions;
 	m_max_bytes = max_bytes;
-	m_show_cursor = show_cursor;
+	m_record_cursor = record_cursor;
 	m_capture_front = capture_front;
 
 	m_shm_main_id = -1;
@@ -95,7 +95,7 @@ void GLInjectLauncher::Init() {
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	header->cbuffer_size = CBUFFER_SIZE;
 	header->max_bytes = m_max_bytes;
-	header->flags = ((m_show_cursor)? GLINJECT_FLAG_SHOW_CURSOR : 0) | ((m_capture_front)? GLINJECT_FLAG_CAPTURE_FRONT : 0);
+	header->flags = ((m_record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((m_capture_front)? GLINJECT_FLAG_CAPTURE_FRONT : 0);
 	header->read_pos = 0;
 	header->write_pos = 0;
 	header->current_width = 0;

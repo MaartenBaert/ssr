@@ -42,13 +42,13 @@ private:
 	MainWindow *m_main_window;
 
 	bool m_page_started, m_encoders_started, m_recording;
-	bool m_video_show_cursor, m_video_follow_cursor, m_video_glinject;
+	bool m_video_record_cursor, m_video_follow_cursor, m_video_glinject;
 	unsigned int m_video_x, m_video_y, m_video_width, m_video_height;
 	bool m_video_scaling;
 	unsigned int m_video_out_width, m_video_out_height;
 	unsigned int m_video_frame_rate, m_audio_sample_rate;
 	bool m_audio_enabled;
-	QString m_audio_source;
+	QString m_alsa_device;
 
 	QString m_file;
 	PageOutput::enum_container m_container;

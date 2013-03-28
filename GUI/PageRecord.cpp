@@ -218,7 +218,7 @@ void PageRecord::PageStart() {
 	PageOutput *page_output = m_main_window->GetPageOutput();
 
 	// get the type of video recording
-	m_video_show_cursor = page_input->GetVideoShowCursor();
+	m_video_record_cursor = page_input->GetVideoRecordCursor();
 	m_video_follow_cursor = (page_input->GetVideoArea() == PageInput::VIDEO_AREA_CURSOR);
 	m_video_glinject = (page_input->GetVideoArea() == PageInput::VIDEO_AREA_GLINJECT);
 
@@ -235,7 +235,7 @@ void PageRecord::PageStart() {
 
 	// get the audio input settings
 	m_audio_enabled = page_input->GetAudioEnabled();
-	m_audio_source = page_input->GetAudioSource();
+	m_alsa_device = page_input->GetALSADevice();
 
 	// get the glinject settings
 	QString glinject_command = page_input->GetGLInjectCommand();
@@ -285,7 +285,7 @@ void PageRecord::PageStart() {
 	if(m_video_glinject) {
 		try {
 			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_run_command, glinject_relax_permissions,
-															glinject_megapixels * 4 * 1024 * 1024, m_video_show_cursor, glinject_capture_front));
+															glinject_megapixels * 4 * 1024 * 1024, m_video_record_cursor, glinject_capture_front));
 		} catch(...) {
 			Logger::LogError("[PageRecord::PageStart] Error: Something went wrong during GLInject initialization.");
 			m_gl_inject_launcher.reset();
@@ -439,12 +439,12 @@ void PageRecord::RecordStart() {
 		if(m_video_glinject) {
 			m_gl_inject_input.reset(new GLInjectInput(m_synchronizer.get(), m_gl_inject_launcher.get()));
 		} else {
-			m_x11_input.reset(new X11Input(m_synchronizer.get(), m_video_x, m_video_y, m_video_width, m_video_height, m_video_show_cursor, m_video_follow_cursor));
+			m_x11_input.reset(new X11Input(m_synchronizer.get(), m_video_x, m_video_y, m_video_width, m_video_height, m_video_record_cursor, m_video_follow_cursor));
 		}
 
 		// start the audio input
 		if(m_audio_enabled)
-			m_alsa_input.reset(new ALSAInput(m_synchronizer.get(), m_audio_source));
+			m_alsa_input.reset(new ALSAInput(m_synchronizer.get(), m_alsa_device));
 
 	} catch(...) {
 		Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");

@@ -77,7 +77,7 @@ PageInput::PageInput(MainWindow* main_window)
 		m_lineedit_video_scaled_w = new QLineEdit(group_video);
 		QLabel *label_scaled_h = new QLabel("Scaled height:", group_video);
 		m_lineedit_video_scaled_h = new QLineEdit(group_video);
-		m_checkbox_show_cursor = new QCheckBox("Show cursor", group_video);
+		m_checkbox_record_cursor = new QCheckBox("Record cursor", group_video);
 
 		connect(m_buttongroup_video_area, SIGNAL(buttonClicked(int)), this, SLOT(UpdateVideoAreaFields()));
 		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(UpdateVideoAreaFields()));
@@ -133,14 +133,14 @@ PageInput::PageInput(MainWindow* main_window)
 			layout2->addWidget(label_scaled_h, 0, 2);
 			layout2->addWidget(m_lineedit_video_scaled_h, 0, 3);
 		}
-		layout->addWidget(m_checkbox_show_cursor);
+		layout->addWidget(m_checkbox_record_cursor);
 	}
 	QGroupBox *group_audio = new QGroupBox("Audio input", this);
 	{
 		m_checkbox_audio_enable = new QCheckBox("Record microphone", group_audio);
-		QLabel *label_source = new QLabel("Audio source:", group_audio);
-		m_lineedit_audio_source = new QLineEdit(group_audio);
-		m_lineedit_audio_source->setToolTip("The ALSA audio source. Normally this should be 'default'.\n"
+		QLabel *label_alsa_device = new QLabel("ALSA device:", group_audio);
+		m_lineedit_alsa_device = new QLineEdit(group_audio);
+		m_lineedit_alsa_device->setToolTip("The ALSA device. Normally this should be 'default'.\n"
 											"If you are using PulseAudio (the default for ubuntu), you should use PulseAudio Volume Control to select the correct input.\n"
 											"PulseAudio can also do more advanced things like recording the sound of other programs instead of recording the microphone.\n"
 											"If you are using ALSA directly, you can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).\n");
@@ -152,8 +152,8 @@ PageInput::PageInput(MainWindow* main_window)
 		{
 			QGridLayout *layout2 = new QGridLayout();
 			layout->addLayout(layout2);
-			layout2->addWidget(label_source, 0, 0);
-			layout2->addWidget(m_lineedit_audio_source, 0, 1);
+			layout2->addWidget(label_alsa_device, 0, 0);
+			layout2->addWidget(m_lineedit_alsa_device, 0, 1);
 		}
 	}
 	QPushButton *button_back = new QPushButton("Back", this);
@@ -190,9 +190,9 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetVideoScalingEnabled(settings->value("input/video/scale", false).toBool());
 	SetVideoScaledW(settings->value("input/video/scaled_w", 800).toUInt());
 	SetVideoScaledH(settings->value("input/video/scaled_h", 600).toUInt());
-	SetVideoShowCursor(settings->value("input/video/show_cursor", true).toBool());
+	SetVideoRecordCursor(settings->value("input/video/record_cursor", true).toBool());
 	SetAudioEnabled(settings->value("input/audio/enable", true).toBool());
-	SetAudioSource(settings->value("input/audio/source", "default").toString());
+	SetALSADevice(settings->value("input/audio/alsa_device", "default").toString());
 	SetGLInjectCommand(settings->value("input/glinject/command", "").toString());
 	SetGLInjectRunCommand(settings->value("input/glinject/run_command", true).toBool());
 	SetGLInjectRelaxPermissions(settings->value("input/glinject/relax_permissions", false).toBool());
@@ -214,9 +214,9 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/video/scale", GetVideoScalingEnabled());
 	settings->setValue("input/video/scaled_w", GetVideoScaledW());
 	settings->setValue("input/video/scaled_h", GetVideoScaledH());
-	settings->setValue("input/video/show_cursor", GetVideoShowCursor());
+	settings->setValue("input/video/record_cursor", GetVideoRecordCursor());
 	settings->setValue("input/audio/enable", GetAudioEnabled());
-	settings->setValue("input/audio/source", GetAudioSource());
+	settings->setValue("input/audio/alsa_device", GetALSADevice());
 	settings->setValue("input/glinject/command", GetGLInjectCommand());
 	settings->setValue("input/glinject/run_command", GetGLInjectRunCommand());
 	settings->setValue("input/glinject/relax_permissions", GetGLInjectRelaxPermissions());
@@ -497,7 +497,7 @@ void PageInput::UpdateVideoScaleFields() {
 
 void PageInput::UpdateAudioFields() {
 	bool enabled = GetAudioEnabled();
-	m_lineedit_audio_source->setEnabled(enabled);
+	m_lineedit_alsa_device->setEnabled(enabled);
 }
 
 void PageInput::UpdateScreenConfiguration() {
