@@ -24,6 +24,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 class VideoEncoder : public BaseEncoder {
 
+public:
+	static const size_t THROTTLE_THRESHOLD_FRAMES, THROTTLE_THRESHOLD_PACKETS;
+
 private:
 	unsigned int m_bit_rate;
 	unsigned int m_width, m_height, m_frame_rate;
@@ -39,6 +42,9 @@ public:
 	VideoEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 				 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate);
 	~VideoEncoder();
+
+	// Returns the expected delay (in us) between frames, taking queue size into account to avoid memory problems.
+	int64_t GetFrameDelay();
 
 	inline unsigned int GetWidth() { return m_width; }
 	inline unsigned int GetHeight() { return m_height; }

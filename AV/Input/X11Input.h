@@ -28,9 +28,6 @@ class Synchronizer;
 class X11Input : private QThread {
 	Q_OBJECT
 
-public:
-	static const size_t THROTTLE_THRESHOLD;
-
 private:
 	struct SharedData {
 		QRect m_screen_bbox;
@@ -74,7 +71,6 @@ public:
 private:
 	void Init();
 	void Free();
-	int64_t GetReadDelay();
 
 private slots:
 	void UpdateScreenConfiguration();

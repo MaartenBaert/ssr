@@ -25,6 +25,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Muxer.h"
 #include "X264Presets.h"
 
+const size_t VideoEncoder::THROTTLE_THRESHOLD_FRAMES = 20;
+const size_t VideoEncoder::THROTTLE_THRESHOLD_PACKETS = 100;
+
 VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 						   unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate)
 	: BaseEncoder(muxer) {
@@ -84,6 +87,21 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 
 VideoEncoder::~VideoEncoder() {
 	Destruct(); // destruct the base class first
+}
+
+int64_t VideoEncoder::GetFrameDelay() {
+	int64_t delay = 1000000 / m_frame_rate;
+	size_t frames = GetQueuedFrameCount();
+	if(frames > THROTTLE_THRESHOLD_FRAMES) {
+		int64_t n = (frames - THROTTLE_THRESHOLD_FRAMES) * 1000 / THROTTLE_THRESHOLD_FRAMES;
+		delay += n * n;
+	}
+	size_t packets = GetMuxer()->GetQueuedPacketCount(GetStreamIndex());
+	if(packets > THROTTLE_THRESHOLD_PACKETS) {
+		int64_t n = (packets - THROTTLE_THRESHOLD_PACKETS) * 1000 / THROTTLE_THRESHOLD_PACKETS;
+		delay += n * n;
+	}
+	return delay;
 }
 
 void VideoEncoder::FillCodecContext(AVCodec* codec) {

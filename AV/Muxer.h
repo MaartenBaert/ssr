@@ -98,6 +98,10 @@ public: // internal
 	// This function is thread-safe.
 	void AddPacket(unsigned int stream_index, std::unique_ptr<AVPacketWrapper> packet);
 
+	// Returns the total number of packets in the queue of a stream. Called by the encoder.
+	// This function is thread-safe.
+	unsigned int GetQueuedPacketCount(unsigned int stream_index);
+
 private:
 	void Init();
 	void Free();

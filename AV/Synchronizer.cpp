@@ -29,13 +29,13 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 // may get weird frame rate fluctuations caused by the limited accuracy of the recording timestamps.
 const double Synchronizer::CORRECTION_SPEED = 0.002;
 
-// The maximum number of video frames that will be buffered. This should be enough to cope with the fact that video and
-// audio don't arrive at the same time, but not too high because that would cause memory problems if the audio input fails.
+// The maximum number of video frames and audio samples that will be buffered. This should be enough to cope with the fact that video and
+// audio don't arrive at the same time, but not too high because that would cause memory problems if one of the inputs fails.
 const size_t Synchronizer::MAX_VIDEO_FRAMES_BUFFERED = 30;
+const size_t Synchronizer::MAX_AUDIO_SAMPLES_BUFFERED = 200000;
 
 Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder) {
 	Q_ASSERT(video_encoder != NULL || audio_encoder != NULL);
-	//TODO// support channel counts other than 2
 
 	m_video_encoder = video_encoder;
 	m_audio_encoder = audio_encoder;
@@ -45,7 +45,7 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 	}
 	if(m_audio_encoder != NULL) {
 		m_audio_sample_rate = m_audio_encoder->GetSampleRate();
-		m_audio_sample_size = 4;
+		m_audio_sample_size = 4; //TODO// support channel counts other than 2
 		m_audio_required_frame_size = m_audio_encoder->GetRequiredFrameSize();
 		m_audio_required_sample_format = m_audio_encoder->GetRequiredSampleFormat();
 		switch(m_audio_required_sample_format) {
@@ -57,7 +57,8 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 			m_temp_audio_buffer.resize(m_audio_required_frame_size * m_audio_sample_size);
 		}
 	}
-	m_warn_drop_frame = true;
+	m_warn_drop_video = true;
+	m_warn_drop_audio = true;
 
 	{
 		SharedLock lock(&m_shared_data);
@@ -106,8 +107,8 @@ void Synchronizer::AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame, int64_t 
 
 	// avoid memory problems by limiting the video buffer size
 	if(lock->m_video_buffer.size() >= MAX_VIDEO_FRAMES_BUFFERED) {
-		if(m_warn_drop_frame) {
-			m_warn_drop_frame = false;
+		if(m_warn_drop_video) {
+			m_warn_drop_video = false;
 			Logger::LogWarning("[Synchronizer::AddVideoFrame] Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.");
 		}
 		return;
@@ -137,6 +138,15 @@ void Synchronizer::AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame, int64_t 
 void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int64_t timestamp) {
 	Q_ASSERT(m_audio_encoder != NULL);
 	SharedLock lock(&m_shared_data);
+
+	// avoid memory problems by limiting the audio buffer size
+	if(lock->m_audio_buffer.GetSize() / m_audio_sample_size >= MAX_AUDIO_SAMPLES_BUFFERED) {
+		if(m_warn_drop_audio) {
+			m_warn_drop_audio = false;
+			Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio buffer overflow, some samples will be lost. The video input seems to be too slow.");
+		}
+		return;
+	}
 
 	// start audio
 	if(!lock->m_segment_audio_started) {
@@ -280,6 +290,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 
 			// is the partial frame full?
 			if(lock->m_partial_audio_frame->nb_samples == (int) m_audio_required_frame_size) {
+				 //TODO// support channel counts other than 2
 				int16_t *data_in = (int16_t*) m_temp_audio_buffer.data();
 				switch(m_audio_required_sample_format) {
 					case AV_SAMPLE_FMT_S16: {

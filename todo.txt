@@ -1,10 +1,10 @@
 Testing:
 - fix GLInject upside-down bug (and improve performance?)
+- limit size of the muxer queues
 
 In progress:
 
 Todo:
-- move THROTTLE_THRESHOLD so there is only one
 
 Wishlist:
 - PulseAudio input
@@ -23,7 +23,6 @@ Wishlist:
 - Force fixed fps and/or size on OpenGL applications. Also, different frame rate strategies.
 - maybe rewrite YUVConverter in assembly instead of using GCC vector extensions
 - optionally show rectangle during recording
-- limit size of the muxer queues
 - tray icon
 - play start/stop sound
 - skip microphone startup click?

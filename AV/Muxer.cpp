@@ -168,6 +168,13 @@ void Muxer::AddPacket(unsigned int stream_index, std::unique_ptr<AVPacketWrapper
 	lock->m_packet_queue.push_back(std::move(packet));
 }
 
+unsigned int Muxer::GetQueuedPacketCount(unsigned int stream_index) {
+	Q_ASSERT(m_started);
+	Q_ASSERT(stream_index < m_format_context->nb_streams);
+	StreamLock lock(&m_stream_data[stream_index]);
+	return lock->m_packet_queue.size();
+}
+
 void Muxer::Init() {
 
 	// get the format we want (this is just a pointer, we don't have to free this)

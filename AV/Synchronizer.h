@@ -50,7 +50,7 @@ private:
 
 private:
 	static const double CORRECTION_SPEED;
-	static const size_t MAX_VIDEO_FRAMES_BUFFERED;
+	static const size_t MAX_VIDEO_FRAMES_BUFFERED, MAX_AUDIO_SAMPLES_BUFFERED;
 
 private:
 	VideoEncoder *m_video_encoder;
@@ -60,7 +60,7 @@ private:
 	unsigned int m_audio_sample_rate, m_audio_sample_size;
 	unsigned int m_audio_required_frame_size, m_audio_required_sample_size;
 	AVSampleFormat m_audio_required_sample_format;
-	bool m_warn_drop_frame;
+	bool m_warn_drop_video, m_warn_drop_audio;
 
 	std::vector<char> m_temp_audio_buffer; // stores the original samples for a partial frame with a different sample format
 

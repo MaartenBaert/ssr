@@ -195,8 +195,6 @@ static void X11ImageDrawCursor(Display* dpy, XImage* image, int recording_area_x
 
 }
 
-const size_t X11Input::THROTTLE_THRESHOLD = 20;
-
 X11Input::X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor) {
 	Q_ASSERT(synchronizer->GetVideoEncoder() != NULL);
 
@@ -345,16 +343,6 @@ void X11Input::Free() {
 	}
 }
 
-int64_t X11Input::GetReadDelay() {
-	int64_t delay = 1000000 / m_frame_rate;
-	size_t frames = m_synchronizer->GetVideoEncoder()->GetQueuedFrameCount();
-	if(frames > THROTTLE_THRESHOLD) {
-		int64_t n = (frames - THROTTLE_THRESHOLD) * 1000 / THROTTLE_THRESHOLD;
-		delay += n * n;
-	}
-	return delay;
-}
-
 void X11Input::UpdateScreenConfiguration() {
 	SharedLock lock(&m_shared_data);
 
@@ -390,7 +378,7 @@ void X11Input::run() {
 		while(!m_should_stop) {
 
 			// sleep
-			int64_t delay = GetReadDelay();
+			int64_t delay = m_synchronizer->GetVideoEncoder()->GetFrameDelay();
 			if(delay != 0) {
 				int64_t wait = last_frame_time + delay - hrt_time_micro();
 				if(wait > 11000) {

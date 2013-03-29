@@ -66,8 +66,6 @@ static void VFlipYUV(AVFrameWrapper* frame, unsigned int height) {
 	}
 }
 
-const size_t GLInjectInput::THROTTLE_THRESHOLD = 20;
-
 GLInjectInput::GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launcher) {
 	Q_ASSERT(synchronizer->GetVideoEncoder() != NULL);
 
@@ -128,16 +126,6 @@ void GLInjectInput::Init() {
 
 void GLInjectInput::Free() {
 
-}
-
-int64_t GLInjectInput::GetReadDelay() {
-	int64_t delay = 1000000 / m_frame_rate;
-	size_t frames = m_synchronizer->GetVideoEncoder()->GetQueuedFrameCount();
-	if(frames > THROTTLE_THRESHOLD) {
-		int64_t n = (frames - THROTTLE_THRESHOLD) * 1000 / THROTTLE_THRESHOLD;
-		delay += n * n;
-	}
-	return delay;
 }
 
 void GLInjectInput::run() {
@@ -223,7 +211,8 @@ void GLInjectInput::run() {
 			VFlipYUV(converted_frame.get(), m_out_height);
 
 			// set the timestamp
-			last_frame_time = std::max(last_frame_time + GetReadDelay(), frameinfo.timestamp);
+			int64_t delay = m_synchronizer->GetVideoEncoder()->GetFrameDelay();
+			last_frame_time = std::max(last_frame_time + delay, frameinfo.timestamp);
 
 			// save the frame
 			m_synchronizer->AddVideoFrame(std::move(converted_frame), frameinfo.timestamp);

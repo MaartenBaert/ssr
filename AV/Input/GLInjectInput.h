@@ -27,9 +27,6 @@ class GLInjectLauncher;
 
 class GLInjectInput : private QThread {
 
-public:
-	static const size_t THROTTLE_THRESHOLD;
-
 private:
 	Synchronizer *m_synchronizer;
 	GLInjectLauncher *m_launcher;
@@ -57,7 +54,6 @@ public:
 private:
 	void Init();
 	void Free();
-	int64_t GetReadDelay();
 
 private:
 	virtual void run();
