@@ -1,5 +1,4 @@
 Testing:
-- fix GLInject upside-down bug (and improve performance?)
 - limit size of the muxer queues
 
 In progress:

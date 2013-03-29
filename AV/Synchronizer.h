@@ -39,11 +39,13 @@ private:
 		double m_time_correction_factor; // correction factor used to synchronize video and audio time
 
 		int64_t m_time_offset; // the length of all previous segments combined (in microseconds)
-		bool m_segment_video_started, m_segment_audio_started; // whether video and audio have started
+		bool m_segment_video_started, m_segment_audio_started; // whether video and audio have started (always true if the corresponding stream is disabled)
 		int64_t m_segment_video_start_time, m_segment_audio_start_time; // the start time of video and audio (real-time, in microseconds)
 		int64_t m_segment_video_stop_time, m_segment_audio_stop_time; // the stop time of video and audio (real-time, in microseconds)
 		int64_t m_segment_audio_offset; // the offset in the final stream corresponding to the audio start time
 		int64_t m_segment_audio_samples_read; // the number of samples that have been read from the audio buffer (including dropped samples)
+
+		bool m_warn_drop_video, m_warn_drop_audio, m_warn_desync;
 
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
@@ -60,7 +62,6 @@ private:
 	unsigned int m_audio_sample_rate, m_audio_sample_size;
 	unsigned int m_audio_required_frame_size, m_audio_required_sample_size;
 	AVSampleFormat m_audio_required_sample_format;
-	bool m_warn_drop_video, m_warn_drop_audio;
 
 	std::vector<char> m_temp_audio_buffer; // stores the original samples for a partial frame with a different sample format
 

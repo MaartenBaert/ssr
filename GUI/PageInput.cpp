@@ -143,7 +143,7 @@ PageInput::PageInput(MainWindow* main_window)
 		m_lineedit_alsa_device->setToolTip("The ALSA device. Normally this should be 'default'.\n"
 											"If you are using PulseAudio (the default for ubuntu), you should use PulseAudio Volume Control to select the correct input.\n"
 											"PulseAudio can also do more advanced things like recording the sound of other programs instead of recording the microphone.\n"
-											"If you are using ALSA directly, you can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).\n");
+											"If you are using ALSA directly, you can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).");
 
 		connect(m_checkbox_audio_enable, SIGNAL(clicked(bool)), this, SLOT(UpdateAudioFields()));
 

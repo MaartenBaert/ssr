@@ -16,13 +16,20 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #define GLINJECT_FLAG_CAPTURE_FRONT  0x0002
 
 struct GLInjectHeader {
+	// input
 	uint32_t cbuffer_size, max_bytes;
+	uint32_t fps_limit;
 	uint32_t flags;
+	// input/output
 	uint32_t read_pos, write_pos;
+	// output
 	uint32_t current_width, current_height;
+	uint32_t current_fps;
 };
 struct GLInjectFrameInfo {
+	// input
 	int32_t shm_id;
+	// output
 	int64_t timestamp;
 	uint32_t width, height;
 };

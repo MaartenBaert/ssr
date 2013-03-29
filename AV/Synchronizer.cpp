@@ -31,8 +31,10 @@ const double Synchronizer::CORRECTION_SPEED = 0.002;
 
 // The maximum number of video frames and audio samples that will be buffered. This should be enough to cope with the fact that video and
 // audio don't arrive at the same time, but not too high because that would cause memory problems if one of the inputs fails.
+// The limit for audio should be set very high, because (1) audio uses almost no memory and (2) it is possible to get huge delays between
+// video frames when using GLInject (loading screens are often a single frame).
 const size_t Synchronizer::MAX_VIDEO_FRAMES_BUFFERED = 30;
-const size_t Synchronizer::MAX_AUDIO_SAMPLES_BUFFERED = 200000;
+const size_t Synchronizer::MAX_AUDIO_SAMPLES_BUFFERED = 5000000;
 
 Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder) {
 	Q_ASSERT(video_encoder != NULL || audio_encoder != NULL);
@@ -57,8 +59,6 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 			m_temp_audio_buffer.resize(m_audio_required_frame_size * m_audio_sample_size);
 		}
 	}
-	m_warn_drop_video = true;
-	m_warn_drop_audio = true;
 
 	{
 		SharedLock lock(&m_shared_data);
@@ -69,6 +69,9 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 		lock->m_segment_video_started = (m_video_encoder == NULL);
 		lock->m_segment_audio_started = (m_audio_encoder == NULL);
 		lock->m_segment_audio_samples_read = 0;
+		lock->m_warn_drop_video = true;
+		lock->m_warn_drop_audio = true;
+		lock->m_warn_desync = true;
 	}
 
 }
@@ -107,11 +110,18 @@ void Synchronizer::AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame, int64_t 
 
 	// avoid memory problems by limiting the video buffer size
 	if(lock->m_video_buffer.size() >= MAX_VIDEO_FRAMES_BUFFERED) {
-		if(m_warn_drop_video) {
-			m_warn_drop_video = false;
-			Logger::LogWarning("[Synchronizer::AddVideoFrame] Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.");
+		if(lock->m_segment_audio_started) {
+			if(lock->m_warn_drop_video) {
+				lock->m_warn_drop_video = false;
+				Logger::LogWarning("[Synchronizer::AddVideoFrame] Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.");
+			}
+			return;
+		} else {
+			// if the audio hasn't started yet, it makes more sense to drop the oldest frames
+			lock->m_video_buffer.pop_front();
+			Q_ASSERT(lock->m_video_buffer.size() > 0);
+			lock->m_segment_video_start_time = lock->m_video_buffer.front()->pkt_dts;
 		}
-		return;
 	}
 
 	// start video
@@ -141,11 +151,19 @@ void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int6
 
 	// avoid memory problems by limiting the audio buffer size
 	if(lock->m_audio_buffer.GetSize() / m_audio_sample_size >= MAX_AUDIO_SAMPLES_BUFFERED) {
-		if(m_warn_drop_audio) {
-			m_warn_drop_audio = false;
-			Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio buffer overflow, some samples will be lost. The video input seems to be too slow.");
+		if(lock->m_segment_video_started) {
+			if(lock->m_warn_drop_audio) {
+				lock->m_warn_drop_audio = false;
+				Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio buffer overflow, some samples will be lost. The video input seems to be too slow.");
+			}
+			return;
+		} else {
+			// If the video hasn't started yet, it makes more sense to drop the oldest samples.
+			// Shifting the start time like this isn't completely accurate, but this shouldn't happen often anyway.
+			size_t n = lock->m_audio_buffer.GetSize() / m_audio_sample_size - MAX_AUDIO_SAMPLES_BUFFERED + MAX_AUDIO_SAMPLES_BUFFERED / 10;
+			lock->m_audio_buffer.Drop(n * m_audio_sample_size);
+			lock->m_segment_audio_start_time += (int64_t) ((double) n / (double) m_audio_sample_rate / lock->m_time_correction_factor * 1.0e6);
 		}
-		return;
 	}
 
 	// start audio
@@ -164,8 +182,21 @@ void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int6
 	double time_length = (double)(timestamp - lock->m_segment_audio_start_time) * 1.0e-6;
 	if(time_length > 5.0) {
 		double time_correction_factor = sample_length / time_length;
-		lock->m_time_correction_factor = clamp(0.95, 1.05, lock->m_time_correction_factor
-				+ (time_correction_factor - lock->m_time_correction_factor) * CORRECTION_SPEED);
+		lock->m_time_correction_factor = lock->m_time_correction_factor + (time_correction_factor - lock->m_time_correction_factor) * CORRECTION_SPEED;
+		if(lock->m_time_correction_factor < 0.95) {
+			lock->m_time_correction_factor = 0.95;
+			if(lock->m_warn_desync) {
+				lock->m_warn_desync = false;
+				Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio input is more than 5% too slow, video and audio will be out of sync.");
+			}
+		}
+		if(lock->m_time_correction_factor > 1.05) {
+			lock->m_time_correction_factor = 1.05;
+			if(lock->m_warn_desync) {
+				lock->m_warn_desync = false;
+				Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio input is more than 5% too fast, video and audio will be out of sync.");
+			}
+		}
 	}
 
 	// store the samples

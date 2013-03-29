@@ -95,11 +95,13 @@ void GLInjectLauncher::Init() {
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	header->cbuffer_size = CBUFFER_SIZE;
 	header->max_bytes = m_max_bytes;
+	header->fps_limit = 0;
 	header->flags = ((m_record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((m_capture_front)? GLINJECT_FLAG_CAPTURE_FRONT : 0);
 	header->read_pos = 0;
 	header->write_pos = 0;
 	header->current_width = 0;
 	header->current_height = 0;
+	header->current_fps = 0;
 
 	// put the glinject libraries in the .ssr directory
 	QString dir = GetApplicationUserDir();
