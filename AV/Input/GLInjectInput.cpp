@@ -133,7 +133,7 @@ void GLInjectInput::run() {
 
 		Logger::LogInfo("[GLInjectInput::run] Input thread started.");
 
-		int64_t last_frame_time = hrt_time_micro();
+		int64_t next_frame_time = hrt_time_micro();
 		while(!m_should_stop) {
 
 			// is a frame ready?
@@ -147,14 +147,21 @@ void GLInjectInput::run() {
 			// get the frame info
 			unsigned int current_frame = header.read_pos % m_cbuffer_size;
 			GLInjectFrameInfo frameinfo = *(GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
+			if(frameinfo.width < 2 || frameinfo.height < 2) {
+				Logger::LogInfo("[GLInjectInput::run] Error: Image is too small!");
+				throw GLInjectException();
+			}
 			if(frameinfo.width > 10000 || frameinfo.height > 10000) {
 				Logger::LogInfo("[GLInjectInput::run] Error: Image is too large!");
 				throw GLInjectException();
 			}
-			if(frameinfo.timestamp < last_frame_time) {
+			if(frameinfo.timestamp < next_frame_time) {
 				((GLInjectHeader*) m_shm_main_ptr)->read_pos = (header.read_pos + 1) % (m_cbuffer_size * 2);
+				static int drops = 0; ++drops;
+				fprintf(stderr, "drops = %d\n", drops);
 				continue;
 			}
+			next_frame_time = std::max(next_frame_time + m_synchronizer->GetVideoEncoder()->GetFrameDelay(), frameinfo.timestamp);
 
 			// get the image
 			uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];
@@ -209,10 +216,6 @@ void GLInjectInput::run() {
 
 			// flip the frame vertically
 			VFlipYUV(converted_frame.get(), m_out_height);
-
-			// set the timestamp
-			int64_t delay = m_synchronizer->GetVideoEncoder()->GetFrameDelay();
-			last_frame_time = std::max(last_frame_time + delay, frameinfo.timestamp);
 
 			// save the frame
 			m_synchronizer->AddVideoFrame(std::move(converted_frame), frameinfo.timestamp);

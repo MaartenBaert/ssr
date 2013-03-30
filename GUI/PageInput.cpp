@@ -198,6 +198,7 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetGLInjectRelaxPermissions(settings->value("input/glinject/relax_permissions", false).toBool());
 	SetGLInjectMaxMegaPixels(settings->value("input/glinject/max_megapixels", 2).toUInt());
 	SetGLInjectCaptureFront(settings->value("input/glinject/capture_front", false).toBool());
+	SetGLInjectLimitFPS(settings->value("input/glinject/limit_fps", false).toBool());
 	UpdateVideoAreaFields();
 	UpdateVideoScaleFields();
 	UpdateAudioFields();
@@ -222,6 +223,7 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/glinject/relax_permissions", GetGLInjectRelaxPermissions());
 	settings->setValue("input/glinject/max_megapixels", GetGLInjectMaxMegaPixels());
 	settings->setValue("input/glinject/capture_front", GetGLInjectCaptureFront());
+	settings->setValue("input/glinject/limit_fps", GetGLInjectLimitFPS());
 }
 
 // Tries to find the real window that corresponds to a top-level window (the actual window without window manager decorations).
@@ -633,6 +635,10 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	m_checkbox_capture_front->setToolTip("If checked, the injected library will read the front buffer (the frame that's currently on the screen) rather than the back buffer\n"
 										 "(the new frame). This may be useful for some special applications that draw directly to the screen.");
 	m_checkbox_capture_front->setChecked(m_parent->GetGLInjectCaptureFront());
+	m_checkbox_limit_fps = new QCheckBox("Limit application frame rate", this);
+	m_checkbox_limit_fps->setToolTip("If checked, the injected library will slow down the application so the frame rate doesn't become higher than the recording frame rate.\n"
+									 "This stops the application from wasting CPU time for frames that won't be recorded, and sometimes results in smoother video (this depends on the application).");
+	m_checkbox_limit_fps->setChecked(m_parent->GetGLInjectLimitFPS());
 
 	QPushButton *pushbutton_close = new QPushButton("Close", this);
 
@@ -657,6 +663,7 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 		layout2->addWidget(m_lineedit_max_megapixels);
 	}
 	layout->addWidget(m_checkbox_capture_front);
+	layout->addWidget(m_checkbox_limit_fps);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
 		layout->addLayout(layout2);
@@ -673,4 +680,5 @@ void DialogGLInject::WriteBack() {
 	m_parent->SetGLInjectRelaxPermissions(m_checkbox_relax_permissions->isChecked());
 	m_parent->SetGLInjectMaxMegaPixels(m_lineedit_max_megapixels->text().toUInt());
 	m_parent->SetGLInjectCaptureFront(m_checkbox_capture_front->isChecked());
+	m_parent->SetGLInjectLimitFPS(m_checkbox_limit_fps->isChecked());
 }

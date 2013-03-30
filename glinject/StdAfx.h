@@ -24,7 +24,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include <cstring>
 #include <ctime>
 #include <stdint.h>
-#include <inttypes.h>
+#include <unistd.h>
 #include <dlfcn.h>
 #include <sys/shm.h>
 

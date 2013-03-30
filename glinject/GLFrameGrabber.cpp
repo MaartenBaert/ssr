@@ -86,7 +86,10 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 
 	m_shm_main_ptr = (char*) -1;
 
-	m_warn_max_bytes = true;
+	m_next_frame_time = hrt_time_micro();
+
+	m_warn_too_small = true;
+	m_warn_too_large = true;
 
 	fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] created.\n", m_x11_display, m_x11_window, m_glx_drawable);
 
@@ -111,6 +114,7 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
 	m_cbuffer_size = header.cbuffer_size;
 	m_max_bytes = header.max_bytes;
+	m_target_fps = header.target_fps;
 	m_flags = header.flags;
 	if(m_cbuffer_size <= 0 || m_cbuffer_size > 1000000) {
 		fprintf(stderr, "[SSR-GLInject] Error: Circular buffer size %u is invalid!\n", m_cbuffer_size);
@@ -177,12 +181,45 @@ void GLFrameGrabber::GrabFrame() {
 
 	// check image size
 	unsigned int image_stride = grow_align16(m_width * 4);
+	if(m_width < 2 || m_height < 2) {
+		if(m_warn_too_small) {
+			m_warn_too_small = false;
+			fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] frame is too small!\n", m_x11_display, m_x11_window, m_glx_drawable);
+		}
+		return;
+	}
 	if(m_width > 10000 || m_height > 10000 || image_stride * m_height > m_max_bytes) {
-		if(m_warn_max_bytes) {
-			m_warn_max_bytes = false;
+		if(m_warn_too_large) {
+			m_warn_too_large = false;
 			fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] frame is too large to capture!\n", m_x11_display, m_x11_window, m_glx_drawable);
 		}
 		return;
+	}
+
+	// write the current size to shared memory
+	((GLInjectHeader*) m_shm_main_ptr)->current_width = m_width;
+	((GLInjectHeader*) m_shm_main_ptr)->current_height = m_height;
+
+	// is there space in the circular buffer?
+	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
+	unsigned int frames_ready = positive_mod((int) header.write_pos - (int) header.read_pos, (int) m_cbuffer_size * 2);
+	if(frames_ready >= m_cbuffer_size)
+		return;
+
+	// get the timestamp
+	int64_t timestamp = hrt_time_micro();
+	if(m_target_fps > 0) {
+		int64_t delay = 1000000 / m_target_fps;
+		if(m_flags & GLINJECT_FLAG_LIMIT_FPS) {
+			if(timestamp < m_next_frame_time) {
+				usleep(m_next_frame_time - timestamp);
+				timestamp = hrt_time_micro();
+			}
+		} else {
+			if(timestamp < m_next_frame_time)
+				return;
+		}
+		m_next_frame_time = std::max(m_next_frame_time + delay, timestamp);
 	}
 
 	CheckGLError("<external code>");
@@ -207,38 +244,27 @@ void GLFrameGrabber::GrabFrame() {
 	CGLE(glPixelStorei(GL_PACK_ALIGNMENT, 8));
 	CGLE(glReadBuffer((m_flags & GLINJECT_FLAG_CAPTURE_FRONT)? GL_FRONT : GL_BACK));
 
-	// write the current size to shared memory
-	((GLInjectHeader*) m_shm_main_ptr)->current_width = m_width;
-	((GLInjectHeader*) m_shm_main_ptr)->current_height = m_height;
+	// initialize the frame
+	unsigned int current_frame = header.write_pos % m_cbuffer_size;
+	GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
+	frameinfo->timestamp = timestamp;
+	frameinfo->width = m_width;
+	frameinfo->height = m_height;
+	uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];
 
-	// is there space in the circular buffer?
-	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
-	unsigned int frames_ready = positive_mod((int) header.write_pos - (int) header.read_pos, (int) m_cbuffer_size * 2);
-	if(frames_ready < m_cbuffer_size) {
+	// capture the frame
+	CGLE(glReadPixels(0, 0, m_width, m_height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data));
 
-		// initialize the frame
-		unsigned int current_frame = header.write_pos % m_cbuffer_size;
-		GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
-		frameinfo->timestamp = hrt_time_micro();
-		frameinfo->width = m_width;
-		frameinfo->height = m_height;
-		uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];
-
-		// capture the frame
-		CGLE(glReadPixels(0, 0, m_width, m_height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data));
-
-		// draw the cursor
-		if(m_flags & GLINJECT_FLAG_RECORD_CURSOR) {
-			int inner_x, inner_y;
-			if(XTranslateCoordinates(m_x11_display, m_x11_window, DefaultRootWindow(m_x11_display), 0, 0, &inner_x, &inner_y, &unused_window)) {
-				GLImageDrawCursor(m_x11_display, image_data, image_stride, m_width, m_height, inner_x, inner_y);
-			}
+	// draw the cursor
+	if(m_flags & GLINJECT_FLAG_RECORD_CURSOR) {
+		int inner_x, inner_y;
+		if(XTranslateCoordinates(m_x11_display, m_x11_window, DefaultRootWindow(m_x11_display), 0, 0, &inner_x, &inner_y, &unused_window)) {
+			GLImageDrawCursor(m_x11_display, image_data, image_stride, m_width, m_height, inner_x, inner_y);
 		}
-
-		// go to the next frame
-		((GLInjectHeader*) m_shm_main_ptr)->write_pos = (header.write_pos + 1) % (m_cbuffer_size * 2);
-
 	}
+
+	// go to the next frame
+	((GLInjectHeader*) m_shm_main_ptr)->write_pos = (header.write_pos + 1) % (m_cbuffer_size * 2);
 
 	// restore settings
 	CGLE(glBindBuffer(GL_PIXEL_PACK_BUFFER, old_pbo));
@@ -246,7 +272,5 @@ void GLFrameGrabber::GrabFrame() {
 	CGLE(glBindFramebuffer(GL_READ_FRAMEBUFFER, old_fbo_read));
 	CGLE(glPopClientAttrib());
 	CGLE(glPopAttrib());
-
-	//fprintf(m_log, "%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\n", t2 - t1, t3 - t2, t4 - t3, t5 - t4);
 
 }

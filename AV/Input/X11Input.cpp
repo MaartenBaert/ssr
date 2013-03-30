@@ -374,24 +374,21 @@ void X11Input::run() {
 
 		unsigned int grab_x = m_x, grab_y = m_y;
 
-		int64_t last_frame_time = hrt_time_micro();
+		int64_t next_frame_time = hrt_time_micro();
 		while(!m_should_stop) {
 
 			// sleep
-			int64_t delay = m_synchronizer->GetVideoEncoder()->GetFrameDelay();
-			if(delay != 0) {
-				int64_t wait = last_frame_time + delay - hrt_time_micro();
-				if(wait > 11000) {
-					// the thread can't sleep for too long because it still has to check the m_should_stop flag periodically
-					usleep(10000);
-					continue;
-				} else if(wait > 0) {
-					usleep(wait);
-				}
+			int64_t timestamp = hrt_time_micro();
+			int64_t wait = next_frame_time - timestamp;
+			if(wait > 11000) {
+				// the thread can't sleep for too long because it still has to check the m_should_stop flag periodically
+				usleep(10000);
+				continue;
+			} else if(wait > 0) {
+				usleep(wait);
+				timestamp = hrt_time_micro();
 			}
-
-			// save the current time
-			last_frame_time = hrt_time_micro();
+			next_frame_time = std::max(next_frame_time + m_synchronizer->GetVideoEncoder()->GetFrameDelay(), timestamp);
 
 			SharedLock lock(&m_shared_data);
 
@@ -488,7 +485,7 @@ void X11Input::run() {
 			}
 
 			// save the frame
-			m_synchronizer->AddVideoFrame(std::move(converted_frame), last_frame_time);
+			m_synchronizer->AddVideoFrame(std::move(converted_frame), timestamp);
 
 		}
 

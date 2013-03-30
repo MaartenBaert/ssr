@@ -14,11 +14,12 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #define GLINJECT_FLAG_RECORD_CURSOR  0x0001
 #define GLINJECT_FLAG_CAPTURE_FRONT  0x0002
+#define GLINJECT_FLAG_LIMIT_FPS      0x0004
 
 struct GLInjectHeader {
 	// input
 	uint32_t cbuffer_size, max_bytes;
-	uint32_t fps_limit;
+	uint32_t target_fps;
 	uint32_t flags;
 	// input/output
 	uint32_t read_pos, write_pos;
