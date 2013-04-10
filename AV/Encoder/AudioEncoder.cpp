@@ -34,7 +34,12 @@ static bool CheckSampleFormat(AVCodec* codec, AVSampleFormat sample_fmt) {
 	return false;
 }
 
-static AVSampleFormat allowed_sample_formats[] = {AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_FLTP};
+static AVSampleFormat allowed_sample_formats[] = {
+	AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_FLT,
+#if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
+	AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_FLTP,
+#endif
+};
 
 AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 						   unsigned int bit_rate, unsigned int sample_rate)
