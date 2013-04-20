@@ -51,8 +51,16 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 		m_audio_required_frame_size = m_audio_encoder->GetRequiredFrameSize();
 		m_audio_required_sample_format = m_audio_encoder->GetRequiredSampleFormat();
 		switch(m_audio_required_sample_format) {
-			case AV_SAMPLE_FMT_S16: case AV_SAMPLE_FMT_S16P: m_audio_required_sample_size = 4; break;
-			case AV_SAMPLE_FMT_FLT: case AV_SAMPLE_FMT_FLTP: m_audio_required_sample_size = 8; break;
+			case AV_SAMPLE_FMT_S16:
+#if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
+			case AV_SAMPLE_FMT_S16P:
+#endif
+				m_audio_required_sample_size = 4; break;
+			case AV_SAMPLE_FMT_FLT:
+#if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
+			case AV_SAMPLE_FMT_FLTP:
+#endif
+				m_audio_required_sample_size = 8; break;
 			default: Q_ASSERT(false); break;
 		}
 		if(m_audio_required_sample_format != AV_SAMPLE_FMT_S16) {
@@ -288,6 +296,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 						lock->m_partial_audio_frame->linesize[0] = m_audio_required_frame_size * m_audio_required_sample_size;
 						break;
 					}
+#if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
 					case AV_SAMPLE_FMT_S16P:
 					case AV_SAMPLE_FMT_FLTP: {
 						lock->m_partial_audio_frame->linesize[0] = m_audio_required_frame_size * m_audio_required_sample_size / 2;
@@ -295,6 +304,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 						lock->m_partial_audio_frame->data[1] = lock->m_partial_audio_frame->data[0] + lock->m_partial_audio_frame->linesize[0];
 						break;
 					}
+#endif
 					default: {
 						Q_ASSERT(false);
 						break;
@@ -327,19 +337,20 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 					case AV_SAMPLE_FMT_S16: {
 						break;
 					}
+					case AV_SAMPLE_FMT_FLT: {
+						float *data_out = (float*) lock->m_partial_audio_frame->data[0];
+						for(unsigned int i = 0; i < m_audio_required_frame_size * 2; ++i) {
+							*(data_out++) = (double) *(data_in++) / 32768.0;
+						}
+						break;
+					}
+#if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
 					case AV_SAMPLE_FMT_S16P: {
 						int16_t *data_out1 = (int16_t*) lock->m_partial_audio_frame->data[0];
 						int16_t *data_out2 = (int16_t*) lock->m_partial_audio_frame->data[1];
 						for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
 							*(data_out1++) = *(data_in++);
 							*(data_out2++) = *(data_in++);
-						}
-						break;
-					}
-					case AV_SAMPLE_FMT_FLT: {
-						float *data_out = (float*) lock->m_partial_audio_frame->data[0];
-						for(unsigned int i = 0; i < m_audio_required_frame_size * 2; ++i) {
-							*(data_out++) = (double) *(data_in++) / 32768.0;
 						}
 						break;
 					}
@@ -352,6 +363,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 						}
 						break;
 					}
+#endif
 					default: {
 						Q_ASSERT(false);
 						break;

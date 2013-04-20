@@ -67,6 +67,9 @@ extern "C" {
 // https://git.libav.org/?p=libav.git;a=commit;f=libavcodec/libx264.c;h=d5dc8cc2974c816ba964692b75c9f17f40830414
 #define SSR_USE_AVCODEC_OPT_CRF        (LIBAVCODEC_VERSION_MAJOR > 53 || (LIBAVCODEC_VERSION_MAJOR == 53 && LIBAVCODEC_VERSION_MINOR >= 8))
 
+// planar sample formats require libavutil >= 51.17
+#define SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT (LIBAVUTIL_VERSION_MAJOR > 51 || (LIBAVUTIL_VERSION_MAJOR == 51 && LIBAVUTIL_VERSION_MINOR >= 17))
+
 // simple function to do n-byte alignment
 inline size_t grow_align16(size_t size) {
 	return (size_t) (size + 15) & ~((size_t) 15);
