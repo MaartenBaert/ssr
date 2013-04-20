@@ -52,6 +52,10 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		Logger::LogError("[VideoEncoder::Init] Error: Width or height is not an even number.");
 		throw LibavException();
 	}
+	if(m_frame_rate == 0) {
+		Logger::LogError("[VideoEncoder::Init] Error: Frame rate it zero.");
+		throw LibavException();
+	}
 
 	// start the encoder
 	AVDictionary *options = NULL;

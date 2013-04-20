@@ -32,8 +32,8 @@ class Synchronizer;
 class X11Input;
 class GLInjectLauncher;
 class GLInjectInput;
-//class AudioInput;
 class ALSAInput;
+class VideoPreviewer;
 
 class PageRecord : public QWidget {
 	Q_OBJECT
@@ -41,16 +41,17 @@ class PageRecord : public QWidget {
 private:
 	MainWindow *m_main_window;
 
-	bool m_page_started, m_encoders_started, m_recording;
+	bool m_page_started, m_encoders_started, m_capturing, m_previewing;
 	bool m_video_record_cursor, m_video_follow_cursor, m_video_glinject;
-	unsigned int m_video_x, m_video_y, m_video_width, m_video_height;
+	unsigned int m_video_x, m_video_y, m_video_in_width, m_video_in_height;
 	bool m_video_scaling;
-	unsigned int m_video_out_width, m_video_out_height;
+	unsigned int m_video_scaled_width, m_video_scaled_height;
 	unsigned int m_video_frame_rate, m_audio_sample_rate;
 	bool m_audio_enabled;
 	QString m_alsa_device;
 
 	QString m_file;
+	unsigned int m_video_out_width, m_video_out_height;
 	PageOutput::enum_container m_container;
 	PageOutput::enum_video_codec m_video_codec;
 	PageOutput::enum_audio_codec m_audio_codec;
@@ -79,8 +80,15 @@ private:
 	QCheckBox *m_checkbox_hotkey_ctrl, *m_checkbox_hotkey_shift, *m_checkbox_hotkey_alt, *m_checkbox_hotkey_super;
 	QComboBox *m_combobox_hotkey_key;
 
-	QLabel *m_label_total_time, *m_label_video_frame_rate, *m_label_video_size;
+	QLabel *m_label_total_time, *m_label_video_frame_rate, *m_label_video_in_size, *m_label_video_out_size;
 	QLabel *m_label_file_name, *m_label_file_size, *m_label_file_bit_rate;
+
+	QStackedLayout *m_stacked_layout_preview;
+	QWidget *m_preview_page1, *m_preview_page2;
+	QLineEdit *m_lineedit_preview_frame_rate;
+	VideoPreviewer *m_video_previewer;
+	QPushButton *m_pushbutton_preview_start_stop;
+
 	QTextEdit *m_textedit_log;
 
 public:
@@ -96,8 +104,10 @@ public:
 
 	void PageStart();
 	void PageStop(bool save);
-	void RecordStart();
-	void RecordPause();
+	void CaptureStart();
+	void CaptureStop();
+
+	void UpdatePreview();
 
 public:
 	inline bool IsHotkeyEnabled() { return m_checkbox_hotkey_enable->isChecked(); }
@@ -106,6 +116,7 @@ public:
 	inline bool IsHotkeyAltEnabled() { return m_checkbox_hotkey_alt->isChecked(); }
 	inline bool IsHotkeySuperEnabled() { return m_checkbox_hotkey_super->isChecked(); }
 	inline unsigned int GetHotkeyKey() { return m_combobox_hotkey_key->currentIndex(); }
+	inline unsigned int GetPreviewFrameRate() { return m_lineedit_preview_frame_rate->text().toUInt(); }
 
 	inline void SetHotkeyEnabled(bool enable) { m_checkbox_hotkey_enable->setChecked(enable); }
 	inline void SetHotkeyCtrlEnabled(bool enable) { m_checkbox_hotkey_ctrl->setChecked(enable); }
@@ -113,6 +124,7 @@ public:
 	inline void SetHotkeyAltEnabled(bool enable) { m_checkbox_hotkey_alt->setChecked(enable); }
 	inline void SetHotkeySuperEnabled(bool enable) { m_checkbox_hotkey_super->setChecked(enable); }
 	inline void SetHotkeyKey(unsigned int key) { m_combobox_hotkey_key->setCurrentIndex(clamp<unsigned int>(0, 25, key)); }
+	inline void SetPreviewFrameRate(unsigned int frame_rate) { m_lineedit_preview_frame_rate->setText(QString::number(frame_rate)); }
 
 public slots:
 	void UpdateHotkeyFields();
@@ -120,6 +132,7 @@ public slots:
 
 private slots:
 	void RecordStartPause();
+	void PreviewStartStop();
 	void Cancel();
 	void Save();
 	void UpdateInformation();

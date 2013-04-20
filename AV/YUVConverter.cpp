@@ -73,11 +73,7 @@ void YUVConverter::Convert(unsigned int w, unsigned int h, uint8_t* in_data, int
 		} else {
 			if(m_warn_alignment) {
 				m_warn_alignment = false;
-				Logger::LogWarning("[YUVConverter::Convert] Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem but performance will be worse."
-									 "\n    in_data = 0x" + QString::number((uintptr_t) in_data, 16) + ", in_stride = 0x" + QString::number(in_stride, 16) +
-									 "\n    out_data[0] = 0x" + QString::number((uintptr_t) out_data[0], 16) + ", out_stride[0] = 0x" + QString::number(out_stride[0], 16) +
-									 "\n    out_data[1] = 0x" + QString::number((uintptr_t) out_data[1], 16) + ", out_stride[1] = 0x" + QString::number(out_stride[1], 16) +
-									 "\n    out_data[2] = 0x" + QString::number((uintptr_t) out_data[2], 16) + ", out_stride[2] = 0x" + QString::number(out_stride[2], 16));
+				Logger::LogWarning("[YUVConverter::Convert] Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem but performance will be worse.");
 			}
 			Convert_Fallback(w, h, in_data, in_stride, out_data, out_stride);
 		}
@@ -91,14 +87,14 @@ static void Convert_Fallback(unsigned int w, unsigned int h, uint8_t* in_data, i
 
 	int y_offset = 128 + (16 << 8), u_offset = 512 + (128 << 10), v_offset = 512 + (128 << 10);
 
-	for(unsigned int y = 0; y < h / 2; ++y) {
-		uint32_t *rgb1 = (uint32_t*)(in_data + in_stride * y * 2);
-		uint32_t *rgb2 = (uint32_t*)(in_data + in_stride * (y * 2 + 1));
-		uint8_t *yuv_y1 = out_data[0] + out_stride[0] * y * 2;
-		uint8_t *yuv_y2 = out_data[0] + out_stride[0] * (y * 2 + 1);
-		uint8_t *yuv_u = out_data[1] + out_stride[1] * y;
-		uint8_t *yuv_v = out_data[2] + out_stride[2] * y;
-		for(unsigned int x = 0; x < w / 2; ++x) {
+	for(unsigned int j = 0; j < h / 2; ++j) {
+		uint32_t *rgb1 = (uint32_t*)(in_data + in_stride * (int) j * 2);
+		uint32_t *rgb2 = (uint32_t*)(in_data + in_stride * ((int) j * 2 + 1));
+		uint8_t *yuv_y1 = out_data[0] + out_stride[0] * (int) j * 2;
+		uint8_t *yuv_y2 = out_data[0] + out_stride[0] * ((int) j * 2 + 1);
+		uint8_t *yuv_u = out_data[1] + out_stride[1] * (int) j;
+		uint8_t *yuv_v = out_data[2] + out_stride[2] * (int) j;
+		for(unsigned int i = 0; i < w / 2; ++i) {
 			uint32_t c[4] = {rgb1[0], rgb1[1], rgb2[0], rgb2[1]};
 			int r[4] = {(int) ((c[0] >> 16) & 0xff), (int) ((c[1] >> 16) & 0xff), (int) ((c[2] >> 16) & 0xff), (int) ((c[3] >> 16) & 0xff)};
 			int g[4] = {(int) ((c[0] >>  8) & 0xff), (int) ((c[1] >>  8) & 0xff), (int) ((c[2] >>  8) & 0xff), (int) ((c[3] >>  8) & 0xff)};
@@ -219,12 +215,12 @@ static void Convert_SSSE3(unsigned int w, unsigned int h, uint8_t* in_data, int 
 	v16u8 v_shuffle4 = {255, 255, 255, 255, 255, 255, 255, 255, 1, 5, 3, 7, 9, 13, 11, 15};
 
 	for(unsigned int j = 0; j < h / 2; ++j) {
-		uint8_t *rgb1 = in_data + in_stride * j * 2;
-		uint8_t *rgb2 = in_data + in_stride * (j * 2 + 1);
-		uint8_t *yuv_y1 = out_data[0] + out_stride[0] * j * 2;
-		uint8_t *yuv_y2 = out_data[0] + out_stride[0] * (j * 2 + 1);
-		uint8_t *yuv_u = out_data[1] + out_stride[1] * j;
-		uint8_t *yuv_v = out_data[2] + out_stride[2] * j;
+		uint8_t *rgb1 = in_data + in_stride * (int) j * 2;
+		uint8_t *rgb2 = in_data + in_stride * ((int) j * 2 + 1);
+		uint8_t *yuv_y1 = out_data[0] + out_stride[0] * (int) j * 2;
+		uint8_t *yuv_y2 = out_data[0] + out_stride[0] * ((int) j * 2 + 1);
+		uint8_t *yuv_u = out_data[1] + out_stride[1] * (int) j;
+		uint8_t *yuv_v = out_data[2] + out_stride[2] * (int) j;
 		for(unsigned int i = 0; i < w / 32; ++i) {
 			v16u8 up1, vp1, up2, vp2;
 			SSSE3_Convert(rgb1, rgb2, yuv_y1, yuv_y2, up1, vp1);

@@ -21,54 +21,38 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "StdAfx.h"
 
 #include "VPair.h"
-#include "YUVConverter.h"
 
-class Synchronizer;
-class GLInjectLauncher;
-class VideoPreviewer;
-
-class GLInjectInput : private QThread {
+class VideoPreviewer : public QWidget {
 
 private:
 	struct SharedData {
-		VideoPreviewer *m_video_previewer;
+		QImage m_image;
+		int64_t m_next_frame_time;
+		QSize m_size;
+		unsigned int m_frame_rate;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 
 private:
-	Synchronizer *m_synchronizer;
-	GLInjectLauncher *m_launcher;
-
-	unsigned int m_cbuffer_size, m_max_bytes;
-	unsigned int m_frame_rate, m_out_width, m_out_height;
-
-	volatile char *m_shm_main_ptr;
-	std::vector<volatile char*> m_shm_frame_ptrs;
-
-	bool m_warn_swscale;
-	YUVConverter m_yuv_converter;
 	SwsContext *m_sws_context;
 
 	VPair<SharedData> m_shared_data;
-	volatile bool m_should_stop, m_error_occurred;
+	volatile bool m_should_repaint;
 
 public:
-	GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launcher);
-	~GLInjectInput();
+	VideoPreviewer(QWidget* parent);
+	~VideoPreviewer();
 
-	// Connect the video previewer.
-	// video_previewer can be NULL.
-	void ConnectVideoPreviewer(VideoPreviewer* video_previewer);
+	void Reset();
+	void SetFrameRate(unsigned int frame_rate);
+	void ReadFrame(unsigned int width, unsigned int height, uint8_t* in_data, int in_stride, AVPixelFormat format);
+	void CheckFrame();
 
-	// Returns whether an error has occurred in the input thread.
-	// This function is thread-safe.
-	inline bool HasErrorOccurred() { return m_error_occurred; }
+	virtual QSize minimumSizeHint() const { return QSize(100, 100); }
+	virtual QSize sizeHint() const { return QSize(100, 100); }
 
-private:
-	void Init();
-	void Free();
-
-private:
-	virtual void run();
+protected:
+	virtual void resizeEvent(QResizeEvent* event);
+	virtual void paintEvent(QPaintEvent* event);
 
 };

@@ -15,9 +15,9 @@ This list may be incomplete. All instructions and package names are for Ubuntu 1
 - Qt 4 (package qt4-qmake, libqt4-dev)
 - libavformat (package libavformat-dev)
 - libavcodec (package libavcodec-dev)
-- libavdevice (package libavdevice-dev)
 - libavutil (package libavutil-dev)
 - libswscale (package libswscale-dev)
+- ALSA library  (package libasound2-dev)
 - libGL (32/64) (package libgl1-mesa-dev)
 - libX11 (32/64) (package libx11-dev)
 - libXext (package libxext-dev)
@@ -26,14 +26,16 @@ This list may be incomplete. All instructions and package names are for Ubuntu 1
 
 Everything combined:
 
-    sudo apt-get install qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
+    sudo apt-get install qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
 
 If the 32-bit version of libGL and libX11 isn't found during linking, but 64-bit works fine, try this:
 
     cd /usr/lib/i386-linux-gnu/
-    sudo ln -s libGL.so.1.2.0 mesa/libGL.so    (replace 1.2.0 with the highest version you have)
+    sudo ln -s libGL.so.1 mesa/libGL.so
     sudo ln -s mesa/libGL.so libGL.so
     sudo ln -s libX11.so.6 libX11.so
+    sudo ln -s libXfixes.so.3 libXfixes.so
+    sudo ldconfig
 
 I don't know whether this is the right way to do it, but it works for me.
 

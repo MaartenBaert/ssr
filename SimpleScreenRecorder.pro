@@ -44,7 +44,8 @@ SOURCES += \
 	Logger.cpp \
 	Main.cpp \
 	ByteQueue.cpp \
-	AV/Input/ALSAInput.cpp
+	AV/Input/ALSAInput.cpp \
+    GUI/VideoPreviewer.cpp
 
 HEADERS  += \
 	AV/Encoder/AudioEncoder.h \
@@ -70,7 +71,8 @@ HEADERS  += \
 	VPair.h \
 	Main.h \
 	ByteQueue.h \
-	AV/Input/ALSAInput.h
+	AV/Input/ALSAInput.h \
+    GUI/VideoPreviewer.h
 
 RESOURCES += \
 	resources.qrc

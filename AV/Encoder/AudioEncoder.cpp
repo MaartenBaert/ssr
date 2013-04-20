@@ -43,6 +43,11 @@ AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::v
 	m_bit_rate = bit_rate;
 	m_sample_rate = sample_rate;
 
+	if(m_sample_rate == 0) {
+		Logger::LogError("[AudioEncoder::Init] Error: Sample rate it zero.");
+		throw LibavException();
+	}
+
 	// start the encoder
 	AVDictionary *options = NULL;
 	try {

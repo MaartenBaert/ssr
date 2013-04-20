@@ -26,45 +26,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoEncoder.h"
 #include "GLInjectLauncher.h"
 
-inline __attribute__((always_inline)) void memswap(uint8_t* a, uint8_t* b, size_t n) {
-#ifdef __x86_64__
-	size_t n32 = n / 32;
-	for(size_t i = 0; i < n32; ++i) {
-		std::swap(((uint64_t*) a)[i * 4 + 0], ((uint64_t*) b)[i * 4 + 0]);
-		std::swap(((uint64_t*) a)[i * 4 + 1], ((uint64_t*) b)[i * 4 + 1]);
-		std::swap(((uint64_t*) a)[i * 4 + 2], ((uint64_t*) b)[i * 4 + 2]);
-		std::swap(((uint64_t*) a)[i * 4 + 3], ((uint64_t*) b)[i * 4 + 3]);
-	}
-	for(size_t i = n32 * 32; i < n; ++i) {
-		std::swap(a[i], b[i]);
-	}
-#else
-	size_t n16 = n / 16;
-	for(size_t i = 0; i < n16; ++i) {
-		std::swap(((uint32_t*) a)[i * 4 + 0], ((uint32_t*) b)[i * 4 + 0]);
-		std::swap(((uint32_t*) a)[i * 4 + 1], ((uint32_t*) b)[i * 4 + 1]);
-		std::swap(((uint32_t*) a)[i * 4 + 2], ((uint32_t*) b)[i * 4 + 2]);
-		std::swap(((uint32_t*) a)[i * 4 + 3], ((uint32_t*) b)[i * 4 + 3]);
-	}
-	for(size_t i = n16 * 16; i < n; ++i) {
-		std::swap(a[i], b[i]);
-	}
-#endif
-}
-
-// Flips a YUV frame vertically. This is needed because OpenGL returns frames upside-down.
-static void VFlipYUV(AVFrameWrapper* frame, unsigned int height) {
-	unsigned int height_d2 = height / 2, height_d4 = height / 4;
-	for(unsigned int y1 = 0; y1 < height_d2; ++y1) {
-		unsigned int y2 = height - 1 - y1;
-		memswap(frame->data[0] + frame->linesize[0] * y1, frame->data[0] + frame->linesize[0] * y2, frame->linesize[0]);
-	}
-	for(unsigned int y1 = 0; y1 < height_d4; ++y1) {
-		unsigned int y2 = height_d2 - 1 - y1;
-		memswap(frame->data[1] + frame->linesize[1] * y1, frame->data[1] + frame->linesize[1] * y2, frame->linesize[1]);
-		memswap(frame->data[2] + frame->linesize[2] * y1, frame->data[2] + frame->linesize[2] * y2, frame->linesize[2]);
-	}
-}
+#include "VideoPreviewer.h"
 
 GLInjectInput::GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launcher) {
 	Q_ASSERT(synchronizer->GetVideoEncoder() != NULL);
@@ -80,6 +42,11 @@ GLInjectInput::GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launc
 
 	m_warn_swscale = true;
 	m_sws_context = NULL;
+
+	{
+		SharedLock lock(&m_shared_data);
+		lock->m_video_previewer = NULL;
+	}
 
 	try {
 		Init();
@@ -104,6 +71,11 @@ GLInjectInput::~GLInjectInput() {
 
 }
 
+void GLInjectInput::ConnectVideoPreviewer(VideoPreviewer* video_previewer) {
+	SharedLock lock(&m_shared_data);
+	lock->m_video_previewer = video_previewer;
+}
+
 void GLInjectInput::Init() {
 
 	// get the main shared memory
@@ -125,7 +97,10 @@ void GLInjectInput::Init() {
 }
 
 void GLInjectInput::Free() {
-
+	if(m_sws_context != NULL) {
+		sws_freeContext(m_sws_context);
+		m_sws_context = NULL;
+	}
 }
 
 void GLInjectInput::run() {
@@ -157,11 +132,11 @@ void GLInjectInput::run() {
 			}
 			if(frameinfo.timestamp < next_frame_time) {
 				((GLInjectHeader*) m_shm_main_ptr)->read_pos = (header.read_pos + 1) % (m_cbuffer_size * 2);
-				static int drops = 0; ++drops;
-				fprintf(stderr, "drops = %d\n", drops);
 				continue;
 			}
 			next_frame_time = std::max(next_frame_time + m_synchronizer->GetVideoEncoder()->GetFrameDelay(), frameinfo.timestamp);
+
+			SharedLock lock(&m_shared_data);
 
 			// get the image
 			uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];
@@ -169,6 +144,16 @@ void GLInjectInput::run() {
 			if(image_stride * frameinfo.height > m_max_bytes) {
 				Logger::LogInfo("[GLInjectInput::run] Error: Image is supposedly larger than the maximum size!");
 				throw GLInjectException();
+			}
+
+			// flip the image upside down by changing the pointer and stride
+			// this is needed because OpenGL stores frames upside-down
+			image_data += image_stride * (frameinfo.height - 1);
+			image_stride = -image_stride;
+
+			// let the previewer read the frame
+			if(lock->m_video_previewer != NULL) {
+				lock->m_video_previewer->ReadFrame(frameinfo.width, frameinfo.height, image_data, image_stride, PIX_FMT_BGRA);
 			}
 
 			// allocate the converted frame, with proper alignment
@@ -213,9 +198,6 @@ void GLInjectInput::run() {
 
 			// go to the next frame
 			((GLInjectHeader*) m_shm_main_ptr)->read_pos = (header.read_pos + 1) % (m_cbuffer_size * 2);
-
-			// flip the frame vertically
-			VFlipYUV(converted_frame.get(), m_out_height);
 
 			// save the frame
 			m_synchronizer->AddVideoFrame(std::move(converted_frame), frameinfo.timestamp);

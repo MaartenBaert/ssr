@@ -34,6 +34,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLInjectLauncher.h"
 #include "GLInjectInput.h"
 #include "ALSAInput.h"
+#include "VideoPreviewer.h"
 
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
@@ -54,7 +55,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 	m_page_started = false;
 	m_encoders_started = false;
-	m_recording = false;
+	m_capturing = false;
+	m_previewing = false;
 
 	QGroupBox *group_recording = new QGroupBox("Recording", this);
 	{
@@ -107,8 +109,10 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_label_total_time = new QLabel(group_information);
 		QLabel *label_video_frame_rate = new QLabel("Video frame rate:", group_information);
 		m_label_video_frame_rate = new QLabel(group_information);
-		QLabel *label_video_size = new QLabel("Video size:", group_information);
-		m_label_video_size = new QLabel(group_information);
+		QLabel *label_video_in_size = new QLabel("Video in size:", group_information);
+		m_label_video_in_size = new QLabel(group_information);
+		QLabel *label_video_out_size = new QLabel("Video out size:", group_information);
+		m_label_video_out_size = new QLabel(group_information);
 		QLabel *label_file_name = new QLabel("File name:", group_information);
 		m_label_file_name = new QLabel(group_information);
 		QLabel *label_file_size = new QLabel("File size:", group_information);
@@ -121,14 +125,54 @@ PageRecord::PageRecord(MainWindow* main_window)
 		layout->addWidget(m_label_total_time, 0, 1);
 		layout->addWidget(label_video_frame_rate, 1, 0);
 		layout->addWidget(m_label_video_frame_rate, 1, 1);
-		layout->addWidget(label_video_size, 2, 0);
-		layout->addWidget(m_label_video_size, 2, 1);
-		layout->addWidget(label_file_name, 3, 0);
-		layout->addWidget(m_label_file_name, 3, 1);
-		layout->addWidget(label_file_size, 4, 0);
-		layout->addWidget(m_label_file_size, 4, 1);
-		layout->addWidget(label_file_bit_rate, 5, 0);
-		layout->addWidget(m_label_file_bit_rate, 5, 1);
+		layout->addWidget(label_video_in_size, 2, 0);
+		layout->addWidget(m_label_video_in_size, 2, 1);
+		layout->addWidget(label_video_out_size, 3, 0);
+		layout->addWidget(m_label_video_out_size, 3, 1);
+		layout->addWidget(label_file_name, 4, 0);
+		layout->addWidget(m_label_file_name, 4, 1);
+		layout->addWidget(label_file_size, 5, 0);
+		layout->addWidget(m_label_file_size, 5, 1);
+		layout->addWidget(label_file_bit_rate, 6, 0);
+		layout->addWidget(m_label_file_bit_rate, 6, 1);
+		layout->setRowStretch(7, 1);
+	}
+	QGroupBox *group_preview = new QGroupBox("Preview", this);
+	{
+		m_preview_page1 = new QWidget(group_preview);
+		{
+			QLabel *label_preview_frame_rate = new QLabel("Preview frame rate:", m_preview_page1);
+			m_lineedit_preview_frame_rate = new QLineEdit(m_preview_page1);
+			QLabel *label_preview_note = new QLabel("Note: Previewing requires extra CPU time (especially at high frame rates).", m_preview_page1);
+			label_preview_note->setWordWrap(true);
+
+			QGridLayout *layout = new QGridLayout(m_preview_page1);
+			layout->setMargin(0);
+			layout->addWidget(label_preview_frame_rate, 0, 0);
+			layout->addWidget(m_lineedit_preview_frame_rate, 0, 1);
+			layout->addWidget(label_preview_note, 1, 0, 1, 2);
+			layout->setRowStretch(2, 1);
+		}
+		m_preview_page2 = new QWidget(group_preview);
+		{
+			m_video_previewer = new VideoPreviewer(m_preview_page2);
+
+			QVBoxLayout *layout = new QVBoxLayout(m_preview_page2);
+			layout->setMargin(0);
+			layout->addWidget(m_video_previewer);
+		}
+		m_pushbutton_preview_start_stop = new QPushButton(group_preview);
+
+		connect(m_pushbutton_preview_start_stop, SIGNAL(clicked()), this, SLOT(PreviewStartStop()));
+
+		QVBoxLayout *layout = new QVBoxLayout(group_preview);
+		{
+			m_stacked_layout_preview = new QStackedLayout();
+			layout->addLayout(m_stacked_layout_preview);
+			m_stacked_layout_preview->addWidget(m_preview_page1);
+			m_stacked_layout_preview->addWidget(m_preview_page2);
+		}
+		layout->addWidget(m_pushbutton_preview_start_stop);
 	}
 	QGroupBox *group_log = new QGroupBox("Log", this);
 	{
@@ -138,29 +182,38 @@ PageRecord::PageRecord(MainWindow* main_window)
 		QVBoxLayout *layout = new QVBoxLayout(group_log);
 		layout->addWidget(m_textedit_log);
 	}
-	QPushButton *button_cancel = new QPushButton("Cancel recording", this);
-	QPushButton *button_save = new QPushButton("Save recording", this);
+	QPushButton *button_cancel = new QPushButton(QIcon::fromTheme("process-stop"), "Cancel recording", this);
+	button_cancel->setIconSize(QSize(20, 20));
+	QPushButton *button_save = new QPushButton(QIcon::fromTheme("document-save"), "Save recording", this);
+	button_save->setIconSize(QSize(20, 20));
 
 	connect(button_cancel, SIGNAL(clicked()), this, SLOT(Cancel()));
 	connect(button_save, SIGNAL(clicked()), this, SLOT(Save()));
 
-	QVBoxLayout *layout_page = new QVBoxLayout(this);
-	layout_page->addWidget(group_recording);
-	layout_page->addWidget(group_information);
-	layout_page->addWidget(group_log);
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(group_recording);
 	{
-		QHBoxLayout *layout = new QHBoxLayout();
-		layout->addWidget(button_cancel);
-		layout->addWidget(button_save);
-		layout_page->addLayout(layout);
+		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout->addLayout(layout2, 2);
+		layout2->addWidget(group_information);
+		layout2->addWidget(group_preview);
 	}
+	layout->addWidget(group_log, 1);
+	{
+		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout->addLayout(layout2);
+		layout2->addWidget(button_cancel);
+		layout2->addWidget(button_save);
+	}
+
+	UpdatePreview();
 
 	m_info_timer = new QTimer(this);
 	connect(m_info_timer, SIGNAL(timeout()), this, SLOT(UpdateInformation()));
 
 	m_log_timer = new QTimer(this);
 	connect(m_log_timer, SIGNAL(timeout()), this, SLOT(UpdateLog()));
-	m_log_timer->start(100);
+	m_log_timer->start(10);
 
 }
 
@@ -191,6 +244,7 @@ void PageRecord::LoadSettings(QSettings *settings) {
 	SetHotkeyAltEnabled(settings->value("input/hotkey/alt", false).toBool());
 	SetHotkeySuperEnabled(settings->value("input/hotkey/super", false).toBool());
 	SetHotkeyKey(settings->value("input/hotkey/key", 'r' - 'a').toUInt());
+	SetPreviewFrameRate(settings->value("input/preview/frame_rate", 10).toUInt());
 	UpdateHotkeyFields();
 }
 
@@ -201,6 +255,7 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	settings->setValue("input/hotkey/alt", IsHotkeyAltEnabled());
 	settings->setValue("input/hotkey/super", IsHotkeySuperEnabled());
 	settings->setValue("input/hotkey/key", GetHotkeyKey());
+	settings->setValue("input/preview/frame_rate", GetPreviewFrameRate());
 }
 
 void PageRecord::PageStart() {
@@ -211,6 +266,9 @@ void PageRecord::PageStart() {
 	// clear the log
 	Logger::GetLines();
 	m_textedit_log->clear();
+
+	// clear the preview
+	m_video_previewer->Reset();
 
 	Logger::LogInfo("[PageRecord::PageStart] Starting page ...");
 
@@ -225,11 +283,16 @@ void PageRecord::PageStart() {
 	// get the video recording area
 	m_video_x = page_input->GetVideoX();
 	m_video_y = page_input->GetVideoY();
-	m_video_width = page_input->GetVideoW();
-	m_video_height = page_input->GetVideoH();
+	if(m_video_glinject) {
+		m_video_in_width = 0;
+		m_video_in_height = 0;
+	} else {
+		m_video_in_width = page_input->GetVideoW();
+		m_video_in_height = page_input->GetVideoH();
+	}
 	m_video_scaling = page_input->GetVideoScalingEnabled();
-	m_video_out_width = page_input->GetVideoScaledW();
-	m_video_out_height = page_input->GetVideoScaledH();
+	m_video_scaled_width = page_input->GetVideoScaledW();
+	m_video_scaled_height = page_input->GetVideoScaledH();
 	m_video_frame_rate = page_input->GetVideoFrameRate();
 	m_audio_sample_rate = 44100;
 
@@ -247,6 +310,8 @@ void PageRecord::PageStart() {
 
 	// get the output settings
 	m_file = page_output->GetFile();
+	m_video_out_width = 0;
+	m_video_out_height = 0;
 	m_container = page_output->GetContainer();
 	m_video_codec = page_output->GetVideoCodec();
 	m_audio_codec = page_output->GetAudioCodec();
@@ -313,7 +378,7 @@ void PageRecord::PageStop(bool save) {
 	if(!m_page_started)
 		return;
 
-	RecordPause();
+	CaptureStop();
 
 	Logger::LogInfo("[PageRecord::PageStop] Stopping page ...");
 
@@ -359,9 +424,9 @@ void PageRecord::PageStop(bool save) {
 
 }
 
-void PageRecord::RecordStart() {
+void PageRecord::CaptureStart() {
 
-	if(m_recording || !m_page_started)
+	if(m_capturing || !m_page_started)
 		return;
 
 	Logger::LogInfo("[PageRecord::RecordStart] Starting recording ...");
@@ -378,8 +443,8 @@ void PageRecord::RecordStart() {
 
 			// for OpenGL recording, detect the application size
 			if(m_video_glinject) {
-				m_gl_inject_launcher->GetCurrentSize(&m_video_width, &m_video_height);
-				if(m_video_width == 0 && m_video_height == 0) {
+				m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+				if(m_video_in_width == 0 && m_video_in_height == 0) {
 					Logger::LogError("[PageRecord::RecordStart] Error: Could not get the size of the OpenGL application. Either the "
 									  "application wasn't started correctly, or the application hasn't created an OpenGL window yet. If "
 									  "you want to start recording before starting the application, you have to enable scaling and enter "
@@ -391,19 +456,19 @@ void PageRecord::RecordStart() {
 			// calculate the output width and height
 			if(m_video_scaling) {
 				// Only even width and height is allowed because the final images are encoded as YUV.
-				m_video_out_width = m_video_out_width / 2 * 2;
-				m_video_out_height = m_video_out_height / 2 * 2;
+				m_video_out_width = m_video_scaled_width / 2 * 2;
+				m_video_out_height = m_video_scaled_height / 2 * 2;
 			} else if(m_video_glinject) {
 				// The input size is the size of the OpenGL application and can't be changed. The output size is set to the current size of the application.
-				m_video_out_width = m_video_width / 2 * 2;
-				m_video_out_height = m_video_height / 2 * 2;
+				m_video_out_width = m_video_in_width / 2 * 2;
+				m_video_out_height = m_video_in_height / 2 * 2;
 			} else {
 				// If the user did not explicitly select scaling, then don't force scaling just because the recording area is one pixel too large.
 				// One missing row/column of pixels is probably better than a blurry video (and scaling is SLOW).
-				m_video_width = m_video_width / 2 * 2;
-				m_video_height = m_video_height / 2 * 2;
-				m_video_out_width = m_video_width;
-				m_video_out_height = m_video_height;
+				m_video_in_width = m_video_in_width / 2 * 2;
+				m_video_in_height = m_video_in_height / 2 * 2;
+				m_video_out_width = m_video_in_width;
+				m_video_out_height = m_video_in_height;
 			}
 
 			// prepare everything for recording
@@ -440,7 +505,7 @@ void PageRecord::RecordStart() {
 		if(m_video_glinject) {
 			m_gl_inject_input.reset(new GLInjectInput(m_synchronizer.get(), m_gl_inject_launcher.get()));
 		} else {
-			m_x11_input.reset(new X11Input(m_synchronizer.get(), m_video_x, m_video_y, m_video_width, m_video_height, m_video_record_cursor, m_video_follow_cursor));
+			m_x11_input.reset(new X11Input(m_synchronizer.get(), m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_follow_cursor));
 		}
 
 		// start the audio input
@@ -457,14 +522,16 @@ void PageRecord::RecordStart() {
 
 	Logger::LogInfo("[PageRecord::RecordStart] Started recording.");
 
-	m_recording = true;
+	m_capturing = true;
 	m_pushbutton_start_pause->setText("Pause recording");
+
+	UpdatePreview();
 
 }
 
-void PageRecord::RecordPause() {
+void PageRecord::CaptureStop() {
 
-	if(!m_recording || !m_page_started)
+	if(!m_capturing || !m_page_started)
 		return;
 
 	Logger::LogInfo("[PageRecord::RecordPause] Pausing recording ...");
@@ -475,9 +542,25 @@ void PageRecord::RecordPause() {
 
 	Logger::LogInfo("[PageRecord::RecordPause] Paused recording.");
 
-	m_recording = false;
+	m_capturing = false;
 	m_pushbutton_start_pause->setText("Start recording");
 
+}
+
+void PageRecord::UpdatePreview() {
+	m_video_previewer->SetFrameRate(GetPreviewFrameRate());
+	if(m_previewing) {
+		m_stacked_layout_preview->setCurrentWidget(m_preview_page2);
+		m_pushbutton_preview_start_stop->setText("Stop preview");
+	} else {
+		m_stacked_layout_preview->setCurrentWidget(m_preview_page1);
+		m_pushbutton_preview_start_stop->setText("Start preview");
+	}
+	VideoPreviewer *p = (m_previewing)? m_video_previewer : NULL;
+	if(m_gl_inject_input.get() != NULL)
+		m_gl_inject_input->ConnectVideoPreviewer(p);
+	if(m_x11_input.get() != NULL)
+		m_x11_input->ConnectVideoPreviewer(p);
 }
 
 void PageRecord::UpdateHotkeyFields() {
@@ -513,11 +596,16 @@ void PageRecord::UpdateHotkey() {
 }
 
 void PageRecord::RecordStartPause() {
-	if(m_recording) {
-		RecordPause();
+	if(m_capturing) {
+		CaptureStop();
 	} else {
-		RecordStart();
+		CaptureStart();
 	}
+}
+
+void PageRecord::PreviewStartStop() {
+	m_previewing = !m_previewing;
+	UpdatePreview();
 }
 
 void PageRecord::Cancel() {
@@ -586,18 +674,21 @@ void PageRecord::UpdateInformation() {
 
 		}
 
-		// for OpenGL recording, detect the application size
+		// for OpenGL recording, update the application size
 		if(m_video_glinject) {
-			m_gl_inject_launcher->GetCurrentSize(&m_video_width, &m_video_height);
+			m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 		}
 
 		m_label_total_time->setText(ReadableTime(total_time));
 		m_label_video_frame_rate->setText(QString::number(fps, 'f', 2));
-		if(m_encoders_started && (m_video_width != m_video_out_width || m_video_height != m_video_out_height))
-			m_label_video_size->setText(QString::number(m_video_width) + "x" + QString::number(m_video_height) + " -> " +
-										QString::number(m_video_out_width) + "x" + QString::number(m_video_out_height));
+		if(m_video_in_width == 0 && m_video_in_height == 0)
+			m_label_video_in_size->setText("?");
 		else
-			m_label_video_size->setText(QString::number(m_video_width) + "x" + QString::number(m_video_height));
+			m_label_video_in_size->setText(QString::number(m_video_in_width) + "x" + QString::number(m_video_in_height));
+		if(m_video_out_width == 0 && m_video_out_height == 0)
+			m_label_video_out_size->setText("?");
+		else
+			m_label_video_out_size->setText(QString::number(m_video_out_width) + "x" + QString::number(m_video_out_height));
 		m_label_file_name->setText(QFileInfo(m_file).fileName());
 		m_label_file_size->setText(ReadableSize(current_bytes, "B"));
 		m_label_file_bit_rate->setText(ReadableSize((uint64_t) (bit_rate + 0.5), "bps"));
@@ -606,7 +697,8 @@ void PageRecord::UpdateInformation() {
 
 		m_label_total_time->clear();
 		m_label_video_frame_rate->clear();
-		m_label_video_size->clear();
+		m_label_video_in_size->clear();
+		m_label_video_out_size->clear();
 		m_label_file_name->clear();
 		m_label_file_size->clear();
 		m_label_file_bit_rate->clear();
@@ -633,4 +725,5 @@ void PageRecord::UpdateLog() {
 		if(should_scroll)
 			m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
 	}
+	m_video_previewer->CheckFrame();
 }

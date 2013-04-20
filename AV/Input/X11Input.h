@@ -24,6 +24,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "YUVConverter.h"
 
 class Synchronizer;
+class VideoPreviewer;
 
 class X11Input : private QThread {
 	Q_OBJECT
@@ -32,6 +33,7 @@ private:
 	struct SharedData {
 		QRect m_screen_bbox;
 		QVector<QRect> m_screen_dead_space;
+		VideoPreviewer *m_video_previewer;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 
@@ -63,6 +65,10 @@ private:
 public:
 	X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor);
 	~X11Input();
+
+	// Connect the video previewer.
+	// video_previewer can be NULL.
+	void ConnectVideoPreviewer(VideoPreviewer* video_previewer);
 
 	// Returns whether an error has occurred in the input thread.
 	// This function is thread-safe.

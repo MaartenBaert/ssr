@@ -37,6 +37,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Synchronizer.h"
 #include "VideoEncoder.h"
 
+#include "VideoPreviewer.h"
+
 #include <X11/Xlibint.h>
 //#include <X11/Xproto.h>
 #include <X11/Xutil.h>
@@ -75,8 +77,8 @@ static PixelFormat X11ImageGetPixelFormat(XImage* image) {
 			return PIX_FMT_RGB32;
 		}
 	}
-	Logger::LogError("[X11ImageGetPixelFormat] Error: Unsupported X11 image pixel format!"
-					 "\n    bits_per_pixel = " + QString::number(image->bits_per_pixel) + ", red_mask = 0x" + QString::number(image->red_mask, 16)
+	Logger::LogError("[X11ImageGetPixelFormat] Error: Unsupported X11 image pixel format!\n"
+					 "    bits_per_pixel = " + QString::number(image->bits_per_pixel) + ", red_mask = 0x" + QString::number(image->red_mask, 16)
 					 + ", green_mask = 0x" + QString::number(image->green_mask, 16) + ", blue_mask = 0x" + QString::number(image->blue_mask, 16));
 	throw X11Exception();
 }
@@ -218,6 +220,11 @@ X11Input::X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, u
 	m_warn_swscale = true;
 	m_sws_context = NULL;
 
+	{
+		SharedLock lock(&m_shared_data);
+		lock->m_video_previewer = NULL;
+	}
+
 	if(m_width == 0 || m_height == 0) {
 		Logger::LogError("[X11Input::Init] Error: Width or height is zero.");
 		throw X11Exception();
@@ -248,6 +255,11 @@ X11Input::~X11Input() {
 	// free everything
 	Free();
 
+}
+
+void X11Input::ConnectVideoPreviewer(VideoPreviewer* video_previewer) {
+	SharedLock lock(&m_shared_data);
+	lock->m_video_previewer = video_previewer;
 }
 
 void X11Input::Init() {
@@ -413,19 +425,19 @@ void X11Input::run() {
 					m_x11_shm_server_attached = true;
 				}
 				if(!XShmGetImage(m_x11_display, m_x11_root, m_x11_image, grab_x, grab_y, AllPlanes)) {
-					Logger::LogError("[X11Input::run] Error: Can't get image (using shared memory)!"
-									   "\n    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?");
+					Logger::LogError("[X11Input::run] Error: Can't get image (using shared memory)!\n"
+									 "    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?");
 					throw X11Exception();
 				}
 			} else {
 				if(!X11ImageGetWithoutSHM(m_x11_display, m_x11_root, m_x11_image, grab_x, grab_y)) {
-					Logger::LogError("[X11Input::run] Error: Can't get image (not using shared memory)!"
-									   "\n    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?");
+					Logger::LogError("[X11Input::run] Error: Can't get image (not using shared memory)!\n"
+									 "    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?");
 					throw X11Exception();
 				}
 			}
 			uint8_t *image_data = (uint8_t*) m_x11_image->data;
-			int image_linesize = m_x11_image->bytes_per_line;
+			int image_stride = m_x11_image->bytes_per_line;
 
 			// clear the dead space
 			QRect clip_rect(0, 0, m_width, m_height);
@@ -438,6 +450,11 @@ void X11Input::run() {
 			// draw the cursor
 			if(m_record_cursor) {
 				X11ImageDrawCursor(m_x11_display, m_x11_image, grab_x, grab_y);
+			}
+
+			// let the previewer read the frame
+			if(lock->m_video_previewer != NULL) {
+				lock->m_video_previewer->ReadFrame(m_width, m_height, image_data, image_stride, m_x11_image_format);
 			}
 
 			// allocate the converted frame, with proper alignment
@@ -458,7 +475,7 @@ void X11Input::run() {
 			if(m_x11_image_format == PIX_FMT_BGRA && !scaling) {
 
 				// use my faster converter
-				m_yuv_converter.Convert(m_width, m_height, image_data, image_linesize, converted_frame->data, converted_frame->linesize);
+				m_yuv_converter.Convert(m_width, m_height, image_data, image_stride, converted_frame->data, converted_frame->linesize);
 
 			} else {
 
@@ -480,7 +497,7 @@ void X11Input::run() {
 					Logger::LogError("[X11Input::run] Error: Can't get swscale context!");
 					throw LibavException();
 				}
-				sws_scale(m_sws_context, &image_data, &image_linesize, 0, m_height, converted_frame->data, converted_frame->linesize);
+				sws_scale(m_sws_context, &image_data, &image_stride, 0, m_height, converted_frame->data, converted_frame->linesize);
 
 			}
 
