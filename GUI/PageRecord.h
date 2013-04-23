@@ -107,6 +107,7 @@ public:
 	void CaptureStart();
 	void CaptureStop();
 
+	void UpdateRecordPauseButton();
 	void UpdatePreview();
 
 public:

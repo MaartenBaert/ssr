@@ -60,7 +60,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 	QGroupBox *group_recording = new QGroupBox("Recording", this);
 	{
-		m_pushbutton_start_pause = new QPushButton("Start recording", group_recording);
+		m_pushbutton_start_pause = new QPushButton(group_recording);
 
 		m_checkbox_hotkey_enable = new QCheckBox("Enable recording hotkey", group_recording);
 		QLabel *label_hotkey = new QLabel("Hotkey:", group_recording);
@@ -206,6 +206,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		layout2->addWidget(button_save);
 	}
 
+	UpdateRecordPauseButton();
 	UpdatePreview();
 
 	m_info_timer = new QTimer(this);
@@ -523,9 +524,9 @@ void PageRecord::CaptureStart() {
 	Logger::LogInfo("[PageRecord::RecordStart] Started recording.");
 
 	m_capturing = true;
-	m_pushbutton_start_pause->setText("Pause recording");
 
-	UpdatePreview();
+	UpdateRecordPauseButton();
+	UpdatePreview(); //TODO// remove after capture/record split
 
 }
 
@@ -543,8 +544,20 @@ void PageRecord::CaptureStop() {
 	Logger::LogInfo("[PageRecord::RecordPause] Paused recording.");
 
 	m_capturing = false;
-	m_pushbutton_start_pause->setText("Start recording");
 
+	UpdateRecordPauseButton();
+
+}
+
+void PageRecord::UpdateRecordPauseButton() {
+	if(m_capturing) { //TODO// should be 'm_recording' once recording and capturing are split
+		m_pushbutton_start_pause->setText("Pause recording");
+		m_pushbutton_start_pause->setIcon(QIcon(":/img/icon-pause.svg"));
+	} else {
+		m_pushbutton_start_pause->setText("Start recording");
+		m_pushbutton_start_pause->setIcon(QIcon(":/img/icon-record.svg"));
+	}
+	m_pushbutton_start_pause->setIconSize(QSize(20, 20));
 }
 
 void PageRecord::UpdatePreview() {
