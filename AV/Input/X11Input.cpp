@@ -40,7 +40,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoPreviewer.h"
 
 #include <X11/Xlibint.h>
-//#include <X11/Xproto.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/Xfixes.h>
 

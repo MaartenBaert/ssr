@@ -42,7 +42,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
-#include <libavutil/mathematics.h>
+#include <libavutil/avutil.h>
 #include <libswscale/swscale.h>
 }
 
@@ -83,7 +83,7 @@ inline double ToDouble(const AVFrac& f) {
 	return (double) f.val + (double) f.num / (double) f.den;
 }
 
-// exception thrown when an error occurs in libav
+// exception thrown when errors occur in external libraries
 class LibavException : public std::exception {
 public:
 	inline virtual const char* what() const throw() {

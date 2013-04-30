@@ -46,7 +46,7 @@ public:
 	void Reset();
 	void SetFrameRate(unsigned int frame_rate);
 	void ReadFrame(unsigned int width, unsigned int height, uint8_t* in_data, int in_stride, AVPixelFormat format);
-	void CheckFrame();
+	void UpdateIfNeeded();
 
 	virtual QSize minimumSizeHint() const { return QSize(100, 100); }
 	virtual QSize sizeHint() const { return QSize(100, 100); }

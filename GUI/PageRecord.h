@@ -34,6 +34,7 @@ class GLInjectLauncher;
 class GLInjectInput;
 class ALSAInput;
 class VideoPreviewer;
+class AudioPreviewer;
 
 class PageRecord : public QWidget {
 	Q_OBJECT
@@ -87,6 +88,7 @@ private:
 	QWidget *m_preview_page1, *m_preview_page2;
 	QLineEdit *m_lineedit_preview_frame_rate;
 	VideoPreviewer *m_video_previewer;
+	AudioPreviewer *m_audio_previewer;
 	QPushButton *m_pushbutton_preview_start_stop;
 
 	QTextEdit *m_textedit_log;

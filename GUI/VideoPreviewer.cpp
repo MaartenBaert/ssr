@@ -118,7 +118,7 @@ void VideoPreviewer::ReadFrame(unsigned int width, unsigned int height, uint8_t*
 
 }
 
-void VideoPreviewer::CheckFrame() {
+void VideoPreviewer::UpdateIfNeeded() {
 	if(m_should_repaint) {
 		update();
 	}

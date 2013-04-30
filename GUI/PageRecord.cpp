@@ -35,6 +35,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLInjectInput.h"
 #include "ALSAInput.h"
 #include "VideoPreviewer.h"
+#include "AudioPreviewer.h"
 
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
@@ -156,10 +157,21 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_preview_page2 = new QWidget(group_preview);
 		{
 			m_video_previewer = new VideoPreviewer(m_preview_page2);
+			QLabel *label_mic_icon = new QLabel(m_preview_page2);
+			label_mic_icon->setPixmap(QIcon::fromTheme("audio-input-microphone").pixmap(24, 24));
+			m_audio_previewer = new AudioPreviewer(m_preview_page2);
 
 			QVBoxLayout *layout = new QVBoxLayout(m_preview_page2);
 			layout->setMargin(0);
 			layout->addWidget(m_video_previewer);
+			{
+				QHBoxLayout *layout2 = new QHBoxLayout();
+				layout->addLayout(layout2);
+				layout2->addStretch();
+				layout2->addWidget(label_mic_icon);
+				layout2->addWidget(m_audio_previewer);
+				layout2->addStretch();
+			}
 		}
 		m_pushbutton_preview_start_stop = new QPushButton(group_preview);
 
@@ -270,6 +282,7 @@ void PageRecord::PageStart() {
 
 	// clear the preview
 	m_video_previewer->Reset();
+	m_audio_previewer->Reset();
 
 	Logger::LogInfo("[PageRecord::PageStart] Starting page ...");
 
@@ -569,11 +582,12 @@ void PageRecord::UpdatePreview() {
 		m_stacked_layout_preview->setCurrentWidget(m_preview_page1);
 		m_pushbutton_preview_start_stop->setText("Start preview");
 	}
-	VideoPreviewer *p = (m_previewing)? m_video_previewer : NULL;
 	if(m_gl_inject_input.get() != NULL)
-		m_gl_inject_input->ConnectVideoPreviewer(p);
+		m_gl_inject_input->ConnectVideoPreviewer((m_previewing)? m_video_previewer : NULL);
 	if(m_x11_input.get() != NULL)
-		m_x11_input->ConnectVideoPreviewer(p);
+		m_x11_input->ConnectVideoPreviewer((m_previewing)? m_video_previewer : NULL);
+	if(m_alsa_input.get() != NULL)
+		m_alsa_input->ConnectAudioPreviewer((m_previewing)? m_audio_previewer : NULL);
 }
 
 void PageRecord::UpdateHotkeyFields() {
@@ -617,6 +631,8 @@ void PageRecord::RecordStartPause() {
 }
 
 void PageRecord::PreviewStartStop() {
+	m_video_previewer->Reset();
+	m_audio_previewer->Reset();
 	m_previewing = !m_previewing;
 	UpdatePreview();
 }
@@ -738,5 +754,6 @@ void PageRecord::UpdateLog() {
 		if(should_scroll)
 			m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
 	}
-	m_video_previewer->CheckFrame();
+	m_video_previewer->UpdateIfNeeded();
+	m_audio_previewer->UpdateIfNeeded();
 }

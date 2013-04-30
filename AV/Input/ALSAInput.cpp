@@ -24,6 +24,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Synchronizer.h"
 #include "AudioEncoder.h"
 
+#include "AudioPreviewer.h"
+
 static void ALSARecoverAfterOverrun(snd_pcm_t* pcm) {
 	Logger::LogWarning("[ALSARecoverAfterOverrun] Warning: Overrun occurred, some samples were lost.");
 	if(snd_pcm_prepare(pcm) < 0) {
@@ -49,6 +51,11 @@ ALSAInput::ALSAInput(Synchronizer* synchronizer, const QString& device_name) {
 	m_alsa_periods = 10;
 	m_alsa_period_size = 1024; // number of samples per period
 
+	{
+		SharedLock lock(&m_shared_data);
+		lock->m_audio_previewer = NULL;
+	}
+
 	try {
 		Init();
 	} catch(...) {
@@ -70,6 +77,11 @@ ALSAInput::~ALSAInput() {
 	// free everything
 	Free();
 
+}
+
+void ALSAInput::ConnectAudioPreviewer(AudioPreviewer* audio_previewer) {
+	SharedLock lock(&m_shared_data);
+	lock->m_audio_previewer = audio_previewer;
 }
 
 void ALSAInput::Init() {
@@ -218,13 +230,19 @@ void ALSAInput::run() {
 				}
 				continue;
 			}
-			if(samples_read > 0) {
+			if(samples_read <= 0)
+				continue;
 
-				// send the samples to the synchronizer
-				int64_t time = hrt_time_micro() - (int64_t) m_alsa_period_size * (int64_t) 1000000 / (int64_t) m_sample_rate;
-				m_synchronizer->AddAudioSamples(buffer.data(), samples_read, time);
+			SharedLock lock(&m_shared_data);
 
+			// let the previewer read the samples
+			if(lock->m_audio_previewer != NULL) {
+				lock->m_audio_previewer->ReadSamples(buffer.data(), samples_read);
 			}
+
+			// send the samples to the synchronizer
+			int64_t time = hrt_time_micro() - (int64_t) m_alsa_period_size * (int64_t) 1000000 / (int64_t) m_sample_rate;
+			m_synchronizer->AddAudioSamples(buffer.data(), samples_read, time);
 
 		}
 

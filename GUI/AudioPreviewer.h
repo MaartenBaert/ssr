@@ -21,51 +21,36 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "StdAfx.h"
 
 #include "VPair.h"
+#include "ByteQueue.h"
 
-class Synchronizer;
-class AudioPreviewer;
-
-class ALSAInput : private QThread {
+class AudioPreviewer : public QWidget {
 
 private:
 	struct SharedData {
-		AudioPreviewer *m_audio_previewer;
+		double m_current_low[2], m_current_high[2];
+		double m_next_low[2], m_next_high[2];
+		int64_t m_next_frame_time;
+		unsigned int m_frame_rate;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 
 private:
-	Synchronizer *m_synchronizer;
-
-	QString m_device_name;
-	unsigned int m_sample_rate, m_channels;
-
-	snd_pcm_t *m_alsa_pcm;
-	unsigned int m_alsa_periods, m_alsa_period_size;
-
 	VPair<SharedData> m_shared_data;
-	volatile bool m_should_stop, m_error_occurred;
+	volatile bool m_should_repaint;
 
 public:
-	ALSAInput(Synchronizer* synchronizer, const QString& device_name);
-	~ALSAInput();
+	AudioPreviewer(QWidget* parent);
+	~AudioPreviewer();
 
-	// Connect the audio previewer.
-	// audio_previewer can be NULL.
-	void ConnectAudioPreviewer(AudioPreviewer* audio_previewer);
+	void Reset();
+	void SetFrameRate(unsigned int frame_rate);
+	void ReadSamples(const char* samples, size_t samplecount);
+	void UpdateIfNeeded();
 
-	// Returns whether an error has occurred in the input thread.
-	// This function is thread-safe.
-	inline bool HasErrorOccurred() { return m_error_occurred; }
+	virtual QSize minimumSizeHint() const { return QSize(100, 21); }
+	virtual QSize sizeHint() const { return QSize(100, 21); }
 
-private:
-	void Init();
-	void Free();
-	int64_t GetReadDelay();
-
-private slots:
-	void UpdateScreenConfiguration();
-
-private:
-	virtual void run();
+protected:
+	virtual void paintEvent(QPaintEvent* event);
 
 };

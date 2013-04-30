@@ -157,6 +157,9 @@ void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int6
 	Q_ASSERT(m_audio_encoder != NULL);
 	SharedLock lock(&m_shared_data);
 
+	if(samplecount == 0)
+		return;
+
 	// avoid memory problems by limiting the audio buffer size
 	if(lock->m_audio_buffer.GetSize() / m_audio_sample_size >= MAX_AUDIO_SAMPLES_BUFFERED) {
 		if(lock->m_segment_video_started) {

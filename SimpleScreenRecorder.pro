@@ -45,7 +45,8 @@ SOURCES += \
 	Main.cpp \
 	ByteQueue.cpp \
 	AV/Input/ALSAInput.cpp \
-    GUI/VideoPreviewer.cpp
+    GUI/VideoPreviewer.cpp \
+    GUI/AudioPreviewer.cpp
 
 HEADERS  += \
 	AV/Encoder/AudioEncoder.h \
@@ -72,7 +73,8 @@ HEADERS  += \
 	Main.h \
 	ByteQueue.h \
 	AV/Input/ALSAInput.h \
-    GUI/VideoPreviewer.h
+    GUI/VideoPreviewer.h \
+    GUI/AudioPreviewer.h
 
 RESOURCES += \
 	resources.qrc
