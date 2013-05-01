@@ -67,7 +67,7 @@ void VideoPreviewer::SetFrameRate(unsigned int frame_rate) {
 	lock->m_frame_rate = std::max(1u, frame_rate);
 }
 
-void VideoPreviewer::ReadFrame(unsigned int width, unsigned int height, uint8_t* in_data, int in_stride, AVPixelFormat format) {
+void VideoPreviewer::ReadFrame(unsigned int width, unsigned int height, uint8_t* in_data, int in_stride, PixelFormat format) {
 	SharedLock lock(&m_shared_data);
 
 	// check the size
