@@ -179,6 +179,10 @@ void GLFrameGrabber::GrabFrame() {
 		fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] frame size = %ux%u\n", m_x11_display, m_x11_window, m_glx_drawable, m_width, m_height);
 	}
 
+	// write the current size to shared memory
+	((GLInjectHeader*) m_shm_main_ptr)->current_width = m_width;
+	((GLInjectHeader*) m_shm_main_ptr)->current_height = m_height;
+
 	// check image size
 	unsigned int image_stride = grow_align16(m_width * 4);
 	if(m_width < 2 || m_height < 2) {
@@ -195,10 +199,6 @@ void GLFrameGrabber::GrabFrame() {
 		}
 		return;
 	}
-
-	// write the current size to shared memory
-	((GLInjectHeader*) m_shm_main_ptr)->current_width = m_width;
-	((GLInjectHeader*) m_shm_main_ptr)->current_height = m_height;
 
 	// is there space in the circular buffer?
 	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
