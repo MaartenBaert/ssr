@@ -74,7 +74,8 @@ HEADERS  += \
 	ByteQueue.h \
 	AV/Input/ALSAInput.h \
     GUI/VideoPreviewer.h \
-    GUI/AudioPreviewer.h
+    GUI/AudioPreviewer.h \
+    Version.h
 
 RESOURCES += \
 	resources.qrc

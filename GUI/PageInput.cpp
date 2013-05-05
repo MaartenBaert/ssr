@@ -156,8 +156,8 @@ PageInput::PageInput(MainWindow* main_window)
 			layout2->addWidget(m_lineedit_alsa_device, 0, 1);
 		}
 	}
-	QPushButton *button_back = new QPushButton("Back", this);
-	QPushButton *button_continue = new QPushButton("Continue", this);
+	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), "Back", this);
+	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), "Continue", this);
 
 	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(UpdateScreenConfiguration()));
 	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(UpdateScreenConfiguration()));
@@ -606,7 +606,7 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	QLabel *label_info = new QLabel("Warning: OpenGL recording works by injecting a library into the program that will be recorded. "
 									"This library will override some system functions in order to capture the frames before they are "
 									"displayed on the screen. If you are trying to record a game that tries to detect hacking attempts "
-									"on the client side, it's (theoretically) possible that the game will consider this as a hack. This "
+									"on the client side, it's (theoretically) possible that the game will consider this a hack. This "
 									"might even get you banned, so it's a good idea to make sure that the program you want to record "
 									"won't ban you, *before* you try to record it. You've been warned :).\n\n"
 									"Another warning: OpenGL recording is experimental, it may not work or even crash the program you "

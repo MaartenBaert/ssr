@@ -176,8 +176,8 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout->addWidget(m_label_audio_kbit_rate, 1, 0);
 		layout->addWidget(m_lineedit_audio_kbit_rate, 1, 1);
 	}
-	QPushButton *button_back = new QPushButton("Back", this);
-	QPushButton *button_continue = new QPushButton("Continue", this);
+	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), "Back", this);
+	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), "Continue", this);
 
 	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageInput()));
 	connect(button_continue, SIGNAL(clicked()), this, SLOT(Continue()));

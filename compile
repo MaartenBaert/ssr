@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+cd glinject
+./compile32
+./compile64
+
+cd ..
+./prebuild
+qmake
+make

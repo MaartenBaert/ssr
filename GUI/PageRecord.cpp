@@ -195,9 +195,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		layout->addWidget(m_textedit_log);
 	}
 	QPushButton *button_cancel = new QPushButton(QIcon::fromTheme("process-stop"), "Cancel recording", this);
-	button_cancel->setIconSize(QSize(20, 20));
 	QPushButton *button_save = new QPushButton(QIcon::fromTheme("document-save"), "Save recording", this);
-	button_save->setIconSize(QSize(20, 20));
 
 	connect(button_cancel, SIGNAL(clicked()), this, SLOT(Cancel()));
 	connect(button_save, SIGNAL(clicked()), this, SLOT(Save()));
@@ -565,12 +563,11 @@ void PageRecord::CaptureStop() {
 void PageRecord::UpdateRecordPauseButton() {
 	if(m_capturing) { //TODO// should be 'm_recording' once recording and capturing are split
 		m_pushbutton_start_pause->setText("Pause recording");
-		m_pushbutton_start_pause->setIcon(QIcon(":/img/icon-pause.svg"));
+		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-playback-pause"));
 	} else {
 		m_pushbutton_start_pause->setText("Start recording");
-		m_pushbutton_start_pause->setIcon(QIcon(":/img/icon-record.svg"));
+		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-record"));
 	}
-	m_pushbutton_start_pause->setIconSize(QSize(20, 20));
 }
 
 void PageRecord::UpdatePreview() {

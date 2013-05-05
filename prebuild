@@ -1,0 +1,18 @@
+#!/bin/sh
+
+GIT_HASH="$( git rev-parse HEAD )"
+if [ $? != 0 ]
+then
+	GIT_HASH="<error-no-git>"
+else
+	GIT_MODIFIED="$( git diff --name-only )"
+	if [ "$GIT_MODIFIED" != "" ]
+	then
+		GIT_HASH="$GIT_HASH (modified working tree)"
+	fi
+fi
+
+BUILD_DATE="$( date -uI )"
+
+echo "#define SSR_GIT_HASH \"$GIT_HASH\"" > Version.h
+echo "#define SSR_BUILD_DATE \"$BUILD_DATE\"" >> Version.h
