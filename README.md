@@ -42,9 +42,13 @@ I don't know whether this is the right way to do it, but it works for me.
 Compiling
 ---------
 
-First compile GLInject. Go to the glinject directory and run both 'compile32' and 'compile64'. If compile32 fails but compile64 works, read the instructions above again :).
+To compile everything, just run:
 
-You can compile the main program by running 'qmake' followed by 'make'. Alternatively you can use Qt Creator (just open the project file).
+    ./compile
+
+This will first compile GLInject for 32-bit and 64-bit. If 32-bit fails because libraries are missing, but 64-bit works fine, read the instructions above again :). After GLInject has been compiled, it will run the pre-build script, then qmake, then make.
+
+You can also use Qt Creator if you want. Just run all the commands in the 'compile' script except qmake and make, then open the .pro file in Qt Creator and compile it.
 
 Other files you may want to read
 --------------------------------

@@ -3,10 +3,17 @@
 set -e
 
 cd glinject
-./compile32
+echo "Compiling 64-bit GLInject ..."
 ./compile64
+echo "Compiling 32-bit GLInject ..."
+./compile32
 
 cd ..
+echo "Running pre-build script ..."
 ./prebuild
+echo "Running qmake ..."
 qmake
-make
+echo "Running make ..."
+make -j `grep -c "^processor" /proc/cpuinfo`
+
+echo "Done!"
