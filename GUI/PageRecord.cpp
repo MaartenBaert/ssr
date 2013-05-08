@@ -454,7 +454,7 @@ void PageRecord::CaptureStart() {
 		try {
 
 			// for OpenGL recording, detect the application size
-			if(m_video_glinject) {
+			if(m_video_glinject && !m_video_scaling) {
 				m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 				if(m_video_in_width == 0 && m_video_in_height == 0) {
 					Logger::LogError("[PageRecord::RecordStart] Error: Could not get the size of the OpenGL application. Either the "
