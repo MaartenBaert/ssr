@@ -73,7 +73,7 @@ static PixelFormat X11ImageGetPixelFormat(XImage* image) {
 			break;
 		}
 		case 32: {
-			return PIX_FMT_RGB32;
+			return PIX_FMT_BGRA;
 		}
 	}
 	Logger::LogError("[X11ImageGetPixelFormat] Error: Unsupported X11 image pixel format!\n"

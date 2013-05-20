@@ -512,7 +512,7 @@ void PageInput::UpdateScreenConfiguration() {
 	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
 		rect = QApplication::desktop()->screenGeometry(i);
 		m_combobox_screens->addItem("Screen " + QString::number(i + 1) + ": " + QString::number(rect.width()) + "x" + QString::number(rect.height())
-									+ " at (" + QString::number(rect.left()) + "," + QString::number(rect.top()) + ")");
+									+ " at " + QString::number(rect.left()) + "," + QString::number(rect.top()));
 	}
 	// update the video x/y/w/h in case the position or size of the selected screen changed
 	UpdateVideoAreaFields();

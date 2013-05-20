@@ -44,3 +44,8 @@ public:
 	AVPacketWrapper* operator=(const AVPacketWrapper& other) = delete;
 	~AVPacketWrapper();
 };
+
+bool AVFormatIsInstalled(const QString& format_name);
+bool AVCodecIsInstalled(const QString& codec_name);
+bool AVCodecSupportsPixelFormat(AVCodec* codec, PixelFormat pixel_fmt);
+bool AVCodecSupportsSampleFormat(AVCodec* codec, AVSampleFormat sample_fmt);

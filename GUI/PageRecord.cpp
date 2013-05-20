@@ -327,9 +327,9 @@ void PageRecord::PageStart() {
 	m_container = page_output->GetContainer();
 	m_video_codec = page_output->GetVideoCodec();
 	m_audio_codec = page_output->GetAudioCodec();
-	m_container_avname = PageOutput::GetContainerAVName(m_container);
-	m_video_avname = PageOutput::GetVideoCodecAVName(m_video_codec);
-	m_audio_avname = PageOutput::GetAudioCodecAVName(m_audio_codec);
+	m_container_avname = page_output->GetContainerAVName();
+	m_video_avname = page_output->GetVideoCodecAVName();
+	m_audio_avname = page_output->GetAudioCodecAVName();
 	m_video_kbit_rate = page_output->GetVideoKBitRate();
 	m_audio_kbit_rate = page_output->GetAudioKBitRate();
 	m_video_options.clear();
@@ -344,7 +344,7 @@ void PageRecord::PageStart() {
 			// with the 'crf' option. 'preset' changes the encoding speed (and hence the efficiency of the compression) but doesn't really influence the quality,
 			// which is great because it means you don't have to experiment with different bit rates and different speeds to get good results.
 			m_video_options.push_back(std::make_pair(QString("crf"), QString::number(page_output->GetH264CRF())));
-			m_video_options.push_back(std::make_pair(QString("preset"), QString(page_output->GetH264PresetName(page_output->GetH264Preset()))));
+			m_video_options.push_back(std::make_pair(QString("preset"), page_output->GetH264PresetName()));
 			break;
 		}
 		case PageOutput::VIDEO_CODEC_VP8: {

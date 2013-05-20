@@ -29,6 +29,8 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 
 	m_main_window = main_window;
 
+	QLabel *label_logo = new QLabel(this);
+	label_logo->setPixmap(QPixmap(":/img/header.png"));
 	QLabel *label_welcome = new QLabel(this);
 	label_welcome->setText("<p>Welcome to SimpleScreenRecorder!</p>\n\n"
 						   "<p>Despite the name, this program actually has a lot of options. Don't worry though, there are really just two things that you "
@@ -47,6 +49,13 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 	connect(button_continue, SIGNAL(clicked()), m_main_window, SLOT(GoPageInput()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
+	{
+		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout->addLayout(layout2);
+		layout2->addStretch();
+		layout2->addWidget(label_logo);
+		layout2->addStretch();
+	}
 	layout->addWidget(label_welcome);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
@@ -79,8 +88,14 @@ DialogAbout::DialogAbout(PageWelcome* parent)
 		}
 	}
 
-	QString version_info = QString("Git: ") + SSR_GIT_HASH + "<br>\nBuild date: " + SSR_BUILD_DATE;
-	html_about.replace("%VERSIONINFO%", version_info);
+	html_about.replace("%VERSION%", SSR_VERSION);
+	html_about.replace("%VERSIONINFO%", QString("Git: ") + SSR_GIT_HASH + "<br>\n"
+					   "Build date: " + SSR_BUILD_DATE + "<br>\n"
+					   "Qt version: headers " + QT_VERSION_STR + ", libraries " + qVersion() + "<br>\n"
+					   "libavformat: " + LIBAVFORMAT_IDENT + "<br>\n"
+					   "libavcodec: " + LIBAVCODEC_IDENT + "<br>\n"
+					   "libavutil: " + LIBAVUTIL_IDENT + "<br>\n"
+					   "libswscale: " + LIBSWSCALE_IDENT);
 
 	QTextBrowser *textbrowser = new QTextBrowser(this);
 	textbrowser->setHtml(html_about);

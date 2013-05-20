@@ -91,7 +91,7 @@ void VideoPreviewer::ReadFrame(unsigned int width, unsigned int height, uint8_t*
 	// get sws context
 	m_sws_context = sws_getCachedContext(m_sws_context,
 										 width, height, format,
-										 image_size.width(), image_size.height(), PIX_FMT_RGB32,
+										 image_size.width(), image_size.height(), PIX_FMT_BGRA,
 										 SWS_BILINEAR, NULL, NULL, NULL);
 	if(m_sws_context == NULL) {
 		Logger::LogError("[VideoPreviewer::ReadFrame] Error: Can't get swscale context!");

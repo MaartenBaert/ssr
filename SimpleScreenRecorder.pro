@@ -46,7 +46,8 @@ SOURCES += \
 	ByteQueue.cpp \
 	AV/Input/ALSAInput.cpp \
     GUI/VideoPreviewer.cpp \
-    GUI/AudioPreviewer.cpp
+    GUI/AudioPreviewer.cpp \
+    Version.cpp
 
 HEADERS  += \
 	AV/Encoder/AudioEncoder.h \

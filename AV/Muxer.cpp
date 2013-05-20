@@ -184,6 +184,8 @@ void Muxer::Init() {
 		throw LibavException();
 	}
 
+	Logger::LogInfo(QString("[Muxer::Init] Using format ") + format->name + " (" + format->long_name + ").");
+
 	// allocate format context
 	m_format_context = avformat_alloc_context();
 	if(m_format_context == NULL) {

@@ -25,6 +25,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class AudioEncoder : public BaseEncoder {
 
 private:
+	static const std::vector<AVSampleFormat> SUPPORTED_SAMPLE_FORMATS;
+
+private:
 	unsigned int m_bit_rate;
 	unsigned int m_sample_rate;
 
@@ -44,6 +47,9 @@ public:
 	AVSampleFormat GetRequiredSampleFormat();
 
 	inline unsigned int GetSampleRate() { return m_sample_rate; }
+
+public:
+	static bool AVCodecIsSupported(const QString& codec_name);
 
 private:
 	virtual void FillCodecContext(AVCodec* codec);

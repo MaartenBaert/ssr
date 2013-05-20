@@ -24,17 +24,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AVWrapper.h"
 #include "Muxer.h"
 
-static bool CheckSampleFormat(AVCodec* codec, AVSampleFormat sample_fmt) {
-	const AVSampleFormat *p = codec->sample_fmts;
-	while(*p != AV_SAMPLE_FMT_NONE) {
-		if(*p == sample_fmt)
-			return true;
-		++p;
-	}
-	return false;
-}
-
-static AVSampleFormat allowed_sample_formats[] = {
+const std::vector<AVSampleFormat> AudioEncoder::SUPPORTED_SAMPLE_FORMATS = {
 	AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_FLT,
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
 	AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_FLTP,
@@ -44,41 +34,46 @@ static AVSampleFormat allowed_sample_formats[] = {
 AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 						   unsigned int bit_rate, unsigned int sample_rate)
 	: BaseEncoder(muxer) {
-
-	m_bit_rate = bit_rate;
-	m_sample_rate = sample_rate;
-
-	if(m_sample_rate == 0) {
-		Logger::LogError("[AudioEncoder::Init] Error: Sample rate it zero.");
-		throw LibavException();
-	}
-
-	// start the encoder
-	AVDictionary *options = NULL;
 	try {
-		for(unsigned int i = 0; i < codec_options.size(); ++i) {
-			av_dict_set(&options, qPrintable(codec_options[i].first), qPrintable(codec_options[i].second), 0);
+
+		m_bit_rate = bit_rate;
+		m_sample_rate = sample_rate;
+
+		if(m_sample_rate == 0) {
+			Logger::LogError("[AudioEncoder::Init] Error: Sample rate it zero.");
+			throw LibavException();
 		}
-		CreateCodec(qPrintable(codec_name), &options);
-		av_dict_free(&options);
+
+		// start the encoder
+		AVDictionary *options = NULL;
+		try {
+			for(unsigned int i = 0; i < codec_options.size(); ++i) {
+				av_dict_set(&options, qPrintable(codec_options[i].first), qPrintable(codec_options[i].second), 0);
+			}
+			CreateCodec(qPrintable(codec_name), &options);
+			av_dict_free(&options);
+		} catch(...) {
+			av_dict_free(&options);
+			throw;
+		}
+
+	#if !SSR_USE_AVCODEC_ENCODE_AUDIO2
+		// allocate a temporary buffer
+		if(GetCodecContext()->frame_size <= 1) {
+			// This is really weird, the old API uses the size of the *output* buffer to determine the number of
+			// input samples if the number of input samples (i.e. frame_size) is not fixed (i.e. frame_size <= 1).
+			m_temp_buffer.resize(1024 * GetCodecContext()->channels * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
+		} else {
+			m_temp_buffer.resize(std::max(FF_MIN_BUFFER_SIZE, 256 * 1024));
+		}
+	#endif
+
+		GetMuxer()->RegisterEncoder(GetStreamIndex(), this);
+
 	} catch(...) {
-		av_dict_free(&options);
+		Destruct();
 		throw;
 	}
-
-#if !SSR_USE_AVCODEC_ENCODE_AUDIO2
-	// allocate a temporary buffer
-	if(GetCodecContext()->frame_size <= 1) {
-		// This is really weird, the old API uses the size of the *output* buffer to determine the number of
-		// input samples if the number of input samples (i.e. frame_size) is not fixed (i.e. frame_size <= 1).
-		m_temp_buffer.resize(1024 * GetCodecContext()->channels * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
-	} else {
-		m_temp_buffer.resize(std::max(FF_MIN_BUFFER_SIZE, 256 * 1024));
-	}
-#endif
-
-	GetMuxer()->RegisterEncoder(GetStreamIndex(), this);
-
 }
 
 AudioEncoder::~AudioEncoder() {
@@ -97,6 +92,16 @@ AVSampleFormat AudioEncoder::GetRequiredSampleFormat() {
 	return GetCodecContext()->sample_fmt;
 }
 
+bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
+	AVCodec *codec = avcodec_find_encoder_by_name(qPrintable(codec_name));
+	if(codec == NULL)
+		return false;
+	for(unsigned int i = 0; i < SUPPORTED_SAMPLE_FORMATS.size(); ++i) {
+		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i]))
+			return true;
+	}
+	return false;
+}
 
 void AudioEncoder::FillCodecContext(AVCodec* codec) {
 	Q_UNUSED(codec);
@@ -107,9 +112,9 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 	GetCodecContext()->sample_rate = m_sample_rate;
 	GetCodecContext()->channels = 2;
 	GetCodecContext()->sample_fmt = AV_SAMPLE_FMT_NONE;
-	for(size_t i = 0; i < sizeof(allowed_sample_formats) / sizeof(AVSampleFormat); ++i) {
-		if(CheckSampleFormat(codec, allowed_sample_formats[i])) {
-			GetCodecContext()->sample_fmt = allowed_sample_formats[i];
+	for(unsigned int i = 0; i < SUPPORTED_SAMPLE_FORMATS.size(); ++i) {
+		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i])) {
+			GetCodecContext()->sample_fmt = SUPPORTED_SAMPLE_FORMATS[i];
 			break;
 		}
 	}

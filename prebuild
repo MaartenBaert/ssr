@@ -1,5 +1,7 @@
 #!/bin/sh
 
+VERSION="0.0.2"
+
 GIT_HASH="$( git rev-parse HEAD )"
 if [ $? != 0 ]
 then
@@ -14,5 +16,8 @@ fi
 
 BUILD_DATE="$( date -uI )"
 
-echo "#define SSR_GIT_HASH \"$GIT_HASH\"" > Version.h
-echo "#define SSR_BUILD_DATE \"$BUILD_DATE\"" >> Version.h
+echo "// This file is generated automatically by the prebuild script. Do not try to modify it, changes will be overwritten." > Version.cpp
+echo "#include \"Version.h\"" >> Version.cpp
+echo "const char SSR_VERSION[] = \"$VERSION\";" >> Version.cpp
+echo "const char SSR_GIT_HASH[] = \"$GIT_HASH\";" >> Version.cpp
+echo "const char SSR_BUILD_DATE[] = \"$BUILD_DATE\";" >> Version.cpp

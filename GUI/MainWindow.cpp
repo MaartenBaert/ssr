@@ -32,6 +32,7 @@ MainWindow::MainWindow()
 	: QMainWindow() {
 
 	setWindowTitle(WINDOW_CAPTION);
+	setWindowIcon(QIcon(":/img/icon.png"));
 
 	QWidget *centralwidget = new QWidget(this);
 	setCentralWidget(centralwidget);
@@ -89,7 +90,7 @@ void MainWindow::GoPageInput() {
 }
 void MainWindow::GoPageOutput() {
 	m_stacked_layout->setCurrentWidget(m_page_output);
-	m_page_output->UpdateStreams();
+	m_page_output->PageStart();
 }
 void MainWindow::GoPageRecord() {
 	m_stacked_layout->setCurrentWidget(m_page_record);

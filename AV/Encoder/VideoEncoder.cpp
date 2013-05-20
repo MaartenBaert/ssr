@@ -27,66 +27,74 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 const size_t VideoEncoder::THROTTLE_THRESHOLD_FRAMES = 20;
 const size_t VideoEncoder::THROTTLE_THRESHOLD_PACKETS = 100;
+const std::vector<PixelFormat> VideoEncoder::SUPPORTED_PIXEL_FORMATS = {
+	PIX_FMT_YUV420P,
+};
 
 VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 						   unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate)
 	: BaseEncoder(muxer) {
-
-	m_bit_rate = bit_rate;
-	m_width = width;
-	m_height = height;
-	m_frame_rate = frame_rate;
-
-	m_opt_crf = (unsigned int) -1;
-	m_opt_preset = "";
-
-	if(m_width == 0 || m_height == 0) {
-		Logger::LogError("[VideoEncoder::Init] Error: Width or height is zero.");
-		throw LibavException();
-	}
-	if(m_width > 10000 || m_height > 10000) {
-		Logger::LogError("[VideoEncoder::Init] Error: Width or height is too large, the maximum width and height is 10000.");
-		throw LibavException();
-	}
-	if(m_width % 2 != 0 || m_height % 2 != 0) {
-		Logger::LogError("[VideoEncoder::Init] Error: Width or height is not an even number.");
-		throw LibavException();
-	}
-	if(m_frame_rate == 0) {
-		Logger::LogError("[VideoEncoder::Init] Error: Frame rate it zero.");
-		throw LibavException();
-	}
-
-	// start the encoder
-	AVDictionary *options = NULL;
 	try {
-		for(unsigned int i = 0; i < codec_options.size(); ++i) {
-			if(codec_options[i].first == "crf")
-				m_opt_crf = codec_options[i].second.toUInt();
-			if(codec_options[i].first == "preset")
-				m_opt_preset = codec_options[i].second;
-			av_dict_set(&options, qPrintable(codec_options[i].first), qPrintable(codec_options[i].second), 0);
+
+		m_bit_rate = bit_rate;
+		m_width = width;
+		m_height = height;
+		m_frame_rate = frame_rate;
+
+		m_opt_crf = (unsigned int) -1;
+		m_opt_preset = "";
+
+		if(m_width == 0 || m_height == 0) {
+			Logger::LogError("[VideoEncoder::Init] Error: Width or height is zero.");
+			throw LibavException();
 		}
-		CreateCodec(qPrintable(codec_name), &options);
-		av_dict_free(&options);
+		if(m_width > 10000 || m_height > 10000) {
+			Logger::LogError("[VideoEncoder::Init] Error: Width or height is too large, the maximum width and height is 10000.");
+			throw LibavException();
+		}
+		if(m_width % 2 != 0 || m_height % 2 != 0) {
+			Logger::LogError("[VideoEncoder::Init] Error: Width or height is not an even number.");
+			throw LibavException();
+		}
+		if(m_frame_rate == 0) {
+			Logger::LogError("[VideoEncoder::Init] Error: Frame rate it zero.");
+			throw LibavException();
+		}
+
+		// start the encoder
+		AVDictionary *options = NULL;
+		try {
+			for(unsigned int i = 0; i < codec_options.size(); ++i) {
+				if(codec_options[i].first == "crf")
+					m_opt_crf = codec_options[i].second.toUInt();
+				if(codec_options[i].first == "preset")
+					m_opt_preset = codec_options[i].second;
+				av_dict_set(&options, qPrintable(codec_options[i].first), qPrintable(codec_options[i].second), 0);
+			}
+			CreateCodec(qPrintable(codec_name), &options);
+			av_dict_free(&options);
+		} catch(...) {
+			av_dict_free(&options);
+			throw;
+		}
+
+	#if !SSR_USE_AVCODEC_ENCODE_VIDEO2
+		// allocate a temporary buffer
+		// Apparently libav completely ignores the size of the buffer, and if it's too small it just crashes.
+		// Originally it was 256k, which is large enough for about 99.9% of the packets, but it still occasionally crashes.
+		// So now I'm using a buffer that's always at least large enough to hold a 256k header and *two* completely uncompressed frames.
+		// (one YUV frame takes w * h * 1.5 bytes)
+		// Newer versions of libav have deprecated avcodec_encode_video and added a new function which does the allocation
+		// automatically, just like avcodec_encode_audio2, but that function isn't available in Ubuntu 12.04/12.10 yet.
+		m_temp_buffer.resize(std::max<unsigned int>(FF_MIN_BUFFER_SIZE, 256 * 1024 + m_width * m_height * 3));
+	#endif
+
+		GetMuxer()->RegisterEncoder(GetStreamIndex(), this);
+
 	} catch(...) {
-		av_dict_free(&options);
+		Destruct();
 		throw;
 	}
-
-#if !SSR_USE_AVCODEC_ENCODE_VIDEO2
-	// allocate a temporary buffer
-	// Apparently libav completely ignores the size of the buffer, and if it's too small it just crashes.
-	// Originally it was 256k, which is large enough for about 99.9% of the packets, but it still occasionally crashes.
-	// So now I'm using a buffer that's always at least large enough to hold a 256k header and *two* completely uncompressed frames.
-	// (one YUV frame takes w * h * 1.5 bytes)
-	// Newer versions of libav have deprecated avcodec_encode_video and added a new function which does the allocation
-	// automatically, just like avcodec_encode_audio2, but that function isn't available in Ubuntu 12.04/12.10 yet.
-	m_temp_buffer.resize(std::max<unsigned int>(FF_MIN_BUFFER_SIZE, 256 * 1024 + m_width * m_height * 3));
-#endif
-
-	GetMuxer()->RegisterEncoder(GetStreamIndex(), this);
-
 }
 
 VideoEncoder::~VideoEncoder() {
@@ -106,6 +114,17 @@ int64_t VideoEncoder::GetFrameDelay() {
 		delay += n * n;
 	}
 	return delay;
+}
+
+bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
+	AVCodec *codec = avcodec_find_encoder_by_name(qPrintable(codec_name));
+	if(codec == NULL)
+		return false;
+	for(unsigned int i = 0; i < SUPPORTED_PIXEL_FORMATS.size(); ++i) {
+		if(AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i]))
+			return true;
+	}
+	return false;
 }
 
 void VideoEncoder::FillCodecContext(AVCodec* codec) {

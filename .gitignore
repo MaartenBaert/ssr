@@ -5,4 +5,4 @@ qrc_*
 moc_*
 Makefile
 SimpleScreenRecorder
-Version.h
+Version.cpp

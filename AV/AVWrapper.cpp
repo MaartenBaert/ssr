@@ -77,3 +77,34 @@ AVPacketWrapper::~AVPacketWrapper() {
 		av_free_packet(this);
 }
 
+bool AVFormatIsInstalled(const QString& format_name) {
+	return (av_guess_format(qPrintable(format_name), NULL, NULL) != NULL);
+}
+
+bool AVCodecIsInstalled(const QString& codec_name) {
+	return (avcodec_find_encoder_by_name(qPrintable(codec_name)) != NULL);
+}
+
+bool AVCodecSupportsPixelFormat(AVCodec* codec, PixelFormat pixel_fmt) {
+	const PixelFormat *p = codec->pix_fmts;
+	if(p == NULL)
+		return true; // NULL means 'unknown' or 'any', assume it is supported
+	while(*p != PIX_FMT_NONE) {
+		if(*p == pixel_fmt)
+			return true;
+		++p;
+	}
+	return false;
+}
+
+bool AVCodecSupportsSampleFormat(AVCodec* codec, AVSampleFormat sample_fmt) {
+	const AVSampleFormat *p = codec->sample_fmts;
+	if(p == NULL)
+		return true; // NULL means 'unknown' or 'any', assume it is supported
+	while(*p != AV_SAMPLE_FMT_NONE) {
+		if(*p == sample_fmt)
+			return true;
+		++p;
+	}
+	return false;
+}

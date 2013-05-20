@@ -56,7 +56,7 @@ private:
 	PageOutput::enum_container m_container;
 	PageOutput::enum_video_codec m_video_codec;
 	PageOutput::enum_audio_codec m_audio_codec;
-	const char *m_container_avname, *m_video_avname, *m_audio_avname;
+	QString m_container_avname, m_video_avname, m_audio_avname;
 	unsigned int m_video_kbit_rate, m_audio_kbit_rate;
 	std::vector<std::pair<QString, QString> > m_video_options, m_audio_options;
 

@@ -32,6 +32,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <limits>
 #include <vector>
 #include <deque>
+#include <set>
 #include <memory>
 
 #include <QX11Info>
@@ -47,10 +48,12 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-// avformat_close_input requires libavformat >= 53.17
-#define SSR_USE_AVFORMAT_CLOSE_INPUT   (LIBAVFORMAT_VERSION_MAJOR > 53 || (LIBAVFORMAT_VERSION_MAJOR == 53 && LIBAVFORMAT_VERSION_MINOR >= 17))
+// libav/ffmpeg API changes with version numbers are listed in their repositories in the file 'doc/APIchanges'
+
 // avformat_new_stream requires libavformat >= 53.10
 #define SSR_USE_AVFORMAT_NEW_STREAM    (LIBAVFORMAT_VERSION_MAJOR > 53 || (LIBAVFORMAT_VERSION_MAJOR == 53 && LIBAVFORMAT_VERSION_MINOR >= 10))
+// avformat_query_codec requires libavformat >= 53.8 (or maybe 53.11, APIchanges isn't clear)
+#define SSR_USE_AVFORMAT_QUERY_CODEC   (LIBAVFORMAT_VERSION_MAJOR > 53 || (LIBAVFORMAT_VERSION_MAJOR == 53 && LIBAVFORMAT_VERSION_MINOR >= 8))
 
 // avcodec_encode_video2 requires libavcodec >= 54.1
 #define SSR_USE_AVCODEC_ENCODE_VIDEO2  (LIBAVCODEC_VERSION_MAJOR > 54 || (LIBAVCODEC_VERSION_MAJOR == 54 && LIBAVCODEC_VERSION_MINOR >= 1))

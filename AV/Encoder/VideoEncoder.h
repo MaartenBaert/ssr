@@ -24,8 +24,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 class VideoEncoder : public BaseEncoder {
 
-public:
+private:
 	static const size_t THROTTLE_THRESHOLD_FRAMES, THROTTLE_THRESHOLD_PACKETS;
+	static const std::vector<PixelFormat> SUPPORTED_PIXEL_FORMATS;
 
 private:
 	unsigned int m_bit_rate;
@@ -49,6 +50,9 @@ public:
 	inline unsigned int GetWidth() { return m_width; }
 	inline unsigned int GetHeight() { return m_height; }
 	inline unsigned int GetFrameRate() { return m_frame_rate; }
+
+public:
+	static bool AVCodecIsSupported(const QString& codec_name);
 
 private:
 	virtual void FillCodecContext(AVCodec* codec);
