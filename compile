@@ -7,12 +7,33 @@ echo "Compiling 64-bit GLInject ..."
 ./compile64
 echo "Compiling 32-bit GLInject ..."
 ./compile32
-
 cd ..
+
+echo "Detecting ffmpeg/libav ..."
+HAS_FFMPEG=$( grep -c "This file is part of FFmpeg." /usr/include/libavcodec/avcodec.h || true )
+HAS_LIBAV=$( grep -c "This file is part of Libav." /usr/include/libavcodec/avcodec.h || true )
+if [ $HAS_FFMPEG -gt 0 ]; then
+	if [ $HAS_LIBAV -gt 0 ]; then
+		echo "Detected ffmpeg AND libav, this should not happen."
+		exit 1
+	else
+		echo "Detected ffmpeg."
+		TEST_USE_FFMPEG_VERSIONS=1
+	fi
+else
+	if [ $HAS_LIBAV -gt 0 ]; then
+		echo "Detected libav."
+		TEST_USE_FFMPEG_VERSIONS=0
+	else
+		echo "Detection failed."
+		exit 1
+	fi
+fi
+
 echo "Running pre-build script ..."
 ./prebuild
 echo "Running qmake ..."
-qmake
+qmake QMAKE_CXXFLAGS+="-DTEST_USE_FFMPEG_VERSIONS=$TEST_USE_FFMPEG_VERSIONS"
 echo "Running make ..."
 make -j `grep -c "^processor" /proc/cpuinfo`
 
