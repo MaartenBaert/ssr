@@ -204,7 +204,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	layout->addWidget(group_recording);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
-		layout->addLayout(layout2, 2);
+		layout->addLayout(layout2, 3);
 		layout2->addWidget(group_information);
 		layout2->addWidget(group_preview);
 	}

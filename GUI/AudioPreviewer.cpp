@@ -112,6 +112,12 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 
 	int w = width() - 1, h = height() - 1;
 
+	painter.setPen(Qt::NoPen);
+	painter.setBrush(QColor(150, 150, 150));
+	for(unsigned int channel = 0; channel < 2; ++channel) {
+		painter.drawRect(0, 0, w, h);
+	}
+
 	QLinearGradient grad(0.0, 0.0, (double) width(), 0.0);
 	grad.setColorAt(0.0, QColor(0, 200, 0));
 	grad.setColorAt(0.5, QColor(255, 255, 0));
@@ -123,7 +129,7 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 		painter.drawRect(0, h * channel / 2, (int) round((double) w * val), h * (channel + 1) / 2 - h * channel / 2);
 	}
 
-	painter.setPen(Qt::black);
+	painter.setPen(QColor(0, 0, 0));
 	painter.setBrush(Qt::NoBrush);
 	for(unsigned int channel = 0; channel < 2; ++channel) {
 		painter.drawRect(0, h * channel / 2, w, h * (channel + 1) / 2 - h * channel / 2);
