@@ -33,6 +33,7 @@ If the 32-bit version of libGL and libX11 isn't found during linking, but 64-bit
     cd /usr/lib/i386-linux-gnu/
     sudo ln -s libGL.so.1 mesa/libGL.so
     sudo ln -s mesa/libGL.so libGL.so
+    sudo ln -s libGLU.so.1 libGLU.so
     sudo ln -s libX11.so.6 libX11.so
     sudo ln -s libXfixes.so.3 libXfixes.so
     sudo ldconfig
