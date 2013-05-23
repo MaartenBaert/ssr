@@ -1,0 +1,7 @@
+<RCC>
+	<qresource prefix="/">
+		<file alias="img/header.png">%DATADIR%/img/header.png</file>
+		<file alias="img/icon.png">%DATADIR%/img/icon.png</file>
+		<file alias="about.htm">%DATADIR%/about.htm</file>
+	</qresource>
+</RCC>

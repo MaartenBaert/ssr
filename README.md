@@ -12,6 +12,7 @@ Build dependencies
 ------------------
 
 This list may be incomplete. All instructions and package names are for Ubuntu 12.10, it could be different for other versions/distros.
+- pkg-config (package pkg-config)
 - Qt 4 (package qt4-qmake, libqt4-dev)
 - libavformat (package libavformat-dev)
 - libavcodec (package libavcodec-dev)
@@ -26,15 +27,16 @@ This list may be incomplete. All instructions and package names are for Ubuntu 1
 
 Everything combined:
 
-    sudo apt-get install qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
+    sudo apt-get install pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
 
-If the 32-bit version of libGL and libX11 isn't found during linking, but 64-bit works fine, try this:
+If the 32-bit version of some library isn't found, but 64-bit works fine, try this:
 
     cd /usr/lib/i386-linux-gnu/
     sudo ln -s libGL.so.1 mesa/libGL.so
     sudo ln -s mesa/libGL.so libGL.so
     sudo ln -s libGLU.so.1 libGLU.so
     sudo ln -s libX11.so.6 libX11.so
+    sudo ln -s libXext.so.6 libXext.so
     sudo ln -s libXfixes.so.3 libXfixes.so
     sudo ldconfig
 
@@ -50,6 +52,14 @@ To compile everything, just run:
 This will first compile GLInject for 32-bit and 64-bit. If 32-bit fails because libraries are missing, but 64-bit works fine, read the instructions above again :). After GLInject has been compiled, it will run the pre-build script, then qmake, then make.
 
 You can also use Qt Creator if you want. Just run all the commands in the 'compile' script except qmake and make, then open the .pro file in Qt Creator and compile it.
+
+Installing
+----------
+
+You don't need to install anything to run the program, installing is only needed if you want a desktop entry and an icon for SimpleScreenRecorder. To install, run:
+
+    sudo ./install
+    sudo ./postinstall
 
 Other files you may want to read
 --------------------------------

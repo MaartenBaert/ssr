@@ -1,5 +1,0 @@
-#!/bin/sh
-
-set -e
-
-g++ -m32 -shared -s -fPIC -pipe -Wall -O3 -Wl,-O3 *.c *.cpp -o libssr-glinject32.so -lGL -lGLU -ldl -lrt -lX11 -lXfixes

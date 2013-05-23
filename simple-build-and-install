@@ -1,0 +1,60 @@
+#!/bin/sh
+# Run this if you just want to build and install the program and you don't care about all the details.
+
+set -e
+
+if [ "$( whoami )" == "root" ]; then
+	echo "error: don't run this script as root, this will mess up file permissions"
+	exit 1
+fi
+
+echo "Detecting ffmpeg/libav ..."
+HAS_FFMPEG=$( grep -c "This file is part of FFmpeg." /usr/include/libavcodec/avcodec.h || true )
+HAS_LIBAV=$( grep -c "This file is part of Libav." /usr/include/libavcodec/avcodec.h || true )
+if [ $HAS_FFMPEG -gt 0 ]; then
+	if [ $HAS_LIBAV -gt 0 ]; then
+		echo "Detected ffmpeg AND libav, this should not happen."
+		exit 1
+	else
+		echo "Detected ffmpeg."
+		TEST_USE_FFMPEG_VERSIONS=1
+	fi
+else
+	if [ $HAS_LIBAV -gt 0 ]; then
+		echo "Detected libav."
+		TEST_USE_FFMPEG_VERSIONS=0
+	else
+		echo "Detection failed."
+		exit 1
+	fi
+fi
+
+export CPPFLAGS="-DNDEBUG -DQT_NO_DEBUG -DTEST_USE_FFMPEG_VERSIONS=$TEST_USE_FFMPEG_VERSIONS"
+export CFLAGS="-Wall -O3"
+export CXXFLAGS="-Wall -O3"
+
+mkdir -p build
+cd build
+	echo "Configuring ..."
+	../configure --prefix=/usr
+	echo "Compiling ..."
+	make -j "$( grep -c "^processor" /proc/cpuinfo )"
+	echo "Installing ..."
+	sudo make install
+cd ..
+
+mkdir -p build32
+cd build32
+	echo "Configuring 32-bit GLInject library ..."
+	CC="gcc -m32" CXX="g++ -m32" PKG_CONFIG_PATH="/usr/lib32/pkgconfig" \
+		../configure --prefix=/usr --libdir=/usr/lib32 --disable-ssrprogram
+	echo "Compiling 32-bit GLInject library ..."
+	make -j "$( grep -c "^processor" /proc/cpuinfo )"
+	echo "Installing 32-bit GLInject library ..."
+	sudo make install
+cd ..
+
+echo "Running post-install script ..."
+sudo ./postinstall
+
+echo "Done."

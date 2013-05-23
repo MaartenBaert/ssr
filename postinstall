@@ -1,0 +1,13 @@
+#!/bin/sh
+# You should run this (as root) after installation/uninstallation to make sure the libraries, desktop entry and icon will be found.
+
+set -e
+
+if [ "$( whoami )" != "root" ]; then
+	echo "error: postinstall should be run as root"
+	exit 1
+fi
+
+ldconfig
+update-desktop-database -q
+gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor

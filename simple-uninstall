@@ -1,0 +1,24 @@
+#!/bin/sh
+# Run this if you used 'simple-build-and-install' and you want to uninstall the program again.
+
+set -e
+
+if [ "$( whoami )" == "root" ]; then
+	echo "error: don't run this script as root, this will mess up file permissions"
+	exit 1
+fi
+
+cd build
+	echo "Uninstalling ..."
+	sudo make uninstall
+cd ..
+
+cd build32
+	echo "Uninstalling 32-bit GLInject library ..."
+	sudo make uninstall
+cd ..
+
+echo "Running post-install script ..."
+sudo ./postinstall
+
+echo "Done."

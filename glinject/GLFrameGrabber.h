@@ -7,7 +7,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 */
 
 #pragma once
-#include "StdAfx.h"
+#include "Global.h"
 
 #define BUFFER_COUNT 2
 

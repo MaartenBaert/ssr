@@ -7,7 +7,6 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 */
 
 #pragma once
-#include "StdAfx.h"
 
 // Disable padding to make sure the 32-bit and 64-bit libs are compatible.
 #pragma pack(push, 1)

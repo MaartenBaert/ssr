@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=SimpleScreenRecorder
+Icon=simplescreenrecorder
+Exec=simplescreenrecorder --logfile
+Terminal=false
+Categories=AudioVideo;Video;Recorder;Qt;

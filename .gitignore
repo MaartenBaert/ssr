@@ -1,8 +1,0 @@
-*.so
-*.o
-*.user
-qrc_*
-moc_*
-Makefile
-SimpleScreenRecorder
-Version.cpp

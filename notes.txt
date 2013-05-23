@@ -90,6 +90,8 @@ OpenGL recording is usually called 'GLInject' in the code. It consists of three 
 
 If the video is corrupted after some change to the back-end, check the timestamps. In most of the cases I've seen, the muxer was simply messing up the interleaving of the video and audio frames. The typical result is video that starts fine, then gets corrupted, and then freezes after a few seconds.
 
+Video can also get corrupted if the frame rate is too low (like 1 fps). This may be a problem with the player though, I'm not sure.
+
 #### Dealing with old versions of libav/ffmpeg ####
 
 This is very annoying. Libav likes to change its API a lot. The API is usually backwards compatible, but the old functions often have some disadvantages. So for now I'm supporting both old and new versions of the API, based on the preprocessor definitions from the libav/ffmpeg headers.
