@@ -42,24 +42,18 @@ If the 32-bit version of some library isn't found, but 64-bit works fine, try th
 
 I don't know whether this is the right way to do it, but it works for me.
 
-Compiling
----------
+Compiling and installing
+------------------------
 
-To compile everything, just run:
+The simplest way to compile and install everything is to run:
 
-    ./compile
+    ./simple-build-and-install
 
-This will first compile GLInject for 32-bit and 64-bit. If 32-bit fails because libraries are missing, but 64-bit works fine, read the instructions above again :). After GLInject has been compiled, it will run the pre-build script, then qmake, then make.
+This will compile the 64-bit main program and library, and then the 32-bit library. If the 32-bit build fails because libraries are missing, but 64-bit works fine, read the instructions above again :).
 
-You can also use Qt Creator if you want. Just run all the commands in the 'compile' script except qmake and make, then open the .pro file in Qt Creator and compile it.
+If you want to compile step-by-step, just run configure followed by make. It's a good idea to build in a separate directory, because you will need to build the library twice (32-bit and 64-bit). Look at the 'simple-build-and-install' script to see how this is done.
 
-Installing
-----------
-
-You don't need to install anything to run the program, installing is only needed if you want a desktop entry and an icon for SimpleScreenRecorder. To install, run:
-
-    sudo ./install
-    sudo ./postinstall
+You don't need to install the program to use it, but installing will give you a desktop entry and an icon. Also, if you don't install the program, you will need to specify where the GLInject libraries are located with LD_LIBRARY_PATH when using OpenGL recording.
 
 Other files you may want to read
 --------------------------------
