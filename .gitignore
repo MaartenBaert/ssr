@@ -1,0 +1,8 @@
+autom4te.cache
+*~
+*.so
+*.o
+qrc_*
+moc_*
+Makefile
+simplescreenrecorder
