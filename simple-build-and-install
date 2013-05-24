@@ -1,9 +1,12 @@
 #!/bin/sh
 # Run this if you just want to build and install the program and you don't care about all the details.
+# Any additional arguments will be passed on to 'configure'.
+# If you want to modify configure.ac or Makefile.am, you will need the correct version of autotools, and you should
+# run configure (or this script) with --enable-maintainer-mode.
 
 set -e
 
-if [ "$( whoami )" == "root" ]; then
+if [ x"$( whoami )" = x"root" ]; then
 	echo "error: don't run this script as root, this will mess up file permissions"
 	exit 1
 fi
@@ -36,7 +39,7 @@ export CXXFLAGS="-Wall -O3"
 mkdir -p build
 cd build
 	echo "Configuring ..."
-	../configure --prefix=/usr
+	../configure --prefix=/usr $@
 	echo "Compiling ..."
 	make -j "$( grep -c "^processor" /proc/cpuinfo )"
 	echo "Installing ..."
@@ -47,7 +50,7 @@ mkdir -p build32
 cd build32
 	echo "Configuring 32-bit GLInject library ..."
 	CC="gcc -m32" CXX="g++ -m32" PKG_CONFIG_PATH="/usr/lib32/pkgconfig" \
-		../configure --prefix=/usr --libdir=/usr/lib32 --disable-ssrprogram
+		../configure --prefix=/usr --libdir=/usr/lib32 --disable-ssrprogram $@
 	echo "Compiling 32-bit GLInject library ..."
 	make -j "$( grep -c "^processor" /proc/cpuinfo )"
 	echo "Installing 32-bit GLInject library ..."

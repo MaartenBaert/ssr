@@ -3,6 +3,7 @@
 *.o
 *.lo
 *.la
+*.tar.gz
 qrc_*
 moc_*
 Makefile
