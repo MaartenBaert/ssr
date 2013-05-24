@@ -5,6 +5,7 @@ bin_PROGRAMS = simplescreenrecorder
 simplescreenrecorder_CPPFLAGS = \
 	$(QT4_CFLAGS)
 simplescreenrecorder_CXXFLAGS = \
+	-pthread \
 	-I$(srcdir)/AV/Encoder \
 	-I$(srcdir)/AV/Input \
 	-I$(srcdir)/AV \

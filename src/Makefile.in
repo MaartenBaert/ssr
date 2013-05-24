@@ -344,6 +344,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	$(QT4_CFLAGS)
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = \
+@ENABLE_SSRPROGRAM_TRUE@	-pthread \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Encoder \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV \

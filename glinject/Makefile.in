@@ -97,8 +97,11 @@ libssr_glinject_la_LIBADD =
 am__libssr_glinject_la_SOURCES_DIST = elfhacks.c elfhacks.h \
 	GLFrameGrabber.cpp GLFrameGrabber.h GLInject.cpp GLInject.h \
 	Global.h Hook.cpp ShmStructs.h
-@ENABLE_GLINJECTLIB_TRUE@am_libssr_glinject_la_OBJECTS = elfhacks.lo \
-@ENABLE_GLINJECTLIB_TRUE@	GLFrameGrabber.lo GLInject.lo Hook.lo
+@ENABLE_GLINJECTLIB_TRUE@am_libssr_glinject_la_OBJECTS =  \
+@ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-elfhacks.lo \
+@ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-GLFrameGrabber.lo \
+@ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-GLInject.lo \
+@ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-Hook.lo
 libssr_glinject_la_OBJECTS = $(am_libssr_glinject_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -106,8 +109,8 @@ am__v_lt_0 = --silent
 am__v_lt_1 = 
 libssr_glinject_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(AM_CXXFLAGS) $(CXXFLAGS) $(libssr_glinject_la_LDFLAGS) \
-	$(LDFLAGS) -o $@
+	$(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) \
+	$(libssr_glinject_la_LDFLAGS) $(LDFLAGS) -o $@
 @ENABLE_GLINJECTLIB_TRUE@am_libssr_glinject_la_rpath = -rpath \
 @ENABLE_GLINJECTLIB_TRUE@	$(libdir)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -319,6 +322,16 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @ENABLE_GLINJECTLIB_TRUE@lib_LTLIBRARIES = libssr-glinject.la
+@ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_CFLAGS = \
+@ENABLE_GLINJECTLIB_TRUE@	-pthread
+
+@ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_CXXFLAGS = \
+@ENABLE_GLINJECTLIB_TRUE@	-pthread
+
+@ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_LDFLAGS = \
+@ENABLE_GLINJECTLIB_TRUE@	-avoid-version -shared \
+@ENABLE_GLINJECTLIB_TRUE@	 -lrt -ldl -lGL -lGLU -lX11 -lXfixes
+
 @ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_SOURCES = \
 @ENABLE_GLINJECTLIB_TRUE@	elfhacks.c \
 @ENABLE_GLINJECTLIB_TRUE@	elfhacks.h \
@@ -329,10 +342,6 @@ top_srcdir = @top_srcdir@
 @ENABLE_GLINJECTLIB_TRUE@	Global.h \
 @ENABLE_GLINJECTLIB_TRUE@	Hook.cpp \
 @ENABLE_GLINJECTLIB_TRUE@	ShmStructs.h
-
-@ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_LDFLAGS = \
-@ENABLE_GLINJECTLIB_TRUE@	-avoid-version -shared \
-@ENABLE_GLINJECTLIB_TRUE@	 -lrt -ldl -lGL -lGLU -lX11 -lXfixes
 
 all: all-am
 
@@ -412,10 +421,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLFrameGrabber.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLInject.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Hook.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elfhacks.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libssr_glinject_la-GLFrameGrabber.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libssr_glinject_la-GLInject.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libssr_glinject_la-Hook.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libssr_glinject_la-elfhacks.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -438,6 +447,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
+libssr_glinject_la-elfhacks.lo: elfhacks.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CFLAGS) $(CFLAGS) -MT libssr_glinject_la-elfhacks.lo -MD -MP -MF $(DEPDIR)/libssr_glinject_la-elfhacks.Tpo -c -o libssr_glinject_la-elfhacks.lo `test -f 'elfhacks.c' || echo '$(srcdir)/'`elfhacks.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libssr_glinject_la-elfhacks.Tpo $(DEPDIR)/libssr_glinject_la-elfhacks.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elfhacks.c' object='libssr_glinject_la-elfhacks.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CFLAGS) $(CFLAGS) -c -o libssr_glinject_la-elfhacks.lo `test -f 'elfhacks.c' || echo '$(srcdir)/'`elfhacks.c
+
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
@@ -458,6 +474,27 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
+
+libssr_glinject_la-GLFrameGrabber.lo: GLFrameGrabber.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -MT libssr_glinject_la-GLFrameGrabber.lo -MD -MP -MF $(DEPDIR)/libssr_glinject_la-GLFrameGrabber.Tpo -c -o libssr_glinject_la-GLFrameGrabber.lo `test -f 'GLFrameGrabber.cpp' || echo '$(srcdir)/'`GLFrameGrabber.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libssr_glinject_la-GLFrameGrabber.Tpo $(DEPDIR)/libssr_glinject_la-GLFrameGrabber.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GLFrameGrabber.cpp' object='libssr_glinject_la-GLFrameGrabber.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -c -o libssr_glinject_la-GLFrameGrabber.lo `test -f 'GLFrameGrabber.cpp' || echo '$(srcdir)/'`GLFrameGrabber.cpp
+
+libssr_glinject_la-GLInject.lo: GLInject.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -MT libssr_glinject_la-GLInject.lo -MD -MP -MF $(DEPDIR)/libssr_glinject_la-GLInject.Tpo -c -o libssr_glinject_la-GLInject.lo `test -f 'GLInject.cpp' || echo '$(srcdir)/'`GLInject.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libssr_glinject_la-GLInject.Tpo $(DEPDIR)/libssr_glinject_la-GLInject.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GLInject.cpp' object='libssr_glinject_la-GLInject.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -c -o libssr_glinject_la-GLInject.lo `test -f 'GLInject.cpp' || echo '$(srcdir)/'`GLInject.cpp
+
+libssr_glinject_la-Hook.lo: Hook.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -MT libssr_glinject_la-Hook.lo -MD -MP -MF $(DEPDIR)/libssr_glinject_la-Hook.Tpo -c -o libssr_glinject_la-Hook.lo `test -f 'Hook.cpp' || echo '$(srcdir)/'`Hook.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libssr_glinject_la-Hook.Tpo $(DEPDIR)/libssr_glinject_la-Hook.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Hook.cpp' object='libssr_glinject_la-Hook.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -c -o libssr_glinject_la-Hook.lo `test -f 'Hook.cpp' || echo '$(srcdir)/'`Hook.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
