@@ -38,24 +38,34 @@ export CXXFLAGS="-Wall -O2 -pipe"
 
 mkdir -p build
 cd build
-	echo "Configuring ..."
-	../configure --prefix=/usr $@
-	echo "Compiling ..."
-	make -j "$( grep -c "^processor" /proc/cpuinfo )"
-	echo "Installing ..."
-	sudo make install
+echo "Configuring ..."
+../configure --prefix=/usr $@
+echo "Compiling ..."
+make -j "$( grep -c "^processor" /proc/cpuinfo )"
 cd ..
 
-mkdir -p build32
-cd build32
+if [ x$( uname -m ) = x"x86_64" ]; then
+	mkdir -p build32
+	cd build32
 	echo "Configuring 32-bit GLInject library ..."
 	CC="gcc -m32" CXX="g++ -m32" PKG_CONFIG_PATH="/usr/lib32/pkgconfig" \
 		../configure --prefix=/usr --libdir=/usr/lib32 --disable-ssrprogram $@
 	echo "Compiling 32-bit GLInject library ..."
 	make -j "$( grep -c "^processor" /proc/cpuinfo )"
+	cd ..
+fi
+
+cd build
+echo "Installing ..."
+sudo make install
+cd ..
+
+if [ x$( uname -m ) = x"x86_64" ]; then
+	cd build32
 	echo "Installing 32-bit GLInject library ..."
 	sudo make install
-cd ..
+	cd ..
+fi
 
 echo "Running post-install script ..."
 sudo ./postinstall
