@@ -11,7 +11,8 @@ GNU GPL v3 - read 'COPYING' for more info.
 Build dependencies
 ------------------
 
-This list may be incomplete. All instructions and package names are for Ubuntu 12.10, it could be different for other versions/distros.
+This list may be incomplete. All instructions and package names are for Ubuntu 12.04/12.10/13.04, it could be different for other versions/distros.
+- GCC and make (package build-essential)
 - pkg-config (package pkg-config)
 - Qt 4 (package qt4-qmake, libqt4-dev)
 - libavformat (package libavformat-dev)
@@ -27,7 +28,7 @@ This list may be incomplete. All instructions and package names are for Ubuntu 1
 
 Everything combined:
 
-    sudo apt-get install pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
+    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
 
 If the 32-bit version of some library isn't found, but 64-bit works fine, try this:
 
