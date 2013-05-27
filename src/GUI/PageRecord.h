@@ -88,6 +88,7 @@ private:
 	QWidget *m_preview_page1, *m_preview_page2;
 	QLineEdit *m_lineedit_preview_frame_rate;
 	VideoPreviewer *m_video_previewer;
+	QLabel *m_label_mic_icon;
 	AudioPreviewer *m_audio_previewer;
 	QPushButton *m_pushbutton_preview_start_stop;
 

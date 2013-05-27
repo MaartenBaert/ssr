@@ -33,8 +33,8 @@ else
 fi
 
 export CPPFLAGS="-DNDEBUG -DQT_NO_DEBUG -DTEST_USE_FFMPEG_VERSIONS=$TEST_USE_FFMPEG_VERSIONS"
-export CFLAGS="-Wall -O3"
-export CXXFLAGS="-Wall -O3"
+export CFLAGS="-Wall -O2 -pipe"
+export CXXFLAGS="-Wall -O2 -pipe"
 
 mkdir -p build
 cd build

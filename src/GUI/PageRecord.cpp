@@ -157,8 +157,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_preview_page2 = new QWidget(group_preview);
 		{
 			m_video_previewer = new VideoPreviewer(m_preview_page2);
-			QLabel *label_mic_icon = new QLabel(m_preview_page2);
-			label_mic_icon->setPixmap(QIcon::fromTheme("audio-input-microphone").pixmap(24, 24));
+			m_label_mic_icon = new QLabel(m_preview_page2);
+			m_label_mic_icon->setPixmap(QIcon::fromTheme("audio-input-microphone").pixmap(24, 24));
 			m_audio_previewer = new AudioPreviewer(m_preview_page2);
 
 			QVBoxLayout *layout = new QVBoxLayout(m_preview_page2);
@@ -168,7 +168,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 				QHBoxLayout *layout2 = new QHBoxLayout();
 				layout->addLayout(layout2);
 				layout2->addStretch();
-				layout2->addWidget(label_mic_icon);
+				layout2->addWidget(m_label_mic_icon);
 				layout2->addWidget(m_audio_previewer);
 				layout2->addStretch();
 			}
@@ -334,6 +334,10 @@ void PageRecord::PageStart() {
 	m_audio_kbit_rate = page_output->GetAudioKBitRate();
 	m_video_options.clear();
 	m_audio_options.clear();
+
+	// hide the audio previewer if there is no audio
+	m_label_mic_icon->setVisible(m_audio_enabled);
+	m_audio_previewer->setVisible(m_audio_enabled);
 
 	// some codec-specific things
 	// you can get more information about all these options by running 'avconv -h' from a terminal
