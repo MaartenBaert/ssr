@@ -21,3 +21,5 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 
 QString GetApplicationUserDir();
+bool DetectNVIDIAFlipping();
+bool DisableNVIDIAFlipping();

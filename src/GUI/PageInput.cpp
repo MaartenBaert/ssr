@@ -637,7 +637,8 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	m_checkbox_capture_front->setChecked(m_parent->GetGLInjectCaptureFront());
 	m_checkbox_limit_fps = new QCheckBox("Limit application frame rate", this);
 	m_checkbox_limit_fps->setToolTip("If checked, the injected library will slow down the application so the frame rate doesn't become higher than the recording frame rate.\n"
-									 "This stops the application from wasting CPU time for frames that won't be recorded, and sometimes results in smoother video (this depends on the application).");
+									 "This stops the application from wasting CPU time for frames that won't be recorded, and sometimes results in smoother video\n"
+									 "(this depends on the application).");
 	m_checkbox_limit_fps->setChecked(m_parent->GetGLInjectLimitFPS());
 
 	QPushButton *pushbutton_close = new QPushButton("Close", this);

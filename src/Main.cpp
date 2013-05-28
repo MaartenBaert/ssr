@@ -58,6 +58,16 @@ int main(int argc, char* argv[]) {
 		dup2(2, 1); // this redirects stdout to stderr
 	}
 
+	// warning for glitch with proprietary NVIDIA drivers
+	if(DetectNVIDIAFlipping()) {
+		if(QMessageBox::warning(NULL, MainWindow::WINDOW_CAPTION, "SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?",
+								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+			if(!DisableNVIDIAFlipping()) {
+				QMessageBox::warning(NULL, MainWindow::WINDOW_CAPTION, "I couldn't disable flipping for some reason - sorry! Try disabling it from the NVIDIA control panel.", QMessageBox::Ok);
+			}
+		}
+	}
+
 	Logger::LogInfo("==================== Starting SSR ====================");
 
 	MainWindow mainwindow;
@@ -76,4 +86,29 @@ QString GetApplicationUserDir() {
 		throw 0;
 	}
 	return dir;
+}
+
+bool DetectNVIDIAFlipping() {
+	QString program = "nvidia-settings";
+	QStringList args;
+	args << "-tq" << "AllowFlipping";
+	QProcess p;
+	p.start(program, args);
+	p.waitForFinished();
+	if(p.exitCode() != 0)
+		return false;
+	QString result = p.readAll();
+	return (result.trimmed() == "1");
+}
+
+bool DisableNVIDIAFlipping() {
+	QString program = "nvidia-settings";
+	QStringList args;
+	args << "-a" << "AllowFlipping=0";
+	QProcess p;
+	p.start(program, args);
+	p.waitForFinished();
+	if(p.exitCode() != 0)
+		return false;
+	return !DetectNVIDIAFlipping();
 }
