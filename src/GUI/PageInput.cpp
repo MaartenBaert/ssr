@@ -603,15 +603,20 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 
 	setWindowTitle("OpenGL Settings");
 
-	QLabel *label_info = new QLabel("Warning: OpenGL recording works by injecting a library into the program that will be recorded. "
-									"This library will override some system functions in order to capture the frames before they are "
-									"displayed on the screen. If you are trying to record a game that tries to detect hacking attempts "
-									"on the client side, it's (theoretically) possible that the game will consider this a hack. This "
-									"might even get you banned, so it's a good idea to make sure that the program you want to record "
-									"won't ban you, *before* you try to record it. You've been warned :).\n\n"
-									"Another warning: OpenGL recording is experimental, it may not work or even crash the program you "
-									"are recording. If you are worried about losing program data, make a backup first!", this);
+	QLabel *label_info = new QLabel(this);
+	label_info->setText("<p>Warning: OpenGL recording works by injecting a library into the program that will be recorded. "
+						"This library will override some system functions in order to capture the frames before they are "
+						"displayed on the screen. If you are trying to record a game that tries to detect hacking attempts "
+						"on the client side, it's (theoretically) possible that the game will consider this a hack. This "
+						"might even get you banned, so it's a good idea to make sure that the program you want to record "
+						"won't ban you, *before* you try to record it. You've been warned :).</p>\n\n"
+						"<p>Another warning: OpenGL recording is experimental, it may not work or even crash the program you "
+						"are recording. If you are worried about losing program data, make a backup first!</p>\n\n"
+						"<p>If you want to record Steam games, <a href=\"http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/\">read this first</a>.</p>");
 	label_info->setWordWrap(true);
+	label_info->setTextFormat(Qt::RichText);
+	label_info->setTextInteractionFlags(Qt::TextBrowserInteraction);
+	label_info->setOpenExternalLinks(true);
 	QLabel *label_command = new QLabel("Command:", this);
 	m_lineedit_command = new QLineEdit(m_parent->GetGLInjectCommand(), this);
 	m_lineedit_command->setToolTip("This command will be executed to start the program that should be recorded.");
