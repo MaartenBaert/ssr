@@ -1,8 +1,8 @@
 /*
 Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
 
-This file contains code from x11grab.c (part of libav). The copyright information for x11grab.c is:
->> Libav integration:
+This file contains code from x11grab.c (part of ffmpeg/libav). The copyright information for x11grab.c is:
+>> FFmpeg/Libav integration:
 >> Copyright (C) 2006 Clemens Fruhwirth <clemens@endorphin.org>
 >>                    Edouard Gomez <ed.gomez@free.fr>
 >>
@@ -39,26 +39,17 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "VideoPreviewer.h"
 
-#include <X11/Xlibint.h> //TODO// remove this
 #include <X11/Xutil.h>
 #include <X11/extensions/Xfixes.h>
 
-// get rid of min/max macros from Xlibint.h
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
-
 /*
-The code in this file is based on the MIT-SHM example code and the x11grab device in libav (which is GPL):
+The code in this file is based on the MIT-SHM example code and the x11grab device in libav/ffmpeg (which is GPL):
 http://www.xfree86.org/current/mit-shm.html
 https://git.libav.org/?p=libav.git;a=blob;f=libavdevice/x11grab.c
 I am doing the recording myself instead of just using x11grab (as I originally planned) because this is more flexible.
 */
 
-// Converts a X11 image format to a format that libav understands.
+// Converts a X11 image format to a format that libav/ffmpeg understands.
 static PixelFormat X11ImageGetPixelFormat(XImage* image) {
 	switch(image->bits_per_pixel) {
 		case 8: return PIX_FMT_PAL8;
@@ -73,46 +64,17 @@ static PixelFormat X11ImageGetPixelFormat(XImage* image) {
 			break;
 		}
 		case 32: {
-			return PIX_FMT_BGRA;
+			if(image->red_mask == 0xff0000 && image->green_mask == 0x00ff00 && image->blue_mask == 0x0000ff) return PIX_FMT_BGRA;
+			if(image->red_mask == 0x0000ff && image->green_mask == 0x00ff00 && image->blue_mask == 0xff0000) return PIX_FMT_RGBA;
+			if(image->red_mask == 0xff000000 && image->green_mask == 0x00ff0000 && image->blue_mask == 0x0000ff00) return PIX_FMT_ABGR;
+			if(image->red_mask == 0x0000ff00 && image->green_mask == 0x00ff0000 && image->blue_mask == 0xff000000) return PIX_FMT_ARGB;
+			break;
 		}
 	}
 	Logger::LogError("[X11ImageGetPixelFormat] Error: Unsupported X11 image pixel format!\n"
 					 "    bits_per_pixel = " + QString::number(image->bits_per_pixel) + ", red_mask = 0x" + QString::number(image->red_mask, 16)
 					 + ", green_mask = 0x" + QString::number(image->green_mask, 16) + ", blue_mask = 0x" + QString::number(image->blue_mask, 16));
 	throw X11Exception();
-}
-
-// Copies a part of the screen to an X11 image without shared memory. This function assumes the image has already been
-// allocated and has the right size and alignment. As far as I can tell, the only reason to use this instead of XGetImage
-// is to avoid an unneccesary memory reallocation. Feel free to use XGetImage instead, the difference isn't that big. In
-// my test, this function took 11ms, and XGetImage took 13ms (on average). Besides, this is only a fallback in case shared
-// memory can't be used, which really shouldn't happen, unless you're trying to record over a network :).
-static bool X11ImageGetWithoutSHM(Display* dpy, Drawable d, XImage* image, int x, int y) {
-	xGetImageReq *req;
-	LockDisplay(dpy);
-	GetReq(GetImage, req);
-
-	req->drawable = d;
-	req->x = x;
-	req->y = y;
-	req->width = image->width;
-	req->height = image->height;
-	req->planeMask = (unsigned int) AllPlanes;
-	req->format = ZPixmap;
-
-	xGetImageReply rep;
-	if(_XReply(dpy, (xReply*) &rep, 0, xFalse) == 0 || rep.length == 0) {
-		UnlockDisplay(dpy);
-		SyncHandle();
-		return false;
-	}
-
-	long nbytes = (long) rep.length << 2;
-	_XReadPad(dpy, image->data, nbytes);
-
-	UnlockDisplay(dpy);
-	SyncHandle();
-	return true;
 }
 
 // clears a rectangular area of an image (i.e. sets the memory to zero, which will most likely make the image black)
@@ -146,9 +108,18 @@ static void X11ImageDrawCursor(Display* dpy, XImage* image, int recording_area_x
 	} else if(image->bits_per_pixel == 24 && image->red_mask == 0x0000ff && image->green_mask == 0x00ff00 && image->blue_mask == 0xff0000) {
 		pixel_bytes = 3;
 		r_offset = 0; g_offset = 1; b_offset = 2;
-	} else if(image->bits_per_pixel == 32) {
+	} else if(image->bits_per_pixel == 32 && image->red_mask == 0xff0000 && image->green_mask == 0x00ff00 && image->blue_mask == 0x0000ff) {
 		pixel_bytes = 4;
 		r_offset = 2; g_offset = 1; b_offset = 0;
+	} else if(image->bits_per_pixel == 32 && image->red_mask == 0x0000ff && image->green_mask == 0x00ff00 && image->blue_mask == 0xff0000) {
+		pixel_bytes = 4;
+		r_offset = 0; g_offset = 1; b_offset = 2;
+	} else if(image->bits_per_pixel == 32 && image->red_mask == 0xff000000 && image->green_mask == 0x00ff0000 && image->blue_mask == 0x0000ff00) {
+		pixel_bytes = 4;
+		r_offset = 3; g_offset = 2; b_offset = 1;
+	} else if(image->bits_per_pixel == 32 && image->red_mask == 0x0000ff00 && image->green_mask == 0x00ff0000 && image->blue_mask == 0xff000000) {
+		pixel_bytes = 4;
+		r_offset = 1; g_offset = 2; b_offset = 3;
 	} else {
 		return;
 	}
@@ -296,14 +267,8 @@ void X11Input::Init() {
 		// the server will attach later
 	} else {
 		Logger::LogInfo("[X11Input::Init] Not using X11 shared memory.");
-		// the simplest way to create an image with the correct format and alignment is to do a pointless normal screen grab
-		m_x11_image = XGetImage(m_x11_display, m_x11_root, m_x, m_y, m_width, m_height, AllPlanes, ZPixmap);
-		if(m_x11_image == NULL) {
-			Logger::LogError("[X11Input::Init] Error: Can't create image!");
-			throw X11Exception();
-		}
+		m_x11_image = NULL;
 	}
-	m_x11_image_format = X11ImageGetPixelFormat(m_x11_image);
 
 	// showing the cursor requires XFixes (which should be supported on any modern X server, but let's check it anyway)
 	if(m_record_cursor) {
@@ -429,7 +394,12 @@ void X11Input::run() {
 					throw X11Exception();
 				}
 			} else {
-				if(!X11ImageGetWithoutSHM(m_x11_display, m_x11_root, m_x11_image, grab_x, grab_y)) {
+				if(m_x11_image != NULL) {
+					XDestroyImage(m_x11_image);
+					m_x11_image = NULL;
+				}
+				m_x11_image = XGetImage(m_x11_display, m_x11_root, grab_x, grab_y, m_width, m_height, AllPlanes, ZPixmap);
+				if(m_x11_image == NULL) {
 					Logger::LogError("[X11Input::run] Error: Can't get image (not using shared memory)!\n"
 									 "    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?");
 					throw X11Exception();
@@ -437,6 +407,7 @@ void X11Input::run() {
 			}
 			uint8_t *image_data = (uint8_t*) m_x11_image->data;
 			int image_stride = m_x11_image->bytes_per_line;
+			PixelFormat x11_image_format = X11ImageGetPixelFormat(m_x11_image);
 
 			// clear the dead space
 			QRect clip_rect(0, 0, m_width, m_height);
@@ -453,7 +424,7 @@ void X11Input::run() {
 
 			// let the previewer read the frame
 			if(lock->m_video_previewer != NULL) {
-				lock->m_video_previewer->ReadFrame(m_width, m_height, image_data, image_stride, m_x11_image_format);
+				lock->m_video_previewer->ReadFrame(m_width, m_height, image_data, image_stride, x11_image_format);
 			}
 
 			// allocate the converted frame, with proper alignment
@@ -471,7 +442,7 @@ void X11Input::run() {
 
 			// convert the frame to YUV420P
 			bool scaling = (m_width != m_out_width || m_height != m_out_height);
-			if(m_x11_image_format == PIX_FMT_BGRA && !scaling) {
+			if(x11_image_format == PIX_FMT_BGRA && !scaling) {
 
 				// use my faster converter
 				m_yuv_converter.Convert(m_width, m_height, image_data, image_stride, converted_frame->data, converted_frame->linesize);
@@ -483,13 +454,13 @@ void X11Input::run() {
 					if(scaling)
 						Logger::LogInfo("[X11Input::run] Using swscale for scaling.");
 					else
-						Logger::LogWarning("[X11Input::run] Warning: Pixel format is " + QString::number(m_x11_image_format) + " instead of "
-											 + QString::number(PIX_FMT_BGRA) + " (PIX_FMT_BGRA), falling back to swscale.");
+						Logger::LogWarning("[X11Input::run] Warning: Pixel format is " + QString::number(x11_image_format) + " instead of "
+											 + QString::number(PIX_FMT_BGRA) + " (PIX_FMT_BGRA), falling back to swscale. This is not a problem but performance will be worse.");
 				}
 
 				// get sws context
 				m_sws_context = sws_getCachedContext(m_sws_context,
-													 m_width, m_height, m_x11_image_format,
+													 m_width, m_height, x11_image_format,
 													 m_out_width, m_out_height, PIX_FMT_YUV420P,
 													 SWS_BILINEAR, NULL, NULL, NULL);
 				if(m_sws_context == NULL) {

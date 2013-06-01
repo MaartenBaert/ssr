@@ -24,7 +24,7 @@ class AVFrameWrapper : public AVFrame {
 public:
 	bool m_free_on_destruct;
 #if !SSR_USE_AVFRAME_NB_SAMPLES
-	int nb_samples; // we need this even if libav doesn't use it
+	int nb_samples; // we need this even if libav/ffmpeg doesn't use it
 #endif
 public:
 	AVFrameWrapper();

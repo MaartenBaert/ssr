@@ -19,3 +19,5 @@ stamp-h1
 simplescreenrecorder
 simplescreenrecorder.png
 resources_generated.qrc
+
+private-*

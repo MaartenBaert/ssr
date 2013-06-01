@@ -66,6 +66,8 @@ extern "C" {
 #define TEST_AV_VERSION(prefix, ffmpeg_major, ffmpeg_minor, libav_major, libav_minor) TEST_MAJOR_MINOR(prefix##_VERSION_MAJOR, prefix##_VERSION_MINOR, libav_major, libav_minor)
 #endif
 
+// avformat_network_init: lavf 53.19.0 / 53.13.0
+#define SSR_USE_AVFORMAT_NETWORK_INIT  TEST_AV_VERSION(LIBAVFORMAT, 53, 19, 53, 13)
 // avformat_new_stream: lavf 53.17.0 / 53.10.0
 #define SSR_USE_AVFORMAT_NEW_STREAM    TEST_AV_VERSION(LIBAVFORMAT, 53, 17, 53, 10)
 // avformat_query_codec: lavf 53.11.0 / 53.8.0
@@ -101,7 +103,7 @@ inline size_t grow_align16(size_t size) {
 	return (size_t) (size + 15) & ~((size_t) 15);
 }
 
-// convert weird types from libav to doubles
+// convert weird types from libav/ffmpeg to doubles
 inline double ToDouble(const AVRational& r) {
 	return (double) r.num / (double) r.den;
 }

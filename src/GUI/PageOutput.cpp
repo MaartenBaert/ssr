@@ -405,7 +405,7 @@ void PageOutput::UpdateContainerFields() {
 		QString name = m_video_codecs[i].name;
 		if(!AVCodecIsInstalled(m_video_codecs[i].avname))
 			name += " (not installed)";
-		else if(!m_containers[new_container].supported_video_codecs.count((enum_video_codec) i))
+		else if(new_container != CONTAINER_OTHER && !m_containers[new_container].supported_video_codecs.count((enum_video_codec) i))
 			name += " (not supported by container)";
 		m_combobox_video_codec->setItemText(i, name);
 	}
@@ -413,7 +413,7 @@ void PageOutput::UpdateContainerFields() {
 		QString name = m_audio_codecs[i].name;
 		if(!AVCodecIsInstalled(m_audio_codecs[i].avname))
 			name += " (not installed)";
-		else if(!m_containers[new_container].supported_audio_codecs.count((enum_audio_codec) i))
+		else if(new_container != CONTAINER_OTHER && !m_containers[new_container].supported_audio_codecs.count((enum_audio_codec) i))
 			name += " (not supported by container)";
 		m_combobox_audio_codec->setItemText(i, name);
 	}

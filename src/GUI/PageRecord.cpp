@@ -274,6 +274,9 @@ void PageRecord::PageStart() {
 	if(m_page_started)
 		return;
 
+	// save the settings in case libav/ffmpeg decides to kill the process
+	m_main_window->SaveSettings();
+
 	// clear the log
 	Logger::GetLines();
 	m_textedit_log->clear();

@@ -94,9 +94,9 @@ Video can also get corrupted if the frame rate is too low (like 1 fps). This may
 
 #### Dealing with old versions of libav/ffmpeg ####
 
-This is very annoying. Libav likes to change its API a lot. The API is usually backwards compatible, but the old functions often have some disadvantages. So for now I'm supporting both old and new versions of the API, based on the preprocessor definitions from the libav/ffmpeg headers.
+This is very annoying. Libav/ffmpeg likes to change its API a lot. The API is usually backwards compatible, but the old functions often have some disadvantages. So for now I'm supporting both old and new versions of the API, based on the preprocessor definitions from the libav/ffmpeg headers.
 
-libav/ffmpeg has a very useful document that keeps track of all API changes, it's located in 'doc/APIchanges'. The best way to find out how the old API actually worked is to search for the commit that removed the function (just search for the function name), go back one commit, go to the corresponding tree, and look at the example code (e.g. output-example.c for libavformat).
+Libav/ffmpeg has a very useful document that keeps track of all API changes, it's located in 'doc/APIchanges'. The best way to find out how the old API actually worked is to search for the commit that removed the function (just search for the function name), go back one commit, go to the corresponding tree, and look at the example code (e.g. output-example.c for libavformat).
 
 #### GUI ####
 

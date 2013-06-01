@@ -36,6 +36,9 @@ public:
 	AVGlobal() {
 		av_register_all();
 		av_lockmgr_register(&lock_manager);
+#if SSR_USE_AVFORMAT_NETWORK_INIT
+		avformat_network_init();
+#endif
 	}
 } g_av_global;
 

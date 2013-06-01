@@ -53,7 +53,6 @@ private:
 	XShmSegmentInfo m_x11_shm_info;
 	bool m_x11_shm_server_attached;
 	XImage *m_x11_image;
-	PixelFormat m_x11_image_format;
 
 	bool m_warn_swscale;
 	YUVConverter m_yuv_converter;

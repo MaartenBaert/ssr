@@ -71,7 +71,7 @@ Muxer::~Muxer() {
 		}
 
 		// wait for the thread to stop
-		Logger::LogInfo("[Muxer::~Muxer] Waiting muxer thread to stop by itself ...");
+		Logger::LogInfo("[Muxer::~Muxer] Waiting for muxer thread to stop by itself ...");
 		wait();
 
 	}
@@ -295,7 +295,7 @@ void Muxer::run() {
 				packet->dts = av_rescale_q(packet->dts, st->codec->time_base, st->time_base);
 			}
 
-			// write the packet (again, why does libav call this a frame?)
+			// write the packet (again, why does libav/ffmpeg call this a frame?)
 			// The packet should already be interleaved now, but containers can have custom interleaving specifications,
 			// so it's a good idea to call av_interleaved_write_frame anyway.
 			if(av_interleaved_write_frame(m_format_context, packet.get()) != 0) {
@@ -303,7 +303,7 @@ void Muxer::run() {
 				throw LibavException();
 			}
 
-			// the data is now owned by libav, so don't free it
+			// the data is now owned by libav/ffmpeg, so don't free it
 			packet->m_free_on_destruct = false;
 
 			// update the byte counter
