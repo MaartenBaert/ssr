@@ -60,7 +60,7 @@ private:
 	QString m_glinject_command;
 	bool m_glinject_run_command, m_glinject_relax_permissions;
 	unsigned int m_glinject_max_megapixels;
-	bool m_glinject_capture_front, m_glinject_limit_fps;
+	bool m_glinject_capture_front, m_glinject_limit_fps, m_glinject_insert_duplicates;
 
 	QButtonGroup *m_buttongroup_video_area;
 	QComboBoxWithSignal *m_combobox_screens;
@@ -102,6 +102,7 @@ public:
 	inline unsigned int GetGLInjectMaxMegaPixels() { return m_glinject_max_megapixels; }
 	inline bool GetGLInjectCaptureFront() { return m_glinject_capture_front; }
 	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
+	inline bool GetGLInjectInsertDuplicates() { return m_glinject_insert_duplicates; }
 
 	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
 	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp<unsigned int>(0, m_combobox_screens->count() - 1, screen)); }
@@ -122,6 +123,7 @@ public:
 	inline void SetGLInjectMaxMegaPixels(unsigned int max_megapixels) { m_glinject_max_megapixels = clamp<unsigned int>(0, 100, max_megapixels); }
 	inline void SetGLInjectCaptureFront(bool capture_front) { m_glinject_capture_front = capture_front; }
 	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
+	inline void SetGLInjectInsertDuplicates(bool insert_duplicates) { m_glinject_insert_duplicates = insert_duplicates; }
 
 protected:
 	virtual void mousePressEvent(QMouseEvent* event);
@@ -174,7 +176,7 @@ private:
 	QLineEdit *m_lineedit_command;
 	QCheckBox *m_checkbox_run_command, *m_checkbox_relax_permissions;
 	QLineEdit *m_lineedit_max_megapixels;
-	QCheckBox *m_checkbox_capture_front, *m_checkbox_limit_fps;
+	QCheckBox *m_checkbox_capture_front, *m_checkbox_limit_fps, *m_checkbox_insert_duplicates;
 
 public:
 	DialogGLInject(PageInput* parent);

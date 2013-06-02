@@ -322,6 +322,7 @@ void PageRecord::PageStart() {
 	unsigned int glinject_megapixels = page_input->GetGLInjectMaxMegaPixels();
 	bool glinject_capture_front = page_input->GetGLInjectCaptureFront();
 	bool glinject_limit_fps = page_input->GetGLInjectLimitFPS();
+	m_glinject_insert_duplicates = page_input->GetGLInjectInsertDuplicates();
 
 	// get the output settings
 	m_file = page_output->GetFile();
@@ -522,7 +523,7 @@ void PageRecord::CaptureStart() {
 
 		// start the video input
 		if(m_video_glinject) {
-			m_gl_inject_input.reset(new GLInjectInput(m_synchronizer.get(), m_gl_inject_launcher.get()));
+			m_gl_inject_input.reset(new GLInjectInput(m_synchronizer.get(), m_gl_inject_launcher.get(), m_glinject_insert_duplicates));
 		} else {
 			m_x11_input.reset(new X11Input(m_synchronizer.get(), m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_follow_cursor));
 		}

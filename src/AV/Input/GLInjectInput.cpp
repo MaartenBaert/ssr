@@ -28,7 +28,14 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "VideoPreviewer.h"
 
-GLInjectInput::GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launcher) {
+// The maximum delay between frames, in microseconds. If the delay is longer, duplicates will be inserted.
+// This is needed because some codecs/players can't handle long delays.
+const int64_t GLInjectInput::MAX_FRAME_DELAY = 200000;
+
+// The highest expected latency between GLInject and the input thread.
+const int64_t GLInjectInput::MAX_COMMUNICATION_LATENCY = 50000;
+
+GLInjectInput::GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launcher, bool insert_duplicates) {
 	Q_ASSERT(synchronizer->GetVideoEncoder() != NULL);
 
 	m_synchronizer = synchronizer;
@@ -39,6 +46,7 @@ GLInjectInput::GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launc
 	m_frame_rate = m_synchronizer->GetVideoEncoder()->GetFrameRate();
 	m_out_width = m_synchronizer->GetVideoEncoder()->GetWidth();
 	m_out_height = m_synchronizer->GetVideoEncoder()->GetHeight();
+	m_insert_duplicates = insert_duplicates;
 
 	m_warn_swscale = true;
 	m_sws_context = NULL;
@@ -108,6 +116,15 @@ void GLInjectInput::run() {
 
 		Logger::LogInfo("[GLInjectInput::run] Input thread started.");
 
+		// Sometimes long delays between frames can occur, e.g. when a game is showing a loading screen.
+		// Not all codecs/players can handle that. It's also a problem for streaming. To fix this, long delays should be avoided by
+		// duplicating the previous frame a few times when needed. The problem is that the previous frame has been passed on to the
+		// synchronizer and can't be used anymore. This could be fixed by creating a copy of each frame, but that is wasteful.
+		// Instead, the last frame is simply held back until the next frame is available. This increases the latency by one frame,
+		// which is not really a problem (the synchronizer will simply hold on to the audio a bit longer, which doesn't change the result).
+		std::unique_ptr<AVFrameWrapper> previous_frame;
+		int64_t previous_timestamp = 0; // value won't be used, but GCC gives a warning otherwise
+
 		int64_t next_frame_time = hrt_time_micro();
 		while(!m_should_stop) {
 
@@ -115,6 +132,47 @@ void GLInjectInput::run() {
 			GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
 			unsigned int frames_ready = positive_mod((int) header.write_pos - (int) header.read_pos, (int) m_cbuffer_size * 2);
 			if(frames_ready == 0) {
+
+				// Calculate at what point in time the duplicate should be inserted.
+				// This is always in the past, because we don't want to drop a real frame because it was captured
+				// right after the duplicate was inserted. MAX_COMMUNICATION_LATENCY simulates the latency between GLInject and this thread,
+				// i.e. any new frame is assumed to have a timestamp higher than the current time minus MAX_COMMUNICATION_LATENCY. The duplicate
+				// frame will have a timestamp that's one frame earlier than that time, so it will never interfere with the real frame.
+				int64_t delay = m_synchronizer->GetVideoEncoder()->GetFrameDelay();
+				int64_t duplicate_timestamp = hrt_time_micro() - MAX_COMMUNICATION_LATENCY - delay;
+				int64_t extra_delay = (m_insert_duplicates)? 0 : MAX_FRAME_DELAY;
+
+				// is the delay too high?
+				if(previous_frame != NULL && duplicate_timestamp >= next_frame_time + extra_delay) {
+
+					// insert a duplicate frame
+					next_frame_time = std::max(next_frame_time + delay, duplicate_timestamp);
+
+					// allocate the duplicate frame, with proper alignment
+					// Y = 1 byte per pixel, U or V = 1 byte per 2x2 pixels
+					int l1 = grow_align16(m_out_width);
+					int l2 = grow_align16(m_out_width / 2);
+					int s1 = grow_align16(l1 * m_out_height);
+					int s2 = grow_align16(l2 * m_out_height / 2);
+					std::unique_ptr<AVFrameWrapper> duplicate_frame(new AVFrameWrapper(s1 + 2 * s2));
+					duplicate_frame->data[1] = duplicate_frame->data[0] + s1;
+					duplicate_frame->data[2] = duplicate_frame->data[1] + s2;
+					duplicate_frame->linesize[0] = l1;
+					duplicate_frame->linesize[1] = l2;
+					duplicate_frame->linesize[2] = l2;
+
+					// copy the data (this is simple because we know how the frame was allocated)
+					memcpy(duplicate_frame->data[0], previous_frame->data[0], s1 + 2 * s2);
+
+					// save the frame
+					m_synchronizer->AddVideoFrame(std::move(previous_frame), previous_timestamp);
+					previous_frame = std::move(duplicate_frame);
+					previous_timestamp = duplicate_timestamp;
+
+					continue;
+
+				}
+
 				usleep(10000);
 				continue;
 			}
@@ -131,6 +189,7 @@ void GLInjectInput::run() {
 				throw GLInjectException();
 			}
 			if(frameinfo.timestamp < next_frame_time) {
+				// this frame is too early, go to the next frame
 				((GLInjectHeader*) m_shm_main_ptr)->read_pos = (header.read_pos + 1) % (m_cbuffer_size * 2);
 				continue;
 			}
@@ -200,8 +259,17 @@ void GLInjectInput::run() {
 			((GLInjectHeader*) m_shm_main_ptr)->read_pos = (header.read_pos + 1) % (m_cbuffer_size * 2);
 
 			// save the frame
-			m_synchronizer->AddVideoFrame(std::move(converted_frame), frameinfo.timestamp);
+			if(previous_frame != NULL) {
+				m_synchronizer->AddVideoFrame(std::move(previous_frame), previous_timestamp);
+			}
+			previous_frame = std::move(converted_frame);
+			previous_timestamp = frameinfo.timestamp;
 
+		}
+
+		// save the frame that was held back
+		if(previous_frame != NULL) {
+			m_synchronizer->AddVideoFrame(std::move(previous_frame), previous_timestamp);
 		}
 
 		Logger::LogInfo("[GLInjectInput::run] Input thread stopped.");

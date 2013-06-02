@@ -31,10 +31,9 @@ const double Synchronizer::CORRECTION_SPEED = 0.002;
 
 // The maximum number of video frames and audio samples that will be buffered. This should be enough to cope with the fact that video and
 // audio don't arrive at the same time, but not too high because that would cause memory problems if one of the inputs fails.
-// The limit for audio should be set very high, because (1) audio uses almost no memory and (2) it is possible to get huge delays between
-// video frames when using GLInject (loading screens are often a single frame).
+// The limit for audio can be set very high, because audio uses almost no memory.
 const size_t Synchronizer::MAX_VIDEO_FRAMES_BUFFERED = 30;
-const size_t Synchronizer::MAX_AUDIO_SAMPLES_BUFFERED = 5000000;
+const size_t Synchronizer::MAX_AUDIO_SAMPLES_BUFFERED = 1000000;
 
 Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder) {
 	Q_ASSERT(video_encoder != NULL || audio_encoder != NULL);

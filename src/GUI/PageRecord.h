@@ -50,6 +50,7 @@ private:
 	unsigned int m_video_frame_rate, m_audio_sample_rate;
 	bool m_audio_enabled;
 	QString m_alsa_device;
+	bool m_glinject_insert_duplicates;
 
 	QString m_file;
 	unsigned int m_video_out_width, m_video_out_height;
