@@ -4,7 +4,7 @@
 set -e
 
 if [ x"$( whoami )" = x"root" ]; then
-	echo "error: don't run this script as root, this will mess up file permissions"
+	echo "Error: don't run this script as root, this will mess up file permissions"
 	exit 1
 fi
 

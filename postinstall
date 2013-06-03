@@ -4,7 +4,7 @@
 set -e
 
 if [ x"$( whoami )" != x"root" ]; then
-	echo "error: postinstall should be run as root"
+	echo "Error: postinstall should be run as root"
 	exit 1
 fi
 
