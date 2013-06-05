@@ -35,6 +35,21 @@ signals:
 
 };
 
+class QLineEditWithSignal : public QLineEdit {
+	Q_OBJECT
+
+public:
+	QLineEditWithSignal(QWidget* parent);
+
+	virtual void focusInEvent(QFocusEvent* event);
+	virtual void focusOutEvent(QFocusEvent* event);
+
+signals:
+	void focusIn();
+	void focusOut();
+
+};
+
 class MainWindow;
 class WidgetScreenLabel;
 
@@ -54,7 +69,7 @@ private:
 	MainWindow *m_main_window;
 
 	bool m_grabbing, m_selecting_window;
-	std::unique_ptr<QRubberBand> m_rubber_band;
+	std::unique_ptr<QRubberBand> m_rubber_band, m_recording_frame;
 	QRect m_rubber_band_rect, m_select_window_outer_rect, m_select_window_inner_rect;
 
 	QString m_glinject_command;
@@ -65,7 +80,7 @@ private:
 	QButtonGroup *m_buttongroup_video_area;
 	QComboBoxWithSignal *m_combobox_screens;
 	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window, *m_pushbutton_video_opengl_settings;
-	QLineEdit *m_lineedit_video_x, *m_lineedit_video_y, *m_lineedit_video_w, *m_lineedit_video_h;
+	QLineEditWithSignal *m_lineedit_video_x, *m_lineedit_video_y, *m_lineedit_video_w, *m_lineedit_video_h;
 	QLineEdit *m_lineedit_video_frame_rate;
 	QCheckBox *m_checkbox_scale;
 	QLineEdit *m_lineedit_video_scaled_w, *m_lineedit_video_scaled_h;
@@ -137,6 +152,7 @@ private:
 	void SetVideoAreaFromRubberBand();
 
 public slots:
+	void UpdateRecordingFrame();
 	void UpdateVideoAreaFields();
 	void UpdateVideoScaleFields();
 	void UpdateAudioFields();

@@ -25,6 +25,44 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QX11Info>
 #include <X11/Xlib.h>
 
+// This does some sanity checking on the rubber band rectangle before creating it.
+// Rubber bands with width or height zero or extremely large appear to cause problems.
+static QRect ValidateRubberBandRectangle(QRect rect) {
+	QRect screenrect = QApplication::desktop()->screenGeometry(0);
+	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
+		screenrect |= QApplication::desktop()->screenGeometry(i);
+	}
+	rect = rect.normalized();
+	rect &= screenrect.adjusted(-10, -10, 10, 10);
+	return (rect.isNull())? QRect(-10, -10, 1, 1) : rect;
+}
+
+QComboBoxWithSignal::QComboBoxWithSignal(QWidget* parent)
+	: QComboBox(parent) {}
+
+void QComboBoxWithSignal::showPopup() {
+	emit popupShown();
+	QComboBox::showPopup();
+}
+
+void QComboBoxWithSignal::hidePopup() {
+	emit popupHidden();
+	QComboBox::hidePopup();
+}
+
+QLineEditWithSignal::QLineEditWithSignal(QWidget* parent)
+	: QLineEdit(parent) {}
+
+void QLineEditWithSignal::focusInEvent(QFocusEvent* event) {
+	emit focusIn();
+	QLineEdit::focusInEvent(event);
+}
+
+void QLineEditWithSignal::focusOutEvent(QFocusEvent* event) {
+	emit focusOut();
+	QLineEdit::focusOutEvent(event);
+}
+
 PageInput::PageInput(MainWindow* main_window)
 	: QWidget(main_window->centralWidget()) {
 
@@ -58,16 +96,16 @@ PageInput::PageInput(MainWindow* main_window)
 		m_pushbutton_video_opengl_settings = new QPushButton("OpenGL settings...", group_video);
 		m_pushbutton_video_opengl_settings->setToolTip("Change the settings for OpenGL recording.");
 		QLabel *label_x = new QLabel("Left:", group_video);
-		m_lineedit_video_x = new QLineEdit(group_video);
+		m_lineedit_video_x = new QLineEditWithSignal(group_video);
 		m_lineedit_video_x->setToolTip("The x coordinate of the upper-left corner of the recorded rectangle.");
 		QLabel *label_y = new QLabel("Top:", group_video);
-		m_lineedit_video_y = new QLineEdit(group_video);
+		m_lineedit_video_y = new QLineEditWithSignal(group_video);
 		m_lineedit_video_y->setToolTip("The y coordinate of the upper-left corner of the recorded rectangle.");
 		QLabel *label_w = new QLabel("Width:", group_video);
-		m_lineedit_video_w = new QLineEdit(group_video);
+		m_lineedit_video_w = new QLineEditWithSignal(group_video);
 		m_lineedit_video_w->setToolTip("The width of the recorded rectangle.");
 		QLabel *label_h = new QLabel("Height:", group_video);
-		m_lineedit_video_h = new QLineEdit(group_video);
+		m_lineedit_video_h = new QLineEditWithSignal(group_video);
 		m_lineedit_video_h->setToolTip("The height of the recorded rectangle.");
 		QLabel *label_frame_rate = new QLabel("Frame rate:", group_video);
 		m_lineedit_video_frame_rate = new QLineEdit(group_video);
@@ -83,6 +121,18 @@ PageInput::PageInput(MainWindow* main_window)
 		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(UpdateVideoAreaFields()));
 		connect(m_combobox_screens, SIGNAL(popupShown()), this, SLOT(IdentifyScreens()));
 		connect(m_combobox_screens, SIGNAL(popupHidden()), this, SLOT(StopIdentifyScreens()));
+		connect(m_lineedit_video_x, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_x, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_x, SIGNAL(textEdited(const QString&)), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_y, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_y, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_y, SIGNAL(textEdited(const QString&)), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_w, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_w, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_w, SIGNAL(textEdited(const QString&)), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_h, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_h, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_lineedit_video_h, SIGNAL(textEdited(const QString&)), this, SLOT(UpdateRecordingFrame()));
 		connect(m_pushbutton_video_select_rectangle, SIGNAL(clicked()), this, SLOT(StartSelectRectangle()));
 		connect(m_pushbutton_video_select_window, SIGNAL(clicked()), this, SLOT(StartSelectWindow()));
 		connect(m_pushbutton_video_opengl_settings, SIGNAL(clicked()), this, SLOT(GLInjectDialog()));
@@ -326,7 +376,7 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 						// pick the inner rectangle if the users clicks inside the window, or the outer rectangle otherwise
 						m_rubber_band_rect = (m_select_window_inner_rect.contains(event->globalPos()))? m_select_window_inner_rect : m_select_window_outer_rect;
 						m_rubber_band.reset(new QRubberBand(QRubberBand::Rectangle));
-						m_rubber_band->setGeometry(m_rubber_band_rect.normalized());
+						m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
 						m_rubber_band->show();
 
 					}
@@ -334,7 +384,7 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 			} else {
 				m_rubber_band_rect = QRect(event->globalPos(), QSize(0, 0));
 				m_rubber_band.reset(new QRubberBand(QRubberBand::Rectangle));
-				m_rubber_band->setGeometry(m_rubber_band_rect.normalized());
+				m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
 				m_rubber_band->show();
 			}
 			return;
@@ -367,7 +417,7 @@ void PageInput::mouseMoveEvent(QMouseEvent* event) {
 			} else {
 				m_rubber_band_rect.setBottomRight(event->globalPos());
 			}
-			m_rubber_band->setGeometry(m_rubber_band_rect.normalized());
+			m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
 		}
 		return;
 	}
@@ -423,6 +473,20 @@ void PageInput::SetVideoAreaFromRubberBand() {
 	}
 	SetVideoW(r.width());
 	SetVideoH(r.height());
+}
+
+void PageInput::UpdateRecordingFrame() {
+	if(m_lineedit_video_x->hasFocus() || m_lineedit_video_y->hasFocus() || m_lineedit_video_w->hasFocus() || m_lineedit_video_h->hasFocus()) {
+		if(m_recording_frame == NULL) {
+			m_recording_frame.reset(new QRubberBand(QRubberBand::Rectangle));
+			m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
+			m_recording_frame->show();
+		} else {
+			m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
+		}
+	} else {
+		m_recording_frame.reset();
+	}
 }
 
 void PageInput::UpdateVideoAreaFields() {
@@ -562,21 +626,6 @@ void PageInput::Continue() {
 		return;
 	}
 	m_main_window->GoPageOutput();
-}
-
-QComboBoxWithSignal::QComboBoxWithSignal(QWidget* parent)
-	: QComboBox(parent) {
-
-}
-
-void QComboBoxWithSignal::showPopup() {
-	emit popupShown();
-	QComboBox::showPopup();
-}
-
-void QComboBoxWithSignal::hidePopup() {
-	emit popupHidden();
-	QComboBox::hidePopup();
 }
 
 WidgetScreenLabel::WidgetScreenLabel(QWidget* parent, const QString &text)
