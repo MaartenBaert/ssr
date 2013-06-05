@@ -50,17 +50,17 @@ void QComboBoxWithSignal::hidePopup() {
 	QComboBox::hidePopup();
 }
 
-QLineEditWithSignal::QLineEditWithSignal(QWidget* parent)
-	: QLineEdit(parent) {}
+QSpinBoxWithSignal::QSpinBoxWithSignal(QWidget* parent)
+	: QSpinBox(parent) {}
 
-void QLineEditWithSignal::focusInEvent(QFocusEvent* event) {
+void QSpinBoxWithSignal::focusInEvent(QFocusEvent* event) {
 	emit focusIn();
-	QLineEdit::focusInEvent(event);
+	QSpinBox::focusInEvent(event);
 }
 
-void QLineEditWithSignal::focusOutEvent(QFocusEvent* event) {
+void QSpinBoxWithSignal::focusOutEvent(QFocusEvent* event) {
 	emit focusOut();
-	QLineEdit::focusOutEvent(event);
+	QSpinBox::focusOutEvent(event);
 }
 
 PageInput::PageInput(MainWindow* main_window)
@@ -96,43 +96,57 @@ PageInput::PageInput(MainWindow* main_window)
 		m_pushbutton_video_opengl_settings = new QPushButton("OpenGL settings...", group_video);
 		m_pushbutton_video_opengl_settings->setToolTip("Change the settings for OpenGL recording.");
 		QLabel *label_x = new QLabel("Left:", group_video);
-		m_lineedit_video_x = new QLineEditWithSignal(group_video);
-		m_lineedit_video_x->setToolTip("The x coordinate of the upper-left corner of the recorded rectangle.");
+		m_spinbox_video_x = new QSpinBoxWithSignal(group_video);
+		m_spinbox_video_x->setRange(0, 10000);
+		m_spinbox_video_x->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		m_spinbox_video_x->setToolTip("The x coordinate of the upper-left corner of the recorded rectangle.");
 		QLabel *label_y = new QLabel("Top:", group_video);
-		m_lineedit_video_y = new QLineEditWithSignal(group_video);
-		m_lineedit_video_y->setToolTip("The y coordinate of the upper-left corner of the recorded rectangle.");
+		m_spinbox_video_y = new QSpinBoxWithSignal(group_video);
+		m_spinbox_video_y->setRange(0, 10000);
+		m_spinbox_video_y->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		m_spinbox_video_y->setToolTip("The y coordinate of the upper-left corner of the recorded rectangle.");
 		QLabel *label_w = new QLabel("Width:", group_video);
-		m_lineedit_video_w = new QLineEditWithSignal(group_video);
-		m_lineedit_video_w->setToolTip("The width of the recorded rectangle.");
+		m_spinbox_video_w = new QSpinBoxWithSignal(group_video);
+		m_spinbox_video_w->setRange(0, 10000);
+		m_spinbox_video_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		m_spinbox_video_w->setToolTip("The width of the recorded rectangle.");
 		QLabel *label_h = new QLabel("Height:", group_video);
-		m_lineedit_video_h = new QLineEditWithSignal(group_video);
-		m_lineedit_video_h->setToolTip("The height of the recorded rectangle.");
+		m_spinbox_video_h = new QSpinBoxWithSignal(group_video);
+		m_spinbox_video_h->setRange(0, 10000);
+		m_spinbox_video_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		m_spinbox_video_h->setToolTip("The height of the recorded rectangle.");
 		QLabel *label_frame_rate = new QLabel("Frame rate:", group_video);
-		m_lineedit_video_frame_rate = new QLineEdit(group_video);
+		m_spinbox_video_frame_rate = new QSpinBox(group_video);
+		m_spinbox_video_frame_rate->setRange(1, 1000);
+		m_spinbox_video_frame_rate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_checkbox_scale = new QCheckBox("Scale video", group_video);
 		m_checkbox_scale->setToolTip("Enable or disable scaling. Scaling uses more CPU, but if the scaled video is smaller, it could make the encoding faster.");
 		QLabel *label_scaled_w = new QLabel("Scaled width:", group_video);
-		m_lineedit_video_scaled_w = new QLineEdit(group_video);
+		m_spinbox_video_scaled_w = new QSpinBox(group_video);
+		m_spinbox_video_scaled_w->setRange(0, 10000);
+		m_spinbox_video_scaled_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		QLabel *label_scaled_h = new QLabel("Scaled height:", group_video);
-		m_lineedit_video_scaled_h = new QLineEdit(group_video);
+		m_spinbox_video_scaled_h = new QSpinBox(group_video);
+		m_spinbox_video_scaled_h->setRange(0, 10000);
+		m_spinbox_video_scaled_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_checkbox_record_cursor = new QCheckBox("Record cursor", group_video);
 
 		connect(m_buttongroup_video_area, SIGNAL(buttonClicked(int)), this, SLOT(UpdateVideoAreaFields()));
 		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(UpdateVideoAreaFields()));
 		connect(m_combobox_screens, SIGNAL(popupShown()), this, SLOT(IdentifyScreens()));
 		connect(m_combobox_screens, SIGNAL(popupHidden()), this, SLOT(StopIdentifyScreens()));
-		connect(m_lineedit_video_x, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_x, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_x, SIGNAL(textEdited(const QString&)), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_y, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_y, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_y, SIGNAL(textEdited(const QString&)), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_w, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_w, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_w, SIGNAL(textEdited(const QString&)), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_h, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_h, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_lineedit_video_h, SIGNAL(textEdited(const QString&)), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_x, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_x, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_x, SIGNAL(valueChanged(int)), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_y, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_y, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_y, SIGNAL(valueChanged(int)), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_w, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_w, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_w, SIGNAL(valueChanged(int)), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_h, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_h, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
+		connect(m_spinbox_video_h, SIGNAL(valueChanged(int)), this, SLOT(UpdateRecordingFrame()));
 		connect(m_pushbutton_video_select_rectangle, SIGNAL(clicked()), this, SLOT(StartSelectRectangle()));
 		connect(m_pushbutton_video_select_window, SIGNAL(clicked()), this, SLOT(StartSelectWindow()));
 		connect(m_pushbutton_video_opengl_settings, SIGNAL(clicked()), this, SLOT(GLInjectDialog()));
@@ -160,28 +174,28 @@ PageInput::PageInput(MainWindow* main_window)
 			QGridLayout *layout2 = new QGridLayout();
 			layout->addLayout(layout2);
 			layout2->addWidget(label_x, 0, 0);
-			layout2->addWidget(m_lineedit_video_x, 0, 1);
+			layout2->addWidget(m_spinbox_video_x, 0, 1);
 			layout2->addWidget(label_y, 0, 2);
-			layout2->addWidget(m_lineedit_video_y, 0, 3);
+			layout2->addWidget(m_spinbox_video_y, 0, 3);
 			layout2->addWidget(label_w, 1, 0);
-			layout2->addWidget(m_lineedit_video_w, 1, 1);
+			layout2->addWidget(m_spinbox_video_w, 1, 1);
 			layout2->addWidget(label_h, 1, 2);
-			layout2->addWidget(m_lineedit_video_h, 1, 3);
+			layout2->addWidget(m_spinbox_video_h, 1, 3);
 		}
 		{
 			QGridLayout *layout2 = new QGridLayout();
 			layout->addLayout(layout2);
 			layout2->addWidget(label_frame_rate, 0, 0);
-			layout2->addWidget(m_lineedit_video_frame_rate, 0, 1);
+			layout2->addWidget(m_spinbox_video_frame_rate, 0, 1);
 		}
 		layout->addWidget(m_checkbox_scale);
 		{
 			QGridLayout *layout2 = new QGridLayout();
 			layout->addLayout(layout2);
 			layout2->addWidget(label_scaled_w, 0, 0);
-			layout2->addWidget(m_lineedit_video_scaled_w, 0, 1);
+			layout2->addWidget(m_spinbox_video_scaled_w, 0, 1);
 			layout2->addWidget(label_scaled_h, 0, 2);
-			layout2->addWidget(m_lineedit_video_scaled_h, 0, 3);
+			layout2->addWidget(m_spinbox_video_scaled_h, 0, 3);
 		}
 		layout->addWidget(m_checkbox_record_cursor);
 	}
@@ -476,7 +490,7 @@ void PageInput::SetVideoAreaFromRubberBand() {
 }
 
 void PageInput::UpdateRecordingFrame() {
-	if(m_lineedit_video_x->hasFocus() || m_lineedit_video_y->hasFocus() || m_lineedit_video_w->hasFocus() || m_lineedit_video_h->hasFocus()) {
+	if(m_spinbox_video_x->hasFocus() || m_spinbox_video_y->hasFocus() || m_spinbox_video_w->hasFocus() || m_spinbox_video_h->hasFocus()) {
 		if(m_recording_frame == NULL) {
 			m_recording_frame.reset(new QRubberBand(QRubberBand::Rectangle));
 			m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
@@ -496,10 +510,10 @@ void PageInput::UpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
 			m_pushbutton_video_opengl_settings->setEnabled(false);
-			m_lineedit_video_x->setEnabled(false);
-			m_lineedit_video_y->setEnabled(false);
-			m_lineedit_video_w->setEnabled(false);
-			m_lineedit_video_h->setEnabled(false);
+			m_spinbox_video_x->setEnabled(false);
+			m_spinbox_video_y->setEnabled(false);
+			m_spinbox_video_w->setEnabled(false);
+			m_spinbox_video_h->setEnabled(false);
 			int sc = m_combobox_screens->currentIndex();
 			QRect rect;
 			if(sc == 0) {
@@ -521,10 +535,10 @@ void PageInput::UpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
 			m_pushbutton_video_opengl_settings->setEnabled(false);
-			m_lineedit_video_x->setEnabled(true);
-			m_lineedit_video_y->setEnabled(true);
-			m_lineedit_video_w->setEnabled(true);
-			m_lineedit_video_h->setEnabled(true);
+			m_spinbox_video_x->setEnabled(true);
+			m_spinbox_video_y->setEnabled(true);
+			m_spinbox_video_w->setEnabled(true);
+			m_spinbox_video_h->setEnabled(true);
 			break;
 		}
 		case VIDEO_AREA_CURSOR: {
@@ -532,10 +546,10 @@ void PageInput::UpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
 			m_pushbutton_video_opengl_settings->setEnabled(false);
-			m_lineedit_video_x->setEnabled(false);
-			m_lineedit_video_y->setEnabled(false);
-			m_lineedit_video_w->setEnabled(true);
-			m_lineedit_video_h->setEnabled(true);
+			m_spinbox_video_x->setEnabled(false);
+			m_spinbox_video_y->setEnabled(false);
+			m_spinbox_video_w->setEnabled(true);
+			m_spinbox_video_h->setEnabled(true);
 			SetVideoX(0);
 			SetVideoY(0);
 			break;
@@ -545,10 +559,10 @@ void PageInput::UpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
 			m_pushbutton_video_opengl_settings->setEnabled(true);
-			m_lineedit_video_x->setEnabled(false);
-			m_lineedit_video_y->setEnabled(false);
-			m_lineedit_video_w->setEnabled(false);
-			m_lineedit_video_h->setEnabled(false);
+			m_spinbox_video_x->setEnabled(false);
+			m_spinbox_video_y->setEnabled(false);
+			m_spinbox_video_w->setEnabled(false);
+			m_spinbox_video_h->setEnabled(false);
 			SetVideoX(0);
 			SetVideoY(0);
 			break;
@@ -559,8 +573,8 @@ void PageInput::UpdateVideoAreaFields() {
 
 void PageInput::UpdateVideoScaleFields() {
 	bool enabled = GetVideoScalingEnabled();
-	m_lineedit_video_scaled_w->setEnabled(enabled);
-	m_lineedit_video_scaled_h->setEnabled(enabled);
+	m_spinbox_video_scaled_w->setEnabled(enabled);
+	m_spinbox_video_scaled_h->setEnabled(enabled);
 }
 
 void PageInput::UpdateAudioFields() {
