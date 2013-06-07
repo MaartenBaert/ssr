@@ -138,7 +138,13 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 	QPainter painter(this);
 	QImage &img = lock->m_image;
 
-	if(!img.isNull()) {
+	if(img.isNull()) {
+
+		painter.setPen(QApplication::palette().text().color());
+		painter.setFont(QFont("Sans", 10));
+		painter.drawText(0, 0, width(), height(), Qt::AlignHCenter | Qt::AlignVCenter, "(recording not started)");
+
+	} else {
 
 		// draw the image
 		// Scaling is only used if the widget was resized after the image was captured, which is unlikely
