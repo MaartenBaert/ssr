@@ -223,6 +223,11 @@ PageOutput::PageOutput(MainWindow* main_window)
 		m_combobox_vp8_cpu_used->setToolTip("The encoding speed. A higher value uses *less* CPU  (I didn't choose the name, this is the name\n"
 											"used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.");
 		m_combobox_vp8_cpu_used->setVisible(false);
+		m_label_video_options = new QLabel("Custom options:", groupbox_video);
+		m_label_video_options->setVisible(false);
+		m_lineedit_video_options = new QLineEdit(groupbox_video);
+		m_lineedit_video_options->setToolTip("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)");
+		m_lineedit_video_options->setVisible(false);
 
 		connect(m_combobox_video_codec, SIGNAL(activated(int)), this, SLOT(UpdateVideoCodecFields()));
 
@@ -239,6 +244,8 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout->addWidget(m_combobox_h264_preset, 4, 1);
 		layout->addWidget(m_label_vp8_cpu_used, 5, 0);
 		layout->addWidget(m_combobox_vp8_cpu_used, 5, 1);
+		layout->addWidget(m_label_video_options, 6, 0);
+		layout->addWidget(m_lineedit_video_options, 6, 1);
 	}
 	m_groupbox_audio = new QGroupBox("Audio");
 	{
@@ -266,6 +273,11 @@ PageOutput::PageOutput(MainWindow* main_window)
 		m_label_audio_kbit_rate = new QLabel("Bit rate (in kbps):", m_groupbox_audio);
 		m_lineedit_audio_kbit_rate = new QLineEdit(m_groupbox_audio);
 		m_lineedit_audio_kbit_rate->setToolTip("The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.");
+		m_label_audio_options = new QLabel("Custom options:", m_groupbox_audio);
+		m_label_audio_options->setVisible(false);
+		m_lineedit_audio_options = new QLineEdit(m_groupbox_audio);
+		m_lineedit_audio_options->setToolTip("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)");
+		m_lineedit_audio_options->setVisible(false);
 
 		connect(m_combobox_audio_codec, SIGNAL(activated(int)), this, SLOT(UpdateAudioCodecFields()));
 
@@ -276,6 +288,8 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout->addWidget(m_combobox_audio_codec_av, 1, 1);
 		layout->addWidget(m_label_audio_kbit_rate, 2, 0);
 		layout->addWidget(m_lineedit_audio_kbit_rate, 2, 1);
+		layout->addWidget(m_label_audio_options, 3, 0);
+		layout->addWidget(m_lineedit_audio_options, 3, 1);
 	}
 	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), "Back", this);
 	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), "Continue", this);
@@ -339,9 +353,11 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	SetH264CRF(settings->value("output/video/h264/crf", 23).toUInt());
 	SetH264Preset((enum_h264_preset) settings->value("output/video/h264/preset", H264_PRESET_SUPERFAST).toUInt());
 	SetVP8CPUUsed(settings->value("output/video/vp8/cpu_used", 5).toUInt());
+	SetVideoOptions(settings->value("output/video/options", "").toString());
 	SetAudioCodec((enum_audio_codec) settings->value("output/audio/codec", default_audio_codec).toUInt());
 	SetAudioCodecAV(settings->value("output/audio/codec_av", default_audio_codec).toUInt());
 	SetAudioKBitRate(settings->value("output/audio/kbit_rate", 128).toUInt());
+	SetAudioOptions(settings->value("output/audio/options", "").toString());
 
 	// update things
 	UpdateContainerFields();
@@ -360,17 +376,12 @@ void PageOutput::SaveSettings(QSettings* settings) {
 	settings->setValue("output/video/h264/crf", GetH264CRF());
 	settings->setValue("output/video/h264/preset", GetH264Preset());
 	settings->setValue("output/video/vp8/cpu_used", GetVP8CPUUsed());
+	settings->setValue("output/video/options", GetVideoOptions());
 	settings->setValue("output/audio/codec", GetAudioCodec());
 	settings->setValue("output/audio/codec_av", GetAudioCodecAV());
 	settings->setValue("output/audio/kbit_rate", GetAudioKBitRate());
+	settings->setValue("output/audio/options", GetAudioOptions());
 }
-
-/*static QString FirstStringFromList(const QStringList& list) {
-	if(list.isEmpty())
-		return "";
-	else
-		return list[0];
-}*/
 
 static bool MatchSuffix(const QString& suffix, const QStringList& suffixes) {
 	return ((suffix.isEmpty() && suffixes.isEmpty()) || suffixes.contains(suffix, Qt::CaseInsensitive));
@@ -432,6 +443,8 @@ void PageOutput::UpdateVideoCodecFields() {
 	m_combobox_h264_preset->setVisible(codec == VIDEO_CODEC_H264);
 	m_label_vp8_cpu_used->setVisible(codec == VIDEO_CODEC_VP8);
 	m_combobox_vp8_cpu_used->setVisible(codec == VIDEO_CODEC_VP8);
+	m_label_video_options->setVisible(codec == VIDEO_CODEC_OTHER);
+	m_lineedit_video_options->setVisible(codec == VIDEO_CODEC_OTHER);
 }
 
 void PageOutput::UpdateAudioCodecFields() {
@@ -440,6 +453,8 @@ void PageOutput::UpdateAudioCodecFields() {
 	m_combobox_audio_codec_av->setVisible(codec == AUDIO_CODEC_OTHER);
 	m_label_audio_kbit_rate->setVisible(codec != AUDIO_CODEC_UNCOMPRESSED);
 	m_lineedit_audio_kbit_rate->setVisible(codec != AUDIO_CODEC_UNCOMPRESSED);
+	m_label_audio_options->setVisible(codec == AUDIO_CODEC_OTHER);
+	m_lineedit_audio_options->setVisible(codec == AUDIO_CODEC_OTHER);
 }
 
 void PageOutput::Browse() {

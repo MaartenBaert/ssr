@@ -48,19 +48,24 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
+// Whether x86/x64 specific instructions should be used.
+#ifndef SSR_USE_X86_ASM
+#define SSR_USE_X86_ASM 1
+#endif
+
+// Whether ffmpeg or libav version numbers should be used for tests. The ffmpeg version number is usually slightly higher,
+// so that's the default (deprecation warnings are better than compilation errors).
+#ifndef SSR_USE_FFMPEG_VERSIONS
+#define SSR_USE_FFMPEG_VERSIONS 1
+#endif
+
 // libav/ffmpeg API changes with version numbers are listed in their repositories in the file 'doc/APIchanges'
 // I recommend using the ffmpeg one:
 // http://git.videolan.org/?p=ffmpeg.git;a=blob;f=doc/APIchanges
 // this one lists version numbers for both ffmpeg and libav whereas libav just ignores ffmpeg.
 
-// Whether ffmpeg or libav version numbers should be used for tests. The ffmpeg version number is usually slightly higher,
-// so that's the default (deprecation warnings are better than compilation errors).
-#ifndef TEST_USE_FFMPEG_VERSIONS
-#define TEST_USE_FFMPEG_VERSIONS 1
-#endif
-
 #define TEST_MAJOR_MINOR(major, minor, required_major, required_minor) (major > required_major || (major == required_major && minor >= required_minor))
-#if TEST_USE_FFMPEG_VERSIONS
+#if SSR_USE_FFMPEG_VERSIONS
 #define TEST_AV_VERSION(prefix, ffmpeg_major, ffmpeg_minor, libav_major, libav_minor) TEST_MAJOR_MINOR(prefix##_VERSION_MAJOR, prefix##_VERSION_MINOR, ffmpeg_major, ffmpeg_minor)
 #else
 #define TEST_AV_VERSION(prefix, ffmpeg_major, ffmpeg_minor, libav_major, libav_minor) TEST_MAJOR_MINOR(prefix##_VERSION_MAJOR, prefix##_VERSION_MINOR, libav_major, libav_minor)

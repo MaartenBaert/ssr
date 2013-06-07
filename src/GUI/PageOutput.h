@@ -99,11 +99,15 @@ private:
 	QLineEdit *m_lineedit_h264_crf;
 	QComboBox *m_combobox_h264_preset;
 	QComboBox *m_combobox_vp8_cpu_used;
+	QLabel *m_label_video_options;
+	QLineEdit *m_lineedit_video_options;
 	QComboBox *m_combobox_audio_codec;
 	QLabel *m_label_audio_codec_av;
 	QComboBox *m_combobox_audio_codec_av;
 	QLabel *m_label_audio_kbit_rate;
 	QLineEdit *m_lineedit_audio_kbit_rate;
+	QLabel *m_label_audio_options;
+	QLineEdit *m_lineedit_audio_options;
 
 	std::vector<ContainerData> m_containers, m_containers_av;
 	std::vector<VideoCodecData> m_video_codecs, m_video_codecs_av;
@@ -130,9 +134,11 @@ public:
 	inline unsigned int GetH264CRF() { return m_lineedit_h264_crf->text().toUInt(); }
 	inline enum_h264_preset GetH264Preset() { return (enum_h264_preset) clamp(0, H264_PRESET_COUNT - 1, m_combobox_h264_preset->currentIndex()); }
 	inline unsigned int GetVP8CPUUsed() { return 5 - m_combobox_vp8_cpu_used->currentIndex(); }
+	inline QString GetVideoOptions() { return m_lineedit_video_options->text(); }
 	inline enum_audio_codec GetAudioCodec() { return (enum_audio_codec) clamp(0, AUDIO_CODEC_COUNT - 1, m_combobox_audio_codec->currentIndex()); }
 	inline unsigned int GetAudioCodecAV() { return clamp<unsigned int>(0, m_audio_codecs_av.size() - 1, m_combobox_audio_codec_av->currentIndex()); }
 	inline unsigned int GetAudioKBitRate() { return m_lineedit_audio_kbit_rate->text().toUInt(); }
+	inline QString GetAudioOptions() { return m_lineedit_audio_options->text(); }
 
 	inline void SetContainer(enum_container container) { m_combobox_container->setCurrentIndex(clamp<unsigned int>(0, CONTAINER_COUNT - 1, container)); }
 	inline void SetContainerAV(unsigned int container) { m_combobox_container_av->setCurrentIndex(clamp<unsigned int>(0, m_containers_av.size() - 1, container)); }
@@ -143,9 +149,11 @@ public:
 	inline void SetH264CRF(unsigned int crf) { m_lineedit_h264_crf->setText(QString::number(crf)); }
 	inline void SetH264Preset(enum_h264_preset preset) { m_combobox_h264_preset->setCurrentIndex(clamp<unsigned int>(0, H264_PRESET_COUNT - 1, preset)); }
 	inline void SetVP8CPUUsed(unsigned int cpu_used) { m_combobox_vp8_cpu_used->setCurrentIndex(clamp<unsigned int>(0, 4, 5 - cpu_used)); }
+	inline void SetVideoOptions(const QString& options) { m_lineedit_video_options->setText(options); }
 	inline void SetAudioCodec(enum_audio_codec audio_codec) { m_combobox_audio_codec->setCurrentIndex(clamp<unsigned int>(0, AUDIO_CODEC_COUNT - 1, audio_codec)); }
 	inline void SetAudioCodecAV(unsigned int audio_codec) { m_combobox_audio_codec_av->setCurrentIndex(clamp<unsigned int>(0, m_audio_codecs_av.size() - 1, audio_codec)); }
 	inline void SetAudioKBitRate(unsigned int kbit_rate) { m_lineedit_audio_kbit_rate->setText(QString::number(kbit_rate)); }
+	inline void SetAudioOptions(const QString& options) { m_lineedit_audio_options->setText(options); }
 
 public:
 	inline QString GetContainerAVName() {

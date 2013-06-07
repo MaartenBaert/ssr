@@ -269,6 +269,21 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	settings->setValue("input/preview/frame_rate", GetPreviewFrameRate());
 }
 
+static std::vector<std::pair<QString, QString> > GetOptionsFromString(const QString& str) {
+	std::vector<std::pair<QString, QString> > options;
+	QStringList optionlist = str.split(',', QString::SkipEmptyParts);
+	for(int i = 0; i < optionlist.size(); ++i) {
+		QString a = optionlist[i];
+		int p = a.indexOf('=');
+		if(p < 0) {
+			options.push_back(std::make_pair(a.trimmed(), QString()));
+		} else {
+			options.push_back(std::make_pair(a.mid(0, p).trimmed(), a.mid(p + 1).trimmed()));
+		}
+	}
+	return options;
+}
+
 void PageRecord::PageStart() {
 
 	if(m_page_started)
@@ -345,7 +360,6 @@ void PageRecord::PageStart() {
 
 	// some codec-specific things
 	// you can get more information about all these options by running 'avconv -h' from a terminal
-	// I'm not setting any options for the audio encoder yet, but it can be added here if it's ever needed.
 	switch(m_video_codec) {
 		case PageOutput::VIDEO_CODEC_H264: {
 			// x264 has a 'constant quality' mode, where the bit rate is simply set to whatever is needed to keep a certain quality. The quality is set
@@ -362,6 +376,17 @@ void PageRecord::PageStart() {
 			// It sounds useful, but I think it will use so much CPU that it will slow down the program that is being recorded.
 			m_video_options.push_back(std::make_pair(QString("deadline"), QString("good")));
 			m_video_options.push_back(std::make_pair(QString("cpu-used"), QString::number(page_output->GetVP8CPUUsed())));
+			break;
+		}
+		case PageOutput::VIDEO_CODEC_OTHER: {
+			m_video_options = GetOptionsFromString(page_output->GetVideoOptions());
+			break;
+		}
+		default: break; // to keep GCC happy
+	}
+	switch(m_audio_codec) {
+		case PageOutput::AUDIO_CODEC_OTHER: {
+			m_audio_options = GetOptionsFromString(page_output->GetAudioOptions());
 			break;
 		}
 		default: break; // to keep GCC happy

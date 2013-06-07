@@ -30,6 +30,7 @@ http://softpixel.com/~cwright/programming/simd/cpuid.php
 http://software.intel.com/en-us/forums/topic/305798
 */
 
+#if SSR_USE_X86_ASM
 #define CPUID(func,ax,bx,cx,dx) {\
 	__asm__ __volatile__ ("cpuid" : "=a" (ax), "=b" (bx), "=c" (cx), "=d" (dx) : "a" (func));\
 }
@@ -40,11 +41,16 @@ http://software.intel.com/en-us/forums/topic/305798
 #define SSSE3_FLAG  0x00000200  // from ecx
 #define SSE4_FLAG   0x00080000  // from ecx
 #define SSE42_FLAG  0x00100000  // from ecx
+#endif
 
 static void Convert_Fallback(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]);
+
+#if SSR_USE_X86_ASM
 static void Convert_SSSE3(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]) __attribute__((__target__("sse2,ssse3")));
+#endif
 
 YUVConverter::YUVConverter() {
+#if SSR_USE_X86_ASM
 	{
 		unsigned int a, b, c, d;
 		CPUID(1, a, b, c, d);
@@ -53,12 +59,16 @@ YUVConverter::YUVConverter() {
 	if(m_use_sse)
 		Logger::LogInfo("[YUVConverter::YUVConverter] Using SSSE3 converter.");
 	else
-		Logger::LogInfo("[YUVConverter::YUVConverter] Using fallback converter.");
+		Logger::LogInfo("[YUVConverter::YUVConverter] No SSSE3, using fallback converter.");
 	m_warn_alignment = true;
+#else
+	Logger::LogInfo("[YUVConverter::YUVConverter] Using fallback converter.");
+#endif
 }
 
 void YUVConverter::Convert(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]) {
 	Q_ASSERT(w % 2 == 0 && h % 2 == 0);
+#if SSR_USE_X86_ASM
 	if(m_use_sse) {
 		if((uintptr_t)(in_data) % 16 == 0 && in_stride % 16 == 0 &&
 		   (uintptr_t)(out_data[0]) % 16 == 0 && out_stride[0] % 16 == 0 &&
@@ -80,6 +90,9 @@ void YUVConverter::Convert(unsigned int w, unsigned int h, uint8_t* in_data, int
 	} else {
 		Convert_Fallback(w, h, in_data, in_stride, out_data, out_stride);
 	}
+#else
+	Convert_Fallback(w, h, in_data, in_stride, out_data, out_stride);
+#endif
 }
 
 static void Convert_Fallback(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]) {
@@ -115,6 +128,8 @@ static void Convert_Fallback(unsigned int w, unsigned int h, uint8_t* in_data, i
 	}
 
 }
+
+#if SSR_USE_X86_ASM
 
 /*
 My SSE2/SSSE3-optimized BGRA-to-YUV converter: about 4 times faster than the fallback implementation on my CPU (first gen Intel Core i5),
@@ -240,3 +255,5 @@ static void Convert_SSSE3(unsigned int w, unsigned int h, uint8_t* in_data, int 
 	}
 
 }
+
+#endif
