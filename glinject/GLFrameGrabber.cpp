@@ -146,6 +146,15 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 		}
 	}
 
+	// showing the cursor requires XFixes (which should be supported on any modern X server, but let's check it anyway)
+	{
+		int event, error;
+		m_has_xfixes = XFixesQueryExtension(m_x11_display, &event, &error);
+		if(!m_has_xfixes) {
+			fprintf(stderr, "[SSR-GLInject] Warning:  XFixes is not supported by server, the cursor has been hidden.\n");
+		}
+	}
+
 }
 
 GLFrameGrabber::~GLFrameGrabber() {
@@ -256,7 +265,7 @@ void GLFrameGrabber::GrabFrame() {
 	CGLE(glReadPixels(0, 0, m_width, m_height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data));
 
 	// draw the cursor
-	if(m_flags & GLINJECT_FLAG_RECORD_CURSOR) {
+	if((m_flags & GLINJECT_FLAG_RECORD_CURSOR) && m_has_xfixes) {
 		int inner_x, inner_y;
 		if(XTranslateCoordinates(m_x11_display, m_x11_window, DefaultRootWindow(m_x11_display), 0, 0, &inner_x, &inner_y, &unused_window)) {
 			GLImageDrawCursor(m_x11_display, image_data, image_stride, m_width, m_height, inner_x, inner_y);
