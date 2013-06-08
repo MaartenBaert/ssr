@@ -23,9 +23,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VPair.h"
 #include "YUVConverter.h"
 
-class Synchronizer;
-class VideoPreviewer;
-
 class X11Input : private QThread {
 	Q_OBJECT
 
@@ -38,8 +35,6 @@ private:
 	typedef VPair<SharedData>::Lock SharedLock;
 
 private:
-	Synchronizer *m_synchronizer;
-
 	unsigned int m_x, m_y, m_width, m_height;
 	unsigned int m_frame_rate, m_out_width, m_out_height;
 	bool m_record_cursor, m_follow_cursor;
@@ -62,12 +57,8 @@ private:
 	volatile bool m_should_stop, m_error_occurred;
 
 public:
-	X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor);
+	X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned int frame_rate, bool record_cursor, bool follow_cursor);
 	~X11Input();
-
-	// Connect the video previewer.
-	// video_previewer can be NULL.
-	void ConnectVideoPreviewer(VideoPreviewer* video_previewer);
 
 	// Returns whether an error has occurred in the input thread.
 	// This function is thread-safe.

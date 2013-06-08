@@ -36,7 +36,8 @@ SOURCES += \
 	ByteQueue.cpp \
 	Logger.cpp \
 	Main.cpp \
-	Version.cpp
+	Version.cpp \
+    AV/Input/VideoInput.cpp
 
 HEADERS  += \
 	AV/Encoder/AudioEncoder.h \
@@ -65,7 +66,8 @@ HEADERS  += \
 	Logger.h \
 	Main.h \
 	Version.h \
-	VPair.h
+	VPair.h \
+    AV/Input/VideoInput.h
 
 RESOURCES += \
 	resources.qrc
