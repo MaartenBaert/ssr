@@ -37,7 +37,7 @@ SOURCES += \
 	Logger.cpp \
 	Main.cpp \
 	Version.cpp \
-    AV/Input/VideoInput.cpp
+    AV/Input/VideoConnection.cpp
 
 HEADERS  += \
 	AV/Encoder/AudioEncoder.h \
@@ -67,7 +67,7 @@ HEADERS  += \
 	Main.h \
 	Version.h \
 	VPair.h \
-    AV/Input/VideoInput.h
+    AV/Input/VideoConnection.h
 
 RESOURCES += \
 	resources.qrc

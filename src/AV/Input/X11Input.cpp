@@ -167,18 +167,13 @@ static void X11ImageDrawCursor(Display* dpy, XImage* image, int recording_area_x
 
 }
 
-X11Input::X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor) {
-	Q_ASSERT(synchronizer->GetVideoEncoder() != NULL);
-
-	m_synchronizer = synchronizer;
+X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned int frame_rate, bool record_cursor, bool follow_cursor) {
 
 	m_x = x;
 	m_y = y;
 	m_width = width;
 	m_height = height;
-	m_frame_rate = m_synchronizer->GetVideoEncoder()->GetFrameRate();
-	m_out_width = m_synchronizer->GetVideoEncoder()->GetWidth();
-	m_out_height = m_synchronizer->GetVideoEncoder()->GetHeight();
+	m_frame_rate = frame_rate;
 	m_record_cursor = record_cursor;
 	m_follow_cursor = follow_cursor;
 
@@ -186,9 +181,6 @@ X11Input::X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, u
 	m_x11_shm_info.shmaddr = (char*) -1;
 	m_x11_shm_server_attached = false;
 	m_x11_image = NULL;
-
-	m_warn_swscale = true;
-	m_sws_context = NULL;
 
 	{
 		SharedLock lock(&m_shared_data);
@@ -215,6 +207,9 @@ X11Input::X11Input(Synchronizer* synchronizer, unsigned int x, unsigned int y, u
 
 X11Input::~X11Input() {
 
+	// disconnect everything
+	DisconnectAll();
+
 	// tell the thread to stop
 	if(isRunning()) {
 		Logger::LogInfo("[X11Input::~X11Input] Telling input thread to stop ...");
@@ -225,11 +220,6 @@ X11Input::~X11Input() {
 	// free everything
 	Free();
 
-}
-
-void X11Input::ConnectVideoPreviewer(VideoPreviewer* video_previewer) {
-	SharedLock lock(&m_shared_data);
-	lock->m_video_previewer = video_previewer;
 }
 
 void X11Input::Init() {
@@ -312,10 +302,6 @@ void X11Input::Free() {
 	if(m_x11_display != NULL) {
 		XCloseDisplay(m_x11_display);
 		m_x11_display = NULL;
-	}
-	if(m_sws_context != NULL) {
-		sws_freeContext(m_sws_context);
-		m_sws_context = NULL;
 	}
 }
 
@@ -422,57 +408,8 @@ void X11Input::run() {
 				X11ImageDrawCursor(m_x11_display, m_x11_image, grab_x, grab_y);
 			}
 
-			// let the previewer read the frame
-			if(lock->m_video_previewer != NULL) {
-				lock->m_video_previewer->ReadFrame(m_width, m_height, image_data, image_stride, x11_image_format);
-			}
-
-			// allocate the converted frame, with proper alignment
-			// Y = 1 byte per pixel, U or V = 1 byte per 2x2 pixels
-			int l1 = grow_align16(m_out_width);
-			int l2 = grow_align16(m_out_width / 2);
-			int s1 = grow_align16(l1 * m_out_height);
-			int s2 = grow_align16(l2 * m_out_height / 2);
-			std::unique_ptr<AVFrameWrapper> converted_frame(new AVFrameWrapper(s1 + 2 * s2));
-			converted_frame->data[1] = converted_frame->data[0] + s1;
-			converted_frame->data[2] = converted_frame->data[1] + s2;
-			converted_frame->linesize[0] = l1;
-			converted_frame->linesize[1] = l2;
-			converted_frame->linesize[2] = l2;
-
-			// convert the frame to YUV420P
-			bool scaling = (m_width != m_out_width || m_height != m_out_height);
-			if(x11_image_format == PIX_FMT_BGRA && !scaling) {
-
-				// use my faster converter
-				m_yuv_converter.Convert(m_width, m_height, image_data, image_stride, converted_frame->data, converted_frame->linesize);
-
-			} else {
-
-				if(m_warn_swscale) {
-					m_warn_swscale = false;
-					if(scaling)
-						Logger::LogInfo("[X11Input::run] Using swscale for scaling.");
-					else
-						Logger::LogWarning("[X11Input::run] Warning: Pixel format is " + QString::number(x11_image_format) + " instead of "
-											 + QString::number(PIX_FMT_BGRA) + " (PIX_FMT_BGRA), falling back to swscale. This is not a problem but performance will be worse.");
-				}
-
-				// get sws context
-				m_sws_context = sws_getCachedContext(m_sws_context,
-													 m_width, m_height, x11_image_format,
-													 m_out_width, m_out_height, PIX_FMT_YUV420P,
-													 SWS_BILINEAR, NULL, NULL, NULL);
-				if(m_sws_context == NULL) {
-					Logger::LogError("[X11Input::run] Error: Can't get swscale context!");
-					throw LibavException();
-				}
-				sws_scale(m_sws_context, &image_data, &image_stride, 0, m_height, converted_frame->data, converted_frame->linesize);
-
-			}
-
-			// save the frame
-			m_synchronizer->AddVideoFrame(std::move(converted_frame), timestamp);
+			// push out the frame
+			PushVideoFrame(m_width, m_height, image_data, image_stride, x11_image_format, timestamp);
 
 		}
 

@@ -20,14 +20,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "VideoConnection.h"
 #include "VPair.h"
+#include "YUVConverter.h"
 #include "ByteQueue.h"
 #include "AVWrapper.h"
 
 class VideoEncoder;
 class AudioEncoder;
 
-class Synchronizer {
+class Synchronizer : public VideoSink {
 
 private:
 	struct SharedData {
@@ -45,7 +47,7 @@ private:
 		int64_t m_segment_audio_offset; // the offset in the final stream corresponding to the audio start time
 		int64_t m_segment_audio_samples_read; // the number of samples that have been read from the audio buffer (including dropped samples)
 
-		bool m_warn_drop_video, m_warn_drop_audio, m_warn_desync;
+		bool m_warn_swscale, m_warn_drop_video, m_warn_drop_audio, m_warn_desync;
 
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
@@ -58,18 +60,29 @@ private:
 	VideoEncoder *m_video_encoder;
 	AudioEncoder *m_audio_encoder;
 
+	unsigned int m_video_width, m_video_height;
 	unsigned int m_video_frame_rate;
+
 	unsigned int m_audio_sample_rate, m_audio_sample_size;
 	unsigned int m_audio_required_frame_size, m_audio_required_sample_size;
 	AVSampleFormat m_audio_required_sample_format;
 
 	std::vector<char> m_temp_audio_buffer; // stores the original samples for a partial frame with a different sample format
 
+	YUVConverter m_yuv_converter;
+	SwsContext *m_sws_context;
+
 	VPair<SharedData> m_shared_data;
 
 public:
 	// The arguments 'video_encoder' and 'audio_encoder' can be NULL to disable video or audio.
 	Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder);
+	~Synchronizer();
+
+private:
+
+	void Init();
+	void Free();
 
 	// This function tells the synchronizer to end the current segment and reset the synchronization system
 	// in preparation for a new segment. This is required for pausing and continuing a recording.
@@ -87,10 +100,7 @@ public:
 
 public: // internal
 
-	// Adds a frame to the video queue. Called by the input.
-	// The timestamp contains the capture time of the frame.
-	// This function is thread-safe.
-	void AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame, int64_t timestamp);
+	virtual void ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp);
 
 	// Adds samples to the audio queue. Called by the input.
 	// The timestamp contains the capture time of the first sample.

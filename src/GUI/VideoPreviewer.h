@@ -22,7 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "VPair.h"
 
-class VideoPreviewer : public QWidget {
+class VideoPreviewer : public QWidget, public VideoSink {
 
 private:
 	struct SharedData {
@@ -45,11 +45,13 @@ public:
 
 	void Reset();
 	void SetFrameRate(unsigned int frame_rate);
-	void ReadFrame(unsigned int width, unsigned int height, uint8_t* in_data, int in_stride, PixelFormat format);
 	void UpdateIfNeeded();
+
+	virtual void ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp);
 
 	virtual QSize minimumSizeHint() const { return QSize(100, 100); }
 	virtual QSize sizeHint() const { return QSize(100, 100); }
+
 
 protected:
 	virtual void resizeEvent(QResizeEvent* event);

@@ -1,27 +1,26 @@
 Testing:
 
 In progress:
+- preview even when not recording yet (i.e. detach input from output)
 
 Todo:
 
 Wishlist:
-- PulseAudio input
-- Fixed cursor position when using 'follow cursor'
+- PulseAudio input (+ 2 inputs?)
 - Built-in re-encoding after recording
 - Separate file for each clip.
-- clean up StdAfx.h
-- Show codec/container support matrix somewhere?
+- clean up Global.h
 - QuickLZ-based codec. (-> QuickLZ beta?)
 - Better support for multiple GLInject windows.
 - Easier GLInject application selection (as an alternative to entering the command).
 - Timelapse recording, i.e. recording at a slow speed but playing it back faster (without sound obviously).
-- Force fixed size on OpenGL applications.
 - maybe rewrite YUVConverter in assembly instead of using GCC vector extensions
-- optionally show rectangle during recording
-- tray icon
-- play start/stop sound
+
+Not sure yet:
+- Fixed cursor position when using 'follow cursor'?
+- tray icon?
+- play start/stop sound?
 - skip microphone startup click?
-- redesigned interface (https://github.com/swick/glc2/issues/1)
+- redesigned interface? (https://github.com/swick/glc2/issues/1)
 - equalizer?
-- save whether preview is enabled
-- preview even when not recording yet (i.e. detach input from output)
+- if possible, force fixed size on OpenGL applications? (optional of course)

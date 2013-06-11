@@ -20,14 +20,14 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "VideoConnection.h"
 #include "VPair.h"
-#include "YUVConverter.h"
 
 class Synchronizer;
 class GLInjectLauncher;
 class VideoPreviewer;
 
-class GLInjectInput : private QThread {
+class GLInjectInput : private QThread, public VideoSource {
 
 private:
 	struct SharedData {
@@ -39,30 +39,21 @@ private:
 	static const int64_t MAX_FRAME_DELAY, MAX_COMMUNICATION_LATENCY;
 
 private:
-	Synchronizer *m_synchronizer;
 	GLInjectLauncher *m_launcher;
 
 	unsigned int m_cbuffer_size, m_max_bytes;
-	unsigned int m_frame_rate, m_out_width, m_out_height;
+	unsigned int m_frame_rate;
 	bool m_insert_duplicates;
 
 	volatile char *m_shm_main_ptr;
 	std::vector<volatile char*> m_shm_frame_ptrs;
 
-	bool m_warn_swscale;
-	YUVConverter m_yuv_converter;
-	SwsContext *m_sws_context;
-
 	VPair<SharedData> m_shared_data;
 	volatile bool m_should_stop, m_error_occurred;
 
 public:
-	GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launcher, bool insert_duplicates);
+	GLInjectInput(GLInjectLauncher* launcher, unsigned int frame_rate, bool insert_duplicates);
 	~GLInjectInput();
-
-	// Connect the video previewer.
-	// video_previewer can be NULL.
-	void ConnectVideoPreviewer(VideoPreviewer* video_previewer);
 
 	// Returns whether an error has occurred in the input thread.
 	// This function is thread-safe.

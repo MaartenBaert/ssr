@@ -67,14 +67,15 @@ void VideoPreviewer::SetFrameRate(unsigned int frame_rate) {
 	lock->m_frame_rate = std::max(1u, frame_rate);
 }
 
-void VideoPreviewer::ReadFrame(unsigned int width, unsigned int height, uint8_t* in_data, int in_stride, PixelFormat format) {
+void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
+	Q_UNUSED(timestamp);
 	SharedLock lock(&m_shared_data);
 
 	// check the size
 	if(width < 2 || height < 2 || lock->m_size.width() < 2 || lock->m_size.height() < 2)
 		return;
 
-	// check the time
+	// check the time (the timestamp is not used, everything is displayed immediately because there's no synchronization anyway)
 	int64_t time = hrt_time_micro();
 	if(time < lock->m_next_frame_time)
 		return;
@@ -101,7 +102,7 @@ void VideoPreviewer::ReadFrame(unsigned int width, unsigned int height, uint8_t*
 	// scale the image
 	uint8_t *out_data = lock->m_image.bits();
 	int out_stride = lock->m_image.bytesPerLine();
-	sws_scale(m_sws_context, &in_data, &in_stride, 0, height, &out_data, &out_stride);
+	sws_scale(m_sws_context, &data, &stride, 0, height, &out_data, &out_stride);
 
 	// set the alpha channel to 0xff (just to be sure)
 	// Some applications (e.g. firefox) generate alpha values that are not 0xff.

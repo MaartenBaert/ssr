@@ -35,21 +35,14 @@ const int64_t GLInjectInput::MAX_FRAME_DELAY = 200000;
 // The highest expected latency between GLInject and the input thread.
 const int64_t GLInjectInput::MAX_COMMUNICATION_LATENCY = 50000;
 
-GLInjectInput::GLInjectInput(Synchronizer* synchronizer, GLInjectLauncher* launcher, bool insert_duplicates) {
-	Q_ASSERT(synchronizer->GetVideoEncoder() != NULL);
+GLInjectInput::GLInjectInput(GLInjectLauncher *launcher, unsigned int frame_rate, bool insert_duplicates) {
 
-	m_synchronizer = synchronizer;
 	m_launcher = launcher;
 
 	m_cbuffer_size = m_launcher->GetCBufferSize();
 	m_max_bytes = m_launcher->GetMaxBytes();
-	m_frame_rate = m_synchronizer->GetVideoEncoder()->GetFrameRate();
-	m_out_width = m_synchronizer->GetVideoEncoder()->GetWidth();
-	m_out_height = m_synchronizer->GetVideoEncoder()->GetHeight();
+	m_frame_rate = frame_rate;
 	m_insert_duplicates = insert_duplicates;
-
-	m_warn_swscale = true;
-	m_sws_context = NULL;
 
 	{
 		SharedLock lock(&m_shared_data);
@@ -79,11 +72,6 @@ GLInjectInput::~GLInjectInput() {
 
 }
 
-void GLInjectInput::ConnectVideoPreviewer(VideoPreviewer* video_previewer) {
-	SharedLock lock(&m_shared_data);
-	lock->m_video_previewer = video_previewer;
-}
-
 void GLInjectInput::Init() {
 
 	// get the main shared memory
@@ -105,10 +93,7 @@ void GLInjectInput::Init() {
 }
 
 void GLInjectInput::Free() {
-	if(m_sws_context != NULL) {
-		sws_freeContext(m_sws_context);
-		m_sws_context = NULL;
-	}
+
 }
 
 void GLInjectInput::run() {
@@ -122,8 +107,8 @@ void GLInjectInput::run() {
 		// synchronizer and can't be used anymore. This could be fixed by creating a copy of each frame, but that is wasteful.
 		// Instead, the last frame is simply held back until the next frame is available. This increases the latency by one frame,
 		// which is not really a problem (the synchronizer will simply hold on to the audio a bit longer, which doesn't change the result).
-		std::unique_ptr<AVFrameWrapper> previous_frame;
-		int64_t previous_timestamp = 0; // value won't be used, but GCC gives a warning otherwise
+		//TODO// std::unique_ptr<AVFrameWrapper> previous_frame;
+		//TODO// int64_t previous_timestamp = 0; // value won't be used, but GCC gives a warning otherwise
 
 		int64_t next_frame_time = hrt_time_micro();
 		while(!m_should_stop) {
@@ -133,12 +118,13 @@ void GLInjectInput::run() {
 			unsigned int frames_ready = positive_mod((int) header.write_pos - (int) header.read_pos, (int) m_cbuffer_size * 2);
 			if(frames_ready == 0) {
 
+				//TODO//
 				// Calculate at what point in time the duplicate should be inserted.
 				// This is always in the past, because we don't want to drop a real frame because it was captured
 				// right after the duplicate was inserted. MAX_COMMUNICATION_LATENCY simulates the latency between GLInject and this thread,
 				// i.e. any new frame is assumed to have a timestamp higher than the current time minus MAX_COMMUNICATION_LATENCY. The duplicate
 				// frame will have a timestamp that's one frame earlier than that time, so it will never interfere with the real frame.
-				int64_t delay = m_synchronizer->GetVideoEncoder()->GetFrameDelay();
+				/*int64_t delay = m_synchronizer->GetVideoEncoder()->GetFrameDelay();
 				int64_t duplicate_timestamp = hrt_time_micro() - MAX_COMMUNICATION_LATENCY - delay;
 				int64_t extra_delay = (m_insert_duplicates)? 0 : MAX_FRAME_DELAY;
 
@@ -171,7 +157,7 @@ void GLInjectInput::run() {
 
 					continue;
 
-				}
+				}*/
 
 				usleep(10000);
 				continue;
@@ -210,67 +196,25 @@ void GLInjectInput::run() {
 			image_data += image_stride * (frameinfo.height - 1);
 			image_stride = -image_stride;
 
-			// let the previewer read the frame
-			if(lock->m_video_previewer != NULL) {
-				lock->m_video_previewer->ReadFrame(frameinfo.width, frameinfo.height, image_data, image_stride, PIX_FMT_BGRA);
-			}
-
-			// allocate the converted frame, with proper alignment
-			// Y = 1 byte per pixel, U or V = 1 byte per 2x2 pixels
-			int l1 = grow_align16(m_out_width);
-			int l2 = grow_align16(m_out_width / 2);
-			int s1 = grow_align16(l1 * m_out_height);
-			int s2 = grow_align16(l2 * m_out_height / 2);
-			std::unique_ptr<AVFrameWrapper> converted_frame(new AVFrameWrapper(s1 + 2 * s2));
-			converted_frame->data[1] = converted_frame->data[0] + s1;
-			converted_frame->data[2] = converted_frame->data[1] + s2;
-			converted_frame->linesize[0] = l1;
-			converted_frame->linesize[1] = l2;
-			converted_frame->linesize[2] = l2;
-
-			// convert the frame to YUV420P
-			bool scaling = (frameinfo.width != m_out_width || frameinfo.height != m_out_height);
-			if(!scaling) {
-
-				// use my faster converter
-				m_yuv_converter.Convert(frameinfo.width, frameinfo.height, image_data, image_stride, converted_frame->data, converted_frame->linesize);
-
-			} else {
-
-				if(m_warn_swscale) {
-					m_warn_swscale = false;
-					Logger::LogInfo("[GLInjectInput::run] Using swscale for scaling.");
-				}
-
-				// get sws context
-				m_sws_context = sws_getCachedContext(m_sws_context,
-													 frameinfo.width, frameinfo.height, PIX_FMT_BGRA,
-													 m_out_width, m_out_height, PIX_FMT_YUV420P,
-													 SWS_BILINEAR, NULL, NULL, NULL);
-				if(m_sws_context == NULL) {
-					Logger::LogError("[GLInjectInput::run] Error: Can't get swscale context!");
-					throw LibavException();
-				}
-				sws_scale(m_sws_context, &image_data, &image_stride, 0, frameinfo.height, converted_frame->data, converted_frame->linesize);
-
-			}
+			// push out the frame
+			PushVideoFrame(frameinfo.width, frameinfo.height, image_data, image_stride, PIX_FMT_BGRA);
 
 			// go to the next frame
 			((GLInjectHeader*) m_shm_main_ptr)->read_pos = (header.read_pos + 1) % (m_cbuffer_size * 2);
 
 			// save the frame
-			if(previous_frame != NULL) {
+			/*if(previous_frame != NULL) {
 				m_synchronizer->AddVideoFrame(std::move(previous_frame), previous_timestamp);
 			}
 			previous_frame = std::move(converted_frame);
-			previous_timestamp = frameinfo.timestamp;
+			previous_timestamp = frameinfo.timestamp;*/
 
 		}
 
 		// save the frame that was held back
-		if(previous_frame != NULL) {
+		/*if(previous_frame != NULL) {
 			m_synchronizer->AddVideoFrame(std::move(previous_frame), previous_timestamp);
-		}
+		}*/
 
 		Logger::LogInfo("[GLInjectInput::run] Input thread stopped.");
 

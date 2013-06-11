@@ -20,10 +20,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "VideoConnection.h"
 #include "VPair.h"
-#include "YUVConverter.h"
 
-class X11Input : private QThread {
+class X11Input : private QThread, public VideoSource {
 	Q_OBJECT
 
 private:
@@ -36,7 +36,7 @@ private:
 
 private:
 	unsigned int m_x, m_y, m_width, m_height;
-	unsigned int m_frame_rate, m_out_width, m_out_height;
+	unsigned int m_frame_rate;
 	bool m_record_cursor, m_follow_cursor;
 
 	Display *m_x11_display;
@@ -48,10 +48,6 @@ private:
 	XShmSegmentInfo m_x11_shm_info;
 	bool m_x11_shm_server_attached;
 	XImage *m_x11_image;
-
-	bool m_warn_swscale;
-	YUVConverter m_yuv_converter;
-	SwsContext *m_sws_context;
 
 	VPair<SharedData> m_shared_data;
 	volatile bool m_should_stop, m_error_occurred;

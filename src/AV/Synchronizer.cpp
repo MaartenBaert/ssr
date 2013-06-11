@@ -41,6 +41,27 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 	m_video_encoder = video_encoder;
 	m_audio_encoder = audio_encoder;
 
+	try {
+		Init();
+	} catch(...) {
+		Free();
+		throw;
+	}
+
+}
+
+Synchronizer::~Synchronizer() {
+
+	// disconnect
+	ConnectVideoSource(NULL);
+
+	// free everything
+	Free();
+
+}
+
+void Synchronizer::Init() {
+
 	if(m_video_encoder != NULL) {
 		m_video_frame_rate = m_video_encoder->GetFrameRate();
 	}
@@ -67,6 +88,8 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 		}
 	}
 
+	m_sws_context = NULL;
+
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_video_pts = 0;
@@ -76,11 +99,19 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 		lock->m_segment_video_started = (m_video_encoder == NULL);
 		lock->m_segment_audio_started = (m_audio_encoder == NULL);
 		lock->m_segment_audio_samples_read = 0;
+		lock->m_warn_swscale = true;
 		lock->m_warn_drop_video = true;
 		lock->m_warn_drop_audio = true;
 		lock->m_warn_desync = true;
 	}
 
+}
+
+void Synchronizer::Free() {
+	if(m_sws_context != NULL) {
+		sws_freeContext(m_sws_context);
+		m_sws_context = NULL;
+	}
 }
 
 void Synchronizer::NewSegment() {
@@ -111,7 +142,7 @@ int64_t Synchronizer::GetTotalTime() {
 	}
 }
 
-void Synchronizer::AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame, int64_t timestamp) {
+void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
 	Q_ASSERT(m_video_encoder != NULL);
 	SharedLock lock(&m_shared_data);
 
@@ -137,9 +168,53 @@ void Synchronizer::AddVideoFrame(std::unique_ptr<AVFrameWrapper> frame, int64_t 
 		lock->m_segment_video_start_time = timestamp;
 	}
 
+	// allocate the converted frame, with proper alignment
+	// Y = 1 byte per pixel, U or V = 1 byte per 2x2 pixels
+	int l1 = grow_align16(m_video_width);
+	int l2 = grow_align16(m_video_width / 2);
+	int s1 = grow_align16(l1 * m_video_height);
+	int s2 = grow_align16(l2 * m_video_height / 2);
+	std::unique_ptr<AVFrameWrapper> converted_frame(new AVFrameWrapper(s1 + 2 * s2));
+	converted_frame->data[1] = converted_frame->data[0] + s1;
+	converted_frame->data[2] = converted_frame->data[1] + s2;
+	converted_frame->linesize[0] = l1;
+	converted_frame->linesize[1] = l2;
+	converted_frame->linesize[2] = l2;
+
+	// convert the frame to YUV420P
+	bool scaling = (width != m_video_width || height != m_video_height);
+	if(format == PIX_FMT_BGRA && !scaling) {
+
+		// use my faster converter
+		m_yuv_converter.Convert(width, height, data, stride, converted_frame->data, converted_frame->linesize);
+
+	} else {
+
+		if(m_warn_swscale) {
+			m_warn_swscale = false;
+			if(scaling)
+				Logger::LogInfo("[X11Input::run] Using swscale for scaling.");
+			else
+				Logger::LogWarning("[X11Input::run] Warning: Pixel format is " + QString::number(x11_image_format) + " instead of "
+									 + QString::number(PIX_FMT_BGRA) + " (PIX_FMT_BGRA), falling back to swscale. This is not a problem but performance will be worse.");
+		}
+
+		// get sws context
+		m_sws_context = sws_getCachedContext(m_sws_context,
+											 width, height, format,
+											 m_video_width, m_video_height, PIX_FMT_YUV420P,
+											 SWS_BILINEAR, NULL, NULL, NULL);
+		if(m_sws_context == NULL) {
+			Logger::LogError("[X11Input::run] Error: Can't get swscale context!");
+			throw LibavException();
+		}
+		sws_scale(m_sws_context, &image_data, &image_stride, 0, m_height, converted_frame->data, converted_frame->linesize);
+
+	}
+
 	// store the frame
 	frame->pkt_dts = timestamp;
-	lock->m_video_buffer.push_back(std::move(frame));
+	lock->m_video_buffer.push_back(std::move(converted_frame));
 
 	// increase segment stop time
 	lock->m_segment_video_stop_time = timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate;
