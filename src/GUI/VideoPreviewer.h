@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "VideoConnection.h"
 #include "VPair.h"
 
 class VideoPreviewer : public QWidget, public VideoSink {
@@ -28,6 +29,7 @@ private:
 	struct SharedData {
 		QImage m_image;
 		int64_t m_next_frame_time;
+		bool m_is_visible;
 		QSize m_size;
 		unsigned int m_frame_rate;
 	};
@@ -54,6 +56,8 @@ public:
 
 
 protected:
+	virtual void showEvent(QShowEvent* event);
+	virtual void hideEvent(QShowEvent* event);
 	virtual void resizeEvent(QResizeEvent* event);
 	virtual void paintEvent(QPaintEvent* event);
 

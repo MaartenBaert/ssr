@@ -63,6 +63,8 @@ Synchronizer::~Synchronizer() {
 void Synchronizer::Init() {
 
 	if(m_video_encoder != NULL) {
+		m_video_width = m_video_encoder->GetWidth();
+		m_video_height = m_video_encoder->GetHeight();
 		m_video_frame_rate = m_video_encoder->GetFrameRate();
 	}
 	if(m_audio_encoder != NULL) {
@@ -88,6 +90,7 @@ void Synchronizer::Init() {
 		}
 	}
 
+	m_warn_swscale = true;
 	m_sws_context = NULL;
 
 	{
@@ -99,7 +102,6 @@ void Synchronizer::Init() {
 		lock->m_segment_video_started = (m_video_encoder == NULL);
 		lock->m_segment_audio_started = (m_audio_encoder == NULL);
 		lock->m_segment_audio_samples_read = 0;
-		lock->m_warn_swscale = true;
 		lock->m_warn_drop_video = true;
 		lock->m_warn_drop_audio = true;
 		lock->m_warn_desync = true;
@@ -142,31 +144,13 @@ int64_t Synchronizer::GetTotalTime() {
 	}
 }
 
+int64_t Synchronizer::GetVideoFrameInterval() {
+	Q_ASSERT(m_video_encoder != NULL);
+	return m_video_encoder->GetFrameInterval();
+}
+
 void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
 	Q_ASSERT(m_video_encoder != NULL);
-	SharedLock lock(&m_shared_data);
-
-	// avoid memory problems by limiting the video buffer size
-	if(lock->m_video_buffer.size() >= MAX_VIDEO_FRAMES_BUFFERED) {
-		if(lock->m_segment_audio_started) {
-			if(lock->m_warn_drop_video) {
-				lock->m_warn_drop_video = false;
-				Logger::LogWarning("[Synchronizer::AddVideoFrame] Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.");
-			}
-			return;
-		} else {
-			// if the audio hasn't started yet, it makes more sense to drop the oldest frames
-			lock->m_video_buffer.pop_front();
-			Q_ASSERT(lock->m_video_buffer.size() > 0);
-			lock->m_segment_video_start_time = lock->m_video_buffer.front()->pkt_dts;
-		}
-	}
-
-	// start video
-	if(!lock->m_segment_video_started) {
-		lock->m_segment_video_started = true;
-		lock->m_segment_video_start_time = timestamp;
-	}
 
 	// allocate the converted frame, with proper alignment
 	// Y = 1 byte per pixel, U or V = 1 byte per 2x2 pixels
@@ -193,9 +177,9 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, uint8
 		if(m_warn_swscale) {
 			m_warn_swscale = false;
 			if(scaling)
-				Logger::LogInfo("[X11Input::run] Using swscale for scaling.");
+				Logger::LogInfo("[Synchronizer::run] Using swscale for scaling.");
 			else
-				Logger::LogWarning("[X11Input::run] Warning: Pixel format is " + QString::number(x11_image_format) + " instead of "
+				Logger::LogWarning("[Synchronizer::run] Warning: Pixel format is " + QString::number(format) + " instead of "
 									 + QString::number(PIX_FMT_BGRA) + " (PIX_FMT_BGRA), falling back to swscale. This is not a problem but performance will be worse.");
 		}
 
@@ -205,15 +189,39 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, uint8
 											 m_video_width, m_video_height, PIX_FMT_YUV420P,
 											 SWS_BILINEAR, NULL, NULL, NULL);
 		if(m_sws_context == NULL) {
-			Logger::LogError("[X11Input::run] Error: Can't get swscale context!");
+			Logger::LogError("[Synchronizer::run] Error: Can't get swscale context!");
 			throw LibavException();
 		}
-		sws_scale(m_sws_context, &image_data, &image_stride, 0, m_height, converted_frame->data, converted_frame->linesize);
+		sws_scale(m_sws_context, &data, &stride, 0, height, converted_frame->data, converted_frame->linesize);
 
 	}
 
+	SharedLock lock(&m_shared_data);
+
+	// avoid memory problems by limiting the video buffer size
+	if(lock->m_video_buffer.size() >= MAX_VIDEO_FRAMES_BUFFERED) {
+		if(lock->m_segment_audio_started) {
+			if(lock->m_warn_drop_video) {
+				lock->m_warn_drop_video = false;
+				Logger::LogWarning("[Synchronizer::AddVideoFrame] Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.");
+			}
+			return;
+		} else {
+			// if the audio hasn't started yet, it makes more sense to drop the oldest frames
+			lock->m_video_buffer.pop_front();
+			Q_ASSERT(lock->m_video_buffer.size() > 0);
+			lock->m_segment_video_start_time = lock->m_video_buffer.front()->pkt_dts;
+		}
+	}
+
+	// start video
+	if(!lock->m_segment_video_started) {
+		lock->m_segment_video_started = true;
+		lock->m_segment_video_start_time = timestamp;
+	}
+
 	// store the frame
-	frame->pkt_dts = timestamp;
+	converted_frame->pkt_dts = timestamp;
 	lock->m_video_buffer.push_back(std::move(converted_frame));
 
 	// increase segment stop time
@@ -264,7 +272,7 @@ void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int6
 	// Speed correction only starts after at least 5 seconds of audio have been recorded, because otherwise the timestamps are too inaccurate.
 	// The speed correction factor is also clamped to 95% .. 105% to limit the potential damage if this code produces wrong results :).
 	double sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
-	double time_length = (double)(timestamp - lock->m_segment_audio_start_time) * 1.0e-6;
+	double time_length = (double) (timestamp - lock->m_segment_audio_start_time) * 1.0e-6;
 	if(time_length > 5.0) {
 		double time_correction_factor = sample_length / time_length;
 		lock->m_time_correction_factor = lock->m_time_correction_factor + (time_correction_factor - lock->m_time_correction_factor) * CORRECTION_SPEED;

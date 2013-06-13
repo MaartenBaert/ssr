@@ -548,16 +548,20 @@ void PageRecord::CaptureStart() {
 
 		// start the video input
 		if(m_video_glinject) {
-			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get(), m_glinject_insert_duplicates));
+			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get(), m_video_frame_rate, m_glinject_insert_duplicates));
 			m_synchronizer->ConnectVideoSource(m_gl_inject_input.get());
+			m_video_previewer->ConnectVideoSource(m_gl_inject_input.get());
 		} else {
-			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_follow_cursor));
+			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_frame_rate, m_video_record_cursor, m_video_follow_cursor));
 			m_synchronizer->ConnectVideoSource(m_x11_input.get());
+			m_video_previewer->ConnectVideoSource(m_x11_input.get());
 		}
 
 		// start the audio input
-		if(m_audio_enabled)
+		if(m_audio_enabled) {
 			m_alsa_input.reset(new ALSAInput(m_synchronizer.get(), m_alsa_device));
+			//TODO// m_audio_previewer->ConnectAudioSource(m_alsa_input.get());
+		}
 
 	} catch(...) {
 		Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
@@ -614,12 +618,6 @@ void PageRecord::UpdatePreview() {
 		m_stacked_layout_preview->setCurrentWidget(m_preview_page1);
 		m_pushbutton_preview_start_stop->setText("Start preview");
 	}
-	if(m_gl_inject_input.get() != NULL)
-		m_gl_inject_input->ConnectVideoPreviewer((m_previewing)? m_video_previewer : NULL);
-	if(m_x11_input.get() != NULL)
-		m_x11_input->ConnectVideoPreviewer((m_previewing)? m_video_previewer : NULL);
-	if(m_alsa_input.get() != NULL)
-		m_alsa_input->ConnectAudioPreviewer((m_previewing)? m_audio_previewer : NULL);
 }
 
 void PageRecord::UpdateHotkeyFields() {

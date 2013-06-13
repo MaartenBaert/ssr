@@ -45,7 +45,7 @@ public:
 	~VideoEncoder();
 
 	// Returns the expected delay (in us) between frames, taking queue size into account to avoid memory problems.
-	int64_t GetFrameDelay();
+	int64_t GetFrameInterval();
 
 	inline unsigned int GetWidth() { return m_width; }
 	inline unsigned int GetHeight() { return m_height; }

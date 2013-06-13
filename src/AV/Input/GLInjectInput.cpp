@@ -179,7 +179,7 @@ void GLInjectInput::run() {
 				((GLInjectHeader*) m_shm_main_ptr)->read_pos = (header.read_pos + 1) % (m_cbuffer_size * 2);
 				continue;
 			}
-			next_frame_time = std::max(next_frame_time + m_synchronizer->GetVideoEncoder()->GetFrameDelay(), frameinfo.timestamp);
+			next_frame_time = std::max(next_frame_time + CalculateVideoFrameInterval(m_frame_rate), frameinfo.timestamp);
 
 			SharedLock lock(&m_shared_data);
 
@@ -197,7 +197,7 @@ void GLInjectInput::run() {
 			image_stride = -image_stride;
 
 			// push out the frame
-			PushVideoFrame(frameinfo.width, frameinfo.height, image_data, image_stride, PIX_FMT_BGRA);
+			PushVideoFrame(frameinfo.width, frameinfo.height, image_data, image_stride, PIX_FMT_BGRA, frameinfo.timestamp);
 
 			// go to the next frame
 			((GLInjectHeader*) m_shm_main_ptr)->read_pos = (header.read_pos + 1) % (m_cbuffer_size * 2);

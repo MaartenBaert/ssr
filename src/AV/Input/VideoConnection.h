@@ -47,6 +47,7 @@ protected:
 	~VideoSource();
 
 protected:
+	int64_t CalculateVideoFrameInterval(unsigned int frame_rate);
 	void PushVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp);
 
 };
@@ -67,6 +68,7 @@ public:
 	void ConnectVideoSource(VideoSource* source);
 
 public:
-	virtual void ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp);
+	virtual int64_t GetVideoFrameInterval() { return 0; }
+	virtual void ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp) = 0;
 
 };

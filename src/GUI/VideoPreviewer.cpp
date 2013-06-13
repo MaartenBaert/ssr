@@ -41,6 +41,7 @@ VideoPreviewer::VideoPreviewer(QWidget* parent)
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_next_frame_time = hrt_time_micro();
+		lock->m_is_visible = false;
 		lock->m_size = QSize(0, 0);
 		lock->m_frame_rate = 10;
 	}
@@ -50,10 +51,16 @@ VideoPreviewer::VideoPreviewer(QWidget* parent)
 }
 
 VideoPreviewer::~VideoPreviewer() {
+
+	// disconnect
+	ConnectVideoSource(NULL);
+
+	// free everything
 	if(m_sws_context != NULL) {
 		sws_freeContext(m_sws_context);
 		m_sws_context = NULL;
 	}
+
 }
 
 void VideoPreviewer::Reset() {
@@ -70,6 +77,10 @@ void VideoPreviewer::SetFrameRate(unsigned int frame_rate) {
 void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
 	Q_UNUSED(timestamp);
 	SharedLock lock(&m_shared_data);
+
+	// don't do anything if the preview window is invisible
+	if(!lock->m_is_visible)
+		return;
 
 	// check the size
 	if(width < 2 || height < 2 || lock->m_size.width() < 2 || lock->m_size.height() < 2)
@@ -125,12 +136,24 @@ void VideoPreviewer::UpdateIfNeeded() {
 	}
 }
 
+void VideoPreviewer::showEvent(QShowEvent* event) {
+	Q_UNUSED(event);
+	SharedLock lock(&m_shared_data);
+	lock->m_is_visible = true;
+	qDebug() << "[VideoPreviewer::showEvent] SHOW";
+}
+
+void VideoPreviewer::hideEvent(QShowEvent* event) {
+	Q_UNUSED(event);
+	SharedLock lock(&m_shared_data);
+	lock->m_is_visible = false;
+	qDebug() << "[VideoPreviewer::hideEvent] HIDE";
+}
+
 void VideoPreviewer::resizeEvent(QResizeEvent* event) {
 	Q_UNUSED(event);
 	SharedLock lock(&m_shared_data);
-
 	lock->m_size = QSize(width() - 2, height() - 2);
-
 }
 
 void VideoPreviewer::paintEvent(QPaintEvent* event) {

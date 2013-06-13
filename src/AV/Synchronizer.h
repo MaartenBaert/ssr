@@ -47,7 +47,7 @@ private:
 		int64_t m_segment_audio_offset; // the offset in the final stream corresponding to the audio start time
 		int64_t m_segment_audio_samples_read; // the number of samples that have been read from the audio buffer (including dropped samples)
 
-		bool m_warn_swscale, m_warn_drop_video, m_warn_drop_audio, m_warn_desync;
+		bool m_warn_drop_video, m_warn_drop_audio, m_warn_desync;
 
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
@@ -69,6 +69,7 @@ private:
 
 	std::vector<char> m_temp_audio_buffer; // stores the original samples for a partial frame with a different sample format
 
+	bool m_warn_swscale;
 	YUVConverter m_yuv_converter;
 	SwsContext *m_sws_context;
 
@@ -80,9 +81,10 @@ public:
 	~Synchronizer();
 
 private:
-
 	void Init();
 	void Free();
+
+public:
 
 	// This function tells the synchronizer to end the current segment and reset the synchronization system
 	// in preparation for a new segment. This is required for pausing and continuing a recording.
@@ -100,6 +102,7 @@ private:
 
 public: // internal
 
+	virtual int64_t GetVideoFrameInterval();
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp);
 
 	// Adds samples to the audio queue. Called by the input.

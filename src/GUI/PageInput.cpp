@@ -252,8 +252,8 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetVideoH(settings->value("input/video/h", 600).toUInt());
 	SetVideoFrameRate(settings->value("input/video/frame_rate", 30).toUInt());
 	SetVideoScalingEnabled(settings->value("input/video/scale", false).toBool());
-	SetVideoScaledW(settings->value("input/video/scaled_w", 800).toUInt());
-	SetVideoScaledH(settings->value("input/video/scaled_h", 600).toUInt());
+	SetVideoScaledW(settings->value("input/video/scaled_w", 854).toUInt());
+	SetVideoScaledH(settings->value("input/video/scaled_h", 480).toUInt());
 	SetVideoRecordCursor(settings->value("input/video/record_cursor", true).toBool());
 	SetAudioEnabled(settings->value("input/audio/enable", true).toBool());
 	SetALSADevice(settings->value("input/audio/alsa_device", "default").toString());

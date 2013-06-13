@@ -182,11 +182,6 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 	m_x11_shm_server_attached = false;
 	m_x11_image = NULL;
 
-	{
-		SharedLock lock(&m_shared_data);
-		lock->m_video_previewer = NULL;
-	}
-
 	if(m_width == 0 || m_height == 0) {
 		Logger::LogError("[X11Input::Init] Error: Width or height is zero.");
 		throw X11Exception();
@@ -206,9 +201,6 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 }
 
 X11Input::~X11Input() {
-
-	// disconnect everything
-	DisconnectAll();
 
 	// tell the thread to stop
 	if(isRunning()) {
@@ -350,7 +342,7 @@ void X11Input::run() {
 				usleep(wait);
 				timestamp = hrt_time_micro();
 			}
-			next_frame_time = std::max(next_frame_time + m_synchronizer->GetVideoEncoder()->GetFrameDelay(), timestamp);
+			next_frame_time = std::max(next_frame_time + CalculateVideoFrameInterval(m_frame_rate), timestamp);
 
 			SharedLock lock(&m_shared_data);
 

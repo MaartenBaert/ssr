@@ -30,7 +30,6 @@ private:
 	struct SharedData {
 		QRect m_screen_bbox;
 		QVector<QRect> m_screen_dead_space;
-		VideoPreviewer *m_video_previewer;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 

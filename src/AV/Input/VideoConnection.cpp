@@ -31,6 +31,17 @@ VideoSource::~VideoSource() {
 	}
 }
 
+int64_t VideoSource::CalculateVideoFrameInterval(unsigned int frame_rate) {
+	SharedLock lock(&m_shared_data);
+	int64_t max_interval = 1000000 / frame_rate;
+	for(VideoSink *s : lock->m_sinks) {
+		int64_t interval = s->GetVideoFrameInterval();
+		if(interval > max_interval)
+			max_interval = interval;
+	}
+	return max_interval;
+}
+
 void VideoSource::PushVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
 	SharedLock lock(&m_shared_data);
 	for(VideoSink *s : lock->m_sinks) {
@@ -48,7 +59,7 @@ VideoSink::~VideoSink() {
 
 void VideoSink::ConnectVideoSource(VideoSource* source) {
 	if(m_source != NULL) {
-		VideoSource::SharedLock lock(m_source->m_shared_data);
+		VideoSource::SharedLock lock(&m_source->m_shared_data);
 		for(auto it = lock->m_sinks.begin(); it != lock->m_sinks.end(); ++it) {
 			if(*it == this) {
 				lock->m_sinks.erase(it);
@@ -58,7 +69,7 @@ void VideoSink::ConnectVideoSource(VideoSource* source) {
 	}
 	m_source = source;
 	if(m_source != NULL) {
-		VideoSource::SharedLock lock(m_source->m_shared_data);
+		VideoSource::SharedLock lock(&m_source->m_shared_data);
 		lock->m_sinks.push_back(this);
 	}
 }

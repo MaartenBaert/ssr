@@ -101,19 +101,19 @@ VideoEncoder::~VideoEncoder() {
 	Destruct(); // destruct the base class first
 }
 
-int64_t VideoEncoder::GetFrameDelay() {
-	int64_t delay = 1000000 / m_frame_rate;
+int64_t VideoEncoder::GetFrameInterval() {
+	int64_t interval = 1000000 / m_frame_rate;
 	size_t frames = GetQueuedFrameCount();
 	if(frames > THROTTLE_THRESHOLD_FRAMES) {
 		int64_t n = (frames - THROTTLE_THRESHOLD_FRAMES) * 1000 / THROTTLE_THRESHOLD_FRAMES;
-		delay += n * n;
+		interval += n * n;
 	}
 	size_t packets = GetMuxer()->GetQueuedPacketCount(GetStreamIndex());
 	if(packets > THROTTLE_THRESHOLD_PACKETS) {
 		int64_t n = (packets - THROTTLE_THRESHOLD_PACKETS) * 1000 / THROTTLE_THRESHOLD_PACKETS;
-		delay += n * n;
+		interval += n * n;
 	}
-	return delay;
+	return interval;
 }
 
 bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
