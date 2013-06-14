@@ -26,6 +26,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "AudioPreviewer.h"
 
+// Artificial delay after the first samples have been received (in microseconds). Any samples received during this time will be dropped.
+// This is needed because the first samples sometimes have weird timestamps, especially when PulseAudio is active
+// (I've seen one situation where PulseAudio instantly 'captures' 2 seconds of silence when the recording is started).
+// It also eliminates the clicking sound when the microphone is started for the first time.
+const int64_t ALSAInput::START_DELAY = 100000;
+
 static void ALSARecoverAfterOverrun(snd_pcm_t* pcm) {
 	Logger::LogWarning("[ALSARecoverAfterOverrun] Warning: Overrun occurred, some samples were lost.");
 	if(snd_pcm_prepare(pcm) < 0) {
@@ -198,6 +204,8 @@ void ALSAInput::run() {
 		Logger::LogInfo("[ALSAInput::run] Input thread started.");
 
 		std::vector<char> buffer(m_alsa_period_size * m_channels * 2);
+		bool has_first_samples = false;
+		int64_t first_timestamp = 0; // value won't be used, but GCC gives a warning otherwise
 
 		while(!m_should_stop) {
 
@@ -233,6 +241,18 @@ void ALSAInput::run() {
 			if(samples_read <= 0)
 				continue;
 
+			int64_t timestamp = hrt_time_micro();
+
+			// skip the first samples
+			if(has_first_samples) {
+				if(timestamp < first_timestamp + START_DELAY)
+					continue;
+			} else {
+				has_first_samples = true;
+				first_timestamp = timestamp;
+				continue;
+			}
+
 			SharedLock lock(&m_shared_data);
 
 			// let the previewer read the samples
@@ -241,7 +261,7 @@ void ALSAInput::run() {
 			}
 
 			// send the samples to the synchronizer
-			int64_t time = hrt_time_micro() - (int64_t) m_alsa_period_size * (int64_t) 1000000 / (int64_t) m_sample_rate;
+			int64_t time = timestamp - (int64_t) m_alsa_period_size * (int64_t) 1000000 / (int64_t) m_sample_rate;
 			m_synchronizer->AddAudioSamples(buffer.data(), samples_read, time);
 
 		}

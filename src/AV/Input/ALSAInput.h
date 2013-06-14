@@ -34,6 +34,9 @@ private:
 	typedef VPair<SharedData>::Lock SharedLock;
 
 private:
+	static const int64_t START_DELAY;
+
+private:
 	Synchronizer *m_synchronizer;
 
 	QString m_device_name;
