@@ -3,6 +3,7 @@ Testing:
 In progress:
 
 Todo:
+- Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
 
 Wishlist:
 - PulseAudio input
