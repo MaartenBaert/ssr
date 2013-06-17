@@ -46,6 +46,7 @@ private:
 		int64_t m_segment_video_stop_time, m_segment_audio_stop_time; // the stop time of video and audio (real-time, in microseconds)
 		int64_t m_segment_audio_offset; // the offset in the final stream corresponding to the audio start time
 		int64_t m_segment_audio_samples_read; // the number of samples that have been read from the audio buffer (including dropped samples)
+		int64_t m_segment_audio_last_timestamp; // the timestamp of the last received audio frame (for gap detection)
 
 		bool m_warn_drop_video, m_warn_drop_audio, m_warn_desync;
 
@@ -55,6 +56,7 @@ private:
 private:
 	static const double CORRECTION_SPEED;
 	static const size_t MAX_VIDEO_FRAMES_BUFFERED, MAX_AUDIO_SAMPLES_BUFFERED;
+	static const int64_t AUDIO_GAP_THRESHOLD;
 
 private:
 	VideoEncoder *m_video_encoder;
@@ -112,6 +114,7 @@ public: // internal
 
 private:
 
+	void NewSegment(SharedData* lock);
 	void GetSegmentStartStop(SharedData* lock, int64_t* segment_start_time, int64_t* segment_stop_time);
 	void FlushBuffers(SharedData* lock);
 	void ClearBuffers(SharedData* lock);

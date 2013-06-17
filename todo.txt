@@ -4,6 +4,7 @@ In progress:
 - preview even when not recording yet (i.e. detach input from output)
 
 Todo:
+- Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
 
 Wishlist:
 - PulseAudio input (+ 2 inputs?)

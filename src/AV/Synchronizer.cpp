@@ -35,6 +35,12 @@ const double Synchronizer::CORRECTION_SPEED = 0.002;
 const size_t Synchronizer::MAX_VIDEO_FRAMES_BUFFERED = 30;
 const size_t Synchronizer::MAX_AUDIO_SAMPLES_BUFFERED = 1000000;
 
+// The maximum allowed time between two audio timestamps (in microseconds). If the time difference is greater than this value,
+// the synchronizer will assume that there is a gap in the audio stream and will cut the segment to avoid excessive desynchronization.
+// If the difference is smaller, the synchronizer will do nothing and the speed correction system will take care of it (eventually).
+// PulseAudio creates these gaps when a VT-switch or user switch occurs (it simply freezes all audio streams, this causes problems with many other applications as well).
+const int64_t Synchronizer::AUDIO_GAP_THRESHOLD = 500000;
+
 Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder) {
 	Q_ASSERT(video_encoder != NULL || audio_encoder != NULL);
 
@@ -118,19 +124,7 @@ void Synchronizer::Free() {
 
 void Synchronizer::NewSegment() {
 	SharedLock lock(&m_shared_data);
-
-	if(lock->m_segment_video_started && lock->m_segment_audio_started) {
-		int64_t segment_start_time, segment_stop_time;
-		GetSegmentStartStop(lock.get(), &segment_start_time, &segment_stop_time);
-		lock->m_time_offset += (int64_t) ((double) (segment_stop_time - segment_start_time) * lock->m_time_correction_factor);
-	}
-
-	lock->m_video_buffer.clear();
-	lock->m_audio_buffer.Clear();
-	lock->m_segment_video_started = (m_video_encoder == NULL);
-	lock->m_segment_audio_started = (m_audio_encoder == NULL);
-	lock->m_segment_audio_samples_read = 0;
-
+	NewSegment(lock.get());
 }
 
 int64_t Synchronizer::GetTotalTime() {
@@ -259,11 +253,18 @@ void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int6
 		}
 	}
 
+	// detect audio gaps
+	if(lock->m_segment_audio_started && timestamp > lock->m_segment_audio_last_timestamp + AUDIO_GAP_THRESHOLD) {
+		Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Detected gap in audio stream, starting new segment to keep the audio in sync with the video (some video may be lost).");
+		NewSegment(lock.get());
+	}
+
 	// start audio
 	if(!lock->m_segment_audio_started) {
 		lock->m_segment_audio_started = true;
 		lock->m_segment_audio_start_time = timestamp;
 	}
+	lock->m_segment_audio_last_timestamp = timestamp;
 
 	// do speed correction (i.e. do the calculations so the video can synchronize to it)
 	// The point of speed correction is to keep video and audio in sync even when the clocks are not running at exactly the same speed.
@@ -305,6 +306,19 @@ void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int6
 	if(lock->m_segment_video_started)
 		FlushBuffers(lock.get());
 
+}
+
+void Synchronizer::NewSegment(SharedData* lock) {
+	if(lock->m_segment_video_started && lock->m_segment_audio_started) {
+		int64_t segment_start_time, segment_stop_time;
+		GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
+		lock->m_time_offset += (int64_t) ((double) (segment_stop_time - segment_start_time) * lock->m_time_correction_factor);
+	}
+	lock->m_video_buffer.clear();
+	lock->m_audio_buffer.Clear();
+	lock->m_segment_video_started = (m_video_encoder == NULL);
+	lock->m_segment_audio_started = (m_audio_encoder == NULL);
+	lock->m_segment_audio_samples_read = 0;
 }
 
 void Synchronizer::GetSegmentStartStop(SharedData* lock, int64_t* segment_start_time, int64_t* segment_stop_time) {
