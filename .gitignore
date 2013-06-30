@@ -15,6 +15,7 @@ config.status
 libtool
 .deps
 .libs
+.dirstamp
 stamp-h1
 
 simplescreenrecorder
