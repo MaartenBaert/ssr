@@ -156,6 +156,13 @@ public:
 	inline void SetAudioOptions(const QString& options) { m_lineedit_audio_options->setText(options); }
 
 public:
+	inline QString GetFileProtocol() {
+		QRegExp protocol_regex("^([a-z0-9]+)://", Qt::CaseInsensitive, QRegExp::RegExp);
+		if(protocol_regex.indexIn(GetFile()) < 0) {
+			return QString();
+		}
+		return protocol_regex.cap(1);
+	}
 	inline QString GetContainerAVName() {
 		enum_container container = GetContainer();
 		if(container != CONTAINER_OTHER)

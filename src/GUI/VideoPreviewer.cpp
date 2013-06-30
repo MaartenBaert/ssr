@@ -143,7 +143,7 @@ void VideoPreviewer::showEvent(QShowEvent* event) {
 	qDebug() << "[VideoPreviewer::showEvent] SHOW";
 }
 
-void VideoPreviewer::hideEvent(QShowEvent* event) {
+void VideoPreviewer::hideEvent(QHideEvent *event) {
 	Q_UNUSED(event);
 	SharedLock lock(&m_shared_data);
 	lock->m_is_visible = false;

@@ -517,7 +517,7 @@ void PageOutput::Continue() {
 		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION, "You did not select an output file!", QMessageBox::Ok);
 		return;
 	}
-	if(QFileInfo(file).exists()) {
+	if(GetFileProtocol().isNull() && QFileInfo(file).exists()) {
 		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, "The file '" + QFileInfo(file).fileName() + "' already exists. Are you sure you want to overwrite it?",
 								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
 			return;

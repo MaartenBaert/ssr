@@ -115,7 +115,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		QLabel *label_video_out_size = new QLabel("Video out size:", group_information);
 		m_label_video_out_size = new QLabel(group_information);
 		QLabel *label_file_name = new QLabel("File name:", group_information);
-		m_label_file_name = new QLabel(group_information);
+		m_label_file_name = new ElidedLabel(group_information);
 		QLabel *label_file_size = new QLabel("File size:", group_information);
 		m_label_file_size = new QLabel(group_information);
 		QLabel *label_file_bit_rate = new QLabel("File bit rate:", group_information);
@@ -354,6 +354,16 @@ void PageRecord::PageStart() {
 	m_video_options.clear();
 	m_audio_options.clear();
 
+	// detect protocols
+	QString protocol = page_output->GetFileProtocol();
+	if(protocol.isNull()) {
+		m_file_is_protocol = false;
+		m_file_shown = QFileInfo(m_file).fileName();
+	} else {
+		m_file_is_protocol = true;
+		m_file_shown = "(" + protocol + ")";
+	}
+
 	// hide the audio previewer if there is no audio
 	m_label_mic_icon->setVisible(m_audio_enabled);
 	m_audio_previewer->setVisible(m_audio_enabled);
@@ -454,7 +464,7 @@ void PageRecord::PageStop(bool save) {
 	// delete the file if it isn't needed
 	// First make sure it's actually *our* file - the user might have pressed Cancel after realising he was about to overwrite an
 	// important file, in that case we definitely shouldn't delete the file. If the encoders have already been started, it's too late.
-	if(!save && m_encoders_started) {
+	if(!save && m_encoders_started && !m_file_is_protocol) {
 		if(QFileInfo(m_file).exists())
 			QFile(m_file).remove();
 	}
@@ -748,7 +758,7 @@ void PageRecord::UpdateInformation() {
 			m_label_video_out_size->setText("?");
 		else
 			m_label_video_out_size->setText(QString::number(m_video_out_width) + "x" + QString::number(m_video_out_height));
-		m_label_file_name->setText(QFileInfo(m_file).fileName());
+		m_label_file_name->setText(m_file_shown);
 		m_label_file_size->setText(ReadableSize(current_bytes, "B"));
 		m_label_file_bit_rate->setText(ReadableSize((uint64_t) (bit_rate + 0.5), "bps"));
 

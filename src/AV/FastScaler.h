@@ -20,17 +20,19 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-// Faster BGRA to YUV converter.
-// Note: this code assumes little-endianness.
-class YUVConverter {
+class FastScaler {
 
 private:
 #if SSR_USE_X86_ASM
-	bool m_use_sse, m_warn_alignment;
+	bool m_use_ssse3, m_warn_alignment;
 #endif
 
+	bool m_warn_swscale;
+	SwsContext *m_sws_context;
+
 public:
-	YUVConverter();
-	void Convert(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]);
+	FastScaler();
+	void Scale(unsigned int in_width, unsigned int in_height, uint8_t** in_data, int* in_stride, PixelFormat in_format,
+			   unsigned int out_width, unsigned int out_height, uint8_t** out_data, int* out_stride, PixelFormat out_format);
 
 };

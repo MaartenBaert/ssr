@@ -96,9 +96,6 @@ void Synchronizer::Init() {
 		}
 	}
 
-	m_warn_swscale = true;
-	m_sws_context = NULL;
-
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_video_pts = 0;
@@ -116,10 +113,7 @@ void Synchronizer::Init() {
 }
 
 void Synchronizer::Free() {
-	if(m_sws_context != NULL) {
-		sws_freeContext(m_sws_context);
-		m_sws_context = NULL;
-	}
+
 }
 
 void Synchronizer::NewSegment() {
@@ -159,35 +153,12 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, uint8
 	converted_frame->linesize[1] = l2;
 	converted_frame->linesize[2] = l2;
 
-	// convert the frame to YUV420P
-	bool scaling = (width != m_video_width || height != m_video_height);
-	if(format == PIX_FMT_BGRA && !scaling) {
-
-		// use my faster converter
-		m_yuv_converter.Convert(width, height, data, stride, converted_frame->data, converted_frame->linesize);
-
-	} else {
-
-		if(m_warn_swscale) {
-			m_warn_swscale = false;
-			if(scaling)
-				Logger::LogInfo("[Synchronizer::run] Using swscale for scaling.");
-			else
-				Logger::LogWarning("[Synchronizer::run] Warning: Pixel format is " + QString::number(format) + " instead of "
-									 + QString::number(PIX_FMT_BGRA) + " (PIX_FMT_BGRA), falling back to swscale. This is not a problem but performance will be worse.");
-		}
-
-		// get sws context
-		m_sws_context = sws_getCachedContext(m_sws_context,
-											 width, height, format,
-											 m_video_width, m_video_height, PIX_FMT_YUV420P,
-											 SWS_BILINEAR, NULL, NULL, NULL);
-		if(m_sws_context == NULL) {
-			Logger::LogError("[Synchronizer::run] Error: Can't get swscale context!");
-			throw LibavException();
-		}
-		sws_scale(m_sws_context, &data, &stride, 0, height, converted_frame->data, converted_frame->linesize);
-
+	// scale and convert the frame to YUV420P
+	// the scaler has a separate lock so the audio thread is less likely to block (scaling is still slow)
+	{
+		FastScalerLock lock(&m_fast_scaler);
+		lock->Scale(width, height, &data, &stride, format,
+					m_video_width, m_video_height, converted_frame->data, converted_frame->linesize, PIX_FMT_YUV420P);
 	}
 
 	SharedLock lock(&m_shared_data);

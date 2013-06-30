@@ -38,14 +38,18 @@ simplescreenrecorder_SOURCES = \
 	AV/Input/X11Input.h \
 	AV/AVWrapper.cpp \
 	AV/AVWrapper.h \
+	AV/DetectCPUFeatures.cpp \
+	AV/DetectCPUFeatures.h \
+	AV/FastScaler.cpp \
+	AV/FastScaler.h \
 	AV/Muxer.cpp \
 	AV/Muxer.h \
 	AV/Synchronizer.cpp \
 	AV/Synchronizer.h \
-	AV/YUVConverter.cpp \
-	AV/YUVConverter.h \
 	GUI/AudioPreviewer.cpp \
 	GUI/AudioPreviewer.h \
+	GUI/ElidedLabel.cpp \
+	GUI/ElidedLabel.h \
 	GUI/HotkeyListener.cpp \
 	GUI/HotkeyListener.h \
 	GUI/MainWindow.cpp \
@@ -99,6 +103,7 @@ clean-qrc-extra:
 
 nodist_simplescreenrecorder_SOURCES += \
 	moc_X11Input.cpp \
+	moc_ElidedLabel.cpp \
 	moc_HotkeyListener.cpp \
 	moc_MainWindow.cpp \
 	moc_PageDone.cpp \
@@ -108,6 +113,8 @@ nodist_simplescreenrecorder_SOURCES += \
 	moc_PageWelcome.cpp
 
 moc_X11Input.cpp: $(srcdir)/AV/Input/X11Input.h
+	$(MOC) "$<" -o "$@"
+moc_ElidedLabel.cpp: $(srcdir)/GUI/ElidedLabel.h
 	$(MOC) "$<" -o "$@"
 moc_HotkeyListener.cpp: $(srcdir)/GUI/HotkeyListener.h
 	$(MOC) "$<" -o "$@"

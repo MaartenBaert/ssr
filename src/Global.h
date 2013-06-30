@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STDAFX_H
-#define STDAFX_H
+#ifndef GLOBAL_H
+#define GLOBAL_H
 
 #include <QtGui>
 
@@ -164,4 +164,4 @@ T positive_mod(T x, T y) {
 	return (z < 0)? z + y : z;
 }
 
-#endif
+#endif // GLOBAL_H

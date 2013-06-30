@@ -19,12 +19,13 @@ SOURCES += \
 	AV/Input/ALSAInput.cpp \
 	AV/Input/GLInjectInput.cpp \
 	AV/Input/GLInjectLauncher.cpp \
+	AV/Input/VideoConnection.cpp \
 	AV/Input/X11Input.cpp \
 	AV/AVWrapper.cpp \
 	AV/Muxer.cpp \
 	AV/Synchronizer.cpp \
-	AV/YUVConverter.cpp \
 	GUI/AudioPreviewer.cpp \
+	GUI/ElidedLabel.cpp \
 	GUI/HotkeyListener.cpp \
 	GUI/MainWindow.cpp \
 	GUI/PageDone.cpp \
@@ -37,7 +38,8 @@ SOURCES += \
 	Logger.cpp \
 	Main.cpp \
 	Version.cpp \
-    AV/Input/VideoConnection.cpp
+	AV/FastScaler.cpp \
+	AV/DetectCPUFeatures.cpp
 
 HEADERS  += \
 	AV/Encoder/AudioEncoder.h \
@@ -47,12 +49,13 @@ HEADERS  += \
 	AV/Input/ALSAInput.h \
 	AV/Input/GLInjectInput.h \
 	AV/Input/GLInjectLauncher.h \
+	AV/Input/VideoConnection.h \
 	AV/Input/X11Input.h \
 	AV/AVWrapper.h \
 	AV/Muxer.h \
 	AV/Synchronizer.h \
-	AV/YUVConverter.h \
 	GUI/AudioPreviewer.h \
+	GUI/ElidedLabel.h \
 	GUI/HotkeyListener.h \
 	GUI/MainWindow.h \
 	GUI/PageDone.h \
@@ -67,7 +70,8 @@ HEADERS  += \
 	Main.h \
 	Version.h \
 	VPair.h \
-    AV/Input/VideoConnection.h
+	AV/FastScaler.h \
+	AV/DetectCPUFeatures.h
 
 RESOURCES += \
 	resources.qrc

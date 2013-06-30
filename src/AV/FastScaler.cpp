@@ -18,30 +18,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Global.h"
-#include "YUVConverter.h"
+#include "FastScaler.h"
 
 #include "Logger.h"
-
-/* In GCC 4.8 this should work:
-__builtin_cpu_init();
-m_use_sse = __builtin_cpu_supports("sse2") && __builtin_cpu_supports("ssse3");
-... but for now I have to use CPUID manually. The detection code is based on:
-http://softpixel.com/~cwright/programming/simd/cpuid.php
-http://software.intel.com/en-us/forums/topic/305798
-*/
-
-#if SSR_USE_X86_ASM
-#define CPUID(func,ax,bx,cx,dx) {\
-	__asm__ __volatile__ ("cpuid" : "=a" (ax), "=b" (bx), "=c" (cx), "=d" (dx) : "a" (func));\
-}
-#define MMX_FLAG    0x00800000  // from edx
-#define SSE_FLAG    0x02000000  // from edx
-#define SSE2_FLAG   0x04000000  // from edx
-#define SSE3_FLAG   0x00000001  // from ecx
-#define SSSE3_FLAG  0x00000200  // from ecx
-#define SSE4_FLAG   0x00080000  // from ecx
-#define SSE42_FLAG  0x00100000  // from ecx
-#endif
+#include "DetectCPUFeatures.h"
 
 static void Convert_Fallback(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]);
 
@@ -49,50 +29,88 @@ static void Convert_Fallback(unsigned int w, unsigned int h, uint8_t* in_data, i
 static void Convert_SSSE3(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]) __attribute__((__target__("sse2,ssse3")));
 #endif
 
-YUVConverter::YUVConverter() {
+FastScaler::FastScaler() {
+
 #if SSR_USE_X86_ASM
-	{
-		unsigned int a, b, c, d;
-		CPUID(1, a, b, c, d);
-		m_use_sse = ((d & SSE2_FLAG) != 0 && (c & SSSE3_FLAG) != 0);
-	}
-	if(m_use_sse)
-		Logger::LogInfo("[YUVConverter::YUVConverter] Using SSSE3 converter.");
+	CPUFeatures features;
+	DetectCPUFeatures(&features);
+	m_use_ssse3 = (features.sse2 && features.ssse3);
+	if(m_use_ssse3)
+		Logger::LogInfo("[FastScaler::FastScaler] Using SSSE3 converter.");
 	else
-		Logger::LogInfo("[YUVConverter::YUVConverter] No SSSE3, using fallback converter.");
+		Logger::LogInfo("[FastScaler::FastScaler] No SSSE3, using fallback converter.");
 	m_warn_alignment = true;
 #else
-	Logger::LogInfo("[YUVConverter::YUVConverter] Using fallback converter.");
+	Logger::LogInfo("[FastScaler::FastScaler] Using fallback converter.");
 #endif
+
+	m_warn_swscale = true;
+	m_sws_context = NULL;
+
 }
 
-void YUVConverter::Convert(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]) {
-	Q_ASSERT(w % 2 == 0 && h % 2 == 0);
+void FastScaler::Scale(unsigned int in_width, unsigned int in_height, uint8_t** in_data, int* in_stride, PixelFormat in_format,
+					   unsigned int out_width, unsigned int out_height, uint8_t** out_data, int* out_stride, PixelFormat out_format) {
+
+	// faster BGRA to YUV conversion
+	if(in_format == PIX_FMT_BGRA && out_format == PIX_FMT_YUV420P && in_width == out_width && in_height == out_height) {
+		Q_ASSERT(out_width % 2 == 0 && out_height % 2 == 0);
+
 #if SSR_USE_X86_ASM
-	if(m_use_sse) {
-		if((uintptr_t)(in_data) % 16 == 0 && in_stride % 16 == 0 &&
-		   (uintptr_t)(out_data[0]) % 16 == 0 && out_stride[0] % 16 == 0 &&
-		   (uintptr_t)(out_data[1]) % 16 == 0 && out_stride[1] % 16 == 0 &&
-		   (uintptr_t)(out_data[2]) % 16 == 0 && out_stride[2] % 16 == 0) {
-			unsigned int w16 = (w / 16) * 16;
-			Convert_SSSE3(w16, h, in_data, in_stride, out_data, out_stride);
-			if(w != w16) {
-				uint8_t* out_data_b[3] = {out_data[0] + w16, out_data[1] + w16 / 2, out_data[2] + w16 / 2};
-				Convert_Fallback(w - w16, h, in_data + 4 * w16, in_stride, out_data_b, out_stride);
+		if(m_use_ssse3) {
+			if((uintptr_t)(in_data[0]) % 16 == 0 && in_stride[0] % 16 == 0 &&
+			   (uintptr_t)(out_data[0]) % 16 == 0 && out_stride[0] % 16 == 0 &&
+			   (uintptr_t)(out_data[1]) % 16 == 0 && out_stride[1] % 16 == 0 &&
+			   (uintptr_t)(out_data[2]) % 16 == 0 && out_stride[2] % 16 == 0) {
+				unsigned int out_width_16 = (out_width / 16) * 16;
+				Convert_SSSE3(out_width_16, out_height, in_data[0], in_stride[0], out_data, out_stride);
+				if(out_width != out_width_16) {
+					uint8_t* in_data_b = in_data[0] + 4 * out_width_16;
+					uint8_t* out_data_b[3] = {
+						out_data[0] + out_width_16,
+						out_data[1] + out_width_16 / 2,
+						out_data[2] + out_width_16 / 2
+					};
+					Convert_Fallback(out_width - out_width_16, out_height, in_data_b, in_stride[0], out_data_b, out_stride);
+				}
+			} else {
+				if(m_warn_alignment) {
+					m_warn_alignment = false;
+					Logger::LogWarning("[FastScaler::Scale] Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem but performance will be worse.");
+				}
+				Convert_Fallback(out_width, out_height, in_data[0], in_stride[0], out_data, out_stride);
 			}
 		} else {
-			if(m_warn_alignment) {
-				m_warn_alignment = false;
-				Logger::LogWarning("[YUVConverter::Convert] Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem but performance will be worse.");
-			}
-			Convert_Fallback(w, h, in_data, in_stride, out_data, out_stride);
+			Convert_Fallback(out_width, out_height, in_data[0], in_stride[0], out_data, out_stride);
 		}
-	} else {
-		Convert_Fallback(w, h, in_data, in_stride, out_data, out_stride);
-	}
 #else
-	Convert_Fallback(w, h, in_data, in_stride, out_data, out_stride);
+		Convert_Fallback(out_width, out_height, in_data, in_stride, out_data, out_stride);
 #endif
+
+	} else {
+
+		if(m_warn_swscale) {
+			m_warn_swscale = false;
+			if(in_width == out_width && in_height == out_height) {
+				Logger::LogWarning("[Synchronizer::run] Warning: Pixel format is not supported (" + QString::number(in_format) + " -> " + QString::number(out_format)
+								   + "), falling back to swscale. This is not a problem but performance will be worse.");
+			} else {
+				Logger::LogInfo("[Synchronizer::run] Using swscale for scaling.");
+			}
+		}
+
+		m_sws_context = sws_getCachedContext(m_sws_context,
+											 in_width, in_height, in_format,
+											 out_width, out_height, out_format,
+											 SWS_BILINEAR, NULL, NULL, NULL);
+		if(m_sws_context == NULL) {
+			Logger::LogError("[FastScaler::Scale] Error: Can't get swscale context!");
+			throw LibavException();
+		}
+		sws_scale(m_sws_context, in_data, in_stride, 0, in_height, out_data, out_stride);
+
+	}
+
 }
 
 static void Convert_Fallback(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]) {

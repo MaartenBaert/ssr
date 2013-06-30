@@ -22,7 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "VideoConnection.h"
 #include "VPair.h"
-#include "YUVConverter.h"
+#include "FastScaler.h"
 #include "ByteQueue.h"
 #include "AVWrapper.h"
 
@@ -52,6 +52,7 @@ private:
 
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
+	typedef VPair<FastScaler>::Lock FastScalerLock;
 
 private:
 	static const double CORRECTION_SPEED;
@@ -71,10 +72,7 @@ private:
 
 	std::vector<char> m_temp_audio_buffer; // stores the original samples for a partial frame with a different sample format
 
-	bool m_warn_swscale;
-	YUVConverter m_yuv_converter;
-	SwsContext *m_sws_context;
-
+	VPair<FastScaler> m_fast_scaler;
 	VPair<SharedData> m_shared_data;
 
 public:
