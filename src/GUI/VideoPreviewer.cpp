@@ -140,14 +140,12 @@ void VideoPreviewer::showEvent(QShowEvent* event) {
 	Q_UNUSED(event);
 	SharedLock lock(&m_shared_data);
 	lock->m_is_visible = true;
-	qDebug() << "[VideoPreviewer::showEvent] SHOW";
 }
 
 void VideoPreviewer::hideEvent(QHideEvent *event) {
 	Q_UNUSED(event);
 	SharedLock lock(&m_shared_data);
 	lock->m_is_visible = false;
-	qDebug() << "[VideoPreviewer::hideEvent] HIDE";
 }
 
 void VideoPreviewer::resizeEvent(QResizeEvent* event) {
@@ -158,9 +156,15 @@ void VideoPreviewer::resizeEvent(QResizeEvent* event) {
 
 void VideoPreviewer::paintEvent(QPaintEvent* event) {
 	Q_UNUSED(event);
-	SharedLock lock(&m_shared_data);
 	QPainter painter(this);
-	QImage &img = lock->m_image;
+
+	// Copy the image so the lock isn't held while actually drawing the image.
+	// This is fast because QImage is reference counted.
+	QImage img;
+	{
+		SharedLock lock(&m_shared_data);
+		img = lock->m_image;
+	}
 
 	if(img.isNull()) {
 
@@ -173,7 +177,7 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 		// draw the image
 		// Scaling is only used if the widget was resized after the image was captured, which is unlikely
 		// except when the video is paused. That's good because the quality after Qt's scaling is horrible.
-		QSize out_size = CalculateScaledSize(img.size(), lock->m_size);
+		QSize out_size = CalculateScaledSize(img.size(), QSize(width() - 2, height() - 2));
 		QPoint out_pos((width() - out_size.width()) / 2, (height() - out_size.height()) / 2);
 		QRect out_rect(out_pos, out_size);
 		painter.drawImage(out_rect, img);

@@ -116,6 +116,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_label_video_out_size = new QLabel(group_information);
 		QLabel *label_file_name = new QLabel("File name:", group_information);
 		m_label_file_name = new ElidedLabel(group_information);
+		m_label_file_name->setMinimumWidth(70);
 		QLabel *label_file_size = new QLabel("File size:", group_information);
 		m_label_file_size = new QLabel(group_information);
 		QLabel *label_file_bit_rate = new QLabel("File bit rate:", group_information);
@@ -143,14 +144,17 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_preview_page1 = new QWidget(group_preview);
 		{
 			QLabel *label_preview_frame_rate = new QLabel("Preview frame rate:", m_preview_page1);
-			m_lineedit_preview_frame_rate = new QLineEdit(m_preview_page1);
+			m_spinbox_preview_frame_rate = new QSpinBox(m_preview_page1);
+			m_spinbox_preview_frame_rate->setRange(1, 1000);
+			m_spinbox_preview_frame_rate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			QLabel *label_preview_note = new QLabel("Note: Previewing requires extra CPU time (especially at high frame rates).", m_preview_page1);
 			label_preview_note->setWordWrap(true);
+			label_preview_note->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding);
 
 			QGridLayout *layout = new QGridLayout(m_preview_page1);
 			layout->setMargin(0);
 			layout->addWidget(label_preview_frame_rate, 0, 0);
-			layout->addWidget(m_lineedit_preview_frame_rate, 0, 1);
+			layout->addWidget(m_spinbox_preview_frame_rate, 0, 1);
 			layout->addWidget(label_preview_note, 1, 0, 1, 2);
 			layout->setRowStretch(2, 1);
 		}
@@ -708,7 +712,7 @@ static QString ReadableSize(uint64_t size, const QString& suffix) {
 	return QString::number((size / 1024 / 1024 + 512) / 1024) + " G" + suffix;
 }
 static QString ReadableTime(int64_t time_micro) {
-	unsigned int time = time_micro / 1000000;
+	unsigned int time = (time_micro + 500000) / 1000000;
 	return QString("%1:%2:%3")
 			.arg(time / 3600)
 			.arg((time / 60) % 60, 2, 10, QLatin1Char('0'))

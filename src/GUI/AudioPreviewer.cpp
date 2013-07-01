@@ -105,6 +105,18 @@ void AudioPreviewer::UpdateIfNeeded() {
 	}
 }
 
+void AudioPreviewer::showEvent(QShowEvent* event) {
+	Q_UNUSED(event);
+	SharedLock lock(&m_shared_data);
+	lock->m_is_visible = true;
+}
+
+void AudioPreviewer::hideEvent(QHideEvent *event) {
+	Q_UNUSED(event);
+	SharedLock lock(&m_shared_data);
+	lock->m_is_visible = false;
+}
+
 void AudioPreviewer::paintEvent(QPaintEvent* event) {
 	Q_UNUSED(event);
 	SharedLock lock(&m_shared_data);

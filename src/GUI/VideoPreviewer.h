@@ -54,7 +54,6 @@ public:
 	virtual QSize minimumSizeHint() const { return QSize(100, 100); }
 	virtual QSize sizeHint() const { return QSize(100, 100); }
 
-
 protected:
 	virtual void showEvent(QShowEvent* event);
 	virtual void hideEvent(QHideEvent* event);

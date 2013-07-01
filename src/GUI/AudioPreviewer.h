@@ -30,6 +30,7 @@ private:
 		double m_current_low[2], m_current_high[2];
 		double m_next_low[2], m_next_high[2];
 		int64_t m_next_frame_time;
+		bool m_is_visible;
 		unsigned int m_frame_rate;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
@@ -47,10 +48,12 @@ public:
 	void ReadSamples(const char* samples, size_t samplecount);
 	void UpdateIfNeeded();
 
-	virtual QSize minimumSizeHint() const { return QSize(100, 21); }
-	virtual QSize sizeHint() const { return QSize(100, 21); }
+	virtual QSize minimumSizeHint() const { return QSize(100, 17); }
+	virtual QSize sizeHint() const { return QSize(100, 17); }
 
 protected:
+	virtual void showEvent(QShowEvent* event);
+	virtual void hideEvent(QHideEvent* event);
 	virtual void paintEvent(QPaintEvent* event);
 
 };

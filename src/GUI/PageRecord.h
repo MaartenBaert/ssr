@@ -91,7 +91,7 @@ private:
 
 	QStackedLayout *m_stacked_layout_preview;
 	QWidget *m_preview_page1, *m_preview_page2;
-	QLineEdit *m_lineedit_preview_frame_rate;
+	QSpinBox *m_spinbox_preview_frame_rate;
 	VideoPreviewer *m_video_previewer;
 	QLabel *m_label_mic_icon;
 	AudioPreviewer *m_audio_previewer;
@@ -125,7 +125,7 @@ public:
 	inline bool IsHotkeyAltEnabled() { return m_checkbox_hotkey_alt->isChecked(); }
 	inline bool IsHotkeySuperEnabled() { return m_checkbox_hotkey_super->isChecked(); }
 	inline unsigned int GetHotkeyKey() { return m_combobox_hotkey_key->currentIndex(); }
-	inline unsigned int GetPreviewFrameRate() { return m_lineedit_preview_frame_rate->text().toUInt(); }
+	inline unsigned int GetPreviewFrameRate() { return m_spinbox_preview_frame_rate->value(); }
 
 	inline void SetHotkeyEnabled(bool enable) { m_checkbox_hotkey_enable->setChecked(enable); }
 	inline void SetHotkeyCtrlEnabled(bool enable) { m_checkbox_hotkey_ctrl->setChecked(enable); }
@@ -133,7 +133,7 @@ public:
 	inline void SetHotkeyAltEnabled(bool enable) { m_checkbox_hotkey_alt->setChecked(enable); }
 	inline void SetHotkeySuperEnabled(bool enable) { m_checkbox_hotkey_super->setChecked(enable); }
 	inline void SetHotkeyKey(unsigned int key) { m_combobox_hotkey_key->setCurrentIndex(clamp<unsigned int>(0, 25, key)); }
-	inline void SetPreviewFrameRate(unsigned int frame_rate) { m_lineedit_preview_frame_rate->setText(QString::number(frame_rate)); }
+	inline void SetPreviewFrameRate(unsigned int frame_rate) { m_spinbox_preview_frame_rate->setValue(frame_rate); }
 
 public slots:
 	void UpdateHotkeyFields();

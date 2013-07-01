@@ -242,25 +242,20 @@ void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int6
 	// This can happen because the sample rate of the sound card is not always 100% accurate. Even a 0.1% error will result in audio that is
 	// seconds too early or too late at the end of a one hour video. This problem doesn't occur on all computers though (I'm not sure why).
 	// Speed correction only starts after at least 5 seconds of audio have been recorded, because otherwise the timestamps are too inaccurate.
-	// The speed correction factor is also clamped to 95% .. 105% to limit the potential damage if this code produces wrong results :).
+	// I used to limit the speed correction factor to 95% .. 105% to limit potential damage, but I've removed this limit since problems with
+	// PulseAudio often result in large speed correction factors. I have changed the limit to 10% .. 1000% instead, while keeping the old warnings.
 	double sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
 	double time_length = (double) (timestamp - lock->m_segment_audio_start_time) * 1.0e-6;
 	if(time_length > 5.0) {
 		double time_correction_factor = sample_length / time_length;
-		lock->m_time_correction_factor = lock->m_time_correction_factor + (time_correction_factor - lock->m_time_correction_factor) * CORRECTION_SPEED;
-		if(lock->m_time_correction_factor < 0.95) {
-			lock->m_time_correction_factor = 0.95;
-			if(lock->m_warn_desync) {
-				lock->m_warn_desync = false;
-				Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio input is more than 5% too slow, video and audio will be out of sync.");
-			}
+		lock->m_time_correction_factor = clamp(0.1, 10.0, lock->m_time_correction_factor + (time_correction_factor - lock->m_time_correction_factor) * CORRECTION_SPEED);
+		if(lock->m_time_correction_factor < 0.95 && lock->m_warn_desync) {
+			lock->m_warn_desync = false;
+			Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio input is more than 5% too slow!");
 		}
-		if(lock->m_time_correction_factor > 1.05) {
-			lock->m_time_correction_factor = 1.05;
-			if(lock->m_warn_desync) {
-				lock->m_warn_desync = false;
-				Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio input is more than 5% too fast, video and audio will be out of sync.");
-			}
+		if(lock->m_time_correction_factor > 1.05 && lock->m_warn_desync) {
+			lock->m_warn_desync = false;
+			Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio input is more than 5% too fast!");
 		}
 	}
 
