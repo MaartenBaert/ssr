@@ -151,7 +151,6 @@ PageOutput::PageOutput(MainWindow* main_window)
 		m_combobox_container_av = new QComboBox(groupbox_file);
 		for(unsigned int i = 0; i < m_containers_av.size(); ++i) {
 			ContainerData &c = m_containers_av[i];
-			//qDebug() << c.avname << c.suffixes << c.filter;
 			m_combobox_container_av->addItem(c.avname);
 		}
 		m_combobox_container_av->setToolTip("For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.");
@@ -159,10 +158,13 @@ PageOutput::PageOutput(MainWindow* main_window)
 		QLabel *label_file = new QLabel("Save as:", groupbox_file);
 		m_lineedit_file = new QLineEdit(groupbox_file);
 		m_lineedit_file->setToolTip("The recording will be saved to this location.");
+		m_checkbox_separate_files = new QCheckBox("Separate file per segment", groupbox_file);
+		m_checkbox_separate_files->setToolTip("If checked, a separate video file will be created every time you pause and resume the recording.\n"
+											  "If the original file name is 'test.mkv', the segments will be saved as 'test-0001.mkv', 'test-0002.mkv', ...");
 		QPushButton *button_browse = new QPushButton("Browse...", groupbox_file);
 
-		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(UpdateContainerFields()));
-		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(UpdateContainerFields()));
+		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(UpdateSuffixAndContainerFields()));
+		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(UpdateSuffixAndContainerFields()));
 		connect(button_browse, SIGNAL(clicked()), this, SLOT(Browse()));
 
 		QGridLayout *layout = new QGridLayout(groupbox_file);
@@ -173,6 +175,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout->addWidget(label_file, 2, 0);
 		layout->addWidget(m_lineedit_file, 2, 1);
 		layout->addWidget(button_browse, 2, 2);
+		layout->addWidget(m_checkbox_separate_files, 3, 0, 1, 3);
 	}
 	QGroupBox *groupbox_video = new QGroupBox("Video", this);
 	{
@@ -347,6 +350,7 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	SetContainer((enum_container) settings->value("output/container", default_container).toUInt());
 	SetContainerAV(settings->value("output/container_av", default_container).toUInt());
 	SetFile(settings->value("output/file", "").toString());
+	SetSeparateFiles(settings->value("output/separate_files", false).toBool());
 	SetVideoCodec((enum_video_codec) settings->value("output/video/codec", default_video_codec).toUInt());
 	SetVideoCodecAV(settings->value("output/video/codec_av", default_video_codec).toUInt());
 	SetVideoKBitRate(settings->value("output/video/kbit_rate", 5000).toUInt());
@@ -370,6 +374,7 @@ void PageOutput::SaveSettings(QSettings* settings) {
 	settings->setValue("output/container", GetContainer());
 	settings->setValue("output/container_av", GetContainerAV());
 	settings->setValue("output/file", GetFile());
+	settings->setValue("output/separate_files", GetSeparateFiles());
 	settings->setValue("output/video/codec", GetVideoCodec());
 	settings->setValue("output/video/codec_av", GetVideoCodecAV());
 	settings->setValue("output/video/kbit_rate", GetVideoKBitRate());
@@ -387,36 +392,46 @@ static bool MatchSuffix(const QString& suffix, const QStringList& suffixes) {
 	return ((suffix.isEmpty() && suffixes.isEmpty()) || suffixes.contains(suffix, Qt::CaseInsensitive));
 }
 
-void PageOutput::UpdateContainerFields() {
+void PageOutput::UpdateSuffixAndContainerFields() {
 
 	// change file extension
 	enum_container new_container = GetContainer();
 	unsigned int new_container_av = GetContainerAV();
-	QStringList old_suffixes = (m_old_container == CONTAINER_OTHER)? m_containers_av[m_old_container_av].suffixes : m_containers[m_old_container].suffixes;
-	QStringList new_suffixes = (new_container == CONTAINER_OTHER)? m_containers_av[new_container_av].suffixes : m_containers[new_container].suffixes;
-	QString file = m_lineedit_file->text();
-	if(!file.isEmpty()) {
-		QFileInfo fi(file);
-		if(MatchSuffix(fi.suffix(), old_suffixes) && !MatchSuffix(fi.suffix(), new_suffixes)) {
-			if(new_suffixes.isEmpty())
-				m_lineedit_file->setText(fi.path() + "/" + fi.completeBaseName());
-			else
-				m_lineedit_file->setText(fi.path() + "/" + fi.completeBaseName() + "." + new_suffixes[0]);
+	if(GetFileProtocol().isNull()) {
+		QStringList old_suffixes = (m_old_container == CONTAINER_OTHER)? m_containers_av[m_old_container_av].suffixes : m_containers[m_old_container].suffixes;
+		QStringList new_suffixes = (new_container == CONTAINER_OTHER)? m_containers_av[new_container_av].suffixes : m_containers[new_container].suffixes;
+		QString file = GetFile();
+		if(!file.isEmpty()) {
+			QFileInfo fi(file);
+			if(MatchSuffix(fi.suffix(), old_suffixes) && !MatchSuffix(fi.suffix(), new_suffixes)) {
+				if(new_suffixes.isEmpty())
+					m_lineedit_file->setText(fi.path() + "/" + fi.completeBaseName());
+				else
+					m_lineedit_file->setText(fi.path() + "/" + fi.completeBaseName() + "." + new_suffixes[0]);
+			}
 		}
 	}
-	m_old_container = new_container;
-	m_old_container_av = new_container_av;
+
+	// update fields
+	UpdateContainerFields();
+
+}
+
+void PageOutput::UpdateContainerFields() {
+
+	enum_container container = GetContainer();
+	unsigned int container_av = GetContainerAV();
 
 	// show/hide fields
-	m_label_container_av->setVisible(new_container == CONTAINER_OTHER);
-	m_combobox_container_av->setVisible(new_container == CONTAINER_OTHER);
+	m_label_container_av->setVisible(container == CONTAINER_OTHER);
+	m_combobox_container_av->setVisible(container == CONTAINER_OTHER);
 
 	// mark uninstalled or unsupported codecs
 	for(unsigned int i = 0; i < VIDEO_CODEC_OTHER; ++i) {
 		QString name = m_video_codecs[i].name;
 		if(!AVCodecIsInstalled(m_video_codecs[i].avname))
 			name += " (not installed)";
-		else if(new_container != CONTAINER_OTHER && !m_containers[new_container].supported_video_codecs.count((enum_video_codec) i))
+		else if(container != CONTAINER_OTHER && !m_containers[container].supported_video_codecs.count((enum_video_codec) i))
 			name += " (not supported by container)";
 		m_combobox_video_codec->setItemText(i, name);
 	}
@@ -424,10 +439,13 @@ void PageOutput::UpdateContainerFields() {
 		QString name = m_audio_codecs[i].name;
 		if(!AVCodecIsInstalled(m_audio_codecs[i].avname))
 			name += " (not installed)";
-		else if(new_container != CONTAINER_OTHER && !m_containers[new_container].supported_audio_codecs.count((enum_audio_codec) i))
+		else if(container != CONTAINER_OTHER && !m_containers[container].supported_audio_codecs.count((enum_audio_codec) i))
 			name += " (not supported by container)";
 		m_combobox_audio_codec->setItemText(i, name);
 	}
+
+	m_old_container = container;
+	m_old_container_av = container_av;
 
 }
 
@@ -473,7 +491,6 @@ void PageOutput::Browse() {
 	enum_container container = GetContainer();
 	unsigned int container_av = GetContainerAV();
 	QString selected_filter = (container == CONTAINER_OTHER)? m_containers_av[container_av].filter : m_containers[container].filter;
-	qDebug() << "---- selected filter:" << selected_filter;
 	QString selected_file = QFileDialog::getSaveFileName(this, "Save recording as",
 		GetFile(), filters, &selected_filter, QFileDialog::DontConfirmOverwrite);
 
@@ -517,7 +534,7 @@ void PageOutput::Continue() {
 		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION, "You did not select an output file!", QMessageBox::Ok);
 		return;
 	}
-	if(GetFileProtocol().isNull() && QFileInfo(file).exists()) {
+	if(GetFileProtocol().isNull() && !GetSeparateFiles() && QFileInfo(file).exists()) {
 		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, "The file '" + QFileInfo(file).fileName() + "' already exists. Are you sure you want to overwrite it?",
 								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
 			return;

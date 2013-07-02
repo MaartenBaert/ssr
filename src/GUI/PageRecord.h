@@ -54,7 +54,8 @@ private:
 	QString m_alsa_device;
 	bool m_glinject_insert_duplicates;
 
-	QString m_file, m_file_shown;
+	QString m_file;
+	bool m_separate_files;
 	unsigned int m_video_out_width, m_video_out_height;
 	PageOutput::enum_container m_container;
 	PageOutput::enum_video_codec m_video_codec;
@@ -62,7 +63,9 @@ private:
 	QString m_container_avname, m_video_avname, m_audio_avname;
 	unsigned int m_video_kbit_rate, m_audio_kbit_rate;
 	std::vector<std::pair<QString, QString> > m_video_options, m_audio_options;
-	bool m_file_is_protocol;
+	QString m_file_protocol;
+	unsigned int m_file_segment_counter;
+	QString m_file_segment;
 
 	QTimer *m_info_timer, *m_log_timer;
 	bool m_info_first_time;
@@ -85,9 +88,9 @@ private:
 	QCheckBox *m_checkbox_hotkey_ctrl, *m_checkbox_hotkey_shift, *m_checkbox_hotkey_alt, *m_checkbox_hotkey_super;
 	QComboBox *m_combobox_hotkey_key;
 
-	QLabel *m_label_total_time, *m_label_video_frame_rate, *m_label_video_in_size, *m_label_video_out_size;
-	ElidedLabel *m_label_file_name;
-	QLabel *m_label_file_size, *m_label_file_bit_rate;
+	QLabel *m_label_info_total_time, *m_label_info_frame_rate, *m_label_info_size_in, *m_label_info_size_out;
+	ElidedLabel *m_label_info_file_name;
+	QLabel *m_label_info_file_size, *m_label_info_bit_rate;
 
 	QStackedLayout *m_stacked_layout_preview;
 	QWidget *m_preview_page1, *m_preview_page2;

@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "MainWindow.h"
 
+#include "Main.h"
 #include "PageWelcome.h"
 #include "PageInput.h"
 #include "PageOutput.h"
@@ -69,14 +70,15 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 }
 
 void MainWindow::LoadSettings() {
-	QSettings settings;
+	QSettings settings(GetApplicationUserDir() + "/settings.conf", QSettings::IniFormat);
 	m_page_input->LoadSettings(&settings);
 	m_page_output->LoadSettings(&settings);
 	m_page_record->LoadSettings(&settings);
 }
 
 void MainWindow::SaveSettings() {
-	QSettings settings;
+	QSettings settings(GetApplicationUserDir() + "/settings.conf", QSettings::IniFormat);
+	settings.clear();
 	m_page_input->SaveSettings(&settings);
 	m_page_output->SaveSettings(&settings);
 	m_page_record->SaveSettings(&settings);

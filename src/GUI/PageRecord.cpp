@@ -40,6 +40,53 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
 
+static QString GetNewSegmentFile(const QString& file, unsigned int* counter, bool check_existing) {
+	QFileInfo fi(file);
+	QString path = fi.path(), basename = fi.completeBaseName(), suffix = fi.suffix();
+	QString newfile;
+	do {
+		++*counter;
+		if(suffix.isEmpty())
+			newfile = path + "/" + basename + QString("-%1").arg(*counter, 4, 10, QLatin1Char('0'));
+		else
+			newfile = path + "/" + basename + QString("-%1").arg(*counter, 4, 10, QLatin1Char('0')) + "." + suffix;
+	} while(check_existing && QFileInfo(newfile).exists());
+	return newfile;
+}
+
+static std::vector<std::pair<QString, QString> > GetOptionsFromString(const QString& str) {
+	std::vector<std::pair<QString, QString> > options;
+	QStringList optionlist = str.split(',', QString::SkipEmptyParts);
+	for(int i = 0; i < optionlist.size(); ++i) {
+		QString a = optionlist[i];
+		int p = a.indexOf('=');
+		if(p < 0) {
+			options.push_back(std::make_pair(a.trimmed(), QString()));
+		} else {
+			options.push_back(std::make_pair(a.mid(0, p).trimmed(), a.mid(p + 1).trimmed()));
+		}
+	}
+	return options;
+}
+
+static QString ReadableSize(uint64_t size, const QString& suffix) {
+	if(size < (uint64_t) 10 * 1024)
+		return QString::number(size) + " " + suffix;
+	if(size < (uint64_t) 10 * 1024 * 1024)
+		return QString::number((size + 512) / 1024) + " k" + suffix;
+	if(size < (uint64_t) 10 * 1024 * 1024 * 1024)
+		return QString::number((size / 1024 + 512) / 1024) + " M" + suffix;
+	return QString::number((size / 1024 / 1024 + 512) / 1024) + " G" + suffix;
+}
+
+static QString ReadableTime(int64_t time_micro) {
+	unsigned int time = (time_micro + 500000) / 1000000;
+	return QString("%1:%2:%3")
+			.arg(time / 3600)
+			.arg((time / 60) % 60, 2, 10, QLatin1Char('0'))
+			.arg(time % 60, 2, 10, QLatin1Char('0'));
+}
+
 class QTextEditSmall : public QTextEdit {
 
 public:
@@ -107,36 +154,36 @@ PageRecord::PageRecord(MainWindow* main_window)
 	QGroupBox *group_information = new QGroupBox("Information", this);
 	{
 		QLabel *label_total_time = new QLabel("Total time:", group_information);
-		m_label_total_time = new QLabel(group_information);
-		QLabel *label_video_frame_rate = new QLabel("Video frame rate:", group_information);
-		m_label_video_frame_rate = new QLabel(group_information);
-		QLabel *label_video_in_size = new QLabel("Video in size:", group_information);
-		m_label_video_in_size = new QLabel(group_information);
-		QLabel *label_video_out_size = new QLabel("Video out size:", group_information);
-		m_label_video_out_size = new QLabel(group_information);
+		m_label_info_total_time = new QLabel(group_information);
+		QLabel *label_frame_rate = new QLabel("Frame rate:", group_information);
+		m_label_info_frame_rate = new QLabel(group_information);
+		QLabel *label_size_in = new QLabel("Size in:", group_information);
+		m_label_info_size_in = new QLabel(group_information);
+		QLabel *label_size_out = new QLabel("Size out:", group_information);
+		m_label_info_size_out = new QLabel(group_information);
 		QLabel *label_file_name = new QLabel("File name:", group_information);
-		m_label_file_name = new ElidedLabel(group_information);
-		m_label_file_name->setMinimumWidth(70);
+		m_label_info_file_name = new ElidedLabel(QString(), Qt::ElideMiddle, group_information);
+		m_label_info_file_name->setMinimumWidth(100);
 		QLabel *label_file_size = new QLabel("File size:", group_information);
-		m_label_file_size = new QLabel(group_information);
-		QLabel *label_file_bit_rate = new QLabel("File bit rate:", group_information);
-		m_label_file_bit_rate = new QLabel(group_information);
+		m_label_info_file_size = new QLabel(group_information);
+		QLabel *label_bit_rate = new QLabel("Bit rate:", group_information);
+		m_label_info_bit_rate = new QLabel(group_information);
 
 		QGridLayout *layout = new QGridLayout(group_information);
 		layout->addWidget(label_total_time, 0, 0);
-		layout->addWidget(m_label_total_time, 0, 1);
-		layout->addWidget(label_video_frame_rate, 1, 0);
-		layout->addWidget(m_label_video_frame_rate, 1, 1);
-		layout->addWidget(label_video_in_size, 2, 0);
-		layout->addWidget(m_label_video_in_size, 2, 1);
-		layout->addWidget(label_video_out_size, 3, 0);
-		layout->addWidget(m_label_video_out_size, 3, 1);
+		layout->addWidget(m_label_info_total_time, 0, 1);
+		layout->addWidget(label_frame_rate, 1, 0);
+		layout->addWidget(m_label_info_frame_rate, 1, 1);
+		layout->addWidget(label_size_in, 2, 0);
+		layout->addWidget(m_label_info_size_in, 2, 1);
+		layout->addWidget(label_size_out, 3, 0);
+		layout->addWidget(m_label_info_size_out, 3, 1);
 		layout->addWidget(label_file_name, 4, 0);
-		layout->addWidget(m_label_file_name, 4, 1);
+		layout->addWidget(m_label_info_file_name, 4, 1);
 		layout->addWidget(label_file_size, 5, 0);
-		layout->addWidget(m_label_file_size, 5, 1);
-		layout->addWidget(label_file_bit_rate, 6, 0);
-		layout->addWidget(m_label_file_bit_rate, 6, 1);
+		layout->addWidget(m_label_info_file_size, 5, 1);
+		layout->addWidget(label_bit_rate, 6, 0);
+		layout->addWidget(m_label_info_bit_rate, 6, 1);
 		layout->setRowStretch(7, 1);
 	}
 	QGroupBox *group_preview = new QGroupBox("Preview", this);
@@ -253,39 +300,24 @@ bool PageRecord::ShouldBlockClose() {
 }
 
 void PageRecord::LoadSettings(QSettings *settings) {
-	SetHotkeyEnabled(settings->value("input/hotkey/enable", true).toBool());
-	SetHotkeyCtrlEnabled(settings->value("input/hotkey/ctrl", true).toBool());
-	SetHotkeyShiftEnabled(settings->value("input/hotkey/shift", false).toBool());
-	SetHotkeyAltEnabled(settings->value("input/hotkey/alt", false).toBool());
-	SetHotkeySuperEnabled(settings->value("input/hotkey/super", false).toBool());
-	SetHotkeyKey(settings->value("input/hotkey/key", 'r' - 'a').toUInt());
-	SetPreviewFrameRate(settings->value("input/preview/frame_rate", 10).toUInt());
+	SetHotkeyEnabled(settings->value("record/hotkey/enable", true).toBool());
+	SetHotkeyCtrlEnabled(settings->value("record/hotkey/ctrl", true).toBool());
+	SetHotkeyShiftEnabled(settings->value("record/hotkey/shift", false).toBool());
+	SetHotkeyAltEnabled(settings->value("record/hotkey/alt", false).toBool());
+	SetHotkeySuperEnabled(settings->value("record/hotkey/super", false).toBool());
+	SetHotkeyKey(settings->value("record/hotkey/key", 'r' - 'a').toUInt());
+	SetPreviewFrameRate(settings->value("record/preview/frame_rate", 10).toUInt());
 	UpdateHotkeyFields();
 }
 
 void PageRecord::SaveSettings(QSettings *settings) {
-	settings->setValue("input/hotkey/enable", IsHotkeyEnabled());
-	settings->setValue("input/hotkey/ctrl", IsHotkeyCtrlEnabled());
-	settings->setValue("input/hotkey/shift", IsHotkeyShiftEnabled());
-	settings->setValue("input/hotkey/alt", IsHotkeyAltEnabled());
-	settings->setValue("input/hotkey/super", IsHotkeySuperEnabled());
-	settings->setValue("input/hotkey/key", GetHotkeyKey());
-	settings->setValue("input/preview/frame_rate", GetPreviewFrameRate());
-}
-
-static std::vector<std::pair<QString, QString> > GetOptionsFromString(const QString& str) {
-	std::vector<std::pair<QString, QString> > options;
-	QStringList optionlist = str.split(',', QString::SkipEmptyParts);
-	for(int i = 0; i < optionlist.size(); ++i) {
-		QString a = optionlist[i];
-		int p = a.indexOf('=');
-		if(p < 0) {
-			options.push_back(std::make_pair(a.trimmed(), QString()));
-		} else {
-			options.push_back(std::make_pair(a.mid(0, p).trimmed(), a.mid(p + 1).trimmed()));
-		}
-	}
-	return options;
+	settings->setValue("record/hotkey/enable", IsHotkeyEnabled());
+	settings->setValue("record/hotkey/ctrl", IsHotkeyCtrlEnabled());
+	settings->setValue("record/hotkey/shift", IsHotkeyShiftEnabled());
+	settings->setValue("record/hotkey/alt", IsHotkeyAltEnabled());
+	settings->setValue("record/hotkey/super", IsHotkeySuperEnabled());
+	settings->setValue("record/hotkey/key", GetHotkeyKey());
+	settings->setValue("record/preview/frame_rate", GetPreviewFrameRate());
 }
 
 void PageRecord::PageStart() {
@@ -345,6 +377,7 @@ void PageRecord::PageStart() {
 
 	// get the output settings
 	m_file = page_output->GetFile();
+	m_separate_files = page_output->GetSeparateFiles();
 	m_video_out_width = 0;
 	m_video_out_height = 0;
 	m_container = page_output->GetContainer();
@@ -358,15 +391,13 @@ void PageRecord::PageStart() {
 	m_video_options.clear();
 	m_audio_options.clear();
 
-	// detect protocols
-	QString protocol = page_output->GetFileProtocol();
-	if(protocol.isNull()) {
-		m_file_is_protocol = false;
-		m_file_shown = QFileInfo(m_file).fileName();
-	} else {
-		m_file_is_protocol = true;
-		m_file_shown = "(" + protocol + ")";
-	}
+	// detect protocols and choose segment file name
+	m_file_protocol = page_output->GetFileProtocol();
+	m_file_segment_counter = 0;
+	if(m_separate_files)
+		m_file_segment = GetNewSegmentFile(m_file, &m_file_segment_counter, m_file_protocol.isNull());
+	else
+		m_file_segment = m_file;
 
 	// hide the audio previewer if there is no audio
 	m_label_mic_icon->setVisible(m_audio_enabled);
@@ -468,9 +499,9 @@ void PageRecord::PageStop(bool save) {
 	// delete the file if it isn't needed
 	// First make sure it's actually *our* file - the user might have pressed Cancel after realising he was about to overwrite an
 	// important file, in that case we definitely shouldn't delete the file. If the encoders have already been started, it's too late.
-	if(!save && m_encoders_started && !m_file_is_protocol) {
-		if(QFileInfo(m_file).exists())
-			QFile(m_file).remove();
+	if(!save && m_encoders_started && m_file_protocol.isNull()) {
+		if(QFileInfo(m_file_segment).exists())
+			QFile(m_file_segment).remove();
 	}
 
 	Logger::LogInfo("[PageRecord::PageStop] Stopped page.");
@@ -531,7 +562,7 @@ void PageRecord::CaptureStart() {
 			}
 
 			// prepare everything for recording
-			m_muxer.reset(new Muxer(m_container_avname, m_file));
+			m_muxer.reset(new Muxer(m_container_avname, m_file_segment));
 			m_video_encoder = new VideoEncoder(m_muxer.get(), m_video_avname, m_video_options, m_video_kbit_rate * 1024, m_video_out_width, m_video_out_height, m_video_frame_rate);
 			if(m_audio_enabled)
 				m_audio_encoder = new AudioEncoder(m_muxer.get(), m_audio_avname, m_audio_options, m_audio_kbit_rate * 1024, m_audio_sample_rate);
@@ -606,6 +637,14 @@ void PageRecord::CaptureStop() {
 	m_alsa_input.reset();
 
 	Logger::LogInfo("[PageRecord::RecordPause] Paused recording.");
+
+	if(m_separate_files) {
+
+		//TODO// stop encoders+muxer BEFORE changing file
+
+		// m_file_segment = GetNewSegmentFile(m_file, &m_file_segment_counter, m_file_protocol.isNull());
+
+	}
 
 	m_capturing = false;
 
@@ -702,23 +741,6 @@ void PageRecord::Save() {
 	m_main_window->GoPageDone();
 }
 
-static QString ReadableSize(uint64_t size, const QString& suffix) {
-	if(size < (uint64_t) 10 * 1024)
-		return QString::number(size) + " " + suffix;
-	if(size < (uint64_t) 10 * 1024 * 1024)
-		return QString::number((size + 512) / 1024) + " k" + suffix;
-	if(size < (uint64_t) 10 * 1024 * 1024 * 1024)
-		return QString::number((size / 1024 + 512) / 1024) + " M" + suffix;
-	return QString::number((size / 1024 / 1024 + 512) / 1024) + " G" + suffix;
-}
-static QString ReadableTime(int64_t time_micro) {
-	unsigned int time = (time_micro + 500000) / 1000000;
-	return QString("%1:%2:%3")
-			.arg(time / 3600)
-			.arg((time / 60) % 60, 2, 10, QLatin1Char('0'))
-			.arg(time % 60, 2, 10, QLatin1Char('0'));
-}
-
 void PageRecord::UpdateInformation() {
 
 	if(m_page_started) {
@@ -752,29 +774,33 @@ void PageRecord::UpdateInformation() {
 			m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 		}
 
-		m_label_total_time->setText(ReadableTime(total_time));
-		m_label_video_frame_rate->setText(QString::number(fps, 'f', 2));
+		m_label_info_total_time->setText(ReadableTime(total_time));
+		m_label_info_frame_rate->setText(QString::number(fps, 'f', 2));
 		if(m_video_in_width == 0 && m_video_in_height == 0)
-			m_label_video_in_size->setText("?");
+			m_label_info_size_in->setText("?");
 		else
-			m_label_video_in_size->setText(QString::number(m_video_in_width) + "x" + QString::number(m_video_in_height));
+			m_label_info_size_in->setText(QString::number(m_video_in_width) + "x" + QString::number(m_video_in_height));
 		if(m_video_out_width == 0 && m_video_out_height == 0)
-			m_label_video_out_size->setText("?");
+			m_label_info_size_out->setText("?");
 		else
-			m_label_video_out_size->setText(QString::number(m_video_out_width) + "x" + QString::number(m_video_out_height));
-		m_label_file_name->setText(m_file_shown);
-		m_label_file_size->setText(ReadableSize(current_bytes, "B"));
-		m_label_file_bit_rate->setText(ReadableSize((uint64_t) (bit_rate + 0.5), "bps"));
+			m_label_info_size_out->setText(QString::number(m_video_out_width) + "x" + QString::number(m_video_out_height));
+		if(m_file_protocol.isNull()) {
+			m_label_info_file_name->setText(QFileInfo(m_file_segment).fileName());
+		} else {
+			m_label_info_file_name->setText("(" + m_file_protocol + ")");
+		}
+		m_label_info_file_size->setText(ReadableSize(current_bytes, "B"));
+		m_label_info_bit_rate->setText(ReadableSize((uint64_t) (bit_rate + 0.5), "bps"));
 
 	} else {
 
-		m_label_total_time->clear();
-		m_label_video_frame_rate->clear();
-		m_label_video_in_size->clear();
-		m_label_video_out_size->clear();
-		m_label_file_name->clear();
-		m_label_file_size->clear();
-		m_label_file_bit_rate->clear();
+		m_label_info_total_time->clear();
+		m_label_info_frame_rate->clear();
+		m_label_info_size_in->clear();
+		m_label_info_size_out->clear();
+		m_label_info_file_name->clear();
+		m_label_info_file_size->clear();
+		m_label_info_bit_rate->clear();
 
 	}
 
