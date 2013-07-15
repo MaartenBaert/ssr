@@ -35,7 +35,7 @@ void DetectCPUFeatures(CPUFeatures* features) {
 	// CPUID exists in i586 ('pentium 1') and higher, older processors are not supported.
 	// The meaning of ecx/edx bits are listed in table 3-20 and 3-21 ('Feature Information Returned in the ECX/EDX Register')
 	// from the Intel reference manual (page 589), or in AMD's CPUID reference (they are compatible).
-	memset(features, 0, sizeof(features));
+	memset(features, 0, sizeof(CPUFeatures));
 	QString str = "[DetectCPUFeatures] CPU features:";
 
 	unsigned int eax, ebx, ecx, edx;
