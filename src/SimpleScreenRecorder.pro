@@ -20,7 +20,6 @@ SOURCES += \
 	AV/Output/BaseEncoder.cpp \
 	AV/Output/Muxer.cpp \
 	AV/Output/OutputManager.cpp \
-	AV/Output/OutputSettings.cpp \
 	AV/Output/Synchronizer.cpp \
 	AV/Output/VideoEncoder.cpp \
 	AV/Output/X264Presets.cpp \

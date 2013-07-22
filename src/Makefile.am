@@ -34,7 +34,6 @@ simplescreenrecorder_SOURCES = \
 	AV/Output/Muxer.h \
 	AV/Output/OutputManager.cpp \
 	AV/Output/OutputManager.h \
-	AV/Output/OutputSettings.cpp \
 	AV/Output/OutputSettings.h \
 	AV/Output/Synchronizer.cpp \
 	AV/Output/Synchronizer.h \
