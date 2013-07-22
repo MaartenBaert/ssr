@@ -20,7 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "VideoConnection.h"
+#include "SourceSink.h"
 #include "VPair.h"
 #include "FastScaler.h"
 #include "ByteQueue.h"
@@ -29,7 +29,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class VideoEncoder;
 class AudioEncoder;
 
-class Synchronizer : public VideoSink {
+class Synchronizer : public VideoSink, public AudioSink {
 
 private:
 	struct SharedData {
@@ -102,13 +102,9 @@ public:
 
 public: // internal
 
-	virtual int64_t GetVideoFrameInterval();
-	virtual void ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp);
-
-	// Adds samples to the audio queue. Called by the input.
-	// The timestamp contains the capture time of the first sample.
-	// This function is thread-safe.
-	void AddAudioSamples(const char* samples, size_t samplecount, int64_t timestamp);
+	virtual int64_t GetVideoFrameInterval() override;
+	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;
+	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) override;
 
 private:
 

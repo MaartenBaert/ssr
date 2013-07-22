@@ -43,6 +43,7 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 
 		m_opt_crf = (unsigned int) -1;
 		m_opt_preset = "";
+		m_opt_threads = std::max(1, ::QThread::idealThreadCount());
 
 		if(m_width == 0 || m_height == 0) {
 			Logger::LogError("[VideoEncoder::Init] Error: Width or height is zero.");
@@ -69,6 +70,8 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 					m_opt_crf = codec_options[i].second.toUInt();
 				if(codec_options[i].first == "preset")
 					m_opt_preset = codec_options[i].second;
+				if(codec_options[i].first == "threads")
+					m_opt_threads = codec_options[i].second.toUInt();
 				av_dict_set(&options, qPrintable(codec_options[i].first), qPrintable(codec_options[i].second), 0);
 			}
 			CreateCodec(qPrintable(codec_name), &options);
@@ -137,7 +140,7 @@ void VideoEncoder::FillCodecContext(AVCodec* codec) {
 	GetCodecContext()->sample_aspect_ratio.num = 1;
 	GetCodecContext()->sample_aspect_ratio.den = 1;
 	GetCodecContext()->flags |= CODEC_FLAG_LOOP_FILTER;
-	GetCodecContext()->thread_count = std::max(1, ::QThread::idealThreadCount());
+	GetCodecContext()->thread_count = m_opt_threads;
 
 	if(m_opt_crf != (unsigned int) -1) {
 #if !SSR_USE_AVCODEC_OPT_CRF

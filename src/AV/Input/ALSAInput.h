@@ -20,41 +20,29 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "SourceSink.h"
 #include "VPair.h"
 
 class Synchronizer;
 class AudioPreviewer;
 
-class ALSAInput : private QThread {
-
-private:
-	struct SharedData {
-		AudioPreviewer *m_audio_previewer;
-	};
-	typedef VPair<SharedData>::Lock SharedLock;
+class ALSAInput : private QThread, public AudioSource {
 
 private:
 	static const int64_t START_DELAY;
 
 private:
-	Synchronizer *m_synchronizer;
-
 	QString m_device_name;
 	unsigned int m_sample_rate, m_channels;
 
 	snd_pcm_t *m_alsa_pcm;
 	unsigned int m_alsa_periods, m_alsa_period_size;
 
-	VPair<SharedData> m_shared_data;
 	volatile bool m_should_stop, m_error_occurred;
 
 public:
-	ALSAInput(Synchronizer* synchronizer, const QString& device_name);
+	ALSAInput(const QString& device_name, unsigned int sample_rate);
 	~ALSAInput();
-
-	// Connect the audio previewer.
-	// audio_previewer can be NULL.
-	void ConnectAudioPreviewer(AudioPreviewer* audio_previewer);
 
 	// Returns whether an error has occurred in the input thread.
 	// This function is thread-safe.
@@ -63,10 +51,6 @@ public:
 private:
 	void Init();
 	void Free();
-	int64_t GetReadDelay();
-
-private slots:
-	void UpdateScreenConfiguration();
 
 private:
 	virtual void run();

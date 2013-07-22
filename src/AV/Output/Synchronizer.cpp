@@ -60,6 +60,7 @@ Synchronizer::~Synchronizer() {
 
 	// disconnect
 	ConnectVideoSource(NULL);
+	ConnectAudioSource(NULL);
 
 	// free everything
 	Free();
@@ -137,7 +138,7 @@ int64_t Synchronizer::GetVideoFrameInterval() {
 	return m_video_encoder->GetFrameInterval();
 }
 
-void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
+void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
 	Q_ASSERT(m_video_encoder != NULL);
 
 	// allocate the converted frame, with proper alignment
@@ -200,12 +201,16 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, uint8
 
 }
 
-void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int64_t timestamp) {
+void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) {
 	Q_ASSERT(m_audio_encoder != NULL);
 	SharedLock lock(&m_shared_data);
 
-	if(samplecount == 0)
+	if(sample_count == 0)
 		return;
+
+	Q_ASSERT(sample_rate == m_audio_sample_rate); // resampling isn't supported
+	Q_ASSERT(channels == 2); // only stereo is currently supported
+	Q_ASSERT(format == AV_SAMPLE_FMT_S16); // only S16 is currently supported
 
 	// avoid memory problems by limiting the audio buffer size
 	if(lock->m_audio_buffer.GetSize() / m_audio_sample_size >= MAX_AUDIO_SAMPLES_BUFFERED) {
@@ -260,7 +265,7 @@ void Synchronizer::AddAudioSamples(const char* samples, size_t samplecount, int6
 	}
 
 	// store the samples
-	lock->m_audio_buffer.Write(samples, samplecount * m_audio_sample_size);
+	lock->m_audio_buffer.Write((const char*) data, sample_count * m_audio_sample_size);
 
 	// increase segment stop time
 	sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;

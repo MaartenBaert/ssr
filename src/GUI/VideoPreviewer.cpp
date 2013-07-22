@@ -56,6 +56,7 @@ VideoPreviewer::~VideoPreviewer() {
 	ConnectVideoSource(NULL);
 
 	// free everything
+	//TODO// use FastScaler
 	if(m_sws_context != NULL) {
 		sws_freeContext(m_sws_context);
 		m_sws_context = NULL;
@@ -74,7 +75,7 @@ void VideoPreviewer::SetFrameRate(unsigned int frame_rate) {
 	lock->m_frame_rate = std::max(1u, frame_rate);
 }
 
-void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
+void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
 	Q_UNUSED(timestamp);
 	SharedLock lock(&m_shared_data);
 

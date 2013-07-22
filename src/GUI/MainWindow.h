@@ -48,7 +48,7 @@ public:
 	void SaveSettings();
 
 protected:
-	virtual void closeEvent(QCloseEvent* event);
+	virtual void closeEvent(QCloseEvent* event) override;
 
 public:
 	inline PageInput* GetPageInput() { return m_page_input; }

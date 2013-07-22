@@ -63,6 +63,7 @@ public:
 		H264_PRESET_COUNT // must be last
 	};
 
+private:
 	struct ContainerData {
 		QString name, avname;
 		QStringList suffixes;
@@ -80,8 +81,7 @@ public:
 		inline bool operator<(const AudioCodecData& other) const { return (avname < other.avname); }
 	};
 
-private:
-	static QString H264_PRESET_STRINGS[PageOutput::H264_PRESET_COUNT];
+	static const QString H264_PRESET_STRINGS[H264_PRESET_COUNT];
 
 private:
 	MainWindow *m_main_window;
@@ -110,12 +110,12 @@ private:
 	QLabel *m_label_audio_options;
 	QLineEdit *m_lineedit_audio_options;
 
+	enum_container m_old_container;
+	unsigned int m_old_container_av;
+
 	std::vector<ContainerData> m_containers, m_containers_av;
 	std::vector<VideoCodecData> m_video_codecs, m_video_codecs_av;
 	std::vector<AudioCodecData> m_audio_codecs, m_audio_codecs_av;
-
-	enum_container m_old_container;
-	unsigned int m_old_container_av;
 
 public:
 	PageOutput(MainWindow* main_window);
@@ -126,10 +126,10 @@ public:
 	void PageStart();
 
 public:
-	inline enum_container GetContainer() { return (enum_container) clamp(0, CONTAINER_COUNT - 1, m_combobox_container->currentIndex()); }
-	inline unsigned int GetContainerAV() { return clamp<unsigned int>(0, m_containers_av.size() - 1, m_combobox_container_av->currentIndex()); }
 	inline QString GetFile() { return m_lineedit_file->text(); }
 	inline bool GetSeparateFiles() { return m_checkbox_separate_files->isChecked(); }
+	inline enum_container GetContainer() { return (enum_container) clamp(0, CONTAINER_COUNT - 1, m_combobox_container->currentIndex()); }
+	inline unsigned int GetContainerAV() { return clamp<unsigned int>(0, m_containers_av.size() - 1, m_combobox_container_av->currentIndex()); }
 	inline enum_video_codec GetVideoCodec() { return (enum_video_codec) clamp(0, VIDEO_CODEC_COUNT - 1, m_combobox_video_codec->currentIndex()); }
 	inline unsigned int GetVideoCodecAV() { return clamp<unsigned int>(0, m_video_codecs_av.size() - 1, m_combobox_video_codec_av->currentIndex()); }
 	inline unsigned int GetVideoKBitRate() { return m_lineedit_video_kbit_rate->text().toUInt(); }

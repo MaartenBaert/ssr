@@ -23,10 +23,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "DetectCPUFeatures.h"
 
-static void Convert_Fallback(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]);
+static void Convert_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]);
 
 #if SSR_USE_X86_ASM
-static void Convert_SSSE3(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]) __attribute__((__target__("sse2,ssse3")));
+static void Convert_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) __attribute__((__target__("sse2,ssse3")));
 #endif
 
 FastScaler::FastScaler() {
@@ -49,8 +49,8 @@ FastScaler::FastScaler() {
 
 }
 
-void FastScaler::Scale(unsigned int in_width, unsigned int in_height, uint8_t** in_data, int* in_stride, PixelFormat in_format,
-					   unsigned int out_width, unsigned int out_height, uint8_t** out_data, int* out_stride, PixelFormat out_format) {
+void FastScaler::Scale(unsigned int in_width, unsigned int in_height, const uint8_t* const* in_data, const int* in_stride, PixelFormat in_format,
+					   unsigned int out_width, unsigned int out_height, uint8_t* const* out_data, const int* out_stride, PixelFormat out_format) {
 
 	// faster BGRA to YUV conversion
 	if(in_format == PIX_FMT_BGRA && out_format == PIX_FMT_YUV420P && in_width == out_width && in_height == out_height) {
@@ -65,7 +65,7 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, uint8_t** 
 				unsigned int out_width_16 = (out_width / 16) * 16;
 				Convert_SSSE3(out_width_16, out_height, in_data[0], in_stride[0], out_data, out_stride);
 				if(out_width != out_width_16) {
-					uint8_t* in_data_b = in_data[0] + 4 * out_width_16;
+					const uint8_t* in_data_b = in_data[0] + 4 * out_width_16;
 					uint8_t* out_data_b[3] = {
 						out_data[0] + out_width_16,
 						out_data[1] + out_width_16 / 2,
@@ -80,40 +80,38 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, uint8_t** 
 				}
 				Convert_Fallback(out_width, out_height, in_data[0], in_stride[0], out_data, out_stride);
 			}
-		} else {
-			Convert_Fallback(out_width, out_height, in_data[0], in_stride[0], out_data, out_stride);
+			return;
 		}
-#else
-		Convert_Fallback(out_width, out_height, in_data, in_stride, out_data, out_stride);
 #endif
 
-	} else {
-
-		if(m_warn_swscale) {
-			m_warn_swscale = false;
-			if(in_width == out_width && in_height == out_height) {
-				Logger::LogWarning("[Synchronizer::run] Warning: Pixel format is not supported (" + QString::number(in_format) + " -> " + QString::number(out_format)
-								   + "), falling back to swscale. This is not a problem but performance will be worse.");
-			} else {
-				Logger::LogInfo("[Synchronizer::run] Using swscale for scaling.");
-			}
-		}
-
-		m_sws_context = sws_getCachedContext(m_sws_context,
-											 in_width, in_height, in_format,
-											 out_width, out_height, out_format,
-											 SWS_BILINEAR, NULL, NULL, NULL);
-		if(m_sws_context == NULL) {
-			Logger::LogError("[FastScaler::Scale] Error: Can't get swscale context!");
-			throw LibavException();
-		}
-		sws_scale(m_sws_context, in_data, in_stride, 0, in_height, out_data, out_stride);
+		Convert_Fallback(out_width, out_height, in_data[0], in_stride[0], out_data, out_stride);
+		return;
 
 	}
 
+	if(m_warn_swscale) {
+		m_warn_swscale = false;
+		if(in_width == out_width && in_height == out_height) {
+			Logger::LogWarning("[Synchronizer::run] Warning: Pixel format is not supported (" + QString::number(in_format) + " -> " + QString::number(out_format)
+							   + "), falling back to swscale. This is not a problem but performance will be worse.");
+		} else {
+			Logger::LogInfo("[Synchronizer::run] Using swscale for scaling.");
+		}
+	}
+
+	m_sws_context = sws_getCachedContext(m_sws_context,
+										 in_width, in_height, in_format,
+										 out_width, out_height, out_format,
+										 SWS_BILINEAR, NULL, NULL, NULL);
+	if(m_sws_context == NULL) {
+		Logger::LogError("[FastScaler::Scale] Error: Can't get swscale context!");
+		throw LibavException();
+	}
+	sws_scale(m_sws_context, in_data, in_stride, 0, in_height, out_data, out_stride);
+
 }
 
-static void Convert_Fallback(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]) {
+static void Convert_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
 	Q_ASSERT(w % 2 == 0 && h % 2 == 0);
 
 	int y_offset = 128 + (16 << 8), u_offset = 512 + (128 << 10), v_offset = 512 + (128 << 10);
@@ -222,7 +220,7 @@ typedef int8_t   v16i8 __attribute__((vector_size(16)));
 	\
 }
 
-static void Convert_SSSE3(unsigned int w, unsigned int h, uint8_t* in_data, int in_stride, uint8_t* out_data[3], int out_stride[3]) {
+static void Convert_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
 	Q_ASSERT(w % 16 == 0 && h % 2 == 0);
 	Q_ASSERT((uintptr_t)(in_data) % 16 == 0 && in_stride % 16 == 0);
 	Q_ASSERT((uintptr_t)(out_data[0]) % 16 == 0 && out_stride[0] % 16 == 0);
@@ -248,8 +246,8 @@ static void Convert_SSSE3(unsigned int w, unsigned int h, uint8_t* in_data, int 
 	v16u8 v_shuffle4 = {255, 255, 255, 255, 255, 255, 255, 255, 1, 5, 3, 7, 9, 13, 11, 15};
 
 	for(unsigned int j = 0; j < h / 2; ++j) {
-		uint8_t *rgb1 = in_data + in_stride * (int) j * 2;
-		uint8_t *rgb2 = in_data + in_stride * ((int) j * 2 + 1);
+		const uint8_t *rgb1 = in_data + in_stride * (int) j * 2;
+		const uint8_t *rgb2 = in_data + in_stride * ((int) j * 2 + 1);
 		uint8_t *yuv_y1 = out_data[0] + out_stride[0] * (int) j * 2;
 		uint8_t *yuv_y2 = out_data[0] + out_stride[0] * ((int) j * 2 + 1);
 		uint8_t *yuv_u = out_data[1] + out_stride[1] * (int) j;

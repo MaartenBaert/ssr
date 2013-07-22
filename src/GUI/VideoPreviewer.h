@@ -20,7 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "VideoConnection.h"
+#include "SourceSink.h"
 #include "VPair.h"
 
 class VideoPreviewer : public QWidget, public VideoSink {
@@ -49,15 +49,15 @@ public:
 	void SetFrameRate(unsigned int frame_rate);
 	void UpdateIfNeeded();
 
-	virtual void ReadVideoFrame(unsigned int width, unsigned int height, uint8_t* data, int stride, PixelFormat format, int64_t timestamp);
+	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;
 
-	virtual QSize minimumSizeHint() const { return QSize(100, 100); }
-	virtual QSize sizeHint() const { return QSize(100, 100); }
+	virtual QSize minimumSizeHint() const override { return QSize(100, 100); }
+	virtual QSize sizeHint() const override { return QSize(100, 100); }
 
 protected:
-	virtual void showEvent(QShowEvent* event);
-	virtual void hideEvent(QHideEvent* event);
-	virtual void resizeEvent(QResizeEvent* event);
-	virtual void paintEvent(QPaintEvent* event);
+	virtual void showEvent(QShowEvent* event) override;
+	virtual void hideEvent(QHideEvent* event) override;
+	virtual void resizeEvent(QResizeEvent* event) override;
+	virtual void paintEvent(QPaintEvent* event) override;
 
 };

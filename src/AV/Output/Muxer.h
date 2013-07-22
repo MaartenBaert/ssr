@@ -69,7 +69,7 @@ public:
 	uint64_t GetTotalBytes();
 
 	// Returns whether the muxing is done. If this returns true, the object can be deleted.
-	// Note: If an error occurred in one of the encoders or the muxer itself, this function will return false.
+	// Note: If an error occurred in the mixing thread, this function will return false.
 	// This function is thread-safe and lock-free.
 	inline bool IsDone() { return m_is_done; }
 
@@ -106,6 +106,6 @@ private:
 	void Init();
 	void Free();
 
-	virtual void run();
+	virtual void run() override;
 
 };

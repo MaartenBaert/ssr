@@ -95,43 +95,48 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__simplescreenrecorder_SOURCES_DIST = AV/Encoder/AudioEncoder.cpp \
-	AV/Encoder/AudioEncoder.h AV/Encoder/BaseEncoder.cpp \
-	AV/Encoder/BaseEncoder.h AV/Encoder/VideoEncoder.cpp \
-	AV/Encoder/VideoEncoder.h AV/Encoder/X264Presets.cpp \
-	AV/Encoder/X264Presets.h AV/Input/ALSAInput.cpp \
+am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	AV/Input/ALSAInput.h AV/Input/GLInjectInput.cpp \
 	AV/Input/GLInjectInput.h AV/Input/GLInjectLauncher.cpp \
-	AV/Input/GLInjectLauncher.h AV/Input/VideoConnection.cpp \
-	AV/Input/VideoConnection.h AV/Input/X11Input.cpp \
-	AV/Input/X11Input.h AV/AVWrapper.cpp AV/AVWrapper.h \
-	AV/DetectCPUFeatures.cpp AV/DetectCPUFeatures.h \
-	AV/FastScaler.cpp AV/FastScaler.h AV/Muxer.cpp AV/Muxer.h \
-	AV/Synchronizer.cpp AV/Synchronizer.h GUI/AudioPreviewer.cpp \
-	GUI/AudioPreviewer.h GUI/ElidedLabel.cpp GUI/ElidedLabel.h \
-	GUI/HotkeyListener.cpp GUI/HotkeyListener.h GUI/MainWindow.cpp \
-	GUI/MainWindow.h GUI/PageDone.cpp GUI/PageDone.h \
-	GUI/PageInput.cpp GUI/PageInput.h GUI/PageOutput.cpp \
-	GUI/PageOutput.h GUI/PageRecord.cpp GUI/PageRecord.h \
-	GUI/PageWelcome.cpp GUI/PageWelcome.h GUI/VideoPreviewer.cpp \
-	GUI/VideoPreviewer.h ByteQueue.cpp ByteQueue.h Global.h \
-	Logger.cpp Logger.h Main.cpp Main.h Version.cpp Version.h \
-	VPair.h
+	AV/Input/GLInjectLauncher.h AV/Input/X11Input.cpp \
+	AV/Input/X11Input.h AV/Output/AudioEncoder.cpp \
+	AV/Output/AudioEncoder.h AV/Output/BaseEncoder.cpp \
+	AV/Output/BaseEncoder.h AV/Output/Muxer.cpp AV/Output/Muxer.h \
+	AV/Output/OutputManager.cpp AV/Output/OutputManager.h \
+	AV/Output/OutputSettings.cpp AV/Output/OutputSettings.h \
+	AV/Output/Synchronizer.cpp AV/Output/Synchronizer.h \
+	AV/Output/VideoEncoder.cpp AV/Output/VideoEncoder.h \
+	AV/Output/X264Presets.cpp AV/Output/X264Presets.h \
+	AV/AVWrapper.cpp AV/AVWrapper.h AV/ByteQueue.cpp \
+	AV/ByteQueue.h AV/DetectCPUFeatures.cpp AV/DetectCPUFeatures.h \
+	AV/FastScaler.cpp AV/FastScaler.h AV/SourceSink.cpp \
+	AV/SourceSink.h GUI/AudioPreviewer.cpp GUI/AudioPreviewer.h \
+	GUI/ElidedLabel.cpp GUI/ElidedLabel.h GUI/HotkeyListener.cpp \
+	GUI/HotkeyListener.h GUI/MainWindow.cpp GUI/MainWindow.h \
+	GUI/PageDone.cpp GUI/PageDone.h GUI/PageInput.cpp \
+	GUI/PageInput.h GUI/PageOutput.cpp GUI/PageOutput.h \
+	GUI/PageRecord.cpp GUI/PageRecord.h GUI/PageWelcome.cpp \
+	GUI/PageWelcome.h GUI/VideoPreviewer.cpp GUI/VideoPreviewer.h \
+	Global.h Logger.cpp Logger.h Main.cpp Main.h Version.cpp \
+	Version.h VPair.h
 am__dirstamp = $(am__leading_dot)dirstamp
-@ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Encoder/simplescreenrecorder-AudioEncoder.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/simplescreenrecorder-BaseEncoder.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/simplescreenrecorder-VideoEncoder.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/simplescreenrecorder-X264Presets.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectLauncher.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-VideoConnection.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-X11Input.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-AudioEncoder.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-BaseEncoder.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-Muxer.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-OutputManager.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-OutputSettings.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-Synchronizer.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-VideoEncoder.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-X264Presets.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-AVWrapper.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-ByteQueue.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-DetectCPUFeatures.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-FastScaler.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-Muxer.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-Synchronizer.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-SourceSink.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-AudioPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-ElidedLabel.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-HotkeyListener.$(OBJEXT) \
@@ -142,7 +147,6 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageRecord.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageWelcome.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-VideoPreviewer.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-ByteQueue.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Logger.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Main.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Version.$(OBJEXT)
@@ -381,8 +385,8 @@ top_srcdir = @top_srcdir@
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = \
 @ENABLE_SSRPROGRAM_TRUE@	-pthread \
-@ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Encoder \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
+@ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Output \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/GUI \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(top_srcdir)/glinject \
@@ -394,34 +398,40 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_SOURCES = \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/AudioEncoder.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/AudioEncoder.h \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/BaseEncoder.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/BaseEncoder.h \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/VideoEncoder.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/VideoEncoder.h \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/X264Presets.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Encoder/X264Presets.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectLauncher.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectLauncher.h \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Input/VideoConnection.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Input/VideoConnection.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/X11Input.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/X11Input.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/AudioEncoder.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/AudioEncoder.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/BaseEncoder.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/BaseEncoder.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/Muxer.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/Muxer.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/OutputManager.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/OutputManager.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/OutputSettings.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/OutputSettings.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/Synchronizer.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/Synchronizer.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/VideoEncoder.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/VideoEncoder.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/X264Presets.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Output/X264Presets.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/AVWrapper.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/AVWrapper.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/ByteQueue.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/ByteQueue.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/DetectCPUFeatures.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/DetectCPUFeatures.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler.h \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Muxer.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Muxer.h \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Synchronizer.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Synchronizer.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/SourceSink.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/SourceSink.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/AudioPreviewer.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/AudioPreviewer.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/ElidedLabel.cpp \
@@ -442,8 +452,6 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageWelcome.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/VideoPreviewer.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/VideoPreviewer.h \
-@ENABLE_SSRPROGRAM_TRUE@	ByteQueue.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	ByteQueue.h \
 @ENABLE_SSRPROGRAM_TRUE@	Global.h \
 @ENABLE_SSRPROGRAM_TRUE@	Logger.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	Logger.h \
@@ -550,24 +558,6 @@ clean-binPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-AV/Encoder/$(am__dirstamp):
-	@$(MKDIR_P) AV/Encoder
-	@: > AV/Encoder/$(am__dirstamp)
-AV/Encoder/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) AV/Encoder/$(DEPDIR)
-	@: > AV/Encoder/$(DEPDIR)/$(am__dirstamp)
-AV/Encoder/simplescreenrecorder-AudioEncoder.$(OBJEXT):  \
-	AV/Encoder/$(am__dirstamp) \
-	AV/Encoder/$(DEPDIR)/$(am__dirstamp)
-AV/Encoder/simplescreenrecorder-BaseEncoder.$(OBJEXT):  \
-	AV/Encoder/$(am__dirstamp) \
-	AV/Encoder/$(DEPDIR)/$(am__dirstamp)
-AV/Encoder/simplescreenrecorder-VideoEncoder.$(OBJEXT):  \
-	AV/Encoder/$(am__dirstamp) \
-	AV/Encoder/$(DEPDIR)/$(am__dirstamp)
-AV/Encoder/simplescreenrecorder-X264Presets.$(OBJEXT):  \
-	AV/Encoder/$(am__dirstamp) \
-	AV/Encoder/$(DEPDIR)/$(am__dirstamp)
 AV/Input/$(am__dirstamp):
 	@$(MKDIR_P) AV/Input
 	@: > AV/Input/$(am__dirstamp)
@@ -580,10 +570,30 @@ AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-GLInjectLauncher.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
-AV/Input/simplescreenrecorder-VideoConnection.$(OBJEXT):  \
-	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-X11Input.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
+AV/Output/$(am__dirstamp):
+	@$(MKDIR_P) AV/Output
+	@: > AV/Output/$(am__dirstamp)
+AV/Output/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) AV/Output/$(DEPDIR)
+	@: > AV/Output/$(DEPDIR)/$(am__dirstamp)
+AV/Output/simplescreenrecorder-AudioEncoder.$(OBJEXT):  \
+	AV/Output/$(am__dirstamp) AV/Output/$(DEPDIR)/$(am__dirstamp)
+AV/Output/simplescreenrecorder-BaseEncoder.$(OBJEXT):  \
+	AV/Output/$(am__dirstamp) AV/Output/$(DEPDIR)/$(am__dirstamp)
+AV/Output/simplescreenrecorder-Muxer.$(OBJEXT):  \
+	AV/Output/$(am__dirstamp) AV/Output/$(DEPDIR)/$(am__dirstamp)
+AV/Output/simplescreenrecorder-OutputManager.$(OBJEXT):  \
+	AV/Output/$(am__dirstamp) AV/Output/$(DEPDIR)/$(am__dirstamp)
+AV/Output/simplescreenrecorder-OutputSettings.$(OBJEXT):  \
+	AV/Output/$(am__dirstamp) AV/Output/$(DEPDIR)/$(am__dirstamp)
+AV/Output/simplescreenrecorder-Synchronizer.$(OBJEXT):  \
+	AV/Output/$(am__dirstamp) AV/Output/$(DEPDIR)/$(am__dirstamp)
+AV/Output/simplescreenrecorder-VideoEncoder.$(OBJEXT):  \
+	AV/Output/$(am__dirstamp) AV/Output/$(DEPDIR)/$(am__dirstamp)
+AV/Output/simplescreenrecorder-X264Presets.$(OBJEXT):  \
+	AV/Output/$(am__dirstamp) AV/Output/$(DEPDIR)/$(am__dirstamp)
 AV/$(am__dirstamp):
 	@$(MKDIR_P) AV
 	@: > AV/$(am__dirstamp)
@@ -592,13 +602,13 @@ AV/$(DEPDIR)/$(am__dirstamp):
 	@: > AV/$(DEPDIR)/$(am__dirstamp)
 AV/simplescreenrecorder-AVWrapper.$(OBJEXT): AV/$(am__dirstamp) \
 	AV/$(DEPDIR)/$(am__dirstamp)
+AV/simplescreenrecorder-ByteQueue.$(OBJEXT): AV/$(am__dirstamp) \
+	AV/$(DEPDIR)/$(am__dirstamp)
 AV/simplescreenrecorder-DetectCPUFeatures.$(OBJEXT):  \
 	AV/$(am__dirstamp) AV/$(DEPDIR)/$(am__dirstamp)
 AV/simplescreenrecorder-FastScaler.$(OBJEXT): AV/$(am__dirstamp) \
 	AV/$(DEPDIR)/$(am__dirstamp)
-AV/simplescreenrecorder-Muxer.$(OBJEXT): AV/$(am__dirstamp) \
-	AV/$(DEPDIR)/$(am__dirstamp)
-AV/simplescreenrecorder-Synchronizer.$(OBJEXT): AV/$(am__dirstamp) \
+AV/simplescreenrecorder-SourceSink.$(OBJEXT): AV/$(am__dirstamp) \
 	AV/$(DEPDIR)/$(am__dirstamp)
 GUI/$(am__dirstamp):
 	@$(MKDIR_P) GUI
@@ -634,14 +644,13 @@ simplescreenrecorder$(EXEEXT): $(simplescreenrecorder_OBJECTS) $(simplescreenrec
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f AV/*.$(OBJEXT)
-	-rm -f AV/Encoder/*.$(OBJEXT)
 	-rm -f AV/Input/*.$(OBJEXT)
+	-rm -f AV/Output/*.$(OBJEXT)
 	-rm -f GUI/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-ByteQueue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Logger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Version.Po@am__quote@
@@ -656,19 +665,22 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_X11Input.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-qrc_resources.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-AVWrapper.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-ByteQueue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-FastScaler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-Muxer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-Synchronizer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@AV/Encoder/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@AV/Encoder/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@AV/Encoder/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@AV/Encoder/$(DEPDIR)/simplescreenrecorder-X264Presets.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-SourceSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-ALSAInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectLauncher.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-VideoConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-X11Input.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-Muxer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-OutputManager.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-OutputSettings.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-Synchronizer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-X264Presets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-AudioPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-ElidedLabel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-HotkeyListener.Po@am__quote@
@@ -703,62 +715,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
-
-AV/Encoder/simplescreenrecorder-AudioEncoder.o: AV/Encoder/AudioEncoder.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Encoder/simplescreenrecorder-AudioEncoder.o -MD -MP -MF AV/Encoder/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Tpo -c -o AV/Encoder/simplescreenrecorder-AudioEncoder.o `test -f 'AV/Encoder/AudioEncoder.cpp' || echo '$(srcdir)/'`AV/Encoder/AudioEncoder.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Encoder/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Tpo AV/Encoder/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Encoder/AudioEncoder.cpp' object='AV/Encoder/simplescreenrecorder-AudioEncoder.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Encoder/simplescreenrecorder-AudioEncoder.o `test -f 'AV/Encoder/AudioEncoder.cpp' || echo '$(srcdir)/'`AV/Encoder/AudioEncoder.cpp
-
-AV/Encoder/simplescreenrecorder-AudioEncoder.obj: AV/Encoder/AudioEncoder.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Encoder/simplescreenrecorder-AudioEncoder.obj -MD -MP -MF AV/Encoder/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Tpo -c -o AV/Encoder/simplescreenrecorder-AudioEncoder.obj `if test -f 'AV/Encoder/AudioEncoder.cpp'; then $(CYGPATH_W) 'AV/Encoder/AudioEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Encoder/AudioEncoder.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Encoder/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Tpo AV/Encoder/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Encoder/AudioEncoder.cpp' object='AV/Encoder/simplescreenrecorder-AudioEncoder.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Encoder/simplescreenrecorder-AudioEncoder.obj `if test -f 'AV/Encoder/AudioEncoder.cpp'; then $(CYGPATH_W) 'AV/Encoder/AudioEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Encoder/AudioEncoder.cpp'; fi`
-
-AV/Encoder/simplescreenrecorder-BaseEncoder.o: AV/Encoder/BaseEncoder.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Encoder/simplescreenrecorder-BaseEncoder.o -MD -MP -MF AV/Encoder/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Tpo -c -o AV/Encoder/simplescreenrecorder-BaseEncoder.o `test -f 'AV/Encoder/BaseEncoder.cpp' || echo '$(srcdir)/'`AV/Encoder/BaseEncoder.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Encoder/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Tpo AV/Encoder/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Encoder/BaseEncoder.cpp' object='AV/Encoder/simplescreenrecorder-BaseEncoder.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Encoder/simplescreenrecorder-BaseEncoder.o `test -f 'AV/Encoder/BaseEncoder.cpp' || echo '$(srcdir)/'`AV/Encoder/BaseEncoder.cpp
-
-AV/Encoder/simplescreenrecorder-BaseEncoder.obj: AV/Encoder/BaseEncoder.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Encoder/simplescreenrecorder-BaseEncoder.obj -MD -MP -MF AV/Encoder/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Tpo -c -o AV/Encoder/simplescreenrecorder-BaseEncoder.obj `if test -f 'AV/Encoder/BaseEncoder.cpp'; then $(CYGPATH_W) 'AV/Encoder/BaseEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Encoder/BaseEncoder.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Encoder/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Tpo AV/Encoder/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Encoder/BaseEncoder.cpp' object='AV/Encoder/simplescreenrecorder-BaseEncoder.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Encoder/simplescreenrecorder-BaseEncoder.obj `if test -f 'AV/Encoder/BaseEncoder.cpp'; then $(CYGPATH_W) 'AV/Encoder/BaseEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Encoder/BaseEncoder.cpp'; fi`
-
-AV/Encoder/simplescreenrecorder-VideoEncoder.o: AV/Encoder/VideoEncoder.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Encoder/simplescreenrecorder-VideoEncoder.o -MD -MP -MF AV/Encoder/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Tpo -c -o AV/Encoder/simplescreenrecorder-VideoEncoder.o `test -f 'AV/Encoder/VideoEncoder.cpp' || echo '$(srcdir)/'`AV/Encoder/VideoEncoder.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Encoder/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Tpo AV/Encoder/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Encoder/VideoEncoder.cpp' object='AV/Encoder/simplescreenrecorder-VideoEncoder.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Encoder/simplescreenrecorder-VideoEncoder.o `test -f 'AV/Encoder/VideoEncoder.cpp' || echo '$(srcdir)/'`AV/Encoder/VideoEncoder.cpp
-
-AV/Encoder/simplescreenrecorder-VideoEncoder.obj: AV/Encoder/VideoEncoder.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Encoder/simplescreenrecorder-VideoEncoder.obj -MD -MP -MF AV/Encoder/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Tpo -c -o AV/Encoder/simplescreenrecorder-VideoEncoder.obj `if test -f 'AV/Encoder/VideoEncoder.cpp'; then $(CYGPATH_W) 'AV/Encoder/VideoEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Encoder/VideoEncoder.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Encoder/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Tpo AV/Encoder/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Encoder/VideoEncoder.cpp' object='AV/Encoder/simplescreenrecorder-VideoEncoder.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Encoder/simplescreenrecorder-VideoEncoder.obj `if test -f 'AV/Encoder/VideoEncoder.cpp'; then $(CYGPATH_W) 'AV/Encoder/VideoEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Encoder/VideoEncoder.cpp'; fi`
-
-AV/Encoder/simplescreenrecorder-X264Presets.o: AV/Encoder/X264Presets.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Encoder/simplescreenrecorder-X264Presets.o -MD -MP -MF AV/Encoder/$(DEPDIR)/simplescreenrecorder-X264Presets.Tpo -c -o AV/Encoder/simplescreenrecorder-X264Presets.o `test -f 'AV/Encoder/X264Presets.cpp' || echo '$(srcdir)/'`AV/Encoder/X264Presets.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Encoder/$(DEPDIR)/simplescreenrecorder-X264Presets.Tpo AV/Encoder/$(DEPDIR)/simplescreenrecorder-X264Presets.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Encoder/X264Presets.cpp' object='AV/Encoder/simplescreenrecorder-X264Presets.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Encoder/simplescreenrecorder-X264Presets.o `test -f 'AV/Encoder/X264Presets.cpp' || echo '$(srcdir)/'`AV/Encoder/X264Presets.cpp
-
-AV/Encoder/simplescreenrecorder-X264Presets.obj: AV/Encoder/X264Presets.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Encoder/simplescreenrecorder-X264Presets.obj -MD -MP -MF AV/Encoder/$(DEPDIR)/simplescreenrecorder-X264Presets.Tpo -c -o AV/Encoder/simplescreenrecorder-X264Presets.obj `if test -f 'AV/Encoder/X264Presets.cpp'; then $(CYGPATH_W) 'AV/Encoder/X264Presets.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Encoder/X264Presets.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Encoder/$(DEPDIR)/simplescreenrecorder-X264Presets.Tpo AV/Encoder/$(DEPDIR)/simplescreenrecorder-X264Presets.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Encoder/X264Presets.cpp' object='AV/Encoder/simplescreenrecorder-X264Presets.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Encoder/simplescreenrecorder-X264Presets.obj `if test -f 'AV/Encoder/X264Presets.cpp'; then $(CYGPATH_W) 'AV/Encoder/X264Presets.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Encoder/X264Presets.cpp'; fi`
 
 AV/Input/simplescreenrecorder-ALSAInput.o: AV/Input/ALSAInput.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-ALSAInput.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-ALSAInput.Tpo -c -o AV/Input/simplescreenrecorder-ALSAInput.o `test -f 'AV/Input/ALSAInput.cpp' || echo '$(srcdir)/'`AV/Input/ALSAInput.cpp
@@ -802,20 +758,6 @@ AV/Input/simplescreenrecorder-GLInjectLauncher.obj: AV/Input/GLInjectLauncher.cp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-GLInjectLauncher.obj `if test -f 'AV/Input/GLInjectLauncher.cpp'; then $(CYGPATH_W) 'AV/Input/GLInjectLauncher.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/GLInjectLauncher.cpp'; fi`
 
-AV/Input/simplescreenrecorder-VideoConnection.o: AV/Input/VideoConnection.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-VideoConnection.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-VideoConnection.Tpo -c -o AV/Input/simplescreenrecorder-VideoConnection.o `test -f 'AV/Input/VideoConnection.cpp' || echo '$(srcdir)/'`AV/Input/VideoConnection.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-VideoConnection.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-VideoConnection.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/VideoConnection.cpp' object='AV/Input/simplescreenrecorder-VideoConnection.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-VideoConnection.o `test -f 'AV/Input/VideoConnection.cpp' || echo '$(srcdir)/'`AV/Input/VideoConnection.cpp
-
-AV/Input/simplescreenrecorder-VideoConnection.obj: AV/Input/VideoConnection.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-VideoConnection.obj -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-VideoConnection.Tpo -c -o AV/Input/simplescreenrecorder-VideoConnection.obj `if test -f 'AV/Input/VideoConnection.cpp'; then $(CYGPATH_W) 'AV/Input/VideoConnection.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/VideoConnection.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-VideoConnection.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-VideoConnection.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/VideoConnection.cpp' object='AV/Input/simplescreenrecorder-VideoConnection.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-VideoConnection.obj `if test -f 'AV/Input/VideoConnection.cpp'; then $(CYGPATH_W) 'AV/Input/VideoConnection.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/VideoConnection.cpp'; fi`
-
 AV/Input/simplescreenrecorder-X11Input.o: AV/Input/X11Input.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-X11Input.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-X11Input.Tpo -c -o AV/Input/simplescreenrecorder-X11Input.o `test -f 'AV/Input/X11Input.cpp' || echo '$(srcdir)/'`AV/Input/X11Input.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-X11Input.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-X11Input.Po
@@ -830,6 +772,118 @@ AV/Input/simplescreenrecorder-X11Input.obj: AV/Input/X11Input.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-X11Input.obj `if test -f 'AV/Input/X11Input.cpp'; then $(CYGPATH_W) 'AV/Input/X11Input.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/X11Input.cpp'; fi`
 
+AV/Output/simplescreenrecorder-AudioEncoder.o: AV/Output/AudioEncoder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-AudioEncoder.o -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Tpo -c -o AV/Output/simplescreenrecorder-AudioEncoder.o `test -f 'AV/Output/AudioEncoder.cpp' || echo '$(srcdir)/'`AV/Output/AudioEncoder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/AudioEncoder.cpp' object='AV/Output/simplescreenrecorder-AudioEncoder.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-AudioEncoder.o `test -f 'AV/Output/AudioEncoder.cpp' || echo '$(srcdir)/'`AV/Output/AudioEncoder.cpp
+
+AV/Output/simplescreenrecorder-AudioEncoder.obj: AV/Output/AudioEncoder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-AudioEncoder.obj -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Tpo -c -o AV/Output/simplescreenrecorder-AudioEncoder.obj `if test -f 'AV/Output/AudioEncoder.cpp'; then $(CYGPATH_W) 'AV/Output/AudioEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/AudioEncoder.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/AudioEncoder.cpp' object='AV/Output/simplescreenrecorder-AudioEncoder.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-AudioEncoder.obj `if test -f 'AV/Output/AudioEncoder.cpp'; then $(CYGPATH_W) 'AV/Output/AudioEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/AudioEncoder.cpp'; fi`
+
+AV/Output/simplescreenrecorder-BaseEncoder.o: AV/Output/BaseEncoder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-BaseEncoder.o -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Tpo -c -o AV/Output/simplescreenrecorder-BaseEncoder.o `test -f 'AV/Output/BaseEncoder.cpp' || echo '$(srcdir)/'`AV/Output/BaseEncoder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/BaseEncoder.cpp' object='AV/Output/simplescreenrecorder-BaseEncoder.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-BaseEncoder.o `test -f 'AV/Output/BaseEncoder.cpp' || echo '$(srcdir)/'`AV/Output/BaseEncoder.cpp
+
+AV/Output/simplescreenrecorder-BaseEncoder.obj: AV/Output/BaseEncoder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-BaseEncoder.obj -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Tpo -c -o AV/Output/simplescreenrecorder-BaseEncoder.obj `if test -f 'AV/Output/BaseEncoder.cpp'; then $(CYGPATH_W) 'AV/Output/BaseEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/BaseEncoder.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/BaseEncoder.cpp' object='AV/Output/simplescreenrecorder-BaseEncoder.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-BaseEncoder.obj `if test -f 'AV/Output/BaseEncoder.cpp'; then $(CYGPATH_W) 'AV/Output/BaseEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/BaseEncoder.cpp'; fi`
+
+AV/Output/simplescreenrecorder-Muxer.o: AV/Output/Muxer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-Muxer.o -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-Muxer.Tpo -c -o AV/Output/simplescreenrecorder-Muxer.o `test -f 'AV/Output/Muxer.cpp' || echo '$(srcdir)/'`AV/Output/Muxer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-Muxer.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-Muxer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/Muxer.cpp' object='AV/Output/simplescreenrecorder-Muxer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-Muxer.o `test -f 'AV/Output/Muxer.cpp' || echo '$(srcdir)/'`AV/Output/Muxer.cpp
+
+AV/Output/simplescreenrecorder-Muxer.obj: AV/Output/Muxer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-Muxer.obj -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-Muxer.Tpo -c -o AV/Output/simplescreenrecorder-Muxer.obj `if test -f 'AV/Output/Muxer.cpp'; then $(CYGPATH_W) 'AV/Output/Muxer.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/Muxer.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-Muxer.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-Muxer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/Muxer.cpp' object='AV/Output/simplescreenrecorder-Muxer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-Muxer.obj `if test -f 'AV/Output/Muxer.cpp'; then $(CYGPATH_W) 'AV/Output/Muxer.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/Muxer.cpp'; fi`
+
+AV/Output/simplescreenrecorder-OutputManager.o: AV/Output/OutputManager.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-OutputManager.o -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-OutputManager.Tpo -c -o AV/Output/simplescreenrecorder-OutputManager.o `test -f 'AV/Output/OutputManager.cpp' || echo '$(srcdir)/'`AV/Output/OutputManager.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-OutputManager.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-OutputManager.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/OutputManager.cpp' object='AV/Output/simplescreenrecorder-OutputManager.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-OutputManager.o `test -f 'AV/Output/OutputManager.cpp' || echo '$(srcdir)/'`AV/Output/OutputManager.cpp
+
+AV/Output/simplescreenrecorder-OutputManager.obj: AV/Output/OutputManager.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-OutputManager.obj -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-OutputManager.Tpo -c -o AV/Output/simplescreenrecorder-OutputManager.obj `if test -f 'AV/Output/OutputManager.cpp'; then $(CYGPATH_W) 'AV/Output/OutputManager.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/OutputManager.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-OutputManager.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-OutputManager.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/OutputManager.cpp' object='AV/Output/simplescreenrecorder-OutputManager.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-OutputManager.obj `if test -f 'AV/Output/OutputManager.cpp'; then $(CYGPATH_W) 'AV/Output/OutputManager.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/OutputManager.cpp'; fi`
+
+AV/Output/simplescreenrecorder-OutputSettings.o: AV/Output/OutputSettings.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-OutputSettings.o -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-OutputSettings.Tpo -c -o AV/Output/simplescreenrecorder-OutputSettings.o `test -f 'AV/Output/OutputSettings.cpp' || echo '$(srcdir)/'`AV/Output/OutputSettings.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-OutputSettings.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-OutputSettings.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/OutputSettings.cpp' object='AV/Output/simplescreenrecorder-OutputSettings.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-OutputSettings.o `test -f 'AV/Output/OutputSettings.cpp' || echo '$(srcdir)/'`AV/Output/OutputSettings.cpp
+
+AV/Output/simplescreenrecorder-OutputSettings.obj: AV/Output/OutputSettings.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-OutputSettings.obj -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-OutputSettings.Tpo -c -o AV/Output/simplescreenrecorder-OutputSettings.obj `if test -f 'AV/Output/OutputSettings.cpp'; then $(CYGPATH_W) 'AV/Output/OutputSettings.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/OutputSettings.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-OutputSettings.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-OutputSettings.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/OutputSettings.cpp' object='AV/Output/simplescreenrecorder-OutputSettings.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-OutputSettings.obj `if test -f 'AV/Output/OutputSettings.cpp'; then $(CYGPATH_W) 'AV/Output/OutputSettings.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/OutputSettings.cpp'; fi`
+
+AV/Output/simplescreenrecorder-Synchronizer.o: AV/Output/Synchronizer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-Synchronizer.o -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-Synchronizer.Tpo -c -o AV/Output/simplescreenrecorder-Synchronizer.o `test -f 'AV/Output/Synchronizer.cpp' || echo '$(srcdir)/'`AV/Output/Synchronizer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-Synchronizer.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-Synchronizer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/Synchronizer.cpp' object='AV/Output/simplescreenrecorder-Synchronizer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-Synchronizer.o `test -f 'AV/Output/Synchronizer.cpp' || echo '$(srcdir)/'`AV/Output/Synchronizer.cpp
+
+AV/Output/simplescreenrecorder-Synchronizer.obj: AV/Output/Synchronizer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-Synchronizer.obj -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-Synchronizer.Tpo -c -o AV/Output/simplescreenrecorder-Synchronizer.obj `if test -f 'AV/Output/Synchronizer.cpp'; then $(CYGPATH_W) 'AV/Output/Synchronizer.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/Synchronizer.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-Synchronizer.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-Synchronizer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/Synchronizer.cpp' object='AV/Output/simplescreenrecorder-Synchronizer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-Synchronizer.obj `if test -f 'AV/Output/Synchronizer.cpp'; then $(CYGPATH_W) 'AV/Output/Synchronizer.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/Synchronizer.cpp'; fi`
+
+AV/Output/simplescreenrecorder-VideoEncoder.o: AV/Output/VideoEncoder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-VideoEncoder.o -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Tpo -c -o AV/Output/simplescreenrecorder-VideoEncoder.o `test -f 'AV/Output/VideoEncoder.cpp' || echo '$(srcdir)/'`AV/Output/VideoEncoder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/VideoEncoder.cpp' object='AV/Output/simplescreenrecorder-VideoEncoder.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-VideoEncoder.o `test -f 'AV/Output/VideoEncoder.cpp' || echo '$(srcdir)/'`AV/Output/VideoEncoder.cpp
+
+AV/Output/simplescreenrecorder-VideoEncoder.obj: AV/Output/VideoEncoder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-VideoEncoder.obj -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Tpo -c -o AV/Output/simplescreenrecorder-VideoEncoder.obj `if test -f 'AV/Output/VideoEncoder.cpp'; then $(CYGPATH_W) 'AV/Output/VideoEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/VideoEncoder.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-VideoEncoder.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/VideoEncoder.cpp' object='AV/Output/simplescreenrecorder-VideoEncoder.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-VideoEncoder.obj `if test -f 'AV/Output/VideoEncoder.cpp'; then $(CYGPATH_W) 'AV/Output/VideoEncoder.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/VideoEncoder.cpp'; fi`
+
+AV/Output/simplescreenrecorder-X264Presets.o: AV/Output/X264Presets.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-X264Presets.o -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-X264Presets.Tpo -c -o AV/Output/simplescreenrecorder-X264Presets.o `test -f 'AV/Output/X264Presets.cpp' || echo '$(srcdir)/'`AV/Output/X264Presets.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-X264Presets.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-X264Presets.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/X264Presets.cpp' object='AV/Output/simplescreenrecorder-X264Presets.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-X264Presets.o `test -f 'AV/Output/X264Presets.cpp' || echo '$(srcdir)/'`AV/Output/X264Presets.cpp
+
+AV/Output/simplescreenrecorder-X264Presets.obj: AV/Output/X264Presets.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Output/simplescreenrecorder-X264Presets.obj -MD -MP -MF AV/Output/$(DEPDIR)/simplescreenrecorder-X264Presets.Tpo -c -o AV/Output/simplescreenrecorder-X264Presets.obj `if test -f 'AV/Output/X264Presets.cpp'; then $(CYGPATH_W) 'AV/Output/X264Presets.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/X264Presets.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Output/$(DEPDIR)/simplescreenrecorder-X264Presets.Tpo AV/Output/$(DEPDIR)/simplescreenrecorder-X264Presets.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Output/X264Presets.cpp' object='AV/Output/simplescreenrecorder-X264Presets.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Output/simplescreenrecorder-X264Presets.obj `if test -f 'AV/Output/X264Presets.cpp'; then $(CYGPATH_W) 'AV/Output/X264Presets.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Output/X264Presets.cpp'; fi`
+
 AV/simplescreenrecorder-AVWrapper.o: AV/AVWrapper.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-AVWrapper.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-AVWrapper.Tpo -c -o AV/simplescreenrecorder-AVWrapper.o `test -f 'AV/AVWrapper.cpp' || echo '$(srcdir)/'`AV/AVWrapper.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-AVWrapper.Tpo AV/$(DEPDIR)/simplescreenrecorder-AVWrapper.Po
@@ -843,6 +897,20 @@ AV/simplescreenrecorder-AVWrapper.obj: AV/AVWrapper.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/AVWrapper.cpp' object='AV/simplescreenrecorder-AVWrapper.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-AVWrapper.obj `if test -f 'AV/AVWrapper.cpp'; then $(CYGPATH_W) 'AV/AVWrapper.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/AVWrapper.cpp'; fi`
+
+AV/simplescreenrecorder-ByteQueue.o: AV/ByteQueue.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-ByteQueue.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo -c -o AV/simplescreenrecorder-ByteQueue.o `test -f 'AV/ByteQueue.cpp' || echo '$(srcdir)/'`AV/ByteQueue.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo AV/$(DEPDIR)/simplescreenrecorder-ByteQueue.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/ByteQueue.cpp' object='AV/simplescreenrecorder-ByteQueue.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-ByteQueue.o `test -f 'AV/ByteQueue.cpp' || echo '$(srcdir)/'`AV/ByteQueue.cpp
+
+AV/simplescreenrecorder-ByteQueue.obj: AV/ByteQueue.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-ByteQueue.obj -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo -c -o AV/simplescreenrecorder-ByteQueue.obj `if test -f 'AV/ByteQueue.cpp'; then $(CYGPATH_W) 'AV/ByteQueue.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/ByteQueue.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo AV/$(DEPDIR)/simplescreenrecorder-ByteQueue.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/ByteQueue.cpp' object='AV/simplescreenrecorder-ByteQueue.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-ByteQueue.obj `if test -f 'AV/ByteQueue.cpp'; then $(CYGPATH_W) 'AV/ByteQueue.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/ByteQueue.cpp'; fi`
 
 AV/simplescreenrecorder-DetectCPUFeatures.o: AV/DetectCPUFeatures.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-DetectCPUFeatures.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Tpo -c -o AV/simplescreenrecorder-DetectCPUFeatures.o `test -f 'AV/DetectCPUFeatures.cpp' || echo '$(srcdir)/'`AV/DetectCPUFeatures.cpp
@@ -872,33 +940,19 @@ AV/simplescreenrecorder-FastScaler.obj: AV/FastScaler.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-FastScaler.obj `if test -f 'AV/FastScaler.cpp'; then $(CYGPATH_W) 'AV/FastScaler.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/FastScaler.cpp'; fi`
 
-AV/simplescreenrecorder-Muxer.o: AV/Muxer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-Muxer.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-Muxer.Tpo -c -o AV/simplescreenrecorder-Muxer.o `test -f 'AV/Muxer.cpp' || echo '$(srcdir)/'`AV/Muxer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-Muxer.Tpo AV/$(DEPDIR)/simplescreenrecorder-Muxer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Muxer.cpp' object='AV/simplescreenrecorder-Muxer.o' libtool=no @AMDEPBACKSLASH@
+AV/simplescreenrecorder-SourceSink.o: AV/SourceSink.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-SourceSink.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-SourceSink.Tpo -c -o AV/simplescreenrecorder-SourceSink.o `test -f 'AV/SourceSink.cpp' || echo '$(srcdir)/'`AV/SourceSink.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-SourceSink.Tpo AV/$(DEPDIR)/simplescreenrecorder-SourceSink.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/SourceSink.cpp' object='AV/simplescreenrecorder-SourceSink.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-Muxer.o `test -f 'AV/Muxer.cpp' || echo '$(srcdir)/'`AV/Muxer.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-SourceSink.o `test -f 'AV/SourceSink.cpp' || echo '$(srcdir)/'`AV/SourceSink.cpp
 
-AV/simplescreenrecorder-Muxer.obj: AV/Muxer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-Muxer.obj -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-Muxer.Tpo -c -o AV/simplescreenrecorder-Muxer.obj `if test -f 'AV/Muxer.cpp'; then $(CYGPATH_W) 'AV/Muxer.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Muxer.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-Muxer.Tpo AV/$(DEPDIR)/simplescreenrecorder-Muxer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Muxer.cpp' object='AV/simplescreenrecorder-Muxer.obj' libtool=no @AMDEPBACKSLASH@
+AV/simplescreenrecorder-SourceSink.obj: AV/SourceSink.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-SourceSink.obj -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-SourceSink.Tpo -c -o AV/simplescreenrecorder-SourceSink.obj `if test -f 'AV/SourceSink.cpp'; then $(CYGPATH_W) 'AV/SourceSink.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/SourceSink.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-SourceSink.Tpo AV/$(DEPDIR)/simplescreenrecorder-SourceSink.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/SourceSink.cpp' object='AV/simplescreenrecorder-SourceSink.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-Muxer.obj `if test -f 'AV/Muxer.cpp'; then $(CYGPATH_W) 'AV/Muxer.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Muxer.cpp'; fi`
-
-AV/simplescreenrecorder-Synchronizer.o: AV/Synchronizer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-Synchronizer.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-Synchronizer.Tpo -c -o AV/simplescreenrecorder-Synchronizer.o `test -f 'AV/Synchronizer.cpp' || echo '$(srcdir)/'`AV/Synchronizer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-Synchronizer.Tpo AV/$(DEPDIR)/simplescreenrecorder-Synchronizer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Synchronizer.cpp' object='AV/simplescreenrecorder-Synchronizer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-Synchronizer.o `test -f 'AV/Synchronizer.cpp' || echo '$(srcdir)/'`AV/Synchronizer.cpp
-
-AV/simplescreenrecorder-Synchronizer.obj: AV/Synchronizer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-Synchronizer.obj -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-Synchronizer.Tpo -c -o AV/simplescreenrecorder-Synchronizer.obj `if test -f 'AV/Synchronizer.cpp'; then $(CYGPATH_W) 'AV/Synchronizer.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Synchronizer.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-Synchronizer.Tpo AV/$(DEPDIR)/simplescreenrecorder-Synchronizer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Synchronizer.cpp' object='AV/simplescreenrecorder-Synchronizer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-Synchronizer.obj `if test -f 'AV/Synchronizer.cpp'; then $(CYGPATH_W) 'AV/Synchronizer.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Synchronizer.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-SourceSink.obj `if test -f 'AV/SourceSink.cpp'; then $(CYGPATH_W) 'AV/SourceSink.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/SourceSink.cpp'; fi`
 
 GUI/simplescreenrecorder-AudioPreviewer.o: GUI/AudioPreviewer.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-AudioPreviewer.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-AudioPreviewer.Tpo -c -o GUI/simplescreenrecorder-AudioPreviewer.o `test -f 'GUI/AudioPreviewer.cpp' || echo '$(srcdir)/'`GUI/AudioPreviewer.cpp
@@ -1039,20 +1093,6 @@ GUI/simplescreenrecorder-VideoPreviewer.obj: GUI/VideoPreviewer.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/VideoPreviewer.cpp' object='GUI/simplescreenrecorder-VideoPreviewer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-VideoPreviewer.obj `if test -f 'GUI/VideoPreviewer.cpp'; then $(CYGPATH_W) 'GUI/VideoPreviewer.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/VideoPreviewer.cpp'; fi`
-
-simplescreenrecorder-ByteQueue.o: ByteQueue.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-ByteQueue.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo -c -o simplescreenrecorder-ByteQueue.o `test -f 'ByteQueue.cpp' || echo '$(srcdir)/'`ByteQueue.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo $(DEPDIR)/simplescreenrecorder-ByteQueue.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ByteQueue.cpp' object='simplescreenrecorder-ByteQueue.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-ByteQueue.o `test -f 'ByteQueue.cpp' || echo '$(srcdir)/'`ByteQueue.cpp
-
-simplescreenrecorder-ByteQueue.obj: ByteQueue.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-ByteQueue.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo -c -o simplescreenrecorder-ByteQueue.obj `if test -f 'ByteQueue.cpp'; then $(CYGPATH_W) 'ByteQueue.cpp'; else $(CYGPATH_W) '$(srcdir)/ByteQueue.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo $(DEPDIR)/simplescreenrecorder-ByteQueue.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ByteQueue.cpp' object='simplescreenrecorder-ByteQueue.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-ByteQueue.obj `if test -f 'ByteQueue.cpp'; then $(CYGPATH_W) 'ByteQueue.cpp'; else $(CYGPATH_W) '$(srcdir)/ByteQueue.cpp'; fi`
 
 simplescreenrecorder-Logger.o: Logger.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-Logger.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-Logger.Tpo -c -o simplescreenrecorder-Logger.o `test -f 'Logger.cpp' || echo '$(srcdir)/'`Logger.cpp
@@ -1359,10 +1399,10 @@ distclean-generic:
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
 	-rm -f AV/$(DEPDIR)/$(am__dirstamp)
 	-rm -f AV/$(am__dirstamp)
-	-rm -f AV/Encoder/$(DEPDIR)/$(am__dirstamp)
-	-rm -f AV/Encoder/$(am__dirstamp)
 	-rm -f AV/Input/$(DEPDIR)/$(am__dirstamp)
 	-rm -f AV/Input/$(am__dirstamp)
+	-rm -f AV/Output/$(DEPDIR)/$(am__dirstamp)
+	-rm -f AV/Output/$(am__dirstamp)
 	-rm -f GUI/$(DEPDIR)/$(am__dirstamp)
 	-rm -f GUI/$(am__dirstamp)
 
@@ -1376,7 +1416,7 @@ clean-am: clean-binPROGRAMS clean-generic clean-libtool clean-local \
 	mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR) AV/$(DEPDIR) AV/Encoder/$(DEPDIR) AV/Input/$(DEPDIR) GUI/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) AV/$(DEPDIR) AV/Input/$(DEPDIR) AV/Output/$(DEPDIR) GUI/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1422,7 +1462,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR) AV/$(DEPDIR) AV/Encoder/$(DEPDIR) AV/Input/$(DEPDIR) GUI/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) AV/$(DEPDIR) AV/Input/$(DEPDIR) AV/Output/$(DEPDIR) GUI/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

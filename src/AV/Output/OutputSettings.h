@@ -20,19 +20,20 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-class FastScaler {
+struct OutputSettings {
 
-private:
-#if SSR_USE_X86_ASM
-	bool m_use_ssse3, m_warn_alignment;
-#endif
+	QString file;
+	QString container_avname;
 
-	bool m_warn_swscale;
-	SwsContext *m_sws_context;
+	QString video_codec_avname;
+	unsigned int video_kbit_rate;
+	std::vector<std::pair<QString, QString> > video_options;
+	unsigned int video_width, video_height;
+	unsigned int video_frame_rate;
 
-public:
-	FastScaler();
-	void Scale(unsigned int in_width, unsigned int in_height, const uint8_t* const* in_data, const int* in_stride, PixelFormat in_format,
-			   unsigned int out_width, unsigned int out_height, uint8_t* const* out_data, const int* out_stride, PixelFormat out_format);
+	QString audio_codec_avname;
+	unsigned int audio_kbit_rate;
+	std::vector<std::pair<QString, QString> > audio_options;
+	unsigned int audio_sample_rate;
 
 };

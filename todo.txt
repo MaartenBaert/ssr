@@ -2,20 +2,26 @@ Testing:
 
 In progress:
 - preview even when not recording yet (i.e. detach input from output)
+- Separate file for each clip.
 
 Todo:
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
+- Command-line options for recording.
 
 Wishlist:
 - PulseAudio input (+ 2 inputs?)
 - Built-in re-encoding after recording
-- Separate file for each clip.
 - clean up Global.h
 - QuickLZ-based codec. (-> QuickLZ beta?)
 - Better support for multiple GLInject windows.
 - Easier GLInject application selection (as an alternative to entering the command).
 - Timelapse recording, i.e. recording at a slow speed but playing it back faster (without sound obviously).
 - maybe rewrite YUVConverter in assembly instead of using GCC vector extensions
+- X11Input should track resolution change.
+- Synchronizer should be a separate thread (and handle inserting duplicate frames instead of GLInjectInput).
+- Planar sample/pixel formats for inputs (source/sink).
+- Keep encoders completely inside the muxer.
+- Multiple synchronization methods.
 
 Not sure yet:
 - Fixed cursor position when using 'follow cursor'?

@@ -45,6 +45,9 @@ AudioPreviewer::AudioPreviewer(QWidget* parent)
 
 AudioPreviewer::~AudioPreviewer() {
 
+	// disconnect
+	ConnectAudioSource(NULL);
+
 }
 
 void AudioPreviewer::Reset() {
@@ -63,15 +66,26 @@ void AudioPreviewer::SetFrameRate(unsigned int frame_rate) {
 	lock->m_frame_rate = std::max(1u, frame_rate);
 }
 
-void AudioPreviewer::ReadSamples(const char* samples, size_t samplecount) {
+void AudioPreviewer::UpdateIfNeeded() {
+	if(m_should_repaint) {
+		update();
+	}
+}
+
+void AudioPreviewer::ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) {
+	Q_UNUSED(sample_rate);
+	Q_UNUSED(timestamp);
 	SharedLock lock(&m_shared_data);
 
-	if(samplecount == 0)
+	if(sample_count == 0)
 		return;
 
+	Q_ASSERT(channels == 2); // only stereo is currently supported
+	Q_ASSERT(format == AV_SAMPLE_FMT_S16); // only S16 is currently supported
+
 	// save the samples
-	int16_t *data_in = (int16_t*) samples;
-	for(size_t i = 0; i < samplecount; ++i) {
+	int16_t *data_in = (int16_t*) data;
+	for(size_t i = 0; i < sample_count; ++i) {
 		for(unsigned int channel = 0; channel < 2; ++channel) {
 			double val = (double) *(data_in++) / 32768.0;
 			if(val < lock->m_next_low[channel])
@@ -97,12 +111,6 @@ void AudioPreviewer::ReadSamples(const char* samples, size_t samplecount) {
 
 	m_should_repaint = true;
 
-}
-
-void AudioPreviewer::UpdateIfNeeded() {
-	if(m_should_repaint) {
-		update();
-	}
 }
 
 void AudioPreviewer::showEvent(QShowEvent* event) {

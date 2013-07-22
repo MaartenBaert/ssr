@@ -27,7 +27,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoEncoder.h"
 #include "AudioEncoder.h"
 
-QString PageOutput::H264_PRESET_STRINGS[PageOutput::H264_PRESET_COUNT] = {
+const QString PageOutput::H264_PRESET_STRINGS[H264_PRESET_COUNT] = {
 	"ultrafast",
 	"superfast",
 	"veryfast",
@@ -53,13 +53,13 @@ PageOutput::PageOutput(MainWindow* main_window)
 		{"Matroska (MKV)", "matroska", {"mkv"}, "Matroska files (*.mkv)",
 			{VIDEO_CODEC_H264, VIDEO_CODEC_VP8, VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC, AUDIO_CODEC_UNCOMPRESSED}},
-		{"MP4", "mp4", {"mp4"}, "MP4 files (*.mp4)"     ,
+		{"MP4", "mp4", {"mp4"}, "MP4 files (*.mp4)",
 			{VIDEO_CODEC_H264},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC}},
-		{"WebM", "webm", {"webm"}, "WebM files (*.webm)"   ,
+		{"WebM", "webm", {"webm"}, "WebM files (*.webm)",
 			{VIDEO_CODEC_VP8},
-			{AUDIO_CODEC_VORBIS,}},
-		{"OGG", "ogg", {"ogg"}, "OGG files (*.ogg)"     ,
+			{AUDIO_CODEC_VORBIS}},
+		{"OGG", "ogg", {"ogg"}, "OGG files (*.ogg)",
 			{VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS}},
 		{"Other...", "", {}, "", {}, {}},
@@ -130,6 +130,14 @@ PageOutput::PageOutput(MainWindow* main_window)
 
 	QGroupBox *groupbox_file = new QGroupBox("File", this);
 	{
+		QLabel *label_file = new QLabel("Save as:", groupbox_file);
+		m_lineedit_file = new QLineEdit(groupbox_file);
+		m_lineedit_file->setToolTip("The recording will be saved to this location.");
+		QPushButton *button_browse = new QPushButton("Browse...", groupbox_file);
+		m_checkbox_separate_files = new QCheckBox("Separate file per segment", groupbox_file);
+		m_checkbox_separate_files->setToolTip("If checked, a separate video file will be created every time you pause and resume the recording.\n"
+											  "If the original file name is 'test.mkv', the segments will be saved as 'test-0001.mkv', 'test-0002.mkv', ...\n"
+											  "File names that exist already will be skipped.");
 		QLabel *label_container = new QLabel("Container:", groupbox_file);
 		m_combobox_container = new QComboBox(groupbox_file);
 		for(unsigned int i = 0; i < CONTAINER_COUNT; ++i) {
@@ -155,27 +163,20 @@ PageOutput::PageOutput(MainWindow* main_window)
 		}
 		m_combobox_container_av->setToolTip("For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.");
 		m_combobox_container_av->setVisible(false);
-		QLabel *label_file = new QLabel("Save as:", groupbox_file);
-		m_lineedit_file = new QLineEdit(groupbox_file);
-		m_lineedit_file->setToolTip("The recording will be saved to this location.");
-		m_checkbox_separate_files = new QCheckBox("Separate file per segment", groupbox_file);
-		m_checkbox_separate_files->setToolTip("If checked, a separate video file will be created every time you pause and resume the recording.\n"
-											  "If the original file name is 'test.mkv', the segments will be saved as 'test-0001.mkv', 'test-0002.mkv', ...");
-		QPushButton *button_browse = new QPushButton("Browse...", groupbox_file);
 
 		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(UpdateSuffixAndContainerFields()));
 		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(UpdateSuffixAndContainerFields()));
 		connect(button_browse, SIGNAL(clicked()), this, SLOT(Browse()));
 
 		QGridLayout *layout = new QGridLayout(groupbox_file);
-		layout->addWidget(label_container, 0, 0);
-		layout->addWidget(m_combobox_container, 0, 1, 1, 2);
-		layout->addWidget(m_label_container_av, 1, 0);
-		layout->addWidget(m_combobox_container_av, 1, 1, 1, 2);
-		layout->addWidget(label_file, 2, 0);
-		layout->addWidget(m_lineedit_file, 2, 1);
-		layout->addWidget(button_browse, 2, 2);
-		layout->addWidget(m_checkbox_separate_files, 3, 0, 1, 3);
+		layout->addWidget(label_file, 0, 0);
+		layout->addWidget(m_lineedit_file, 0, 1);
+		layout->addWidget(button_browse, 0, 2);
+		layout->addWidget(m_checkbox_separate_files, 1, 0, 1, 3);
+		layout->addWidget(label_container, 2, 0);
+		layout->addWidget(m_combobox_container, 2, 1, 1, 2);
+		layout->addWidget(m_label_container_av, 3, 0);
+		layout->addWidget(m_combobox_container_av, 3, 1, 1, 2);
 	}
 	QGroupBox *groupbox_video = new QGroupBox("Video", this);
 	{
@@ -347,10 +348,10 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	}
 
 	// load settings
-	SetContainer((enum_container) settings->value("output/container", default_container).toUInt());
-	SetContainerAV(settings->value("output/container_av", default_container).toUInt());
 	SetFile(settings->value("output/file", "").toString());
 	SetSeparateFiles(settings->value("output/separate_files", false).toBool());
+	SetContainer((enum_container) settings->value("output/container", default_container).toUInt());
+	SetContainerAV(settings->value("output/container_av", default_container).toUInt());
 	SetVideoCodec((enum_video_codec) settings->value("output/video/codec", default_video_codec).toUInt());
 	SetVideoCodecAV(settings->value("output/video/codec_av", default_video_codec).toUInt());
 	SetVideoKBitRate(settings->value("output/video/kbit_rate", 5000).toUInt());
@@ -371,21 +372,26 @@ void PageOutput::LoadSettings(QSettings* settings) {
 }
 
 void PageOutput::SaveSettings(QSettings* settings) {
-	settings->setValue("output/container", GetContainer());
-	settings->setValue("output/container_av", GetContainerAV());
+
 	settings->setValue("output/file", GetFile());
 	settings->setValue("output/separate_files", GetSeparateFiles());
-	settings->setValue("output/video/codec", GetVideoCodec());
-	settings->setValue("output/video/codec_av", GetVideoCodecAV());
-	settings->setValue("output/video/kbit_rate", GetVideoKBitRate());
-	settings->setValue("output/video/h264/crf", GetH264CRF());
-	settings->setValue("output/video/h264/preset", GetH264Preset());
-	settings->setValue("output/video/vp8/cpu_used", GetVP8CPUUsed());
-	settings->setValue("output/video/options", GetVideoOptions());
-	settings->setValue("output/audio/codec", GetAudioCodec());
-	settings->setValue("output/audio/codec_av", GetAudioCodecAV());
-	settings->setValue("output/audio/kbit_rate", GetAudioKBitRate());
-	settings->setValue("output/audio/options", GetAudioOptions());
+	settings->setValue("output/container", GetContainer());
+	settings->setValue("output/container_avname", GetContainerAV()); //TODO// name/index
+
+	//TODO// names instead of index
+	settings->setValue("output/video_codec", GetVideoCodec());
+	settings->setValue("output/video_codec_avname", GetVideoCodecAV());
+	settings->setValue("output/video_kbit_rate", GetVideoKBitRate());
+	settings->setValue("output/video_h264_crf", GetH264CRF());
+	settings->setValue("output/video_h264_preset", GetH264Preset());
+	settings->setValue("output/video_vp8_cpu_used", GetVP8CPUUsed());
+	settings->setValue("output/video_options", GetVideoOptions());
+
+	settings->setValue("output/audio_codec", GetAudioCodec());
+	settings->setValue("output/audio_codec_av", GetAudioCodecAV());
+	settings->setValue("output/audio_kbit_rate", GetAudioKBitRate());
+	settings->setValue("output/audio_options", GetAudioOptions());
+
 }
 
 static bool MatchSuffix(const QString& suffix, const QStringList& suffixes) {

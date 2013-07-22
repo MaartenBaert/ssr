@@ -44,23 +44,15 @@ static void ALSARecoverAfterOverrun(snd_pcm_t* pcm) {
 	}
 }
 
-ALSAInput::ALSAInput(Synchronizer* synchronizer, const QString& device_name) {
-	Q_ASSERT(synchronizer->GetAudioEncoder() != NULL);
-
-	m_synchronizer = synchronizer;
+ALSAInput::ALSAInput(const QString& device_name, unsigned int sample_rate) {
 
 	m_device_name = device_name;
-	m_sample_rate = m_synchronizer->GetAudioEncoder()->GetSampleRate();
+	m_sample_rate = sample_rate;
 	m_channels = 2; // always 2 channels because the synchronizer and encoder don't support anything else at this point
 
 	m_alsa_pcm = NULL;
 	m_alsa_periods = 10;
 	m_alsa_period_size = 1024; // number of samples per period
-
-	{
-		SharedLock lock(&m_shared_data);
-		lock->m_audio_previewer = NULL;
-	}
 
 	try {
 		Init();
@@ -83,11 +75,6 @@ ALSAInput::~ALSAInput() {
 	// free everything
 	Free();
 
-}
-
-void ALSAInput::ConnectAudioPreviewer(AudioPreviewer* audio_previewer) {
-	SharedLock lock(&m_shared_data);
-	lock->m_audio_previewer = audio_previewer;
 }
 
 void ALSAInput::Init() {
@@ -203,7 +190,7 @@ void ALSAInput::run() {
 
 		Logger::LogInfo("[ALSAInput::run] Input thread started.");
 
-		std::vector<char> buffer(m_alsa_period_size * m_channels * 2);
+		std::vector<uint8_t> buffer(m_alsa_period_size * m_channels * 2);
 		bool has_first_samples = false;
 		int64_t first_timestamp = 0; // value won't be used, but GCC gives a warning otherwise
 
@@ -253,16 +240,9 @@ void ALSAInput::run() {
 				continue;
 			}
 
-			SharedLock lock(&m_shared_data);
-
-			// let the previewer read the samples
-			if(lock->m_audio_previewer != NULL) {
-				lock->m_audio_previewer->ReadSamples(buffer.data(), samples_read);
-			}
-
 			// send the samples to the synchronizer
 			int64_t time = timestamp - (int64_t) m_alsa_period_size * (int64_t) 1000000 / (int64_t) m_sample_rate;
-			m_synchronizer->AddAudioSamples(buffer.data(), samples_read, time);
+			PushAudioSamples(m_sample_rate, m_channels, samples_read, buffer.data(), AV_SAMPLE_FMT_S16, time);
 
 		}
 

@@ -20,10 +20,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "SourceSink.h"
 #include "VPair.h"
-#include "ByteQueue.h"
 
-class AudioPreviewer : public QWidget {
+class AudioPreviewer : public QWidget, public AudioSink {
 
 private:
 	struct SharedData {
@@ -45,15 +45,16 @@ public:
 
 	void Reset();
 	void SetFrameRate(unsigned int frame_rate);
-	void ReadSamples(const char* samples, size_t samplecount);
 	void UpdateIfNeeded();
 
-	virtual QSize minimumSizeHint() const { return QSize(100, 17); }
-	virtual QSize sizeHint() const { return QSize(100, 17); }
+	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) override;
+
+	virtual QSize minimumSizeHint() const override { return QSize(100, 17); }
+	virtual QSize sizeHint() const override { return QSize(100, 17); }
 
 protected:
-	virtual void showEvent(QShowEvent* event);
-	virtual void hideEvent(QHideEvent* event);
-	virtual void paintEvent(QPaintEvent* event);
+	virtual void showEvent(QShowEvent* event) override;
+	virtual void hideEvent(QHideEvent* event) override;
+	virtual void paintEvent(QPaintEvent* event) override;
 
 };

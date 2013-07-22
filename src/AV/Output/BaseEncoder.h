@@ -103,6 +103,6 @@ public: // internal
 	inline bool HasErrorOccurred() { return m_error_occurred; }
 
 private:
-	virtual void run();
+	virtual void run() override;
 
 };

@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "PageRecord.h"
 
+#include "Logger.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 #include "PageOutput.h"
@@ -102,8 +103,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_main_window = main_window;
 
 	m_page_started = false;
-	m_encoders_started = false;
 	m_capturing = false;
+	m_recording = false;
 	m_previewing = false;
 
 	QGroupBox *group_recording = new QGroupBox("Recording", this);
@@ -280,14 +281,12 @@ PageRecord::PageRecord(MainWindow* main_window)
 }
 
 PageRecord::~PageRecord() {
-
 	PageStop(false);
-
 }
 
 bool PageRecord::ShouldBlockClose() {
 
-	if(m_encoders_started) {
+	if(m_output_manager != NULL) {
 		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION,
 								"You have not saved the current recording yet, if you quit now it will be lost.\n"
 								"Are you sure you want to quit?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
@@ -325,6 +324,9 @@ void PageRecord::PageStart() {
 	if(m_page_started)
 		return;
 
+	Q_ASSERT(!m_capturing);
+	Q_ASSERT(!m_recording);
+
 	// save the settings in case libav/ffmpeg decides to kill the process
 	m_main_window->SaveSettings();
 
@@ -341,29 +343,26 @@ void PageRecord::PageStart() {
 	PageInput *page_input = m_main_window->GetPageInput();
 	PageOutput *page_output = m_main_window->GetPageOutput();
 
-	// get the type of video recording
-	m_video_record_cursor = page_input->GetVideoRecordCursor();
-	m_video_follow_cursor = (page_input->GetVideoArea() == PageInput::VIDEO_AREA_CURSOR);
-	m_video_glinject = (page_input->GetVideoArea() == PageInput::VIDEO_AREA_GLINJECT);
-
-	// get the video recording area
+	// get the video input settings
+	m_video_area = page_input->GetVideoArea();
 	m_video_x = page_input->GetVideoX();
 	m_video_y = page_input->GetVideoY();
-	if(m_video_glinject) {
+	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 		m_video_in_width = 0;
 		m_video_in_height = 0;
 	} else {
 		m_video_in_width = page_input->GetVideoW();
 		m_video_in_height = page_input->GetVideoH();
 	}
+	m_video_frame_rate = page_input->GetVideoFrameRate();
 	m_video_scaling = page_input->GetVideoScalingEnabled();
 	m_video_scaled_width = page_input->GetVideoScaledW();
 	m_video_scaled_height = page_input->GetVideoScaledH();
-	m_video_frame_rate = page_input->GetVideoFrameRate();
-	m_audio_sample_rate = 44100;
+	m_video_record_cursor = page_input->GetVideoRecordCursor();
 
 	// get the audio input settings
 	m_audio_enabled = page_input->GetAudioEnabled();
+	m_audio_sample_rate = 44100;
 	m_alsa_device = page_input->GetALSADevice();
 
 	// get the glinject settings
@@ -375,43 +374,40 @@ void PageRecord::PageStart() {
 	bool glinject_limit_fps = page_input->GetGLInjectLimitFPS();
 	m_glinject_insert_duplicates = page_input->GetGLInjectInsertDuplicates();
 
-	// get the output settings
-	m_file = page_output->GetFile();
-	m_separate_files = page_output->GetSeparateFiles();
-	m_video_out_width = 0;
-	m_video_out_height = 0;
-	m_container = page_output->GetContainer();
-	m_video_codec = page_output->GetVideoCodec();
-	m_audio_codec = page_output->GetAudioCodec();
-	m_container_avname = page_output->GetContainerAVName();
-	m_video_avname = page_output->GetVideoCodecAVName();
-	m_audio_avname = page_output->GetAudioCodecAVName();
-	m_video_kbit_rate = page_output->GetVideoKBitRate();
-	m_audio_kbit_rate = page_output->GetAudioKBitRate();
-	m_video_options.clear();
-	m_audio_options.clear();
-
-	// detect protocols and choose segment file name
+	// get file settings
+	m_file_base = page_output->GetFile();
 	m_file_protocol = page_output->GetFileProtocol();
+	m_separate_files = page_output->GetSeparateFiles();
 	m_file_segment_counter = 0;
-	if(m_separate_files)
-		m_file_segment = GetNewSegmentFile(m_file, &m_file_segment_counter, m_file_protocol.isNull());
-	else
-		m_file_segment = m_file;
 
-	// hide the audio previewer if there is no audio
-	m_label_mic_icon->setVisible(m_audio_enabled);
-	m_audio_previewer->setVisible(m_audio_enabled);
+	// get the output settings
+	if(m_separate_files)
+		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
+	else
+		m_output_settings.file = m_file_base;
+	m_output_settings.container_avname = page_output->GetContainerAVName();
+
+	m_output_settings.video_codec_avname = page_output->GetVideoCodecAVName();
+	m_output_settings.video_kbit_rate = page_output->GetVideoKBitRate();
+	m_output_settings.video_options.clear();
+	m_output_settings.video_width = 0;
+	m_output_settings.video_height = 0;
+	m_output_settings.video_frame_rate = m_video_frame_rate;
+
+	m_output_settings.audio_codec_avname = (m_audio_enabled)? page_output->GetAudioCodecAVName() : QString();
+	m_output_settings.audio_kbit_rate = page_output->GetAudioKBitRate();
+	m_output_settings.audio_options.clear();
+	m_output_settings.audio_sample_rate = m_audio_sample_rate;
 
 	// some codec-specific things
-	// you can get more information about all these options by running 'avconv -h' from a terminal
-	switch(m_video_codec) {
+	// you can get more information about all these options by running 'ffmpeg -h' or 'avconv -h' from a terminal
+	switch(page_output->GetVideoCodec()) {
 		case PageOutput::VIDEO_CODEC_H264: {
 			// x264 has a 'constant quality' mode, where the bit rate is simply set to whatever is needed to keep a certain quality. The quality is set
 			// with the 'crf' option. 'preset' changes the encoding speed (and hence the efficiency of the compression) but doesn't really influence the quality,
 			// which is great because it means you don't have to experiment with different bit rates and different speeds to get good results.
-			m_video_options.push_back(std::make_pair(QString("crf"), QString::number(page_output->GetH264CRF())));
-			m_video_options.push_back(std::make_pair(QString("preset"), page_output->GetH264PresetName()));
+			m_output_settings.video_options.push_back(std::make_pair(QString("crf"), QString::number(page_output->GetH264CRF())));
+			m_output_settings.video_options.push_back(std::make_pair(QString("preset"), page_output->GetH264PresetName()));
 			break;
 		}
 		case PageOutput::VIDEO_CODEC_VP8: {
@@ -419,26 +415,30 @@ void PageRecord::PageStart() {
 			// 'deadline'='best' is unusably slow. 'deadline'='good' is the normal setting, it tells the encoder to use the speed set with 'cpu-used'. Higher
 			// numbers will use *less* CPU, confusingly, so a higher number is faster. I haven't done much testing with 'realtime' so I'm not sure if it's a good idea here.
 			// It sounds useful, but I think it will use so much CPU that it will slow down the program that is being recorded.
-			m_video_options.push_back(std::make_pair(QString("deadline"), QString("good")));
-			m_video_options.push_back(std::make_pair(QString("cpu-used"), QString::number(page_output->GetVP8CPUUsed())));
+			m_output_settings.video_options.push_back(std::make_pair(QString("deadline"), QString("good")));
+			m_output_settings.video_options.push_back(std::make_pair(QString("cpu-used"), QString::number(page_output->GetVP8CPUUsed())));
 			break;
 		}
 		case PageOutput::VIDEO_CODEC_OTHER: {
-			m_video_options = GetOptionsFromString(page_output->GetVideoOptions());
+			m_output_settings.video_options = GetOptionsFromString(page_output->GetVideoOptions());
 			break;
 		}
 		default: break; // to keep GCC happy
 	}
-	switch(m_audio_codec) {
+	switch(page_output->GetAudioCodec()) {
 		case PageOutput::AUDIO_CODEC_OTHER: {
-			m_audio_options = GetOptionsFromString(page_output->GetAudioOptions());
+			m_output_settings.audio_options = GetOptionsFromString(page_output->GetAudioOptions());
 			break;
 		}
 		default: break; // to keep GCC happy
 	}
 
+	// hide the audio previewer if there is no audio
+	m_label_mic_icon->setVisible(m_audio_enabled);
+	m_audio_previewer->setVisible(m_audio_enabled);
+
 	// for OpenGL recording, allocate shared memory and start the program now
-	if(m_video_glinject) {
+	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 		try {
 			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_run_command, glinject_relax_permissions, glinject_megapixels * 4 * 1024 * 1024,
 															m_video_frame_rate, m_video_record_cursor, glinject_capture_front, glinject_limit_fps));
@@ -452,12 +452,11 @@ void PageRecord::PageStart() {
 	Logger::LogInfo("[PageRecord::PageStart] Started page.");
 
 	m_page_started = true;
-	m_encoders_started = false;
-	m_info_first_time = true;
-	m_video_encoder = NULL;
-	m_audio_encoder = NULL;
-
+	m_recorded_something = false;
 	UpdateHotkey();
+	UpdateCapture();
+
+	m_info_first_time = true;
 	UpdateInformation();
 	m_info_timer->start(1000);
 
@@ -468,71 +467,53 @@ void PageRecord::PageStop(bool save) {
 	if(!m_page_started)
 		return;
 
+	RecordStop();
 	CaptureStop();
 
 	Logger::LogInfo("[PageRecord::PageStop] Stopping page ...");
 
-	// stop the synchronizer
-	Q_ASSERT(m_x11_input == NULL);
-	Q_ASSERT(m_gl_inject_input == NULL);
-	Q_ASSERT(m_alsa_input == NULL);
-	m_synchronizer.reset();
+	if(m_output_manager != NULL) {
 
-	// If we want to save the file, we have to wait for the encoders and mixer to finish or else the file will be corrupted.
-	// This can take some time depending on how many frames were buffered, so maybe a progress dialog would make sense here.
-	if(save && m_muxer != NULL && m_muxer->IsStarted()) {
-		m_muxer->Finish();
-		while(!m_muxer->IsDone() && !m_muxer->HasErrorOccurred()) {
-			usleep(10000);
+		// stop the output
+		if(save)
+			m_output_manager->Finish();
+		m_output_manager.reset();
+
+		// delete the file if it isn't needed
+		if(!save && m_file_protocol.isNull()) {
+			if(QFileInfo(m_output_settings.file).exists())
+				QFile(m_output_settings.file).remove();
 		}
+
 	}
-
-	// delete the muxer (it will also delete the encoders)
-	m_muxer.reset();
-	m_video_encoder = NULL;
-	m_audio_encoder = NULL;
-
 	// free the shared memory for OpenGL recording
 	// This doesn't stop the program, and the memory is only actually freed when the recorded program stops too.
 	m_gl_inject_launcher.reset();
 
-	// delete the file if it isn't needed
-	// First make sure it's actually *our* file - the user might have pressed Cancel after realising he was about to overwrite an
-	// important file, in that case we definitely shouldn't delete the file. If the encoders have already been started, it's too late.
-	if(!save && m_encoders_started && m_file_protocol.isNull()) {
-		if(QFileInfo(m_file_segment).exists())
-			QFile(m_file_segment).remove();
-	}
-
 	Logger::LogInfo("[PageRecord::PageStop] Stopped page.");
 
 	m_page_started = false;
-	m_encoders_started = false;
 	UpdateHotkey();
-	UpdateInformation();
+
 	m_info_timer->stop();
+	UpdateInformation();
 
 }
 
-void PageRecord::CaptureStart() {
+void PageRecord::RecordStart() {
+	Q_ASSERT(m_page_started);
 
-	if(m_capturing || !m_page_started)
+	if(m_recording)
 		return;
 
 	Logger::LogInfo("[PageRecord::RecordStart] Starting recording ...");
 
-	// start the encoders if they weren't started already
-	if(!m_encoders_started) {
+	try {
 
-		Q_ASSERT(m_muxer == NULL);
-		Q_ASSERT(m_video_encoder == NULL);
-		Q_ASSERT(m_audio_encoder == NULL);
-		Q_ASSERT(m_synchronizer == NULL);
-
-		try {
+		if(m_output_manager == NULL) {
 
 			// for OpenGL recording, detect the application size
-			if(m_video_glinject && !m_video_scaling) {
+			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT && !m_video_scaling) {
 				m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 				if(m_video_in_width == 0 && m_video_in_height == 0) {
 					Logger::LogError("[PageRecord::RecordStart] Error: Could not get the size of the OpenGL application. Either the "
@@ -546,41 +527,77 @@ void PageRecord::CaptureStart() {
 			// calculate the output width and height
 			if(m_video_scaling) {
 				// Only even width and height is allowed because the final images are encoded as YUV.
-				m_video_out_width = m_video_scaled_width / 2 * 2;
-				m_video_out_height = m_video_scaled_height / 2 * 2;
-			} else if(m_video_glinject) {
+				m_output_settings.video_width = m_video_scaled_width / 2 * 2;
+				m_output_settings.video_height = m_video_scaled_height / 2 * 2;
+			} else if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 				// The input size is the size of the OpenGL application and can't be changed. The output size is set to the current size of the application.
-				m_video_out_width = m_video_in_width / 2 * 2;
-				m_video_out_height = m_video_in_height / 2 * 2;
+				m_output_settings.video_width = m_video_in_width / 2 * 2;
+				m_output_settings.video_height = m_video_in_height / 2 * 2;
 			} else {
 				// If the user did not explicitly select scaling, then don't force scaling just because the recording area is one pixel too large.
 				// One missing row/column of pixels is probably better than a blurry video (and scaling is SLOW).
 				m_video_in_width = m_video_in_width / 2 * 2;
 				m_video_in_height = m_video_in_height / 2 * 2;
-				m_video_out_width = m_video_in_width;
-				m_video_out_height = m_video_in_height;
+				m_output_settings.video_width = m_video_in_width;
+				m_output_settings.video_height = m_video_in_height;
 			}
 
-			// prepare everything for recording
-			m_muxer.reset(new Muxer(m_container_avname, m_file_segment));
-			m_video_encoder = new VideoEncoder(m_muxer.get(), m_video_avname, m_video_options, m_video_kbit_rate * 1024, m_video_out_width, m_video_out_height, m_video_frame_rate);
-			if(m_audio_enabled)
-				m_audio_encoder = new AudioEncoder(m_muxer.get(), m_audio_avname, m_audio_options, m_audio_kbit_rate * 1024, m_audio_sample_rate);
-			m_muxer->Start();
-			m_synchronizer.reset(new Synchronizer(m_video_encoder, m_audio_encoder));
+			// start the output
+			m_output_manager.reset(new OutputManager(m_output_settings));
 
-		} catch(...) {
-			Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
-			m_synchronizer.reset();
-			m_muxer.reset();
-			m_video_encoder = NULL;
-			m_audio_encoder = NULL;
-			return;
+		} else {
+
+			// start a new segment
+			m_output_manager->GetSynchronizer()->NewSegment();
+
 		}
 
-		m_encoders_started = true;
+	} catch(...) {
+		Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
+	}
+
+	Logger::LogInfo("[PageRecord::RecordStart] Started recording.");
+
+	m_recording = true;
+	m_recorded_something = true;
+	UpdateRecordPauseButton();
+	UpdateCapture();
+
+}
+
+void PageRecord::RecordStop() {
+	Q_ASSERT(m_page_started);
+
+	if(!m_recording)
+		return;
+
+	Logger::LogInfo("[PageRecord::RecordStop] Stopping recording ...");
+
+	if(m_separate_files) {
+
+		// stop the output
+		m_output_manager->Finish();
+		m_output_manager.reset();
+
+		// change the file name
+		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
 
 	}
+
+	Logger::LogInfo("[PageRecord::RecordStart] Stopped recording.");
+
+	m_recording = false;
+	UpdateRecordPauseButton();
+	UpdateCapture();
+
+}
+
+void PageRecord::CaptureStart() {
+
+	if(m_capturing || !m_page_started)
+		return;
+
+	Logger::LogInfo("[PageRecord::CaptureStart] Starting capturing ...");
 
 	Q_ASSERT(m_x11_input == NULL);
 	Q_ASSERT(m_gl_inject_input == NULL);
@@ -588,40 +605,29 @@ void PageRecord::CaptureStart() {
 
 	try {
 
-		// start a new segment
-		m_synchronizer->NewSegment();
-
 		// start the video input
-		if(m_video_glinject) {
+		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get(), m_video_frame_rate, m_glinject_insert_duplicates));
-			m_synchronizer->ConnectVideoSource(m_gl_inject_input.get());
-			m_video_previewer->ConnectVideoSource(m_gl_inject_input.get());
 		} else {
-			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_frame_rate, m_video_record_cursor, m_video_follow_cursor));
-			m_synchronizer->ConnectVideoSource(m_x11_input.get());
-			m_video_previewer->ConnectVideoSource(m_x11_input.get());
+			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_frame_rate, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
 		}
 
 		// start the audio input
 		if(m_audio_enabled) {
-			m_alsa_input.reset(new ALSAInput(m_synchronizer.get(), m_alsa_device));
-			//TODO// m_audio_previewer->ConnectAudioSource(m_alsa_input.get());
+			m_alsa_input.reset(new ALSAInput(m_alsa_device, m_audio_sample_rate));
 		}
 
 	} catch(...) {
-		Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
+		Logger::LogError("[PageRecord::CaptureStart] Error: Something went wrong during initialization.");
 		m_x11_input.reset();
 		m_gl_inject_input.reset();
 		m_alsa_input.reset();
 		return;
 	}
 
-	Logger::LogInfo("[PageRecord::RecordStart] Started recording.");
+	Logger::LogInfo("[PageRecord::CaptureStart] Started capturing.");
 
 	m_capturing = true;
-
-	UpdateRecordPauseButton();
-	UpdatePreview(); //TODO// remove after capture/record split
 
 }
 
@@ -630,30 +636,60 @@ void PageRecord::CaptureStop() {
 	if(!m_capturing || !m_page_started)
 		return;
 
-	Logger::LogInfo("[PageRecord::RecordPause] Pausing recording ...");
+	Logger::LogInfo("[PageRecord::CaptureStop] Stopping capturing ...");
 
 	m_x11_input.reset();
 	m_gl_inject_input.reset();
 	m_alsa_input.reset();
 
-	Logger::LogInfo("[PageRecord::RecordPause] Paused recording.");
-
-	if(m_separate_files) {
-
-		//TODO// stop encoders+muxer BEFORE changing file
-
-		// m_file_segment = GetNewSegmentFile(m_file, &m_file_segment_counter, m_file_protocol.isNull());
-
-	}
+	Logger::LogInfo("[PageRecord::CaptureStop] Stopped capturing.");
 
 	m_capturing = false;
 
-	UpdateRecordPauseButton();
+}
+
+void PageRecord::UpdateCapture() {
+
+	if(m_recording || m_previewing) {
+		CaptureStart();
+	} else {
+		CaptureStop();
+	}
+
+	// get sources
+	VideoSource *video_source = NULL;
+	AudioSource *audio_source = NULL;
+	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
+		video_source = m_gl_inject_input.get();
+	} else {
+		video_source = m_x11_input.get();
+	}
+	if(m_audio_enabled) {
+		audio_source = m_alsa_input.get();
+	}
+
+	// connect sinks
+	if(m_output_manager != NULL) {
+		if(m_recording) {
+			m_output_manager->GetSynchronizer()->ConnectVideoSource(video_source);
+			m_output_manager->GetSynchronizer()->ConnectAudioSource(audio_source);
+		} else {
+			m_output_manager->GetSynchronizer()->ConnectVideoSource(NULL);
+			m_output_manager->GetSynchronizer()->ConnectAudioSource(NULL);
+		}
+	}
+	if(m_previewing) {
+		m_video_previewer->ConnectVideoSource(video_source);
+		m_audio_previewer->ConnectAudioSource(audio_source);
+	} else {
+		m_video_previewer->ConnectVideoSource(NULL);
+		m_audio_previewer->ConnectAudioSource(NULL);
+	}
 
 }
 
 void PageRecord::UpdateRecordPauseButton() {
-	if(m_capturing) { //TODO// should be 'm_recording' once recording and capturing are split
+	if(m_recording) {
 		m_pushbutton_start_pause->setText("Pause recording");
 		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-playback-pause"));
 	} else {
@@ -706,10 +742,10 @@ void PageRecord::UpdateHotkey() {
 }
 
 void PageRecord::RecordStartPause() {
-	if(m_capturing) {
-		CaptureStop();
+	if(m_recording) {
+		RecordStop();
 	} else {
-		CaptureStart();
+		RecordStart();
 	}
 }
 
@@ -718,10 +754,11 @@ void PageRecord::PreviewStartStop() {
 	m_audio_previewer->Reset();
 	m_previewing = !m_previewing;
 	UpdatePreview();
+	UpdateCapture();
 }
 
 void PageRecord::Cancel() {
-	if(m_encoders_started) {
+	if(m_output_manager != NULL) {
 		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, "Are you sure you want to cancel this recording?",
 								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
 			return;
@@ -732,7 +769,7 @@ void PageRecord::Cancel() {
 }
 
 void PageRecord::Save() {
-	if(!m_encoders_started) {
+	if(!m_recorded_something) {
 		QMessageBox::information(this, MainWindow::WINDOW_CAPTION, "You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;).",
 								 QMessageBox::Ok);
 		return;
@@ -749,15 +786,20 @@ void PageRecord::UpdateInformation() {
 		double fps = 0.0, bit_rate = 0.0;
 		uint64_t current_bytes = 0;
 
-		if(m_encoders_started) {
+		if(m_output_manager != NULL) {
 
-			total_time = m_synchronizer->GetTotalTime();
-			current_bytes = m_muxer->GetTotalBytes();
+			Muxer *muxer = m_output_manager->GetMuxer();
+			VideoEncoder *video_encoder = m_output_manager->GetVideoEncoder();
+			Synchronizer *synchronizer = m_output_manager->GetSynchronizer();
 
-			// calculate the number of frames recorded per second
+			total_time = synchronizer->GetTotalTime();
+			current_bytes = muxer->GetTotalBytes();
+
+			// calculate the frame rate and bit rate
+			//TODO// do this in the encoder?
 			int64_t current_time = hrt_time_micro();
-			unsigned int current_frames = m_video_encoder->GetTotalFrames();
-			if(!m_info_first_time && current_time - m_info_last_time > 1000) {
+			unsigned int current_frames = (video_encoder == NULL)? 0 : video_encoder->GetTotalFrames();
+			if(!m_info_first_time && current_time - m_info_last_time > 100000) {
 				double t = (double) (current_time - m_info_last_time) * 0.000001;
 				fps = (double) (current_frames - m_info_last_frames) / t;
 				bit_rate =  (double) (current_bytes - m_info_last_bytes) * 8.0 / t;
@@ -770,7 +812,7 @@ void PageRecord::UpdateInformation() {
 		}
 
 		// for OpenGL recording, update the application size
-		if(m_video_glinject) {
+		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 			m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 		}
 
@@ -780,12 +822,12 @@ void PageRecord::UpdateInformation() {
 			m_label_info_size_in->setText("?");
 		else
 			m_label_info_size_in->setText(QString::number(m_video_in_width) + "x" + QString::number(m_video_in_height));
-		if(m_video_out_width == 0 && m_video_out_height == 0)
+		if(m_output_settings.video_width == 0 && m_output_settings.video_height == 0)
 			m_label_info_size_out->setText("?");
 		else
-			m_label_info_size_out->setText(QString::number(m_video_out_width) + "x" + QString::number(m_video_out_height));
+			m_label_info_size_out->setText(QString::number(m_output_settings.video_width) + "x" + QString::number(m_output_settings.video_height));
 		if(m_file_protocol.isNull()) {
-			m_label_info_file_name->setText(QFileInfo(m_file_segment).fileName());
+			m_label_info_file_name->setText(QFileInfo(m_output_settings.file).fileName());
 		} else {
 			m_label_info_file_name->setText("(" + m_file_protocol + ")");
 		}

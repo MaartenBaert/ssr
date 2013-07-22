@@ -20,7 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "VideoConnection.h"
+#include "SourceSink.h"
 #include "VPair.h"
 
 class Synchronizer;

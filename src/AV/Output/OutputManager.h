@@ -20,19 +20,36 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-class FastScaler {
+#include "Muxer.h"
+#include "VideoEncoder.h"
+#include "AudioEncoder.h"
+#include "Synchronizer.h"
+#include "OutputSettings.h"
+
+class OutputManager {
 
 private:
-#if SSR_USE_X86_ASM
-	bool m_use_ssse3, m_warn_alignment;
-#endif
+	OutputSettings m_output_settings;
 
-	bool m_warn_swscale;
-	SwsContext *m_sws_context;
+	Muxer *m_muxer;
+	VideoEncoder *m_video_encoder;
+	AudioEncoder *m_audio_encoder;
+	Synchronizer *m_synchronizer;
 
 public:
-	FastScaler();
-	void Scale(unsigned int in_width, unsigned int in_height, const uint8_t* const* in_data, const int* in_stride, PixelFormat in_format,
-			   unsigned int out_width, unsigned int out_height, uint8_t* const* out_data, const int* out_stride, PixelFormat out_format);
+	OutputManager(const OutputSettings& output_settings);
+	~OutputManager();
+
+	void Finish();
+
+private:
+	void Init();
+	void Free(bool save);
+
+public:
+	inline Muxer* GetMuxer() { return m_muxer; }
+	inline VideoEncoder* GetVideoEncoder() { return m_video_encoder; }
+	inline AudioEncoder* GetAudioEncoder() { return m_audio_encoder; }
+	inline Synchronizer* GetSynchronizer() { return m_synchronizer; }
 
 };

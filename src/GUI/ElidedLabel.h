@@ -1,10 +1,9 @@
 /*
-Created by Jason Gedge. Code is in the public domain.
+Original code written by Jason Gedge. Code is in the public domain.
 http://gedgedev.blogspot.be/2010/12/elided-labels-in-qt.html
 */
 
-#ifndef ELIDEDLABEL_HPP
-#define ELIDEDLABEL_HPP
+#pragma once
 
 #include <QLabel>
 
@@ -39,8 +38,8 @@ public: // QLabel overrides
 	void setText(const QString &);
 
 protected: // QLabel overrides
-	virtual void paintEvent(QPaintEvent *);
-	virtual void resizeEvent(QResizeEvent *);
+	virtual void paintEvent(QPaintEvent *) override;
+	virtual void resizeEvent(QResizeEvent *) override;
 
 protected:
 	//! Cache the elided text so as to not recompute it every paint event
@@ -50,5 +49,3 @@ private:
 	Qt::TextElideMode elideMode_;
 	QString cachedElidedText;
 };
-
-#endif // ELIDEDLABEL_HPP

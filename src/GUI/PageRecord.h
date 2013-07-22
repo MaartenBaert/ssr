@@ -20,8 +20,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "PageInput.h"
 #include "PageOutput.h"
-#include "Logger.h"
+#include "OutputSettings.h"
+#include "OutputManager.h"
 
 #include "ElidedLabel.h"
 
@@ -44,28 +46,27 @@ class PageRecord : public QWidget {
 private:
 	MainWindow *m_main_window;
 
-	bool m_page_started, m_encoders_started, m_capturing, m_previewing;
-	bool m_video_record_cursor, m_video_follow_cursor, m_video_glinject;
+	bool m_page_started, m_capturing, m_recording, m_previewing;
+	bool m_recorded_something;
+
+	PageInput::enum_video_area m_video_area;
 	unsigned int m_video_x, m_video_y, m_video_in_width, m_video_in_height;
+	unsigned int m_video_frame_rate;
 	bool m_video_scaling;
 	unsigned int m_video_scaled_width, m_video_scaled_height;
-	unsigned int m_video_frame_rate, m_audio_sample_rate;
+	bool m_video_record_cursor;
 	bool m_audio_enabled;
+	unsigned int m_audio_sample_rate;
 	QString m_alsa_device;
 	bool m_glinject_insert_duplicates;
 
-	QString m_file;
-	bool m_separate_files;
-	unsigned int m_video_out_width, m_video_out_height;
-	PageOutput::enum_container m_container;
-	PageOutput::enum_video_codec m_video_codec;
-	PageOutput::enum_audio_codec m_audio_codec;
-	QString m_container_avname, m_video_avname, m_audio_avname;
-	unsigned int m_video_kbit_rate, m_audio_kbit_rate;
-	std::vector<std::pair<QString, QString> > m_video_options, m_audio_options;
+	OutputSettings m_output_settings;
+	std::unique_ptr<OutputManager> m_output_manager;
+
+	QString m_file_base;
 	QString m_file_protocol;
+	bool m_separate_files;
 	unsigned int m_file_segment_counter;
-	QString m_file_segment;
 
 	QTimer *m_info_timer, *m_log_timer;
 	bool m_info_first_time;
@@ -73,10 +74,6 @@ private:
 	unsigned int m_info_last_frames;
 	uint64_t m_info_last_bytes;
 
-	std::unique_ptr<Muxer> m_muxer;
-	VideoEncoder *m_video_encoder;
-	AudioEncoder *m_audio_encoder;
-	std::unique_ptr<Synchronizer> m_synchronizer;
 	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
@@ -115,9 +112,13 @@ public:
 
 	void PageStart();
 	void PageStop(bool save);
+	void RecordStart();
+	void RecordStop();
 	void CaptureStart();
 	void CaptureStop();
 
+private:
+	void UpdateCapture();
 	void UpdateRecordPauseButton();
 	void UpdatePreview();
 

@@ -17,22 +17,6 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
 #include "Global.h"
+#include "OutputSettings.h"
 
-class FastScaler {
-
-private:
-#if SSR_USE_X86_ASM
-	bool m_use_ssse3, m_warn_alignment;
-#endif
-
-	bool m_warn_swscale;
-	SwsContext *m_sws_context;
-
-public:
-	FastScaler();
-	void Scale(unsigned int in_width, unsigned int in_height, const uint8_t* const* in_data, const int* in_stride, PixelFormat in_format,
-			   unsigned int out_width, unsigned int out_height, uint8_t* const* out_data, const int* out_stride, PixelFormat out_format);
-
-};

@@ -8,22 +8,27 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++0x -D__STDC_CONSTANT_MACROS -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
-INCLUDEPATH += AV AV/Encoder AV/Input GUI
-DEPENDPATH += AV AV/Encoder AV/Input GUI
+INCLUDEPATH += AV AV/Input AV/Output GUI
+DEPENDPATH += AV AV/Input AV/Output GUI
 
 SOURCES += \
-	AV/Encoder/AudioEncoder.cpp \
-	AV/Encoder/BaseEncoder.cpp \
-	AV/Encoder/VideoEncoder.cpp \
-	AV/Encoder/X264Presets.cpp \
 	AV/Input/ALSAInput.cpp \
 	AV/Input/GLInjectInput.cpp \
 	AV/Input/GLInjectLauncher.cpp \
-	AV/Input/VideoConnection.cpp \
 	AV/Input/X11Input.cpp \
+	AV/Output/AudioEncoder.cpp \
+	AV/Output/BaseEncoder.cpp \
+	AV/Output/Muxer.cpp \
+	AV/Output/OutputManager.cpp \
+	AV/Output/OutputSettings.cpp \
+	AV/Output/Synchronizer.cpp \
+	AV/Output/VideoEncoder.cpp \
+	AV/Output/X264Presets.cpp \
 	AV/AVWrapper.cpp \
-	AV/Muxer.cpp \
-	AV/Synchronizer.cpp \
+	AV/ByteQueue.cpp \
+	AV/DetectCPUFeatures.cpp \
+	AV/FastScaler.cpp \
+	AV/SourceSink.cpp \
 	GUI/AudioPreviewer.cpp \
 	GUI/ElidedLabel.cpp \
 	GUI/HotkeyListener.cpp \
@@ -34,26 +39,28 @@ SOURCES += \
 	GUI/PageRecord.cpp \
 	GUI/PageWelcome.cpp \
 	GUI/VideoPreviewer.cpp \
-	ByteQueue.cpp \
 	Logger.cpp \
 	Main.cpp \
-	Version.cpp \
-	AV/FastScaler.cpp \
-	AV/DetectCPUFeatures.cpp
+	Version.cpp
 
 HEADERS  += \
-	AV/Encoder/AudioEncoder.h \
-	AV/Encoder/BaseEncoder.h \
-	AV/Encoder/VideoEncoder.h \
-	AV/Encoder/X264Presets.h \
 	AV/Input/ALSAInput.h \
 	AV/Input/GLInjectInput.h \
 	AV/Input/GLInjectLauncher.h \
-	AV/Input/VideoConnection.h \
 	AV/Input/X11Input.h \
+	AV/Output/AudioEncoder.h \
+	AV/Output/BaseEncoder.h \
+	AV/Output/Muxer.h \
+	AV/Output/OutputManager.h \
+	AV/Output/OutputSettings.h \
+	AV/Output/Synchronizer.h \
+	AV/Output/VideoEncoder.h \
+	AV/Output/X264Presets.h \
 	AV/AVWrapper.h \
-	AV/Muxer.h \
-	AV/Synchronizer.h \
+	AV/ByteQueue.h \
+	AV/DetectCPUFeatures.h \
+	AV/FastScaler.h \
+	AV/SourceSink.h \
 	GUI/AudioPreviewer.h \
 	GUI/ElidedLabel.h \
 	GUI/HotkeyListener.h \
@@ -64,14 +71,11 @@ HEADERS  += \
 	GUI/PageRecord.h \
 	GUI/PageWelcome.h \
 	GUI/VideoPreviewer.h \
-	ByteQueue.h \
 	Global.h \
 	Logger.h \
 	Main.h \
 	Version.h \
-	VPair.h \
-	AV/FastScaler.h \
-	AV/DetectCPUFeatures.h
+	VPair.h
 
 RESOURCES += \
 	resources.qrc

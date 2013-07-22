@@ -26,8 +26,8 @@ class QComboBoxWithSignal : public QComboBox {
 public:
 	QComboBoxWithSignal(QWidget* parent);
 
-	virtual void showPopup();
-	virtual void hidePopup();
+	virtual void showPopup() override;
+	virtual void hidePopup() override;
 
 signals:
 	void popupShown();
@@ -41,8 +41,8 @@ class QSpinBoxWithSignal : public QSpinBox {
 public:
 	QSpinBoxWithSignal(QWidget* parent);
 
-	virtual void focusInEvent(QFocusEvent* event);
-	virtual void focusOutEvent(QFocusEvent* event);
+	virtual void focusInEvent(QFocusEvent* event) override;
+	virtual void focusOutEvent(QFocusEvent* event) override;
 
 signals:
 	void focusIn();
@@ -141,10 +141,10 @@ public:
 	inline void SetGLInjectInsertDuplicates(bool insert_duplicates) { m_glinject_insert_duplicates = insert_duplicates; }
 
 protected:
-	virtual void mousePressEvent(QMouseEvent* event);
-	virtual void mouseReleaseEvent(QMouseEvent* event);
-	virtual void mouseMoveEvent(QMouseEvent* event);
-	virtual void keyPressEvent(QKeyEvent* event);
+	virtual void mousePressEvent(QMouseEvent* event) override;
+	virtual void mouseReleaseEvent(QMouseEvent* event) override;
+	virtual void mouseMoveEvent(QMouseEvent* event) override;
+	virtual void keyPressEvent(QKeyEvent* event) override;
 
 private:
 	void StartGrabbing();
@@ -178,8 +178,8 @@ public:
 	WidgetScreenLabel(QWidget* parent, const QString& text);
 
 protected:
-	virtual QSize sizeHint() const;
-	virtual void paintEvent(QPaintEvent* event);
+	virtual QSize sizeHint() const override;
+	virtual void paintEvent(QPaintEvent* event) override;
 
 };
 

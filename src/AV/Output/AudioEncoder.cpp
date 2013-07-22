@@ -39,6 +39,8 @@ AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		m_bit_rate = bit_rate;
 		m_sample_rate = sample_rate;
 
+		m_opt_threads = 1;
+
 		if(m_sample_rate == 0) {
 			Logger::LogError("[AudioEncoder::Init] Error: Sample rate it zero.");
 			throw LibavException();
@@ -48,6 +50,8 @@ AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		AVDictionary *options = NULL;
 		try {
 			for(unsigned int i = 0; i < codec_options.size(); ++i) {
+				if(codec_options[i].first == "threads")
+					m_opt_threads = codec_options[i].second.toUInt();
 				av_dict_set(&options, qPrintable(codec_options[i].first), qPrintable(codec_options[i].second), 0);
 			}
 			CreateCodec(qPrintable(codec_name), &options);
@@ -122,6 +126,7 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 		Logger::LogError("[AudioEncoder::FillCodecContext] Error: Encoder requires an unsupported sample format (" + QString::number(*codec->sample_fmts) + ")!");
 		throw LibavException();
 	}
+	GetCodecContext()->thread_count = m_opt_threads;
 
 }
 

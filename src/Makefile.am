@@ -6,8 +6,8 @@ simplescreenrecorder_CPPFLAGS = \
 	$(QT4_CFLAGS)
 simplescreenrecorder_CXXFLAGS = \
 	-pthread \
-	-I$(srcdir)/AV/Encoder \
 	-I$(srcdir)/AV/Input \
+	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
 	-I$(srcdir)/GUI \
 	-I$(top_srcdir)/glinject \
@@ -18,34 +18,40 @@ simplescreenrecorder_LDFLAGS = \
 	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
 simplescreenrecorder_SOURCES = \
-	AV/Encoder/AudioEncoder.cpp \
-	AV/Encoder/AudioEncoder.h \
-	AV/Encoder/BaseEncoder.cpp \
-	AV/Encoder/BaseEncoder.h \
-	AV/Encoder/VideoEncoder.cpp \
-	AV/Encoder/VideoEncoder.h \
-	AV/Encoder/X264Presets.cpp \
-	AV/Encoder/X264Presets.h \
 	AV/Input/ALSAInput.cpp \
 	AV/Input/ALSAInput.h \
 	AV/Input/GLInjectInput.cpp \
 	AV/Input/GLInjectInput.h \
 	AV/Input/GLInjectLauncher.cpp \
 	AV/Input/GLInjectLauncher.h \
-	AV/Input/VideoConnection.cpp \
-	AV/Input/VideoConnection.h \
 	AV/Input/X11Input.cpp \
 	AV/Input/X11Input.h \
+	AV/Output/AudioEncoder.cpp \
+	AV/Output/AudioEncoder.h \
+	AV/Output/BaseEncoder.cpp \
+	AV/Output/BaseEncoder.h \
+	AV/Output/Muxer.cpp \
+	AV/Output/Muxer.h \
+	AV/Output/OutputManager.cpp \
+	AV/Output/OutputManager.h \
+	AV/Output/OutputSettings.cpp \
+	AV/Output/OutputSettings.h \
+	AV/Output/Synchronizer.cpp \
+	AV/Output/Synchronizer.h \
+	AV/Output/VideoEncoder.cpp \
+	AV/Output/VideoEncoder.h \
+	AV/Output/X264Presets.cpp \
+	AV/Output/X264Presets.h \
 	AV/AVWrapper.cpp \
 	AV/AVWrapper.h \
+	AV/ByteQueue.cpp \
+	AV/ByteQueue.h \
 	AV/DetectCPUFeatures.cpp \
 	AV/DetectCPUFeatures.h \
 	AV/FastScaler.cpp \
 	AV/FastScaler.h \
-	AV/Muxer.cpp \
-	AV/Muxer.h \
-	AV/Synchronizer.cpp \
-	AV/Synchronizer.h \
+	AV/SourceSink.cpp \
+	AV/SourceSink.h \
 	GUI/AudioPreviewer.cpp \
 	GUI/AudioPreviewer.h \
 	GUI/ElidedLabel.cpp \
@@ -66,8 +72,6 @@ simplescreenrecorder_SOURCES = \
 	GUI/PageWelcome.h \
 	GUI/VideoPreviewer.cpp \
 	GUI/VideoPreviewer.h \
-	ByteQueue.cpp \
-	ByteQueue.h \
 	Global.h \
 	Logger.cpp \
 	Logger.h \
