@@ -27,6 +27,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoEncoder.h"
 #include "AudioEncoder.h"
 
+static bool MatchSuffix(const QString& suffix, const QStringList& suffixes) {
+	return ((suffix.isEmpty() && suffixes.isEmpty()) || suffixes.contains(suffix, Qt::CaseInsensitive));
+}
+
 const QString PageOutput::H264_PRESET_STRINGS[H264_PRESET_COUNT] = {
 	"ultrafast",
 	"superfast",
@@ -62,20 +66,20 @@ PageOutput::PageOutput(MainWindow* main_window)
 		{"OGG", "ogg", {"ogg"}, "OGG files (*.ogg)",
 			{VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS}},
-		{"Other...", "", {}, "", {}, {}},
+		{"Other...", "other", {}, "", {}, {}},
 	};
 	m_video_codecs = {
 		{"H.264"   , "libx264"  },
 		{"VP8"     , "libvpx"   },
 		{"Theora"  , "libtheora"},
-		{"Other...", ""         },
+		{"Other...", "other"    },
 	};
 	m_audio_codecs = {
 		{"Vorbis"      , "libvorbis"   },
 		{"MP3"         , "libmp3lame"  },
 		{"AAC"         , "libvo_aacenc"},
 		{"Uncompressed", "pcm_s16le"   },
-		{"Other..."    , ""            },
+		{"Other..."    , "other"       },
 	};
 
 	// alternative aac codec
@@ -315,13 +319,6 @@ PageOutput::PageOutput(MainWindow* main_window)
 
 }
 
-void PageOutput::PageStart() {
-
-	// only show audio settings if audio is enabled
-	m_groupbox_audio->setVisible(m_main_window->GetPageInput()->GetAudioEnabled());
-
-}
-
 void PageOutput::LoadSettings(QSettings* settings) {
 
 	// choose default container and codecs
@@ -348,21 +345,23 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	}
 
 	// load settings
-	SetFile(settings->value("output/file", "").toString());
-	SetSeparateFiles(settings->value("output/separate_files", false).toBool());
-	SetContainer((enum_container) settings->value("output/container", default_container).toUInt());
-	SetContainerAV(settings->value("output/container_av", default_container).toUInt());
-	SetVideoCodec((enum_video_codec) settings->value("output/video/codec", default_video_codec).toUInt());
-	SetVideoCodecAV(settings->value("output/video/codec_av", default_video_codec).toUInt());
-	SetVideoKBitRate(settings->value("output/video/kbit_rate", 5000).toUInt());
-	SetH264CRF(settings->value("output/video/h264/crf", 23).toUInt());
-	SetH264Preset((enum_h264_preset) settings->value("output/video/h264/preset", H264_PRESET_SUPERFAST).toUInt());
-	SetVP8CPUUsed(settings->value("output/video/vp8/cpu_used", 5).toUInt());
-	SetVideoOptions(settings->value("output/video/options", "").toString());
-	SetAudioCodec((enum_audio_codec) settings->value("output/audio/codec", default_audio_codec).toUInt());
-	SetAudioCodecAV(settings->value("output/audio/codec_av", default_audio_codec).toUInt());
-	SetAudioKBitRate(settings->value("output/audio/kbit_rate", 128).toUInt());
-	SetAudioOptions(settings->value("output/audio/options", "").toString());
+	SetFile(                         settings->value("output/file", "").toString());
+	SetSeparateFiles(                settings->value("output/separate_files", false).toBool());
+	SetContainer(FindContainer(      settings->value("output/container").toString(), default_container));
+	SetContainerAV(FindContainerAV(  settings->value("output/container_av").toString()));
+
+	SetVideoCodec(FindVideoCodec(    settings->value("output/video_codec").toString(), default_video_codec));
+	SetVideoCodecAV(FindVideoCodecAV(settings->value("output/video_codec_av").toString()));
+	SetVideoKBitRate(                settings->value("output/video_kbit_rate", 5000).toUInt());
+	SetH264CRF(                      settings->value("output/video_h264_crf", 23).toUInt());
+	SetH264Preset((enum_h264_preset) settings->value("output/video_h264_preset", H264_PRESET_SUPERFAST).toUInt());
+	SetVP8CPUUsed(                   settings->value("output/video_vp8_cpu_used", 5).toUInt());
+	SetVideoOptions(                 settings->value("output/video_options", "").toString());
+
+	SetAudioCodec(FindAudioCodec(    settings->value("output/audio_codec").toString(), default_audio_codec));
+	SetAudioCodecAV(FindAudioCodecAV(settings->value("output/audio_codec_av").toString()));
+	SetAudioKBitRate(                settings->value("output/audio_kbit_rate", 128).toUInt());
+	SetAudioOptions(                 settings->value("output/audio_options", "").toString());
 
 	// update things
 	UpdateContainerFields();
@@ -375,27 +374,113 @@ void PageOutput::SaveSettings(QSettings* settings) {
 
 	settings->setValue("output/file", GetFile());
 	settings->setValue("output/separate_files", GetSeparateFiles());
-	settings->setValue("output/container", GetContainer());
-	settings->setValue("output/container_avname", GetContainerAV()); //TODO// name/index
+	settings->setValue("output/container", m_containers[GetContainer()].avname);
+	settings->setValue("output/container_av", m_containers_av[GetContainerAV()].avname);
 
-	//TODO// names instead of index
-	settings->setValue("output/video_codec", GetVideoCodec());
-	settings->setValue("output/video_codec_avname", GetVideoCodecAV());
+	settings->setValue("output/video_codec", m_video_codecs[GetVideoCodec()].avname);
+	settings->setValue("output/video_codec_av", m_video_codecs_av[GetVideoCodecAV()].avname);
 	settings->setValue("output/video_kbit_rate", GetVideoKBitRate());
 	settings->setValue("output/video_h264_crf", GetH264CRF());
 	settings->setValue("output/video_h264_preset", GetH264Preset());
 	settings->setValue("output/video_vp8_cpu_used", GetVP8CPUUsed());
 	settings->setValue("output/video_options", GetVideoOptions());
 
-	settings->setValue("output/audio_codec", GetAudioCodec());
-	settings->setValue("output/audio_codec_av", GetAudioCodecAV());
+	settings->setValue("output/audio_codec", m_audio_codecs[GetAudioCodec()].avname);
+	settings->setValue("output/audio_codec_av", m_audio_codecs_av[GetAudioCodecAV()].avname);
 	settings->setValue("output/audio_kbit_rate", GetAudioKBitRate());
 	settings->setValue("output/audio_options", GetAudioOptions());
 
 }
 
-static bool MatchSuffix(const QString& suffix, const QStringList& suffixes) {
-	return ((suffix.isEmpty() && suffixes.isEmpty()) || suffixes.contains(suffix, Qt::CaseInsensitive));
+void PageOutput::PageStart() {
+
+	// only show audio settings if audio is enabled
+	m_groupbox_audio->setVisible(m_main_window->GetPageInput()->GetAudioEnabled());
+
+}
+
+QString PageOutput::GetFileProtocol() {
+	QRegExp protocol_regex("^([a-z0-9]+)://", Qt::CaseInsensitive, QRegExp::RegExp);
+	if(protocol_regex.indexIn(GetFile()) < 0) {
+		return QString();
+	}
+	return protocol_regex.cap(1);
+}
+
+QString PageOutput::GetContainerAVName() {
+	enum_container container = GetContainer();
+	if(container != CONTAINER_OTHER)
+		return m_containers[container].avname;
+	else
+		return m_containers_av[GetContainerAV()].avname;
+}
+
+QString PageOutput::GetVideoCodecAVName() {
+	enum_video_codec video_codec = GetVideoCodec();
+	if(video_codec != VIDEO_CODEC_OTHER)
+		return m_video_codecs[video_codec].avname;
+	else
+		return m_video_codecs_av[GetVideoCodecAV()].avname;
+}
+
+QString PageOutput::GetAudioCodecAVName() {
+	enum_audio_codec audio_codec = GetAudioCodec();
+	if(audio_codec != AUDIO_CODEC_OTHER)
+		return m_audio_codecs[audio_codec].avname;
+	else
+		return m_audio_codecs_av[GetAudioCodecAV()].avname;
+}
+
+QString PageOutput::GetH264PresetName() {
+	return H264_PRESET_STRINGS[GetH264Preset()];
+}
+
+PageOutput::enum_container PageOutput::FindContainer(QString name, enum_container fallback) {
+	for(unsigned int i = 0; i < CONTAINER_COUNT; ++i) {
+		if(m_containers[i].avname == name)
+			return (enum_container) i;
+	}
+	return fallback;
+}
+
+unsigned int PageOutput::FindContainerAV(QString name) {
+	for(unsigned int i = 0; i < m_containers_av.size(); ++i) {
+		if(m_containers_av[i].avname == name)
+			return i;
+	}
+	return 0;
+}
+
+PageOutput::enum_video_codec PageOutput::FindVideoCodec(QString name, enum_video_codec fallback) {
+	for(unsigned int i = 0; i < VIDEO_CODEC_COUNT; ++i) {
+		if(m_video_codecs[i].avname == name)
+			return (enum_video_codec) i;
+	}
+	return fallback;
+}
+
+unsigned int PageOutput::FindVideoCodecAV(QString name) {
+	for(unsigned int i = 0; i < m_video_codecs_av.size(); ++i) {
+		if(m_video_codecs_av[i].avname == name)
+			return i;
+	}
+	return 0;
+}
+
+PageOutput::enum_audio_codec PageOutput::FindAudioCodec(QString name, enum_audio_codec fallback) {
+	for(unsigned int i = 0; i < AUDIO_CODEC_COUNT; ++i) {
+		if(m_audio_codecs[i].avname == name)
+			return (enum_audio_codec) i;
+	}
+	return fallback;
+}
+
+unsigned int PageOutput::FindAudioCodecAV(QString name) {
+	for(unsigned int i = 0; i < m_audio_codecs_av.size(); ++i) {
+		if(m_audio_codecs_av[i].avname == name)
+			return i;
+	}
+	return 0;
 }
 
 void PageOutput::UpdateSuffixAndContainerFields() {

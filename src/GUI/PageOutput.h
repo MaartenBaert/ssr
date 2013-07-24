@@ -125,6 +125,20 @@ public:
 
 	void PageStart();
 
+	QString GetFileProtocol();
+	QString GetContainerAVName();
+	QString GetVideoCodecAVName();
+	QString GetAudioCodecAVName();
+	QString GetH264PresetName();
+
+private:
+	enum_container FindContainer(QString name, enum_container fallback);
+	unsigned int FindContainerAV(QString name);
+	enum_video_codec FindVideoCodec(QString name, enum_video_codec fallback);
+	unsigned int FindVideoCodecAV(QString name);
+	enum_audio_codec FindAudioCodec(QString name, enum_audio_codec fallback);
+	unsigned int FindAudioCodecAV(QString name);
+
 public:
 	inline QString GetFile() { return m_lineedit_file->text(); }
 	inline bool GetSeparateFiles() { return m_checkbox_separate_files->isChecked(); }
@@ -157,39 +171,6 @@ public:
 	inline void SetAudioCodecAV(unsigned int audio_codec) { m_combobox_audio_codec_av->setCurrentIndex(clamp<unsigned int>(0, m_audio_codecs_av.size() - 1, audio_codec)); }
 	inline void SetAudioKBitRate(unsigned int kbit_rate) { m_lineedit_audio_kbit_rate->setText(QString::number(kbit_rate)); }
 	inline void SetAudioOptions(const QString& options) { m_lineedit_audio_options->setText(options); }
-
-public:
-	inline QString GetFileProtocol() {
-		QRegExp protocol_regex("^([a-z0-9]+)://", Qt::CaseInsensitive, QRegExp::RegExp);
-		if(protocol_regex.indexIn(GetFile()) < 0) {
-			return QString();
-		}
-		return protocol_regex.cap(1);
-	}
-	inline QString GetContainerAVName() {
-		enum_container container = GetContainer();
-		if(container != CONTAINER_OTHER)
-			return m_containers[container].avname;
-		else
-			return m_containers_av[GetContainerAV()].avname;
-	}
-	inline QString GetVideoCodecAVName() {
-		enum_video_codec video_codec = GetVideoCodec();
-		if(video_codec != VIDEO_CODEC_OTHER)
-			return m_video_codecs[video_codec].avname;
-		else
-			return m_video_codecs_av[GetVideoCodecAV()].avname;
-	}
-	inline QString GetAudioCodecAVName() {
-		enum_audio_codec audio_codec = GetAudioCodec();
-		if(audio_codec != AUDIO_CODEC_OTHER)
-			return m_audio_codecs[audio_codec].avname;
-		else
-			return m_audio_codecs_av[GetAudioCodecAV()].avname;
-	}
-	inline QString GetH264PresetName() {
-		return H264_PRESET_STRINGS[GetH264Preset()];
-	}
 
 public slots:
 	void UpdateSuffixAndContainerFields();
