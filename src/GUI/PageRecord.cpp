@@ -588,6 +588,10 @@ void PageRecord::RecordStop(bool final) {
 		// change the file name
 		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
 
+		// reset the output video size
+		m_output_settings.video_width = 0;
+		m_output_settings.video_height = 0;
+
 	}
 
 	Logger::LogInfo("[PageRecord::RecordStart] Stopped recording.");
