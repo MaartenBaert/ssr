@@ -34,8 +34,6 @@ QSize CalculateScaledSize(QSize in, QSize out) {
 VideoPreviewer::VideoPreviewer(QWidget* parent)
 	: QWidget(parent) {
 
-	m_sws_context = NULL;
-
 	m_should_repaint = false;
 
 	{
@@ -54,13 +52,6 @@ VideoPreviewer::~VideoPreviewer() {
 
 	// disconnect
 	ConnectVideoSource(NULL);
-
-	// free everything
-	//TODO// use FastScaler
-	if(m_sws_context != NULL) {
-		sws_freeContext(m_sws_context);
-		m_sws_context = NULL;
-	}
 
 }
 
@@ -101,20 +92,11 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 		lock->m_image = QImage(image_size, QImage::Format_RGB32);
 	}
 
-	// get sws context
-	m_sws_context = sws_getCachedContext(m_sws_context,
-										 width, height, format,
-										 image_size.width(), image_size.height(), PIX_FMT_BGRA,
-										 SWS_BILINEAR, NULL, NULL, NULL);
-	if(m_sws_context == NULL) {
-		Logger::LogError("[VideoPreviewer::ReadFrame] Error: Can't get swscale context!");
-		throw LibavException();
-	}
-
 	// scale the image
 	uint8_t *out_data = lock->m_image.bits();
 	int out_stride = lock->m_image.bytesPerLine();
-	sws_scale(m_sws_context, &data, &stride, 0, height, &out_data, &out_stride);
+	m_fast_scaler.Scale(width, height, &data, &stride, format,
+						image_size.width(), image_size.height(), &out_data, &out_stride, PIX_FMT_BGRA);
 
 	// set the alpha channel to 0xff (just to be sure)
 	// Some applications (e.g. firefox) generate alpha values that are not 0xff.

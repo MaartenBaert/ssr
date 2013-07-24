@@ -32,6 +32,7 @@ private:
 
 public:
 	FastScaler();
+	~FastScaler();
 	void Scale(unsigned int in_width, unsigned int in_height, const uint8_t* const* in_data, const int* in_stride, PixelFormat in_format,
 			   unsigned int out_width, unsigned int out_height, uint8_t* const* out_data, const int* out_stride, PixelFormat out_format);
 

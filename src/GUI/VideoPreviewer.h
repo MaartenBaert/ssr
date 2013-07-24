@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "SourceSink.h"
 #include "VPair.h"
+#include "FastScaler.h"
 
 class VideoPreviewer : public QWidget, public VideoSink {
 
@@ -36,7 +37,7 @@ private:
 	typedef VPair<SharedData>::Lock SharedLock;
 
 private:
-	SwsContext *m_sws_context;
+	FastScaler m_fast_scaler;
 
 	VPair<SharedData> m_shared_data;
 	volatile bool m_should_repaint;
