@@ -38,6 +38,8 @@ BaseSink::~BaseSink() {
 	Q_ASSERT(m_source == NULL);
 }
 void BaseSink::ConnectBaseSource(BaseSource* source) {
+	if(m_source == source)
+		return;
 	if(m_source != NULL) {
 		BaseSource::SharedLock lock(&m_source->m_shared_data);
 		for(auto it = lock->m_sinks.begin(); it != lock->m_sinks.end(); ++it) {

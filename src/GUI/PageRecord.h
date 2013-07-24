@@ -69,13 +69,9 @@ private:
 	unsigned int m_file_segment_counter;
 
 	QTimer *m_info_timer, *m_log_timer;
-	bool m_info_first_time;
-	int64_t m_info_last_time;
-	unsigned int m_info_last_frames;
-	uint64_t m_info_last_bytes;
 
-	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
+	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
 	std::unique_ptr<ALSAInput> m_alsa_input;
 
@@ -113,7 +109,7 @@ public:
 	void PageStart();
 	void PageStop(bool save);
 	void RecordStart();
-	void RecordStop();
+	void RecordStop(bool final);
 	void CaptureStart();
 	void CaptureStop();
 

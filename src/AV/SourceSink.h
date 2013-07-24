@@ -44,7 +44,7 @@ public:
 
 class BaseSink {
 public:
-	BaseSource *m_source;
+	BaseSource *m_source; // not protected by a lock because it should only be read when connections change
 public:
 	BaseSink();
 	virtual ~BaseSink();

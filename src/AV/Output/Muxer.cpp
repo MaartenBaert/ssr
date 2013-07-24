@@ -25,6 +25,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "BaseEncoder.h"
 
 static const unsigned int INVALID_STREAM = std::numeric_limits<unsigned int>::max();
+static const double NOPTS_DOUBLE = -std::numeric_limits<double>::max();
 
 Muxer::Muxer(const QString& container_name, const QString& output_file) {
 
@@ -45,6 +46,9 @@ Muxer::Muxer(const QString& container_name, const QString& output_file) {
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_total_bytes = 0;
+		lock->m_actual_bit_rate = 0.0;
+		lock->m_previous_pts = NOPTS_DOUBLE;
+		lock->m_previous_bytes = 0;
 	}
 
 	// initialize thread signals
@@ -110,6 +114,11 @@ void Muxer::Finish() {
 
 bool Muxer::IsStarted() {
 	return m_started;
+}
+
+double Muxer::GetActualBitRate() {
+	SharedLock lock(&m_shared_data);
+	return lock->m_actual_bit_rate;
 }
 
 uint64_t Muxer::GetTotalBytes() {
@@ -247,17 +256,12 @@ void Muxer::run() {
 		// start muxing
 		for( ; ; ) {
 
-			// find the oldest packet
-			bool should_wait = false;
+			// find the oldest stream that isn't done yet
 			unsigned int oldest_stream = INVALID_STREAM;
 			double oldest_pts = std::numeric_limits<double>::max();
 			for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 				StreamLock lock(&m_stream_data[i]);
-				if(lock->m_packet_queue.empty()) {
-					if(!lock->m_is_done) {
-						should_wait = true;
-					}
-				} else {
+				if(!lock->m_is_done) {
 					double pts = ToDouble(m_format_context->streams[i]->pts) * ToDouble(m_format_context->streams[i]->time_base);
 					if(pts < oldest_pts) {
 						oldest_stream = i;
@@ -266,13 +270,7 @@ void Muxer::run() {
 				}
 			}
 
-			// should we wait for more packets?
-			if(should_wait) {
-				usleep(10000);
-				continue;
-			}
-
-			// if there are no packets left and we don't have to wait for more, we're done
+			// if there are no packets left, we're done
 			if(oldest_stream == INVALID_STREAM) {
 				break;
 			}
@@ -281,17 +279,25 @@ void Muxer::run() {
 			std::unique_ptr<AVPacketWrapper> packet;
 			{
 				StreamLock lock(&m_stream_data[oldest_stream]);
-				packet = std::move(lock->m_packet_queue.front());
-				lock->m_packet_queue.pop_front();
+				if(!lock->m_packet_queue.empty()) {
+					packet = std::move(lock->m_packet_queue.front());
+					lock->m_packet_queue.pop_front();
+				}
 			}
+
+			// if there is no packet, wait and try again later
+			if(packet == NULL) {
+				usleep(10000);
+				continue;
+			}
+
+			// prepare packet
 			AVStream *st = m_format_context->streams[oldest_stream];
 			packet->stream_index = oldest_stream;
 			if(packet->pts != (int64_t) AV_NOPTS_VALUE) {
-				//packet->pts =  (int64_t) ((double) packet->pts * ToDouble(st->codec->time_base) / ToDouble(st->time_base) + 0.5);
 				packet->pts = av_rescale_q(packet->pts, st->codec->time_base, st->time_base);
 			}
 			if(packet->dts != (int64_t) AV_NOPTS_VALUE) {
-				//packet->dts =  (int64_t) ((double) packet->dts * ToDouble(st->codec->time_base) / ToDouble(st->time_base) + 0.5);
 				packet->dts = av_rescale_q(packet->dts, st->codec->time_base, st->time_base);
 			}
 
@@ -310,6 +316,16 @@ void Muxer::run() {
 			{
 				SharedLock lock(&m_shared_data);
 				lock->m_total_bytes = m_format_context->pb->pos + (m_format_context->pb->buf_ptr - m_format_context->pb->buffer);
+				if(lock->m_previous_pts == NOPTS_DOUBLE) {
+					lock->m_previous_pts = oldest_pts;
+					lock->m_previous_bytes = lock->m_total_bytes;
+				}
+				double timedelta = oldest_pts - lock->m_previous_pts;
+				if(timedelta > 0.999999) {
+					lock->m_actual_bit_rate = (double) ((lock->m_total_bytes - lock->m_previous_bytes) * 8) / timedelta;
+					lock->m_previous_pts = oldest_pts;
+					lock->m_previous_bytes = lock->m_total_bytes;
+				}
 			}
 
 		}

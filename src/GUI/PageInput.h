@@ -77,6 +77,8 @@ private:
 	unsigned int m_glinject_max_megapixels;
 	bool m_glinject_capture_front, m_glinject_limit_fps, m_glinject_insert_duplicates;
 
+	std::vector<WidgetScreenLabel*> m_screen_labels;
+
 	QButtonGroup *m_buttongroup_video_area;
 	QComboBoxWithSignal *m_combobox_screens;
 	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window, *m_pushbutton_video_opengl_settings;
@@ -88,8 +90,6 @@ private:
 
 	QCheckBox *m_checkbox_audio_enable;
 	QLineEdit *m_lineedit_alsa_device;
-
-	std::vector<WidgetScreenLabel*> m_screen_labels;
 
 public:
 	PageInput(MainWindow* main_window);

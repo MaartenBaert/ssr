@@ -88,6 +88,12 @@ static QString ReadableTime(int64_t time_micro) {
 			.arg(time % 60, 2, 10, QLatin1Char('0'));
 }
 
+static QString ReadableWidthHeight(unsigned int width, unsigned int height) {
+	if(width == 0 && height == 0)
+		return "?";
+	return QString::number(width) + "x" + QString::number(height);
+}
+
 class QTextEditSmall : public QTextEdit {
 
 public:
@@ -456,7 +462,6 @@ void PageRecord::PageStart() {
 	UpdateHotkey();
 	UpdateCapture();
 
-	m_info_first_time = true;
 	UpdateInformation();
 	m_info_timer->start(1000);
 
@@ -467,7 +472,7 @@ void PageRecord::PageStop(bool save) {
 	if(!m_page_started)
 		return;
 
-	RecordStop();
+	RecordStop(true);
 	CaptureStop();
 
 	Logger::LogInfo("[PageRecord::PageStop] Stopping page ...");
@@ -565,7 +570,7 @@ void PageRecord::RecordStart() {
 
 }
 
-void PageRecord::RecordStop() {
+void PageRecord::RecordStop(bool final) {
 	Q_ASSERT(m_page_started);
 
 	if(!m_recording)
@@ -573,7 +578,8 @@ void PageRecord::RecordStop() {
 
 	Logger::LogInfo("[PageRecord::RecordStop] Stopping recording ...");
 
-	if(m_separate_files) {
+	// if final, then PageStop will stop the output (and delete the file if needed)
+	if(m_separate_files && !final) {
 
 		// stop the output
 		m_output_manager->Finish();
@@ -743,7 +749,7 @@ void PageRecord::UpdateHotkey() {
 
 void PageRecord::RecordStartPause() {
 	if(m_recording) {
-		RecordStop();
+		RecordStop(false);
 	} else {
 		RecordStart();
 	}
@@ -783,32 +789,14 @@ void PageRecord::UpdateInformation() {
 	if(m_page_started) {
 
 		int64_t total_time = 0;
-		double fps = 0.0, bit_rate = 0.0;
-		uint64_t current_bytes = 0;
+		double frame_rate = 0.0, bit_rate = 0.0;
+		uint64_t total_bytes = 0;
 
 		if(m_output_manager != NULL) {
-
-			Muxer *muxer = m_output_manager->GetMuxer();
-			VideoEncoder *video_encoder = m_output_manager->GetVideoEncoder();
-			Synchronizer *synchronizer = m_output_manager->GetSynchronizer();
-
-			total_time = synchronizer->GetTotalTime();
-			current_bytes = muxer->GetTotalBytes();
-
-			// calculate the frame rate and bit rate
-			//TODO// do this in the encoder?
-			int64_t current_time = hrt_time_micro();
-			unsigned int current_frames = (video_encoder == NULL)? 0 : video_encoder->GetTotalFrames();
-			if(!m_info_first_time && current_time - m_info_last_time > 100000) {
-				double t = (double) (current_time - m_info_last_time) * 0.000001;
-				fps = (double) (current_frames - m_info_last_frames) / t;
-				bit_rate =  (double) (current_bytes - m_info_last_bytes) * 8.0 / t;
-			}
-			m_info_first_time = false;
-			m_info_last_time = current_time;
-			m_info_last_frames = current_frames;
-			m_info_last_bytes = current_bytes;
-
+			total_time = m_output_manager->GetSynchronizer()->GetTotalTime();
+			frame_rate = m_output_manager->GetVideoEncoder()->GetActualFrameRate();
+			bit_rate = m_output_manager->GetMuxer()->GetActualBitRate();
+			total_bytes = m_output_manager->GetMuxer()->GetTotalBytes();
 		}
 
 		// for OpenGL recording, update the application size
@@ -817,21 +805,11 @@ void PageRecord::UpdateInformation() {
 		}
 
 		m_label_info_total_time->setText(ReadableTime(total_time));
-		m_label_info_frame_rate->setText(QString::number(fps, 'f', 2));
-		if(m_video_in_width == 0 && m_video_in_height == 0)
-			m_label_info_size_in->setText("?");
-		else
-			m_label_info_size_in->setText(QString::number(m_video_in_width) + "x" + QString::number(m_video_in_height));
-		if(m_output_settings.video_width == 0 && m_output_settings.video_height == 0)
-			m_label_info_size_out->setText("?");
-		else
-			m_label_info_size_out->setText(QString::number(m_output_settings.video_width) + "x" + QString::number(m_output_settings.video_height));
-		if(m_file_protocol.isNull()) {
-			m_label_info_file_name->setText(QFileInfo(m_output_settings.file).fileName());
-		} else {
-			m_label_info_file_name->setText("(" + m_file_protocol + ")");
-		}
-		m_label_info_file_size->setText(ReadableSize(current_bytes, "B"));
+		m_label_info_frame_rate->setText(QString::number(frame_rate, 'f', 2));
+		m_label_info_size_in->setText(ReadableWidthHeight(m_video_in_width, m_video_in_height));
+		m_label_info_size_out->setText(ReadableWidthHeight(m_output_settings.video_width, m_output_settings.video_height));
+		m_label_info_file_name->setText((m_file_protocol.isNull())? QFileInfo(m_output_settings.file).fileName() : "(" + m_file_protocol + ")");
+		m_label_info_file_size->setText(ReadableSize(total_bytes, "B"));
 		m_label_info_bit_rate->setText(ReadableSize((uint64_t) (bit_rate + 0.5), "bps"));
 
 	} else {

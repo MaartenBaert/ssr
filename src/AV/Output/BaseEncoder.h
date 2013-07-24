@@ -30,7 +30,10 @@ class BaseEncoder : private QThread {
 private:
 	struct SharedData {
 		std::deque<std::unique_ptr<AVFrameWrapper> > m_frame_queue;
-		unsigned int m_total_frames;
+		uint64_t m_total_frames;
+		double m_actual_frame_rate;
+		int64_t m_previous_pts;
+		uint64_t m_previous_frames;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 
@@ -69,6 +72,10 @@ protected:
 	inline unsigned int GetStreamIndex() { return m_stream_index; }
 
 public:
+
+	// Returns the frame rate of the output stream.
+	// This function is thread-safe.
+	double GetActualFrameRate();
 
 	// Returns the total number of added frames.
 	// This function is thread-safe.

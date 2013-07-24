@@ -612,7 +612,6 @@ void PageInput::IdentifyScreens() {
 void PageInput::StopIdentifyScreens() {
 	for(unsigned int i = 0; i < m_screen_labels.size(); ++i) {
 		delete m_screen_labels[i];
-		m_screen_labels[i] = NULL;
 	}
 	m_screen_labels.clear();
 }

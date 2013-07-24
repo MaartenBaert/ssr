@@ -37,6 +37,9 @@ private:
 	typedef VPair<StreamData>::Lock StreamLock;
 	struct SharedData {
 		uint64_t m_total_bytes;
+		double m_actual_bit_rate;
+		double m_previous_pts;
+		uint64_t m_previous_bytes;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 
@@ -63,6 +66,10 @@ public:
 
 	// Returns whether the muxer is running.
 	bool IsStarted();
+
+	// Returns the bit rate of the output stream.
+	// This function is thread-safe.
+	double GetActualBitRate();
 
 	// Returns the total number of bytes written to the output file.
 	// This function is thread-safe.
