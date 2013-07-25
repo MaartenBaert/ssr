@@ -34,10 +34,12 @@ class Synchronizer : public VideoSink, public AudioSink {
 private:
 	struct SharedData {
 
+		std::vector<char> m_partial_audio_frame;
+		unsigned int m_partial_audio_frame_samples;
+
 		std::deque<std::unique_ptr<AVFrameWrapper> > m_video_buffer;
 		ByteQueue m_audio_buffer;
-		std::unique_ptr<AVFrameWrapper> m_partial_audio_frame;
-		int64_t m_video_pts, m_audio_samples; // video and audio position in the final stream (encoded frames and samples in the partial audio frame)
+		int64_t m_video_pts, m_audio_samples; // video and audio position in the final stream (encoded frames and samples, including the partial audio frame)
 		double m_time_correction_factor; // correction factor used to synchronize video and audio time
 
 		int64_t m_time_offset; // the length of all previous segments combined (in microseconds)
@@ -66,11 +68,9 @@ private:
 	unsigned int m_video_width, m_video_height;
 	unsigned int m_video_frame_rate;
 
-	unsigned int m_audio_sample_rate, m_audio_sample_size;
+	unsigned int m_audio_sample_rate, m_audio_channels, m_audio_sample_size;
 	unsigned int m_audio_required_frame_size, m_audio_required_sample_size;
 	AVSampleFormat m_audio_required_sample_format;
-
-	std::vector<char> m_temp_audio_buffer; // stores the original samples for a partial frame with a different sample format
 
 	VPair<FastScaler> m_fast_scaler;
 	VPair<SharedData> m_shared_data;
