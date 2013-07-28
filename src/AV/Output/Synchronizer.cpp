@@ -62,6 +62,13 @@ Synchronizer::~Synchronizer() {
 	ConnectVideoSource(NULL);
 	ConnectAudioSource(NULL);
 
+	// tell the thread to stop
+	if(isRunning()) {
+		Logger::LogInfo("[Synchronizer::~Synchronizer] Telling synchronizer thread to stop ...");
+		m_should_stop = true;
+		wait();
+	}
+
 	// free everything
 	Free();
 
@@ -110,6 +117,11 @@ void Synchronizer::Init() {
 		lock->m_warn_drop_audio = true;
 		lock->m_warn_desync = true;
 	}
+
+	// start input thread
+	m_should_stop = false;
+	m_error_occurred = false;
+	start();
 
 }
 
@@ -195,10 +207,6 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 
 	//Logger::LogInfo("[Synchronizer::AddVideoFrame] Added video frame at " + QString::number(timestamp) + ".");
 
-	// flush buffers
-	if(lock->m_segment_audio_started)
-		FlushBuffers(lock.get());
-
 }
 
 void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) {
@@ -273,13 +281,10 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 
 	//Logger::LogInfo("[Synchronizer::AddAudioSamples] Added audio samples at " + QString::number(timestamp) + ".");
 
-	// flush buffers
-	if(lock->m_segment_video_started)
-		FlushBuffers(lock.get());
-
 }
 
 void Synchronizer::NewSegment(SharedData* lock) {
+	FlushBuffers(lock);
 	if(lock->m_segment_video_started && lock->m_segment_audio_started) {
 		int64_t segment_start_time, segment_stop_time;
 		GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
@@ -306,7 +311,8 @@ void Synchronizer::GetSegmentStartStop(SharedData* lock, int64_t* segment_start_
 }
 
 void Synchronizer::FlushBuffers(SharedData* lock) {
-	Q_ASSERT(lock->m_segment_video_started && lock->m_segment_audio_started);
+	if(!lock->m_segment_video_started || !lock->m_segment_audio_started)
+		return;
 
 	int64_t segment_start_time, segment_stop_time;
 	GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
@@ -444,7 +450,29 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 
 }
 
-void Synchronizer::ClearBuffers(SharedData* lock) {
-	lock->m_video_buffer.clear();
-	lock->m_audio_buffer.Clear();
+void Synchronizer::run() {
+	try {
+
+		Logger::LogInfo("[Synchronizer::run] Synchronizer thread started.");
+
+		while(!m_should_stop) {
+
+			{
+				SharedLock lock(&m_shared_data);
+				FlushBuffers(lock.get());
+			}
+
+			usleep(10000);
+
+		}
+
+		Logger::LogInfo("[Synchronizer::run] Synchronizer thread stopped.");
+
+	} catch(const std::exception& e) {
+		m_error_occurred = true;
+		Logger::LogError(QString("[Synchronizer::run] Exception '") + e.what() + "' in synchronizer thread.");
+	} catch(...) {
+		m_error_occurred = true;
+		Logger::LogError("[Synchronizer::run] Unknown exception in synchronizer thread.");
+	}
 }

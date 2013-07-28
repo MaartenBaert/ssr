@@ -29,7 +29,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class VideoEncoder;
 class AudioEncoder;
 
-class Synchronizer : public VideoSink, public AudioSink {
+class Synchronizer : private QThread, public VideoSink, public AudioSink {
 
 private:
 	struct SharedData {
@@ -73,6 +73,7 @@ private:
 
 	VPair<FastScaler> m_fast_scaler;
 	VPair<SharedData> m_shared_data;
+	volatile bool m_should_stop, m_error_occurred;
 
 public:
 	// The arguments 'video_encoder' and 'audio_encoder' can be NULL to disable video or audio.
@@ -96,20 +97,24 @@ public:
 	// This function is thread-safe.
 	int64_t GetTotalTime();
 
+	// Returns whether an error has occurred in the synchronizer thread.
+	// This function is thread-safe.
+	inline bool HasErrorOccurred() { return m_error_occurred; }
+
 	inline VideoEncoder* GetVideoEncoder() { return m_video_encoder; }
 	inline AudioEncoder* GetAudioEncoder() { return m_audio_encoder; }
 
 public: // internal
-
 	virtual int64_t GetVideoFrameInterval() override;
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;
 	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) override;
 
 private:
-
 	void NewSegment(SharedData* lock);
 	void GetSegmentStartStop(SharedData* lock, int64_t* segment_start_time, int64_t* segment_stop_time);
 	void FlushBuffers(SharedData* lock);
-	void ClearBuffers(SharedData* lock);
+
+private:
+	virtual void run();
 
 };
