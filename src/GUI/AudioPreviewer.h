@@ -24,6 +24,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VPair.h"
 
 class AudioPreviewer : public QWidget, public AudioSink {
+	Q_OBJECT
 
 private:
 	struct SharedData {
@@ -37,16 +38,21 @@ private:
 
 private:
 	VPair<SharedData> m_shared_data;
-	volatile bool m_should_repaint;
 
 public:
 	AudioPreviewer(QWidget* parent);
 	~AudioPreviewer();
 
+	// Resets the preview.
+	// This function is thread-safe.
 	void Reset();
-	void SetFrameRate(unsigned int frame_rate);
-	void UpdateIfNeeded();
 
+	// Changes the preview frame rate.
+	// This function is thread-safe.
+	void SetFrameRate(unsigned int frame_rate);
+
+	// Reads audio samples from the audio source.
+	// This function is thread-safe.
 	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) override;
 
 	virtual QSize minimumSizeHint() const override { return QSize(100, 17); }
@@ -56,5 +62,8 @@ protected:
 	virtual void showEvent(QShowEvent* event) override;
 	virtual void hideEvent(QHideEvent* event) override;
 	virtual void paintEvent(QPaintEvent* event) override;
+
+signals:
+	void NeedsUpdate();
 
 };

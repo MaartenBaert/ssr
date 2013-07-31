@@ -150,6 +150,7 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Version.$(OBJEXT)
 @ENABLE_SSRPROGRAM_TRUE@nodist_simplescreenrecorder_OBJECTS = simplescreenrecorder-qrc_resources.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_X11Input.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_AudioPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_ElidedLabel.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_HotkeyListener.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_MainWindow.$(OBJEXT) \
@@ -157,7 +158,9 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageOutput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageRecord.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageWelcome.$(OBJEXT)
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageWelcome.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_VideoPreviewer.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_Logger.$(OBJEXT)
 simplescreenrecorder_OBJECTS = $(am_simplescreenrecorder_OBJECTS) \
 	$(nodist_simplescreenrecorder_OBJECTS)
 simplescreenrecorder_LDADD = $(LDADD)
@@ -462,11 +465,13 @@ top_srcdir = @top_srcdir@
 ########## Qt meta object compiler ##########
 @ENABLE_SSRPROGRAM_TRUE@nodist_simplescreenrecorder_SOURCES =  \
 @ENABLE_SSRPROGRAM_TRUE@	qrc_resources.cpp moc_X11Input.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	moc_AudioPreviewer.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_ElidedLabel.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_HotkeyListener.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_MainWindow.cpp moc_PageDone.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageInput.cpp moc_PageOutput.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	moc_PageRecord.cpp moc_PageWelcome.cpp
+@ENABLE_SSRPROGRAM_TRUE@	moc_PageRecord.cpp moc_PageWelcome.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	moc_VideoPreviewer.cpp moc_Logger.cpp
 
 ########## Qt resource system ##########
 @ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = \
@@ -649,14 +654,17 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Logger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Version.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_ElidedLabel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_HotkeyListener.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_Logger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_MainWindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageDone.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageOutput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageRecord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageWelcome.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_VideoPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_X11Input.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-qrc_resources.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-AVWrapper.Po@am__quote@
@@ -1144,6 +1152,20 @@ simplescreenrecorder-moc_X11Input.obj: moc_X11Input.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_X11Input.obj `if test -f 'moc_X11Input.cpp'; then $(CYGPATH_W) 'moc_X11Input.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_X11Input.cpp'; fi`
 
+simplescreenrecorder-moc_AudioPreviewer.o: moc_AudioPreviewer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_AudioPreviewer.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Tpo -c -o simplescreenrecorder-moc_AudioPreviewer.o `test -f 'moc_AudioPreviewer.cpp' || echo '$(srcdir)/'`moc_AudioPreviewer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Tpo $(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_AudioPreviewer.cpp' object='simplescreenrecorder-moc_AudioPreviewer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_AudioPreviewer.o `test -f 'moc_AudioPreviewer.cpp' || echo '$(srcdir)/'`moc_AudioPreviewer.cpp
+
+simplescreenrecorder-moc_AudioPreviewer.obj: moc_AudioPreviewer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_AudioPreviewer.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Tpo -c -o simplescreenrecorder-moc_AudioPreviewer.obj `if test -f 'moc_AudioPreviewer.cpp'; then $(CYGPATH_W) 'moc_AudioPreviewer.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_AudioPreviewer.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Tpo $(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_AudioPreviewer.cpp' object='simplescreenrecorder-moc_AudioPreviewer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_AudioPreviewer.obj `if test -f 'moc_AudioPreviewer.cpp'; then $(CYGPATH_W) 'moc_AudioPreviewer.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_AudioPreviewer.cpp'; fi`
+
 simplescreenrecorder-moc_ElidedLabel.o: moc_ElidedLabel.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_ElidedLabel.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_ElidedLabel.Tpo -c -o simplescreenrecorder-moc_ElidedLabel.o `test -f 'moc_ElidedLabel.cpp' || echo '$(srcdir)/'`moc_ElidedLabel.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_ElidedLabel.Tpo $(DEPDIR)/simplescreenrecorder-moc_ElidedLabel.Po
@@ -1255,6 +1277,34 @@ simplescreenrecorder-moc_PageWelcome.obj: moc_PageWelcome.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_PageWelcome.cpp' object='simplescreenrecorder-moc_PageWelcome.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_PageWelcome.obj `if test -f 'moc_PageWelcome.cpp'; then $(CYGPATH_W) 'moc_PageWelcome.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_PageWelcome.cpp'; fi`
+
+simplescreenrecorder-moc_VideoPreviewer.o: moc_VideoPreviewer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_VideoPreviewer.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_VideoPreviewer.Tpo -c -o simplescreenrecorder-moc_VideoPreviewer.o `test -f 'moc_VideoPreviewer.cpp' || echo '$(srcdir)/'`moc_VideoPreviewer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_VideoPreviewer.Tpo $(DEPDIR)/simplescreenrecorder-moc_VideoPreviewer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_VideoPreviewer.cpp' object='simplescreenrecorder-moc_VideoPreviewer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_VideoPreviewer.o `test -f 'moc_VideoPreviewer.cpp' || echo '$(srcdir)/'`moc_VideoPreviewer.cpp
+
+simplescreenrecorder-moc_VideoPreviewer.obj: moc_VideoPreviewer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_VideoPreviewer.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_VideoPreviewer.Tpo -c -o simplescreenrecorder-moc_VideoPreviewer.obj `if test -f 'moc_VideoPreviewer.cpp'; then $(CYGPATH_W) 'moc_VideoPreviewer.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_VideoPreviewer.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_VideoPreviewer.Tpo $(DEPDIR)/simplescreenrecorder-moc_VideoPreviewer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_VideoPreviewer.cpp' object='simplescreenrecorder-moc_VideoPreviewer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_VideoPreviewer.obj `if test -f 'moc_VideoPreviewer.cpp'; then $(CYGPATH_W) 'moc_VideoPreviewer.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_VideoPreviewer.cpp'; fi`
+
+simplescreenrecorder-moc_Logger.o: moc_Logger.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_Logger.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_Logger.Tpo -c -o simplescreenrecorder-moc_Logger.o `test -f 'moc_Logger.cpp' || echo '$(srcdir)/'`moc_Logger.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_Logger.Tpo $(DEPDIR)/simplescreenrecorder-moc_Logger.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_Logger.cpp' object='simplescreenrecorder-moc_Logger.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_Logger.o `test -f 'moc_Logger.cpp' || echo '$(srcdir)/'`moc_Logger.cpp
+
+simplescreenrecorder-moc_Logger.obj: moc_Logger.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_Logger.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_Logger.Tpo -c -o simplescreenrecorder-moc_Logger.obj `if test -f 'moc_Logger.cpp'; then $(CYGPATH_W) 'moc_Logger.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_Logger.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_Logger.Tpo $(DEPDIR)/simplescreenrecorder-moc_Logger.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_Logger.cpp' object='simplescreenrecorder-moc_Logger.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_Logger.obj `if test -f 'moc_Logger.cpp'; then $(CYGPATH_W) 'moc_Logger.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_Logger.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1494,6 +1544,8 @@ uninstall-am: uninstall-binPROGRAMS
 
 @ENABLE_SSRPROGRAM_TRUE@moc_X11Input.cpp: $(srcdir)/AV/Input/X11Input.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
+@ENABLE_SSRPROGRAM_TRUE@moc_AudioPreviewer.cpp: $(srcdir)/GUI/AudioPreviewer.h
+@ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_ElidedLabel.cpp: $(srcdir)/GUI/ElidedLabel.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_HotkeyListener.cpp: $(srcdir)/GUI/HotkeyListener.h
@@ -1509,6 +1561,10 @@ uninstall-am: uninstall-binPROGRAMS
 @ENABLE_SSRPROGRAM_TRUE@moc_PageRecord.cpp: $(srcdir)/GUI/PageRecord.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_PageWelcome.cpp: $(srcdir)/GUI/PageWelcome.h
+@ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
+@ENABLE_SSRPROGRAM_TRUE@moc_VideoPreviewer.cpp: $(srcdir)/GUI/VideoPreviewer.h
+@ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
+@ENABLE_SSRPROGRAM_TRUE@moc_Logger.cpp: $(srcdir)/Logger.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 
 @ENABLE_SSRPROGRAM_TRUE@clean-moc-extra:

@@ -106,6 +106,7 @@ clean-qrc-extra:
 
 nodist_simplescreenrecorder_SOURCES += \
 	moc_X11Input.cpp \
+	moc_AudioPreviewer.cpp \
 	moc_ElidedLabel.cpp \
 	moc_HotkeyListener.cpp \
 	moc_MainWindow.cpp \
@@ -113,9 +114,13 @@ nodist_simplescreenrecorder_SOURCES += \
 	moc_PageInput.cpp \
 	moc_PageOutput.cpp \
 	moc_PageRecord.cpp \
-	moc_PageWelcome.cpp
+	moc_PageWelcome.cpp \
+	moc_VideoPreviewer.cpp \
+	moc_Logger.cpp
 
 moc_X11Input.cpp: $(srcdir)/AV/Input/X11Input.h
+	$(MOC) "$<" -o "$@"
+moc_AudioPreviewer.cpp: $(srcdir)/GUI/AudioPreviewer.h
 	$(MOC) "$<" -o "$@"
 moc_ElidedLabel.cpp: $(srcdir)/GUI/ElidedLabel.h
 	$(MOC) "$<" -o "$@"
@@ -132,6 +137,10 @@ moc_PageOutput.cpp: $(srcdir)/GUI/PageOutput.h
 moc_PageRecord.cpp: $(srcdir)/GUI/PageRecord.h
 	$(MOC) "$<" -o "$@"
 moc_PageWelcome.cpp: $(srcdir)/GUI/PageWelcome.h
+	$(MOC) "$<" -o "$@"
+moc_VideoPreviewer.cpp: $(srcdir)/GUI/VideoPreviewer.h
+	$(MOC) "$<" -o "$@"
+moc_Logger.cpp: $(srcdir)/Logger.h
 	$(MOC) "$<" -o "$@"
 
 clean-moc-extra:

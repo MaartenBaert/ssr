@@ -25,6 +25,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "FastScaler.h"
 
 class VideoPreviewer : public QWidget, public VideoSink {
+	Q_OBJECT
 
 private:
 	struct SharedData {
@@ -40,16 +41,21 @@ private:
 	FastScaler m_fast_scaler;
 
 	VPair<SharedData> m_shared_data;
-	volatile bool m_should_repaint;
 
 public:
 	VideoPreviewer(QWidget* parent);
 	~VideoPreviewer();
 
+	// Resets the preview.
+	// This function is thread-safe.
 	void Reset();
-	void SetFrameRate(unsigned int frame_rate);
-	void UpdateIfNeeded();
 
+	// Changes the preview frame rate.
+	// This function is thread-safe.
+	void SetFrameRate(unsigned int frame_rate);
+
+	// Reads a video frame from the video source.
+	// This function is thread-safe.
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;
 
 	virtual QSize minimumSizeHint() const override { return QSize(100, 100); }
@@ -60,5 +66,8 @@ protected:
 	virtual void hideEvent(QHideEvent* event) override;
 	virtual void resizeEvent(QResizeEvent* event) override;
 	virtual void paintEvent(QPaintEvent* event) override;
+
+signals:
+	void NeedsUpdate();
 
 };

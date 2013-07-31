@@ -345,23 +345,23 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	}
 
 	// load settings
-	SetFile(                         settings->value("output/file", "").toString());
-	SetSeparateFiles(                settings->value("output/separate_files", false).toBool());
-	SetContainer(FindContainer(      settings->value("output/container").toString(), default_container));
-	SetContainerAV(FindContainerAV(  settings->value("output/container_av").toString()));
+	SetFile(settings->value("output/file", "").toString());
+	SetSeparateFiles(settings->value("output/separate_files", false).toBool());
+	SetContainer(FindContainer(settings->value("output/container").toString(), default_container));
+	SetContainerAV(FindContainerAV(settings->value("output/container_av").toString()));
 
-	SetVideoCodec(FindVideoCodec(    settings->value("output/video_codec").toString(), default_video_codec));
+	SetVideoCodec(FindVideoCodec(settings->value("output/video_codec").toString(), default_video_codec));
 	SetVideoCodecAV(FindVideoCodecAV(settings->value("output/video_codec_av").toString()));
-	SetVideoKBitRate(                settings->value("output/video_kbit_rate", 5000).toUInt());
-	SetH264CRF(                      settings->value("output/video_h264_crf", 23).toUInt());
+	SetVideoKBitRate(settings->value("output/video_kbit_rate", 5000).toUInt());
+	SetH264CRF(settings->value("output/video_h264_crf", 23).toUInt());
 	SetH264Preset((enum_h264_preset) settings->value("output/video_h264_preset", H264_PRESET_SUPERFAST).toUInt());
-	SetVP8CPUUsed(                   settings->value("output/video_vp8_cpu_used", 5).toUInt());
-	SetVideoOptions(                 settings->value("output/video_options", "").toString());
+	SetVP8CPUUsed(settings->value("output/video_vp8_cpu_used", 5).toUInt());
+	SetVideoOptions(settings->value("output/video_options", "").toString());
 
-	SetAudioCodec(FindAudioCodec(    settings->value("output/audio_codec").toString(), default_audio_codec));
+	SetAudioCodec(FindAudioCodec(settings->value("output/audio_codec").toString(), default_audio_codec));
 	SetAudioCodecAV(FindAudioCodecAV(settings->value("output/audio_codec_av").toString()));
-	SetAudioKBitRate(                settings->value("output/audio_kbit_rate", 128).toUInt());
-	SetAudioOptions(                 settings->value("output/audio_options", "").toString());
+	SetAudioKBitRate(settings->value("output/audio_kbit_rate", 128).toUInt());
+	SetAudioOptions(settings->value("output/audio_options", "").toString());
 
 	// update things
 	UpdateContainerFields();

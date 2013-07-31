@@ -20,8 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "Logger.h"
 #include "PageInput.h"
-#include "PageOutput.h"
 #include "OutputSettings.h"
 #include "OutputManager.h"
 
@@ -68,7 +68,7 @@ private:
 	bool m_separate_files;
 	unsigned int m_file_segment_counter;
 
-	QTimer *m_info_timer, *m_log_timer;
+	QTimer *m_info_timer;
 
 	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
 	std::unique_ptr<X11Input> m_x11_input;
@@ -145,6 +145,6 @@ private slots:
 	void Cancel();
 	void Save();
 	void UpdateInformation();
-	void UpdateLog();
+	void UpdateLog(Logger::enum_type type, QString string);
 
 };

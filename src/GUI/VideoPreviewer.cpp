@@ -34,8 +34,6 @@ QSize CalculateScaledSize(QSize in, QSize out) {
 VideoPreviewer::VideoPreviewer(QWidget* parent)
 	: QWidget(parent) {
 
-	m_should_repaint = false;
-
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_next_frame_time = hrt_time_micro();
@@ -45,6 +43,8 @@ VideoPreviewer::VideoPreviewer(QWidget* parent)
 	}
 
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+	connect(this, SIGNAL(NeedsUpdate()), this, SLOT(update()), Qt::QueuedConnection);
 
 }
 
@@ -58,7 +58,7 @@ VideoPreviewer::~VideoPreviewer() {
 void VideoPreviewer::Reset() {
 	SharedLock lock(&m_shared_data);
 	lock->m_image = QImage();
-	m_should_repaint = true;
+	emit NeedsUpdate();
 }
 
 void VideoPreviewer::SetFrameRate(unsigned int frame_rate) {
@@ -109,14 +109,8 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 		}
 	}
 
-	m_should_repaint = true;
+	emit NeedsUpdate();
 
-}
-
-void VideoPreviewer::UpdateIfNeeded() {
-	if(m_should_repaint) {
-		update();
-	}
 }
 
 void VideoPreviewer::showEvent(QShowEvent* event) {
@@ -149,13 +143,7 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 		img = lock->m_image;
 	}
 
-	if(img.isNull()) {
-
-		painter.setPen(QApplication::palette().text().color());
-		painter.setFont(QFont("Sans", 10));
-		painter.drawText(0, 0, width(), height(), Qt::AlignHCenter | Qt::AlignVCenter, "(recording not started)");
-
-	} else {
+	if(!img.isNull()) {
 
 		// draw the image
 		// Scaling is only used if the widget was resized after the image was captured, which is unlikely
@@ -171,6 +159,5 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 		painter.drawRect(out_rect.adjusted(-1, -1, 0, 0));
 
 	}
-	m_should_repaint = false;
 
 }

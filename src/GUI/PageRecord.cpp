@@ -20,7 +20,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "PageRecord.h"
 
-#include "Logger.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 #include "PageOutput.h"
@@ -279,10 +278,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 	m_info_timer = new QTimer(this);
 	connect(m_info_timer, SIGNAL(timeout()), this, SLOT(UpdateInformation()));
-
-	m_log_timer = new QTimer(this);
-	connect(m_log_timer, SIGNAL(timeout()), this, SLOT(UpdateLog()));
-	m_log_timer->start(10);
+	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(UpdateLog(Logger::enum_type,QString)), Qt::QueuedConnection);
 
 }
 
@@ -337,7 +333,6 @@ void PageRecord::PageStart() {
 	m_main_window->SaveSettings();
 
 	// clear the log
-	Logger::GetLines();
 	m_textedit_log->clear();
 
 	// clear the preview
@@ -830,24 +825,19 @@ void PageRecord::UpdateInformation() {
 
 }
 
-void PageRecord::UpdateLog() {
-	auto lines = Logger::GetLines();
-	for(auto it = lines.begin(); it != lines.end(); ++it) {
-		QTextCursor cursor = m_textedit_log->textCursor();
-		QTextCharFormat format;
-		bool should_scroll = (m_textedit_log->verticalScrollBar()->value() >= m_textedit_log->verticalScrollBar()->maximum());
-		switch(it->first) {
-			case Logger::TYPE_INFO:     format.setForeground(Qt::black);       break;
-			case Logger::TYPE_WARNING:  format.setForeground(Qt::darkYellow);  break;
-			case Logger::TYPE_ERROR:    format.setForeground(Qt::red);         break;
-		}
-		cursor.movePosition(QTextCursor::End);
-		if(cursor.position() != 0)
-			cursor.insertBlock();
-		cursor.insertText(it->second, format);
-		if(should_scroll)
-			m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
+void PageRecord::UpdateLog(Logger::enum_type type, QString str) {
+	QTextCursor cursor = m_textedit_log->textCursor();
+	QTextCharFormat format;
+	bool should_scroll = (m_textedit_log->verticalScrollBar()->value() >= m_textedit_log->verticalScrollBar()->maximum());
+	switch(type) {
+		case Logger::TYPE_INFO:     format.setForeground(Qt::black);       break;
+		case Logger::TYPE_WARNING:  format.setForeground(Qt::darkYellow);  break;
+		case Logger::TYPE_ERROR:    format.setForeground(Qt::red);         break;
 	}
-	m_video_previewer->UpdateIfNeeded();
-	m_audio_previewer->UpdateIfNeeded();
+	cursor.movePosition(QTextCursor::End);
+	if(cursor.position() != 0)
+		cursor.insertBlock();
+	cursor.insertText(str, format);
+	if(should_scroll)
+		m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
 }

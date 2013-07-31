@@ -24,14 +24,15 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 
 int main(int argc, char* argv[]) {
-	Logger logger;
-	Q_UNUSED(logger);
 
 	XInitThreads();
 
 	QApplication application(argc, argv);
 	QCoreApplication::setOrganizationName("SimpleScreenRecorder");
 	QCoreApplication::setApplicationName("SimpleScreenRecorder");
+
+	Logger logger;
+	Q_UNUSED(logger);
 
 	bool logfile = false;
 

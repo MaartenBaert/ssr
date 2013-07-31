@@ -22,33 +22,26 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Main.h"
 
-Logger *Logger::g_instance = NULL;
+Logger *Logger::s_instance = NULL;
 
 Logger::Logger() {
-	Q_ASSERT(g_instance == NULL);
-	g_instance = this;
+	Q_ASSERT(s_instance == NULL);
+	qRegisterMetaType<enum_type>();
+	s_instance = this;
 }
 
 Logger::~Logger() {
-	Q_ASSERT(g_instance == this);
-	g_instance = NULL;
+	Q_ASSERT(s_instance == this);
+	s_instance = NULL;
 }
 
 void Logger::Log(enum_type type, const QString& str) {
-	Q_ASSERT(g_instance != NULL);
-	VPair<SharedData>::Lock lock(&g_instance->m_shared_data);
+	Q_ASSERT(s_instance != NULL);
+	QMutexLocker lock(&s_instance->m_mutex);
 	switch(type) {
 		case TYPE_INFO:     fprintf(stderr, "%s\n", qPrintable(str));                   break;
 		case TYPE_WARNING:  fprintf(stderr, "\033[1;33m%s\033[0m\n", qPrintable(str));  break;
 		case TYPE_ERROR:    fprintf(stderr, "\033[1;31m%s\033[0m\n", qPrintable(str));  break;
 	}
-	lock->m_lines.push_back(std::make_pair(type, str));
-}
-
-std::vector<std::pair<Logger::enum_type, QString> > Logger::GetLines() {
-	Q_ASSERT(g_instance != NULL);
-	VPair<SharedData>::Lock lock(&g_instance->m_shared_data);
-	auto lines = std::move(lock->m_lines);
-	lock->m_lines.clear();
-	return lines;
+	emit s_instance->NewLine(type, str);
 }

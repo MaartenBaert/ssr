@@ -22,7 +22,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "VPair.h"
 
-class Logger {
+class Logger : public QObject {
+	Q_OBJECT
 
 public:
 	enum enum_type {
@@ -32,14 +33,9 @@ public:
 	};
 
 private:
-	struct SharedData {
-		std::vector<std::pair<enum_type, QString> > m_lines;
-	};
+	QMutex m_mutex;
 
-private:
-	VPair<SharedData> m_shared_data;
-
-	static Logger *g_instance;
+	static Logger *s_instance;
 
 public:
 	Logger();
@@ -48,12 +44,16 @@ public:
 	// This function is thread-safe.
 	static void Log(enum_type type, const QString& str);
 
-	// This function is thread-safe.
-	static std::vector<std::pair<enum_type, QString> > GetLines();
-
 	// Some convenience functions.
 	inline static void LogInfo(const QString& str) { Log(TYPE_INFO, str); }
 	inline static void LogWarning(const QString& str) { Log(TYPE_WARNING, str); }
 	inline static void LogError(const QString& str) { Log(TYPE_ERROR, str); }
 
+	inline static Logger* GetInstance() { Q_ASSERT(s_instance != NULL); return s_instance; }
+
+signals:
+	void NewLine(Logger::enum_type type, QString str);
+
 };
+
+Q_DECLARE_METATYPE(Logger::enum_type)

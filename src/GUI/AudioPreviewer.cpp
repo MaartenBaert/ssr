@@ -25,8 +25,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 AudioPreviewer::AudioPreviewer(QWidget* parent)
 	: QWidget(parent) {
 
-	m_should_repaint = false;
-
 	{
 		SharedLock lock(&m_shared_data);
 		for(unsigned int channel = 0; channel < 2; ++channel) {
@@ -40,6 +38,8 @@ AudioPreviewer::AudioPreviewer(QWidget* parent)
 	}
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+	connect(this, SIGNAL(NeedsUpdate()), this, SLOT(update()), Qt::QueuedConnection);
 
 }
 
@@ -58,18 +58,12 @@ void AudioPreviewer::Reset() {
 		lock->m_next_low[channel] = std::numeric_limits<double>::max();
 		lock->m_next_high[channel] = -std::numeric_limits<double>::max();
 	}
-	m_should_repaint = true;
+	emit NeedsUpdate();
 }
 
 void AudioPreviewer::SetFrameRate(unsigned int frame_rate) {
 	SharedLock lock(&m_shared_data);
 	lock->m_frame_rate = std::max(1u, frame_rate);
-}
-
-void AudioPreviewer::UpdateIfNeeded() {
-	if(m_should_repaint) {
-		update();
-	}
 }
 
 void AudioPreviewer::ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) {
@@ -109,7 +103,7 @@ void AudioPreviewer::ReadAudioSamples(unsigned int sample_rate, unsigned int cha
 		lock->m_next_high[channel] = -std::numeric_limits<double>::max();
 	}
 
-	m_should_repaint = true;
+	emit NeedsUpdate();
 
 }
 
@@ -154,7 +148,5 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 	for(unsigned int channel = 0; channel < 2; ++channel) {
 		painter.drawRect(0, h * channel / 2, w, h * (channel + 1) / 2 - h * channel / 2);
 	}
-
-	m_should_repaint = false;
 
 }

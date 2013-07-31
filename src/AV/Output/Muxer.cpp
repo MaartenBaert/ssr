@@ -106,6 +106,7 @@ void Muxer::Start() {
 
 void Muxer::Finish() {
 	Q_ASSERT(m_started);
+	Logger::LogInfo("[Muxer::Finish] Telling encoders to finish ...");
 	for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 		Q_ASSERT(m_encoders[i] != NULL);
 		m_encoders[i]->Finish(); // no deadlock: nothing in Muxer is locked in this thread (and BaseEncoder::Finish is lock-free, but that could change)
