@@ -44,6 +44,9 @@ class PageRecord : public QWidget {
 	Q_OBJECT
 
 private:
+	static const int PRIORITY_RECORD, PRIORITY_PREVIEW;
+
+private:
 	MainWindow *m_main_window;
 
 	bool m_page_started, m_capturing, m_recording, m_previewing;
@@ -58,7 +61,6 @@ private:
 	bool m_audio_enabled;
 	unsigned int m_audio_sample_rate;
 	QString m_alsa_device;
-	bool m_glinject_insert_duplicates;
 
 	OutputSettings m_output_settings;
 	std::unique_ptr<OutputManager> m_output_manager;

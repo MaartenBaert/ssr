@@ -46,10 +46,13 @@ private:
 		bool m_segment_video_started, m_segment_audio_started; // whether video and audio have started (always true if the corresponding stream is disabled)
 		int64_t m_segment_video_start_time, m_segment_audio_start_time; // the start time of video and audio (real-time, in microseconds)
 		int64_t m_segment_video_stop_time, m_segment_audio_stop_time; // the stop time of video and audio (real-time, in microseconds)
+		bool m_segment_audio_can_drop; // whether audio samples can still be dropped (i.e. no samples have been sent to the encoder yet)
 		int64_t m_segment_audio_samples_read; // the number of samples that have been read from the audio buffer (including dropped samples)
-		int64_t m_segment_audio_last_timestamp; // the timestamp of the last received audio frame (for gap detection)
+		int64_t m_segment_video_last_timestamp, m_segment_audio_last_timestamp; // the timestamp of the last received video/audio frame (for gap detection)
 
-		bool m_warn_drop_video, m_warn_drop_audio, m_warn_desync;
+		std::unique_ptr<AVFrameWrapper> m_last_video_frame;
+
+		bool m_warn_drop_video, m_warn_desync;
 
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
@@ -59,13 +62,16 @@ private:
 	static const double CORRECTION_SPEED;
 	static const size_t MAX_VIDEO_FRAMES_BUFFERED, MAX_AUDIO_SAMPLES_BUFFERED;
 	static const int64_t AUDIO_GAP_THRESHOLD;
+	static const int64_t MAX_FRAME_DELAY, MAX_INPUT_LATENCY;
 
 private:
 	VideoEncoder *m_video_encoder;
 	AudioEncoder *m_audio_encoder;
+	bool m_allow_frame_skipping;
 
 	unsigned int m_video_width, m_video_height;
 	unsigned int m_video_frame_rate;
+	int64_t m_video_max_frames_skipped;
 
 	unsigned int m_audio_sample_rate, m_audio_channels, m_audio_sample_size;
 	unsigned int m_audio_required_frame_size, m_audio_required_sample_size;
@@ -77,7 +83,7 @@ private:
 
 public:
 	// The arguments 'video_encoder' and 'audio_encoder' can be NULL to disable video or audio.
-	Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder);
+	Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder, bool allow_frame_skipping);
 	~Synchronizer();
 
 private:
@@ -107,6 +113,7 @@ public:
 public: // internal
 	virtual int64_t GetVideoFrameInterval() override;
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;
+	virtual void ReadVideoPing(int64_t timestamp) override;
 	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) override;
 
 private:

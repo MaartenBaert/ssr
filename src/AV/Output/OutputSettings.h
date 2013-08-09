@@ -30,6 +30,7 @@ struct OutputSettings {
 	std::vector<std::pair<QString, QString> > video_options;
 	unsigned int video_width, video_height;
 	unsigned int video_frame_rate;
+	bool video_allow_frame_skipping;
 
 	QString audio_codec_avname;
 	unsigned int audio_kbit_rate;

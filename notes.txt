@@ -70,11 +70,15 @@ Destroy muxer:
 - av_freep(formatcontext->stream[i]): free stream
 - av_free(formatcontext): free format context
 
-#### Avoiding deadlocks ####
+#### Multithreading ####
 
 When you write a multithreaded application, you have to think about deadlocks. A simple and reliable way to avoid deadlocks is to give all mutexes a strict (partial) order, and only ever lock them in that order (the order of unlocking is irrelevant but is usually the reverse of the order of locking). This is automatically accomplished by using a 'push' pipeline design where each class only has pointers to successive stages, because this makes it impossible to lock mutexes in the wrong order, as long as all mutexes are private and locks are never held after a function call returns.
 
 There's one exception in my pipeline: Muxer has a pointer to VideoEncoder/AudioEncoder which it uses to tell them to stop, and to delete them. This seems to be unavoidable because of the design of libav/ffmpeg. Special care has to be taken here to avoid deadlocks: BaseEncoder::Stop and 'delete BaseEncoder' are called while no locks in Muxer are held by the thread.
+
+There's also an issue that's not very well documented: just using volatile is not enough to guarantee correct behaviour. The 'volatile' keyword is meant to stop some compiler optimisations, not to ensure correct multithreaded behaviour. Some of the problems with 'volatile':
+- It only synchronizes access between two volatile variables, not between a volatile and a normal one. So in order to synchronize multiple variables correctly, you would have to make them ALL volatile, which makes things slow and is simply impossible for STL containers. The solution is to use mutexes instead. Apparently volatile is not even needed here because compilers should be smart enough to understand what mutexes do.
+- For lock-free variables (i.e. flags like 'should_finish', 'should_stop', 'error_occurred', ...), volatile will indeed stop compiler optimisations, and even if synchronization with other variables isn't a problem, it is still possible that the CPU itself will reorder memory accesses, or that memory operations won't be visible to other CPU cores because of memory caching issues. This can only be fixed by inserting memory fences (which is also done by mutexes). C++11 provides these in the <atomic> header.
 
 #### OpenGL recording ####
 

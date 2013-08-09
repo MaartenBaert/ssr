@@ -116,6 +116,8 @@ int64_t VideoEncoder::GetFrameInterval() {
 		int64_t n = (packets - THROTTLE_THRESHOLD_PACKETS) * 1000 / THROTTLE_THRESHOLD_PACKETS;
 		interval += n * n;
 	}
+	if(interval > 1000000)
+		interval = 1000000;
 	return interval;
 }
 
@@ -159,6 +161,12 @@ void VideoEncoder::FillCodecContext(AVCodec* codec) {
 }
 
 bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
+
+#if SSR_USE_AVFRAME_FORMAT
+	if(frame != NULL) {
+		Q_ASSERT(frame->format == GetCodecContext()->pix_fmt);
+	}
+#endif
 
 #if SSR_USE_AVCODEC_ENCODE_VIDEO2
 

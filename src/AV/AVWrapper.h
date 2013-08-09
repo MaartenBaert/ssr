@@ -20,20 +20,40 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+// A trivial class that holds (aligned) frame data. This makes it easy to implement reference counting through std::shared_ptr.
+class FrameData {
+private:
+	uint8_t *m_data;
+public:
+	inline FrameData(size_t size) {
+		m_data = (uint8_t*) av_malloc(size);
+		if(m_data == NULL)
+			throw std::bad_alloc();
+	}
+	inline ~FrameData() {
+		av_free(m_data);
+	}
+	inline uint8_t* GetData() {
+		return m_data;
+	}
+};
+
+// A wrapper around AVFrame to manage memory allocation and reference counting.
+// Note: After copying, data is still shared between frames and should not be modified!
+// Note 2: This reference counting mechanism is unrelated to the mechanism added in later versions of ffmpeg/libav.
 class AVFrameWrapper : public AVFrame {
 public:
-	bool m_free_on_destruct;
+	std::shared_ptr<FrameData> m_refcounted_data;
 #if !SSR_USE_AVFRAME_NB_SAMPLES
 	int nb_samples; // we need this even if libav/ffmpeg doesn't use it
 #endif
 public:
-	AVFrameWrapper();
 	AVFrameWrapper(size_t size);
-	AVFrameWrapper(const AVFrameWrapper& other) = delete;
-	AVFrameWrapper* operator=(const AVFrameWrapper& other) = delete;
-	~AVFrameWrapper();
+	AVFrameWrapper(const AVFrameWrapper& other) = default;
+	AVFrameWrapper& operator=(const AVFrameWrapper& other) = default;
 };
 
+// A wrapper around AVPacket to manage memory allocation. There is no copying or reference counting in this case.
 class AVPacketWrapper : public AVPacket {
 public:
 	bool m_free_on_destruct;
@@ -41,7 +61,7 @@ public:
 	AVPacketWrapper();
 	AVPacketWrapper(size_t size);
 	AVPacketWrapper(const AVPacketWrapper& other) = delete;
-	AVPacketWrapper* operator=(const AVPacketWrapper& other) = delete;
+	AVPacketWrapper& operator=(const AVPacketWrapper& other) = delete;
 	~AVPacketWrapper();
 };
 

@@ -123,7 +123,7 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 		}
 	}
 	if(GetCodecContext()->sample_fmt == AV_SAMPLE_FMT_NONE) {
-		Logger::LogError("[AudioEncoder::FillCodecContext] Error: Encoder requires an unsupported sample format (" + QString::number(*codec->sample_fmts) + ")!");
+		Logger::LogError("[AudioEncoder::FillCodecContext] Error: Encoder requires an unsupported sample format!");
 		throw LibavException();
 	}
 	GetCodecContext()->thread_count = m_opt_threads;
@@ -131,6 +131,12 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 }
 
 bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
+
+#if SSR_USE_AVFRAME_FORMAT
+	if(frame != NULL) {
+		Q_ASSERT(frame->format == GetCodecContext()->sample_fmt);
+	}
+#endif
 
 #if SSR_USE_AVCODEC_ENCODE_AUDIO2
 

@@ -55,7 +55,7 @@ void OutputManager::Init() {
 		m_audio_encoder = new AudioEncoder(m_muxer, m_output_settings.audio_codec_avname, m_output_settings.audio_options, m_output_settings.audio_kbit_rate * 1024,
 										   m_output_settings.audio_sample_rate);
 	m_muxer->Start();
-	m_synchronizer = new Synchronizer(m_video_encoder, m_audio_encoder);
+	m_synchronizer = new Synchronizer(m_video_encoder, m_audio_encoder, m_output_settings.video_allow_frame_skipping);
 }
 
 void OutputManager::Free(bool save) {

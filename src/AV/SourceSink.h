@@ -31,8 +31,17 @@ class BaseSink;
 
 class BaseSource {
 public:
+	struct SinkData {
+		BaseSink *sink;
+		int priority;
+		inline SinkData() {}
+		inline SinkData(BaseSink *sink, int priority) : sink(sink), priority(priority) {}
+		inline bool operator<(const SinkData& other) const {
+			return (priority > other.priority); // sort in reverse order (high priority first)
+		}
+	};
 	struct SharedData {
-		std::vector<BaseSink*> m_sinks;
+		std::vector<SinkData> m_sinks;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 public:
@@ -44,11 +53,13 @@ public:
 
 class BaseSink {
 public:
-	BaseSource *m_source; // not protected by a lock because it should only be read when connections change
+	// variables are not protected by a lock because they should only be read when connections change
+	BaseSource *m_source;
+	int m_priority;
 public:
 	BaseSink();
 	virtual ~BaseSink();
-	void ConnectBaseSource(BaseSource* source);
+	void ConnectBaseSource(BaseSource* source, int priority);
 };
 
 class VideoSource : private BaseSource {
@@ -57,6 +68,7 @@ protected:
 	VideoSource() {}
 	int64_t CalculateVideoFrameInterval(unsigned int frame_rate);
 	void PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp);
+	void PushVideoPing(int64_t timestamp);
 };
 
 class VideoSink : private BaseSink {
@@ -64,10 +76,11 @@ class VideoSink : private BaseSink {
 protected:
 	VideoSink() {}
 public:
-	inline void ConnectVideoSource(VideoSource* source) { ConnectBaseSource(source); }
+	inline void ConnectVideoSource(VideoSource* source, int priority = 0) { ConnectBaseSource(source, priority); }
 public:
 	virtual int64_t GetVideoFrameInterval() { return 0; }
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) = 0;
+	virtual void ReadVideoPing(int64_t timestamp) {}
 };
 
 class AudioSource : private BaseSource {
@@ -82,7 +95,7 @@ class AudioSink : private BaseSink {
 protected:
 	AudioSink() {}
 public:
-	inline void ConnectAudioSource(AudioSource* source) { ConnectBaseSource(source); }
+	inline void ConnectAudioSource(AudioSource* source, int priority = 0) { ConnectBaseSource(source, priority); }
 public:
 	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) = 0;
 };

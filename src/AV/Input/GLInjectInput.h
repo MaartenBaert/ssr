@@ -36,14 +36,13 @@ private:
 	typedef VPair<SharedData>::Lock SharedLock;
 
 private:
-	static const int64_t MAX_FRAME_DELAY, MAX_COMMUNICATION_LATENCY;
+	static const int64_t MAX_COMMUNICATION_LATENCY;
 
 private:
 	GLInjectLauncher *m_launcher;
 
 	unsigned int m_cbuffer_size, m_max_bytes;
 	unsigned int m_frame_rate;
-	bool m_insert_duplicates;
 
 	volatile char *m_shm_main_ptr;
 	std::vector<volatile char*> m_shm_frame_ptrs;
@@ -52,7 +51,7 @@ private:
 	volatile bool m_should_stop, m_error_occurred;
 
 public:
-	GLInjectInput(GLInjectLauncher* launcher, unsigned int frame_rate, bool insert_duplicates);
+	GLInjectInput(GLInjectLauncher* launcher, unsigned int frame_rate);
 	~GLInjectInput();
 
 	// Returns whether an error has occurred in the input thread.

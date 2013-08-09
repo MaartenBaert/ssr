@@ -263,7 +263,6 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetGLInjectMaxMegaPixels(settings->value("input/glinject/max_megapixels", 2).toUInt());
 	SetGLInjectCaptureFront(settings->value("input/glinject/capture_front", false).toBool());
 	SetGLInjectLimitFPS(settings->value("input/glinject/limit_fps", false).toBool());
-	SetGLInjectInsertDuplicates(settings->value("input/glinject/insert_duplicates", false).toBool());
 	UpdateVideoAreaFields();
 	UpdateVideoScaleFields();
 	UpdateAudioFields();
@@ -289,7 +288,6 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/glinject/max_megapixels", GetGLInjectMaxMegaPixels());
 	settings->setValue("input/glinject/capture_front", GetGLInjectCaptureFront());
 	settings->setValue("input/glinject/limit_fps", GetGLInjectLimitFPS());
-	settings->setValue("input/glinject/insert_duplicates", GetGLInjectInsertDuplicates());
 }
 
 // Tries to find the real window that corresponds to a top-level window (the actual window without window manager decorations).
@@ -709,10 +707,6 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 									 "This stops the application from wasting CPU time for frames that won't be recorded, and sometimes results in smoother video\n"
 									 "(this depends on the application).");
 	m_checkbox_limit_fps->setChecked(m_parent->GetGLInjectLimitFPS());
-	m_checkbox_insert_duplicates = new QCheckBox("Insert duplicates for missing frames", this);
-	m_checkbox_insert_duplicates->setToolTip("If checked, duplicate frames will be inserted when the OpenGL frame rate drops below the recording frame rate (e.g. in a loading screen).\n"
-											 "You probably won't need this unless you are doing a live stream.");
-	m_checkbox_insert_duplicates->setChecked(m_parent->GetGLInjectInsertDuplicates());
 
 	QPushButton *pushbutton_close = new QPushButton("Close", this);
 
@@ -738,7 +732,6 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	}
 	layout->addWidget(m_checkbox_capture_front);
 	layout->addWidget(m_checkbox_limit_fps);
-	layout->addWidget(m_checkbox_insert_duplicates);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
 		layout->addLayout(layout2);
@@ -756,5 +749,4 @@ void DialogGLInject::WriteBack() {
 	m_parent->SetGLInjectMaxMegaPixels(m_lineedit_max_megapixels->text().toUInt());
 	m_parent->SetGLInjectCaptureFront(m_checkbox_capture_front->isChecked());
 	m_parent->SetGLInjectLimitFPS(m_checkbox_limit_fps->isChecked());
-	m_parent->SetGLInjectInsertDuplicates(m_checkbox_insert_duplicates->isChecked());
 }

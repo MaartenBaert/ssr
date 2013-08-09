@@ -24,8 +24,8 @@ BaseSource::BaseSource() {
 }
 BaseSource::~BaseSource() {
 	SharedLock lock(&m_shared_data);
-	for(BaseSink *s : lock->m_sinks) {
-		s->m_source = NULL;
+	for(SinkData &s : lock->m_sinks) {
+		s.sink->m_source = NULL;
 	}
 }
 
@@ -37,13 +37,13 @@ BaseSink::~BaseSink() {
 	// otherwise inputs may try to send data to partially destructed sinks.
 	Q_ASSERT(m_source == NULL);
 }
-void BaseSink::ConnectBaseSource(BaseSource* source) {
-	if(m_source == source)
+void BaseSink::ConnectBaseSource(BaseSource* source, int priority) {
+	if(m_source == source && m_priority == priority)
 		return;
 	if(m_source != NULL) {
 		BaseSource::SharedLock lock(&m_source->m_shared_data);
 		for(auto it = lock->m_sinks.begin(); it != lock->m_sinks.end(); ++it) {
-			if(*it == this) {
+			if(it->sink == this) {
 				lock->m_sinks.erase(it);
 				break;
 			}
@@ -52,15 +52,17 @@ void BaseSink::ConnectBaseSource(BaseSource* source) {
 	m_source = source;
 	if(m_source != NULL) {
 		BaseSource::SharedLock lock(&m_source->m_shared_data);
-		lock->m_sinks.push_back(this);
+		BaseSource::SinkData data(this, priority);
+		auto it = std::upper_bound(lock->m_sinks.begin(), lock->m_sinks.end(), data);
+		lock->m_sinks.insert(it, data);
 	}
 }
 
 int64_t VideoSource::CalculateVideoFrameInterval(unsigned int frame_rate) {
 	SharedLock lock(&m_shared_data);
 	int64_t max_interval = 1000000 / frame_rate;
-	for(BaseSink *s : lock->m_sinks) {
-		int64_t interval = static_cast<VideoSink*>(s)->GetVideoFrameInterval();
+	for(SinkData &s : lock->m_sinks) {
+		int64_t interval = static_cast<VideoSink*>(s.sink)->GetVideoFrameInterval();
 		if(interval > max_interval)
 			max_interval = interval;
 	}
@@ -69,14 +71,21 @@ int64_t VideoSource::CalculateVideoFrameInterval(unsigned int frame_rate) {
 
 void VideoSource::PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
 	SharedLock lock(&m_shared_data);
-	for(BaseSink *s : lock->m_sinks) {
-		static_cast<VideoSink*>(s)->ReadVideoFrame(width, height, data, stride, format, timestamp);
+	for(SinkData &s : lock->m_sinks) {
+		static_cast<VideoSink*>(s.sink)->ReadVideoFrame(width, height, data, stride, format, timestamp);
+	}
+}
+
+void VideoSource::PushVideoPing(int64_t timestamp) {
+	SharedLock lock(&m_shared_data);
+	for(SinkData &s : lock->m_sinks) {
+		static_cast<VideoSink*>(s.sink)->ReadVideoPing(timestamp);
 	}
 }
 
 void AudioSource::PushAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) {
 	SharedLock lock(&m_shared_data);
-	for(BaseSink *s : lock->m_sinks) {
-		static_cast<AudioSink*>(s)->ReadAudioSamples(sample_rate, channels, sample_count, data, format, timestamp);
+	for(SinkData &s : lock->m_sinks) {
+		static_cast<AudioSink*>(s.sink)->ReadAudioSamples(sample_rate, channels, sample_count, data, format, timestamp);
 	}
 }

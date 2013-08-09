@@ -22,6 +22,7 @@ Wishlist:
 - Planar sample/pixel formats for inputs (source/sink).
 - Keep encoders completely inside the muxer.
 - Multiple synchronization methods.
+- JACK support.
 
 Not sure yet:
 - Fixed cursor position when using 'follow cursor'?

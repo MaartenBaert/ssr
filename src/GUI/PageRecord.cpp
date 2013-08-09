@@ -102,6 +102,9 @@ public:
 
 };
 
+const int PageRecord::PRIORITY_RECORD = 0;
+const int PageRecord::PRIORITY_PREVIEW = -1;
+
 PageRecord::PageRecord(MainWindow* main_window)
 	: QWidget(main_window->centralWidget()) {
 
@@ -373,7 +376,6 @@ void PageRecord::PageStart() {
 	unsigned int glinject_megapixels = page_input->GetGLInjectMaxMegaPixels();
 	bool glinject_capture_front = page_input->GetGLInjectCaptureFront();
 	bool glinject_limit_fps = page_input->GetGLInjectLimitFPS();
-	m_glinject_insert_duplicates = page_input->GetGLInjectInsertDuplicates();
 
 	// get file settings
 	m_file_base = page_output->GetFile();
@@ -394,6 +396,7 @@ void PageRecord::PageStart() {
 	m_output_settings.video_width = 0;
 	m_output_settings.video_height = 0;
 	m_output_settings.video_frame_rate = m_video_frame_rate;
+	m_output_settings.video_allow_frame_skipping = false; //TODO// add option for this
 
 	m_output_settings.audio_codec_avname = (m_audio_enabled)? page_output->GetAudioCodecAVName() : QString();
 	m_output_settings.audio_kbit_rate = page_output->GetAudioKBitRate();
@@ -552,16 +555,16 @@ void PageRecord::RecordStart() {
 
 		}
 
+		Logger::LogInfo("[PageRecord::RecordStart] Started recording.");
+
+		m_recording = true;
+		m_recorded_something = true;
+		UpdateRecordPauseButton();
+		UpdateCapture();
+
 	} catch(...) {
 		Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
 	}
-
-	Logger::LogInfo("[PageRecord::RecordStart] Started recording.");
-
-	m_recording = true;
-	m_recorded_something = true;
-	UpdateRecordPauseButton();
-	UpdateCapture();
 
 }
 
@@ -612,7 +615,7 @@ void PageRecord::CaptureStart() {
 
 		// start the video input
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
-			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get(), m_video_frame_rate, m_glinject_insert_duplicates));
+			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get(), m_video_frame_rate));
 		} else {
 			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_frame_rate, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
 		}
@@ -622,6 +625,10 @@ void PageRecord::CaptureStart() {
 			m_alsa_input.reset(new ALSAInput(m_alsa_device, m_audio_sample_rate));
 		}
 
+		Logger::LogInfo("[PageRecord::CaptureStart] Started capturing.");
+
+		m_capturing = true;
+
 	} catch(...) {
 		Logger::LogError("[PageRecord::CaptureStart] Error: Something went wrong during initialization.");
 		m_x11_input.reset();
@@ -629,10 +636,6 @@ void PageRecord::CaptureStart() {
 		m_alsa_input.reset();
 		return;
 	}
-
-	Logger::LogInfo("[PageRecord::CaptureStart] Started capturing.");
-
-	m_capturing = true;
 
 }
 
@@ -676,16 +679,16 @@ void PageRecord::UpdateCapture() {
 	// connect sinks
 	if(m_output_manager != NULL) {
 		if(m_recording) {
-			m_output_manager->GetSynchronizer()->ConnectVideoSource(video_source);
-			m_output_manager->GetSynchronizer()->ConnectAudioSource(audio_source);
+			m_output_manager->GetSynchronizer()->ConnectVideoSource(video_source, PRIORITY_RECORD);
+			m_output_manager->GetSynchronizer()->ConnectAudioSource(audio_source, PRIORITY_RECORD);
 		} else {
 			m_output_manager->GetSynchronizer()->ConnectVideoSource(NULL);
 			m_output_manager->GetSynchronizer()->ConnectAudioSource(NULL);
 		}
 	}
 	if(m_previewing) {
-		m_video_previewer->ConnectVideoSource(video_source);
-		m_audio_previewer->ConnectAudioSource(audio_source);
+		m_video_previewer->ConnectVideoSource(video_source, PRIORITY_PREVIEW);
+		m_audio_previewer->ConnectAudioSource(audio_source, PRIORITY_PREVIEW);
 	} else {
 		m_video_previewer->ConnectVideoSource(NULL);
 		m_audio_previewer->ConnectAudioSource(NULL);

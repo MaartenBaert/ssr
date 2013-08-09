@@ -34,8 +34,10 @@ int main(int argc, char* argv[]) {
 	Logger logger;
 	Q_UNUSED(logger);
 
+	// initialize default command-line options
 	bool logfile = false;
 
+	// read command-line options
 	QStringList args = QCoreApplication::arguments();
 	for(int i = 1; i < args.count(); ++i) {
 		QString cmd = args[i];
@@ -47,6 +49,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
+	// redirect stdout and stderr to a log file
 	if(logfile) {
 		QString dir = GetApplicationUserDir();
 		QString file1 = dir + "/log1.txt";

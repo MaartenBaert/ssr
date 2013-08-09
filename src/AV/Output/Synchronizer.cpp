@@ -41,11 +41,19 @@ const size_t Synchronizer::MAX_AUDIO_SAMPLES_BUFFERED = 1000000;
 // PulseAudio creates these gaps when a VT-switch or user switch occurs (it simply freezes all audio streams, this causes problems with many other applications as well).
 const int64_t Synchronizer::AUDIO_GAP_THRESHOLD = 500000;
 
-Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder) {
+// The maximum delay between video frames, in microseconds. If the delay is longer, duplicates will be inserted.
+// This is needed because some video codecs/players can't handle long delays.
+const int64_t Synchronizer::MAX_FRAME_DELAY = 200000;
+
+// The highest expected latency from the actual capturing to the synchronizer, in microseconds.
+const int64_t Synchronizer::MAX_INPUT_LATENCY = 200000;
+
+Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder, bool allow_frame_skipping) {
 	Q_ASSERT(video_encoder != NULL || audio_encoder != NULL);
 
 	m_video_encoder = video_encoder;
 	m_audio_encoder = audio_encoder;
+	m_allow_frame_skipping = allow_frame_skipping;
 
 	try {
 		Init();
@@ -76,11 +84,15 @@ Synchronizer::~Synchronizer() {
 
 void Synchronizer::Init() {
 
+	// initialize video
 	if(m_video_encoder != NULL) {
 		m_video_width = m_video_encoder->GetWidth();
 		m_video_height = m_video_encoder->GetHeight();
 		m_video_frame_rate = m_video_encoder->GetFrameRate();
+		m_video_max_frames_skipped = (m_allow_frame_skipping)? (MAX_FRAME_DELAY * m_video_frame_rate + 500000) / 1000000 : 0;
 	}
+
+	// initialize audio
 	if(m_audio_encoder != NULL) {
 		m_audio_sample_rate = m_audio_encoder->GetSampleRate();
 		m_audio_channels = 2; //TODO// never larger than AV_NUM_DATA_POINTERS
@@ -102,6 +114,7 @@ void Synchronizer::Init() {
 		}
 	}
 
+	// initialize shared data
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_partial_audio_frame.resize(m_audio_required_frame_size * m_audio_sample_size);
@@ -112,9 +125,9 @@ void Synchronizer::Init() {
 		lock->m_time_offset = 0;
 		lock->m_segment_video_started = (m_video_encoder == NULL);
 		lock->m_segment_audio_started = (m_audio_encoder == NULL);
+		lock->m_segment_audio_can_drop = true;
 		lock->m_segment_audio_samples_read = 0;
 		lock->m_warn_drop_video = true;
-		lock->m_warn_drop_audio = true;
 		lock->m_warn_desync = true;
 	}
 
@@ -160,11 +173,16 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	int s1 = grow_align16(l1 * m_video_height);
 	int s2 = grow_align16(l2 * m_video_height / 2);
 	std::unique_ptr<AVFrameWrapper> converted_frame(new AVFrameWrapper(s1 + 2 * s2));
-	converted_frame->data[1] = converted_frame->data[0] + s1;
-	converted_frame->data[2] = converted_frame->data[1] + s2;
+	uint8_t *converted_frame_data = converted_frame->m_refcounted_data->GetData();
+	converted_frame->data[0] = converted_frame_data;
+	converted_frame->data[1] = converted_frame_data + s1;
+	converted_frame->data[2] = converted_frame_data + s1 + s2;
 	converted_frame->linesize[0] = l1;
 	converted_frame->linesize[1] = l2;
 	converted_frame->linesize[2] = l2;
+#if SSR_USE_AVFRAME_FORMAT
+	converted_frame->format = PIX_FMT_YUV420P;
+#endif
 
 	// scale and convert the frame to YUV420P
 	// the scaler has a separate lock so the audio thread is less likely to block (scaling is still slow)
@@ -176,12 +194,18 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 
 	SharedLock lock(&m_shared_data);
 
+	// check the timestamp
+	if(lock->m_segment_video_started && timestamp < lock->m_segment_video_last_timestamp) {
+		Logger::LogWarning("[Synchronizer::ReadVideoFrame] Warning: Received video frame with non-monotonic timestamp.");
+		timestamp = lock->m_segment_video_last_timestamp;
+	}
+
 	// avoid memory problems by limiting the video buffer size
 	if(lock->m_video_buffer.size() >= MAX_VIDEO_FRAMES_BUFFERED) {
 		if(lock->m_segment_audio_started) {
 			if(lock->m_warn_drop_video) {
 				lock->m_warn_drop_video = false;
-				Logger::LogWarning("[Synchronizer::AddVideoFrame] Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.");
+				Logger::LogWarning("[Synchronizer::ReadVideoFrame] Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.");
 			}
 			return;
 		} else {
@@ -197,15 +221,26 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 		lock->m_segment_video_started = true;
 		lock->m_segment_video_start_time = timestamp;
 	}
+	lock->m_segment_video_last_timestamp = timestamp;
 
 	// store the frame
 	converted_frame->pkt_dts = timestamp;
 	lock->m_video_buffer.push_back(std::move(converted_frame));
 
-	// increase segment stop time
+	// increase the segment stop time
 	lock->m_segment_video_stop_time = timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate;
 
-	//Logger::LogInfo("[Synchronizer::AddVideoFrame] Added video frame at " + QString::number(timestamp) + ".");
+	//Logger::LogInfo("[Synchronizer::ReadVideoFrame] Added video frame at " + QString::number(timestamp) + ".");
+
+}
+
+void Synchronizer::ReadVideoPing(int64_t timestamp) {
+	SharedLock lock(&m_shared_data);
+
+	// if the video has been started, increase the segment stop time
+	if(lock->m_segment_video_started) {
+		lock->m_segment_video_stop_time = std::max(lock->m_segment_video_stop_time, timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate);
+	}
 
 }
 
@@ -216,6 +251,11 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 	if(sample_count == 0)
 		return;
 
+	if(lock->m_segment_audio_started && timestamp < lock->m_segment_audio_last_timestamp) {
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Received audio samples with non-monotonic timestamp.");
+		timestamp = lock->m_segment_audio_last_timestamp;
+	}
+
 	Q_ASSERT(sample_rate == m_audio_sample_rate); // resampling isn't supported
 	Q_ASSERT(channels == m_audio_channels); // remixing isn't supported
 	Q_ASSERT(format == AV_SAMPLE_FMT_S16); // only S16 is currently supported
@@ -223,23 +263,20 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 	// avoid memory problems by limiting the audio buffer size
 	if(lock->m_audio_buffer.GetSize() / m_audio_sample_size >= MAX_AUDIO_SAMPLES_BUFFERED) {
 		if(lock->m_segment_video_started) {
-			if(lock->m_warn_drop_audio) {
-				lock->m_warn_drop_audio = false;
-				Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio buffer overflow, some samples will be lost. The video input seems to be too slow.");
-			}
-			return;
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.");
+			NewSegment(lock.get());
 		} else {
 			// If the video hasn't started yet, it makes more sense to drop the oldest samples.
 			// Shifting the start time like this isn't completely accurate, but this shouldn't happen often anyway.
 			size_t n = lock->m_audio_buffer.GetSize() / m_audio_sample_size - MAX_AUDIO_SAMPLES_BUFFERED + MAX_AUDIO_SAMPLES_BUFFERED / 10;
 			lock->m_audio_buffer.Drop(n * m_audio_sample_size);
-			lock->m_segment_audio_start_time += (int64_t) ((double) n / (double) m_audio_sample_rate / lock->m_time_correction_factor * 1.0e6);
+			lock->m_segment_audio_start_time += (int64_t) round((double) n / (double) m_audio_sample_rate / lock->m_time_correction_factor * 1.0e6);
 		}
 	}
 
 	// detect audio gaps
 	if(lock->m_segment_audio_started && timestamp > lock->m_segment_audio_last_timestamp + AUDIO_GAP_THRESHOLD) {
-		Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Detected gap in audio stream, starting new segment to keep the audio in sync with the video (some video may be lost).");
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Detected gap in audio stream, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).");
 		NewSegment(lock.get());
 	}
 
@@ -264,11 +301,11 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 		lock->m_time_correction_factor = clamp(0.1, 10.0, lock->m_time_correction_factor + (time_correction_factor - lock->m_time_correction_factor) * CORRECTION_SPEED);
 		if(lock->m_time_correction_factor < 0.95 && lock->m_warn_desync) {
 			lock->m_warn_desync = false;
-			Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio input is more than 5% too slow!");
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio input is more than 5% too slow!");
 		}
 		if(lock->m_time_correction_factor > 1.05 && lock->m_warn_desync) {
 			lock->m_warn_desync = false;
-			Logger::LogWarning("[Synchronizer::AddAudioSamples] Warning: Audio input is more than 5% too fast!");
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio input is more than 5% too fast!");
 		}
 	}
 
@@ -277,9 +314,9 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 
 	// increase segment stop time
 	sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
-	lock->m_segment_audio_stop_time = lock->m_segment_audio_start_time + (int64_t) (sample_length / lock->m_time_correction_factor * 1.0e6);
+	lock->m_segment_audio_stop_time = lock->m_segment_audio_start_time + (int64_t) round(sample_length / lock->m_time_correction_factor * 1.0e6);
 
-	//Logger::LogInfo("[Synchronizer::AddAudioSamples] Added audio samples at " + QString::number(timestamp) + ".");
+	//Logger::LogInfo("[Synchronizer::ReadAudioSamples] Added audio samples at " + QString::number(timestamp) + ".");
 
 }
 
@@ -294,6 +331,7 @@ void Synchronizer::NewSegment(SharedData* lock) {
 	lock->m_audio_buffer.Clear();
 	lock->m_segment_video_started = (m_video_encoder == NULL);
 	lock->m_segment_audio_started = (m_audio_encoder == NULL);
+	lock->m_segment_audio_can_drop = true;
 	lock->m_segment_audio_samples_read = 0;
 }
 
@@ -314,18 +352,53 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	if(!lock->m_segment_video_started || !lock->m_segment_audio_started)
 		return;
 
+	// Sometimes long delays between video frames can occur, e.g. when a game is showing a loading screen.
+	// Not all codecs/players can handle that. It's also a problem for streaming. To fix this, long delays should be avoided by
+	// duplicating the previous frame a few times when needed. Whenever a video frame is sent to the encoder, it is also copied,
+	// with reference counting for the actual image to minimize overhead. When there is a gap, duplicate frames are inserted.
+	// Duplicate frames are always inserted with a timestamp in the past, because we don't want to drop a real frame if it is captured
+	// right after the duplicate was inserted. MAX_INPUT_LATENCY simulates the latency from the capturing of a frame to the synchronizer,
+	// i.e. any new frame is assumed to have a timestamp higher than the current time minus MAX_INPUT_LATENCY. The duplicate
+	// frame will have a timestamp that's one frame earlier than that time, so it will never interfere with the real frame.
+	// There are two situations where duplicate frames can be inserted:
+	// (1) The queue is not empty, but there is a gap between frames that is too large.
+	// (2) The queue is empty and the last timestamp is too long ago (relative to the current time minus MAX_INPUT_LATENCY).
+	// It is perfectly possible that *both* happen, each possibly multiple times, in just one function call.
+
 	int64_t segment_start_time, segment_stop_time;
 	GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
 
 	// flush video
-	while(!lock->m_video_buffer.empty() && lock->m_video_buffer.front()->pkt_dts < segment_stop_time) {
+	int64_t segment_stop_video_pts = (int64_t) round(((double) lock->m_time_offset + (double) (segment_stop_time - segment_start_time) * lock->m_time_correction_factor)
+													 * 1.0e-6 * (double) m_video_frame_rate);
+	for( ; ; ) {
 
-		// get the first frame and calculate the final pts
+		// get/predict the timestamp of the next frame
+		int64_t next_timestamp = (lock->m_video_buffer.empty())? hrt_time_micro() - MAX_INPUT_LATENCY : lock->m_video_buffer.front()->pkt_dts;
+		int64_t next_pts = (int64_t) round(((double) lock->m_time_offset + (double) (next_timestamp - segment_start_time) * lock->m_time_correction_factor)
+										   * 1.0e-6 * (double) m_video_frame_rate);
+
+		// insert duplicate frames if needed, up to either the next frame or the segment end
+		if(lock->m_last_video_frame != NULL) {
+			while(lock->m_video_pts + m_video_max_frames_skipped < std::min(next_pts, segment_stop_video_pts)) {
+				lock->m_last_video_frame->pts = lock->m_video_pts + m_video_max_frames_skipped;
+				std::unique_ptr<AVFrameWrapper> duplicate_frame(new AVFrameWrapper(*lock->m_last_video_frame));
+				lock->m_video_pts = duplicate_frame->pts + 1;
+				//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(duplicate_frame->pts) + "] (duplicate).");
+				m_video_encoder->AddFrame(std::move(duplicate_frame));
+			}
+		}
+
+		// if there are no frames, or they are beyond the segment end, stop
+		if(lock->m_video_buffer.empty() || next_pts >= segment_stop_video_pts)
+			break;
+
+		// get the frame
 		std::unique_ptr<AVFrameWrapper> frame = std::move(lock->m_video_buffer.front());
 		lock->m_video_buffer.pop_front();
-		frame->pts = (int64_t) round(((double) lock->m_time_offset + (double) (frame->pkt_dts - segment_start_time) * lock->m_time_correction_factor)
-									 * 1.0e-6 * (double) m_video_frame_rate);
+		frame->pts = next_pts;
 		frame->pkt_dts = AV_NOPTS_VALUE;
+		lock->m_last_video_frame.reset(new AVFrameWrapper(*frame));
 
 		// if the frame is way too early, drop it
 		if(frame->pts < lock->m_video_pts - 1)
@@ -334,6 +407,10 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 		// if the frame is just a little too early, move it
 		if(frame->pts < lock->m_video_pts)
 			frame->pts = lock->m_video_pts;
+
+		// if this is the first video frame, always set the pts to zero
+		if(lock->m_video_pts == 0)
+			frame->pts = 0;
 
 		// send the frame to the encoder
 		lock->m_video_pts = frame->pts + 1;
@@ -347,21 +424,39 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	int64_t samples_max = (int64_t) ceil(sample_length * (double) m_audio_sample_rate) - lock->m_segment_audio_samples_read;
 	if(lock->m_audio_buffer.GetSize() > 0 && samples_max > 0) {
 
-		// calculate the final position of the first sample
-		int64_t pos = (int64_t) round((double) (lock->m_time_offset + lock->m_segment_audio_start_time - segment_start_time)
-									  * 1.0e-6 * (double) m_audio_sample_rate) + lock->m_segment_audio_samples_read;
+		// Normally, the correct way to calculate the position of the first sample would be:
+		//     int64_t timestamp = lock->m_segment_audio_start_time + (int64_t) round((double) lock->m_segment_audio_samples_read / (double) m_audio_sample_rate / lock->m_time_correction_factor * 1.0e6);
+		//     int64_t pos = (int64_t) round(((double) lock->m_time_offset + (double) (timestamp - segment_start_time) * lock->m_time_correction_factor)
+		//                                   * 1.0e-6 * (double) m_audio_sample_rate);
+		// Simplified:
+		//     int64_t pos = (int64_t) round(((double) lock->m_time_offset + (double) (lock->m_segment_audio_start_time - segment_start_time) * lock->m_time_correction_factor)
+		//                                   * 1.0e-6 * (double) m_audio_sample_rate) + lock->m_segment_audio_samples_read;
+		// This would guarantee that video and audio are always synchronized, even if the time correction factor is completely inaccurate.
+		// Unfortunately it would also mean that samples are dropped or duplicated, resulting in horrible audio quality. So in this case, a compromise must be made:
+		// This equation is only at the start of each segment, and after that the increase in position is always equal to the number of samples written.
+		// This means synchronization is lost, but that's why the time correction system exists. Samples are only dropped at the start of the segment, so actually
+		// the position doesn't have to be calculated anymore after that, since it is assumed to be equal to lock->m_audio_samples.
 
-		// drop samples that are too early
-		if(pos < lock->m_audio_samples) {
-			int64_t n = std::min(lock->m_audio_samples - pos, (int64_t) lock->m_audio_buffer.GetSize() / m_audio_sample_size);
-			lock->m_audio_buffer.Drop(n * m_audio_sample_size);
-			lock->m_segment_audio_samples_read += n;
-			pos += n;
+		if(lock->m_segment_audio_can_drop) {
+
+			// calculate the offset of the first sample
+			int64_t pos = (int64_t) round(((double) lock->m_time_offset + (double) (lock->m_segment_audio_start_time - segment_start_time) * lock->m_time_correction_factor)
+										  * 1.0e-6 * (double) m_audio_sample_rate) + lock->m_segment_audio_samples_read;
+
+			// drop samples that are too early
+			if(pos < lock->m_audio_samples) {
+				int64_t n = std::min(lock->m_audio_samples - pos, (int64_t) lock->m_audio_buffer.GetSize() / m_audio_sample_size);
+				lock->m_audio_buffer.Drop(n * m_audio_sample_size);
+				lock->m_segment_audio_samples_read += n;
+			}
+
 		}
 
 		// send the samples to the encoder
 		int64_t samples_left = std::min(samples_max, (int64_t) lock->m_audio_buffer.GetSize() / m_audio_sample_size);
 		while(samples_left > 0) {
+
+			lock->m_segment_audio_can_drop = false;
 
 			// copy samples until either the partial frame is full or there are no samples left
 			int64_t n = std::min((int64_t) (m_audio_required_frame_size - lock->m_partial_audio_frame_samples), samples_left);
@@ -382,28 +477,28 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 				unsigned int planes = 1;
 #endif
 				size_t plane_size = grow_align16(m_audio_required_frame_size * m_audio_required_sample_size / planes);
-				std::unique_ptr<AVFrameWrapper> frame(new AVFrameWrapper(plane_size * planes));
-				uint8_t *data = frame->data[0];
+				std::unique_ptr<AVFrameWrapper> audio_frame(new AVFrameWrapper(plane_size * planes));
+				uint8_t *data = audio_frame->m_refcounted_data->GetData();
 				for(unsigned int p = 0; p < planes; ++p) {
-					frame->data[p] = data + plane_size * p;
-					frame->linesize[p] = m_audio_required_frame_size * m_audio_required_sample_size / planes;
+					audio_frame->data[p] = data + plane_size * p;
+					audio_frame->linesize[p] = m_audio_required_frame_size * m_audio_required_sample_size / planes;
 				}
 
-				frame->nb_samples = m_audio_required_frame_size;
-				frame->pts = lock->m_audio_samples;
+				audio_frame->nb_samples = m_audio_required_frame_size;
+				audio_frame->pts = lock->m_audio_samples;
 #if SSR_USE_AVFRAME_FORMAT
-				frame->format = m_audio_required_sample_format;
+				audio_frame->format = m_audio_required_sample_format;
 #endif
 
 				// copy/convert the samples
 				switch(m_audio_required_sample_format) {
 					case AV_SAMPLE_FMT_S16: {
-						memcpy(frame->data[0], lock->m_partial_audio_frame.data(), m_audio_required_frame_size * m_audio_required_sample_size);
+						memcpy(audio_frame->data[0], lock->m_partial_audio_frame.data(), m_audio_required_frame_size * m_audio_required_sample_size);
 						break;
 					}
 					case AV_SAMPLE_FMT_FLT: {
 						int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data();
-						float *data_out = (float*) frame->data[0];
+						float *data_out = (float*) audio_frame->data[0];
 						for(unsigned int i = 0; i < m_audio_required_frame_size * m_audio_channels; ++i) {
 							*(data_out++) = (float) *(data_in++) / 32768.0f;
 						}
@@ -413,7 +508,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 					case AV_SAMPLE_FMT_S16P: {
 						for(unsigned int p = 0; p < planes; ++p) {
 							int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data() + p;
-							int16_t *data_out = (int16_t*) frame->data[p];
+							int16_t *data_out = (int16_t*) audio_frame->data[p];
 							for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
 								*data_out = *data_in;
 								data_in += planes; data_out++;
@@ -424,7 +519,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 					case AV_SAMPLE_FMT_FLTP: {
 						for(unsigned int p = 0; p < planes; ++p) {
 							int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data() + p;
-							float *data_out = (float*) frame->data[p];
+							float *data_out = (float*) audio_frame->data[p];
 							for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
 								*data_out = (float) *data_in / 32768.0f;
 								data_in += planes; data_out++;
@@ -441,7 +536,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 				lock->m_partial_audio_frame_samples = 0;
 
 				//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded audio frame [" + QString::number(lock->m_partial_audio_frame->pts) + "].");
-				m_audio_encoder->AddFrame(std::move(frame));
+				m_audio_encoder->AddFrame(std::move(audio_frame));
 			}
 
 		}

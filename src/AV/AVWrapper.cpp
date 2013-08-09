@@ -42,23 +42,9 @@ public:
 	}
 } g_av_global;
 
-AVFrameWrapper::AVFrameWrapper() {
-	m_free_on_destruct = true;
-	avcodec_get_frame_defaults(this);
-}
-
 AVFrameWrapper::AVFrameWrapper(size_t size) {
-	m_free_on_destruct = true;
 	avcodec_get_frame_defaults(this);
-	data[0] = (uint8_t*) av_malloc(size);
-	if(data[0] == NULL) {
-		throw std::bad_alloc();
-	}
-}
-
-AVFrameWrapper::~AVFrameWrapper() {
-	if(m_free_on_destruct)
-		av_free(data[0]);
+	m_refcounted_data = std::make_shared<FrameData>(size);
 }
 
 AVPacketWrapper::AVPacketWrapper() {
