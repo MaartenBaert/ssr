@@ -15,7 +15,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #define CGLE(code) \
 	code; \
-	CheckGLError(#code);
+	if(m_debug) CheckGLError(#code);
 
 static void CheckGLError(const char* at) {
 	GLenum error = glGetError();
@@ -93,14 +93,17 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 
 	fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] created.\n", m_x11_display, m_x11_window, m_glx_drawable);
 
-	const char *id_str = getenv("SSR_GLINJECT_SHM");
-	if(id_str == NULL) {
+	// read environment variables
+	const char *shm_id_str = getenv("SSR_GLINJECT_SHM");
+	const char *debug_str = getenv("SSR_GLINJECT_DEBUG");
+	if(shm_id_str == NULL) {
 		fprintf(stderr, "[SSR-GLInject] Error: Shared memory id is missing!\n");
 		exit(-181818181);
 	}
+	int shm_main_id = atoi(shm_id_str);
+	m_debug = (debug_str == NULL)? false : (atoi(debug_str) > 0);
 
 	// get main shared memory
-	int shm_main_id = atoi(id_str);
 	m_shm_main_ptr = (char*) shmat(shm_main_id, NULL, SHM_RND);
 	if(m_shm_main_ptr == (char*) -1) {
 		fprintf(stderr, "[SSR-GLInject] Error: Can't attach to main shared memory (id = %d)!\n", shm_main_id);
@@ -116,7 +119,7 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 	m_max_bytes = header.max_bytes;
 	m_target_fps = header.target_fps;
 	m_flags = header.flags;
-	if(m_cbuffer_size <= 0 || m_cbuffer_size > 1000000) {
+	if(m_cbuffer_size <= 0 || m_cbuffer_size > 1000) {
 		fprintf(stderr, "[SSR-GLInject] Error: Circular buffer size %u is invalid!\n", m_cbuffer_size);
 		exit(-181818181);
 	}
@@ -124,8 +127,8 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 		fprintf(stderr, "[SSR-GLInject] Error: Maximum byte count %u is invalid!\n", m_max_bytes);
 		exit(-181818181);
 	}
-	if(shm_main_size < sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * m_cbuffer_size) {
-		fprintf(stderr, "[SSR-GLInject] Error: Main shared memory is too small to contain %u frames!\n", m_cbuffer_size);
+	if(shm_main_size != sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * m_cbuffer_size) {
+		fprintf(stderr, "[SSR-GLInject] Error: Main shared memory is not the correct size to contain %u frames!\n", m_cbuffer_size);
 		exit(-181818181);
 	}
 
@@ -141,7 +144,7 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 		}
 		size_t shm_frame_size = shmsize(shm_frame_id);
 		if(shm_frame_size != m_max_bytes) {
-			fprintf(stderr, "[SSR-GLInject] Error: Frame shared memory is too small!\n");
+			fprintf(stderr, "[SSR-GLInject] Error: Frame shared memory is not the correct size!\n");
 			exit(-181818181);
 		}
 	}
@@ -151,7 +154,7 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 		int event, error;
 		m_has_xfixes = XFixesQueryExtension(m_x11_display, &event, &error);
 		if(!m_has_xfixes) {
-			fprintf(stderr, "[SSR-GLInject] Warning:  XFixes is not supported by server, the cursor has been hidden.\n");
+			fprintf(stderr, "[SSR-GLInject] Warning: XFixes is not supported by server, the cursor has been hidden.\n");
 		}
 	}
 
@@ -231,7 +234,7 @@ void GLFrameGrabber::GrabFrame() {
 		m_next_frame_time = std::max(m_next_frame_time + delay, timestamp);
 	}
 
-	CheckGLError("<external code>");
+	if(m_debug) CheckGLError("<external code>");
 
 	// save settings
 	CGLE(glPushAttrib(GL_PIXEL_MODE_BIT));

@@ -25,11 +25,12 @@ private:
 	Window m_x11_window;
 	GLXDrawable m_glx_drawable;
 	unsigned int m_width, m_height;
-	bool m_has_xfixes;
 
+	bool m_debug;
 	unsigned int m_cbuffer_size, m_max_bytes;
 	unsigned int m_target_fps;
 	unsigned int m_flags;
+	bool m_has_xfixes;
 
 	volatile char *m_shm_main_ptr;
 	std::vector<volatile char*> m_shm_frame_ptrs;
