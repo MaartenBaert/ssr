@@ -160,100 +160,118 @@ PageRecord::PageRecord(MainWindow* main_window)
 		}
 		layout->addWidget(label_hint_workspace);
 	}
-	QGroupBox *group_information = new QGroupBox("Information", this);
+	QSplitter *splitter_vertical = new QSplitter(Qt::Vertical, this);
 	{
-		QLabel *label_total_time = new QLabel("Total time:", group_information);
-		m_label_info_total_time = new QLabel(group_information);
-		QLabel *label_frame_rate = new QLabel("Frame rate:", group_information);
-		m_label_info_frame_rate = new QLabel(group_information);
-		QLabel *label_size_in = new QLabel("Size in:", group_information);
-		m_label_info_size_in = new QLabel(group_information);
-		QLabel *label_size_out = new QLabel("Size out:", group_information);
-		m_label_info_size_out = new QLabel(group_information);
-		QLabel *label_file_name = new QLabel("File name:", group_information);
-		m_label_info_file_name = new ElidedLabel(QString(), Qt::ElideMiddle, group_information);
-		m_label_info_file_name->setMinimumWidth(100);
-		QLabel *label_file_size = new QLabel("File size:", group_information);
-		m_label_info_file_size = new QLabel(group_information);
-		QLabel *label_bit_rate = new QLabel("Bit rate:", group_information);
-		m_label_info_bit_rate = new QLabel(group_information);
-
-		QGridLayout *layout = new QGridLayout(group_information);
-		layout->addWidget(label_total_time, 0, 0);
-		layout->addWidget(m_label_info_total_time, 0, 1);
-		layout->addWidget(label_frame_rate, 1, 0);
-		layout->addWidget(m_label_info_frame_rate, 1, 1);
-		layout->addWidget(label_size_in, 2, 0);
-		layout->addWidget(m_label_info_size_in, 2, 1);
-		layout->addWidget(label_size_out, 3, 0);
-		layout->addWidget(m_label_info_size_out, 3, 1);
-		layout->addWidget(label_file_name, 4, 0);
-		layout->addWidget(m_label_info_file_name, 4, 1);
-		layout->addWidget(label_file_size, 5, 0);
-		layout->addWidget(m_label_info_file_size, 5, 1);
-		layout->addWidget(label_bit_rate, 6, 0);
-		layout->addWidget(m_label_info_bit_rate, 6, 1);
-		layout->setRowStretch(7, 1);
-	}
-	QGroupBox *group_preview = new QGroupBox("Preview", this);
-	{
-		m_preview_page1 = new QWidget(group_preview);
+		QSplitter *splitter_horizontal = new QSplitter(Qt::Horizontal, splitter_vertical);
 		{
-			QLabel *label_preview_frame_rate = new QLabel("Preview frame rate:", m_preview_page1);
-			m_spinbox_preview_frame_rate = new QSpinBox(m_preview_page1);
-			m_spinbox_preview_frame_rate->setRange(1, 1000);
-			m_spinbox_preview_frame_rate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-			QLabel *label_preview_note = new QLabel("Note: Previewing requires extra CPU time (especially at high frame rates).", m_preview_page1);
-			label_preview_note->setWordWrap(true);
-			label_preview_note->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding);
-
-			QGridLayout *layout = new QGridLayout(m_preview_page1);
-			layout->setMargin(0);
-			layout->addWidget(label_preview_frame_rate, 0, 0);
-			layout->addWidget(m_spinbox_preview_frame_rate, 0, 1);
-			layout->addWidget(label_preview_note, 1, 0, 1, 2);
-			layout->setRowStretch(2, 1);
-		}
-		m_preview_page2 = new QWidget(group_preview);
-		{
-			m_video_previewer = new VideoPreviewer(m_preview_page2);
-			m_label_mic_icon = new QLabel(m_preview_page2);
-			m_label_mic_icon->setPixmap(QIcon::fromTheme("audio-input-microphone").pixmap(24, 24));
-			m_audio_previewer = new AudioPreviewer(m_preview_page2);
-
-			QVBoxLayout *layout = new QVBoxLayout(m_preview_page2);
-			layout->setMargin(0);
-			layout->addWidget(m_video_previewer);
+			QGroupBox *group_information = new QGroupBox("Information", splitter_horizontal);
 			{
-				QHBoxLayout *layout2 = new QHBoxLayout();
-				layout->addLayout(layout2);
-				layout2->addStretch();
-				layout2->addWidget(m_label_mic_icon);
-				layout2->addWidget(m_audio_previewer);
-				layout2->addStretch();
+				QLabel *label_total_time = new QLabel("Total time:", group_information);
+				m_label_info_total_time = new QLabel(group_information);
+				QLabel *label_frame_rate = new QLabel("Frame rate:", group_information);
+				m_label_info_frame_rate = new QLabel(group_information);
+				QLabel *label_size_in = new QLabel("Size in:", group_information);
+				m_label_info_size_in = new QLabel(group_information);
+				QLabel *label_size_out = new QLabel("Size out:", group_information);
+				m_label_info_size_out = new QLabel(group_information);
+				QLabel *label_file_name = new QLabel("File name:", group_information);
+				m_label_info_file_name = new ElidedLabel(QString(), Qt::ElideMiddle, group_information);
+				m_label_info_file_name->setMinimumWidth(100);
+				QLabel *label_file_size = new QLabel("File size:", group_information);
+				m_label_info_file_size = new QLabel(group_information);
+				QLabel *label_bit_rate = new QLabel("Bit rate:", group_information);
+				m_label_info_bit_rate = new QLabel(group_information);
+
+				QGridLayout *layout = new QGridLayout(group_information);
+				layout->addWidget(label_total_time, 0, 0);
+				layout->addWidget(m_label_info_total_time, 0, 1);
+				layout->addWidget(label_frame_rate, 1, 0);
+				layout->addWidget(m_label_info_frame_rate, 1, 1);
+				layout->addWidget(label_size_in, 2, 0);
+				layout->addWidget(m_label_info_size_in, 2, 1);
+				layout->addWidget(label_size_out, 3, 0);
+				layout->addWidget(m_label_info_size_out, 3, 1);
+				layout->addWidget(label_file_name, 4, 0);
+				layout->addWidget(m_label_info_file_name, 4, 1);
+				layout->addWidget(label_file_size, 5, 0);
+				layout->addWidget(m_label_info_file_size, 5, 1);
+				layout->addWidget(label_bit_rate, 6, 0);
+				layout->addWidget(m_label_info_bit_rate, 6, 1);
+				layout->setColumnStretch(1, 1);
+				layout->setRowStretch(7, 1);
 			}
+			QGroupBox *group_preview = new QGroupBox("Preview", splitter_horizontal);
+			{
+				m_preview_page1 = new QWidget(group_preview);
+				{
+					QLabel *label_preview_frame_rate = new QLabel("Preview frame rate:", m_preview_page1);
+					m_spinbox_preview_frame_rate = new QSpinBox(m_preview_page1);
+					m_spinbox_preview_frame_rate->setRange(1, 1000);
+					m_spinbox_preview_frame_rate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+					QLabel *label_preview_note = new QLabel("Note: Previewing requires extra CPU time (especially at high frame rates).", m_preview_page1);
+					label_preview_note->setWordWrap(true);
+					label_preview_note->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding);
+
+					QGridLayout *layout = new QGridLayout(m_preview_page1);
+					layout->setMargin(0);
+					layout->addWidget(label_preview_frame_rate, 0, 0);
+					layout->addWidget(m_spinbox_preview_frame_rate, 0, 1);
+					layout->addWidget(label_preview_note, 1, 0, 1, 2);
+					layout->setRowStretch(2, 1);
+				}
+				m_preview_page2 = new QWidget(group_preview);
+				{
+					m_video_previewer = new VideoPreviewer(m_preview_page2);
+					m_label_mic_icon = new QLabel(m_preview_page2);
+					m_label_mic_icon->setPixmap(QIcon::fromTheme("audio-input-microphone").pixmap(24, 24));
+					m_audio_previewer = new AudioPreviewer(m_preview_page2);
+
+					QVBoxLayout *layout = new QVBoxLayout(m_preview_page2);
+					layout->setMargin(0);
+					layout->addWidget(m_video_previewer);
+					{
+						QHBoxLayout *layout2 = new QHBoxLayout();
+						layout->addLayout(layout2);
+						layout2->addStretch();
+						layout2->addWidget(m_label_mic_icon);
+						layout2->addWidget(m_audio_previewer);
+						layout2->addStretch();
+					}
+				}
+				m_pushbutton_preview_start_stop = new QPushButton(group_preview);
+
+				connect(m_pushbutton_preview_start_stop, SIGNAL(clicked()), this, SLOT(PreviewStartStop()));
+
+				QVBoxLayout *layout = new QVBoxLayout(group_preview);
+				{
+					m_stacked_layout_preview = new QStackedLayout();
+					layout->addLayout(m_stacked_layout_preview);
+					m_stacked_layout_preview->addWidget(m_preview_page1);
+					m_stacked_layout_preview->addWidget(m_preview_page2);
+				}
+				layout->addWidget(m_pushbutton_preview_start_stop);
+			}
+
+			splitter_horizontal->addWidget(group_information);
+			splitter_horizontal->addWidget(group_preview);
+			splitter_horizontal->setStretchFactor(0, 1);
+			splitter_horizontal->setStretchFactor(1, 3);
 		}
-		m_pushbutton_preview_start_stop = new QPushButton(group_preview);
-
-		connect(m_pushbutton_preview_start_stop, SIGNAL(clicked()), this, SLOT(PreviewStartStop()));
-
-		QVBoxLayout *layout = new QVBoxLayout(group_preview);
+		QGroupBox *group_log = new QGroupBox("Log", splitter_vertical);
 		{
-			m_stacked_layout_preview = new QStackedLayout();
-			layout->addLayout(m_stacked_layout_preview);
-			m_stacked_layout_preview->addWidget(m_preview_page1);
-			m_stacked_layout_preview->addWidget(m_preview_page2);
-		}
-		layout->addWidget(m_pushbutton_preview_start_stop);
-	}
-	QGroupBox *group_log = new QGroupBox("Log", this);
-	{
-		m_textedit_log = new QTextEditSmall(group_log);
-		m_textedit_log->setReadOnly(true);
+			m_textedit_log = new QTextEditSmall(group_log);
+			m_textedit_log->setReadOnly(true);
 
-		QVBoxLayout *layout = new QVBoxLayout(group_log);
-		layout->addWidget(m_textedit_log);
+			QVBoxLayout *layout = new QVBoxLayout(group_log);
+			layout->addWidget(m_textedit_log);
+		}
+
+		splitter_vertical->addWidget(splitter_horizontal);
+		splitter_vertical->addWidget(group_log);
+		splitter_vertical->setStretchFactor(0, 3);
+		splitter_vertical->setStretchFactor(1, 1);
 	}
+
 	QPushButton *button_cancel = new QPushButton(QIcon::fromTheme("process-stop"), "Cancel recording", this);
 	QPushButton *button_save = new QPushButton(QIcon::fromTheme("document-save"), "Save recording", this);
 
@@ -262,13 +280,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(group_recording);
-	{
-		QHBoxLayout *layout2 = new QHBoxLayout();
-		layout->addLayout(layout2, 3);
-		layout2->addWidget(group_information);
-		layout2->addWidget(group_preview);
-	}
-	layout->addWidget(group_log, 1);
+	layout->addWidget(splitter_vertical);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
 		layout->addLayout(layout2);
