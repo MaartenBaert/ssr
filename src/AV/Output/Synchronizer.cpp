@@ -24,10 +24,15 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoEncoder.h"
 #include "AudioEncoder.h"
 
-// This value changes how fast the synchronizer adjusts the time correction factor. It should be a value between 0 and 1.
+// These values change how fast the synchronizer does time correction.
 // If this value is too low, the error will not be corrected fast enough. But if the value is too high, the video
 // may get weird frame rate fluctuations caused by the limited accuracy of the recording timestamps.
-const double Synchronizer::CORRECTION_SPEED = 0.002;
+// The difference between sample length and time length has a lot of noise and can't be used directly,
+// so it is averaged out using exponential smoothing. However, since the difference tends to increase gradually over time,
+// exponential smoothing would constantly lag behind, so instead of simple proportional feedback, I use a PI controller.
+// For critical damping, choose I = P*P/4.
+const double Synchronizer::DESYNC_CORRECTION_P = 0.5;
+const double Synchronizer::DESYNC_CORRECTION_I = 0.5 * 0.5 / 4.0;
 
 // The maximum number of video frames and audio samples that will be buffered. This should be enough to cope with the fact that video and
 // audio don't arrive at the same time, but not too high because that would cause memory problems if one of the inputs fails.
@@ -121,12 +126,15 @@ void Synchronizer::Init() {
 		lock->m_partial_audio_frame_samples = 0;
 		lock->m_video_pts = 0;
 		lock->m_audio_samples = 0;
-		lock->m_time_correction_factor = 1.0;
 		lock->m_time_offset = 0;
 		lock->m_segment_video_started = (m_video_encoder == NULL);
 		lock->m_segment_audio_started = (m_audio_encoder == NULL);
 		lock->m_segment_audio_can_drop = true;
 		lock->m_segment_audio_samples_read = 0;
+		lock->m_segment_video_last_timestamp = AV_NOPTS_VALUE;
+		lock->m_segment_audio_last_timestamp = AV_NOPTS_VALUE;
+		lock->m_av_desync = 0.0;
+		lock->m_av_desync_i = 0.0;
 		lock->m_warn_drop_video = true;
 		lock->m_warn_desync = true;
 	}
@@ -152,7 +160,7 @@ int64_t Synchronizer::GetTotalTime() {
 	if(lock->m_segment_video_started && lock->m_segment_audio_started) {
 		int64_t segment_start_time, segment_stop_time;
 		GetSegmentStartStop(lock.get(), &segment_start_time, &segment_stop_time);
-		return lock->m_time_offset + (int64_t) ((double) (segment_stop_time - segment_start_time) * lock->m_time_correction_factor);
+		return lock->m_time_offset + (segment_stop_time - segment_start_time);
 	} else {
 		return lock->m_time_offset;
 	}
@@ -200,6 +208,9 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 		timestamp = lock->m_segment_video_last_timestamp;
 	}
 
+	// do time correction
+	int64_t corrected_timestamp = timestamp + (int64_t) round(lock->m_av_desync * 1.0e6);
+
 	// avoid memory problems by limiting the video buffer size
 	if(lock->m_video_buffer.size() >= MAX_VIDEO_FRAMES_BUFFERED) {
 		if(lock->m_segment_audio_started) {
@@ -219,16 +230,18 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	// start video
 	if(!lock->m_segment_video_started) {
 		lock->m_segment_video_started = true;
-		lock->m_segment_video_start_time = timestamp;
+		lock->m_segment_video_start_time = corrected_timestamp;
 	}
+
+	// save the timestamp
 	lock->m_segment_video_last_timestamp = timestamp;
 
 	// store the frame
-	converted_frame->pkt_dts = timestamp;
+	converted_frame->pkt_dts = corrected_timestamp;
 	lock->m_video_buffer.push_back(std::move(converted_frame));
 
 	// increase the segment stop time
-	lock->m_segment_video_stop_time = timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate;
+	lock->m_segment_video_stop_time = corrected_timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate;
 
 	//Logger::LogInfo("[Synchronizer::ReadVideoFrame] Added video frame at " + QString::number(timestamp) + ".");
 
@@ -237,10 +250,15 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 void Synchronizer::ReadVideoPing(int64_t timestamp) {
 	SharedLock lock(&m_shared_data);
 
-	// if the video has been started, increase the segment stop time
-	if(lock->m_segment_video_started) {
-		lock->m_segment_video_stop_time = std::max(lock->m_segment_video_stop_time, timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate);
-	}
+	// if the video has not been started, ignore it
+	if(lock->m_segment_video_started)
+		return;
+
+	// do time correction
+	int64_t corrected_timestamp = timestamp + (int64_t) round(lock->m_av_desync * 1.0e6);
+
+	// increase the segment stop time
+	lock->m_segment_video_stop_time = std::max(lock->m_segment_video_stop_time, corrected_timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate);
 
 }
 
@@ -268,9 +286,10 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 		} else {
 			// If the video hasn't started yet, it makes more sense to drop the oldest samples.
 			// Shifting the start time like this isn't completely accurate, but this shouldn't happen often anyway.
-			size_t n = lock->m_audio_buffer.GetSize() / m_audio_sample_size - MAX_AUDIO_SAMPLES_BUFFERED + MAX_AUDIO_SAMPLES_BUFFERED / 10;
+			// The number of samples dropped is calculated so that the buffer will be 90% full after this.
+			size_t n = lock->m_audio_buffer.GetSize() / m_audio_sample_size - (MAX_AUDIO_SAMPLES_BUFFERED - MAX_AUDIO_SAMPLES_BUFFERED / 10);
 			lock->m_audio_buffer.Drop(n * m_audio_sample_size);
-			lock->m_segment_audio_start_time += (int64_t) round((double) n / (double) m_audio_sample_rate / lock->m_time_correction_factor * 1.0e6);
+			lock->m_segment_audio_start_time += (int64_t) round((double) n / (double) m_audio_sample_rate * 1.0e6);
 		}
 	}
 
@@ -285,36 +304,38 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 		lock->m_segment_audio_started = true;
 		lock->m_segment_audio_start_time = timestamp;
 	}
-	lock->m_segment_audio_last_timestamp = timestamp;
 
 	// do speed correction (i.e. do the calculations so the video can synchronize to it)
 	// The point of speed correction is to keep video and audio in sync even when the clocks are not running at exactly the same speed.
 	// This can happen because the sample rate of the sound card is not always 100% accurate. Even a 0.1% error will result in audio that is
 	// seconds too early or too late at the end of a one hour video. This problem doesn't occur on all computers though (I'm not sure why).
-	// Speed correction only starts after at least 5 seconds of audio have been recorded, because otherwise the timestamps are too inaccurate.
-	// I used to limit the speed correction factor to 95% .. 105% to limit potential damage, but I've removed this limit since problems with
-	// PulseAudio often result in large speed correction factors. I have changed the limit to 10% .. 1000% instead, while keeping the old warnings.
 	double sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
 	double time_length = (double) (timestamp - lock->m_segment_audio_start_time) * 1.0e-6;
-	if(time_length > 5.0) {
-		double time_correction_factor = sample_length / time_length;
-		lock->m_time_correction_factor = clamp(0.1, 10.0, lock->m_time_correction_factor + (time_correction_factor - lock->m_time_correction_factor) * CORRECTION_SPEED);
-		if(lock->m_time_correction_factor < 0.95 && lock->m_warn_desync) {
+	if(lock->m_segment_audio_last_timestamp != AV_NOPTS_VALUE) {
+		double dt = (double) (timestamp - lock->m_segment_audio_last_timestamp) * 1.0e-6;
+		double current_error = (sample_length - time_length) - lock->m_av_desync;
+		lock->m_av_desync_i =  clamp(-1.0, 1.0, lock->m_av_desync_i + DESYNC_CORRECTION_I * current_error * dt); //TODO//
+		lock->m_av_desync += (DESYNC_CORRECTION_P * current_error + lock->m_av_desync_i) * dt;
+		if(lock->m_av_desync_i < -0.05 && lock->m_warn_desync) {
 			lock->m_warn_desync = false;
 			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio input is more than 5% too slow!");
 		}
-		if(lock->m_time_correction_factor > 1.05 && lock->m_warn_desync) {
+		if(lock->m_av_desync_i > 0.05 && lock->m_warn_desync) {
 			lock->m_warn_desync = false;
 			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio input is more than 5% too fast!");
 		}
+		//qDebug() << hrt_time_micro() << current_error << (sample_length - time_length) << lock->m_av_desync << lock->m_av_desync_i;
 	}
+
+	// save the timestamp
+	lock->m_segment_audio_last_timestamp = timestamp;
 
 	// store the samples
 	lock->m_audio_buffer.Write((const char*) data, sample_count * m_audio_sample_size);
 
 	// increase segment stop time
 	sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
-	lock->m_segment_audio_stop_time = lock->m_segment_audio_start_time + (int64_t) round(sample_length / lock->m_time_correction_factor * 1.0e6);
+	lock->m_segment_audio_stop_time = lock->m_segment_audio_start_time + (int64_t) round(sample_length * 1.0e6);
 
 	//Logger::LogInfo("[Synchronizer::ReadAudioSamples] Added audio samples at " + QString::number(timestamp) + ".");
 
@@ -325,7 +346,7 @@ void Synchronizer::NewSegment(SharedData* lock) {
 	if(lock->m_segment_video_started && lock->m_segment_audio_started) {
 		int64_t segment_start_time, segment_stop_time;
 		GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
-		lock->m_time_offset += (int64_t) ((double) (segment_stop_time - segment_start_time) * lock->m_time_correction_factor);
+		lock->m_time_offset += segment_stop_time - segment_start_time;
 	}
 	lock->m_video_buffer.clear();
 	lock->m_audio_buffer.Clear();
@@ -333,6 +354,10 @@ void Synchronizer::NewSegment(SharedData* lock) {
 	lock->m_segment_audio_started = (m_audio_encoder == NULL);
 	lock->m_segment_audio_can_drop = true;
 	lock->m_segment_audio_samples_read = 0;
+	lock->m_segment_video_last_timestamp = AV_NOPTS_VALUE;
+	lock->m_segment_audio_last_timestamp = AV_NOPTS_VALUE;
+	lock->m_av_desync = 0.0;
+	// don't reset m_av_desync_i because it is usually still accurate
 }
 
 void Synchronizer::GetSegmentStartStop(SharedData* lock, int64_t* segment_start_time, int64_t* segment_stop_time) {
@@ -369,14 +394,12 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
 
 	// flush video
-	int64_t segment_stop_video_pts = (int64_t) round(((double) lock->m_time_offset + (double) (segment_stop_time - segment_start_time) * lock->m_time_correction_factor)
-													 * 1.0e-6 * (double) m_video_frame_rate);
+	int64_t segment_stop_video_pts = (int64_t) round((double) (lock->m_time_offset + (segment_stop_time - segment_start_time)) * 1.0e-6 * (double) m_video_frame_rate);
 	for( ; ; ) {
 
 		// get/predict the timestamp of the next frame
 		int64_t next_timestamp = (lock->m_video_buffer.empty())? hrt_time_micro() - MAX_INPUT_LATENCY : lock->m_video_buffer.front()->pkt_dts;
-		int64_t next_pts = (int64_t) round(((double) lock->m_time_offset + (double) (next_timestamp - segment_start_time) * lock->m_time_correction_factor)
-										   * 1.0e-6 * (double) m_video_frame_rate);
+		int64_t next_pts = (int64_t) round((double) (lock->m_time_offset + (next_timestamp - segment_start_time)) * 1.0e-6 * (double) m_video_frame_rate);
 
 		// insert duplicate frames if needed, up to either the next frame or the segment end
 		if(lock->m_last_video_frame != NULL) {
@@ -420,28 +443,25 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	}
 
 	// flush audio
-	double sample_length = (double) (segment_stop_time - lock->m_segment_audio_start_time) * 1.0e-6 * lock->m_time_correction_factor;
+	double sample_length = (double) (segment_stop_time - lock->m_segment_audio_start_time) * 1.0e-6;
 	int64_t samples_max = (int64_t) ceil(sample_length * (double) m_audio_sample_rate) - lock->m_segment_audio_samples_read;
 	if(lock->m_audio_buffer.GetSize() > 0 && samples_max > 0) {
 
 		// Normally, the correct way to calculate the position of the first sample would be:
-		//     int64_t timestamp = lock->m_segment_audio_start_time + (int64_t) round((double) lock->m_segment_audio_samples_read / (double) m_audio_sample_rate / lock->m_time_correction_factor * 1.0e6);
-		//     int64_t pos = (int64_t) round(((double) lock->m_time_offset + (double) (timestamp - segment_start_time) * lock->m_time_correction_factor)
-		//                                   * 1.0e-6 * (double) m_audio_sample_rate);
+		//     int64_t timestamp = lock->m_segment_audio_start_time + (int64_t) round((double) lock->m_segment_audio_samples_read / (double) m_audio_sample_rate * 1.0e6);
+		//     int64_t pos = (int64_t) round((double) (lock->m_time_offset + (timestamp - segment_start_time)) * 1.0e-6 * (double) m_audio_sample_rate);
 		// Simplified:
-		//     int64_t pos = (int64_t) round(((double) lock->m_time_offset + (double) (lock->m_segment_audio_start_time - segment_start_time) * lock->m_time_correction_factor)
-		//                                   * 1.0e-6 * (double) m_audio_sample_rate) + lock->m_segment_audio_samples_read;
-		// This would guarantee that video and audio are always synchronized, even if the time correction factor is completely inaccurate.
-		// Unfortunately it would also mean that samples are dropped or duplicated, resulting in horrible audio quality. So in this case, a compromise must be made:
-		// This equation is only at the start of each segment, and after that the increase in position is always equal to the number of samples written.
-		// This means synchronization is lost, but that's why the time correction system exists. Samples are only dropped at the start of the segment, so actually
+		//     int64_t pos = (int64_t) round((double) (lock->m_time_offset + (lock->m_segment_audio_start_time - segment_start_time)) * 1.0e-6 * (double) m_audio_sample_rate)
+		//                   + lock->m_segment_audio_samples_read;
+		// The first part of the expression is constant, so it only has to be calculated at the start of the segment. After that the increase in position is always
+		// equal to the number of samples written. Samples are only dropped at the start of the segment, so actually
 		// the position doesn't have to be calculated anymore after that, since it is assumed to be equal to lock->m_audio_samples.
 
 		if(lock->m_segment_audio_can_drop) {
 
 			// calculate the offset of the first sample
-			int64_t pos = (int64_t) round(((double) lock->m_time_offset + (double) (lock->m_segment_audio_start_time - segment_start_time) * lock->m_time_correction_factor)
-										  * 1.0e-6 * (double) m_audio_sample_rate) + lock->m_segment_audio_samples_read;
+			int64_t pos = (int64_t) round((double) (lock->m_time_offset + (lock->m_segment_audio_start_time - segment_start_time)) * 1.0e-6 * (double) m_audio_sample_rate)
+						  + lock->m_segment_audio_samples_read;
 
 			// drop samples that are too early
 			if(pos < lock->m_audio_samples) {

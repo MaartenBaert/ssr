@@ -40,7 +40,6 @@ private:
 		std::deque<std::unique_ptr<AVFrameWrapper> > m_video_buffer;
 		ByteQueue m_audio_buffer;
 		int64_t m_video_pts, m_audio_samples; // video and audio position in the final stream (encoded frames and samples, including the partial audio frame)
-		double m_time_correction_factor; // correction factor used to synchronize video and audio time
 
 		int64_t m_time_offset; // the length of all previous segments combined (in microseconds)
 		bool m_segment_video_started, m_segment_audio_started; // whether video and audio have started (always true if the corresponding stream is disabled)
@@ -49,6 +48,8 @@ private:
 		bool m_segment_audio_can_drop; // whether audio samples can still be dropped (i.e. no samples have been sent to the encoder yet)
 		int64_t m_segment_audio_samples_read; // the number of samples that have been read from the audio buffer (including dropped samples)
 		int64_t m_segment_video_last_timestamp, m_segment_audio_last_timestamp; // the timestamp of the last received video/audio frame (for gap detection)
+
+		double m_av_desync, m_av_desync_i;
 
 		std::unique_ptr<AVFrameWrapper> m_last_video_frame;
 
@@ -59,7 +60,7 @@ private:
 	typedef VPair<FastScaler>::Lock FastScalerLock;
 
 private:
-	static const double CORRECTION_SPEED;
+	static const double DESYNC_CORRECTION_P, DESYNC_CORRECTION_I;
 	static const size_t MAX_VIDEO_FRAMES_BUFFERED, MAX_AUDIO_SAMPLES_BUFFERED;
 	static const int64_t AUDIO_GAP_THRESHOLD;
 	static const int64_t MAX_FRAME_DELAY, MAX_INPUT_LATENCY;

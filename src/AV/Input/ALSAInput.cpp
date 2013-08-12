@@ -118,7 +118,8 @@ void ALSAInput::Init() {
 		}
 		if(rate != m_sample_rate) {
 			Logger::LogWarning("[ALSAInput::Init] Warning: Sample rate " + QString::number(m_sample_rate) + " is not supported, using " + QString::number(rate) + " instead. This could be a problem if the difference is large.");
-			m_sample_rate = rate;
+			//TODO// enable once resampling is ready
+			//m_sample_rate = rate;
 		}
 
 		// set channels
@@ -160,8 +161,10 @@ void ALSAInput::Init() {
 		alsa_hw_params = NULL;
 
 	} catch(...) {
-		snd_pcm_hw_params_free(alsa_hw_params);
-		alsa_hw_params = NULL;
+		if(alsa_hw_params != NULL) {
+			snd_pcm_hw_params_free(alsa_hw_params);
+			alsa_hw_params = NULL;
+		}
 		throw;
 	}
 
