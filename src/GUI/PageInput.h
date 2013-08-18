@@ -98,7 +98,7 @@ public:
 	void SaveSettings(QSettings* settings);
 
 public:
-	inline enum_video_area GetVideoArea() { return (enum_video_area) clamp(0, VIDEO_AREA_COUNT - 1, m_buttongroup_video_area->checkedId()); }
+	inline enum_video_area GetVideoArea() { return (enum_video_area) clamp(m_buttongroup_video_area->checkedId(), 0, VIDEO_AREA_COUNT - 1); }
 	inline unsigned int GetVideoAreaScreen() { return m_combobox_screens->currentIndex(); }
 	inline unsigned int GetVideoX() { return m_spinbox_video_x->value(); }
 	inline unsigned int GetVideoY() { return m_spinbox_video_y->value(); }
@@ -119,7 +119,7 @@ public:
 	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
 
 	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
-	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp<unsigned int>(0, m_combobox_screens->count() - 1, screen)); }
+	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_screens->count() - 1)); }
 	inline void SetVideoX(unsigned int x) { m_spinbox_video_x->setValue(x); }
 	inline void SetVideoY(unsigned int y) { m_spinbox_video_y->setValue(y); }
 	inline void SetVideoW(unsigned int w) { m_spinbox_video_w->setValue(w); }
@@ -134,7 +134,7 @@ public:
 	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
 	inline void SetGLInjectRunCommand(bool run_command) { m_glinject_run_command = run_command; }
 	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
-	inline void SetGLInjectMaxMegaPixels(unsigned int max_megapixels) { m_glinject_max_megapixels = clamp<unsigned int>(0, 100, max_megapixels); }
+	inline void SetGLInjectMaxMegaPixels(unsigned int max_megapixels) { m_glinject_max_megapixels = clamp(max_megapixels, 1u, 100u); }
 	inline void SetGLInjectCaptureFront(bool capture_front) { m_glinject_capture_front = capture_front; }
 	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
 

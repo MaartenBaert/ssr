@@ -150,12 +150,12 @@ inline int64_t hrt_time_micro() {
 }
 
 template<typename T>
-inline T clamp(T minval, T maxval, T x) {
-	if(x <= minval)
-		return minval;
-	if(x >= maxval)
-		return maxval;
-	return x;
+inline T clamp(T v, T lo, T hi) {
+	if(v < lo)
+		return lo;
+	if(v > hi)
+		return hi;
+	return v;
 }
 
 template<typename T>

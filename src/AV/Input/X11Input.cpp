@@ -352,8 +352,8 @@ void X11Input::run() {
 				Window dummy_win;
 				unsigned int dummy_mask;
 				if(XQueryPointer(m_x11_display, m_x11_root, &dummy_win, &dummy_win, &dummy, &dummy, &mouse_x, &mouse_y, &dummy_mask)) {
-					grab_x = clamp(lock->m_screen_bbox.x(), lock->m_screen_bbox.x() + lock->m_screen_bbox.width() - (int) m_width, mouse_x - (int) m_width / 2);
-					grab_y = clamp(lock->m_screen_bbox.y(), lock->m_screen_bbox.y() + lock->m_screen_bbox.height() - (int) m_height, mouse_y - (int) m_height / 2);
+					grab_x = clamp(mouse_x - (int) m_width / 2, lock->m_screen_bbox.x(), lock->m_screen_bbox.x() + lock->m_screen_bbox.width() - (int) m_width);
+					grab_y = clamp(mouse_y - (int) m_height / 2, lock->m_screen_bbox.y(), lock->m_screen_bbox.y() + lock->m_screen_bbox.height() - (int) m_height);
 				}
 			}
 

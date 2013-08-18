@@ -142,33 +142,33 @@ private:
 public:
 	inline QString GetFile() { return m_lineedit_file->text(); }
 	inline bool GetSeparateFiles() { return m_checkbox_separate_files->isChecked(); }
-	inline enum_container GetContainer() { return (enum_container) clamp(0, CONTAINER_COUNT - 1, m_combobox_container->currentIndex()); }
-	inline unsigned int GetContainerAV() { return clamp<unsigned int>(0, m_containers_av.size() - 1, m_combobox_container_av->currentIndex()); }
-	inline enum_video_codec GetVideoCodec() { return (enum_video_codec) clamp(0, VIDEO_CODEC_COUNT - 1, m_combobox_video_codec->currentIndex()); }
-	inline unsigned int GetVideoCodecAV() { return clamp<unsigned int>(0, m_video_codecs_av.size() - 1, m_combobox_video_codec_av->currentIndex()); }
+	inline enum_container GetContainer() { return (enum_container) clamp(m_combobox_container->currentIndex(), 0, CONTAINER_COUNT - 1); }
+	inline unsigned int GetContainerAV() { return clamp(m_combobox_container_av->currentIndex(), 0, (int) m_containers_av.size() - 1); }
+	inline enum_video_codec GetVideoCodec() { return (enum_video_codec) clamp(m_combobox_video_codec->currentIndex(), 0, VIDEO_CODEC_COUNT - 1); }
+	inline unsigned int GetVideoCodecAV() { return clamp(m_combobox_video_codec_av->currentIndex(), 0, (int) m_video_codecs_av.size() - 1); }
 	inline unsigned int GetVideoKBitRate() { return m_lineedit_video_kbit_rate->text().toUInt(); }
 	inline unsigned int GetH264CRF() { return m_lineedit_h264_crf->text().toUInt(); }
-	inline enum_h264_preset GetH264Preset() { return (enum_h264_preset) clamp(0, H264_PRESET_COUNT - 1, m_combobox_h264_preset->currentIndex()); }
-	inline unsigned int GetVP8CPUUsed() { return 5 - m_combobox_vp8_cpu_used->currentIndex(); }
+	inline enum_h264_preset GetH264Preset() { return (enum_h264_preset) clamp(m_combobox_h264_preset->currentIndex(), 0, H264_PRESET_COUNT - 1); }
+	inline unsigned int GetVP8CPUUsed() { return clamp(5 - m_combobox_vp8_cpu_used->currentIndex(), 1, 5); }
 	inline QString GetVideoOptions() { return m_lineedit_video_options->text(); }
-	inline enum_audio_codec GetAudioCodec() { return (enum_audio_codec) clamp(0, AUDIO_CODEC_COUNT - 1, m_combobox_audio_codec->currentIndex()); }
-	inline unsigned int GetAudioCodecAV() { return clamp<unsigned int>(0, m_audio_codecs_av.size() - 1, m_combobox_audio_codec_av->currentIndex()); }
+	inline enum_audio_codec GetAudioCodec() { return (enum_audio_codec) clamp(m_combobox_audio_codec->currentIndex(), 0, AUDIO_CODEC_COUNT - 1); }
+	inline unsigned int GetAudioCodecAV() { return clamp(m_combobox_audio_codec_av->currentIndex(), 0, (int) m_audio_codecs_av.size() - 1); }
 	inline unsigned int GetAudioKBitRate() { return m_lineedit_audio_kbit_rate->text().toUInt(); }
 	inline QString GetAudioOptions() { return m_lineedit_audio_options->text(); }
 
-	inline void SetContainer(enum_container container) { m_combobox_container->setCurrentIndex(clamp<unsigned int>(0, CONTAINER_COUNT - 1, container)); }
-	inline void SetContainerAV(unsigned int container) { m_combobox_container_av->setCurrentIndex(clamp<unsigned int>(0, m_containers_av.size() - 1, container)); }
+	inline void SetContainer(enum_container container) { m_combobox_container->setCurrentIndex(clamp((unsigned int) container, 0u, (unsigned int) CONTAINER_COUNT - 1)); }
+	inline void SetContainerAV(unsigned int container) { m_combobox_container_av->setCurrentIndex(clamp(container, 0u, (unsigned int) m_containers_av.size() - 1)); }
 	inline void SetFile(const QString& file) { m_lineedit_file->setText(file); }
 	inline void SetSeparateFiles(bool separate_files) { m_checkbox_separate_files->setChecked(separate_files); }
-	inline void SetVideoCodec(enum_video_codec video_codec) { m_combobox_video_codec->setCurrentIndex(clamp<unsigned int>(0, VIDEO_CODEC_COUNT - 1, video_codec)); }
-	inline void SetVideoCodecAV(unsigned int video_codec) { m_combobox_video_codec_av->setCurrentIndex(clamp<unsigned int>(0, m_video_codecs_av.size() - 1, video_codec)); }
+	inline void SetVideoCodec(enum_video_codec video_codec) { m_combobox_video_codec->setCurrentIndex(clamp((unsigned int) video_codec, 0u, (unsigned int) VIDEO_CODEC_COUNT - 1)); }
+	inline void SetVideoCodecAV(unsigned int video_codec) { m_combobox_video_codec_av->setCurrentIndex(clamp((unsigned int) video_codec, 0u, (unsigned int) m_video_codecs_av.size() - 1)); }
 	inline void SetVideoKBitRate(unsigned int kbit_rate) { m_lineedit_video_kbit_rate->setText(QString::number(kbit_rate)); }
 	inline void SetH264CRF(unsigned int crf) { m_lineedit_h264_crf->setText(QString::number(crf)); }
-	inline void SetH264Preset(enum_h264_preset preset) { m_combobox_h264_preset->setCurrentIndex(clamp<unsigned int>(0, H264_PRESET_COUNT - 1, preset)); }
-	inline void SetVP8CPUUsed(unsigned int cpu_used) { m_combobox_vp8_cpu_used->setCurrentIndex(clamp<unsigned int>(0, 4, 5 - cpu_used)); }
+	inline void SetH264Preset(enum_h264_preset preset) { m_combobox_h264_preset->setCurrentIndex(clamp((unsigned int) preset, 0u, (unsigned int) H264_PRESET_COUNT - 1)); }
+	inline void SetVP8CPUUsed(unsigned int cpu_used) { m_combobox_vp8_cpu_used->setCurrentIndex(clamp(5 - (int) cpu_used, 0, 4)); }
 	inline void SetVideoOptions(const QString& options) { m_lineedit_video_options->setText(options); }
-	inline void SetAudioCodec(enum_audio_codec audio_codec) { m_combobox_audio_codec->setCurrentIndex(clamp<unsigned int>(0, AUDIO_CODEC_COUNT - 1, audio_codec)); }
-	inline void SetAudioCodecAV(unsigned int audio_codec) { m_combobox_audio_codec_av->setCurrentIndex(clamp<unsigned int>(0, m_audio_codecs_av.size() - 1, audio_codec)); }
+	inline void SetAudioCodec(enum_audio_codec audio_codec) { m_combobox_audio_codec->setCurrentIndex(clamp((unsigned int) audio_codec, 0u, (unsigned int) AUDIO_CODEC_COUNT - 1)); }
+	inline void SetAudioCodecAV(unsigned int audio_codec) { m_combobox_audio_codec_av->setCurrentIndex(clamp((unsigned int) audio_codec, 0u, (unsigned int) m_audio_codecs_av.size() - 1)); }
 	inline void SetAudioKBitRate(unsigned int kbit_rate) { m_lineedit_audio_kbit_rate->setText(QString::number(kbit_rate)); }
 	inline void SetAudioOptions(const QString& options) { m_lineedit_audio_options->setText(options); }
 

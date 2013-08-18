@@ -314,7 +314,7 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 	if(lock->m_segment_audio_last_timestamp != AV_NOPTS_VALUE) {
 		double dt = (double) (timestamp - lock->m_segment_audio_last_timestamp) * 1.0e-6;
 		double current_error = (sample_length - time_length) - lock->m_av_desync;
-		lock->m_av_desync_i =  clamp(-1.0, 1.0, lock->m_av_desync_i + DESYNC_CORRECTION_I * current_error * dt); //TODO//
+		lock->m_av_desync_i = clamp(lock->m_av_desync_i + DESYNC_CORRECTION_I * current_error * dt, -1.0, 1.0);
 		lock->m_av_desync += (DESYNC_CORRECTION_P * current_error + lock->m_av_desync_i) * dt;
 		if(lock->m_av_desync_i < -0.05 && lock->m_warn_desync) {
 			lock->m_warn_desync = false;
