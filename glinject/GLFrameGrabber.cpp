@@ -112,6 +112,8 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 		exit(-181818181);
 	}
 	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
+	// Make sure we clean if we reattach
+	header.start_pause_recording = false;
 	m_cbuffer_size = header.cbuffer_size;
 	m_max_bytes = header.max_bytes;
 	m_target_fps = header.target_fps;
@@ -282,4 +284,17 @@ void GLFrameGrabber::GrabFrame() {
 	CGLE(glPopClientAttrib());
 	CGLE(glPopAttrib());
 
+}
+
+unsigned int GLFrameGrabber::GetHotkeyModifiers() {
+	return ((GLInjectHeader*) m_shm_main_ptr)->modifiers;
+}
+
+unsigned int GLFrameGrabber::GetHotkeyKeysym() {
+	return ((GLInjectHeader*) m_shm_main_ptr)->keysym;
+}
+
+void GLFrameGrabber::StartPauseRecording() {
+	// We really don't care about exact frame so it's OK for this to be unsychronized
+	((GLInjectHeader*) m_shm_main_ptr)->start_pause_recording = !((GLInjectHeader*) m_shm_main_ptr)->start_pause_recording;
 }

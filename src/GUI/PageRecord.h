@@ -51,6 +51,7 @@ private:
 	bool m_audio_enabled;
 	QString m_alsa_device;
 	bool m_glinject_insert_duplicates;
+	bool m_glinject_controls_recording;
 
 	QString m_file;
 	unsigned int m_video_out_width, m_video_out_height;
@@ -120,6 +121,7 @@ public:
 	inline bool IsHotkeyShiftEnabled() { return m_checkbox_hotkey_shift->isChecked(); }
 	inline bool IsHotkeyAltEnabled() { return m_checkbox_hotkey_alt->isChecked(); }
 	inline bool IsHotkeySuperEnabled() { return m_checkbox_hotkey_super->isChecked(); }
+	inline unsigned int GetHotkeyModifiers();
 	inline unsigned int GetHotkeyKey() { return m_combobox_hotkey_key->currentIndex(); }
 	inline unsigned int GetPreviewFrameRate() { return m_lineedit_preview_frame_rate->text().toUInt(); }
 

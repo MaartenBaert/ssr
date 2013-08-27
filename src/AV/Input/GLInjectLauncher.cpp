@@ -25,7 +25,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 const unsigned int GLInjectLauncher::CBUFFER_SIZE = 5;
 
-GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps) {
+GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, unsigned int modifiers, unsigned int keysym, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps) {
 
 	m_command = command;
 	m_run_command = run_command;
@@ -34,6 +34,8 @@ GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, boo
 	m_target_fps = target_fps;
 	m_record_cursor = record_cursor;
 	m_capture_front = capture_front;
+	m_modifiers = modifiers;
+	m_keysym = keysym;
 	m_limit_fps = limit_fps;
 
 	m_shm_main_id = -1;
@@ -59,6 +61,17 @@ void GLInjectLauncher::GetCurrentSize(unsigned int* width, unsigned int* height)
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	*width = header->current_width;
 	*height = header->current_height;
+}
+
+void GLInjectLauncher::UpdateHotkey(unsigned int modifiers, unsigned int keysym) {
+	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	header->modifiers = modifiers;
+	header->keysym = keysym;
+}
+
+bool GLInjectLauncher::GetStartPauseRecording() {
+	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	return header->start_pause_recording;	
 }
 
 void GLInjectLauncher::Init() {
@@ -99,6 +112,8 @@ void GLInjectLauncher::Init() {
 	header->max_bytes = m_max_bytes;
 	header->target_fps = m_target_fps;
 	header->flags = ((m_record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((m_capture_front)? GLINJECT_FLAG_CAPTURE_FRONT : 0) | ((m_limit_fps)? GLINJECT_FLAG_LIMIT_FPS : 0);
+	header->modifiers = m_modifiers;
+	header->keysym = m_keysym;
 	header->read_pos = 0;
 	header->write_pos = 0;
 	header->current_width = 0;

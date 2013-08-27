@@ -43,6 +43,9 @@ public:
 	~GLFrameGrabber();
 
 	void GrabFrame();
+	unsigned int GetHotkeyModifiers();
+	unsigned int GetHotkeyKeysym();
+	void StartPauseRecording();
 
 public:
 	inline Display* GetX11Display() { return m_x11_display; }

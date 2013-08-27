@@ -20,9 +20,12 @@ struct GLInjectHeader {
 	uint32_t cbuffer_size, max_bytes;
 	uint32_t target_fps;
 	uint32_t flags;
+	uint32_t modifiers;
+	uint32_t keysym;
 	// input/output
 	uint32_t read_pos, write_pos;
 	// output
+	bool start_pause_recording;
 	uint32_t current_width, current_height;
 	uint32_t current_fps;
 };
