@@ -51,7 +51,6 @@ private:
 	bool m_audio_enabled;
 	QString m_alsa_device;
 	bool m_glinject_insert_duplicates;
-	bool m_glinject_controls_recording;
 
 	QString m_file;
 	unsigned int m_video_out_width, m_video_out_height;

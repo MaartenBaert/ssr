@@ -25,11 +25,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 const unsigned int GLInjectLauncher::CBUFFER_SIZE = 5;
 
-GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, unsigned int modifiers, unsigned int keysym, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps) {
+GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, bool hotkey_enabled, unsigned int modifiers, unsigned int keysym, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps) {
 
 	m_command = command;
 	m_run_command = run_command;
 	m_relax_permissions = relax_permissions;
+	m_hotkey_enabled = hotkey_enabled;
 	m_max_bytes = max_bytes;
 	m_target_fps = target_fps;
 	m_record_cursor = record_cursor;
@@ -37,6 +38,7 @@ GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, boo
 	m_modifiers = modifiers;
 	m_keysym = keysym;
 	m_limit_fps = limit_fps;
+	m_hotkey_count = 0;
 
 	m_shm_main_id = -1;
 	m_shm_main_ptr = (char*) -1;
@@ -63,15 +65,22 @@ void GLInjectLauncher::GetCurrentSize(unsigned int* width, unsigned int* height)
 	*height = header->current_height;
 }
 
-void GLInjectLauncher::UpdateHotkey(unsigned int modifiers, unsigned int keysym) {
+void GLInjectLauncher::UpdateHotkey(bool enabled, unsigned int modifiers, unsigned int keysym) {
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	header->hotkey_enabled = false;
 	header->modifiers = modifiers;
 	header->keysym = keysym;
+	header->hotkey_enabled = enabled;
 }
 
 bool GLInjectLauncher::GetStartPauseRecording() {
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
-	return header->start_pause_recording;	
+
+	unsigned int new_hotkey_count = header->hotkey_count;
+	bool event = new_hotkey_count != m_hotkey_count;
+	m_hotkey_count = new_hotkey_count;
+
+	return event;	
 }
 
 void GLInjectLauncher::Init() {
@@ -112,8 +121,10 @@ void GLInjectLauncher::Init() {
 	header->max_bytes = m_max_bytes;
 	header->target_fps = m_target_fps;
 	header->flags = ((m_record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((m_capture_front)? GLINJECT_FLAG_CAPTURE_FRONT : 0) | ((m_limit_fps)? GLINJECT_FLAG_LIMIT_FPS : 0);
+	header->hotkey_enabled = m_hotkey_enabled;
 	header->modifiers = m_modifiers;
 	header->keysym = m_keysym;
+	header->hotkey_count = 0;
 	header->read_pos = 0;
 	header->write_pos = 0;
 	header->current_width = 0;

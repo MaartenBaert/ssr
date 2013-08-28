@@ -26,6 +26,7 @@ int (*g_glinject_real_XNextEvent)(Display*, XEvent*) = NULL;
 
 int g_glinject_hooks_initialized = 0;
 
+bool g_hotkey_enabled = false;
 unsigned int g_hotkey_modifiers = 0;
 unsigned int g_hotkey_keysym = 0;
 bool g_hotkey_pressed = false;
@@ -107,8 +108,9 @@ void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
 	}
 	g_hotkey_modifiers = fg->GetHotkeyModifiers();
 	g_hotkey_keysym = fg->GetHotkeyKeysym();
+	g_hotkey_enabled = fg->GetHotkeyEnabled();
 	if(g_hotkey_pressed) {
-		fg->StartPauseRecording();
+		fg->IncreaseHotkeyCount();
 		g_hotkey_pressed = false;
 	}
 	fg->GrabFrame();
@@ -129,7 +131,7 @@ GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name) {
 int glinject_my_XNextEvent(Display* display, XEvent* event_return) {
 	int res = g_glinject_real_XNextEvent(display, event_return);
 
-	if(event_return->type == KeyRelease) {
+	if(g_hotkey_enabled && event_return->type == KeyRelease) {
 		XKeyEvent* keyEvent = (XKeyEvent*) event_return;
 
 		if(keyEvent->state == g_hotkey_modifiers && keyEvent->keycode == XKeysymToKeycode(display, g_hotkey_keysym)) {

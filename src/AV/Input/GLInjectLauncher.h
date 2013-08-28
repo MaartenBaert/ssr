@@ -37,10 +37,12 @@ private:
 private:
 	QString m_command;
 	bool m_run_command, m_relax_permissions;
+	bool m_hotkey_enabled;
 	unsigned int m_modifiers;
 	unsigned int m_keysym;
 	unsigned int m_max_bytes;
 	unsigned int m_target_fps;
+	unsigned int m_hotkey_count;
 	bool m_record_cursor, m_capture_front, m_limit_fps;
 
 	int m_shm_main_id;
@@ -48,7 +50,7 @@ private:
 	std::vector<ShmFrame> m_shm_frames;
 
 public:
-	GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, unsigned int modifiers, unsigned int keysym, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps);
+	GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, bool hotkey_enabled, unsigned int modifiers, unsigned int keysym, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps);
 	~GLInjectLauncher();
 
 	// Reads the current size of the OpenGL application. If the application hasn't been started yet, this will be 0x0.
@@ -67,7 +69,7 @@ public:
 	inline volatile char* GetFrameSharedPointer(unsigned int frame) { return m_shm_frames[frame].ptr; }
 
 	// Updates the hotkey used to start the capture.
-	void UpdateHotkey(unsigned int modifiers, unsigned int keysym);
+	void UpdateHotkey(bool enabled, unsigned int modifiers, unsigned int keysym);
 
 	// Get if the injected code requested recording
 	bool GetStartPauseRecording();

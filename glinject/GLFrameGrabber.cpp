@@ -112,8 +112,6 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 		exit(-181818181);
 	}
 	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
-	// Make sure we clean if we reattach
-	header.start_pause_recording = false;
 	m_cbuffer_size = header.cbuffer_size;
 	m_max_bytes = header.max_bytes;
 	m_target_fps = header.target_fps;
@@ -294,7 +292,11 @@ unsigned int GLFrameGrabber::GetHotkeyKeysym() {
 	return ((GLInjectHeader*) m_shm_main_ptr)->keysym;
 }
 
-void GLFrameGrabber::StartPauseRecording() {
-	// We really don't care about exact frame so it's OK for this to be unsychronized
-	((GLInjectHeader*) m_shm_main_ptr)->start_pause_recording = !((GLInjectHeader*) m_shm_main_ptr)->start_pause_recording;
+bool GLFrameGrabber::GetHotkeyEnabled() {
+	return ((GLInjectHeader*) m_shm_main_ptr)->hotkey_enabled;
+}
+
+void GLFrameGrabber::IncreaseHotkeyCount() {
+	// We really don't care about exact frame so it's OK for this to be non-atomic
+	((GLInjectHeader*) m_shm_main_ptr)->hotkey_count++;
 }

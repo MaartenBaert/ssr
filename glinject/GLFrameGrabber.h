@@ -45,7 +45,8 @@ public:
 	void GrabFrame();
 	unsigned int GetHotkeyModifiers();
 	unsigned int GetHotkeyKeysym();
-	void StartPauseRecording();
+	bool GetHotkeyEnabled();
+	void IncreaseHotkeyCount();
 
 public:
 	inline Display* GetX11Display() { return m_x11_display; }

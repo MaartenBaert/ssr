@@ -58,7 +58,6 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_encoders_started = false;
 	m_capturing = false;
 	m_previewing = false;
-	m_glinject_controls_recording = false;
 
 	QGroupBox *group_recording = new QGroupBox("Recording", this);
 	{
@@ -396,7 +395,7 @@ void PageRecord::PageStart() {
 	// for OpenGL recording, allocate shared memory and start the program now
 	if(m_video_glinject) {
 		try {
-			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_run_command, glinject_relax_permissions, GetHotkeyModifiers(), XK_A + GetHotkeyKey(), glinject_megapixels * 4 * 1024 * 1024,
+			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_run_command, glinject_relax_permissions, IsHotkeyEnabled(), GetHotkeyModifiers(), XK_A + GetHotkeyKey(), glinject_megapixels * 4 * 1024 * 1024,
 															m_video_frame_rate, m_video_record_cursor, glinject_capture_front, glinject_limit_fps));
 		} catch(...) {
 			Logger::LogError("[PageRecord::PageStart] Error: Something went wrong during GLInject initialization.");
@@ -650,7 +649,7 @@ void PageRecord::UpdateHotkey() {
 
 		g_hotkey_listener.EnableHotkey(XK_A + GetHotkeyKey(), GetHotkeyModifiers());
 
-		m_gl_inject_launcher->UpdateHotkey(GetHotkeyModifiers(), XK_A + GetHotkeyKey());
+		m_gl_inject_launcher->UpdateHotkey(IsHotkeyEnabled(), GetHotkeyModifiers(), XK_A + GetHotkeyKey());
 	} else {
 
 		g_hotkey_listener.DisableHotkey();
@@ -665,10 +664,6 @@ void PageRecord::RecordStartPause() {
 	} else {
 		CaptureStart();
 	}
-
-	// If glinject was controling recording, it must have either
-	// been closed or died (since we got here), so return control to us
-	m_glinject_controls_recording = false;
 }
 
 void PageRecord::PreviewStartStop() {
@@ -748,13 +743,7 @@ void PageRecord::UpdateInformation() {
 		if(m_video_glinject) {
 			m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 			if(m_gl_inject_launcher->GetStartPauseRecording()) {
-				// If injected code requested recording, honor it
-				// and remember
-				CaptureStart();
-				m_glinject_controls_recording = true;
-			} else if(m_glinject_controls_recording) {
-				// Only allow injected code to stop recording if it actually set it
-				CaptureStop();
+				RecordStartPause();		
 			}
 		}
 
