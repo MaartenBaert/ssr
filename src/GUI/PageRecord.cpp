@@ -340,6 +340,7 @@ void PageRecord::PageStart() {
 	m_glinject_insert_duplicates = page_input->GetGLInjectInsertDuplicates();
 
 	// get the output settings
+	m_hide_filename = page_output->GetHideFilename();
 	m_file = page_output->GetFile();
 	m_video_out_width = 0;
 	m_video_out_height = 0;
@@ -748,7 +749,8 @@ void PageRecord::UpdateInformation() {
 			m_label_video_out_size->setText("?");
 		else
 			m_label_video_out_size->setText(QString::number(m_video_out_width) + "x" + QString::number(m_video_out_height));
-		m_label_file_name->setText(QFileInfo(m_file).fileName());
+		QString sFilename = (m_hide_filename) ? "*****" : m_file;
+		m_label_file_name->setText(QFileInfo(sFilename).fileName());
 		m_label_file_size->setText(ReadableSize(current_bytes, "B"));
 		m_label_file_bit_rate->setText(ReadableSize((uint64_t) (bit_rate + 0.5), "bps"));
 

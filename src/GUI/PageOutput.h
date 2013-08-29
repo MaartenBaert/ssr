@@ -91,6 +91,7 @@ private:
 	QLabel *m_label_container_av;
 	QComboBox *m_combobox_container_av;
 	QLineEdit *m_lineedit_file;
+	QCheckBox *m_checkbox_hide;
 	QComboBox *m_combobox_video_codec;
 	QLabel *m_label_video_codec_av;
 	QComboBox *m_combobox_video_codec_av;
@@ -128,6 +129,7 @@ public:
 	inline enum_container GetContainer() { return (enum_container) clamp(0, CONTAINER_COUNT - 1, m_combobox_container->currentIndex()); }
 	inline unsigned int GetContainerAV() { return clamp<unsigned int>(0, m_containers_av.size() - 1, m_combobox_container_av->currentIndex()); }
 	inline QString GetFile() { return m_lineedit_file->text(); }
+	inline bool GetHideFilename() { return m_checkbox_hide->isChecked(); }
 	inline enum_video_codec GetVideoCodec() { return (enum_video_codec) clamp(0, VIDEO_CODEC_COUNT - 1, m_combobox_video_codec->currentIndex()); }
 	inline unsigned int GetVideoCodecAV() { return clamp<unsigned int>(0, m_video_codecs_av.size() - 1, m_combobox_video_codec_av->currentIndex()); }
 	inline unsigned int GetVideoKBitRate() { return m_lineedit_video_kbit_rate->text().toUInt(); }
@@ -143,6 +145,7 @@ public:
 	inline void SetContainer(enum_container container) { m_combobox_container->setCurrentIndex(clamp<unsigned int>(0, CONTAINER_COUNT - 1, container)); }
 	inline void SetContainerAV(unsigned int container) { m_combobox_container_av->setCurrentIndex(clamp<unsigned int>(0, m_containers_av.size() - 1, container)); }
 	inline void SetFile(const QString& file) { m_lineedit_file->setText(file); }
+	inline void SetHideFilename(bool show) { m_checkbox_hide->setChecked(show); }
 	inline void SetVideoCodec(enum_video_codec video_codec) { m_combobox_video_codec->setCurrentIndex(clamp<unsigned int>(0, VIDEO_CODEC_COUNT - 1, video_codec)); }
 	inline void SetVideoCodecAV(unsigned int video_codec) { m_combobox_video_codec_av->setCurrentIndex(clamp<unsigned int>(0, m_video_codecs_av.size() - 1, video_codec)); }
 	inline void SetVideoKBitRate(unsigned int kbit_rate) { m_lineedit_video_kbit_rate->setText(QString::number(kbit_rate)); }

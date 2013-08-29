@@ -44,6 +44,7 @@ private:
 
 	bool m_page_started, m_encoders_started, m_capturing, m_previewing;
 	bool m_video_record_cursor, m_video_follow_cursor, m_video_glinject;
+	bool m_hide_filename;
 	unsigned int m_video_x, m_video_y, m_video_in_width, m_video_in_height;
 	bool m_video_scaling;
 	unsigned int m_video_scaled_width, m_video_scaled_height;

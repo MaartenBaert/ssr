@@ -160,6 +160,11 @@ PageOutput::PageOutput(MainWindow* main_window)
 		m_lineedit_file = new QLineEdit(groupbox_file);
 		m_lineedit_file->setToolTip("The recording will be saved to this location.");
 		QPushButton *button_browse = new QPushButton("Browse...", groupbox_file);
+		QLabel *label_hide = new QLabel("Hide filename:", groupbox_file);
+		m_checkbox_hide = new QCheckBox(groupbox_file);
+		m_checkbox_hide->setToolTip("On streaming sites like twitch.tv the filename is the private key.\n"
+								    "With this option the filename is hidden on the next tab.\n"
+								    "This prevents the key from being shown in a stream by accident.");
 
 		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(UpdateContainerFields()));
 		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(UpdateContainerFields()));
@@ -173,6 +178,8 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout->addWidget(label_file, 2, 0);
 		layout->addWidget(m_lineedit_file, 2, 1);
 		layout->addWidget(button_browse, 2, 2);
+		layout->addWidget(label_hide, 3, 0);
+		layout->addWidget(m_checkbox_hide, 3, 1, 1, 2);
 	}
 	QGroupBox *groupbox_video = new QGroupBox("Video", this);
 	{
@@ -347,6 +354,7 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	SetContainer((enum_container) settings->value("output/container", default_container).toUInt());
 	SetContainerAV(settings->value("output/container_av", default_container).toUInt());
 	SetFile(settings->value("output/file", "").toString());
+	SetHideFilename(settings->value("output/hidefilename", false).toBool());
 	SetVideoCodec((enum_video_codec) settings->value("output/video/codec", default_video_codec).toUInt());
 	SetVideoCodecAV(settings->value("output/video/codec_av", default_video_codec).toUInt());
 	SetVideoKBitRate(settings->value("output/video/kbit_rate", 5000).toUInt());
@@ -370,6 +378,7 @@ void PageOutput::SaveSettings(QSettings* settings) {
 	settings->setValue("output/container", GetContainer());
 	settings->setValue("output/container_av", GetContainerAV());
 	settings->setValue("output/file", GetFile());
+	settings->setValue("output/hidefilename", GetHideFilename());
 	settings->setValue("output/video/codec", GetVideoCodec());
 	settings->setValue("output/video/codec_av", GetVideoCodecAV());
 	settings->setValue("output/video/kbit_rate", GetVideoKBitRate());
