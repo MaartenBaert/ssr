@@ -288,8 +288,8 @@ unsigned int GLFrameGrabber::GetHotkeyModifiers() {
 	return ((GLInjectHeader*) m_shm_main_ptr)->modifiers;
 }
 
-unsigned int GLFrameGrabber::GetHotkeyKeysym() {
-	return ((GLInjectHeader*) m_shm_main_ptr)->keysym;
+unsigned int GLFrameGrabber::GetHotkeyKeycode() {
+	return ((GLInjectHeader*) m_shm_main_ptr)->keycode;
 }
 
 bool GLFrameGrabber::GetHotkeyEnabled() {

@@ -22,7 +22,7 @@ struct GLInjectHeader {
 	uint32_t flags;
 	bool hotkey_enabled;
 	uint32_t modifiers;
-	uint32_t keysym;
+	uint32_t keycode;
 	// input/output
 	uint32_t read_pos, write_pos;
 	// output

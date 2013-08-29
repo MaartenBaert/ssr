@@ -69,7 +69,7 @@ void GLInjectLauncher::UpdateHotkey(bool enabled, unsigned int modifiers, unsign
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	header->hotkey_enabled = false;
 	header->modifiers = modifiers;
-	header->keysym = keysym;
+	header->keycode = XKeysymToKeycode(QX11Info::display(), keysym);
 	header->hotkey_enabled = enabled;
 }
 
@@ -123,7 +123,7 @@ void GLInjectLauncher::Init() {
 	header->flags = ((m_record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((m_capture_front)? GLINJECT_FLAG_CAPTURE_FRONT : 0) | ((m_limit_fps)? GLINJECT_FLAG_LIMIT_FPS : 0);
 	header->hotkey_enabled = m_hotkey_enabled;
 	header->modifiers = m_modifiers;
-	header->keysym = m_keysym;
+	header->keycode = XKeysymToKeycode(QX11Info::display(), m_keysym);
 	header->hotkey_count = 0;
 	header->read_pos = 0;
 	header->write_pos = 0;

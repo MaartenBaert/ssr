@@ -44,7 +44,7 @@ public:
 
 	void GrabFrame();
 	unsigned int GetHotkeyModifiers();
-	unsigned int GetHotkeyKeysym();
+	unsigned int GetHotkeyKeycode();
 	bool GetHotkeyEnabled();
 	void IncreaseHotkeyCount();
 
