@@ -732,6 +732,7 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	}
 	layout->addWidget(m_checkbox_capture_front);
 	layout->addWidget(m_checkbox_limit_fps);
+	layout->addStretch();
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
 		layout->addLayout(layout2);

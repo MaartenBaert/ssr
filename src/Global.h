@@ -159,9 +159,27 @@ inline T clamp(T v, T lo, T hi) {
 }
 
 template<typename T>
-T positive_mod(T x, T y) {
+inline T positive_mod(T x, T y) {
 	T z = x % y;
 	return (z < 0)? z + y : z;
+}
+
+template<typename T>
+inline int32_t round_int32(T x) {
+	if(sizeof(long) >= sizeof(int32_t))
+		return lrint(x);
+	if(sizeof(long long) >= sizeof(int32_t))
+		return llrint(x);
+	return (int32_t) rint(x);
+}
+
+template<typename T>
+inline int64_t round_int64(T x) {
+	if(sizeof(long) >= sizeof(int64_t))
+		return lrint(x);
+	if(sizeof(long long) >= sizeof(int64_t))
+		return llrint(x);
+	return (int64_t) rint(x);
 }
 
 #endif // GLOBAL_H

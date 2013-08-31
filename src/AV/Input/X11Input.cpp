@@ -167,13 +167,12 @@ static void X11ImageDrawCursor(Display* dpy, XImage* image, int recording_area_x
 
 }
 
-X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned int frame_rate, bool record_cursor, bool follow_cursor) {
+X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor) {
 
 	m_x = x;
 	m_y = y;
 	m_width = width;
 	m_height = height;
-	m_frame_rate = frame_rate;
 	m_record_cursor = record_cursor;
 	m_follow_cursor = follow_cursor;
 
@@ -328,21 +327,26 @@ void X11Input::run() {
 
 		unsigned int grab_x = m_x, grab_y = m_y;
 
-		int64_t next_frame_time = hrt_time_micro();
 		while(!m_should_stop) {
 
 			// sleep
+			int64_t next_timestamp = CalculateNextVideoTimestamp();
 			int64_t timestamp = hrt_time_micro();
-			int64_t wait = next_frame_time - timestamp;
-			if(wait > 11000) {
-				// the thread can't sleep for too long because it still has to check the m_should_stop flag periodically
+			if(next_timestamp == SINK_TIMESTAMP_NONE) {
 				usleep(10000);
 				continue;
-			} else if(wait > 0) {
-				usleep(wait);
-				timestamp = hrt_time_micro();
+			} else if(next_timestamp != SINK_TIMESTAMP_ANY) {
+				int64_t wait = next_timestamp - timestamp;
+				if(wait > 11000) {
+					// the thread can't sleep for too long because it still has to check the m_should_stop flag periodically
+					usleep(10000);
+					continue;
+				} else if(wait > 0) {
+					usleep(wait);
+					timestamp = hrt_time_micro();
+				}
 			}
-			next_frame_time = std::max(next_frame_time + CalculateVideoFrameInterval(m_frame_rate), timestamp);
+
 
 			SharedLock lock(&m_shared_data);
 

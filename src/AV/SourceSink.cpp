@@ -58,7 +58,7 @@ void BaseSink::ConnectBaseSource(BaseSource* source, int priority) {
 	}
 }
 
-int64_t VideoSource::CalculateVideoFrameInterval(unsigned int frame_rate) {
+/*int64_t VideoSource::CalculateVideoFrameInterval(unsigned int frame_rate) {
 	SharedLock lock(&m_shared_data);
 	int64_t max_interval = 1000000 / frame_rate;
 	for(SinkData &s : lock->m_sinks) {
@@ -67,6 +67,16 @@ int64_t VideoSource::CalculateVideoFrameInterval(unsigned int frame_rate) {
 			max_interval = interval;
 	}
 	return max_interval;
+}*/
+
+int64_t VideoSource::CalculateNextVideoTimestamp() {
+	SharedLock lock(&m_shared_data);
+	for(SinkData &s : lock->m_sinks) {
+		int64_t timestamp = static_cast<VideoSink*>(s.sink)->GetNextVideoTimestamp();
+		if(timestamp != SINK_TIMESTAMP_NONE)
+			return timestamp;
+	}
+	return SINK_TIMESTAMP_NONE;
 }
 
 void VideoSource::PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {

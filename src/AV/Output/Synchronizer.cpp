@@ -50,9 +50,6 @@ const int64_t Synchronizer::AUDIO_GAP_THRESHOLD = 500000;
 // This is needed because some video codecs/players can't handle long delays.
 const int64_t Synchronizer::MAX_FRAME_DELAY = 200000;
 
-// The highest expected latency from the actual capturing to the synchronizer, in microseconds.
-const int64_t Synchronizer::MAX_INPUT_LATENCY = 200000;
-
 Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder, bool allow_frame_skipping) {
 	Q_ASSERT(video_encoder != NULL || audio_encoder != NULL);
 
@@ -80,6 +77,12 @@ Synchronizer::~Synchronizer() {
 		Logger::LogInfo("[Synchronizer::~Synchronizer] Telling synchronizer thread to stop ...");
 		m_should_stop = true;
 		wait();
+	}
+
+	// flush one more time
+	{
+		SharedLock lock(&m_shared_data);
+		FlushBuffers(lock.get());
 	}
 
 	// free everything
@@ -133,6 +136,7 @@ void Synchronizer::Init() {
 		lock->m_segment_audio_samples_read = 0;
 		lock->m_segment_video_last_timestamp = AV_NOPTS_VALUE;
 		lock->m_segment_audio_last_timestamp = AV_NOPTS_VALUE;
+		lock->m_segment_video_accumulated_delay = 0;
 		lock->m_av_desync = 0.0;
 		lock->m_av_desync_i = 0.0;
 		lock->m_warn_drop_video = true;
@@ -166,13 +170,34 @@ int64_t Synchronizer::GetTotalTime() {
 	}
 }
 
-int64_t Synchronizer::GetVideoFrameInterval() {
+int64_t Synchronizer::GetNextVideoTimestamp() {
 	Q_ASSERT(m_video_encoder != NULL);
-	return m_video_encoder->GetFrameInterval();
+	SharedLock lock(&m_shared_data);
+	return (lock->m_segment_video_started)? lock->m_segment_video_stop_time - (int64_t) round(lock->m_av_desync * 1.0e6) : SINK_TIMESTAMP_ANY;
 }
 
 void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
 	Q_ASSERT(m_video_encoder != NULL);
+
+	int64_t corrected_timestamp;
+	{
+		SharedLock lock(&m_shared_data);
+
+		// check the timestamp
+		if(lock->m_segment_video_started && timestamp < lock->m_segment_video_last_timestamp) {
+			Logger::LogWarning("[Synchronizer::ReadVideoFrame] Warning: Received video frame with non-monotonic timestamp.");
+			timestamp = lock->m_segment_video_last_timestamp;
+		}
+
+		// do time correction
+		corrected_timestamp = timestamp + (int64_t) round(lock->m_av_desync * 1.0e6);
+
+		// drop the frame if it is too early (before converting it)
+		if(lock->m_segment_video_started && corrected_timestamp < lock->m_segment_video_stop_time - (int64_t) (1000000 / m_video_frame_rate)) {
+			return;
+		}
+
+	}
 
 	// allocate the converted frame, with proper alignment
 	// Y = 1 byte per pixel, U or V = 1 byte per 2x2 pixels
@@ -202,15 +227,6 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 
 	SharedLock lock(&m_shared_data);
 
-	// check the timestamp
-	if(lock->m_segment_video_started && timestamp < lock->m_segment_video_last_timestamp) {
-		Logger::LogWarning("[Synchronizer::ReadVideoFrame] Warning: Received video frame with non-monotonic timestamp.");
-		timestamp = lock->m_segment_video_last_timestamp;
-	}
-
-	// do time correction
-	int64_t corrected_timestamp = timestamp + (int64_t) round(lock->m_av_desync * 1.0e6);
-
 	// avoid memory problems by limiting the video buffer size
 	if(lock->m_video_buffer.size() >= MAX_VIDEO_FRAMES_BUFFERED) {
 		if(lock->m_segment_audio_started) {
@@ -231,23 +247,26 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	if(!lock->m_segment_video_started) {
 		lock->m_segment_video_started = true;
 		lock->m_segment_video_start_time = corrected_timestamp;
+		lock->m_segment_video_stop_time = corrected_timestamp;
 	}
 
-	// save the timestamp
-	lock->m_segment_video_last_timestamp = timestamp;
-
 	// store the frame
+	lock->m_segment_video_last_timestamp = timestamp;
 	converted_frame->pkt_dts = corrected_timestamp;
 	lock->m_video_buffer.push_back(std::move(converted_frame));
 
 	// increase the segment stop time
-	lock->m_segment_video_stop_time = corrected_timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate;
+	//lock->m_segment_video_stop_time = corrected_timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate;
+	int64_t delay = m_video_encoder->GetFrameDelay();
+	lock->m_segment_video_stop_time = std::max(lock->m_segment_video_stop_time + (int64_t) 1000000 / (int64_t) m_video_frame_rate + delay, corrected_timestamp);
+	lock->m_segment_video_accumulated_delay += delay;
 
 	//Logger::LogInfo("[Synchronizer::ReadVideoFrame] Added video frame at " + QString::number(timestamp) + ".");
 
 }
 
 void Synchronizer::ReadVideoPing(int64_t timestamp) {
+	Q_ASSERT(m_audio_encoder != NULL);
 	SharedLock lock(&m_shared_data);
 
 	// if the video has not been started, ignore it
@@ -258,7 +277,7 @@ void Synchronizer::ReadVideoPing(int64_t timestamp) {
 	int64_t corrected_timestamp = timestamp + (int64_t) round(lock->m_av_desync * 1.0e6);
 
 	// increase the segment stop time
-	lock->m_segment_video_stop_time = std::max(lock->m_segment_video_stop_time, corrected_timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate);
+	lock->m_segment_video_stop_time = std::max(lock->m_segment_video_stop_time, corrected_timestamp);
 
 }
 
@@ -269,6 +288,7 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 	if(sample_count == 0)
 		return;
 
+	// check the timestamp
 	if(lock->m_segment_audio_started && timestamp < lock->m_segment_audio_last_timestamp) {
 		Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Received audio samples with non-monotonic timestamp.");
 		timestamp = lock->m_segment_audio_last_timestamp;
@@ -303,6 +323,7 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 	if(!lock->m_segment_audio_started) {
 		lock->m_segment_audio_started = true;
 		lock->m_segment_audio_start_time = timestamp;
+		lock->m_segment_audio_stop_time = timestamp;
 	}
 
 	// do speed correction (i.e. do the calculations so the video can synchronize to it)
@@ -327,10 +348,8 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 		//qDebug() << hrt_time_micro() << current_error << (sample_length - time_length) << lock->m_av_desync << lock->m_av_desync_i;
 	}
 
-	// save the timestamp
-	lock->m_segment_audio_last_timestamp = timestamp;
-
 	// store the samples
+	lock->m_segment_audio_last_timestamp = timestamp;
 	lock->m_audio_buffer.Write((const char*) data, sample_count * m_audio_sample_size);
 
 	// increase segment stop time
@@ -356,6 +375,7 @@ void Synchronizer::NewSegment(SharedData* lock) {
 	lock->m_segment_audio_samples_read = 0;
 	lock->m_segment_video_last_timestamp = AV_NOPTS_VALUE;
 	lock->m_segment_audio_last_timestamp = AV_NOPTS_VALUE;
+	lock->m_segment_video_accumulated_delay = 0;
 	lock->m_av_desync = 0.0;
 	// don't reset m_av_desync_i because it is usually still accurate
 }
@@ -387,27 +407,38 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	// frame will have a timestamp that's one frame earlier than that time, so it will never interfere with the real frame.
 	// There are two situations where duplicate frames can be inserted:
 	// (1) The queue is not empty, but there is a gap between frames that is too large.
-	// (2) The queue is empty and the last timestamp is too long ago (relative to the current time minus MAX_INPUT_LATENCY).
+	// (2) The queue is empty and the last timestamp is too long ago (relative to the current time minus MAX_INPUT_LATENCY). //TODO// ping?
 	// It is perfectly possible that *both* happen, each possibly multiple times, in just one function call.
 
 	int64_t segment_start_time, segment_stop_time;
 	GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
 
 	// flush video
-	int64_t segment_stop_video_pts = (int64_t) round((double) (lock->m_time_offset + (segment_stop_time - segment_start_time)) * 1.0e-6 * (double) m_video_frame_rate);
+	//int64_t segment_stop_video_pts = (int64_t) round((double) (lock->m_time_offset + (segment_stop_time - segment_start_time)) * 1.0e-6 * (double) m_video_frame_rate);
+	int64_t segment_stop_video_pts = (lock->m_time_offset + (segment_stop_time - segment_start_time)) * (int64_t) m_video_frame_rate / (int64_t) 1000000;
+	int64_t delay_time_per_frame = 1000000 / m_video_frame_rate + 1; // add one to avoid endless accumulation
 	for( ; ; ) {
 
 		// get/predict the timestamp of the next frame
-		int64_t next_timestamp = (lock->m_video_buffer.empty())? hrt_time_micro() - MAX_INPUT_LATENCY : lock->m_video_buffer.front()->pkt_dts;
-		int64_t next_pts = (int64_t) round((double) (lock->m_time_offset + (next_timestamp - segment_start_time)) * 1.0e-6 * (double) m_video_frame_rate);
+		int64_t next_timestamp = (lock->m_video_buffer.empty())? lock->m_segment_video_stop_time - (int64_t) (1000000 / m_video_frame_rate) : lock->m_video_buffer.front()->pkt_dts;
+		int64_t next_pts = (lock->m_time_offset + (next_timestamp - segment_start_time)) * (int64_t) m_video_frame_rate / (int64_t) 1000000;
+
+		// insert delays if needed, up to either the next frame or the segment end
+		// It doesn't really matter where the delays end up, they will never cause real frames to be dropped, only duplicates.
+		while(lock->m_segment_video_accumulated_delay >= delay_time_per_frame && lock->m_video_pts < std::min(next_pts, segment_stop_video_pts)) {
+			lock->m_segment_video_accumulated_delay -= delay_time_per_frame;
+			lock->m_video_pts += 1;
+			Logger::LogInfo("[Synchronizer::FlushBuffers] Delay [" + QString::number(lock->m_video_pts - 1) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
+		}
 
 		// insert duplicate frames if needed, up to either the next frame or the segment end
 		if(lock->m_last_video_frame != NULL) {
 			while(lock->m_video_pts + m_video_max_frames_skipped < std::min(next_pts, segment_stop_video_pts)) {
-				lock->m_last_video_frame->pts = lock->m_video_pts + m_video_max_frames_skipped;
 				std::unique_ptr<AVFrameWrapper> duplicate_frame(new AVFrameWrapper(*lock->m_last_video_frame));
+				duplicate_frame->pts = lock->m_video_pts + m_video_max_frames_skipped;
+				lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - (duplicate_frame->pts - lock->m_video_pts) * delay_time_per_frame);
 				lock->m_video_pts = duplicate_frame->pts + 1;
-				//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(duplicate_frame->pts) + "] (duplicate).");
+				Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(duplicate_frame->pts) + "] (duplicate) acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 				m_video_encoder->AddFrame(std::move(duplicate_frame));
 			}
 		}
@@ -424,8 +455,10 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 		lock->m_last_video_frame.reset(new AVFrameWrapper(*frame));
 
 		// if the frame is way too early, drop it
-		if(frame->pts < lock->m_video_pts - 1)
+		if(frame->pts < lock->m_video_pts - 1) {
+			Logger::LogInfo("[Synchronizer::FlushBuffers] Dropped video frame [" + QString::number(frame->pts) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 			continue;
+		}
 
 		// if the frame is just a little too early, move it
 		if(frame->pts < lock->m_video_pts)
@@ -436,6 +469,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 			frame->pts = 0;
 
 		// send the frame to the encoder
+		lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - (frame->pts - lock->m_video_pts) * delay_time_per_frame);
 		lock->m_video_pts = frame->pts + 1;
 		//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(frame->pts) + "].");
 		m_video_encoder->AddFrame(std::move(frame));

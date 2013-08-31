@@ -54,6 +54,10 @@ public:
 	// This function is thread-safe.
 	void SetFrameRate(unsigned int frame_rate);
 
+	// Returns the preferred next video timestamp.
+	// This function is thread-safe.
+	virtual int64_t GetNextVideoTimestamp() override;
+
 	// Reads a video frame from the video source.
 	// This function is thread-safe.
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;

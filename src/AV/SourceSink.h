@@ -26,6 +26,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 // It decides where new frames should be sent. Using these connections is thread-safe,
 // however only ONE thread should ever create or destroy connections (this includes destroying sources or sinks).
 
+#define SINK_TIMESTAMP_NONE  ((int64_t) 0x8000000000000000ll)
+#define SINK_TIMESTAMP_ANY   ((int64_t) 0x8000000000000001ll)
+
 class BaseSource;
 class BaseSink;
 
@@ -66,7 +69,8 @@ class VideoSource : private BaseSource {
 	friend class VideoSink;
 protected:
 	VideoSource() {}
-	int64_t CalculateVideoFrameInterval(unsigned int frame_rate);
+	//int64_t CalculateVideoFrameInterval(unsigned int frame_rate);
+	int64_t CalculateNextVideoTimestamp();
 	void PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp);
 	void PushVideoPing(int64_t timestamp);
 };
@@ -78,7 +82,8 @@ protected:
 public:
 	inline void ConnectVideoSource(VideoSource* source, int priority = 0) { ConnectBaseSource(source, priority); }
 public:
-	virtual int64_t GetVideoFrameInterval() { return 0; }
+	//virtual int64_t GetVideoFrameInterval() { return 0; }
+	virtual int64_t GetNextVideoTimestamp() { return SINK_TIMESTAMP_NONE; }
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) = 0;
 	virtual void ReadVideoPing(int64_t timestamp) {}
 };

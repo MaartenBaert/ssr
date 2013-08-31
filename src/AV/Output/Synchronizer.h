@@ -48,6 +48,8 @@ private:
 		bool m_segment_audio_can_drop; // whether audio samples can still be dropped (i.e. no samples have been sent to the encoder yet)
 		int64_t m_segment_audio_samples_read; // the number of samples that have been read from the audio buffer (including dropped samples)
 		int64_t m_segment_video_last_timestamp, m_segment_audio_last_timestamp; // the timestamp of the last received video/audio frame (for gap detection)
+		int64_t m_segment_video_accumulated_delay; // sum of all video frame delays that were applied so far
+		//int64_t m_segment_video_next_timestamp; // the (ideal) timestamp of the next video frame
 
 		double m_av_desync, m_av_desync_i;
 
@@ -63,7 +65,7 @@ private:
 	static const double DESYNC_CORRECTION_P, DESYNC_CORRECTION_I;
 	static const size_t MAX_VIDEO_FRAMES_BUFFERED, MAX_AUDIO_SAMPLES_BUFFERED;
 	static const int64_t AUDIO_GAP_THRESHOLD;
-	static const int64_t MAX_FRAME_DELAY, MAX_INPUT_LATENCY;
+	static const int64_t MAX_FRAME_DELAY;
 
 private:
 	VideoEncoder *m_video_encoder;
@@ -112,7 +114,7 @@ public:
 	inline AudioEncoder* GetAudioEncoder() { return m_audio_encoder; }
 
 public: // internal
-	virtual int64_t GetVideoFrameInterval() override;
+	virtual int64_t GetNextVideoTimestamp() override;
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;
 	virtual void ReadVideoPing(int64_t timestamp) override;
 	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) override;

@@ -31,18 +31,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 // The highest expected latency between GLInject and the input thread.
 const int64_t GLInjectInput::MAX_COMMUNICATION_LATENCY = 100000;
 
-GLInjectInput::GLInjectInput(GLInjectLauncher *launcher, unsigned int frame_rate) {
+GLInjectInput::GLInjectInput(GLInjectLauncher *launcher) {
 
 	m_launcher = launcher;
 
 	m_cbuffer_size = m_launcher->GetCBufferSize();
 	m_max_bytes = m_launcher->GetMaxBytes();
-	m_frame_rate = frame_rate;
-
-	{
-		SharedLock lock(&m_shared_data);
-		lock->m_video_previewer = NULL;
-	}
 
 	try {
 		Init();
@@ -96,7 +90,7 @@ void GLInjectInput::run() {
 
 		Logger::LogInfo("[GLInjectInput::run] Input thread started.");
 
-		int64_t next_frame_time = hrt_time_micro();
+		//int64_t next_frame_time = hrt_time_micro();
 		while(!m_should_stop) {
 
 			// is a frame ready?
@@ -119,14 +113,6 @@ void GLInjectInput::run() {
 				Logger::LogInfo("[GLInjectInput::run] Error: Image is too large!");
 				throw GLInjectException();
 			}
-			if(frameinfo.timestamp < next_frame_time) {
-				// this frame is too early, go to the next frame
-				((GLInjectHeader*) m_shm_main_ptr)->read_pos = (header.read_pos + 1) % (m_cbuffer_size * 2);
-				continue;
-			}
-			next_frame_time = std::max(next_frame_time + CalculateVideoFrameInterval(m_frame_rate), frameinfo.timestamp);
-
-			SharedLock lock(&m_shared_data);
 
 			// get the image
 			uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];

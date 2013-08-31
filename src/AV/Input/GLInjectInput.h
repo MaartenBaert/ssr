@@ -30,28 +30,20 @@ class VideoPreviewer;
 class GLInjectInput : private QThread, public VideoSource {
 
 private:
-	struct SharedData {
-		VideoPreviewer *m_video_previewer;
-	};
-	typedef VPair<SharedData>::Lock SharedLock;
-
-private:
 	static const int64_t MAX_COMMUNICATION_LATENCY;
 
 private:
 	GLInjectLauncher *m_launcher;
 
 	unsigned int m_cbuffer_size, m_max_bytes;
-	unsigned int m_frame_rate;
 
 	volatile char *m_shm_main_ptr;
 	std::vector<volatile char*> m_shm_frame_ptrs;
 
-	VPair<SharedData> m_shared_data;
 	volatile bool m_should_stop, m_error_occurred;
 
 public:
-	GLInjectInput(GLInjectLauncher* launcher, unsigned int frame_rate);
+	GLInjectInput(GLInjectLauncher* launcher);
 	~GLInjectInput();
 
 	// Returns whether an error has occurred in the input thread.

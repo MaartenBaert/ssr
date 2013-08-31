@@ -210,6 +210,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 					m_spinbox_preview_frame_rate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 					QLabel *label_preview_note = new QLabel("Note: Previewing requires extra CPU time (especially at high frame rates).", m_preview_page1);
 					label_preview_note->setWordWrap(true);
+					label_preview_note->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 					label_preview_note->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding);
 
 					QGridLayout *layout = new QGridLayout(m_preview_page1);
@@ -217,7 +218,6 @@ PageRecord::PageRecord(MainWindow* main_window)
 					layout->addWidget(label_preview_frame_rate, 0, 0);
 					layout->addWidget(m_spinbox_preview_frame_rate, 0, 1);
 					layout->addWidget(label_preview_note, 1, 0, 1, 2);
-					layout->setRowStretch(2, 1);
 				}
 				m_preview_page2 = new QWidget(group_preview);
 				{
@@ -627,9 +627,9 @@ void PageRecord::CaptureStart() {
 
 		// start the video input
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
-			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get(), m_video_frame_rate));
+			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get()));
 		} else {
-			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_frame_rate, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
+			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
 		}
 
 		// start the audio input

@@ -36,7 +36,7 @@ VideoPreviewer::VideoPreviewer(QWidget* parent)
 
 	{
 		SharedLock lock(&m_shared_data);
-		lock->m_next_frame_time = hrt_time_micro();
+		lock->m_next_frame_time = SINK_TIMESTAMP_ANY;
 		lock->m_is_visible = false;
 		lock->m_size = QSize(0, 0);
 		lock->m_frame_rate = 10;
@@ -66,6 +66,11 @@ void VideoPreviewer::SetFrameRate(unsigned int frame_rate) {
 	lock->m_frame_rate = std::max(1u, frame_rate);
 }
 
+int64_t VideoPreviewer::GetNextVideoTimestamp() {
+	SharedLock lock(&m_shared_data);
+	return lock->m_next_frame_time;
+}
+
 void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
 	Q_UNUSED(timestamp);
 	SharedLock lock(&m_shared_data);
@@ -78,11 +83,14 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	if(width < 2 || height < 2 || lock->m_size.width() < 2 || lock->m_size.height() < 2)
 		return;
 
-	// check the time (the timestamp is not used, everything is displayed immediately because there's no synchronization anyway)
-	int64_t time = hrt_time_micro();
-	if(time < lock->m_next_frame_time)
-		return;
-	lock->m_next_frame_time = std::max(lock->m_next_frame_time + 1000000 / lock->m_frame_rate, time);
+	// check the timestamp
+	if(lock->m_next_frame_time == SINK_TIMESTAMP_ANY) {
+		lock->m_next_frame_time = timestamp + 1000000 / lock->m_frame_rate;
+	} else {
+		if(timestamp < lock->m_next_frame_time - 1000000 / lock->m_frame_rate)
+			return;
+		lock->m_next_frame_time = std::max(lock->m_next_frame_time + 1000000 / lock->m_frame_rate, timestamp);
+	}
 
 	// calculate the scaled size
 	QSize image_size = CalculateScaledSize(QSize(width, height), lock->m_size);
