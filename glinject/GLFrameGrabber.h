@@ -8,6 +8,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #pragma once
 #include "Global.h"
+#include "ShmStructs.h"
 
 #define BUFFER_COUNT 2
 
@@ -43,10 +44,10 @@ public:
 	~GLFrameGrabber();
 
 	void GrabFrame();
-	unsigned int GetHotkeyModifiers();
-	unsigned int GetHotkeyKeycode();
-	bool GetHotkeyEnabled();
-	void IncreaseHotkeyCount();
+	inline unsigned int GetHotkeyModifiers();
+	inline unsigned int GetHotkeyKeycode();
+	inline bool GetHotkeyEnabled();
+	inline void IncreaseHotkeyCount();
 
 public:
 	inline Display* GetX11Display() { return m_x11_display; }
@@ -54,3 +55,20 @@ public:
 	inline GLXDrawable GetGLXDrawable() { return m_glx_drawable; }
 
 };
+
+inline unsigned int GLFrameGrabber::GetHotkeyModifiers() {
+	return ((GLInjectHeader*) m_shm_main_ptr)->modifiers;
+}
+
+inline unsigned int GLFrameGrabber::GetHotkeyKeycode() {
+	return ((GLInjectHeader*) m_shm_main_ptr)->keycode;
+}
+
+inline bool GLFrameGrabber::GetHotkeyEnabled() {
+	return ((GLInjectHeader*) m_shm_main_ptr)->hotkey_enabled;
+}
+
+inline void GLFrameGrabber::IncreaseHotkeyCount() {
+	// We really don't care about exact frame so it's OK for this to be non-atomic
+	((GLInjectHeader*) m_shm_main_ptr)->hotkey_count++;
+}

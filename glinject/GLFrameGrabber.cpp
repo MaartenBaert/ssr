@@ -283,20 +283,3 @@ void GLFrameGrabber::GrabFrame() {
 	CGLE(glPopAttrib());
 
 }
-
-unsigned int GLFrameGrabber::GetHotkeyModifiers() {
-	return ((GLInjectHeader*) m_shm_main_ptr)->modifiers;
-}
-
-unsigned int GLFrameGrabber::GetHotkeyKeycode() {
-	return ((GLInjectHeader*) m_shm_main_ptr)->keycode;
-}
-
-bool GLFrameGrabber::GetHotkeyEnabled() {
-	return ((GLInjectHeader*) m_shm_main_ptr)->hotkey_enabled;
-}
-
-void GLFrameGrabber::IncreaseHotkeyCount() {
-	// We really don't care about exact frame so it's OK for this to be non-atomic
-	((GLInjectHeader*) m_shm_main_ptr)->hotkey_count++;
-}
