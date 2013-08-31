@@ -407,7 +407,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	// frame will have a timestamp that's one frame earlier than that time, so it will never interfere with the real frame.
 	// There are two situations where duplicate frames can be inserted:
 	// (1) The queue is not empty, but there is a gap between frames that is too large.
-	// (2) The queue is empty and the last timestamp is too long ago (relative to the current time minus MAX_INPUT_LATENCY). //TODO// ping?
+	// (2) The queue is empty and the last timestamp is too long ago (relative to the end of the video segment).
 	// It is perfectly possible that *both* happen, each possibly multiple times, in just one function call.
 
 	int64_t segment_start_time, segment_stop_time;
