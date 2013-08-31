@@ -244,50 +244,50 @@ PageInput::PageInput(MainWindow* main_window)
 }
 
 void PageInput::LoadSettings(QSettings* settings) {
-	SetVideoArea((enum_video_area) settings->value("input/video/area", VIDEO_AREA_SCREEN).toUInt());
-	SetVideoAreaScreen(settings->value("input/video/area_screen", 0).toUInt());
-	SetVideoX(settings->value("input/video/x", 0).toUInt());
-	SetVideoY(settings->value("input/video/y", 0).toUInt());
-	SetVideoW(settings->value("input/video/w", 800).toUInt());
-	SetVideoH(settings->value("input/video/h", 600).toUInt());
-	SetVideoFrameRate(settings->value("input/video/frame_rate", 30).toUInt());
-	SetVideoScalingEnabled(settings->value("input/video/scale", false).toBool());
-	SetVideoScaledW(settings->value("input/video/scaled_w", 854).toUInt());
-	SetVideoScaledH(settings->value("input/video/scaled_h", 480).toUInt());
-	SetVideoRecordCursor(settings->value("input/video/record_cursor", true).toBool());
-	SetAudioEnabled(settings->value("input/audio/enable", true).toBool());
-	SetALSADevice(settings->value("input/audio/alsa_device", "default").toString());
-	SetGLInjectCommand(settings->value("input/glinject/command", "").toString());
-	SetGLInjectRunCommand(settings->value("input/glinject/run_command", true).toBool());
-	SetGLInjectRelaxPermissions(settings->value("input/glinject/relax_permissions", false).toBool());
-	SetGLInjectMaxMegaPixels(settings->value("input/glinject/max_megapixels", 2).toUInt());
-	SetGLInjectCaptureFront(settings->value("input/glinject/capture_front", false).toBool());
-	SetGLInjectLimitFPS(settings->value("input/glinject/limit_fps", false).toBool());
+	SetVideoArea((enum_video_area) settings->value("input/video_area", VIDEO_AREA_SCREEN).toUInt());
+	SetVideoAreaScreen(settings->value("input/video_area_screen", 0).toUInt());
+	SetVideoX(settings->value("input/video_x", 0).toUInt());
+	SetVideoY(settings->value("input/video_y", 0).toUInt());
+	SetVideoW(settings->value("input/video_w", 800).toUInt());
+	SetVideoH(settings->value("input/video_h", 600).toUInt());
+	SetVideoFrameRate(settings->value("input/video_frame_rate", 30).toUInt());
+	SetVideoScalingEnabled(settings->value("input_video/scale", false).toBool());
+	SetVideoScaledW(settings->value("input/video_scaled_w", 854).toUInt());
+	SetVideoScaledH(settings->value("input/video_scaled_h", 480).toUInt());
+	SetVideoRecordCursor(settings->value("input/video_record_cursor", true).toBool());
+	SetAudioEnabled(settings->value("input/audio_enable", true).toBool());
+	SetALSADevice(settings->value("input/audio_alsa_device", "default").toString());
+	SetGLInjectCommand(settings->value("input/glinject_command", "").toString());
+	SetGLInjectRunCommand(settings->value("input/glinject_run_command", true).toBool());
+	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
+	SetGLInjectMaxMegaPixels(settings->value("input/glinject_max_megapixels", 2).toUInt());
+	SetGLInjectCaptureFront(settings->value("input/glinject_capture_front", false).toBool());
+	SetGLInjectLimitFPS(settings->value("input/glinject_limit_fps", false).toBool());
 	UpdateVideoAreaFields();
 	UpdateVideoScaleFields();
 	UpdateAudioFields();
 }
 
 void PageInput::SaveSettings(QSettings* settings) {
-	settings->setValue("input/video/area", GetVideoArea());
-	settings->setValue("input/video/area_screen", GetVideoAreaScreen());
-	settings->setValue("input/video/x", GetVideoX());
-	settings->setValue("input/video/y", GetVideoY());
-	settings->setValue("input/video/w", GetVideoW());
-	settings->setValue("input/video/h", GetVideoH());
-	settings->setValue("input/video/frame_rate", GetVideoFrameRate());
-	settings->setValue("input/video/scale", GetVideoScalingEnabled());
-	settings->setValue("input/video/scaled_w", GetVideoScaledW());
-	settings->setValue("input/video/scaled_h", GetVideoScaledH());
-	settings->setValue("input/video/record_cursor", GetVideoRecordCursor());
-	settings->setValue("input/audio/enable", GetAudioEnabled());
-	settings->setValue("input/audio/alsa_device", GetALSADevice());
-	settings->setValue("input/glinject/command", GetGLInjectCommand());
-	settings->setValue("input/glinject/run_command", GetGLInjectRunCommand());
-	settings->setValue("input/glinject/relax_permissions", GetGLInjectRelaxPermissions());
-	settings->setValue("input/glinject/max_megapixels", GetGLInjectMaxMegaPixels());
-	settings->setValue("input/glinject/capture_front", GetGLInjectCaptureFront());
-	settings->setValue("input/glinject/limit_fps", GetGLInjectLimitFPS());
+	settings->setValue("input/video_area", GetVideoArea());
+	settings->setValue("input/video_area_screen", GetVideoAreaScreen());
+	settings->setValue("input/video_x", GetVideoX());
+	settings->setValue("input/video_y", GetVideoY());
+	settings->setValue("input/video_w", GetVideoW());
+	settings->setValue("input/video_h", GetVideoH());
+	settings->setValue("input/video_frame_rate", GetVideoFrameRate());
+	settings->setValue("input/video_scale", GetVideoScalingEnabled());
+	settings->setValue("input/video_scaled_w", GetVideoScaledW());
+	settings->setValue("input/video_scaled_h", GetVideoScaledH());
+	settings->setValue("input/video_record_cursor", GetVideoRecordCursor());
+	settings->setValue("input/audio_enable", GetAudioEnabled());
+	settings->setValue("input/audio_alsa_device", GetALSADevice());
+	settings->setValue("input/glinject_command", GetGLInjectCommand());
+	settings->setValue("input/glinject_run_command", GetGLInjectRunCommand());
+	settings->setValue("input/glinject_relax_permissions", GetGLInjectRelaxPermissions());
+	settings->setValue("input/glinject_max_megapixels", GetGLInjectMaxMegaPixels());
+	settings->setValue("input/glinject_capture_front", GetGLInjectCaptureFront());
+	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
 }
 
 // Tries to find the real window that corresponds to a top-level window (the actual window without window manager decorations).

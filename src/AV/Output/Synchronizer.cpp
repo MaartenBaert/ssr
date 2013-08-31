@@ -428,7 +428,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 		while(lock->m_segment_video_accumulated_delay >= delay_time_per_frame && lock->m_video_pts < std::min(next_pts, segment_stop_video_pts)) {
 			lock->m_segment_video_accumulated_delay -= delay_time_per_frame;
 			lock->m_video_pts += 1;
-			Logger::LogInfo("[Synchronizer::FlushBuffers] Delay [" + QString::number(lock->m_video_pts - 1) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
+			//Logger::LogInfo("[Synchronizer::FlushBuffers] Delay [" + QString::number(lock->m_video_pts - 1) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 		}
 
 		// insert duplicate frames if needed, up to either the next frame or the segment end
@@ -438,7 +438,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 				duplicate_frame->pts = lock->m_video_pts + m_video_max_frames_skipped;
 				lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - (duplicate_frame->pts - lock->m_video_pts) * delay_time_per_frame);
 				lock->m_video_pts = duplicate_frame->pts + 1;
-				Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(duplicate_frame->pts) + "] (duplicate) acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
+				//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(duplicate_frame->pts) + "] (duplicate) acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 				m_video_encoder->AddFrame(std::move(duplicate_frame));
 			}
 		}
@@ -456,7 +456,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 
 		// if the frame is way too early, drop it
 		if(frame->pts < lock->m_video_pts - 1) {
-			Logger::LogInfo("[Synchronizer::FlushBuffers] Dropped video frame [" + QString::number(frame->pts) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
+			//Logger::LogInfo("[Synchronizer::FlushBuffers] Dropped video frame [" + QString::number(frame->pts) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 			continue;
 		}
 

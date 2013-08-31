@@ -236,6 +236,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		m_lineedit_video_options = new QLineEdit(groupbox_video);
 		m_lineedit_video_options->setToolTip("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)");
 		m_lineedit_video_options->setVisible(false);
+		m_checkbox_video_allow_frame_skipping = new QCheckBox("Allow frame skipping", groupbox_video);
 
 		connect(m_combobox_video_codec, SIGNAL(activated(int)), this, SLOT(UpdateVideoCodecFields()));
 
@@ -254,6 +255,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout->addWidget(m_combobox_vp8_cpu_used, 5, 1);
 		layout->addWidget(m_label_video_options, 6, 0);
 		layout->addWidget(m_lineedit_video_options, 6, 1);
+		layout->addWidget(m_checkbox_video_allow_frame_skipping, 7, 0, 1, 2);
 	}
 	m_groupbox_audio = new QGroupBox("Audio");
 	{
@@ -357,6 +359,7 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	SetH264Preset((enum_h264_preset) settings->value("output/video_h264_preset", H264_PRESET_SUPERFAST).toUInt());
 	SetVP8CPUUsed(settings->value("output/video_vp8_cpu_used", 5).toUInt());
 	SetVideoOptions(settings->value("output/video_options", "").toString());
+	SetVideoAllowFrameSkipping(settings->value("output/video_allow_frame_skipping", true).toBool());
 
 	SetAudioCodec(FindAudioCodec(settings->value("output/audio_codec").toString(), default_audio_codec));
 	SetAudioCodecAV(FindAudioCodecAV(settings->value("output/audio_codec_av").toString()));
@@ -384,6 +387,7 @@ void PageOutput::SaveSettings(QSettings* settings) {
 	settings->setValue("output/video_h264_preset", GetH264Preset());
 	settings->setValue("output/video_vp8_cpu_used", GetVP8CPUUsed());
 	settings->setValue("output/video_options", GetVideoOptions());
+	settings->setValue("output/video_allow_frame_skipping", GetVideoAllowFrameSkipping());
 
 	settings->setValue("output/audio_codec", m_audio_codecs[GetAudioCodec()].avname);
 	settings->setValue("output/audio_codec_av", m_audio_codecs_av[GetAudioCodecAV()].avname);

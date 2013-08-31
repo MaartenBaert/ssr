@@ -316,24 +316,24 @@ bool PageRecord::ShouldBlockClose() {
 }
 
 void PageRecord::LoadSettings(QSettings *settings) {
-	SetHotkeyEnabled(settings->value("record/hotkey/enable", true).toBool());
-	SetHotkeyCtrlEnabled(settings->value("record/hotkey/ctrl", true).toBool());
-	SetHotkeyShiftEnabled(settings->value("record/hotkey/shift", false).toBool());
-	SetHotkeyAltEnabled(settings->value("record/hotkey/alt", false).toBool());
-	SetHotkeySuperEnabled(settings->value("record/hotkey/super", false).toBool());
-	SetHotkeyKey(settings->value("record/hotkey/key", 'r' - 'a').toUInt());
-	SetPreviewFrameRate(settings->value("record/preview/frame_rate", 10).toUInt());
+	SetHotkeyEnabled(settings->value("record/hotkey_enable", true).toBool());
+	SetHotkeyCtrlEnabled(settings->value("record/hotkey_ctrl", true).toBool());
+	SetHotkeyShiftEnabled(settings->value("record/hotkey_shift", false).toBool());
+	SetHotkeyAltEnabled(settings->value("record/hotkey_alt", false).toBool());
+	SetHotkeySuperEnabled(settings->value("record/hotkey_super", false).toBool());
+	SetHotkeyKey(settings->value("record/hotkey_key", 'r' - 'a').toUInt());
+	SetPreviewFrameRate(settings->value("record/preview_frame_rate", 10).toUInt());
 	UpdateHotkeyFields();
 }
 
 void PageRecord::SaveSettings(QSettings *settings) {
-	settings->setValue("record/hotkey/enable", IsHotkeyEnabled());
-	settings->setValue("record/hotkey/ctrl", IsHotkeyCtrlEnabled());
-	settings->setValue("record/hotkey/shift", IsHotkeyShiftEnabled());
-	settings->setValue("record/hotkey/alt", IsHotkeyAltEnabled());
-	settings->setValue("record/hotkey/super", IsHotkeySuperEnabled());
-	settings->setValue("record/hotkey/key", GetHotkeyKey());
-	settings->setValue("record/preview/frame_rate", GetPreviewFrameRate());
+	settings->setValue("record/hotkey_enable", IsHotkeyEnabled());
+	settings->setValue("record/hotkey_ctrl", IsHotkeyCtrlEnabled());
+	settings->setValue("record/hotkey_shift", IsHotkeyShiftEnabled());
+	settings->setValue("record/hotkey_alt", IsHotkeyAltEnabled());
+	settings->setValue("record/hotkey_super", IsHotkeySuperEnabled());
+	settings->setValue("record/hotkey_key", GetHotkeyKey());
+	settings->setValue("record/preview_frame_rate", GetPreviewFrameRate());
 }
 
 void PageRecord::PageStart() {
@@ -408,7 +408,7 @@ void PageRecord::PageStart() {
 	m_output_settings.video_width = 0;
 	m_output_settings.video_height = 0;
 	m_output_settings.video_frame_rate = m_video_frame_rate;
-	m_output_settings.video_allow_frame_skipping = false; //TODO// add option for this
+	m_output_settings.video_allow_frame_skipping = page_output->GetVideoAllowFrameSkipping();
 
 	m_output_settings.audio_codec_avname = (m_audio_enabled)? page_output->GetAudioCodecAVName() : QString();
 	m_output_settings.audio_kbit_rate = page_output->GetAudioKBitRate();

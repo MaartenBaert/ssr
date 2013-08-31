@@ -109,6 +109,7 @@ private:
 	QComboBox *m_combobox_vp8_cpu_used;
 	QLabel *m_label_video_options;
 	QLineEdit *m_lineedit_video_options;
+	QCheckBox *m_checkbox_video_allow_frame_skipping;
 	QComboBox *m_combobox_audio_codec;
 	QLabel *m_label_audio_codec_av;
 	QComboBox *m_combobox_audio_codec_av;
@@ -151,6 +152,7 @@ public:
 	inline enum_h264_preset GetH264Preset() { return (enum_h264_preset) clamp(m_combobox_h264_preset->currentIndex(), 0, H264_PRESET_COUNT - 1); }
 	inline unsigned int GetVP8CPUUsed() { return clamp(5 - m_combobox_vp8_cpu_used->currentIndex(), 1, 5); }
 	inline QString GetVideoOptions() { return m_lineedit_video_options->text(); }
+	inline bool GetVideoAllowFrameSkipping() { return m_checkbox_video_allow_frame_skipping->isChecked(); }
 	inline enum_audio_codec GetAudioCodec() { return (enum_audio_codec) clamp(m_combobox_audio_codec->currentIndex(), 0, AUDIO_CODEC_COUNT - 1); }
 	inline unsigned int GetAudioCodecAV() { return clamp(m_combobox_audio_codec_av->currentIndex(), 0, (int) m_audio_codecs_av.size() - 1); }
 	inline unsigned int GetAudioKBitRate() { return m_lineedit_audio_kbit_rate->text().toUInt(); }
@@ -167,6 +169,7 @@ public:
 	inline void SetH264Preset(enum_h264_preset preset) { m_combobox_h264_preset->setCurrentIndex(clamp((unsigned int) preset, 0u, (unsigned int) H264_PRESET_COUNT - 1)); }
 	inline void SetVP8CPUUsed(unsigned int cpu_used) { m_combobox_vp8_cpu_used->setCurrentIndex(clamp(5 - (int) cpu_used, 0, 4)); }
 	inline void SetVideoOptions(const QString& options) { m_lineedit_video_options->setText(options); }
+	inline void SetVideoAllowFrameSkipping(bool allow_frame_skipping) { return m_checkbox_video_allow_frame_skipping->setChecked(allow_frame_skipping); }
 	inline void SetAudioCodec(enum_audio_codec audio_codec) { m_combobox_audio_codec->setCurrentIndex(clamp((unsigned int) audio_codec, 0u, (unsigned int) AUDIO_CODEC_COUNT - 1)); }
 	inline void SetAudioCodecAV(unsigned int audio_codec) { m_combobox_audio_codec_av->setCurrentIndex(clamp((unsigned int) audio_codec, 0u, (unsigned int) m_audio_codecs_av.size() - 1)); }
 	inline void SetAudioKBitRate(unsigned int kbit_rate) { m_lineedit_audio_kbit_rate->setText(QString::number(kbit_rate)); }
