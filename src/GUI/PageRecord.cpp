@@ -226,6 +226,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 	connect(m_log_timer, SIGNAL(timeout()), this, SLOT(UpdateLog()));
 	m_log_timer->start(10);
 
+	m_glinject_event_timer = new QTimer(this);
+	connect(m_glinject_event_timer, SIGNAL(timeout()), this, SLOT(CheckGLInjectEvents()));
 }
 
 PageRecord::~PageRecord() {
@@ -416,6 +418,9 @@ void PageRecord::PageStart() {
 	UpdateInformation();
 	m_info_timer->start(1000);
 
+	if(m_video_glinject) {
+		m_glinject_event_timer->start(100);
+	}
 }
 
 void PageRecord::PageStop(bool save) {
@@ -466,7 +471,7 @@ void PageRecord::PageStop(bool save) {
 	UpdateHotkey();
 	UpdateInformation();
 	m_info_timer->stop();
-
+	m_glinject_event_timer->stop();
 }
 
 void PageRecord::CaptureStart() {
@@ -732,9 +737,6 @@ void PageRecord::UpdateInformation() {
 		// for OpenGL recording, update the application size
 		if(m_video_glinject) {
 			m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
-			if(m_gl_inject_launcher->GetStartPauseRecording()) {
-				RecordStartPause();		
-			}
 		}
 
 		m_label_total_time->setText(ReadableTime(total_time));
@@ -785,4 +787,12 @@ void PageRecord::UpdateLog() {
 	}
 	m_video_previewer->UpdateIfNeeded();
 	m_audio_previewer->UpdateIfNeeded();
+}
+
+void PageRecord::CheckGLInjectEvents() {
+	if(m_video_glinject) {
+		if(m_gl_inject_launcher->GetStartPauseRecording()) {
+			RecordStartPause();
+		}
+	}
 }

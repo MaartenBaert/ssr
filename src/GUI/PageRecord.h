@@ -61,7 +61,7 @@ private:
 	unsigned int m_video_kbit_rate, m_audio_kbit_rate;
 	std::vector<std::pair<QString, QString> > m_video_options, m_audio_options;
 
-	QTimer *m_info_timer, *m_log_timer;
+	QTimer *m_info_timer, *m_log_timer, *m_glinject_event_timer;
 	bool m_info_first_time;
 	int64_t m_info_last_time;
 	unsigned int m_info_last_frames;
@@ -143,6 +143,7 @@ private slots:
 	void Save();
 	void UpdateInformation();
 	void UpdateLog();
+	void CheckGLInjectEvents();
 
 };
 
