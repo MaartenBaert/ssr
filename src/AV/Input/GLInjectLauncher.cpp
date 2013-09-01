@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Main.h"
 #include "Logger.h"
+#include "ShmStructs.h"
 
 const unsigned int GLInjectLauncher::CBUFFER_SIZE = 5;
 
@@ -35,6 +36,8 @@ GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, boo
 	m_record_cursor = record_cursor;
 	m_capture_front = capture_front;
 	m_limit_fps = limit_fps;
+
+	m_hotkey_last_count = 0;
 
 	m_shm_main_id = -1;
 	m_shm_main_ptr = (char*) -1;
@@ -59,6 +62,22 @@ void GLInjectLauncher::GetCurrentSize(unsigned int* width, unsigned int* height)
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	*width = header->current_width;
 	*height = header->current_height;
+}
+
+void GLInjectLauncher::UpdateHotkey(bool enabled, unsigned int keysym, unsigned int modifiers) {
+	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	header->hotkey_enabled = false; //TODO// this won't work without memory fences
+	header->hotkey_keycode = XKeysymToKeycode(QX11Info::display(), keysym);
+	header->hotkey_modifiers = modifiers;
+	header->hotkey_enabled = enabled;
+}
+
+bool GLInjectLauncher::GetHotkeyPressed() {
+	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	unsigned int new_hotkey_count = header->hotkey_count;
+	bool event = (new_hotkey_count != m_hotkey_last_count);
+	m_hotkey_last_count = new_hotkey_count;
+	return event;
 }
 
 void GLInjectLauncher::Init() {
@@ -99,11 +118,15 @@ void GLInjectLauncher::Init() {
 	header->max_bytes = m_max_bytes;
 	header->target_fps = m_target_fps;
 	header->flags = ((m_record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((m_capture_front)? GLINJECT_FLAG_CAPTURE_FRONT : 0) | ((m_limit_fps)? GLINJECT_FLAG_LIMIT_FPS : 0);
+	header->hotkey_enabled = false;
+	header->hotkey_modifiers = 0;
+	header->hotkey_keycode = 0;
 	header->read_pos = 0;
 	header->write_pos = 0;
 	header->current_width = 0;
 	header->current_height = 0;
 	header->current_fps = 0;
+	header->hotkey_count = 0;
 
 	// generate the full command
 	m_command = "LD_PRELOAD=libssr-glinject.so SSR_GLINJECT_SHM=" + QString::number(m_shm_main_id) + " " + m_command;

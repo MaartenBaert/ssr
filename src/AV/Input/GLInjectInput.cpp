@@ -25,8 +25,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Synchronizer.h"
 #include "VideoEncoder.h"
 #include "GLInjectLauncher.h"
-
 #include "VideoPreviewer.h"
+#include "ShmStructs.h"
 
 // The highest expected latency between GLInject and the input thread.
 const int64_t GLInjectInput::MAX_COMMUNICATION_LATENCY = 100000;

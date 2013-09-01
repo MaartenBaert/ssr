@@ -5,6 +5,7 @@
 *.la
 *.tar.gz
 *.user
+*.orig
 qrc_*
 moc_*
 Makefile

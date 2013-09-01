@@ -137,7 +137,6 @@ PageRecord::PageRecord(MainWindow* main_window)
 		}
 
 		connect(m_pushbutton_start_pause, SIGNAL(clicked()), this, SLOT(RecordStartPause()));
-		connect(&g_hotkey_listener, SIGNAL(Triggered()), this, SLOT(RecordStartPause()));
 		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(UpdateHotkeyFields()));
 		connect(m_checkbox_hotkey_ctrl, SIGNAL(clicked()), this, SLOT(UpdateHotkey()));
 		connect(m_checkbox_hotkey_shift, SIGNAL(clicked()), this, SLOT(UpdateHotkey()));
@@ -292,7 +291,10 @@ PageRecord::PageRecord(MainWindow* main_window)
 	UpdatePreview();
 
 	m_info_timer = new QTimer(this);
+	m_glinject_event_timer = new QTimer(this);
 	connect(m_info_timer, SIGNAL(timeout()), this, SLOT(UpdateInformation()));
+	connect(m_glinject_event_timer, SIGNAL(timeout()), this, SLOT(CheckGLInjectEvents()));
+	connect(&g_hotkey_listener, SIGNAL(Triggered()), this, SLOT(RecordStartPause()));
 	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(UpdateLog(Logger::enum_type,QString)), Qt::QueuedConnection);
 
 }
@@ -475,6 +477,9 @@ void PageRecord::PageStart() {
 	UpdateInformation();
 	m_info_timer->start(1000);
 
+	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
+		m_glinject_event_timer->start(100);
+
 }
 
 void PageRecord::PageStop(bool save) {
@@ -512,6 +517,8 @@ void PageRecord::PageStop(bool save) {
 
 	m_info_timer->stop();
 	UpdateInformation();
+
+	m_glinject_event_timer->stop();
 
 }
 
@@ -753,6 +760,9 @@ void PageRecord::UpdateHotkey() {
 		if(IsHotkeySuperEnabled()) modifiers |= Mod4Mask;
 		g_hotkey_listener.EnableHotkey(XK_A + GetHotkeyKey(), modifiers);
 
+		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
+			m_gl_inject_launcher->UpdateHotkey(IsHotkeyEnabled(), XK_A + GetHotkeyKey(), modifiers);
+
 	} else {
 
 		g_hotkey_listener.DisableHotkey();
@@ -855,4 +865,11 @@ void PageRecord::UpdateLog(Logger::enum_type type, QString str) {
 	cursor.insertText(str, format);
 	if(should_scroll)
 		m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
+}
+
+void PageRecord::CheckGLInjectEvents() {
+	Q_ASSERT(m_video_area == PageInput::VIDEO_AREA_GLINJECT);
+	if(m_gl_inject_launcher->GetHotkeyPressed()) {
+		RecordStartPause();
+	}
 }

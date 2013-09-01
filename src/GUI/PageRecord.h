@@ -70,7 +70,7 @@ private:
 	bool m_separate_files;
 	unsigned int m_file_segment_counter;
 
-	QTimer *m_info_timer;
+	QTimer *m_info_timer, *m_glinject_event_timer;
 
 	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
 	std::unique_ptr<X11Input> m_x11_input;
@@ -148,5 +148,6 @@ private slots:
 	void Save();
 	void UpdateInformation();
 	void UpdateLog(Logger::enum_type type, QString string);
+	void CheckGLInjectEvents();
 
 };

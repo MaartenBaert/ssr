@@ -286,3 +286,19 @@ void GLFrameGrabber::GrabFrame() {
 	CGLE(glPopAttrib());
 
 }
+
+bool GLFrameGrabber::GetHotkeyEnabled() {
+	return ((GLInjectHeader*) m_shm_main_ptr)->hotkey_enabled;
+}
+
+unsigned int GLFrameGrabber::GetHotkeyKeycode() {
+	return ((GLInjectHeader*) m_shm_main_ptr)->hotkey_keycode;
+}
+
+unsigned int GLFrameGrabber::GetHotkeyModifiers() {
+	return ((GLInjectHeader*) m_shm_main_ptr)->hotkey_modifiers;
+}
+
+void GLFrameGrabber::TriggerHotkey() {
+	++((GLInjectHeader*) m_shm_main_ptr)->hotkey_count;
+}

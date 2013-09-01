@@ -54,8 +54,7 @@ void HotkeyListener::DisableHotkey() {
 
 bool HotkeyListener::EventFilter(void* message) {
 	XEvent *ev = (XEvent*) message;
-	unsigned int modifiers = ev->xkey.state & ~LockMask & ~Mod2Mask;
-	if(ev->type == KeyPress && ev->xkey.keycode == m_keycode && modifiers == m_modifiers) {
+	if(ev->type == KeyPress && ev->xkey.keycode == m_keycode && (ev->xkey.state & ~LockMask & ~Mod2Mask) == m_modifiers) {
 		emit Triggered();
 		return true;
 	}

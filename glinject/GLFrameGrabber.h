@@ -44,6 +44,10 @@ public:
 	~GLFrameGrabber();
 
 	void GrabFrame();
+	bool GetHotkeyEnabled();
+	unsigned int GetHotkeyKeycode();
+	unsigned int GetHotkeyModifiers();
+	void TriggerHotkey();
 
 public:
 	inline Display* GetX11Display() { return m_x11_display; }
