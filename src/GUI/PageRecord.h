@@ -145,3 +145,13 @@ private slots:
 	void UpdateLog();
 
 };
+
+inline unsigned int PageRecord::GetHotkeyModifiers()
+{
+	unsigned int modifiers = 0;
+	if(IsHotkeyCtrlEnabled()) modifiers |= ControlMask;
+	if(IsHotkeyShiftEnabled()) modifiers |= ShiftMask;
+	if(IsHotkeyAltEnabled()) modifiers |= Mod1Mask;
+	if(IsHotkeySuperEnabled()) modifiers |= Mod4Mask;
+	return modifiers;
+}

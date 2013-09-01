@@ -620,16 +620,6 @@ void PageRecord::UpdatePreview() {
 		m_alsa_input->ConnectAudioPreviewer((m_previewing)? m_audio_previewer : NULL);
 }
 
-unsigned int PageRecord::GetHotkeyModifiers()
-{
-		unsigned int modifiers = 0;
-		if(IsHotkeyCtrlEnabled()) modifiers |= ControlMask;
-		if(IsHotkeyShiftEnabled()) modifiers |= ShiftMask;
-		if(IsHotkeyAltEnabled()) modifiers |= Mod1Mask;
-		if(IsHotkeySuperEnabled()) modifiers |= Mod4Mask;
-	return modifiers;
-}
-
 void PageRecord::UpdateHotkeyFields() {
 
 	bool enabled = IsHotkeyEnabled();
