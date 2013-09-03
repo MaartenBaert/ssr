@@ -30,6 +30,7 @@ private:
 	struct SharedData {
 		QRect m_screen_bbox;
 		QVector<QRect> m_screen_dead_space;
+		uint32_t m_frame_counter;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 
@@ -53,6 +54,10 @@ private:
 public:
 	X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor);
 	~X11Input();
+
+	// Returns the total number of captured frames.
+	// This function is thread-safe.
+	uint32_t GetFrameCounter();
 
 	// Returns whether an error has occurred in the input thread.
 	// This function is thread-safe.

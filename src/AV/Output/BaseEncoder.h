@@ -31,9 +31,9 @@ private:
 	struct SharedData {
 		std::deque<std::unique_ptr<AVFrameWrapper> > m_frame_queue;
 		uint64_t m_total_frames;
-		double m_actual_frame_rate;
-		int64_t m_previous_pts;
-		uint64_t m_previous_frames;
+		double m_stats_actual_frame_rate;
+		int64_t m_stats_previous_pts;
+		uint64_t m_stats_previous_frames;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 
@@ -79,7 +79,7 @@ public:
 
 	// Returns the total number of added frames.
 	// This function is thread-safe.
-	unsigned int GetTotalFrames();
+	uint64_t GetTotalFrames();
 
 	// Returns the total number of frames in the queue.
 	// This function is thread-safe.

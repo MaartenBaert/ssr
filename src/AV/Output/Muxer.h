@@ -37,9 +37,9 @@ private:
 	typedef VPair<StreamData>::Lock StreamLock;
 	struct SharedData {
 		uint64_t m_total_bytes;
-		double m_actual_bit_rate;
-		double m_previous_pts;
-		uint64_t m_previous_bytes;
+		double m_stats_actual_bit_rate;
+		double m_stats_previous_pts;
+		uint64_t m_stats_previous_bytes;
 	};
 	typedef VPair<SharedData>::Lock SharedLock;
 

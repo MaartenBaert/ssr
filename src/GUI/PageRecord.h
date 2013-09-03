@@ -70,6 +70,9 @@ private:
 	bool m_separate_files;
 	unsigned int m_file_segment_counter;
 
+	int64_t m_info_last_timestamp;
+	uint32_t m_info_last_frame_counter;
+	double m_info_input_frame_rate;
 	QTimer *m_info_timer, *m_glinject_event_timer;
 
 	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
@@ -83,7 +86,7 @@ private:
 	QCheckBox *m_checkbox_hotkey_ctrl, *m_checkbox_hotkey_shift, *m_checkbox_hotkey_alt, *m_checkbox_hotkey_super;
 	QComboBox *m_combobox_hotkey_key;
 
-	QLabel *m_label_info_total_time, *m_label_info_frame_rate, *m_label_info_size_in, *m_label_info_size_out;
+	QLabel *m_label_info_total_time, *m_label_info_frame_rate_in, *m_label_info_frame_rate_out, *m_label_info_size_in, *m_label_info_size_out;
 	ElidedLabel *m_label_info_file_name;
 	QLabel *m_label_info_file_size, *m_label_info_bit_rate;
 

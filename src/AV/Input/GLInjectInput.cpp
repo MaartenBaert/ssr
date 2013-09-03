@@ -162,4 +162,3 @@ void GLInjectInput::run() {
 		Logger::LogError("[GLInjectInput::run] Unknown exception in input thread.");
 	}
 }
-

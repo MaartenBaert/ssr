@@ -38,7 +38,7 @@ GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, boo
 	m_capture_front = capture_front;
 	m_limit_fps = limit_fps;
 
-	m_hotkey_last_count = 0;
+	m_hotkey_last_counter = 0;
 
 	m_shm_main_id = -1;
 	m_shm_main_ptr = (char*) -1;
@@ -67,6 +67,14 @@ void GLInjectLauncher::GetCurrentSize(unsigned int* width, unsigned int* height)
 	std::atomic_thread_fence(std::memory_order_release);
 }
 
+uint32_t GLInjectLauncher::GetFrameCounter() {
+	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	std::atomic_thread_fence(std::memory_order_acquire);
+	uint32_t counter = header->frame_counter;
+	std::atomic_thread_fence(std::memory_order_release);
+	return counter;
+}
+
 void GLInjectLauncher::UpdateHotkey(bool enabled, unsigned int keysym, unsigned int modifiers) {
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	std::atomic_thread_fence(std::memory_order_acquire);
@@ -79,10 +87,10 @@ void GLInjectLauncher::UpdateHotkey(bool enabled, unsigned int keysym, unsigned 
 bool GLInjectLauncher::GetHotkeyPressed() {
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	std::atomic_thread_fence(std::memory_order_acquire);
-	unsigned int new_hotkey_count = header->hotkey_count;
+	unsigned int new_hotkey_counter = header->hotkey_counter;
 	std::atomic_thread_fence(std::memory_order_release);
-	bool event = (new_hotkey_count != m_hotkey_last_count);
-	m_hotkey_last_count = new_hotkey_count;
+	bool event = (new_hotkey_counter != m_hotkey_last_counter);
+	m_hotkey_last_counter = new_hotkey_counter;
 	return event;
 }
 
@@ -132,7 +140,8 @@ void GLInjectLauncher::Init() {
 	header->write_pos = 0;
 	header->current_width = 0;
 	header->current_height = 0;
-	header->hotkey_count = 0;
+	header->frame_counter = 0;
+	header->hotkey_counter = 0;
 	std::atomic_thread_fence(std::memory_order_release);
 
 	// generate the full command

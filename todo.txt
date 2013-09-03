@@ -8,8 +8,10 @@ Todo:
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
 - Play start/stop sound (optional). [https://github.com/MaartenBaert/ssr/issues/26]
 - Command-line options for recording.
+- Move SHM from GLFrameGrabber to GLInject.
 
 Wishlist:
+- Check disk space (Muxer).
 - Systray icon.
 - FPS counter of GLInject (overlay + option to record?)
 - PulseAudio input (+ 2 inputs?)

@@ -39,7 +39,7 @@ private:
 	unsigned int m_target_fps;
 	bool m_record_cursor, m_capture_front, m_limit_fps;
 
-	unsigned int m_hotkey_last_count;
+	unsigned int m_hotkey_last_counter;
 
 	int m_shm_main_id;
 	char *m_shm_main_ptr;
@@ -51,6 +51,9 @@ public:
 
 	// Reads the current size of the OpenGL application. If the application hasn't been started yet, this will be 0x0.
 	void GetCurrentSize(unsigned int* width, unsigned int* height);
+
+	// Returns the total number of captured frames.
+	uint32_t GetFrameCounter();
 
 	// Updates the hotkey used to start the capture.
 	void UpdateHotkey(bool enabled, unsigned int keysym, unsigned int modifiers);

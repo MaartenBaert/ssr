@@ -213,6 +213,11 @@ X11Input::~X11Input() {
 
 }
 
+uint32_t X11Input::GetFrameCounter() {
+	SharedLock lock(&m_shared_data);
+	return lock->m_frame_counter;
+}
+
 void X11Input::Init() {
 
 	// do the X11 stuff
@@ -265,6 +270,12 @@ void X11Input::Init() {
 	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(UpdateScreenConfiguration()));
 	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(UpdateScreenConfiguration()));
 	UpdateScreenConfiguration();
+
+	// initialize frame counter
+	{
+		SharedLock lock(&m_shared_data);
+		lock->m_frame_counter = 0;
+	}
 
 	// start input thread
 	m_should_stop = false;
@@ -347,7 +358,6 @@ void X11Input::run() {
 				}
 			}
 
-
 			SharedLock lock(&m_shared_data);
 
 			// follow the cursor
@@ -406,6 +416,9 @@ void X11Input::run() {
 
 			// push out the frame
 			PushVideoFrame(m_width, m_height, image_data, image_stride, x11_image_format, timestamp);
+
+			// increase frame counter
+			++lock->m_frame_counter;
 
 		}
 

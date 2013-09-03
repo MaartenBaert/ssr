@@ -29,7 +29,8 @@ struct GLInjectHeader {
 	uint32_t read_pos, write_pos;
 	// output
 	uint32_t current_width, current_height;
-	uint32_t hotkey_count;
+	uint32_t frame_counter;
+	uint32_t hotkey_counter;
 };
 struct GLInjectFrameInfo {
 	// input

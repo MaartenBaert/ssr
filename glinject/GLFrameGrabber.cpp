@@ -19,6 +19,36 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 	code; \
 	if(m_debug) CheckGLError(#code);
 
+// Returns the OpenGL version as (major * 1000 + minor). So OpenGL 2.1 would be '2001'.
+static unsigned int GetGLVersion() {
+
+	// get version string
+	const char *str = (const char*) glGetString(GL_VERSION);
+	if(str == NULL) {
+		fprintf(stderr, "[SSR-GLInject] Error: Could not get OpenGL version, version string is NULL!\n");
+		exit(-181818181);
+	}
+
+	// read major version
+	unsigned int dot1 = strspn(str, "0123456789");
+	if(str[dot1] != '.') {
+		fprintf(stderr, "[SSR-GLInject] Error: Could not get OpenGL version, version string is '%s'!\n", str);
+		exit(-181818181);
+	}
+	unsigned int major = atoi(str);
+
+	// read minor version
+	unsigned int dot2 = strspn(str + dot1 + 1, "0123456789") + dot1 + 1;
+	if(str[dot2] != '.' && str[dot2] != ' ' && str[dot2] != '\0') {
+		fprintf(stderr, "[SSR-GLInject] Error: Could not get OpenGL version, version string is '%s'!\n", str);
+		exit(-181818181);
+	}
+	unsigned int minor = atoi(str + dot1 + 1);
+
+	fprintf(stderr, "[SSR-GLInject] OpenGL version = %u.%u (%s).\n", major, minor, str);
+	return major * 1000 + minor;
+}
+
 static void CheckGLError(const char* at) {
 	GLenum error = glGetError();
 	if(error != GL_NO_ERROR) {
@@ -85,8 +115,6 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 	m_glx_drawable = drawable;
 	m_width = 0;
 	m_height = 0;
-
-	m_shm_main_ptr = (char*) -1;
 
 	m_next_frame_time = hrt_time_micro();
 
@@ -155,6 +183,9 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 		}
 	}
 
+	// get the OpenGL version
+	m_gl_version = GetGLVersion();
+
 	// showing the cursor requires XFixes (which should be supported on any modern X server, but let's check it anyway)
 	{
 		int event, error;
@@ -201,11 +232,12 @@ void GLFrameGrabber::GrabFrame() {
 
 	//int64_t t2 = hrt_time_micro();
 
-	// write the current size to shared memory
+	// save the window size and increase the frame count
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	std::atomic_thread_fence(std::memory_order_acquire);
 	header->current_width = m_width;
 	header->current_height = m_height;
+	++header->frame_counter;
 	std::atomic_thread_fence(std::memory_order_release);
 
 	// check image size
@@ -339,6 +371,6 @@ GLFrameGrabber::HotkeyInfo GLFrameGrabber::GetHotkeyInfo() {
 void GLFrameGrabber::TriggerHotkey() {
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	std::atomic_thread_fence(std::memory_order_acquire);
-	++header->hotkey_count;
+	++header->hotkey_counter;
 	std::atomic_thread_fence(std::memory_order_release);
 }

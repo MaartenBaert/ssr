@@ -10,7 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include "Global.h"
 
 class GLFrameGrabber {
-	
+
 public:
 	struct HotkeyInfo {
 		bool enabled;
@@ -27,6 +27,8 @@ private:
 	unsigned int m_cbuffer_size, m_max_bytes;
 	unsigned int m_target_fps;
 	unsigned int m_flags;
+
+	unsigned int m_gl_version;
 	bool m_has_xfixes;
 
 	char *m_shm_main_ptr;

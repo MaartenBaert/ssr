@@ -167,8 +167,10 @@ PageRecord::PageRecord(MainWindow* main_window)
 			{
 				QLabel *label_total_time = new QLabel("Total time:", group_information);
 				m_label_info_total_time = new QLabel(group_information);
-				QLabel *label_frame_rate = new QLabel("Frame rate:", group_information);
-				m_label_info_frame_rate = new QLabel(group_information);
+				QLabel *label_frame_rate_in = new QLabel("FPS in:", group_information);
+				m_label_info_frame_rate_in = new QLabel(group_information);
+				QLabel *label_frame_rate_out = new QLabel("FPS out:", group_information);
+				m_label_info_frame_rate_out = new QLabel(group_information);
 				QLabel *label_size_in = new QLabel("Size in:", group_information);
 				m_label_info_size_in = new QLabel(group_information);
 				QLabel *label_size_out = new QLabel("Size out:", group_information);
@@ -184,20 +186,22 @@ PageRecord::PageRecord(MainWindow* main_window)
 				QGridLayout *layout = new QGridLayout(group_information);
 				layout->addWidget(label_total_time, 0, 0);
 				layout->addWidget(m_label_info_total_time, 0, 1);
-				layout->addWidget(label_frame_rate, 1, 0);
-				layout->addWidget(m_label_info_frame_rate, 1, 1);
-				layout->addWidget(label_size_in, 2, 0);
-				layout->addWidget(m_label_info_size_in, 2, 1);
-				layout->addWidget(label_size_out, 3, 0);
-				layout->addWidget(m_label_info_size_out, 3, 1);
-				layout->addWidget(label_file_name, 4, 0);
-				layout->addWidget(m_label_info_file_name, 4, 1);
-				layout->addWidget(label_file_size, 5, 0);
-				layout->addWidget(m_label_info_file_size, 5, 1);
-				layout->addWidget(label_bit_rate, 6, 0);
-				layout->addWidget(m_label_info_bit_rate, 6, 1);
+				layout->addWidget(label_frame_rate_in, 1, 0);
+				layout->addWidget(m_label_info_frame_rate_in, 1, 1);
+				layout->addWidget(label_frame_rate_out, 2, 0);
+				layout->addWidget(m_label_info_frame_rate_out, 2, 1);
+				layout->addWidget(label_size_in, 3, 0);
+				layout->addWidget(m_label_info_size_in, 3, 1);
+				layout->addWidget(label_size_out, 4, 0);
+				layout->addWidget(m_label_info_size_out, 4, 1);
+				layout->addWidget(label_file_name, 5, 0);
+				layout->addWidget(m_label_info_file_name, 5, 1);
+				layout->addWidget(label_file_size, 6, 0);
+				layout->addWidget(m_label_info_file_size, 6, 1);
+				layout->addWidget(label_bit_rate, 7, 0);
+				layout->addWidget(m_label_info_bit_rate, 7, 1);
 				layout->setColumnStretch(1, 1);
-				layout->setRowStretch(7, 1);
+				layout->setRowStretch(8, 1);
 			}
 			QGroupBox *group_preview = new QGroupBox("Preview", splitter_horizontal);
 			{
@@ -474,6 +478,9 @@ void PageRecord::PageStart() {
 	UpdateHotkey();
 	UpdateCapture();
 
+	m_info_last_timestamp = hrt_time_micro();
+	m_info_last_frame_counter = 0;
+	m_info_input_frame_rate = 0.0;
 	UpdateInformation();
 	m_info_timer->start(1000);
 
@@ -665,6 +672,10 @@ void PageRecord::CaptureStop() {
 
 	Logger::LogInfo("[PageRecord::CaptureStop] Stopping capturing ...");
 
+	if(m_video_area != PageInput::VIDEO_AREA_GLINJECT) {
+		m_info_last_frame_counter -= m_x11_input->GetFrameCounter();
+	}
+
 	m_x11_input.reset();
 	m_gl_inject_input.reset();
 	m_alsa_input.reset();
@@ -812,6 +823,21 @@ void PageRecord::UpdateInformation() {
 
 	if(m_page_started) {
 
+		int64_t timestamp = hrt_time_micro();
+		if(timestamp - m_info_last_timestamp > 10000) {
+			uint32_t frame_counter;
+			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
+				frame_counter = m_gl_inject_launcher->GetFrameCounter();
+			} else if(m_capturing) {
+				frame_counter = m_x11_input->GetFrameCounter();
+			} else {
+				frame_counter = 0;
+			}
+			m_info_input_frame_rate = (double) (frame_counter - m_info_last_frame_counter) / ((double) (timestamp - m_info_last_timestamp) * 1.0e-6);
+			m_info_last_timestamp = timestamp;
+			m_info_last_frame_counter = frame_counter;
+		}
+
 		int64_t total_time = 0;
 		double frame_rate = 0.0, bit_rate = 0.0;
 		uint64_t total_bytes = 0;
@@ -829,7 +855,8 @@ void PageRecord::UpdateInformation() {
 		}
 
 		m_label_info_total_time->setText(ReadableTime(total_time));
-		m_label_info_frame_rate->setText(QString::number(frame_rate, 'f', 2));
+		m_label_info_frame_rate_in->setText(QString::number(m_info_input_frame_rate, 'f', 2));
+		m_label_info_frame_rate_out->setText(QString::number(frame_rate, 'f', 2));
 		m_label_info_size_in->setText(ReadableWidthHeight(m_video_in_width, m_video_in_height));
 		m_label_info_size_out->setText(ReadableWidthHeight(m_output_settings.video_width, m_output_settings.video_height));
 		m_label_info_file_name->setText((m_file_protocol.isNull())? QFileInfo(m_output_settings.file).fileName() : "(" + m_file_protocol + ")");
@@ -839,7 +866,8 @@ void PageRecord::UpdateInformation() {
 	} else {
 
 		m_label_info_total_time->clear();
-		m_label_info_frame_rate->clear();
+		m_label_info_frame_rate_in->clear();
+		m_label_info_frame_rate_out->clear();
 		m_label_info_size_in->clear();
 		m_label_info_size_out->clear();
 		m_label_info_file_name->clear();

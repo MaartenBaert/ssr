@@ -46,9 +46,9 @@ Muxer::Muxer(const QString& container_name, const QString& output_file) {
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_total_bytes = 0;
-		lock->m_actual_bit_rate = 0.0;
-		lock->m_previous_pts = NOPTS_DOUBLE;
-		lock->m_previous_bytes = 0;
+		lock->m_stats_actual_bit_rate = 0.0;
+		lock->m_stats_previous_pts = NOPTS_DOUBLE;
+		lock->m_stats_previous_bytes = 0;
 	}
 
 	// initialize thread signals
@@ -119,7 +119,7 @@ bool Muxer::IsStarted() {
 
 double Muxer::GetActualBitRate() {
 	SharedLock lock(&m_shared_data);
-	return lock->m_actual_bit_rate;
+	return lock->m_stats_actual_bit_rate;
 }
 
 uint64_t Muxer::GetTotalBytes() {
@@ -317,15 +317,15 @@ void Muxer::run() {
 			{
 				SharedLock lock(&m_shared_data);
 				lock->m_total_bytes = m_format_context->pb->pos + (m_format_context->pb->buf_ptr - m_format_context->pb->buffer);
-				if(lock->m_previous_pts == NOPTS_DOUBLE) {
-					lock->m_previous_pts = oldest_pts;
-					lock->m_previous_bytes = lock->m_total_bytes;
+				if(lock->m_stats_previous_pts == NOPTS_DOUBLE) {
+					lock->m_stats_previous_pts = oldest_pts;
+					lock->m_stats_previous_bytes = lock->m_total_bytes;
 				}
-				double timedelta = oldest_pts - lock->m_previous_pts;
+				double timedelta = oldest_pts - lock->m_stats_previous_pts;
 				if(timedelta > 0.999999) {
-					lock->m_actual_bit_rate = (double) ((lock->m_total_bytes - lock->m_previous_bytes) * 8) / timedelta;
-					lock->m_previous_pts = oldest_pts;
-					lock->m_previous_bytes = lock->m_total_bytes;
+					lock->m_stats_actual_bit_rate = (double) ((lock->m_total_bytes - lock->m_stats_previous_bytes) * 8) / timedelta;
+					lock->m_stats_previous_pts = oldest_pts;
+					lock->m_stats_previous_bytes = lock->m_total_bytes;
 				}
 			}
 
