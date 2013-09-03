@@ -22,7 +22,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Main.h"
 #include "Logger.h"
-#include "ShmStructs.h"
+
+#include "../glinject/ShmStructs.h"
 
 const unsigned int GLInjectLauncher::CBUFFER_SIZE = 5;
 
@@ -60,21 +61,26 @@ GLInjectLauncher::~GLInjectLauncher() {
 
 void GLInjectLauncher::GetCurrentSize(unsigned int* width, unsigned int* height) {
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	std::atomic_thread_fence(std::memory_order_acquire);
 	*width = header->current_width;
 	*height = header->current_height;
+	std::atomic_thread_fence(std::memory_order_release);
 }
 
 void GLInjectLauncher::UpdateHotkey(bool enabled, unsigned int keysym, unsigned int modifiers) {
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
-	header->hotkey_enabled = false; //TODO// this won't work without memory fences
+	std::atomic_thread_fence(std::memory_order_acquire);
+	header->hotkey_enabled = enabled;
 	header->hotkey_keycode = XKeysymToKeycode(QX11Info::display(), keysym);
 	header->hotkey_modifiers = modifiers;
-	header->hotkey_enabled = enabled;
+	std::atomic_thread_fence(std::memory_order_release);
 }
 
 bool GLInjectLauncher::GetHotkeyPressed() {
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	std::atomic_thread_fence(std::memory_order_acquire);
 	unsigned int new_hotkey_count = header->hotkey_count;
+	std::atomic_thread_fence(std::memory_order_release);
 	bool event = (new_hotkey_count != m_hotkey_last_count);
 	m_hotkey_last_count = new_hotkey_count;
 	return event;
@@ -93,23 +99,24 @@ void GLInjectLauncher::Init() {
 		Logger::LogError("[GLInjectLauncher::Init] Error: Can't attach to main shared memory!");
 		throw GLInjectException();
 	}
-	memset((void*) m_shm_main_ptr, 0, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * CBUFFER_SIZE);
+	memset(m_shm_main_ptr, 0, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * CBUFFER_SIZE);
 
 	// allocate frame shared memory
 	for(unsigned int i = 0; i < CBUFFER_SIZE; ++i) {
 		m_shm_frames.push_back(ShmFrame());
-		m_shm_frames.back().id = shmget(IPC_PRIVATE, m_max_bytes, IPC_CREAT | ((m_relax_permissions)? 0777 : 0700));
-		if(m_shm_frames.back().id == -1) {
+		m_shm_frames.back().m_id = shmget(IPC_PRIVATE, m_max_bytes, IPC_CREAT | ((m_relax_permissions)? 0777 : 0700));
+		if(m_shm_frames.back().m_id == -1) {
 			Logger::LogError("[GLInjectLauncher::Init] Error: Can't get frame shared memory!");
 			throw GLInjectException();
 		}
-		m_shm_frames.back().ptr = (char*) shmat(m_shm_frames.back().id, NULL, SHM_RND);
-		if(m_shm_frames.back().ptr == (char*) -1) {
+		m_shm_frames.back().m_shm_ptr = (char*) shmat(m_shm_frames.back().m_id, NULL, SHM_RND);
+		if(m_shm_frames.back().m_shm_ptr == (char*) -1) {
 			Logger::LogError("[GLInjectLauncher::Init] Error: Can't attach to frame shared memory!");
 			throw GLInjectException();
 		}
-		((GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * i))->shm_id = m_shm_frames.back().id;
-		memset((void*) m_shm_frames.back().ptr, 0, m_max_bytes);
+		GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * i);
+		frameinfo->shm_id = m_shm_frames.back().m_id;
+		memset((void*) m_shm_frames.back().m_shm_ptr, 0, m_max_bytes);
 	}
 
 	// initialize the memory
@@ -125,22 +132,19 @@ void GLInjectLauncher::Init() {
 	header->write_pos = 0;
 	header->current_width = 0;
 	header->current_height = 0;
-	header->current_fps = 0;
 	header->hotkey_count = 0;
+	std::atomic_thread_fence(std::memory_order_release);
 
 	// generate the full command
-	m_command = "LD_PRELOAD=libssr-glinject.so SSR_GLINJECT_SHM=" + QString::number(m_shm_main_id) + " " + m_command;
-	Logger::LogInfo("[GLInjectLauncher::Init] Full command: " + m_command);
+	QString full_command = "LD_PRELOAD=libssr-glinject.so SSR_GLINJECT_SHM=" + QString::number(m_shm_main_id) + " " + m_command;
+	Logger::LogInfo("[GLInjectLauncher::Init] Full command: " + full_command);
 
 	// run it
 	if(m_run_command) {
-		QDir::setCurrent(QDir::homePath());
-		QByteArray arg2 = m_command.toLocal8Bit();
-		const char* args[] = {"/bin/sh", "-c", arg2.data(), NULL};
-		pid_t pid = fork();
-		if(pid == 0) {
-			execl(args[0], args[0], args[1], args[2], args[3]);
-		} else if(pid == -1) {
+		QStringList args;
+		args.push_back("-c");
+		args.push_back(full_command);
+		if(!QProcess::startDetached("/bin/sh", args, QDir::homePath())) {
 			Logger::LogError("[GLInjectLauncher::Init] Error: Can't run command!");
 			throw GLInjectException();
 		}
@@ -152,11 +156,11 @@ void GLInjectLauncher::Free() {
 
 	// free frame shared memory
 	while(!m_shm_frames.empty()) {
-		if(m_shm_frames.back().ptr != (char*) -1) {
-			shmdt((void*) m_shm_frames.back().ptr);
+		if(m_shm_frames.back().m_shm_ptr != (char*) -1) {
+			shmdt((void*) m_shm_frames.back().m_shm_ptr);
 		}
-		if(m_shm_frames.back().id != -1) {
-			shmctl(m_shm_frames.back().id, IPC_RMID, NULL);
+		if(m_shm_frames.back().m_id != -1) {
+			shmctl(m_shm_frames.back().m_id, IPC_RMID, NULL);
 		}
 		m_shm_frames.pop_back();
 	}

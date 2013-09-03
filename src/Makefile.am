@@ -3,17 +3,19 @@ if ENABLE_SSRPROGRAM
 bin_PROGRAMS = simplescreenrecorder
 
 simplescreenrecorder_CPPFLAGS = \
-	$(QT4_CFLAGS)
-simplescreenrecorder_CXXFLAGS = \
-	-pthread \
+	$(QT4_CFLAGS) \
 	-I$(srcdir)/AV/Input \
 	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
-	-I$(srcdir)/GUI \
-	-I$(top_srcdir)/glinject \
-	-std=c++0x \
+	-I$(srcdir)/GUI
+simplescreenrecorder_CFLAGS = \
+	-pthread
+simplescreenrecorder_CXXFLAGS = \
+	-pthread \
+	-std=c++11 \
 	-flax-vector-conversions
 simplescreenrecorder_LDFLAGS = \
+	-pthread \
 	$(QT4_LIBS) \
 	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 

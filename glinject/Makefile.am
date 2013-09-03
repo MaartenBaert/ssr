@@ -5,8 +5,10 @@ lib_LTLIBRARIES = libssr-glinject.la
 libssr_glinject_la_CFLAGS = \
 	-pthread
 libssr_glinject_la_CXXFLAGS = \
-	-pthread
+	-pthread \
+	-std=c++11
 libssr_glinject_la_LDFLAGS = \
+	-pthread \
 	-avoid-version -shared \
 	 -lrt -ldl -lGL -lGLU -lX11 -lXfixes
 

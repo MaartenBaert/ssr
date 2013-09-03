@@ -354,9 +354,11 @@ top_srcdir = @top_srcdir@
 @ENABLE_GLINJECTLIB_TRUE@	-pthread
 
 @ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_CXXFLAGS = \
-@ENABLE_GLINJECTLIB_TRUE@	-pthread
+@ENABLE_GLINJECTLIB_TRUE@	-pthread \
+@ENABLE_GLINJECTLIB_TRUE@	-std=c++11
 
 @ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_LDFLAGS = \
+@ENABLE_GLINJECTLIB_TRUE@	-pthread \
 @ENABLE_GLINJECTLIB_TRUE@	-avoid-version -shared \
 @ENABLE_GLINJECTLIB_TRUE@	 -lrt -ldl -lGL -lGLU -lX11 -lXfixes
 

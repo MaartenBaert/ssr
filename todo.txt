@@ -1,14 +1,17 @@
 Testing:
-
-In progress:
 - preview even when not recording yet (i.e. detach input from output)
 - Separate file for each clip.
 
+In progress:
+
 Todo:
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
+- Play start/stop sound (optional). [https://github.com/MaartenBaert/ssr/issues/26]
 - Command-line options for recording.
 
 Wishlist:
+- Systray icon.
+- FPS counter of GLInject (overlay + option to record?)
 - PulseAudio input (+ 2 inputs?)
 - Built-in re-encoding after recording
 - clean up Global.h
@@ -26,8 +29,6 @@ Wishlist:
 
 Not sure yet:
 - Fixed cursor position when using 'follow cursor'?
-- tray icon?
-- play start/stop sound?
 - skip microphone startup click?
 - redesigned interface? (https://github.com/swick/glc2/issues/1)
 - equalizer?

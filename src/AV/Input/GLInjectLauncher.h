@@ -20,8 +20,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-//#include "ShmStructs.h"
-
 class GLInjectLauncher {
 
 public:
@@ -29,9 +27,9 @@ public:
 
 private:
 	struct ShmFrame {
-		int id;
-		volatile char *ptr;
-		inline ShmFrame() : id(-1), ptr((char*) -1) {}
+		int m_id;
+		char *m_shm_ptr;
+		inline ShmFrame() : m_id(-1), m_shm_ptr((char*) -1) {}
 	};
 
 private:
@@ -44,7 +42,7 @@ private:
 	unsigned int m_hotkey_last_count;
 
 	int m_shm_main_id;
-	volatile char *m_shm_main_ptr;
+	char *m_shm_main_ptr;
 	std::vector<ShmFrame> m_shm_frames;
 
 public:
@@ -67,10 +65,10 @@ public:
 	inline unsigned int GetCBufferSize() { return CBUFFER_SIZE; }
 
 	// Returns a pointer to the main shared memory block used for communication with the injected library.
-	inline volatile char* GetMainSharedPointer() { return m_shm_main_ptr; }
+	inline char* GetMainSharedPointer() { return m_shm_main_ptr; }
 
 	// Returns a pointer to a frame shared memory block.
-	inline volatile char* GetFrameSharedPointer(unsigned int frame) { return m_shm_frames[frame].ptr; }
+	inline char* GetFrameSharedPointer(unsigned int frame) { return m_shm_frames[frame].m_shm_ptr; }
 
 private:
 	void Init();

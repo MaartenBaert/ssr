@@ -26,9 +26,7 @@ int (*g_glinject_real_XNextEvent)(Display*, XEvent*) = NULL;
 
 int g_glinject_hooks_initialized = 0;
 
-bool g_hotkey_enabled = false;
-unsigned int g_hotkey_modifiers = 0;
-unsigned int g_hotkey_keycode = 0;
+GLFrameGrabber::HotkeyInfo g_hotkey_info;
 bool g_hotkey_pressed = false;
 
 void glinject_init_hooks() {
@@ -104,9 +102,7 @@ void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
 		fprintf(stderr, "[SSR-GLInject] Warning: glXSwapBuffers called without existing frame grabber, creating one assuming window == drawable.\n");
 		fg = g_glinject.NewGrabber(dpy, drawable, drawable);
 	}
-	g_hotkey_modifiers = fg->GetHotkeyModifiers();
-	g_hotkey_keycode = fg->GetHotkeyKeycode();
-	g_hotkey_enabled = fg->GetHotkeyEnabled();
+	g_hotkey_info = fg->GetHotkeyInfo();
 	if(g_hotkey_pressed) {
 		fg->TriggerHotkey();
 		g_hotkey_pressed = false;
@@ -128,8 +124,8 @@ GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name) {
 
 int glinject_my_XNextEvent(Display* display, XEvent* event_return) {
 	int res = g_glinject_real_XNextEvent(display, event_return);
-	if(g_hotkey_enabled && event_return->type == KeyPress
-			&& event_return->xkey.keycode == g_hotkey_keycode && (event_return->xkey.state & ~LockMask & ~Mod2Mask) == g_hotkey_modifiers) {
+	if(g_hotkey_info.enabled && event_return->type == KeyPress && event_return->xkey.keycode == g_hotkey_info.keycode
+			&& (event_return->xkey.state & ~LockMask & ~Mod2Mask) == g_hotkey_info.modifiers) {
 		g_hotkey_pressed = true;
 	}
 	return res;

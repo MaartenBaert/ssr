@@ -382,19 +382,22 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS = \
-@ENABLE_SSRPROGRAM_TRUE@	$(QT4_CFLAGS)
-
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = \
-@ENABLE_SSRPROGRAM_TRUE@	-pthread \
+@ENABLE_SSRPROGRAM_TRUE@	$(QT4_CFLAGS) \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Output \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV \
-@ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/GUI \
-@ENABLE_SSRPROGRAM_TRUE@	-I$(top_srcdir)/glinject \
-@ENABLE_SSRPROGRAM_TRUE@	-std=c++0x \
+@ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/GUI
+
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = \
+@ENABLE_SSRPROGRAM_TRUE@	-pthread
+
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = \
+@ENABLE_SSRPROGRAM_TRUE@	-pthread \
+@ENABLE_SSRPROGRAM_TRUE@	-std=c++11 \
 @ENABLE_SSRPROGRAM_TRUE@	-flax-vector-conversions
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = \
+@ENABLE_SSRPROGRAM_TRUE@	-pthread \
 @ENABLE_SSRPROGRAM_TRUE@	$(QT4_LIBS) \
 @ENABLE_SSRPROGRAM_TRUE@	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 

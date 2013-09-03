@@ -237,6 +237,10 @@ PageOutput::PageOutput(MainWindow* main_window)
 		m_lineedit_video_options->setToolTip("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)");
 		m_lineedit_video_options->setVisible(false);
 		m_checkbox_video_allow_frame_skipping = new QCheckBox("Allow frame skipping", groupbox_video);
+		m_checkbox_video_allow_frame_skipping->setToolTip("If checked, the video encoder will be allowed to skip frames if the input frame rate is\n"
+														  "lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.\n"
+														  "This increases the file size and CPU usage, but reduces the latency for live streams.\n"
+														  "It shouldn't affect the appearance of the video.");
 
 		connect(m_combobox_video_codec, SIGNAL(activated(int)), this, SLOT(UpdateVideoCodecFields()));
 

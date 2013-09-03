@@ -26,7 +26,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoEncoder.h"
 #include "GLInjectLauncher.h"
 #include "VideoPreviewer.h"
-#include "ShmStructs.h"
+
+#include "../glinject/ShmStructs.h"
 
 // The highest expected latency between GLInject and the input thread.
 const int64_t GLInjectInput::MAX_COMMUNICATION_LATENCY = 100000;
@@ -72,7 +73,10 @@ void GLInjectInput::Init() {
 	}
 
 	// flush the circular buffer
-	((GLInjectHeader*) m_shm_main_ptr)->read_pos = ((GLInjectHeader*) m_shm_main_ptr)->write_pos;
+	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	std::atomic_thread_fence(std::memory_order_acquire);
+	header->read_pos = header->write_pos;
+	std::atomic_thread_fence(std::memory_order_release);
 
 	// start input thread
 	m_should_stop = false;
@@ -94,44 +98,57 @@ void GLInjectInput::run() {
 		while(!m_should_stop) {
 
 			// is a frame ready?
-			GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
-			unsigned int frames_ready = positive_mod((int) header.write_pos - (int) header.read_pos, (int) m_cbuffer_size * 2);
+			GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+			std::atomic_thread_fence(std::memory_order_acquire);
+			unsigned int read_pos = header->read_pos;
+			unsigned int write_pos = header->write_pos;
+			std::atomic_thread_fence(std::memory_order_release);
+			unsigned int frames_ready = positive_mod((int) write_pos - (int) read_pos, (int) m_cbuffer_size * 2);
 			if(frames_ready == 0) {
 				PushVideoPing(hrt_time_micro() - MAX_COMMUNICATION_LATENCY);
 				usleep(10000);
 				continue;
 			}
 
+			std::atomic_thread_fence(std::memory_order_acquire); // start reading frame
+
 			// get the frame info
-			unsigned int current_frame = header.read_pos % m_cbuffer_size;
-			GLInjectFrameInfo frameinfo = *(GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
-			if(frameinfo.width < 2 || frameinfo.height < 2) {
+			unsigned int current_frame = read_pos % m_cbuffer_size;
+			GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
+			int64_t timestamp = frameinfo->timestamp;
+			unsigned int frame_width = frameinfo->width;
+			unsigned int frame_height = frameinfo->height;
+			if(frame_width < 2 || frame_height < 2) {
 				Logger::LogInfo("[GLInjectInput::run] Error: Image is too small!");
 				throw GLInjectException();
 			}
-			if(frameinfo.width > 10000 || frameinfo.height > 10000) {
+			if(frame_width > 10000 || frame_height > 10000) {
 				Logger::LogInfo("[GLInjectInput::run] Error: Image is too large!");
 				throw GLInjectException();
 			}
 
 			// get the image
 			uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];
-			int image_stride = grow_align16(frameinfo.width * 4);
-			if(image_stride * frameinfo.height > m_max_bytes) {
+			int image_stride = grow_align16(frame_width * 4);
+			if(image_stride * frame_height > m_max_bytes) {
 				Logger::LogInfo("[GLInjectInput::run] Error: Image is supposedly larger than the maximum size!");
 				throw GLInjectException();
 			}
 
 			// flip the image upside down by changing the pointer and stride
 			// this is needed because OpenGL stores frames upside-down
-			image_data += image_stride * (frameinfo.height - 1);
+			image_data += image_stride * (frame_height - 1);
 			image_stride = -image_stride;
 
 			// push out the frame
-			PushVideoFrame(frameinfo.width, frameinfo.height, image_data, image_stride, PIX_FMT_BGRA, frameinfo.timestamp);
+			PushVideoFrame(frame_width, frame_height, image_data, image_stride, PIX_FMT_BGRA, timestamp);
+
+			std::atomic_thread_fence(std::memory_order_release); // stop reading frame
 
 			// go to the next frame
-			((GLInjectHeader*) m_shm_main_ptr)->read_pos = (header.read_pos + 1) % (m_cbuffer_size * 2);
+			std::atomic_thread_fence(std::memory_order_acquire);
+			header->read_pos = (read_pos + 1) % (m_cbuffer_size * 2);
+			std::atomic_thread_fence(std::memory_order_release);
 
 		}
 

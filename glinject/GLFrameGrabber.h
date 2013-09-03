@@ -9,15 +9,12 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #pragma once
 #include "Global.h"
 
-#define BUFFER_COUNT 2
-
 class GLFrameGrabber {
-
-private:
-	struct ShmFrame {
-		int id;
-		volatile char *ptr;
-		inline ShmFrame() : id(-1), ptr((char*) -1) {}
+	
+public:
+	struct HotkeyInfo {
+		bool enabled;
+		unsigned int keycode, modifiers;
 	};
 
 private:
@@ -32,8 +29,8 @@ private:
 	unsigned int m_flags;
 	bool m_has_xfixes;
 
-	volatile char *m_shm_main_ptr;
-	std::vector<volatile char*> m_shm_frame_ptrs;
+	char *m_shm_main_ptr;
+	std::vector<char*> m_shm_frame_ptrs;
 
 	int64_t m_next_frame_time;
 
@@ -44,9 +41,7 @@ public:
 	~GLFrameGrabber();
 
 	void GrabFrame();
-	bool GetHotkeyEnabled();
-	unsigned int GetHotkeyKeycode();
-	unsigned int GetHotkeyModifiers();
+	HotkeyInfo GetHotkeyInfo();
 	void TriggerHotkey();
 
 public:

@@ -8,8 +8,10 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #pragma once
 
-// Disable padding to make sure the 32-bit and 64-bit libs are compatible.
-#pragma pack(push, 1)
+#include <atomic>
+
+// Force padding to 64-bit to make sure the 32-bit and 64-bit libs are compatible.
+#pragma pack(push, 8)
 
 #define GLINJECT_FLAG_RECORD_CURSOR  0x0001
 #define GLINJECT_FLAG_CAPTURE_FRONT  0x0002
@@ -20,14 +22,13 @@ struct GLInjectHeader {
 	uint32_t cbuffer_size, max_bytes;
 	uint32_t target_fps;
 	uint32_t flags;
-	bool hotkey_enabled;
+	uint32_t hotkey_enabled;
 	uint32_t hotkey_keycode;
 	uint32_t hotkey_modifiers;
 	// input/output
 	uint32_t read_pos, write_pos;
 	// output
 	uint32_t current_width, current_height;
-	uint32_t current_fps;
 	uint32_t hotkey_count;
 };
 struct GLInjectFrameInfo {

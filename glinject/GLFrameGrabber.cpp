@@ -11,6 +11,8 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #include "ShmStructs.h"
 
+#include <atomic>
+
 #include <X11/extensions/Xfixes.h>
 
 #define CGLE(code) \
@@ -114,11 +116,15 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 		fprintf(stderr, "[SSR-GLInject] Error: Main shared memory is too small!\n");
 		exit(-181818181);
 	}
-	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
-	m_cbuffer_size = header.cbuffer_size;
-	m_max_bytes = header.max_bytes;
-	m_target_fps = header.target_fps;
-	m_flags = header.flags;
+
+	// read the header
+	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	std::atomic_thread_fence(std::memory_order_acquire);
+	m_cbuffer_size = header->cbuffer_size;
+	m_max_bytes = header->max_bytes;
+	m_target_fps = header->target_fps;
+	m_flags = header->flags;
+	std::atomic_thread_fence(std::memory_order_release);
 	if(m_cbuffer_size <= 0 || m_cbuffer_size > 1000) {
 		fprintf(stderr, "[SSR-GLInject] Error: Circular buffer size %u is invalid!\n", m_cbuffer_size);
 		exit(-181818181);
@@ -182,6 +188,8 @@ GLFrameGrabber::~GLFrameGrabber() {
 
 void GLFrameGrabber::GrabFrame() {
 
+	//int64_t t1 = hrt_time_micro();
+
 	// get size
 	Window unused_window;
 	int unused;
@@ -191,9 +199,14 @@ void GLFrameGrabber::GrabFrame() {
 		fprintf(stderr, "[SSR-GLInject] GLFrameGrabber for [%p-0x%lx-0x%lx] frame size = %ux%u\n", m_x11_display, m_x11_window, m_glx_drawable, m_width, m_height);
 	}
 
+	//int64_t t2 = hrt_time_micro();
+
 	// write the current size to shared memory
-	((GLInjectHeader*) m_shm_main_ptr)->current_width = m_width;
-	((GLInjectHeader*) m_shm_main_ptr)->current_height = m_height;
+	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	std::atomic_thread_fence(std::memory_order_acquire);
+	header->current_width = m_width;
+	header->current_height = m_height;
+	std::atomic_thread_fence(std::memory_order_release);
 
 	// check image size
 	unsigned int image_stride = grow_align16(m_width * 4);
@@ -212,9 +225,14 @@ void GLFrameGrabber::GrabFrame() {
 		return;
 	}
 
+	//int64_t t3 = hrt_time_micro();
+
 	// is there space in the circular buffer?
-	GLInjectHeader header = *(GLInjectHeader*) m_shm_main_ptr;
-	unsigned int frames_ready = positive_mod((int) header.write_pos - (int) header.read_pos, (int) m_cbuffer_size * 2);
+	std::atomic_thread_fence(std::memory_order_acquire);
+	unsigned int read_pos = header->read_pos;
+	unsigned int write_pos = header->write_pos;
+	std::atomic_thread_fence(std::memory_order_release);
+	unsigned int frames_ready = positive_mod((int) write_pos - (int) read_pos, (int) m_cbuffer_size * 2);
 	if(frames_ready >= m_cbuffer_size)
 		return;
 
@@ -233,6 +251,8 @@ void GLFrameGrabber::GrabFrame() {
 		}
 		m_next_frame_time = std::max(m_next_frame_time + delay, timestamp);
 	}
+
+	//int64_t t4 = hrt_time_micro();
 
 	if(m_debug) CheckGLError("<external code>");
 
@@ -256,8 +276,12 @@ void GLFrameGrabber::GrabFrame() {
 	CGLE(glPixelStorei(GL_PACK_ALIGNMENT, 8));
 	CGLE(glReadBuffer((m_flags & GLINJECT_FLAG_CAPTURE_FRONT)? GL_FRONT : GL_BACK));
 
+	//int64_t t5 = hrt_time_micro();
+
+	std::atomic_thread_fence(std::memory_order_acquire); // start reading frame
+
 	// initialize the frame
-	unsigned int current_frame = header.write_pos % m_cbuffer_size;
+	unsigned int current_frame = write_pos % m_cbuffer_size;
 	GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
 	frameinfo->timestamp = timestamp;
 	frameinfo->width = m_width;
@@ -267,6 +291,8 @@ void GLFrameGrabber::GrabFrame() {
 	// capture the frame
 	CGLE(glReadPixels(0, 0, m_width, m_height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data));
 
+	//int64_t t6 = hrt_time_micro();
+
 	// draw the cursor
 	if((m_flags & GLINJECT_FLAG_RECORD_CURSOR) && m_has_xfixes) {
 		int inner_x, inner_y;
@@ -275,8 +301,14 @@ void GLFrameGrabber::GrabFrame() {
 		}
 	}
 
+	std::atomic_thread_fence(std::memory_order_release); // stop reading frame
+
 	// go to the next frame
-	((GLInjectHeader*) m_shm_main_ptr)->write_pos = (header.write_pos + 1) % (m_cbuffer_size * 2);
+	std::atomic_thread_fence(std::memory_order_acquire);
+	header->write_pos = (write_pos + 1) % (m_cbuffer_size * 2);
+	std::atomic_thread_fence(std::memory_order_release);
+
+	//int64_t t7 = hrt_time_micro();
 
 	// restore settings
 	CGLE(glBindBuffer(GL_PIXEL_PACK_BUFFER, old_pbo));
@@ -285,20 +317,28 @@ void GLFrameGrabber::GrabFrame() {
 	CGLE(glPopClientAttrib());
 	CGLE(glPopAttrib());
 
+	//int64_t t8 = hrt_time_micro();
+
+	/*fprintf(stderr, "%ld %ld %ld %ld %ld %ld %ld\n",
+			t2 - t1, t3 - t2, t4 - t3, t5 - t4,
+			t6 - t5, t7 - t6, t8 - t7);*/
+
 }
 
-bool GLFrameGrabber::GetHotkeyEnabled() {
-	return ((GLInjectHeader*) m_shm_main_ptr)->hotkey_enabled;
-}
-
-unsigned int GLFrameGrabber::GetHotkeyKeycode() {
-	return ((GLInjectHeader*) m_shm_main_ptr)->hotkey_keycode;
-}
-
-unsigned int GLFrameGrabber::GetHotkeyModifiers() {
-	return ((GLInjectHeader*) m_shm_main_ptr)->hotkey_modifiers;
+GLFrameGrabber::HotkeyInfo GLFrameGrabber::GetHotkeyInfo() {
+	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	HotkeyInfo info;
+	std::atomic_thread_fence(std::memory_order_acquire);
+	info.enabled = header->hotkey_enabled;
+	info.keycode = header->hotkey_keycode;
+	info.modifiers = header->hotkey_modifiers;
+	std::atomic_thread_fence(std::memory_order_release);
+	return info;
 }
 
 void GLFrameGrabber::TriggerHotkey() {
-	++((GLInjectHeader*) m_shm_main_ptr)->hotkey_count;
+	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
+	std::atomic_thread_fence(std::memory_order_acquire);
+	++header->hotkey_count;
+	std::atomic_thread_fence(std::memory_order_release);
 }
