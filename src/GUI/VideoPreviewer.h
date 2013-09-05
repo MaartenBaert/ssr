@@ -32,7 +32,7 @@ private:
 		QImage m_image;
 		int64_t m_next_frame_time;
 		bool m_is_visible;
-		QSize m_size;
+		QSize m_source_size, m_widget_size;
 		unsigned int m_frame_rate;
 	};
 	typedef MutexDataPair<SharedData>::Lock SharedLock;

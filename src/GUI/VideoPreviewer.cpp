@@ -23,6 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 
 QSize CalculateScaledSize(QSize in, QSize out) {
+	Q_ASSERT(in.width() > 0 && in.height() > 0);
 	if(in.width() <= out.width() && in.height() <= out.height())
 		return in;
 	if(in.width() * out.height() > out.width() * in.height())
@@ -38,7 +39,8 @@ VideoPreviewer::VideoPreviewer(QWidget* parent)
 		SharedLock lock(&m_shared_data);
 		lock->m_next_frame_time = SINK_TIMESTAMP_ANY;
 		lock->m_is_visible = false;
-		lock->m_size = QSize(0, 0);
+		lock->m_source_size = QSize(0, 0);
+		lock->m_widget_size = QSize(0, 0);
 		lock->m_frame_rate = 10;
 	}
 
@@ -80,7 +82,7 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 		return;
 
 	// check the size
-	if(width < 2 || height < 2 || lock->m_size.width() < 2 || lock->m_size.height() < 2)
+	if(width < 2 || height < 2 || lock->m_widget_size.width() < 2 || lock->m_widget_size.height() < 2)
 		return;
 
 	// check the timestamp
@@ -93,7 +95,8 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	}
 
 	// calculate the scaled size
-	QSize image_size = CalculateScaledSize(QSize(width, height), lock->m_size);
+	lock->m_source_size = QSize(width, height);
+	QSize image_size = CalculateScaledSize(lock->m_source_size, lock->m_widget_size);
 
 	// allocate the image
 	if(lock->m_image.size() != image_size) {
@@ -136,7 +139,7 @@ void VideoPreviewer::hideEvent(QHideEvent *event) {
 void VideoPreviewer::resizeEvent(QResizeEvent* event) {
 	Q_UNUSED(event);
 	SharedLock lock(&m_shared_data);
-	lock->m_size = QSize(width() - 2, height() - 2);
+	lock->m_widget_size = QSize(width() - 2, height() - 2);
 }
 
 void VideoPreviewer::paintEvent(QPaintEvent* event) {
@@ -146,9 +149,11 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 	// Copy the image so the lock isn't held while actually drawing the image.
 	// This is fast because QImage is reference counted.
 	QImage img;
+	QSize source_size;
 	{
 		SharedLock lock(&m_shared_data);
 		img = lock->m_image;
+		source_size = lock->m_source_size;
 	}
 
 	if(!img.isNull()) {
@@ -156,7 +161,7 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 		// draw the image
 		// Scaling is only used if the widget was resized after the image was captured, which is unlikely
 		// except when the video is paused. That's good because the quality after Qt's scaling is horrible.
-		QSize out_size = CalculateScaledSize(img.size(), QSize(width() - 2, height() - 2));
+		QSize out_size = CalculateScaledSize(source_size, QSize(width() - 2, height() - 2));
 		QPoint out_pos((width() - out_size.width()) / 2, (height() - out_size.height()) / 2);
 		QRect out_rect(out_pos, out_size);
 		painter.drawImage(out_rect, img);
