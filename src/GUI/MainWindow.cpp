@@ -60,13 +60,8 @@ MainWindow::~MainWindow() {
 
 }
 
-void MainWindow::closeEvent(QCloseEvent* event) {
-	if(m_page_record->ShouldBlockClose()) {
-		event->ignore();
-		return;
-	}
-	SaveSettings();
-	event->accept();
+void MainWindow::SetStatsFile(const QString& stats_file) {
+	m_page_record->SetStatsFile(stats_file);
 }
 
 void MainWindow::LoadSettings() {
@@ -82,6 +77,15 @@ void MainWindow::SaveSettings() {
 	m_page_input->SaveSettings(&settings);
 	m_page_output->SaveSettings(&settings);
 	m_page_record->SaveSettings(&settings);
+}
+
+void MainWindow::closeEvent(QCloseEvent* event) {
+	if(m_page_record->ShouldBlockClose()) {
+		event->ignore();
+		return;
+	}
+	SaveSettings();
+	event->accept();
 }
 
 void MainWindow::GoPageWelcome() {

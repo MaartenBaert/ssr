@@ -34,23 +34,42 @@ int main(int argc, char* argv[]) {
 	Logger logger;
 	Q_UNUSED(logger);
 
+	qDebug() << "codec for c strings =" << QTextCodec::codecForCStrings();
+	qDebug() << "codec for locale =" << QTextCodec::codecForLocale();
+
 	// initialize default command-line options
-	bool logfile = false;
+	bool commandline_logfile = false;
+	QString commandline_statsfile = QString();
 
 	// read command-line options
 	QStringList args = QCoreApplication::arguments();
 	for(int i = 1; i < args.count(); ++i) {
-		QString cmd = args[i];
+		QString cmd = args[i], value;
+		int p = cmd.indexOf('=');
+		if(p >= 0) {
+			value = cmd.mid(p + 1);
+			cmd = cmd.mid(0, p);
+		}
 		if(cmd == "--logfile") {
-			logfile = true;
+			if(!value.isNull()) {
+				Logger::LogError("[main] Error: Option '--logfile' does not take a value!");
+				return 1;
+			}
+			commandline_logfile = true;
+		} else if(cmd == "--statsfile") {
+			if(value.isNull()) {
+				commandline_statsfile = "/dev/shm/simplescreenrecorder-stats-" + QString::number(QCoreApplication::applicationPid());
+			} else {
+				commandline_statsfile = value;
+			}
 		} else {
 			Logger::LogError("[main] Error: Unknown command-line option '" + cmd + "'!");
-			return -1;
+			return 1;
 		}
 	}
 
 	// redirect stdout and stderr to a log file
-	if(logfile) {
+	if(commandline_logfile) {
 		QString dir = GetApplicationUserDir();
 		QString file1 = dir + "/log1.txt";
 		QString file2 = dir + "/log2.txt";
@@ -75,6 +94,7 @@ int main(int argc, char* argv[]) {
 	Logger::LogInfo("==================== Starting SSR ====================");
 
 	MainWindow mainwindow;
+	mainwindow.SetStatsFile(commandline_statsfile);
 	mainwindow.show();
 	int ret = application.exec();
 

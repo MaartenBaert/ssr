@@ -49,6 +49,8 @@ private:
 private:
 	MainWindow *m_main_window;
 
+	QString m_stats_file;
+
 	bool m_page_started, m_capturing, m_recording, m_previewing;
 	bool m_recorded_something;
 
@@ -103,6 +105,8 @@ private:
 public:
 	PageRecord(MainWindow* main_window);
 	~PageRecord();
+
+	void SetStatsFile(const QString& stats_file);
 
 	// Called when the user tries to close the program. If this function returns true, the command will be blocked.
 	// This is used to display a warning if the user is about to close the program during a recording.

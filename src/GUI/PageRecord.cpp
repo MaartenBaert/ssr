@@ -110,6 +110,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 	m_main_window = main_window;
 
+	m_stats_file = QString();
+
 	m_page_started = false;
 	m_capturing = false;
 	m_recording = false;
@@ -340,6 +342,10 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	settings->setValue("record/hotkey_super", IsHotkeySuperEnabled());
 	settings->setValue("record/hotkey_key", GetHotkeyKey());
 	settings->setValue("record/preview_frame_rate", GetPreviewFrameRate());
+}
+
+void PageRecord::SetStatsFile(const QString& stats_file) {
+	m_stats_file = stats_file;
 }
 
 void PageRecord::PageStart() {
@@ -839,15 +845,17 @@ void PageRecord::UpdateInformation() {
 		}
 
 		int64_t total_time = 0;
-		double frame_rate = 0.0, bit_rate = 0.0;
-		uint64_t total_bytes = 0;
+		double frame_rate = 0.0;
+		uint64_t bit_rate = 0, total_bytes = 0;
 
 		if(m_output_manager != NULL) {
 			total_time = m_output_manager->GetSynchronizer()->GetTotalTime();
 			frame_rate = m_output_manager->GetVideoEncoder()->GetActualFrameRate();
-			bit_rate = m_output_manager->GetMuxer()->GetActualBitRate();
+			bit_rate = (uint64_t) (m_output_manager->GetMuxer()->GetActualBitRate() + 0.5);
 			total_bytes = m_output_manager->GetMuxer()->GetTotalBytes();
 		}
+
+		QString file_name = (m_file_protocol.isNull())? QFileInfo(m_output_settings.file).fileName() : "(" + m_file_protocol + ")";
 
 		// for OpenGL recording, update the application size
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
@@ -859,9 +867,33 @@ void PageRecord::UpdateInformation() {
 		m_label_info_frame_rate_out->setText(QString::number(frame_rate, 'f', 2));
 		m_label_info_size_in->setText(ReadableWidthHeight(m_video_in_width, m_video_in_height));
 		m_label_info_size_out->setText(ReadableWidthHeight(m_output_settings.video_width, m_output_settings.video_height));
-		m_label_info_file_name->setText((m_file_protocol.isNull())? QFileInfo(m_output_settings.file).fileName() : "(" + m_file_protocol + ")");
+		m_label_info_file_name->setText(file_name);
 		m_label_info_file_size->setText(ReadableSize(total_bytes, "B"));
-		m_label_info_bit_rate->setText(ReadableSize((uint64_t) (bit_rate + 0.5), "bps"));
+		m_label_info_bit_rate->setText(ReadableSize(bit_rate, "bps"));
+
+		if(!m_stats_file.isNull()) {
+			QFile file(m_stats_file + "-new");
+			if(file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+				QString str = QString() +
+						"capturing\t" + ((m_capturing)? "1" : "0") + "\n"
+						"recording\t" + ((m_recording)? "1" : "0") + "\n"
+						"total_time\t" + QString::number(total_time) + "\n"
+						"frame_rate_in\t" + QString::number(m_info_input_frame_rate, 'f', 8) + "\n"
+						"frame_rate_out\t" + QString::number(frame_rate, 'f', 8) + "\n"
+						"size_in_width\t" + QString::number(m_video_in_width) + "\n"
+						"size_in_height\t" + QString::number(m_video_in_height) + "\n"
+						"size_out_width\t" + QString::number(m_output_settings.video_width) + "\n"
+						"size_out_height\t" + QString::number(m_output_settings.video_height) + "\n"
+						"file_name\t" + file_name + "\n"
+						"file_size\t" + QString::number(total_bytes) + "\n"
+						"bit_rate\t" + QString::number(bit_rate) + "\n";
+				file.write(str.toLocal8Bit());
+				file.close();
+				// Qt doesn't allow renaming a file over another file, but this is required to get atomic file replacement.
+				// So we have to use the standard C function instead.
+				rename(qPrintable(m_stats_file + "-new"), qPrintable(m_stats_file));
+			}
+		}
 
 	} else {
 
@@ -873,6 +905,12 @@ void PageRecord::UpdateInformation() {
 		m_label_info_file_name->clear();
 		m_label_info_file_size->clear();
 		m_label_info_bit_rate->clear();
+
+		if(!m_stats_file.isNull()) {
+			if(QFileInfo(m_stats_file).exists()) {
+				QFile(m_stats_file).remove();
+			}
+		}
 
 	}
 
