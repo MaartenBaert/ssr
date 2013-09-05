@@ -21,9 +21,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 
 #include "SourceSink.h"
-#include "VPair.h"
+#include "MutexDataPair.h"
 
-class X11Input : private QThread, public VideoSource {
+class X11Input : public QObject, public VideoSource {
 	Q_OBJECT
 
 private:
@@ -32,7 +32,7 @@ private:
 		QVector<QRect> m_screen_dead_space;
 		uint32_t m_frame_counter;
 	};
-	typedef VPair<SharedData>::Lock SharedLock;
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
 	unsigned int m_x, m_y, m_width, m_height;
@@ -48,8 +48,9 @@ private:
 	bool m_x11_shm_server_attached;
 	XImage *m_x11_image;
 
-	VPair<SharedData> m_shared_data;
-	volatile bool m_should_stop, m_error_occurred;
+	std::thread m_thread;
+	MutexDataPair<SharedData> m_shared_data;
+	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
 	X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor);
@@ -71,6 +72,6 @@ private slots:
 	void UpdateScreenConfiguration();
 
 private:
-	virtual void run();
+	void InputThread();
 
 };

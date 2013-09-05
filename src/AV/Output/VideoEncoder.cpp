@@ -43,7 +43,7 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 
 		m_opt_crf = (unsigned int) -1;
 		m_opt_preset = "";
-		m_opt_threads = std::max(1, ::QThread::idealThreadCount());
+		m_opt_threads = std::max(1u, std::thread::hardware_concurrency());
 
 		if(m_width == 0 || m_height == 0) {
 			Logger::LogError("[VideoEncoder::Init] Error: Width or height is zero.");

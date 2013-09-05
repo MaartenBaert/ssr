@@ -21,13 +21,13 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 
 #include "SourceSink.h"
-#include "VPair.h"
+#include "MutexDataPair.h"
 
 class Synchronizer;
 class GLInjectLauncher;
 class VideoPreviewer;
 
-class GLInjectInput : private QThread, public VideoSource {
+class GLInjectInput : public VideoSource {
 
 private:
 	static const int64_t MAX_COMMUNICATION_LATENCY;
@@ -37,10 +37,11 @@ private:
 
 	unsigned int m_cbuffer_size, m_max_bytes;
 
-	volatile char *m_shm_main_ptr;
-	std::vector<volatile char*> m_shm_frame_ptrs;
+	char *m_shm_main_ptr;
+	std::vector<char*> m_shm_frame_ptrs;
 
-	volatile bool m_should_stop, m_error_occurred;
+	std::thread m_thread;
+	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
 	GLInjectInput(GLInjectLauncher* launcher);
@@ -55,6 +56,6 @@ private:
 	void Free();
 
 private:
-	virtual void run();
+	void InputThread();
 
 };

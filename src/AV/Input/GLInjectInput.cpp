@@ -51,10 +51,10 @@ GLInjectInput::GLInjectInput(GLInjectLauncher *launcher) {
 GLInjectInput::~GLInjectInput() {
 
 	// tell the thread to stop
-	if(isRunning()) {
+	if(m_thread.joinable()) {
 		Logger::LogInfo("[GLInjectInput::~GLInjectInput] Telling input thread to stop ...");
 		m_should_stop = true;
-		wait();
+		m_thread.join();
 	}
 
 	// free everything
@@ -81,7 +81,7 @@ void GLInjectInput::Init() {
 	// start input thread
 	m_should_stop = false;
 	m_error_occurred = false;
-	start();
+	m_thread = std::thread(&GLInjectInput::InputThread, this);
 
 }
 
@@ -89,7 +89,7 @@ void GLInjectInput::Free() {
 
 }
 
-void GLInjectInput::run() {
+void GLInjectInput::InputThread() {
 	try {
 
 		Logger::LogInfo("[GLInjectInput::run] Input thread started.");

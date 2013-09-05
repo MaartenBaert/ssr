@@ -21,12 +21,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 
 #include "SourceSink.h"
-#include "VPair.h"
+#include "MutexDataPair.h"
 
 class Synchronizer;
 class AudioPreviewer;
 
-class ALSAInput : private QThread, public AudioSource {
+class ALSAInput : public AudioSource {
 
 private:
 	static const int64_t START_DELAY;
@@ -38,7 +38,8 @@ private:
 	snd_pcm_t *m_alsa_pcm;
 	unsigned int m_alsa_periods, m_alsa_period_size;
 
-	volatile bool m_should_stop, m_error_occurred;
+	std::thread m_thread;
+	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
 	ALSAInput(const QString& device_name, unsigned int sample_rate);
@@ -53,6 +54,6 @@ private:
 	void Free();
 
 private:
-	virtual void run();
+	void InputThread();
 
 };

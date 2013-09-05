@@ -21,7 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 
 #include "SourceSink.h"
-#include "VPair.h"
+#include "MutexDataPair.h"
 #include "FastScaler.h"
 #include "ByteQueue.h"
 #include "AVWrapper.h"
@@ -29,7 +29,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class VideoEncoder;
 class AudioEncoder;
 
-class Synchronizer : private QThread, public VideoSink, public AudioSink {
+class Synchronizer : public VideoSink, public AudioSink {
 
 private:
 	struct SharedData {
@@ -58,8 +58,8 @@ private:
 		bool m_warn_drop_video, m_warn_desync;
 
 	};
-	typedef VPair<SharedData>::Lock SharedLock;
-	typedef VPair<FastScaler>::Lock FastScalerLock;
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
+	typedef MutexDataPair<FastScaler>::Lock FastScalerLock;
 
 private:
 	static const double DESYNC_CORRECTION_P, DESYNC_CORRECTION_I;
@@ -80,9 +80,10 @@ private:
 	unsigned int m_audio_required_frame_size, m_audio_required_sample_size;
 	AVSampleFormat m_audio_required_sample_format;
 
-	VPair<FastScaler> m_fast_scaler;
-	VPair<SharedData> m_shared_data;
-	volatile bool m_should_stop, m_error_occurred;
+	std::thread m_thread;
+	MutexDataPair<FastScaler> m_fast_scaler;
+	MutexDataPair<SharedData> m_shared_data;
+	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
 	// The arguments 'video_encoder' and 'audio_encoder' can be NULL to disable video or audio.
@@ -125,6 +126,6 @@ private:
 	void FlushBuffers(SharedData* lock);
 
 private:
-	virtual void run();
+	void SynchronizerThread();
 
 };

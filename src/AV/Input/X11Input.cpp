@@ -202,10 +202,10 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 X11Input::~X11Input() {
 
 	// tell the thread to stop
-	if(isRunning()) {
+	if(m_thread.joinable()) {
 		Logger::LogInfo("[X11Input::~X11Input] Telling input thread to stop ...");
 		m_should_stop = true;
-		wait();
+		m_thread.join();
 	}
 
 	// free everything
@@ -280,7 +280,7 @@ void X11Input::Init() {
 	// start input thread
 	m_should_stop = false;
 	m_error_occurred = false;
-	start();
+	m_thread = std::thread(&X11Input::InputThread, this);
 
 }
 
@@ -331,7 +331,7 @@ void X11Input::UpdateScreenConfiguration() {
 
 }
 
-void X11Input::run() {
+void X11Input::InputThread() {
 	try {
 
 		Logger::LogInfo("[X11Input::run] Input thread started.");

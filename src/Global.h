@@ -35,6 +35,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <set>
 #include <memory>
 
+#include <atomic>
+#include <thread>
+#include <mutex>
+
 #include <QX11Info>
 #include <X11/Xlib.h>
 #include <X11/extensions/XShm.h>
@@ -119,25 +123,25 @@ inline double ToDouble(const AVFrac& f) {
 // exception thrown when errors occur in external libraries
 class LibavException : public std::exception {
 public:
-	inline virtual const char* what() const throw() {
+	inline virtual const char* what() const throw() override {
 		return "LibavException";
 	}
 };
 class X11Exception : public std::exception {
 public:
-	inline virtual const char* what() const throw() {
+	inline virtual const char* what() const throw() override {
 		return "X11Exception";
 	}
 };
 class GLInjectException : public std::exception {
 public:
-	inline virtual const char* what() const throw() {
+	inline virtual const char* what() const throw() override {
 		return "GLInjectException";
 	}
 };
 class ALSAException : public std::exception {
 public:
-	inline virtual const char* what() const throw() {
+	inline virtual const char* what() const throw() override {
 		return "ALSAException";
 	}
 };

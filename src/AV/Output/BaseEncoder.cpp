@@ -58,10 +58,10 @@ void BaseEncoder::Destruct() {
 
 	// tell the thread to stop
 	// normally the muxer should have stopped the thread already, unless the muxer wasn't actually started
-	if(isRunning()) {
+	if(m_thread.joinable()) {
 		Logger::LogInfo("[BaseEncoder::Stop] Telling encoder thread to stop ...");
 		m_should_stop = true;
-		wait();
+		m_thread.join();
 	}
 
 	// free everything
@@ -108,7 +108,7 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 	}
 
 	// start encoder thread
-	start();
+	m_thread = std::thread(&BaseEncoder::EncoderThread, this);
 
 }
 
@@ -153,7 +153,7 @@ void BaseEncoder::Stop() {
 	m_should_stop = true;
 }
 
-void BaseEncoder::run() {
+void BaseEncoder::EncoderThread() {
 
 	try {
 

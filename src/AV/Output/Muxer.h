@@ -20,39 +20,40 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "VPair.h"
+#include "MutexDataPair.h"
 
 #define MUXER_MAX_STREAMS 2
 
 class AVPacketWrapper;
 class BaseEncoder;
 
-class Muxer : private QThread {
+class Muxer {
 
 private:
 	struct StreamData {
 		std::deque<std::unique_ptr<AVPacketWrapper> > m_packet_queue;
 		bool m_is_done;
 	};
-	typedef VPair<StreamData>::Lock StreamLock;
+	typedef MutexDataPair<StreamData>::Lock StreamLock;
 	struct SharedData {
 		uint64_t m_total_bytes;
 		double m_stats_actual_bit_rate;
 		double m_stats_previous_pts;
 		uint64_t m_stats_previous_bytes;
 	};
-	typedef VPair<SharedData>::Lock SharedLock;
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
 	QString m_container_name, m_output_file;
 
 	AVFormatContext *m_format_context;
 	bool m_started;
-
-	VPair<StreamData> m_stream_data[MUXER_MAX_STREAMS];
 	BaseEncoder *m_encoders[MUXER_MAX_STREAMS];
-	VPair<SharedData> m_shared_data;
-	volatile bool m_is_done, m_error_occurred;
+
+	std::thread m_thread;
+	MutexDataPair<StreamData> m_stream_data[MUXER_MAX_STREAMS];
+	MutexDataPair<SharedData> m_shared_data;
+	std::atomic<bool> m_is_done, m_error_occurred;
 
 public:
 	Muxer(const QString& container_name, const QString& output_file);
@@ -113,6 +114,6 @@ private:
 	void Init();
 	void Free();
 
-	virtual void run() override;
+	void MuxerThread();
 
 };

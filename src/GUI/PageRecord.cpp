@@ -98,7 +98,7 @@ class QTextEditSmall : public QTextEdit {
 public:
 	QTextEditSmall(QWidget *parent) : QTextEdit(parent) {}
 	QTextEditSmall(const QString& text, QWidget *parent) : QTextEdit(text, parent) {}
-	virtual QSize sizeHint() const { return QSize(-1, 100); }
+	virtual QSize sizeHint() const override { return QSize(-1, 100); }
 
 };
 

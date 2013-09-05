@@ -66,10 +66,10 @@ ALSAInput::ALSAInput(const QString& device_name, unsigned int sample_rate) {
 ALSAInput::~ALSAInput() {
 
 	// tell the thread to stop
-	if(isRunning()) {
+	if(m_thread.joinable()) {
 		Logger::LogInfo("[ALSAInput::~ALSAInput] Telling input thread to stop ...");
 		m_should_stop = true;
-		wait();
+		m_thread.join();
 	}
 
 	// free everything
@@ -177,7 +177,7 @@ void ALSAInput::Init() {
 	// start input thread
 	m_should_stop = false;
 	m_error_occurred = false;
-	start();
+	m_thread = std::thread(&ALSAInput::InputThread, this);
 
 }
 
@@ -188,7 +188,7 @@ void ALSAInput::Free() {
 	}
 }
 
-void ALSAInput::run() {
+void ALSAInput::InputThread() {
 	try {
 
 		Logger::LogInfo("[ALSAInput::run] Input thread started.");

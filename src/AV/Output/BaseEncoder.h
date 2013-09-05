@@ -20,12 +20,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "VPair.h"
+#include "MutexDataPair.h"
 
 class Muxer;
 class AVFrameWrapper;
 
-class BaseEncoder : private QThread {
+class BaseEncoder {
 
 private:
 	struct SharedData {
@@ -35,7 +35,7 @@ private:
 		int64_t m_stats_previous_pts;
 		uint64_t m_stats_previous_frames;
 	};
-	typedef VPair<SharedData>::Lock SharedLock;
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
 	bool m_destructed;
@@ -45,8 +45,9 @@ private:
 	unsigned int m_stream_index;
 	bool m_delayed_packets;
 
-	VPair<SharedData> m_shared_data;
-	volatile bool m_should_stop, m_should_finish, m_is_done, m_error_occurred;
+	std::thread m_thread;
+	MutexDataPair<SharedData> m_shared_data;
+	std::atomic<bool> m_should_stop, m_should_finish, m_is_done, m_error_occurred;
 
 protected:
 	BaseEncoder(Muxer* muxer);
@@ -110,6 +111,6 @@ public: // internal
 	inline bool HasErrorOccurred() { return m_error_occurred; }
 
 private:
-	virtual void run() override;
+	void EncoderThread();
 
 };

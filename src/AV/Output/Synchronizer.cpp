@@ -73,10 +73,10 @@ Synchronizer::~Synchronizer() {
 	ConnectAudioSource(NULL);
 
 	// tell the thread to stop
-	if(isRunning()) {
+	if(m_thread.joinable()) {
 		Logger::LogInfo("[Synchronizer::~Synchronizer] Telling synchronizer thread to stop ...");
 		m_should_stop = true;
-		wait();
+		m_thread.join();
 	}
 
 	// flush one more time
@@ -143,10 +143,10 @@ void Synchronizer::Init() {
 		lock->m_warn_desync = true;
 	}
 
-	// start input thread
+	// start synchronizer thread
 	m_should_stop = false;
 	m_error_occurred = false;
-	start();
+	m_thread = std::thread(&Synchronizer::SynchronizerThread, this);
 
 }
 
@@ -599,7 +599,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 
 }
 
-void Synchronizer::run() {
+void Synchronizer::SynchronizerThread() {
 	try {
 
 		Logger::LogInfo("[Synchronizer::run] Synchronizer thread started.");

@@ -75,8 +75,10 @@ Muxer::~Muxer() {
 		}
 
 		// wait for the thread to stop
-		Logger::LogInfo("[Muxer::~Muxer] Waiting for muxer thread to stop by itself ...");
-		wait();
+		if(m_thread.joinable()) {
+			Logger::LogInfo("[Muxer::~Muxer] Waiting for muxer thread to stop by itself ...");
+			m_thread.join();
+		}
 
 	}
 
@@ -100,7 +102,7 @@ void Muxer::Start() {
 	}
 
 	m_started = true;
-	start();
+	m_thread = std::thread(&Muxer::MuxerThread, this);
 
 }
 
@@ -249,7 +251,7 @@ void Muxer::Free() {
 	}
 }
 
-void Muxer::run() {
+void Muxer::MuxerThread() {
 	try {
 
 		Logger::LogInfo("[Muxer::run] Muxer thread started.");

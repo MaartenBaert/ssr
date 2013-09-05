@@ -21,7 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 
 #include "SourceSink.h"
-#include "VPair.h"
+#include "MutexDataPair.h"
 
 class AudioPreviewer : public QWidget, public AudioSink {
 	Q_OBJECT
@@ -34,10 +34,10 @@ private:
 		bool m_is_visible;
 		unsigned int m_frame_rate;
 	};
-	typedef VPair<SharedData>::Lock SharedLock;
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
-	VPair<SharedData> m_shared_data;
+	MutexDataPair<SharedData> m_shared_data;
 
 public:
 	AudioPreviewer(QWidget* parent);

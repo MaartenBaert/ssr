@@ -21,7 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 
 #include "SourceSink.h"
-#include "VPair.h"
+#include "MutexDataPair.h"
 #include "FastScaler.h"
 
 class VideoPreviewer : public QWidget, public VideoSink {
@@ -35,12 +35,12 @@ private:
 		QSize m_size;
 		unsigned int m_frame_rate;
 	};
-	typedef VPair<SharedData>::Lock SharedLock;
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
 	FastScaler m_fast_scaler;
 
-	VPair<SharedData> m_shared_data;
+	MutexDataPair<SharedData> m_shared_data;
 
 public:
 	VideoPreviewer(QWidget* parent);

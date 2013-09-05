@@ -74,7 +74,7 @@ HEADERS  += \
 	Logger.h \
 	Main.h \
 	Version.h \
-	VPair.h
+    MutexDataPair.h
 
 RESOURCES += \
 	resources.qrc

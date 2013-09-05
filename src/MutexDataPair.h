@@ -21,24 +21,23 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 
 template<typename T>
-class VPair {
+class MutexDataPair {
 
 public:
 	class Lock {
 	private:
+		std::unique_lock<std::mutex> m_lock;
 		T *m_data;
-		QMutexLocker m_locker;
 	public:
-		inline Lock(VPair* parent) : m_locker(&parent->m_mutex) {
-			m_data = const_cast<T*>(&parent->m_data);
-		}
+		inline Lock(MutexDataPair* parent) : m_lock(parent->m_mutex), m_data(&parent->m_data) {}
 		inline T* operator->() { return m_data; }
 		inline T& operator*() { return *m_data; }
 		inline T* get() { return m_data; }
+		inline std::unique_lock<std::mutex>& lock() { return m_lock; }
 	};
 
 private:
-	volatile T m_data;
-	QMutex m_mutex;
+	std::mutex m_mutex;
+	T m_data;
 
 };

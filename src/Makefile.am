@@ -78,9 +78,9 @@ simplescreenrecorder_SOURCES = \
 	Logger.h \
 	Main.cpp \
 	Main.h \
+	MutexDataPair.h \
 	Version.cpp \
-	Version.h \
-	VPair.h
+	Version.h
 nodist_simplescreenrecorder_SOURCES =
 
 clean-local: clean-qrc-extra clean-moc-extra
