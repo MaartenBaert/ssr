@@ -11,8 +11,6 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #include "ShmStructs.h"
 
-#include <atomic>
-
 #include <X11/extensions/Xfixes.h>
 
 #define CGLE(code) \

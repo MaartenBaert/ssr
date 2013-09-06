@@ -4,8 +4,7 @@ http://gedgedev.blogspot.be/2010/12/elided-labels-in-qt.html
 */
 
 #pragma once
-
-#include <QLabel>
+#include "Global.h"
 
 /*!
  * A label that elides its text when not enough geometry is available to show

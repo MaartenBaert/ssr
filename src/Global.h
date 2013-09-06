@@ -74,6 +74,16 @@ extern "C" {
 #define override
 #endif
 
+// std::atomic_thread_fence exists in GCC 4.6 but it doesn't link properly for some reason
+#if !TEST_GCC_VERSION(4, 7)
+#define atomic_thread_fence atomic_thread_fence_replacement
+namespace std {
+inline void atomic_thread_fence_replacement(memory_order) {
+	__sync_synchronize();
+}
+}
+#endif
+
 // libav/ffmpeg API changes with version numbers are listed in their repositories in the file 'doc/APIchanges'
 // I recommend using the ffmpeg one:
 // http://git.videolan.org/?p=ffmpeg.git;a=blob;f=doc/APIchanges
