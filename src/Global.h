@@ -63,12 +63,22 @@ extern "C" {
 #define SSR_USE_FFMPEG_VERSIONS 1
 #endif
 
+// generic macro to test version numbers
+#define TEST_MAJOR_MINOR(major, minor, required_major, required_minor) (major > required_major || (major == required_major && minor >= required_minor))
+
+// test GCC version
+#define TEST_GCC_VERSION(major, minor) TEST_MAJOR_MINOR(__GNUC__, __GNUC_MINOR__, major, minor)
+
+// 'override' was added in GCC 4.7
+#if !TEST_GCC_VERSION(4, 7)
+#define override
+#endif
+
 // libav/ffmpeg API changes with version numbers are listed in their repositories in the file 'doc/APIchanges'
 // I recommend using the ffmpeg one:
 // http://git.videolan.org/?p=ffmpeg.git;a=blob;f=doc/APIchanges
 // this one lists version numbers for both ffmpeg and libav whereas libav just ignores ffmpeg.
 
-#define TEST_MAJOR_MINOR(major, minor, required_major, required_minor) (major > required_major || (major == required_major && minor >= required_minor))
 #if SSR_USE_FFMPEG_VERSIONS
 #define TEST_AV_VERSION(prefix, ffmpeg_major, ffmpeg_minor, libav_major, libav_minor) TEST_MAJOR_MINOR(prefix##_VERSION_MAJOR, prefix##_VERSION_MINOR, ffmpeg_major, ffmpeg_minor)
 #else
