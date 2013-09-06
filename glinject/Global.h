@@ -31,7 +31,30 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include <memory>
 #include <vector>
 
+#include <atomic>
+
 typedef void (*GLXextFuncPtr)(void);
+
+// generic macro to test version numbers
+#define TEST_MAJOR_MINOR(major, minor, required_major, required_minor) (major > required_major || (major == required_major && minor >= required_minor))
+
+// test GCC version
+#define TEST_GCC_VERSION(major, minor) TEST_MAJOR_MINOR(__GNUC__, __GNUC_MINOR__, major, minor)
+
+// 'override' was added in GCC 4.7
+#if !TEST_GCC_VERSION(4, 7)
+#define override
+#endif
+
+// std::atomic_thread_fence exists in GCC 4.6 but it doesn't link properly for some reason
+#if !TEST_GCC_VERSION(4, 7)
+#define atomic_thread_fence atomic_thread_fence_replacement
+namespace std {
+inline void atomic_thread_fence_replacement(memory_order) {
+	__sync_synchronize();
+}
+}
+#endif
 
 // simple function to do n-byte alignment
 inline size_t grow_align16(size_t size) {
