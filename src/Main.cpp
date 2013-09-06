@@ -34,9 +34,6 @@ int main(int argc, char* argv[]) {
 	Logger logger;
 	Q_UNUSED(logger);
 
-	qDebug() << "codec for c strings =" << QTextCodec::codecForCStrings();
-	qDebug() << "codec for locale =" << QTextCodec::codecForLocale();
-
 	// initialize default command-line options
 	bool commandline_logfile = false;
 	QString commandline_statsfile = QString();
