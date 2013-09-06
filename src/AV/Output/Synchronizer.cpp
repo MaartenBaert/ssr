@@ -332,7 +332,7 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 	// seconds too early or too late at the end of a one hour video. This problem doesn't occur on all computers though (I'm not sure why).
 	double sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
 	double time_length = (double) (timestamp - lock->m_segment_audio_start_time) * 1.0e-6;
-	if(lock->m_segment_audio_last_timestamp != AV_NOPTS_VALUE) {
+	if(lock->m_segment_audio_last_timestamp != (int64_t) AV_NOPTS_VALUE) {
 		double dt = (double) (timestamp - lock->m_segment_audio_last_timestamp) * 1.0e-6;
 		double current_error = (sample_length - time_length) - lock->m_av_desync;
 		lock->m_av_desync_i = clamp(lock->m_av_desync_i + DESYNC_CORRECTION_I * current_error * dt, -1.0, 1.0);

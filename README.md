@@ -46,6 +46,8 @@ I don't know whether this is the right way to do it, but it works for me.
 Compiling and installing
 ------------------------
 
+If you have installed SimpleScreenRecorder as a package from a repository, you should uninstall that version first to avoid conflicts. If you don't do this, the two versions may overwrite each other or use the wrong version of the GLInject library.
+
 The simplest way to compile and install everything is to run:
 
     ./simple-build-and-install

@@ -892,7 +892,7 @@ void PageRecord::UpdateInformation() {
 			// and it doesn't allow renaming a file over another file, so don't bother with QFile and just use POSIX and C functions.
 			int fd = open(new_file.constData(), O_WRONLY | O_CREAT, 0600);
 			if(fd != -1) {
-				write(fd, data.constData(), data.size());
+				ssize_t b = write(fd, data.constData(), data.size()); Q_UNUSED(b);
 				::close(fd);
 				rename(new_file.constData(), old_file.constData());
 			}
