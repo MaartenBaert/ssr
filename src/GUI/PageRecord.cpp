@@ -872,26 +872,29 @@ void PageRecord::UpdateInformation() {
 		m_label_info_bit_rate->setText(ReadableSize(bit_rate, "bps"));
 
 		if(!m_stats_file.isNull()) {
-			QFile file(m_stats_file + "-new");
-			if(file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-				QString str = QString() +
-						"capturing\t" + ((m_capturing)? "1" : "0") + "\n"
-						"recording\t" + ((m_recording)? "1" : "0") + "\n"
-						"total_time\t" + QString::number(total_time) + "\n"
-						"frame_rate_in\t" + QString::number(m_info_input_frame_rate, 'f', 8) + "\n"
-						"frame_rate_out\t" + QString::number(frame_rate, 'f', 8) + "\n"
-						"size_in_width\t" + QString::number(m_video_in_width) + "\n"
-						"size_in_height\t" + QString::number(m_video_in_height) + "\n"
-						"size_out_width\t" + QString::number(m_output_settings.video_width) + "\n"
-						"size_out_height\t" + QString::number(m_output_settings.video_height) + "\n"
-						"file_name\t" + file_name + "\n"
-						"file_size\t" + QString::number(total_bytes) + "\n"
-						"bit_rate\t" + QString::number(bit_rate) + "\n";
-				file.write(str.toLocal8Bit());
-				file.close();
-				// Qt doesn't allow renaming a file over another file, but this is required to get atomic file replacement.
-				// So we have to use the standard C function instead.
-				rename(qPrintable(m_stats_file + "-new"), qPrintable(m_stats_file));
+			QString str = QString() +
+					"capturing\t" + ((m_capturing)? "1" : "0") + "\n"
+					"recording\t" + ((m_recording)? "1" : "0") + "\n"
+					"total_time\t" + QString::number(total_time) + "\n"
+					"frame_rate_in\t" + QString::number(m_info_input_frame_rate, 'f', 8) + "\n"
+					"frame_rate_out\t" + QString::number(frame_rate, 'f', 8) + "\n"
+					"size_in_width\t" + QString::number(m_video_in_width) + "\n"
+					"size_in_height\t" + QString::number(m_video_in_height) + "\n"
+					"size_out_width\t" + QString::number(m_output_settings.video_width) + "\n"
+					"size_out_height\t" + QString::number(m_output_settings.video_height) + "\n"
+					"file_name\t" + file_name + "\n"
+					"file_size\t" + QString::number(total_bytes) + "\n"
+					"bit_rate\t" + QString::number(bit_rate) + "\n";
+			QByteArray data = str.toLocal8Bit();
+			QByteArray old_file = m_stats_file.toLocal8Bit();
+			QByteArray new_file = (m_stats_file + "-new").toLocal8Bit();
+			// Qt doesn't get the permissions right (you can only change the permissions after creating the file, that's too late),
+			// and it doesn't allow renaming a file over another file, so don't bother with QFile and just use POSIX and C functions.
+			int fd = open(new_file.constData(), O_WRONLY | O_CREAT, 0600);
+			if(fd != -1) {
+				write(fd, data.constData(), data.size());
+				::close(fd);
+				rename(new_file.constData(), old_file.constData());
 			}
 		}
 
@@ -907,9 +910,8 @@ void PageRecord::UpdateInformation() {
 		m_label_info_bit_rate->clear();
 
 		if(!m_stats_file.isNull()) {
-			if(QFileInfo(m_stats_file).exists()) {
-				QFile(m_stats_file).remove();
-			}
+			QByteArray old_file = m_stats_file.toLocal8Bit();
+			remove(old_file.constData());
 		}
 
 	}
