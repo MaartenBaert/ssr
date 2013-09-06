@@ -12,7 +12,7 @@ simplescreenrecorder_CFLAGS = \
 	-pthread
 simplescreenrecorder_CXXFLAGS = \
 	-pthread \
-	-std=c++11 \
+	-std=c++0x \
 	-flax-vector-conversions
 simplescreenrecorder_LDFLAGS = \
 	-pthread \

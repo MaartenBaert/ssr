@@ -6,7 +6,7 @@ libssr_glinject_la_CFLAGS = \
 	-pthread
 libssr_glinject_la_CXXFLAGS = \
 	-pthread \
-	-std=c++11
+	-std=c++0x
 libssr_glinject_la_LDFLAGS = \
 	-pthread \
 	-avoid-version -shared \

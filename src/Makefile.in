@@ -393,7 +393,7 @@ top_srcdir = @top_srcdir@
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = \
 @ENABLE_SSRPROGRAM_TRUE@	-pthread \
-@ENABLE_SSRPROGRAM_TRUE@	-std=c++11 \
+@ENABLE_SSRPROGRAM_TRUE@	-std=c++0x \
 @ENABLE_SSRPROGRAM_TRUE@	-flax-vector-conversions
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = \
