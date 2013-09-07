@@ -10,8 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #include <atomic>
 
-// Force padding to 64-bit to make sure the 32-bit and 64-bit libs are compatible.
-#pragma pack(push, 8)
+// Disable padding to make sure the 32-bit and 64-bit libs are compatible.
+#pragma pack(push, 1)
 
 #define GLINJECT_FLAG_RECORD_CURSOR  0x0001
 #define GLINJECT_FLAG_CAPTURE_FRONT  0x0002
