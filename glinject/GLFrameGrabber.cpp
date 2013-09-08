@@ -130,6 +130,9 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 	}
 	int shm_main_id = atoi(shm_id_str);
 	m_debug = (debug_str == NULL)? false : (atoi(debug_str) > 0);
+	if(m_debug) {
+		fprintf(stderr, "[SSR-GLInject] Debug mode enabled.\n");
+	}
 
 	// get main shared memory
 	m_shm_main_ptr = (char*) shmat(shm_main_id, NULL, SHM_RND);
@@ -180,9 +183,8 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 			exit(-181818181);
 		}
 	}
-
-	// get the OpenGL version
-	m_gl_version = GetGLVersion();
+	
+	m_gl_version = 0;
 
 	// showing the cursor requires XFixes (which should be supported on any modern X server, but let's check it anyway)
 	{
@@ -216,6 +218,10 @@ GLFrameGrabber::~GLFrameGrabber() {
 }
 
 void GLFrameGrabber::GrabFrame() {
+
+	// get the OpenGL version
+	if(m_gl_version == 0)
+		m_gl_version = GetGLVersion();
 
 	//int64_t t1 = hrt_time_micro();
 
