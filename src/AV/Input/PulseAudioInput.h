@@ -23,26 +23,32 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 
-#include <alsa/asoundlib.h>
+#include <pulse/mainloop.h>
+#include <pulse/context.h>
+#include <pulse/stream.h>
+#include <pulse/error.h>
 
-class ALSAInput : public AudioSource {
+class PulseAudioInput : public AudioSource {
 
 private:
 	static const int64_t START_DELAY;
 
 private:
-	QString m_device_name;
+	QString m_source_name;
 	unsigned int m_sample_rate, m_channels;
 
-	snd_pcm_t *m_alsa_pcm;
-	unsigned int m_alsa_periods, m_alsa_period_size;
+	//pa_simple *m_pa_connection;
+	pa_mainloop *m_pa_mainloop;
+	pa_context *m_pa_context;
+	pa_stream *m_pa_stream;
+	unsigned int m_pa_periods, m_pa_period_size;
 
 	std::thread m_thread;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
-	ALSAInput(const QString& device_name, unsigned int sample_rate);
-	~ALSAInput();
+	PulseAudioInput(const QString& source_name, unsigned int sample_rate);
+	~PulseAudioInput();
 
 	// Returns whether an error has occurred in the input thread.
 	// This function is thread-safe.
@@ -52,6 +58,7 @@ private:
 	void Init();
 	void Free();
 
+	void Iterate();
 	void InputThread();
 
 };

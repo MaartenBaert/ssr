@@ -21,10 +21,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "ALSAInput.h"
 
 #include "Logger.h"
-#include "Synchronizer.h"
-#include "AudioEncoder.h"
-
-#include "AudioPreviewer.h"
 
 // Artificial delay after the first samples have been received (in microseconds). Any samples received during this time will be dropped.
 // This is needed because the first samples sometimes have weird timestamps, especially when PulseAudio is active

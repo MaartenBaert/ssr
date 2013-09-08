@@ -15,6 +15,7 @@ SOURCES += \
 	AV/Input/ALSAInput.cpp \
 	AV/Input/GLInjectInput.cpp \
 	AV/Input/GLInjectLauncher.cpp \
+	AV/Input/PulseAudioInput.cpp \
 	AV/Input/X11Input.cpp \
 	AV/Output/AudioEncoder.cpp \
 	AV/Output/BaseEncoder.cpp \
@@ -46,6 +47,7 @@ HEADERS  += \
 	AV/Input/ALSAInput.h \
 	AV/Input/GLInjectInput.h \
 	AV/Input/GLInjectLauncher.h \
+	AV/Input/PulseAudioInput.h \
 	AV/Input/X11Input.h \
 	AV/Output/AudioEncoder.h \
 	AV/Output/BaseEncoder.h \
@@ -74,7 +76,7 @@ HEADERS  += \
 	Logger.h \
 	Main.h \
 	Version.h \
-    MutexDataPair.h
+	MutexDataPair.h
 
 RESOURCES += \
 	resources.qrc
