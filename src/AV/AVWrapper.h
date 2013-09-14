@@ -21,16 +21,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 
 // A trivial class that holds (aligned) frame data. This makes it easy to implement reference counting through std::shared_ptr.
-class FrameData {
+class AVFrameData {
 private:
 	uint8_t *m_data;
 public:
-	inline FrameData(size_t size) {
+	inline AVFrameData(size_t size) {
 		m_data = (uint8_t*) av_malloc(size);
 		if(m_data == NULL)
 			throw std::bad_alloc();
 	}
-	inline ~FrameData() {
+	inline ~AVFrameData() {
 		av_free(m_data);
 	}
 	inline uint8_t* GetData() {
@@ -39,30 +39,46 @@ public:
 };
 
 // A wrapper around AVFrame to manage memory allocation and reference counting.
-// Note: After copying, data is still shared between frames and should not be modified!
-// Note 2: This reference counting mechanism is unrelated to the mechanism added in later versions of ffmpeg/libav.
-class AVFrameWrapper : public AVFrame {
+// Note: This reference counting mechanism is unrelated to the mechanism added in later versions of ffmpeg/libav.
+class AVFrameWrapper {
+
+private:
+	AVFrame *m_frame;
+	std::shared_ptr<AVFrameData> m_refcounted_data;
+
 public:
-	std::shared_ptr<FrameData> m_refcounted_data;
-#if !SSR_USE_AVFRAME_NB_SAMPLES
-	int nb_samples; // we need this even if libav/ffmpeg doesn't use it
-#endif
+	AVFrameWrapper(const std::shared_ptr<AVFrameData>& refcounted_data);
+	~AVFrameWrapper();
+
+	AVFrameWrapper(const AVFrameWrapper&) = delete;
+	AVFrameWrapper& operator=(const AVFrameWrapper&) = delete;
+
 public:
-	AVFrameWrapper(size_t size);
-	AVFrameWrapper(const AVFrameWrapper& other) = default;
-	AVFrameWrapper& operator=(const AVFrameWrapper& other) = default;
+	inline AVFrame* GetFrame() { return m_frame; }
+	inline uint8_t* GetRawData() { return m_refcounted_data->GetData(); }
+	inline std::shared_ptr<AVFrameData> GetFrameData() { return m_refcounted_data; }
+
 };
 
 // A wrapper around AVPacket to manage memory allocation. There is no copying or reference counting in this case.
-class AVPacketWrapper : public AVPacket {
-public:
+class AVPacketWrapper {
+
+private:
+	AVPacket m_packet;
 	bool m_free_on_destruct;
+
 public:
 	AVPacketWrapper();
 	AVPacketWrapper(size_t size);
-	AVPacketWrapper(const AVPacketWrapper& other) = delete;
-	AVPacketWrapper& operator=(const AVPacketWrapper& other) = delete;
 	~AVPacketWrapper();
+
+	AVPacketWrapper(const AVPacketWrapper&) = delete;
+	AVPacketWrapper& operator=(const AVPacketWrapper&) = delete;
+
+public:
+	inline AVPacket* GetPacket() { return &m_packet; }
+	inline void SetFreeOnDestruct(bool free_on_destruct) { m_free_on_destruct = free_on_destruct; }
+
 };
 
 bool AVFormatIsInstalled(const QString& format_name);

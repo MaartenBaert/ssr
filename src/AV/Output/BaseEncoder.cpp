@@ -129,17 +129,17 @@ unsigned int BaseEncoder::GetQueuedFrameCount() {
 
 void BaseEncoder::AddFrame(std::unique_ptr<AVFrameWrapper> frame) {
 	Q_ASSERT(m_muxer->IsStarted());
-	Q_ASSERT(frame->pts != (int64_t) AV_NOPTS_VALUE);
+	Q_ASSERT(frame->GetFrame()->pts != (int64_t) AV_NOPTS_VALUE);
 	SharedLock lock(&m_shared_data);
 	++lock->m_total_frames;
 	if(lock->m_stats_previous_pts == (int64_t) AV_NOPTS_VALUE) {
-		lock->m_stats_previous_pts = frame->pts;
+		lock->m_stats_previous_pts = frame->GetFrame()->pts;
 		lock->m_stats_previous_frames = lock->m_total_frames;
 	}
-	double timedelta = (double) (frame->pts - lock->m_stats_previous_pts) * ToDouble(m_codec_context->time_base);
+	double timedelta = (double) (frame->GetFrame()->pts - lock->m_stats_previous_pts) * ToDouble(m_codec_context->time_base);
 	if(timedelta > 0.999999) {
 		lock->m_stats_actual_frame_rate = (double) (lock->m_total_frames - lock->m_stats_previous_frames) / timedelta;
-		lock->m_stats_previous_pts = frame->pts;
+		lock->m_stats_previous_pts = frame->GetFrame()->pts;
 		lock->m_stats_previous_frames = lock->m_total_frames;
 	}
 	lock->m_frame_queue.push_back(std::move(frame));
@@ -180,7 +180,7 @@ void BaseEncoder::EncoderThread() {
 			}
 
 			// encode the frame
-			EncodeFrame(frame.get());
+			EncodeFrame(frame->GetFrame());
 
 		}
 

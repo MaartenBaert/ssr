@@ -53,7 +53,7 @@ private:
 
 		double m_av_desync, m_av_desync_i;
 
-		std::unique_ptr<AVFrameWrapper> m_last_video_frame;
+		std::shared_ptr<AVFrameData> m_last_video_frame_data;
 
 		bool m_warn_drop_video, m_warn_desync;
 

@@ -130,7 +130,7 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 
 }
 
-bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
+bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 
 #if SSR_USE_AVFRAME_FORMAT
 	if(frame != NULL) {
@@ -145,7 +145,7 @@ bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 
 	// encode the frame
 	int got_packet;
-	if(avcodec_encode_audio2(GetCodecContext(), packet.get(), frame, &got_packet) < 0) {
+	if(avcodec_encode_audio2(GetCodecContext(), packet->GetPacket(), frame, &got_packet) < 0) {
 		Logger::LogError("[AudioEncoder::EncodeFrame] Error: Encoding of audio frame failed!");
 		throw LibavException();
 	}

@@ -50,6 +50,45 @@ const int64_t Synchronizer::AUDIO_GAP_THRESHOLD = 500000;
 // This is needed because some video codecs/players can't handle long delays.
 const int64_t Synchronizer::MAX_FRAME_DELAY = 200000;
 
+static std::unique_ptr<AVFrameWrapper> CreateVideoFrameYUV(unsigned int width, unsigned int height, std::shared_ptr<AVFrameData>* reuse_data = NULL) {
+	// allocate a YUV frame, with proper alignment
+	// Y = 1 byte per pixel, U or V = 1 byte per 2x2 pixels
+	int l1 = grow_align16(width);
+	int l2 = grow_align16(width / 2);
+	int s1 = grow_align16(l1 * height);
+	int s2 = grow_align16(l2 * height / 2);
+	std::shared_ptr<AVFrameData> frame_data = (reuse_data == NULL)? std::make_shared<AVFrameData>(s1 + s2 * 2) : *reuse_data;
+	std::unique_ptr<AVFrameWrapper> frame(new AVFrameWrapper(frame_data));
+	frame->GetFrame()->data[0] = frame->GetRawData();
+	frame->GetFrame()->data[1] = frame->GetRawData() + s1;
+	frame->GetFrame()->data[2] = frame->GetRawData() + s1 + s2;
+	frame->GetFrame()->linesize[0] = l1;
+	frame->GetFrame()->linesize[1] = l2;
+	frame->GetFrame()->linesize[2] = l2;
+#if SSR_USE_AVFRAME_FORMAT
+	frame->GetFrame()->format = PIX_FMT_YUV420P;
+#endif
+	return frame;
+}
+
+// note: sample_size = sizeof(sampletype) * channels
+static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int planes, unsigned int samples, unsigned int sample_size, AVSampleFormat sample_format) {
+	size_t plane_size = grow_align16(samples * sample_size / planes);
+	std::shared_ptr<AVFrameData> frame_data = std::make_shared<AVFrameData>(plane_size * planes);
+	std::unique_ptr<AVFrameWrapper> frame(new AVFrameWrapper(frame_data));
+	for(unsigned int i = 0; i < planes; ++i) {
+		frame->GetFrame()->data[i] = frame->GetRawData() + plane_size * i;
+		frame->GetFrame()->linesize[i] = samples * sample_size / planes;
+	}
+#if SSR_USE_AVFRAME_NB_SAMPLES
+	frame->GetFrame()->nb_samples = samples;
+#endif
+#if SSR_USE_AVFRAME_FORMAT
+	frame->GetFrame()->format = sample_format;
+#endif
+	return frame;
+}
+
 Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder, bool allow_frame_skipping) {
 	Q_ASSERT(video_encoder != NULL || audio_encoder != NULL);
 
@@ -199,30 +238,15 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 
 	}
 
-	// allocate the converted frame, with proper alignment
-	// Y = 1 byte per pixel, U or V = 1 byte per 2x2 pixels
-	int l1 = grow_align16(m_video_width);
-	int l2 = grow_align16(m_video_width / 2);
-	int s1 = grow_align16(l1 * m_video_height);
-	int s2 = grow_align16(l2 * m_video_height / 2);
-	std::unique_ptr<AVFrameWrapper> converted_frame(new AVFrameWrapper(s1 + 2 * s2));
-	uint8_t *converted_frame_data = converted_frame->m_refcounted_data->GetData();
-	converted_frame->data[0] = converted_frame_data;
-	converted_frame->data[1] = converted_frame_data + s1;
-	converted_frame->data[2] = converted_frame_data + s1 + s2;
-	converted_frame->linesize[0] = l1;
-	converted_frame->linesize[1] = l2;
-	converted_frame->linesize[2] = l2;
-#if SSR_USE_AVFRAME_FORMAT
-	converted_frame->format = PIX_FMT_YUV420P;
-#endif
+	// create the converted frame
+	std::unique_ptr<AVFrameWrapper> converted_frame = CreateVideoFrameYUV(m_video_width, m_video_height);
 
 	// scale and convert the frame to YUV420P
 	// the scaler has a separate lock so the audio thread is less likely to block (scaling is still slow)
 	{
 		FastScalerLock lock(&m_fast_scaler);
 		lock->Scale(width, height, &data, &stride, format,
-					m_video_width, m_video_height, converted_frame->data, converted_frame->linesize, PIX_FMT_YUV420P);
+					m_video_width, m_video_height, converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize, PIX_FMT_YUV420P);
 	}
 
 	SharedLock lock(&m_shared_data);
@@ -239,7 +263,7 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 			// if the audio hasn't started yet, it makes more sense to drop the oldest frames
 			lock->m_video_buffer.pop_front();
 			Q_ASSERT(lock->m_video_buffer.size() > 0);
-			lock->m_segment_video_start_time = lock->m_video_buffer.front()->pkt_dts;
+			lock->m_segment_video_start_time = lock->m_video_buffer.front()->GetFrame()->pts;
 		}
 	}
 
@@ -252,7 +276,7 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 
 	// store the frame
 	lock->m_segment_video_last_timestamp = timestamp;
-	converted_frame->pkt_dts = corrected_timestamp;
+	converted_frame->GetFrame()->pts = corrected_timestamp;
 	lock->m_video_buffer.push_back(std::move(converted_frame));
 
 	// increase the segment stop time
@@ -420,7 +444,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	for( ; ; ) {
 
 		// get/predict the timestamp of the next frame
-		int64_t next_timestamp = (lock->m_video_buffer.empty())? lock->m_segment_video_stop_time - (int64_t) (1000000 / m_video_frame_rate) : lock->m_video_buffer.front()->pkt_dts;
+		int64_t next_timestamp = (lock->m_video_buffer.empty())? lock->m_segment_video_stop_time - (int64_t) (1000000 / m_video_frame_rate) : lock->m_video_buffer.front()->GetFrame()->pts;
 		int64_t next_pts = (lock->m_time_offset + (next_timestamp - segment_start_time)) * (int64_t) m_video_frame_rate / (int64_t) 1000000;
 
 		// insert delays if needed, up to either the next frame or the segment end
@@ -432,13 +456,16 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 		}
 
 		// insert duplicate frames if needed, up to either the next frame or the segment end
-		if(lock->m_last_video_frame != NULL) {
+		if(lock->m_last_video_frame_data != NULL) {
 			while(lock->m_video_pts + m_video_max_frames_skipped < std::min(next_pts, segment_stop_video_pts)) {
-				std::unique_ptr<AVFrameWrapper> duplicate_frame(new AVFrameWrapper(*lock->m_last_video_frame));
-				duplicate_frame->pts = lock->m_video_pts + m_video_max_frames_skipped;
-				lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - (duplicate_frame->pts - lock->m_video_pts) * delay_time_per_frame);
-				lock->m_video_pts = duplicate_frame->pts + 1;
-				//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(duplicate_frame->pts) + "] (duplicate) acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
+
+				// create duplicate frame
+				std::unique_ptr<AVFrameWrapper> duplicate_frame = CreateVideoFrameYUV(m_video_width, m_video_height, &lock->m_last_video_frame_data);
+				duplicate_frame->GetFrame()->pts = lock->m_video_pts + m_video_max_frames_skipped;
+
+				lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - (duplicate_frame->GetFrame()->pts - lock->m_video_pts) * delay_time_per_frame);
+				lock->m_video_pts = duplicate_frame->GetFrame()->pts + 1;
+				//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(duplicate_frame->GetFrame()->pts) + "] (duplicate) acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 				m_video_encoder->AddFrame(std::move(duplicate_frame));
 			}
 		}
@@ -450,28 +477,27 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 		// get the frame
 		std::unique_ptr<AVFrameWrapper> frame = std::move(lock->m_video_buffer.front());
 		lock->m_video_buffer.pop_front();
-		frame->pts = next_pts;
-		frame->pkt_dts = AV_NOPTS_VALUE;
-		lock->m_last_video_frame.reset(new AVFrameWrapper(*frame));
+		frame->GetFrame()->pts = next_pts;
+		lock->m_last_video_frame_data = frame->GetFrameData();
 
 		// if the frame is way too early, drop it
-		if(frame->pts < lock->m_video_pts - 1) {
-			//Logger::LogInfo("[Synchronizer::FlushBuffers] Dropped video frame [" + QString::number(frame->pts) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
+		if(frame->GetFrame()->pts < lock->m_video_pts - 1) {
+			//Logger::LogInfo("[Synchronizer::FlushBuffers] Dropped video frame [" + QString::number(frame->GetFrame()->pts) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 			continue;
 		}
 
 		// if the frame is just a little too early, move it
-		if(frame->pts < lock->m_video_pts)
-			frame->pts = lock->m_video_pts;
+		if(frame->GetFrame()->pts < lock->m_video_pts)
+			frame->GetFrame()->pts = lock->m_video_pts;
 
 		// if this is the first video frame, always set the pts to zero
 		if(lock->m_video_pts == 0)
-			frame->pts = 0;
+			frame->GetFrame()->pts = 0;
 
 		// send the frame to the encoder
-		lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - (frame->pts - lock->m_video_pts) * delay_time_per_frame);
-		lock->m_video_pts = frame->pts + 1;
-		//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(frame->pts) + "].");
+		lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - (frame->GetFrame()->pts - lock->m_video_pts) * delay_time_per_frame);
+		lock->m_video_pts = frame->GetFrame()->pts + 1;
+		//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(frame->GetFrame()->pts) + "].");
 		m_video_encoder->AddFrame(std::move(frame));
 
 	}
@@ -530,29 +556,18 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 #else
 				unsigned int planes = 1;
 #endif
-				size_t plane_size = grow_align16(m_audio_required_frame_size * m_audio_required_sample_size / planes);
-				std::unique_ptr<AVFrameWrapper> audio_frame(new AVFrameWrapper(plane_size * planes));
-				uint8_t *data = audio_frame->m_refcounted_data->GetData();
-				for(unsigned int p = 0; p < planes; ++p) {
-					audio_frame->data[p] = data + plane_size * p;
-					audio_frame->linesize[p] = m_audio_required_frame_size * m_audio_required_sample_size / planes;
-				}
-
-				audio_frame->nb_samples = m_audio_required_frame_size;
-				audio_frame->pts = lock->m_audio_samples;
-#if SSR_USE_AVFRAME_FORMAT
-				audio_frame->format = m_audio_required_sample_format;
-#endif
+				std::unique_ptr<AVFrameWrapper> audio_frame = CreateAudioFrame(planes, m_audio_required_frame_size, m_audio_required_sample_size, m_audio_required_sample_format);
+				audio_frame->GetFrame()->pts = lock->m_audio_samples;
 
 				// copy/convert the samples
 				switch(m_audio_required_sample_format) {
 					case AV_SAMPLE_FMT_S16: {
-						memcpy(audio_frame->data[0], lock->m_partial_audio_frame.data(), m_audio_required_frame_size * m_audio_required_sample_size);
+						memcpy(audio_frame->GetFrame()->data[0], lock->m_partial_audio_frame.data(), m_audio_required_frame_size * m_audio_required_sample_size);
 						break;
 					}
 					case AV_SAMPLE_FMT_FLT: {
 						int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data();
-						float *data_out = (float*) audio_frame->data[0];
+						float *data_out = (float*) audio_frame->GetFrame()->data[0];
 						for(unsigned int i = 0; i < m_audio_required_frame_size * m_audio_channels; ++i) {
 							*(data_out++) = (float) *(data_in++) / 32768.0f;
 						}
@@ -562,7 +577,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 					case AV_SAMPLE_FMT_S16P: {
 						for(unsigned int p = 0; p < planes; ++p) {
 							int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data() + p;
-							int16_t *data_out = (int16_t*) audio_frame->data[p];
+							int16_t *data_out = (int16_t*) audio_frame->GetFrame()->data[p];
 							for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
 								*data_out = *data_in;
 								data_in += planes; data_out++;
@@ -573,7 +588,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 					case AV_SAMPLE_FMT_FLTP: {
 						for(unsigned int p = 0; p < planes; ++p) {
 							int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data() + p;
-							float *data_out = (float*) audio_frame->data[p];
+							float *data_out = (float*) audio_frame->GetFrame()->data[p];
 							for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
 								*data_out = (float) *data_in / 32768.0f;
 								data_in += planes; data_out++;

@@ -55,6 +55,6 @@ public:
 
 private:
 	virtual void FillCodecContext(AVCodec* codec) override;
-	virtual bool EncodeFrame(AVFrameWrapper* frame) override;
+	virtual bool EncodeFrame(AVFrame* frame) override;
 
 };

@@ -160,7 +160,7 @@ void VideoEncoder::FillCodecContext(AVCodec* codec) {
 
 }
 
-bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
+bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 
 #if SSR_USE_AVFRAME_FORMAT
 	if(frame != NULL) {
@@ -175,7 +175,7 @@ bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
 
 	// encode the frame
 	int got_packet;
-	if(avcodec_encode_video2(GetCodecContext(), packet.get(), frame, &got_packet) < 0) {
+	if(avcodec_encode_video2(GetCodecContext(), packet->GetPacket(), frame, &got_packet) < 0) {
 		Logger::LogError("[VideoEncoder::EncodeFrame] Error: Encoding of video frame failed!");
 		throw LibavException();
 	}
@@ -184,8 +184,12 @@ bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
 	if(got_packet) {
 
 		// set the keyframe flag
+		//TODO// is this needed?
+		if(GetCodecContext()->coded_frame->key_frame && !(packet->GetPacket()->flags & AV_PKT_FLAG_KEY))
+			qDebug() << "keyframe flag was not set!";
+
 		if(GetCodecContext()->coded_frame->key_frame)
-			packet->flags |= AV_PKT_FLAG_KEY;
+			packet->GetPacket()->flags |= AV_PKT_FLAG_KEY;
 
 		// send the packet to the muxer
 		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));

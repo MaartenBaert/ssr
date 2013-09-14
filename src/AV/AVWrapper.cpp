@@ -21,9 +21,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AVWrapper.h"
 
 int lock_manager(void** m, AVLockOp op) {
-	QMutex *&mutex = *(QMutex**) m;
+	std::mutex *&mutex = *(std::mutex**) m;
 	switch(op) {
-		case AV_LOCK_CREATE: mutex = new QMutex(); break;
+		case AV_LOCK_CREATE: mutex = new std::mutex(); break;
 		case AV_LOCK_DESTROY: delete mutex; break;
 		case AV_LOCK_OBTAIN: mutex->lock(); break;
 		case AV_LOCK_RELEASE: mutex->unlock(); break;
@@ -42,28 +42,35 @@ public:
 	}
 } g_av_global;
 
-AVFrameWrapper::AVFrameWrapper(size_t size) {
-	avcodec_get_frame_defaults(this);
-	m_refcounted_data = std::make_shared<FrameData>(size);
+AVFrameWrapper::AVFrameWrapper(const std::shared_ptr<AVFrameData>& refcounted_data) {
+	m_refcounted_data = refcounted_data;
+	m_frame = av_frame_alloc();
+#if SSR_USE_AVFRAME_EXTENDED_DATA
+	// ffmpeg docs say that extended_data should point to data if it isn't used
+	m_frame->extended_data = m_frame->data;
+#endif
+}
+
+AVFrameWrapper::~AVFrameWrapper() {
+	av_frame_free(&m_frame);
 }
 
 AVPacketWrapper::AVPacketWrapper() {
 	m_free_on_destruct = true;
-	av_init_packet(this);
-	data = NULL;
-	size = 0;
+	av_init_packet(&m_packet);
+	m_packet.data = NULL;
+	m_packet.size = 0;
 }
 
 AVPacketWrapper::AVPacketWrapper(size_t size) {
 	m_free_on_destruct = true;
-	if(av_new_packet(this, size) != 0) {
+	if(av_new_packet(&m_packet, size) != 0)
 		throw std::bad_alloc();
-	}
 }
 
 AVPacketWrapper::~AVPacketWrapper() {
 	if(m_free_on_destruct)
-		av_free_packet(this);
+		av_free_packet(&m_packet);
 }
 
 bool AVFormatIsInstalled(const QString& format_name) {
