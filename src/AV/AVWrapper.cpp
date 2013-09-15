@@ -52,7 +52,11 @@ AVFrameWrapper::AVFrameWrapper(const std::shared_ptr<AVFrameData>& refcounted_da
 }
 
 AVFrameWrapper::~AVFrameWrapper() {
+#if SSR_USE_AVCODEC_FREE_FRAME
 	avcodec_free_frame(&m_frame);
+#else
+	av_free(m_frame);
+#endif
 }
 
 AVPacketWrapper::AVPacketWrapper() {

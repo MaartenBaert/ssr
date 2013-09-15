@@ -102,6 +102,8 @@ inline void atomic_thread_fence_replacement(memory_order) {
 // avformat_query_codec: lavf 53.11.0 / 53.8.0
 #define SSR_USE_AVFORMAT_QUERY_CODEC   TEST_AV_VERSION(LIBAVFORMAT, 53, 11, 53, 8)
 
+// avcodec_free_frame: lavc 54.59.100 / 54.28.0
+#define SSR_USE_AVCODEC_FREE_FRAME     TEST_AV_VERSION(LIBAVCODEC, 54, 59, 54, 28)
 // av_codec_is_encoder: lavc 54.8.100 / 54.7.0
 #define SSR_USE_AV_CODEC_IS_ENCODER    TEST_AV_VERSION(LIBAVCODEC, 54, 8, 54, 7)
 // avcodec_encode_video2: lavc 54.2.100 / 54.1.0
