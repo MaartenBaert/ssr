@@ -44,7 +44,7 @@ public:
 
 AVFrameWrapper::AVFrameWrapper(const std::shared_ptr<AVFrameData>& refcounted_data) {
 	m_refcounted_data = refcounted_data;
-	m_frame = av_frame_alloc();
+	m_frame = avcodec_alloc_frame();
 #if SSR_USE_AVFRAME_EXTENDED_DATA
 	// ffmpeg docs say that extended_data should point to data if it isn't used
 	m_frame->extended_data = m_frame->data;
@@ -52,7 +52,7 @@ AVFrameWrapper::AVFrameWrapper(const std::shared_ptr<AVFrameData>& refcounted_da
 }
 
 AVFrameWrapper::~AVFrameWrapper() {
-	av_frame_free(&m_frame);
+	avcodec_free_frame(&m_frame);
 }
 
 AVPacketWrapper::AVPacketWrapper() {
