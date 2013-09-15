@@ -296,24 +296,24 @@ void Muxer::MuxerThread() {
 
 			// prepare packet
 			AVStream *st = m_format_context->streams[oldest_stream];
-			packet->stream_index = oldest_stream;
-			if(packet->pts != (int64_t) AV_NOPTS_VALUE) {
-				packet->pts = av_rescale_q(packet->pts, st->codec->time_base, st->time_base);
+			packet->GetPacket()->stream_index = oldest_stream;
+			if(packet->GetPacket()->pts != (int64_t) AV_NOPTS_VALUE) {
+				packet->GetPacket()->pts = av_rescale_q(packet->GetPacket()->pts, st->codec->time_base, st->time_base);
 			}
-			if(packet->dts != (int64_t) AV_NOPTS_VALUE) {
-				packet->dts = av_rescale_q(packet->dts, st->codec->time_base, st->time_base);
+			if(packet->GetPacket()->dts != (int64_t) AV_NOPTS_VALUE) {
+				packet->GetPacket()->dts = av_rescale_q(packet->GetPacket()->dts, st->codec->time_base, st->time_base);
 			}
 
 			// write the packet (again, why does libav/ffmpeg call this a frame?)
 			// The packet should already be interleaved now, but containers can have custom interleaving specifications,
 			// so it's a good idea to call av_interleaved_write_frame anyway.
-			if(av_interleaved_write_frame(m_format_context, packet.get()) != 0) {
+			if(av_interleaved_write_frame(m_format_context, packet->GetPacket()) != 0) {
 				Logger::LogError("[Muxer::run] Error: Can't write frame to muxer!");
 				throw LibavException();
 			}
 
 			// the data is now owned by libav/ffmpeg, so don't free it
-			packet->m_free_on_destruct = false;
+			packet->SetFreeOnDestruct(false);
 
 			// update the byte counter
 			{

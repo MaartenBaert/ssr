@@ -66,7 +66,7 @@ protected:
 
 	// Called by the encoder thread to encode a single frame. Frame can be NULL if the encoder uses delayed packets.
 	// Returns whether a packet was received.
-	virtual bool EncodeFrame(AVFrameWrapper* frame) = 0;
+	virtual bool EncodeFrame(AVFrame* frame) = 0;
 
 	inline Muxer* GetMuxer() { return m_muxer; }
 	inline AVCodecContext* GetCodecContext() { return m_codec_context; }

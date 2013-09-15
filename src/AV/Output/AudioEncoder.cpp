@@ -130,7 +130,7 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 
 }
 
-bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
+bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 
 #if SSR_USE_AVFRAME_FORMAT
 	if(frame != NULL) {
@@ -145,7 +145,7 @@ bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 
 	// encode the frame
 	int got_packet;
-	if(avcodec_encode_audio2(GetCodecContext(), packet.get(), frame, &got_packet) < 0) {
+	if(avcodec_encode_audio2(GetCodecContext(), packet->GetPacket(), frame, &got_packet) < 0) {
 		Logger::LogError("[AudioEncoder::EncodeFrame] Error: Encoding of audio frame failed!");
 		throw LibavException();
 	}
@@ -178,12 +178,12 @@ bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 		std::unique_ptr<AVPacketWrapper> packet(new AVPacketWrapper(bytes_encoded));
 
 		// copy the data
-		memcpy(packet->data, m_temp_buffer.data(), bytes_encoded);
+		memcpy(packet->GetPacket()->data, m_temp_buffer.data(), bytes_encoded);
 
 		// set the timestamp
 		// note: pts will be rescaled and stream_index will be set by Muxer
 		if(GetCodecContext()->coded_frame != NULL && GetCodecContext()->coded_frame->pts != (int64_t) AV_NOPTS_VALUE)
-			packet->pts = GetCodecContext()->coded_frame->pts;
+			packet->GetPacket()->pts = GetCodecContext()->coded_frame->pts;
 
 		// send the packet to the muxer
 		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));

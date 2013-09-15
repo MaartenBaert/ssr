@@ -38,30 +38,46 @@ int main(int argc, char* argv[]) {
 	bool commandline_logfile = false;
 	QString commandline_statsfile = QString();
 
-	// read command-line options
+	// read command-line arguments
 	QStringList args = QCoreApplication::arguments();
 	for(int i = 1; i < args.count(); ++i) {
-		QString cmd = args[i], value;
-		int p = cmd.indexOf('=');
-		if(p >= 0) {
-			value = cmd.mid(p + 1);
-			cmd = cmd.mid(0, p);
-		}
-		if(cmd == "--logfile") {
-			if(!value.isNull()) {
-				Logger::LogError("[main] Error: Option '--logfile' does not take a value!");
+		QString arg = args[i];
+		if(arg.startsWith("--")) {
+
+			// split into option and value
+			QString option, value;
+			int p = arg.indexOf('=');
+			if(p < 0) {
+				option = arg.mid(2);
+			} else {
+				option = arg.mid(2, p - 2);
+				value = arg.mid(p + 1);
+			}
+
+			// handle options
+			if(option == "logfile") {
+				if(!value.isNull()) {
+					Logger::LogError("[main] Error: Option 'logfile' does not take a value!");
+					return 1;
+				}
+				commandline_logfile = true;
+			} else if(option == "statsfile") {
+				if(value.isNull()) {
+					commandline_statsfile = "/dev/shm/simplescreenrecorder-stats-" + QString::number(QCoreApplication::applicationPid());
+				} else {
+					commandline_statsfile = value;
+				}
+			} else {
+				Logger::LogError("[main] Error: Unknown command-line option '" + option + "'!");
 				return 1;
 			}
-			commandline_logfile = true;
-		} else if(cmd == "--statsfile") {
-			if(value.isNull()) {
-				commandline_statsfile = "/dev/shm/simplescreenrecorder-stats-" + QString::number(QCoreApplication::applicationPid());
-			} else {
-				commandline_statsfile = value;
-			}
+
 		} else {
-			Logger::LogError("[main] Error: Unknown command-line option '" + cmd + "'!");
+
+			// handle other arguments
+			Logger::LogError("[main] Error: Unknown command-line argument '" + arg + "'!");
 			return 1;
+
 		}
 	}
 

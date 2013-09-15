@@ -33,7 +33,7 @@ public:
 	};
 
 private:
-	QMutex m_mutex;
+	std::mutex m_mutex;
 
 	static Logger *s_instance;
 

@@ -37,7 +37,8 @@ Logger::~Logger() {
 
 void Logger::Log(enum_type type, const QString& str) {
 	Q_ASSERT(s_instance != NULL);
-	QMutexLocker lock(&s_instance->m_mutex);
+	std::lock_guard<std::mutex> lock(s_instance->m_mutex);
+	Q_UNUSED(lock);
 	switch(type) {
 		case TYPE_INFO:     fprintf(stderr, "%s\n", qPrintable(str));                   break;
 		case TYPE_WARNING:  fprintf(stderr, "\033[1;33m%s\033[0m\n", qPrintable(str));  break;

@@ -160,7 +160,7 @@ void VideoEncoder::FillCodecContext(AVCodec* codec) {
 
 }
 
-bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
+bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 
 #if SSR_USE_AVFRAME_FORMAT
 	if(frame != NULL) {
@@ -175,7 +175,7 @@ bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
 
 	// encode the frame
 	int got_packet;
-	if(avcodec_encode_video2(GetCodecContext(), packet.get(), frame, &got_packet) < 0) {
+	if(avcodec_encode_video2(GetCodecContext(), packet->GetPacket(), frame, &got_packet) < 0) {
 		Logger::LogError("[VideoEncoder::EncodeFrame] Error: Encoding of video frame failed!");
 		throw LibavException();
 	}
@@ -184,8 +184,12 @@ bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
 	if(got_packet) {
 
 		// set the keyframe flag
+		//TODO// is this needed?
+		if(GetCodecContext()->coded_frame->key_frame && !(packet->GetPacket()->flags & AV_PKT_FLAG_KEY))
+			qDebug() << "keyframe flag was not set!";
+
 		if(GetCodecContext()->coded_frame->key_frame)
-			packet->flags |= AV_PKT_FLAG_KEY;
+			packet->GetPacket()->flags |= AV_PKT_FLAG_KEY;
 
 		// send the packet to the muxer
 		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));
@@ -211,16 +215,16 @@ bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
 		std::unique_ptr<AVPacketWrapper> packet(new AVPacketWrapper(bytes_encoded));
 
 		// copy the data
-		memcpy(packet->data, m_temp_buffer.data(), bytes_encoded);
+		memcpy(packet->GetPacket()->data, m_temp_buffer.data(), bytes_encoded);
 
 		// set the timestamp
 		// note: pts will be rescaled and stream_index will be set by Muxer
 		if(GetCodecContext()->coded_frame != NULL && GetCodecContext()->coded_frame->pts != (int64_t) AV_NOPTS_VALUE)
-			packet->pts = GetCodecContext()->coded_frame->pts;
+			packet->GetPacket()->pts = GetCodecContext()->coded_frame->pts;
 
 		// set the keyframe flag
 		if(GetCodecContext()->coded_frame->key_frame)
-			packet->flags |= AV_PKT_FLAG_KEY;
+			packet->GetPacket()->flags |= AV_PKT_FLAG_KEY;
 
 		// send the packet to the muxer
 		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));
