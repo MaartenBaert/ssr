@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "PageOutput.h"
 
+#include "Logger.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 
@@ -132,6 +133,19 @@ PageOutput::PageOutput(MainWindow* main_window)
 	std::sort(m_video_codecs_av.begin(), m_video_codecs_av.end());
 	std::sort(m_audio_codecs_av.begin(), m_audio_codecs_av.end());
 
+	if(m_containers_av.empty()) {
+		Logger::LogError("[PageOutput::PageOutput] Error: Could not find any suitable container in libavformat!");
+		throw LibavException();
+	}
+	if(m_video_codecs_av.empty()) {
+		Logger::LogError("[PageOutput::PageOutput] Error: Could not find any suitable video codec in libavcodec!");
+		throw LibavException();
+	}
+	if(m_audio_codecs_av.empty()) {
+		Logger::LogError("[PageOutput::PageOutput] Error: Could not find any suitable audio codec in libavcodec!");
+		throw LibavException();
+	}
+
 	QGroupBox *groupbox_file = new QGroupBox("File", this);
 	{
 		QLabel *label_file = new QLabel("Save as:", groupbox_file);
@@ -194,6 +208,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 										   "- VP8 (libvpx) is quite good but also quite slow.\n"
 										   "- Theora (libtheora) isn't really recommended because the quality isn't very good.");
 		m_label_video_codec_av = new QLabel("Codec name:", groupbox_video);
+		m_label_video_codec_av->setVisible(false);
 		m_combobox_video_codec_av = new QComboBox(groupbox_video);
 		for(unsigned int i = 0; i < m_video_codecs_av.size(); ++i) {
 			VideoCodecData &c = m_video_codecs_av[i];
@@ -277,6 +292,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 										   "   are pretty bad. Only use it if you have no other choice.\n"
 										   "- Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it's very fast.");
 		m_label_audio_codec_av = new QLabel("Codec name:", m_groupbox_audio);
+		m_label_audio_codec_av->setVisible(false);
 		m_combobox_audio_codec_av = new QComboBox(m_groupbox_audio);
 		for(unsigned int i = 0; i < m_audio_codecs_av.size(); ++i) {
 			AudioCodecData &c = m_audio_codecs_av[i];

@@ -119,6 +119,7 @@ public: // internal
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;
 	virtual void ReadVideoPing(int64_t timestamp) override;
 	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) override;
+	virtual void ReadAudioHole() override;
 
 private:
 	void NewSegment(SharedData* lock);

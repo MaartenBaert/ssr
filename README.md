@@ -41,7 +41,7 @@ If the 32-bit version of some library isn't found, but 64-bit works fine, try th
     sudo ln -s libXfixes.so.3 libXfixes.so
     sudo ldconfig
 
-I don't know whether this is the right way to do it, but it works for me.
+I don't know whether this is the right way to do it, but it works for me. If you are using a proprietary driver, the location of libGL will be different. In that case, use 'libGL.so' instead of 'mesa/libGL.so'.
 
 Compiling and installing
 ------------------------

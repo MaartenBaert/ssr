@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
 	XInitThreads();
 
 	QApplication application(argc, argv);
+	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 	QCoreApplication::setOrganizationName("SimpleScreenRecorder");
 	QCoreApplication::setApplicationName("SimpleScreenRecorder");
 

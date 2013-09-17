@@ -3,6 +3,7 @@ Testing:
 - Separate file for each clip.
 
 In progress:
+- PulseAudio input (+ 2 inputs?)
 
 Todo:
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
@@ -11,10 +12,10 @@ Todo:
 - Move SHM from GLFrameGrabber to GLInject.
 
 Wishlist:
+- Improve interface for small screens.
 - Check disk space (Muxer).
 - Systray icon.
 - FPS counter of GLInject (overlay + option to record?)
-- PulseAudio input (+ 2 inputs?)
 - Built-in re-encoding after recording
 - clean up Global.h
 - QuickLZ-based codec. (-> QuickLZ beta?)

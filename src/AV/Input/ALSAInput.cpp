@@ -231,17 +231,17 @@ void ALSAInput::InputThread() {
 
 			// skip the first samples
 			if(has_first_samples) {
-				if(timestamp < first_timestamp + START_DELAY)
-					continue;
+				if(timestamp > first_timestamp + START_DELAY) {
+
+					// send the samples to the synchronizer
+					int64_t time = timestamp - (int64_t) samples_read * (int64_t) 1000000 / (int64_t) m_sample_rate;
+					PushAudioSamples(m_sample_rate, m_channels, samples_read, buffer.data(), AV_SAMPLE_FMT_S16, time);
+
+				}
 			} else {
 				has_first_samples = true;
 				first_timestamp = timestamp;
-				continue;
 			}
-
-			// send the samples to the synchronizer
-			int64_t time = timestamp - (int64_t) m_alsa_period_size * (int64_t) 1000000 / (int64_t) m_sample_rate;
-			PushAudioSamples(m_sample_rate, m_channels, samples_read, buffer.data(), AV_SAMPLE_FMT_S16, time);
 
 		}
 

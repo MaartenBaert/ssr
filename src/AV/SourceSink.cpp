@@ -58,17 +58,6 @@ void BaseSink::ConnectBaseSource(BaseSource* source, int priority) {
 	}
 }
 
-/*int64_t VideoSource::CalculateVideoFrameInterval(unsigned int frame_rate) {
-	SharedLock lock(&m_shared_data);
-	int64_t max_interval = 1000000 / frame_rate;
-	for(SinkData &s : lock->m_sinks) {
-		int64_t interval = static_cast<VideoSink*>(s.sink)->GetVideoFrameInterval();
-		if(interval > max_interval)
-			max_interval = interval;
-	}
-	return max_interval;
-}*/
-
 int64_t VideoSource::CalculateNextVideoTimestamp() {
 	SharedLock lock(&m_shared_data);
 	for(SinkData &s : lock->m_sinks) {
@@ -97,5 +86,12 @@ void AudioSource::PushAudioSamples(unsigned int sample_rate, unsigned int channe
 	SharedLock lock(&m_shared_data);
 	for(SinkData &s : lock->m_sinks) {
 		static_cast<AudioSink*>(s.sink)->ReadAudioSamples(sample_rate, channels, sample_count, data, format, timestamp);
+	}
+}
+
+void AudioSource::PushAudioHole() {
+	SharedLock lock(&m_shared_data);
+	for(SinkData &s : lock->m_sinks) {
+		static_cast<AudioSink*>(s.sink)->ReadAudioHole();
 	}
 }

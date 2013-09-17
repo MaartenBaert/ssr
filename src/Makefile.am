@@ -17,7 +17,7 @@ simplescreenrecorder_CXXFLAGS = \
 simplescreenrecorder_LDFLAGS = \
 	-pthread \
 	$(QT4_LIBS) \
-	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
+	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound -lpulse
 
 simplescreenrecorder_SOURCES = \
 	AV/Input/ALSAInput.cpp \

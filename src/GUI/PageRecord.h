@@ -37,6 +37,7 @@ class X11Input;
 class GLInjectLauncher;
 class GLInjectInput;
 class ALSAInput;
+class PulseAudioInput;
 class VideoPreviewer;
 class AudioPreviewer;
 
@@ -62,7 +63,9 @@ private:
 	bool m_video_record_cursor;
 	bool m_audio_enabled;
 	unsigned int m_audio_sample_rate;
+	PageInput::enum_audio_backend m_audio_backend;
 	QString m_alsa_device;
+	QString m_pulseaudio_source;
 
 	OutputSettings m_output_settings;
 	std::unique_ptr<OutputManager> m_output_manager;
@@ -81,6 +84,7 @@ private:
 	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
 	std::unique_ptr<ALSAInput> m_alsa_input;
+	std::unique_ptr<PulseAudioInput> m_pulseaudio_input;
 
 	QPushButton *m_pushbutton_start_pause;
 

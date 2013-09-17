@@ -34,6 +34,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLInjectLauncher.h"
 #include "GLInjectInput.h"
 #include "ALSAInput.h"
+#include "PulseAudioInput.h"
 #include "VideoPreviewer.h"
 #include "AudioPreviewer.h"
 
@@ -391,7 +392,9 @@ void PageRecord::PageStart() {
 	// get the audio input settings
 	m_audio_enabled = page_input->GetAudioEnabled();
 	m_audio_sample_rate = 44100;
+	m_audio_backend = page_input->GetAudioBackend();
 	m_alsa_device = page_input->GetALSADevice();
+	m_pulseaudio_source = page_input->GetPulseAudioSourceName();
 
 	// get the glinject settings
 	QString glinject_command = page_input->GetGLInjectCommand();
@@ -642,6 +645,7 @@ void PageRecord::CaptureStart() {
 	Q_ASSERT(m_x11_input == NULL);
 	Q_ASSERT(m_gl_inject_input == NULL);
 	Q_ASSERT(m_alsa_input == NULL);
+	Q_ASSERT(m_pulseaudio_input == NULL);
 
 	try {
 
@@ -654,7 +658,10 @@ void PageRecord::CaptureStart() {
 
 		// start the audio input
 		if(m_audio_enabled) {
-			m_alsa_input.reset(new ALSAInput(m_alsa_device, m_audio_sample_rate));
+			if(m_audio_backend == PageInput::AUDIO_BACKEND_ALSA)
+				m_alsa_input.reset(new ALSAInput(m_alsa_device, m_audio_sample_rate));
+			if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
+				m_pulseaudio_input.reset(new PulseAudioInput(m_pulseaudio_source, m_audio_sample_rate));
 		}
 
 		Logger::LogInfo("[PageRecord::CaptureStart] Started capturing.");
@@ -666,6 +673,7 @@ void PageRecord::CaptureStart() {
 		m_x11_input.reset();
 		m_gl_inject_input.reset();
 		m_alsa_input.reset();
+		m_pulseaudio_input.reset();
 		return;
 	}
 
@@ -685,6 +693,7 @@ void PageRecord::CaptureStop() {
 	m_x11_input.reset();
 	m_gl_inject_input.reset();
 	m_alsa_input.reset();
+	m_pulseaudio_input.reset();
 
 	Logger::LogInfo("[PageRecord::CaptureStop] Stopped capturing.");
 
@@ -709,7 +718,10 @@ void PageRecord::UpdateCapture() {
 		video_source = m_x11_input.get();
 	}
 	if(m_audio_enabled) {
-		audio_source = m_alsa_input.get();
+		if(m_audio_backend == PageInput::AUDIO_BACKEND_ALSA)
+			audio_source = m_alsa_input.get();
+		if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
+			audio_source = m_pulseaudio_input.get();
 	}
 
 	// connect sinks

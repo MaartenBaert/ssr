@@ -183,6 +183,7 @@ inline int64_t hrt_time_micro() {
 
 template<typename T>
 inline T clamp(T v, T lo, T hi) {
+	Q_ASSERT(lo <= hi);
 	if(v < lo)
 		return lo;
 	if(v > hi)

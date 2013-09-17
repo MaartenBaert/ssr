@@ -25,10 +25,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <pulse/mainloop.h>
 #include <pulse/context.h>
+#include <pulse/introspect.h>
 #include <pulse/stream.h>
 #include <pulse/error.h>
 
 class PulseAudioInput : public AudioSource {
+
+public:
+	struct Source {
+		QString name, description;
+	};
 
 private:
 	static const int64_t START_DELAY;
@@ -37,11 +43,10 @@ private:
 	QString m_source_name;
 	unsigned int m_sample_rate, m_channels;
 
-	//pa_simple *m_pa_connection;
 	pa_mainloop *m_pa_mainloop;
 	pa_context *m_pa_context;
 	pa_stream *m_pa_stream;
-	unsigned int m_pa_periods, m_pa_period_size;
+	unsigned int m_pa_period_size;
 
 	std::thread m_thread;
 	std::atomic<bool> m_should_stop, m_error_occurred;
@@ -54,11 +59,13 @@ public:
 	// This function is thread-safe.
 	inline bool HasErrorOccurred() { return m_error_occurred; }
 
+public:
+	static std::vector<Source> GetSourceList();
+
 private:
 	void Init();
 	void Free();
 
-	void Iterate();
 	void InputThread();
 
 };

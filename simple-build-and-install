@@ -55,7 +55,11 @@ export CXXFLAGS="-Wall -O2 -pipe"
 mkdir -p build
 cd build
 echo "Configuring ..."
-../configure --prefix=/usr $@
+if [ "$SSR_USE_X86_ASM" = "1" ]; then
+	../configure --prefix=/usr "$@"
+else
+	../configure --prefix=/usr --disable-glinjectlib "$@"
+fi
 echo "Compiling ..."
 make -j "$( grep -c "^processor" /proc/cpuinfo )"
 cd ..
@@ -65,7 +69,7 @@ if [ x"$( uname -m )" = x"x86_64" ]; then
 	cd build32
 	echo "Configuring 32-bit GLInject library ..."
 	CC="gcc -m32" CXX="g++ -m32" PKG_CONFIG_PATH="/usr/lib32/pkgconfig" \
-		../configure --prefix=/usr --libdir=/usr/lib32 --disable-ssrprogram $@
+		../configure --prefix=/usr --libdir=/usr/lib32 --disable-ssrprogram "$@"
 	echo "Compiling 32-bit GLInject library ..."
 	make -j "$( grep -c "^processor" /proc/cpuinfo )"
 	cd ..

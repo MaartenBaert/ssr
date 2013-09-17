@@ -290,7 +290,7 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 }
 
 void Synchronizer::ReadVideoPing(int64_t timestamp) {
-	Q_ASSERT(m_audio_encoder != NULL);
+	Q_ASSERT(m_video_encoder != NULL);
 	SharedLock lock(&m_shared_data);
 
 	// if the video has not been started, ignore it
@@ -339,7 +339,7 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 
 	// detect audio gaps
 	if(lock->m_segment_audio_started && timestamp > lock->m_segment_audio_last_timestamp + AUDIO_GAP_THRESHOLD) {
-		Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Detected gap in audio stream, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).");
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Detected hole in audio stream based on timestamps, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).");
 		NewSegment(lock.get());
 	}
 
@@ -382,6 +382,15 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 
 	//Logger::LogInfo("[Synchronizer::ReadAudioSamples] Added audio samples at " + QString::number(timestamp) + ".");
 
+}
+
+void Synchronizer::ReadAudioHole() {
+	Q_ASSERT(m_audio_encoder != NULL);
+	SharedLock lock(&m_shared_data);
+	if(lock->m_segment_audio_started) {
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Received hole in audio stream, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).");
+		NewSegment(lock.get());
+	}
 }
 
 void Synchronizer::NewSegment(SharedData* lock) {

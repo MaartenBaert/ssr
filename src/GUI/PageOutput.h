@@ -163,7 +163,7 @@ public:
 	inline void SetFile(const QString& file) { m_lineedit_file->setText(file); }
 	inline void SetSeparateFiles(bool separate_files) { m_checkbox_separate_files->setChecked(separate_files); }
 	inline void SetVideoCodec(enum_video_codec video_codec) { m_combobox_video_codec->setCurrentIndex(clamp((unsigned int) video_codec, 0u, (unsigned int) VIDEO_CODEC_COUNT - 1)); }
-	inline void SetVideoCodecAV(unsigned int video_codec) { m_combobox_video_codec_av->setCurrentIndex(clamp((unsigned int) video_codec, 0u, (unsigned int) m_video_codecs_av.size() - 1)); }
+	inline void SetVideoCodecAV(unsigned int video_codec_av) { m_combobox_video_codec_av->setCurrentIndex(clamp(video_codec_av, 0u, (unsigned int) m_video_codecs_av.size() - 1)); }
 	inline void SetVideoKBitRate(unsigned int kbit_rate) { m_lineedit_video_kbit_rate->setText(QString::number(kbit_rate)); }
 	inline void SetH264CRF(unsigned int crf) { m_lineedit_h264_crf->setText(QString::number(crf)); }
 	inline void SetH264Preset(enum_h264_preset preset) { m_combobox_h264_preset->setCurrentIndex(clamp((unsigned int) preset, 0u, (unsigned int) H264_PRESET_COUNT - 1)); }
@@ -171,7 +171,7 @@ public:
 	inline void SetVideoOptions(const QString& options) { m_lineedit_video_options->setText(options); }
 	inline void SetVideoAllowFrameSkipping(bool allow_frame_skipping) { return m_checkbox_video_allow_frame_skipping->setChecked(allow_frame_skipping); }
 	inline void SetAudioCodec(enum_audio_codec audio_codec) { m_combobox_audio_codec->setCurrentIndex(clamp((unsigned int) audio_codec, 0u, (unsigned int) AUDIO_CODEC_COUNT - 1)); }
-	inline void SetAudioCodecAV(unsigned int audio_codec) { m_combobox_audio_codec_av->setCurrentIndex(clamp((unsigned int) audio_codec, 0u, (unsigned int) m_audio_codecs_av.size() - 1)); }
+	inline void SetAudioCodecAV(unsigned int audio_codec_av) { m_combobox_audio_codec_av->setCurrentIndex(clamp(audio_codec_av, 0u, (unsigned int) m_audio_codecs_av.size() - 1)); }
 	inline void SetAudioKBitRate(unsigned int kbit_rate) { m_lineedit_audio_kbit_rate->setText(QString::number(kbit_rate)); }
 	inline void SetAudioOptions(const QString& options) { m_lineedit_audio_options->setText(options); }
 
