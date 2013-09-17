@@ -102,10 +102,14 @@ private:
 	QComboBox *m_combobox_video_codec;
 	QLabel *m_label_video_codec_av;
 	QComboBox *m_combobox_video_codec_av;
-	QLabel *m_label_video_bitrate, *m_label_h264_crf, *m_label_h264_preset, *m_label_vp8_cpu_used;
+	QLabel *m_label_video_kbit_rate;
 	QLineEdit *m_lineedit_video_kbit_rate;
-	QLineEdit *m_lineedit_h264_crf;
+	QLabel *m_label_h264_crf;
+	QSlider *m_slider_h264_crf;
+	QLabel *m_label_h264_crf_value;
+	QLabel *m_label_h264_preset;
 	QComboBox *m_combobox_h264_preset;
+	QLabel *m_label_vp8_cpu_used;
 	QComboBox *m_combobox_vp8_cpu_used;
 	QLabel *m_label_video_options;
 	QLineEdit *m_lineedit_video_options;
@@ -148,9 +152,9 @@ public:
 	inline enum_video_codec GetVideoCodec() { return (enum_video_codec) clamp(m_combobox_video_codec->currentIndex(), 0, VIDEO_CODEC_COUNT - 1); }
 	inline unsigned int GetVideoCodecAV() { return clamp(m_combobox_video_codec_av->currentIndex(), 0, (int) m_video_codecs_av.size() - 1); }
 	inline unsigned int GetVideoKBitRate() { return m_lineedit_video_kbit_rate->text().toUInt(); }
-	inline unsigned int GetH264CRF() { return m_lineedit_h264_crf->text().toUInt(); }
+	inline unsigned int GetH264CRF() { return m_slider_h264_crf->value(); }
 	inline enum_h264_preset GetH264Preset() { return (enum_h264_preset) clamp(m_combobox_h264_preset->currentIndex(), 0, H264_PRESET_COUNT - 1); }
-	inline unsigned int GetVP8CPUUsed() { return clamp(5 - m_combobox_vp8_cpu_used->currentIndex(), 1, 5); }
+	inline unsigned int GetVP8CPUUsed() { return clamp(5 - m_combobox_vp8_cpu_used->currentIndex(), 0, 5); }
 	inline QString GetVideoOptions() { return m_lineedit_video_options->text(); }
 	inline bool GetVideoAllowFrameSkipping() { return m_checkbox_video_allow_frame_skipping->isChecked(); }
 	inline enum_audio_codec GetAudioCodec() { return (enum_audio_codec) clamp(m_combobox_audio_codec->currentIndex(), 0, AUDIO_CODEC_COUNT - 1); }
@@ -165,9 +169,9 @@ public:
 	inline void SetVideoCodec(enum_video_codec video_codec) { m_combobox_video_codec->setCurrentIndex(clamp((unsigned int) video_codec, 0u, (unsigned int) VIDEO_CODEC_COUNT - 1)); }
 	inline void SetVideoCodecAV(unsigned int video_codec_av) { m_combobox_video_codec_av->setCurrentIndex(clamp(video_codec_av, 0u, (unsigned int) m_video_codecs_av.size() - 1)); }
 	inline void SetVideoKBitRate(unsigned int kbit_rate) { m_lineedit_video_kbit_rate->setText(QString::number(kbit_rate)); }
-	inline void SetH264CRF(unsigned int crf) { m_lineedit_h264_crf->setText(QString::number(crf)); }
+	inline void SetH264CRF(unsigned int crf) { m_slider_h264_crf->setValue(crf); }
 	inline void SetH264Preset(enum_h264_preset preset) { m_combobox_h264_preset->setCurrentIndex(clamp((unsigned int) preset, 0u, (unsigned int) H264_PRESET_COUNT - 1)); }
-	inline void SetVP8CPUUsed(unsigned int cpu_used) { m_combobox_vp8_cpu_used->setCurrentIndex(clamp(5 - (int) cpu_used, 0, 4)); }
+	inline void SetVP8CPUUsed(unsigned int cpu_used) { m_combobox_vp8_cpu_used->setCurrentIndex(clamp(5 - (int) cpu_used, 0, 5)); }
 	inline void SetVideoOptions(const QString& options) { m_lineedit_video_options->setText(options); }
 	inline void SetVideoAllowFrameSkipping(bool allow_frame_skipping) { return m_checkbox_video_allow_frame_skipping->setChecked(allow_frame_skipping); }
 	inline void SetAudioCodec(enum_audio_codec audio_codec) { m_combobox_audio_codec->setCurrentIndex(clamp((unsigned int) audio_codec, 0u, (unsigned int) AUDIO_CODEC_COUNT - 1)); }

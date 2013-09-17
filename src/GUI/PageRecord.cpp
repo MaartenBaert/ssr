@@ -465,8 +465,7 @@ void PageRecord::PageStart() {
 	}
 
 	// hide the audio previewer if there is no audio
-	m_label_mic_icon->setVisible(m_audio_enabled);
-	m_audio_previewer->setVisible(m_audio_enabled);
+	GroupVisible({m_label_mic_icon, m_audio_previewer}, m_audio_enabled);
 
 	// for OpenGL recording, allocate shared memory and start the program now
 	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
@@ -768,11 +767,7 @@ void PageRecord::UpdatePreview() {
 void PageRecord::UpdateHotkeyFields() {
 
 	bool enabled = IsHotkeyEnabled();
-	m_checkbox_hotkey_ctrl->setEnabled(enabled);
-	m_checkbox_hotkey_shift->setEnabled(enabled);
-	m_checkbox_hotkey_alt->setEnabled(enabled);
-	m_checkbox_hotkey_super->setEnabled(enabled);
-	m_combobox_hotkey_key->setEnabled(enabled);
+	GroupEnabled({m_checkbox_hotkey_ctrl, m_checkbox_hotkey_shift, m_checkbox_hotkey_alt, m_checkbox_hotkey_super, m_combobox_hotkey_key}, enabled);
 
 	UpdateHotkey();
 

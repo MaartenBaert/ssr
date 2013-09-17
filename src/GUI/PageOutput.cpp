@@ -180,7 +180,6 @@ PageOutput::PageOutput(MainWindow* main_window)
 			m_combobox_container_av->addItem(c.avname);
 		}
 		m_combobox_container_av->setToolTip("For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.");
-		m_combobox_container_av->setVisible(false);
 
 		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(UpdateSuffixAndContainerFields()));
 		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(UpdateSuffixAndContainerFields()));
@@ -208,49 +207,47 @@ PageOutput::PageOutput(MainWindow* main_window)
 										   "- VP8 (libvpx) is quite good but also quite slow.\n"
 										   "- Theora (libtheora) isn't really recommended because the quality isn't very good.");
 		m_label_video_codec_av = new QLabel("Codec name:", groupbox_video);
-		m_label_video_codec_av->setVisible(false);
 		m_combobox_video_codec_av = new QComboBox(groupbox_video);
 		for(unsigned int i = 0; i < m_video_codecs_av.size(); ++i) {
 			VideoCodecData &c = m_video_codecs_av[i];
 			m_combobox_video_codec_av->addItem(c.avname);
 		}
 		m_combobox_video_codec_av->setToolTip("For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.");
-		m_combobox_video_codec_av->setVisible(false);
-		m_label_video_bitrate = new QLabel("Bit rate (in kbps):", groupbox_video);
+		m_label_video_kbit_rate = new QLabel("Bit rate (in kbps):", groupbox_video);
 		m_lineedit_video_kbit_rate = new QLineEdit(groupbox_video);
 		m_lineedit_video_kbit_rate->setToolTip("The video bit rate (in kilobit per second). A higher value means a higher quality."
 											 "\nIf you have no idea where to start, try 5000 and change it if needed.");
 		m_label_h264_crf = new QLabel("Constant rate factor:", groupbox_video);
-		m_label_h264_crf->setVisible(false);
-		m_lineedit_h264_crf = new QLineEdit(groupbox_video);
-		m_lineedit_h264_crf->setToolTip("This setting changes the video quality. A lower value means a higher quality.\n"
+		m_slider_h264_crf = new QSlider(Qt::Horizontal, groupbox_video);
+		m_slider_h264_crf->setRange(0, 51);
+		m_slider_h264_crf->setSingleStep(1);
+		m_slider_h264_crf->setPageStep(5);
+		m_slider_h264_crf->setToolTip("This setting changes the video quality. A lower value means a higher quality.\n"
 										"The allowed range is 0-51 (0 means lossless, the default is 23).");
-		m_lineedit_h264_crf->setVisible(false);
+		m_label_h264_crf_value = new QLabel(groupbox_video);
+		m_label_h264_crf_value->setNum(m_slider_h264_crf->value());
+		m_label_h264_crf_value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+		m_label_h264_crf_value->setMinimumWidth(QFontMetrics(m_label_h264_crf_value->font()).width("99") + 2);
 		m_label_h264_preset = new QLabel("Preset:", groupbox_video);
-		m_label_h264_preset->setVisible(false);
 		m_combobox_h264_preset = new QComboBox(groupbox_video);
 		for(unsigned int i = 0; i < H264_PRESET_COUNT; ++i) {
 			m_combobox_h264_preset->addItem(H264_PRESET_STRINGS[i]);
 		}
 		m_combobox_h264_preset->setToolTip("The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),\n"
 										   "but results in larger files. The quality shouldn't be affected too much.");
-		m_combobox_h264_preset->setVisible(false);
 		m_label_vp8_cpu_used = new QLabel("CPU used:", groupbox_video);
-		m_label_vp8_cpu_used->setVisible(false);
 		m_combobox_vp8_cpu_used = new QComboBox(groupbox_video);
 		m_combobox_vp8_cpu_used->addItem("5 (fastest)");
 		m_combobox_vp8_cpu_used->addItem("4");
 		m_combobox_vp8_cpu_used->addItem("3");
 		m_combobox_vp8_cpu_used->addItem("2");
-		m_combobox_vp8_cpu_used->addItem("1 (slowest)");
+		m_combobox_vp8_cpu_used->addItem("1");
+		m_combobox_vp8_cpu_used->addItem("0 (slowest)");
 		m_combobox_vp8_cpu_used->setToolTip("The encoding speed. A higher value uses *less* CPU  (I didn't choose the name, this is the name\n"
 											"used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.");
-		m_combobox_vp8_cpu_used->setVisible(false);
 		m_label_video_options = new QLabel("Custom options:", groupbox_video);
-		m_label_video_options->setVisible(false);
 		m_lineedit_video_options = new QLineEdit(groupbox_video);
 		m_lineedit_video_options->setToolTip("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)");
-		m_lineedit_video_options->setVisible(false);
 		m_checkbox_video_allow_frame_skipping = new QCheckBox("Allow frame skipping", groupbox_video);
 		m_checkbox_video_allow_frame_skipping->setToolTip("If checked, the video encoder will be allowed to skip frames if the input frame rate is\n"
 														  "lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.\n"
@@ -258,23 +255,25 @@ PageOutput::PageOutput(MainWindow* main_window)
 														  "It shouldn't affect the appearance of the video.");
 
 		connect(m_combobox_video_codec, SIGNAL(activated(int)), this, SLOT(UpdateVideoCodecFields()));
+		connect(m_slider_h264_crf, SIGNAL(valueChanged(int)), m_label_h264_crf_value, SLOT(setNum(int)));
 
 		QGridLayout *layout = new QGridLayout(groupbox_video);
 		layout->addWidget(label_video_codec, 0, 0);
-		layout->addWidget(m_combobox_video_codec, 0, 1);
+		layout->addWidget(m_combobox_video_codec, 0, 1, 1, 2);
 		layout->addWidget(m_label_video_codec_av, 1, 0);
-		layout->addWidget(m_combobox_video_codec_av, 1, 1);
-		layout->addWidget(m_label_video_bitrate, 2, 0);
-		layout->addWidget(m_lineedit_video_kbit_rate, 2, 1);
+		layout->addWidget(m_combobox_video_codec_av, 1, 1, 1, 2);
+		layout->addWidget(m_label_video_kbit_rate, 2, 0);
+		layout->addWidget(m_lineedit_video_kbit_rate, 2, 1, 1, 2);
 		layout->addWidget(m_label_h264_crf, 3, 0);
-		layout->addWidget(m_lineedit_h264_crf, 3, 1);
+		layout->addWidget(m_slider_h264_crf, 3, 1);
+		layout->addWidget(m_label_h264_crf_value, 3, 2);
 		layout->addWidget(m_label_h264_preset, 4, 0);
-		layout->addWidget(m_combobox_h264_preset, 4, 1);
+		layout->addWidget(m_combobox_h264_preset, 4, 1, 1, 2);
 		layout->addWidget(m_label_vp8_cpu_used, 5, 0);
-		layout->addWidget(m_combobox_vp8_cpu_used, 5, 1);
+		layout->addWidget(m_combobox_vp8_cpu_used, 5, 1, 1, 2);
 		layout->addWidget(m_label_video_options, 6, 0);
-		layout->addWidget(m_lineedit_video_options, 6, 1);
-		layout->addWidget(m_checkbox_video_allow_frame_skipping, 7, 0, 1, 2);
+		layout->addWidget(m_lineedit_video_options, 6, 1, 1, 2);
+		layout->addWidget(m_checkbox_video_allow_frame_skipping, 7, 0, 1, 3);
 	}
 	m_groupbox_audio = new QGroupBox("Audio");
 	{
@@ -292,22 +291,18 @@ PageOutput::PageOutput(MainWindow* main_window)
 										   "   are pretty bad. Only use it if you have no other choice.\n"
 										   "- Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it's very fast.");
 		m_label_audio_codec_av = new QLabel("Codec name:", m_groupbox_audio);
-		m_label_audio_codec_av->setVisible(false);
 		m_combobox_audio_codec_av = new QComboBox(m_groupbox_audio);
 		for(unsigned int i = 0; i < m_audio_codecs_av.size(); ++i) {
 			AudioCodecData &c = m_audio_codecs_av[i];
 			m_combobox_audio_codec_av->addItem(c.avname);
 		}
 		m_combobox_audio_codec_av->setToolTip("For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work.");
-		m_combobox_audio_codec_av->setVisible(false);
 		m_label_audio_kbit_rate = new QLabel("Bit rate (in kbps):", m_groupbox_audio);
 		m_lineedit_audio_kbit_rate = new QLineEdit(m_groupbox_audio);
 		m_lineedit_audio_kbit_rate->setToolTip("The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.");
 		m_label_audio_options = new QLabel("Custom options:", m_groupbox_audio);
-		m_label_audio_options->setVisible(false);
 		m_lineedit_audio_options = new QLineEdit(m_groupbox_audio);
 		m_lineedit_audio_options->setToolTip("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)");
-		m_lineedit_audio_options->setVisible(false);
 
 		connect(m_combobox_audio_codec, SIGNAL(activated(int)), this, SLOT(UpdateAudioCodecFields()));
 
@@ -338,6 +333,10 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout2->addWidget(button_back);
 		layout2->addWidget(button_continue);
 	}
+
+	UpdateContainerFields();
+	UpdateVideoCodecFields();
+	UpdateAudioCodecFields();
 
 }
 
@@ -538,8 +537,7 @@ void PageOutput::UpdateContainerFields() {
 	unsigned int container_av = GetContainerAV();
 
 	// show/hide fields
-	m_label_container_av->setVisible(container == CONTAINER_OTHER);
-	m_combobox_container_av->setVisible(container == CONTAINER_OTHER);
+	GroupVisible({m_label_container_av, m_combobox_container_av}, (container == CONTAINER_OTHER));
 
 	// mark uninstalled or unsupported codecs
 	for(unsigned int i = 0; i < VIDEO_CODEC_OTHER; ++i) {
@@ -566,28 +564,20 @@ void PageOutput::UpdateContainerFields() {
 
 void PageOutput::UpdateVideoCodecFields() {
 	enum_video_codec codec = GetVideoCodec();
-	m_label_video_codec_av->setVisible(codec == VIDEO_CODEC_OTHER);
-	m_combobox_video_codec_av->setVisible(codec == VIDEO_CODEC_OTHER);
-	m_label_video_bitrate->setVisible(codec != VIDEO_CODEC_H264);
-	m_lineedit_video_kbit_rate->setVisible(codec != VIDEO_CODEC_H264);
-	m_label_h264_crf->setVisible(codec == VIDEO_CODEC_H264);
-	m_lineedit_h264_crf->setVisible(codec == VIDEO_CODEC_H264);
-	m_label_h264_preset->setVisible(codec == VIDEO_CODEC_H264);
-	m_combobox_h264_preset->setVisible(codec == VIDEO_CODEC_H264);
-	m_label_vp8_cpu_used->setVisible(codec == VIDEO_CODEC_VP8);
-	m_combobox_vp8_cpu_used->setVisible(codec == VIDEO_CODEC_VP8);
-	m_label_video_options->setVisible(codec == VIDEO_CODEC_OTHER);
-	m_lineedit_video_options->setVisible(codec == VIDEO_CODEC_OTHER);
+	MultiGroupVisible({
+		{{m_label_video_kbit_rate, m_lineedit_video_kbit_rate}, (codec != VIDEO_CODEC_H264)},
+		{{m_label_h264_crf, m_slider_h264_crf, m_label_h264_crf_value, m_label_h264_preset, m_combobox_h264_preset}, (codec == VIDEO_CODEC_H264)},
+		{{m_label_vp8_cpu_used, m_combobox_vp8_cpu_used}, (codec == VIDEO_CODEC_VP8)},
+		{{m_label_video_codec_av, m_combobox_video_codec_av, m_label_video_options, m_lineedit_video_options}, (codec == VIDEO_CODEC_OTHER)},
+	});
 }
 
 void PageOutput::UpdateAudioCodecFields() {
 	enum_audio_codec codec = GetAudioCodec();
-	m_label_audio_codec_av->setVisible(codec == AUDIO_CODEC_OTHER);
-	m_combobox_audio_codec_av->setVisible(codec == AUDIO_CODEC_OTHER);
-	m_label_audio_kbit_rate->setVisible(codec != AUDIO_CODEC_UNCOMPRESSED);
-	m_lineedit_audio_kbit_rate->setVisible(codec != AUDIO_CODEC_UNCOMPRESSED);
-	m_label_audio_options->setVisible(codec == AUDIO_CODEC_OTHER);
-	m_lineedit_audio_options->setVisible(codec == AUDIO_CODEC_OTHER);
+	MultiGroupVisible({
+		{{m_label_audio_kbit_rate, m_lineedit_audio_kbit_rate}, (codec != AUDIO_CODEC_UNCOMPRESSED)},
+		{{m_label_audio_codec_av, m_combobox_audio_codec_av, m_label_audio_options, m_lineedit_audio_options}, (codec == AUDIO_CODEC_OTHER)},
+	});
 }
 
 void PageOutput::Browse() {

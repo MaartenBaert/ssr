@@ -215,4 +215,28 @@ inline int64_t round_int64(T x) {
 	return (int64_t) rint(x);
 }
 
+inline void GroupEnabled(std::initializer_list<QWidget*> widgets, bool enabled) {
+	for(QWidget *w : widgets) {
+		w->setEnabled(enabled);
+	}
+}
+inline void GroupVisible(std::initializer_list<QWidget*> widgets, bool visible) {
+	for(QWidget *w : widgets) {
+		w->setVisible(visible);
+	}
+}
+inline void MultiGroupVisible(std::initializer_list<std::pair<std::initializer_list<QWidget*>, bool> > conditions) {
+	// Qt updates the layout every time something is made visible or invisible, so the order is important.
+	// First hide everything that needs to be hidden, then show everything that needs to be shown.
+	// If the order is wrong, Qt will make the widget larger than necessary.
+	for(auto &c : conditions) {
+		if(!c.second)
+			GroupVisible(c.first, false);
+	}
+	for(auto &c : conditions) {
+		if(c.second)
+			GroupVisible(c.first, true);
+	}
+}
+
 #endif // GLOBAL_H

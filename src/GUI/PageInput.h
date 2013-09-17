@@ -99,7 +99,7 @@ private:
 	QCheckBox *m_checkbox_record_cursor;
 
 	QCheckBox *m_checkbox_audio_enable;
-	QLabel *m_label_audio_backend;
+	QLabel *label_audio_backend;
 	QComboBox *m_combobox_audio_backend;
 	QLabel *m_label_alsa_device;
 	QLineEdit *m_lineedit_alsa_device;

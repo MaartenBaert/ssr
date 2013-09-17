@@ -106,37 +106,42 @@ PageInput::PageInput(MainWindow* main_window)
 													 "the client area of the window will be recorded.");
 		m_pushbutton_video_opengl_settings = new QPushButton("OpenGL settings...", group_video);
 		m_pushbutton_video_opengl_settings->setToolTip("Change the settings for OpenGL recording.");
-		QLabel *label_x = new QLabel("Left:", group_video);
+		QLabel *label_video_x = new QLabel("Left:", group_video);
 		m_spinbox_video_x = new QSpinBoxWithSignal(group_video);
 		m_spinbox_video_x->setRange(0, 10000);
 		m_spinbox_video_x->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_spinbox_video_x->setToolTip("The x coordinate of the upper-left corner of the recorded rectangle.");
-		QLabel *label_y = new QLabel("Top:", group_video);
+		m_spinbox_video_x->setToolTip("The x coordinate of the upper-left corner of the recorded rectangle.\n"
+									  "Hint: You can also change this value with the scroll wheel or the up/down arrows.");
+		QLabel *label_video_y = new QLabel("Top:", group_video);
 		m_spinbox_video_y = new QSpinBoxWithSignal(group_video);
 		m_spinbox_video_y->setRange(0, 10000);
 		m_spinbox_video_y->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_spinbox_video_y->setToolTip("The y coordinate of the upper-left corner of the recorded rectangle.");
-		QLabel *label_w = new QLabel("Width:", group_video);
+		m_spinbox_video_y->setToolTip("The y coordinate of the upper-left corner of the recorded rectangle.\n"
+									  "Hint: You can also change this value with the scroll wheel or the up/down arrows.");
+		QLabel *label_video_w = new QLabel("Width:", group_video);
 		m_spinbox_video_w = new QSpinBoxWithSignal(group_video);
 		m_spinbox_video_w->setRange(0, 10000);
 		m_spinbox_video_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_spinbox_video_w->setToolTip("The width of the recorded rectangle.");
-		QLabel *label_h = new QLabel("Height:", group_video);
+		m_spinbox_video_w->setToolTip("The width of the recorded rectangle.\n"
+									  "Hint: You can also change this value with the scroll wheel or the up/down arrows.");
+		QLabel *label_video_h = new QLabel("Height:", group_video);
 		m_spinbox_video_h = new QSpinBoxWithSignal(group_video);
 		m_spinbox_video_h->setRange(0, 10000);
 		m_spinbox_video_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_spinbox_video_h->setToolTip("The height of the recorded rectangle.");
+		m_spinbox_video_h->setToolTip("The height of the recorded rectangle.\n"
+									  "Hint: You can also change this value with the scroll wheel or the up/down arrows.");
 		QLabel *label_frame_rate = new QLabel("Frame rate:", group_video);
 		m_spinbox_video_frame_rate = new QSpinBox(group_video);
 		m_spinbox_video_frame_rate->setRange(1, 1000);
 		m_spinbox_video_frame_rate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		m_spinbox_video_frame_rate->setToolTip("The number of frames per second in the final video. Higher frame rates use more CPU time.");
 		m_checkbox_scale = new QCheckBox("Scale video", group_video);
-		m_checkbox_scale->setToolTip("Enable or disable scaling. Scaling uses more CPU, but if the scaled video is smaller, it could make the encoding faster.");
-		QLabel *label_scaled_w = new QLabel("Scaled width:", group_video);
+		m_checkbox_scale->setToolTip("Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.");
+		QLabel *label_video_scaled_w = new QLabel("Scaled width:", group_video);
 		m_spinbox_video_scaled_w = new QSpinBox(group_video);
 		m_spinbox_video_scaled_w->setRange(0, 10000);
 		m_spinbox_video_scaled_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		QLabel *label_scaled_h = new QLabel("Scaled height:", group_video);
+		QLabel *label_video_scaled_h = new QLabel("Scaled height:", group_video);
 		m_spinbox_video_scaled_h = new QSpinBox(group_video);
 		m_spinbox_video_scaled_h->setRange(0, 10000);
 		m_spinbox_video_scaled_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -184,13 +189,13 @@ PageInput::PageInput(MainWindow* main_window)
 		{
 			QGridLayout *layout2 = new QGridLayout();
 			layout->addLayout(layout2);
-			layout2->addWidget(label_x, 0, 0);
+			layout2->addWidget(label_video_x, 0, 0);
 			layout2->addWidget(m_spinbox_video_x, 0, 1);
-			layout2->addWidget(label_y, 0, 2);
+			layout2->addWidget(label_video_y, 0, 2);
 			layout2->addWidget(m_spinbox_video_y, 0, 3);
-			layout2->addWidget(label_w, 1, 0);
+			layout2->addWidget(label_video_w, 1, 0);
 			layout2->addWidget(m_spinbox_video_w, 1, 1);
-			layout2->addWidget(label_h, 1, 2);
+			layout2->addWidget(label_video_h, 1, 2);
 			layout2->addWidget(m_spinbox_video_h, 1, 3);
 		}
 		{
@@ -203,9 +208,9 @@ PageInput::PageInput(MainWindow* main_window)
 		{
 			QGridLayout *layout2 = new QGridLayout();
 			layout->addLayout(layout2);
-			layout2->addWidget(label_scaled_w, 0, 0);
+			layout2->addWidget(label_video_scaled_w, 0, 0);
 			layout2->addWidget(m_spinbox_video_scaled_w, 0, 1);
-			layout2->addWidget(label_scaled_h, 0, 2);
+			layout2->addWidget(label_video_scaled_h, 0, 2);
 			layout2->addWidget(m_spinbox_video_scaled_h, 0, 3);
 		}
 		layout->addWidget(m_checkbox_record_cursor);
@@ -213,7 +218,7 @@ PageInput::PageInput(MainWindow* main_window)
 	QGroupBox *group_audio = new QGroupBox("Audio input", this);
 	{
 		m_checkbox_audio_enable = new QCheckBox("Record microphone", group_audio);
-		m_label_audio_backend = new QLabel("Backend:", group_audio);
+		label_audio_backend = new QLabel("Backend:", group_audio);
 		m_combobox_audio_backend = new QComboBox(group_audio);
 		m_combobox_audio_backend->addItem("ALSA");
 		m_combobox_audio_backend->addItem((m_pulseaudio_available)? "PulseAudio" : "PulseAudio (unavailable)");
@@ -224,7 +229,6 @@ PageInput::PageInput(MainWindow* main_window)
 		m_lineedit_alsa_device->setToolTip("The ALSA device that will be used for recording. Normally this should be 'default'.\n"
 										   "You can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).");
 		m_label_pulseaudio_source = new QLabel("Source:", group_audio);
-		m_label_pulseaudio_source->setVisible(false);
 		m_combobox_pulseaudio_source = new QComboBox(group_audio);
 		for(unsigned int i = 0; i < m_pulseaudio_sources.size(); ++i) {
 			m_combobox_pulseaudio_source->addItem(m_pulseaudio_sources[i].description);
@@ -232,7 +236,6 @@ PageInput::PageInput(MainWindow* main_window)
 		m_combobox_pulseaudio_source->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_combobox_pulseaudio_source->setToolTip("The PulseAudio source that will be used for recording.\n"
 												 "A 'monitor' is a source that records the audio played by other applications.");
-		m_combobox_pulseaudio_source->setVisible(false);
 
 		connect(m_checkbox_audio_enable, SIGNAL(clicked(bool)), this, SLOT(UpdateAudioFields()));
 		connect(m_combobox_audio_backend, SIGNAL(activated(int)), this, SLOT(UpdateAudioFields()));
@@ -242,7 +245,7 @@ PageInput::PageInput(MainWindow* main_window)
 		{
 			QGridLayout *layout2 = new QGridLayout();
 			layout->addLayout(layout2);
-			layout2->addWidget(m_label_audio_backend, 0, 0);
+			layout2->addWidget(label_audio_backend, 0, 0);
 			layout2->addWidget(m_combobox_audio_backend, 0, 1);
 			layout2->addWidget(m_label_alsa_device, 1, 0);
 			layout2->addWidget(m_lineedit_alsa_device, 1, 1);
@@ -270,6 +273,10 @@ PageInput::PageInput(MainWindow* main_window)
 		layout2->addWidget(button_back);
 		layout2->addWidget(button_continue);
 	}
+
+	UpdateVideoAreaFields();
+	UpdateVideoScaleFields();
+	UpdateAudioFields();
 
 }
 
@@ -547,10 +554,7 @@ void PageInput::UpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
 			m_pushbutton_video_opengl_settings->setEnabled(false);
-			m_spinbox_video_x->setEnabled(false);
-			m_spinbox_video_y->setEnabled(false);
-			m_spinbox_video_w->setEnabled(false);
-			m_spinbox_video_h->setEnabled(false);
+			GroupEnabled({m_spinbox_video_x, m_spinbox_video_y, m_spinbox_video_w, m_spinbox_video_h}, false);
 			int sc = m_combobox_screens->currentIndex();
 			QRect rect;
 			if(sc == 0) {
@@ -572,10 +576,7 @@ void PageInput::UpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
 			m_pushbutton_video_opengl_settings->setEnabled(false);
-			m_spinbox_video_x->setEnabled(true);
-			m_spinbox_video_y->setEnabled(true);
-			m_spinbox_video_w->setEnabled(true);
-			m_spinbox_video_h->setEnabled(true);
+			GroupEnabled({m_spinbox_video_x, m_spinbox_video_y, m_spinbox_video_w, m_spinbox_video_h}, true);
 			break;
 		}
 		case VIDEO_AREA_CURSOR: {
@@ -583,10 +584,8 @@ void PageInput::UpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
 			m_pushbutton_video_opengl_settings->setEnabled(false);
-			m_spinbox_video_x->setEnabled(false);
-			m_spinbox_video_y->setEnabled(false);
-			m_spinbox_video_w->setEnabled(true);
-			m_spinbox_video_h->setEnabled(true);
+			GroupEnabled({m_spinbox_video_x, m_spinbox_video_y}, false);
+			GroupEnabled({m_spinbox_video_w, m_spinbox_video_h}, true);
 			SetVideoX(0);
 			SetVideoY(0);
 			break;
@@ -596,12 +595,7 @@ void PageInput::UpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
 			m_pushbutton_video_opengl_settings->setEnabled(true);
-			m_spinbox_video_x->setEnabled(false);
-			m_spinbox_video_y->setEnabled(false);
-			m_spinbox_video_w->setEnabled(false);
-			m_spinbox_video_h->setEnabled(false);
-			SetVideoX(0);
-			SetVideoY(0);
+			GroupEnabled({m_spinbox_video_x, m_spinbox_video_y, m_spinbox_video_w, m_spinbox_video_h}, false);
 			break;
 		}
 		default: break;
@@ -610,19 +604,17 @@ void PageInput::UpdateVideoAreaFields() {
 
 void PageInput::UpdateVideoScaleFields() {
 	bool enabled = GetVideoScalingEnabled();
-	m_spinbox_video_scaled_w->setEnabled(enabled);
-	m_spinbox_video_scaled_h->setEnabled(enabled);
+	GroupEnabled({m_spinbox_video_scaled_w, m_spinbox_video_scaled_h}, enabled);
 }
 
 void PageInput::UpdateAudioFields() {
 	bool enabled = GetAudioEnabled();
 	enum_audio_backend backend = GetAudioBackend();
-	m_label_audio_backend->setVisible(enabled);
-	m_combobox_audio_backend->setVisible(enabled);
-	m_label_alsa_device->setVisible(enabled && (backend == AUDIO_BACKEND_ALSA));
-	m_lineedit_alsa_device->setVisible(enabled && (backend == AUDIO_BACKEND_ALSA));
-	m_label_pulseaudio_source->setVisible(enabled && (backend == AUDIO_BACKEND_PULSEAUDIO));
-	m_combobox_pulseaudio_source->setVisible(enabled && (backend == AUDIO_BACKEND_PULSEAUDIO));
+	GroupEnabled({m_combobox_audio_backend, m_label_alsa_device, m_lineedit_alsa_device, m_label_pulseaudio_source, m_combobox_pulseaudio_source}, enabled);
+	MultiGroupVisible({
+		{{m_label_alsa_device, m_lineedit_alsa_device}, (backend == AUDIO_BACKEND_ALSA)},
+		{{m_label_pulseaudio_source, m_combobox_pulseaudio_source}, (backend == AUDIO_BACKEND_PULSEAUDIO)}
+	});
 }
 
 void PageInput::UpdateScreenConfiguration() {
@@ -785,6 +777,8 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 		layout2->addWidget(pushbutton_close);
 		layout2->addStretch();
 	}
+
+	setMinimumSize(minimumSizeHint()); // workaround for Qt bug
 
 }
 
