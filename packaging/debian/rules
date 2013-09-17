@@ -1,0 +1,8 @@
+#!/usr/bin/make -f
+CPPFLAGS+=-DNDEBUG -DQT_NO_DEBUG -DTEST_USE_FFMPEG_VERSIONS=0
+%:
+	dh $@ --parallel
+
+override_dh_install:
+	dh_install --fail-missing
+	find debian/libssr-glinject -name "*.la" -delete

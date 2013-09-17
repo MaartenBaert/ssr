@@ -1,0 +1,17 @@
+simplescreenrecorder (0.0.7-1~getdeb2) precise; urgency=low
+
+  * New master.
+
+ -- Christoph Korn <christoph.korn@getdeb.net>  Sat, 14 Sep 2013 21:57:05 +0200
+
+simplescreenrecorder (0.0.7-1~getdeb1) precise; urgency=low
+
+  * Upload to GetDeb.
+
+ -- Christoph Korn <christoph.korn@getdeb.net>  Wed, 28 Aug 2013 21:28:51 +0200
+
+simplescreenrecorder (0.0.7-1~ppa1~raring1) raring; urgency=low
+
+  * Sorry, no changelogs yet.
+
+ -- Maarten Baert (v2) <maarten-baert@hotmail.com>  Sun, 02 Jun 2013 22:39:53 +0200
