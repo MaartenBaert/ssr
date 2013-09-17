@@ -64,6 +64,8 @@ AM_COND_IF([ENABLE_SSRPROGRAM], [
 AM_COND_IF([ENABLE_SSRPROGRAM], [
 	AC_CHECK_HEADER([alsa/asoundlib.h], [ ], [AC_MSG_ERROR([required header missing])])
 	AC_CHECK_LIB([asound], [snd_pcm_open], [ ], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([pulse/context.h], [ ], [AC_MSG_ERROR([required header missing])])
+	AC_CHECK_LIB([pulse], [pa_context_new], [ ], [AC_MSG_ERROR([required library missing])])
 ])
 
 AM_COND_IF([ENABLE_GLINJECTLIB], [

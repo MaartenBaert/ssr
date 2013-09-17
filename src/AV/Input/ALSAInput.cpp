@@ -206,6 +206,7 @@ void ALSAInput::InputThread() {
 			if(res < 0) {
 				if(res == -EPIPE) {
 					ALSARecoverAfterOverrun(m_alsa_pcm);
+					PushAudioHole();
 				} else {
 					Logger::LogError("[ALSAInput::run] Error: Can't check whether samples are available!");
 					throw ALSAException();
@@ -218,6 +219,7 @@ void ALSAInput::InputThread() {
 			if(samples_read < 0) {
 				if(samples_read == -EPIPE) {
 					ALSARecoverAfterOverrun(m_alsa_pcm);
+					PushAudioHole();
 				} else {
 					Logger::LogError("[ALSAInput::run] Error: Can't read samples!");
 					throw ALSAException();

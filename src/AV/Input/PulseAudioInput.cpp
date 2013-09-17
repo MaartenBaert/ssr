@@ -30,15 +30,15 @@ const int64_t PulseAudioInput::START_DELAY = 100000;
 
 static void PulseAudioIterate(pa_mainloop* mainloop) {
 	if(pa_mainloop_prepare(mainloop, 1000) < 0) {
-		Logger::LogError("[PulseAudioInput::Init] Error: Main loop prepare failed!");
+		Logger::LogError("[PulseAudioIterate] Error: Main loop prepare failed!");
 		throw PulseAudioException();
 	}
 	if(pa_mainloop_poll(mainloop) < 0) {
-		Logger::LogError("[PulseAudioInput::Init] Error: Main loop poll failed!");
+		Logger::LogError("[PulseAudioIterate] Error: Main loop poll failed!");
 		throw PulseAudioException();
 	}
 	if(pa_mainloop_dispatch(mainloop) < 0) {
-		Logger::LogError("[PulseAudioInput::Init] Error: Main loop dispatch failed!");
+		Logger::LogError("[PulseAudioIterate] Error: Main loop dispatch failed!");
 		throw PulseAudioException();
 	}
 }
@@ -48,18 +48,18 @@ static void PulseAudioConnect(pa_mainloop** mainloop, pa_context** context) {
 	// create PulseAudio main loop
 	*mainloop = pa_mainloop_new();
 	if(*mainloop == NULL) {
-		Logger::LogError("[PulseAudioInput::Init] Error: Could not create main loop!");
+		Logger::LogError("[PulseAudioConnect] Error: Could not create main loop!");
 		throw PulseAudioException();
 	}
 
 	// connect to PulseAudio
 	*context = pa_context_new(pa_mainloop_get_api(*mainloop), "SimpleScreenRecorder");
 	if(*context == NULL) {
-		Logger::LogError("[PulseAudioInput::Init] Error: Could not create context!");
+		Logger::LogError("[PulseAudioConnect] Error: Could not create context!");
 		throw PulseAudioException();
 	}
 	if(pa_context_connect(*context, NULL, PA_CONTEXT_NOAUTOSPAWN , NULL) < 0) {
-		Logger::LogError(QString("[PulseAudioInput::Init] Error: Could not connect! Reason: ") + pa_strerror(pa_context_errno(*context)) + "\n"
+		Logger::LogError(QString("[PulseAudioConnect] Error: Could not connect! Reason: ") + pa_strerror(pa_context_errno(*context)) + "\n"
 						 "It is possible that your system doesn't use PulseAudio. Try using the ALSA backend instead.");
 		throw PulseAudioException();
 	}
@@ -71,7 +71,7 @@ static void PulseAudioConnect(pa_mainloop** mainloop, pa_context** context) {
 		if(state == PA_CONTEXT_READY)
 			break;
 		if(!PA_CONTEXT_IS_GOOD(state)) {
-			Logger::LogError(QString("[PulseAudioInput::Init] Error: Connection attempt failed! Reason: ") + pa_strerror(pa_context_errno(*context)));
+			Logger::LogError(QString("[PulseAudioConnect] Error: Connection attempt failed! Reason: ") + pa_strerror(pa_context_errno(*context)));
 			throw PulseAudioException();
 		}
 	}
@@ -106,16 +106,16 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 	buffer_attr.tlength = (uint32_t) -1;
 
 	// create a stream
-	*stream = pa_stream_new(context, "SimpleScreenRecorder Audio Input", &sample_spec, NULL);
+	*stream = pa_stream_new(context, "SimpleScreenRecorder audio input", &sample_spec, NULL);
 	if(*stream == NULL) {
-		Logger::LogError(QString("[PulseAudioInput::Init] Error: Could not create stream! Reason: ") + pa_strerror(pa_context_errno(context)));
+		Logger::LogError(QString("[PulseAudioConnectStream] Error: Could not create stream! Reason: ") + pa_strerror(pa_context_errno(context)));
 		throw PulseAudioException();
 	}
 
 	// connect the stream
 	if(pa_stream_connect_record(*stream, qPrintable(source_name), &buffer_attr,
 								(pa_stream_flags_t) (PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE | PA_STREAM_ADJUST_LATENCY)) < 0) {
-		Logger::LogError(QString("[PulseAudioInput::Init] Error: Could not connect stream! Reason: ") + pa_strerror(pa_context_errno(context)));
+		Logger::LogError(QString("[PulseAudioConnectStream] Error: Could not connect stream! Reason: ") + pa_strerror(pa_context_errno(context)));
 		throw PulseAudioException();
 	}
 
@@ -126,7 +126,7 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 		if(state == PA_STREAM_READY)
 			break;
 		if(!PA_STREAM_IS_GOOD(state)) {
-			Logger::LogError(QString("[PulseAudioInput::Init] Error: Stream connection attempt failed! Reason: ") + pa_strerror(pa_context_errno(context)));
+			Logger::LogError(QString("[PulseAudioConnectStream] Error: Stream connection attempt failed! Reason: ") + pa_strerror(pa_context_errno(context)));
 			throw PulseAudioException();
 		}
 	}
@@ -141,7 +141,7 @@ static void PulseAudioDisconnectStream(pa_stream** stream) {
 }
 
 static void PulseAudioCompleteOperation(pa_mainloop* mainloop, pa_operation** operation) {
-	if(operation == NULL)
+	if(*operation == NULL)
 		return;
 
 	// wait until the operation is done
@@ -159,7 +159,7 @@ static void PulseAudioCompleteOperation(pa_mainloop* mainloop, pa_operation** op
 }
 
 static void PulseAudioCancelOperation(pa_mainloop* mainloop, pa_operation** operation) {
-	if(operation == NULL)
+	if(*operation == NULL)
 		return;
 
 	// cancel it
@@ -237,7 +237,7 @@ std::vector<PulseAudioInput::Source> PulseAudioInput::GetSourceList() {
 
 		operation = pa_context_get_source_info_list(context, SourceNamesCallback, &list);
 		if(operation == NULL) {
-			Logger::LogError(QString("[PulseAudioInput::Init] Error: Could not get names of sources! Reason: ") + pa_strerror(pa_context_errno(context)));
+			Logger::LogError(QString("[PulseAudioInput::GetSourceList] Error: Could not get names of sources! Reason: ") + pa_strerror(pa_context_errno(context)));
 			throw PulseAudioException();
 		}
 		PulseAudioCompleteOperation(mainloop, &operation);
@@ -283,6 +283,7 @@ void PulseAudioInput::InputThread() {
 
 			PulseAudioIterate(m_pa_mainloop);
 
+			// try to read samples
 			const void *data;
 			size_t bytes;
 			if(pa_stream_peek(m_pa_stream, &data, &bytes) < 0) {
@@ -295,55 +296,61 @@ void PulseAudioInput::InputThread() {
 					PushAudioHole();
 					pa_stream_drop(m_pa_stream);
 				}
-				continue;
-			}
-
-			// deal with half samples from the last peek
-			unsigned int samples = (buffer.size() + bytes) / (m_channels * 2);
-			unsigned int bytes_left = (buffer.size() + bytes) % (m_channels * 2);
-			uint8_t *push_data;
-			if(buffer.size() > 0) {
-				size_t p = buffer.size();
-				buffer.resize(p + bytes - bytes_left);
-				memcpy(buffer.data() + p, data, bytes - bytes_left);
-				push_data = buffer.data();
 			} else {
-				push_data = (uint8_t*) data;
-			}
 
-			int64_t timestamp = hrt_time_micro();
-
-			// skip the first samples
-			if(has_first_samples) {
-				if(timestamp > first_timestamp + START_DELAY) {
-
-					// get the latency
-					// The latency can be negative for monitors, this means that we got the samples before they were actually played.
-					// But for some reason, PulseAudio doesn't like signed integers ...
-					pa_usec_t latency_magnitude;
-					int latency_negative;
-					pa_stream_get_latency(m_pa_stream, &latency_magnitude, &latency_negative);
-					int64_t latency = (latency_negative)? -(int64_t) latency_magnitude : latency_magnitude;
-
-					// send the samples to the synchronizer
-					int64_t time = timestamp - latency;
-					PushAudioSamples(m_sample_rate, m_channels, samples, push_data, AV_SAMPLE_FMT_S16, time);
-
+				// deal with half samples from the last peek (I don't think this will ever happen, but just in case ...)
+				unsigned int samples = (buffer.size() + bytes) / (m_channels * 2);
+				unsigned int bytes_left = (buffer.size() + bytes) % (m_channels * 2);
+				uint8_t *push_data;
+				if(buffer.size() > 0) {
+					size_t p = buffer.size();
+					buffer.resize(p + bytes - bytes_left);
+					memcpy(buffer.data() + p, data, bytes - bytes_left);
+					push_data = buffer.data();
+				} else {
+					push_data = (uint8_t*) data;
 				}
-			} else {
-				has_first_samples = true;
-				first_timestamp = timestamp;
+
+				int64_t timestamp = hrt_time_micro();
+
+				// skip the first samples
+				if(has_first_samples) {
+					if(timestamp > first_timestamp + START_DELAY) {
+
+						// get the latency
+						// The latency can be negative for monitors, this means that we got the samples before they were actually played.
+						// But for some reason, PulseAudio doesn't like signed integers ...
+						pa_usec_t latency_magnitude;
+						int latency_negative;
+						pa_stream_get_latency(m_pa_stream, &latency_magnitude, &latency_negative);
+						int64_t latency = (latency_negative)? -(int64_t) latency_magnitude : latency_magnitude;
+
+						// send the samples to the synchronizer
+						int64_t time = timestamp - latency;
+						PushAudioSamples(m_sample_rate, m_channels, samples, push_data, AV_SAMPLE_FMT_S16, time);
+
+					}
+				} else {
+					has_first_samples = true;
+					first_timestamp = timestamp;
+				}
+
+				// store remaining bytes
+				buffer.clear();
+				if(bytes_left > 0) {
+					buffer.resize(bytes_left);
+					memcpy(buffer.data(), (uint8_t*) data + bytes - bytes_left, bytes_left);
+				}
+
+				// drop the samples that we have read
+				pa_stream_drop(m_pa_stream);
+
 			}
 
-			// store remaining bytes
-			buffer.clear();
-			if(bytes_left > 0) {
-				buffer.resize(bytes_left);
-				memcpy(buffer.data(), (uint8_t*) data + bytes - bytes_left, bytes_left);
+			// is the stream suspended?
+			if(pa_stream_is_suspended(m_pa_stream)) {
+				PushAudioHole();
 			}
-
-			// drop samples
-			pa_stream_drop(m_pa_stream);
 
 		}
 

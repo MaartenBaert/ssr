@@ -19,7 +19,8 @@ This list may be incomplete. All instructions and package names are for Ubuntu 1
 - libavcodec (package libavcodec-dev)
 - libavutil (package libavutil-dev)
 - libswscale (package libswscale-dev)
-- ALSA library  (package libasound2-dev)
+- ALSA library (package libasound2-dev)
+- PulseAudio library (package libpulse-dev)
 - libGL (32/64) (package libgl1-mesa-dev)
 - libX11 (32/64) (package libx11-dev)
 - libXext (package libxext-dev)
@@ -28,7 +29,7 @@ This list may be incomplete. All instructions and package names are for Ubuntu 1
 
 Everything combined:
 
-    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
+    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libgl1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
 
 If the 32-bit version of some library isn't found, but 64-bit works fine, try this:
 
