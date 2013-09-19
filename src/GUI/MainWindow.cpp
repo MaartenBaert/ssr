@@ -21,6 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "MainWindow.h"
 
 #include "Main.h"
+#include "Icons.h"
 #include "PageWelcome.h"
 #include "PageInput.h"
 #include "PageOutput.h"
@@ -33,7 +34,7 @@ MainWindow::MainWindow()
 	: QMainWindow() {
 
 	setWindowTitle(WINDOW_CAPTION);
-	setWindowIcon(QIcon(":/img/icon.png"));
+	setWindowIcon(g_icon_ssr);
 
 	QWidget *centralwidget = new QWidget(this);
 	setCentralWidget(centralwidget);
@@ -86,6 +87,7 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 	}
 	SaveSettings();
 	event->accept();
+	QApplication::quit();
 }
 
 void MainWindow::GoPageWelcome() {

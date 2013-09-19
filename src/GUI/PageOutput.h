@@ -137,12 +137,12 @@ public:
 	QString GetH264PresetName();
 
 private:
-	enum_container FindContainer(QString name, enum_container fallback);
-	unsigned int FindContainerAV(QString name);
-	enum_video_codec FindVideoCodec(QString name, enum_video_codec fallback);
-	unsigned int FindVideoCodecAV(QString name);
-	enum_audio_codec FindAudioCodec(QString name, enum_audio_codec fallback);
-	unsigned int FindAudioCodecAV(QString name);
+	enum_container FindContainer(const QString& name, enum_container fallback);
+	unsigned int FindContainerAV(const QString& name);
+	enum_video_codec FindVideoCodec(const QString& name, enum_video_codec fallback);
+	unsigned int FindVideoCodecAV(const QString& name);
+	enum_audio_codec FindAudioCodec(const QString& name, enum_audio_codec fallback);
+	unsigned int FindAudioCodecAV(const QString& name);
 
 public:
 	inline QString GetFile() { return m_lineedit_file->text(); }
@@ -180,13 +180,13 @@ public:
 	inline void SetAudioOptions(const QString& options) { m_lineedit_audio_options->setText(options); }
 
 public slots:
-	void UpdateSuffixAndContainerFields();
-	void UpdateContainerFields();
-	void UpdateVideoCodecFields();
-	void UpdateAudioCodecFields();
+	void OnUpdateSuffixAndContainerFields();
+	void OnUpdateContainerFields();
+	void OnUpdateVideoCodecFields();
+	void OnUpdateAudioCodecFields();
 
 private slots:
-	void Browse();
-	void Continue();
+	void OnBrowse();
+	void OnContinue();
 
 };

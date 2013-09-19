@@ -106,6 +106,11 @@ private:
 
 	QTextEdit *m_textedit_log;
 
+	QSystemTrayIcon *m_systray_icon;
+	QAction *m_systray_action_start_pause;
+	QAction *m_systray_action_save;
+	QAction *m_systray_action_cancel;
+
 public:
 	PageRecord(MainWindow* main_window);
 	~PageRecord();
@@ -128,6 +133,7 @@ public:
 
 private:
 	void UpdateCapture();
+	void UpdateSysTray();
 	void UpdateRecordPauseButton();
 	void UpdatePreview();
 
@@ -149,16 +155,19 @@ public:
 	inline void SetPreviewFrameRate(unsigned int frame_rate) { m_spinbox_preview_frame_rate->setValue(frame_rate); }
 
 public slots:
-	void UpdateHotkeyFields();
-	void UpdateHotkey();
+	void OnUpdateHotkeyFields();
+	void OnUpdateHotkey();
 
 private slots:
-	void RecordStartPause();
-	void PreviewStartStop();
-	void Cancel();
-	void Save();
-	void UpdateInformation();
-	void UpdateLog(Logger::enum_type type, QString string);
-	void CheckGLInjectEvents();
+	void OnRecordStartPause();
+	void OnPreviewStartStop();
+	void OnCancel();
+	void OnSave();
+
+	void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
+
+	void OnUpdateInformation();
+	void OnNewLogLine(Logger::enum_type type, QString string);
+	void OnCheckGLInjectEvents();
 
 };

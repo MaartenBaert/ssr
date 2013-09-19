@@ -112,13 +112,14 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	AV/DetectCPUFeatures.h AV/FastScaler.cpp AV/FastScaler.h \
 	AV/SourceSink.cpp AV/SourceSink.h GUI/AudioPreviewer.cpp \
 	GUI/AudioPreviewer.h GUI/ElidedLabel.cpp GUI/ElidedLabel.h \
-	GUI/HotkeyListener.cpp GUI/HotkeyListener.h GUI/MainWindow.cpp \
-	GUI/MainWindow.h GUI/PageDone.cpp GUI/PageDone.h \
-	GUI/PageInput.cpp GUI/PageInput.h GUI/PageOutput.cpp \
-	GUI/PageOutput.h GUI/PageRecord.cpp GUI/PageRecord.h \
-	GUI/PageWelcome.cpp GUI/PageWelcome.h GUI/VideoPreviewer.cpp \
-	GUI/VideoPreviewer.h Global.h Logger.cpp Logger.h Main.cpp \
-	Main.h MutexDataPair.h Version.cpp Version.h
+	GUI/HotkeyListener.cpp GUI/HotkeyListener.h GUI/Icons.cpp \
+	GUI/Icons.h GUI/MainWindow.cpp GUI/MainWindow.h \
+	GUI/PageDone.cpp GUI/PageDone.h GUI/PageInput.cpp \
+	GUI/PageInput.h GUI/PageOutput.cpp GUI/PageOutput.h \
+	GUI/PageRecord.cpp GUI/PageRecord.h GUI/PageWelcome.cpp \
+	GUI/PageWelcome.h GUI/VideoPreviewer.cpp GUI/VideoPreviewer.h \
+	Global.h Logger.cpp Logger.h Main.cpp Main.h MutexDataPair.h \
+	Version.cpp Version.h
 am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT) \
@@ -140,6 +141,7 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-AudioPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-ElidedLabel.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-HotkeyListener.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-Icons.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-MainWindow.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageDone.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageInput.$(OBJEXT) \
@@ -445,6 +447,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	GUI/ElidedLabel.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/HotkeyListener.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/HotkeyListener.h \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/Icons.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/Icons.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/MainWindow.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/MainWindow.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageDone.cpp \
@@ -631,6 +635,8 @@ GUI/simplescreenrecorder-ElidedLabel.$(OBJEXT): GUI/$(am__dirstamp) \
 	GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-HotkeyListener.$(OBJEXT):  \
 	GUI/$(am__dirstamp) GUI/$(DEPDIR)/$(am__dirstamp)
+GUI/simplescreenrecorder-Icons.$(OBJEXT): GUI/$(am__dirstamp) \
+	GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-MainWindow.$(OBJEXT): GUI/$(am__dirstamp) \
 	GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-PageDone.$(OBJEXT): GUI/$(am__dirstamp) \
@@ -696,6 +702,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-AudioPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-ElidedLabel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-HotkeyListener.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-Icons.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-MainWindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-PageDone.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-PageInput.Po@am__quote@
@@ -1007,6 +1014,20 @@ GUI/simplescreenrecorder-HotkeyListener.obj: GUI/HotkeyListener.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/HotkeyListener.cpp' object='GUI/simplescreenrecorder-HotkeyListener.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-HotkeyListener.obj `if test -f 'GUI/HotkeyListener.cpp'; then $(CYGPATH_W) 'GUI/HotkeyListener.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/HotkeyListener.cpp'; fi`
+
+GUI/simplescreenrecorder-Icons.o: GUI/Icons.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-Icons.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-Icons.Tpo -c -o GUI/simplescreenrecorder-Icons.o `test -f 'GUI/Icons.cpp' || echo '$(srcdir)/'`GUI/Icons.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-Icons.Tpo GUI/$(DEPDIR)/simplescreenrecorder-Icons.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/Icons.cpp' object='GUI/simplescreenrecorder-Icons.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-Icons.o `test -f 'GUI/Icons.cpp' || echo '$(srcdir)/'`GUI/Icons.cpp
+
+GUI/simplescreenrecorder-Icons.obj: GUI/Icons.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-Icons.obj -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-Icons.Tpo -c -o GUI/simplescreenrecorder-Icons.obj `if test -f 'GUI/Icons.cpp'; then $(CYGPATH_W) 'GUI/Icons.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/Icons.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-Icons.Tpo GUI/$(DEPDIR)/simplescreenrecorder-Icons.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/Icons.cpp' object='GUI/simplescreenrecorder-Icons.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-Icons.obj `if test -f 'GUI/Icons.cpp'; then $(CYGPATH_W) 'GUI/Icons.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/Icons.cpp'; fi`
 
 GUI/simplescreenrecorder-MainWindow.o: GUI/MainWindow.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-MainWindow.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-MainWindow.Tpo -c -o GUI/simplescreenrecorder-MainWindow.o `test -f 'GUI/MainWindow.cpp' || echo '$(srcdir)/'`GUI/MainWindow.cpp
@@ -1557,7 +1578,8 @@ uninstall-am: uninstall-binPROGRAMS
 
 @ENABLE_SSRPROGRAM_TRUE@qrc_resources.cpp: $(srcdir)/resources.qrc \
 @ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/img/header.png \
-@ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/img/icon.png \
+@ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/img/icon-ssr.png \
+@ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/img/icon-ssr-recording.png \
 @ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/about.htm
 @ENABLE_SSRPROGRAM_TRUE@	$(SED) "s|%DATADIR%|$(top_srcdir)/data|" "$(srcdir)/resources.qrc" > "resources_generated.qrc"
 @ENABLE_SSRPROGRAM_TRUE@	$(RCC) -name resources "resources_generated.qrc" -o "qrc_resources.cpp"

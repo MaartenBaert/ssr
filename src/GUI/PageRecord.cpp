@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "PageRecord.h"
 
+#include "Icons.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 #include "PageOutput.h"
@@ -133,19 +134,17 @@ PageRecord::PageRecord(MainWindow* main_window)
 										  "recording will not receive the key press.\n\n"
 										  "Note: The choice of keys is currently rather limited, because capturing key presses session-wide is a bit harder than it looks. For\n"
 										  "example, applications are not allowed to capture the F1-F12 keys (on Ubuntu at least). The A-Z keys don't have this limitation apparently.");
-		QLabel *label_hint_workspace = new QLabel("Hint: If you want to hide this program completely, move it to a different workspace.", group_recording);
-		label_hint_workspace->setWordWrap(true);
 		for(unsigned int i = 0; i < 26; ++i) {
 			m_combobox_hotkey_key->addItem(QString('A' + i));
 		}
 
-		connect(m_pushbutton_start_pause, SIGNAL(clicked()), this, SLOT(RecordStartPause()));
-		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(UpdateHotkeyFields()));
-		connect(m_checkbox_hotkey_ctrl, SIGNAL(clicked()), this, SLOT(UpdateHotkey()));
-		connect(m_checkbox_hotkey_shift, SIGNAL(clicked()), this, SLOT(UpdateHotkey()));
-		connect(m_checkbox_hotkey_alt, SIGNAL(clicked()), this, SLOT(UpdateHotkey()));
-		connect(m_checkbox_hotkey_super, SIGNAL(clicked()), this, SLOT(UpdateHotkey()));
-		connect(m_combobox_hotkey_key, SIGNAL(activated(int)), this, SLOT(UpdateHotkey()));
+		connect(m_pushbutton_start_pause, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
+		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(OnUpdateHotkeyFields()));
+		connect(m_checkbox_hotkey_ctrl, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
+		connect(m_checkbox_hotkey_shift, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
+		connect(m_checkbox_hotkey_alt, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
+		connect(m_checkbox_hotkey_super, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
+		connect(m_combobox_hotkey_key, SIGNAL(activated(int)), this, SLOT(OnUpdateHotkey()));
 
 		QVBoxLayout *layout = new QVBoxLayout(group_recording);
 		layout->addWidget(m_pushbutton_start_pause);
@@ -160,7 +159,6 @@ PageRecord::PageRecord(MainWindow* main_window)
 			layout2->addWidget(m_checkbox_hotkey_super);
 			layout2->addWidget(m_combobox_hotkey_key);
 		}
-		layout->addWidget(label_hint_workspace);
 	}
 	QSplitter *splitter_vertical = new QSplitter(Qt::Vertical, this);
 	{
@@ -246,7 +244,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 				}
 				m_pushbutton_preview_start_stop = new QPushButton(group_preview);
 
-				connect(m_pushbutton_preview_start_stop, SIGNAL(clicked()), this, SLOT(PreviewStartStop()));
+				connect(m_pushbutton_preview_start_stop, SIGNAL(clicked()), this, SLOT(OnPreviewStartStop()));
 
 				QVBoxLayout *layout = new QVBoxLayout(group_preview);
 				{
@@ -281,8 +279,20 @@ PageRecord::PageRecord(MainWindow* main_window)
 	QPushButton *button_cancel = new QPushButton(QIcon::fromTheme("process-stop"), "Cancel recording", this);
 	QPushButton *button_save = new QPushButton(QIcon::fromTheme("document-save"), "Save recording", this);
 
-	connect(button_cancel, SIGNAL(clicked()), this, SLOT(Cancel()));
-	connect(button_save, SIGNAL(clicked()), this, SLOT(Save()));
+	m_systray_icon = new QSystemTrayIcon(m_main_window);
+	{
+		QMenu *menu = new QMenu(m_main_window);
+		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
+		m_systray_action_save = menu->addAction("Save recording", this, SLOT(OnSave()));
+		m_systray_action_cancel = menu->addAction("Cancel recording", this, SLOT(OnCancel()));
+		menu->addSeparator();
+		menu->addAction("Quit", m_main_window, SLOT(close()));
+		m_systray_icon->setContextMenu(menu);
+	}
+
+	connect(button_cancel, SIGNAL(clicked()), this, SLOT(OnCancel()));
+	connect(button_save, SIGNAL(clicked()), this, SLOT(OnSave()));
+	connect(m_systray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(group_recording);
@@ -294,15 +304,18 @@ PageRecord::PageRecord(MainWindow* main_window)
 		layout2->addWidget(button_save);
 	}
 
+	UpdateSysTray();
 	UpdateRecordPauseButton();
 	UpdatePreview();
 
 	m_info_timer = new QTimer(this);
 	m_glinject_event_timer = new QTimer(this);
-	connect(m_info_timer, SIGNAL(timeout()), this, SLOT(UpdateInformation()));
-	connect(m_glinject_event_timer, SIGNAL(timeout()), this, SLOT(CheckGLInjectEvents()));
-	connect(&g_hotkey_listener, SIGNAL(Triggered()), this, SLOT(RecordStartPause()));
-	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(UpdateLog(Logger::enum_type,QString)), Qt::QueuedConnection);
+	connect(m_info_timer, SIGNAL(timeout()), this, SLOT(OnUpdateInformation()));
+	connect(m_glinject_event_timer, SIGNAL(timeout()), this, SLOT(OnCheckGLInjectEvents()));
+	connect(&g_hotkey_listener, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()));
+	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(OnNewLogLine(Logger::enum_type,QString)), Qt::QueuedConnection);
+
+	m_systray_icon->show();
 
 }
 
@@ -332,7 +345,7 @@ void PageRecord::LoadSettings(QSettings *settings) {
 	SetHotkeySuperEnabled(settings->value("record/hotkey_super", false).toBool());
 	SetHotkeyKey(settings->value("record/hotkey_key", 'r' - 'a').toUInt());
 	SetPreviewFrameRate(settings->value("record/preview_frame_rate", 10).toUInt());
-	UpdateHotkeyFields();
+	OnUpdateHotkeyFields();
 }
 
 void PageRecord::SaveSettings(QSettings *settings) {
@@ -366,8 +379,6 @@ void PageRecord::PageStart() {
 	// clear the preview
 	m_video_previewer->Reset();
 	m_audio_previewer->Reset();
-
-	Logger::LogInfo("[PageRecord::PageStart] Starting page ...");
 
 	PageInput *page_input = m_main_window->GetPageInput();
 	PageOutput *page_output = m_main_window->GetPageOutput();
@@ -467,6 +478,8 @@ void PageRecord::PageStart() {
 	// hide the audio previewer if there is no audio
 	GroupVisible({m_label_mic_icon, m_audio_previewer}, m_audio_enabled);
 
+	Logger::LogInfo("[PageRecord::PageStart] Starting page ...");
+
 	// for OpenGL recording, allocate shared memory and start the program now
 	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 		try {
@@ -475,7 +488,6 @@ void PageRecord::PageStart() {
 		} catch(...) {
 			Logger::LogError("[PageRecord::PageStart] Error: Something went wrong during GLInject initialization.");
 			m_gl_inject_launcher.reset();
-			return;
 		}
 	}
 
@@ -483,13 +495,15 @@ void PageRecord::PageStart() {
 
 	m_page_started = true;
 	m_recorded_something = false;
-	UpdateHotkey();
+	UpdateSysTray();
+	OnUpdateHotkey();
+
 	UpdateCapture();
 
 	m_info_last_timestamp = hrt_time_micro();
 	m_info_last_frame_counter = 0;
 	m_info_input_frame_rate = 0.0;
-	UpdateInformation();
+	OnUpdateInformation();
 	m_info_timer->start(1000);
 
 	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
@@ -521,6 +535,7 @@ void PageRecord::PageStop(bool save) {
 		}
 
 	}
+
 	// free the shared memory for OpenGL recording
 	// This doesn't stop the program, and the memory is only actually freed when the recorded program stops too.
 	m_gl_inject_launcher.reset();
@@ -528,10 +543,11 @@ void PageRecord::PageStop(bool save) {
 	Logger::LogInfo("[PageRecord::PageStop] Stopped page.");
 
 	m_page_started = false;
-	UpdateHotkey();
+	UpdateSysTray();
+	OnUpdateHotkey();
 
 	m_info_timer->stop();
-	UpdateInformation();
+	OnUpdateInformation();
 
 	m_glinject_event_timer->stop();
 
@@ -743,19 +759,27 @@ void PageRecord::UpdateCapture() {
 
 }
 
+void PageRecord::UpdateSysTray() {
+	GroupEnabled({m_systray_action_start_pause, m_systray_action_save, m_systray_action_cancel}, m_page_started);
+}
+
 void PageRecord::UpdateRecordPauseButton() {
 	if(m_recording) {
 		m_pushbutton_start_pause->setText("Pause recording");
 		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-playback-pause"));
+		m_systray_icon->setIcon(g_icon_ssr_recording);
+		m_systray_action_start_pause->setText("Pause recording");
 	} else {
 		m_pushbutton_start_pause->setText("Start recording");
 		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-record"));
+		m_systray_icon->setIcon(g_icon_ssr);
+		m_systray_action_start_pause->setText("Start recording");
 	}
 }
 
 void PageRecord::UpdatePreview() {
-	m_video_previewer->SetFrameRate(GetPreviewFrameRate());
 	if(m_previewing) {
+		m_video_previewer->SetFrameRate(GetPreviewFrameRate());
 		m_stacked_layout_preview->setCurrentWidget(m_preview_page2);
 		m_pushbutton_preview_start_stop->setText("Stop preview");
 	} else {
@@ -764,16 +788,16 @@ void PageRecord::UpdatePreview() {
 	}
 }
 
-void PageRecord::UpdateHotkeyFields() {
+void PageRecord::OnUpdateHotkeyFields() {
 
 	bool enabled = IsHotkeyEnabled();
 	GroupEnabled({m_checkbox_hotkey_ctrl, m_checkbox_hotkey_shift, m_checkbox_hotkey_alt, m_checkbox_hotkey_super, m_combobox_hotkey_key}, enabled);
 
-	UpdateHotkey();
+	OnUpdateHotkey();
 
 }
 
-void PageRecord::UpdateHotkey() {
+void PageRecord::OnUpdateHotkey() {
 
 	if(m_page_started && IsHotkeyEnabled()) {
 
@@ -784,7 +808,7 @@ void PageRecord::UpdateHotkey() {
 		if(IsHotkeySuperEnabled()) modifiers |= Mod4Mask;
 		g_hotkey_listener.EnableHotkey(XK_A + GetHotkeyKey(), modifiers);
 
-		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
+		if(m_gl_inject_launcher != NULL)
 			m_gl_inject_launcher->UpdateHotkey(IsHotkeyEnabled(), XK_A + GetHotkeyKey(), modifiers);
 
 	} else {
@@ -795,7 +819,9 @@ void PageRecord::UpdateHotkey() {
 
 }
 
-void PageRecord::RecordStartPause() {
+void PageRecord::OnRecordStartPause() {
+	if(!m_page_started)
+		return;
 	if(m_recording) {
 		RecordStop(false);
 	} else {
@@ -803,7 +829,9 @@ void PageRecord::RecordStartPause() {
 	}
 }
 
-void PageRecord::PreviewStartStop() {
+void PageRecord::OnPreviewStartStop() {
+	if(!m_page_started)
+		return;
 	m_video_previewer->Reset();
 	m_audio_previewer->Reset();
 	m_previewing = !m_previewing;
@@ -811,7 +839,9 @@ void PageRecord::PreviewStartStop() {
 	UpdateCapture();
 }
 
-void PageRecord::Cancel() {
+void PageRecord::OnCancel() {
+	if(!m_page_started)
+		return;
 	if(m_output_manager != NULL) {
 		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, "Are you sure you want to cancel this recording?",
 								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
@@ -822,7 +852,9 @@ void PageRecord::Cancel() {
 	m_main_window->GoPageOutput();
 }
 
-void PageRecord::Save() {
+void PageRecord::OnSave() {
+	if(!m_page_started)
+		return;
 	if(!m_recorded_something) {
 		QMessageBox::information(this, MainWindow::WINDOW_CAPTION, "You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;).",
 								 QMessageBox::Ok);
@@ -832,7 +864,16 @@ void PageRecord::Save() {
 	m_main_window->GoPageDone();
 }
 
-void PageRecord::UpdateInformation() {
+void PageRecord::OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason) {
+	if(reason == QSystemTrayIcon::Trigger || reason == QSystemTrayIcon::DoubleClick) {
+		if(m_main_window->isVisible())
+			m_main_window->hide();
+		else
+			m_main_window->show();
+	}
+}
+
+void PageRecord::OnUpdateInformation() {
 
 	if(m_page_started) {
 
@@ -925,7 +966,7 @@ void PageRecord::UpdateInformation() {
 
 }
 
-void PageRecord::UpdateLog(Logger::enum_type type, QString str) {
+void PageRecord::OnNewLogLine(Logger::enum_type type, QString str) {
 	QTextCursor cursor = m_textedit_log->textCursor();
 	QTextCharFormat format;
 	bool should_scroll = (m_textedit_log->verticalScrollBar()->value() >= m_textedit_log->verticalScrollBar()->maximum());
@@ -942,9 +983,9 @@ void PageRecord::UpdateLog(Logger::enum_type type, QString str) {
 		m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
 }
 
-void PageRecord::CheckGLInjectEvents() {
+void PageRecord::OnCheckGLInjectEvents() {
 	Q_ASSERT(m_video_area == PageInput::VIDEO_AREA_GLINJECT);
 	if(m_gl_inject_launcher->GetHotkeyPressed()) {
-		RecordStartPause();
+		OnRecordStartPause();
 	}
 }

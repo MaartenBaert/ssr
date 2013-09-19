@@ -9,7 +9,7 @@ dist_desktop_DATA = \
 nodist_icon256_DATA = \
 	simplescreenrecorder.png
 
-simplescreenrecorder.png: $(srcdir)/img/icon.png
+simplescreenrecorder.png: $(srcdir)/img/icon-ssr.png
 	cp "$<" "$@"
 
 clean-local:
@@ -19,7 +19,8 @@ clean-local:
 
 EXTRA_DIST = \
 	img/header.png \
-	img/icon.png \
+	img/icon-ssr.png \
+	img/icon-ssr-recording.png \
 	about.htm
 
 endif

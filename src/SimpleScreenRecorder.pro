@@ -32,6 +32,7 @@ SOURCES += \
 	GUI/AudioPreviewer.cpp \
 	GUI/ElidedLabel.cpp \
 	GUI/HotkeyListener.cpp \
+	GUI/Icons.cpp \
 	GUI/MainWindow.cpp \
 	GUI/PageDone.cpp \
 	GUI/PageInput.cpp \
@@ -65,6 +66,7 @@ HEADERS  += \
 	GUI/AudioPreviewer.h \
 	GUI/ElidedLabel.h \
 	GUI/HotkeyListener.h \
+	GUI/Icons.h \
 	GUI/MainWindow.h \
 	GUI/PageDone.h \
 	GUI/PageInput.h \
@@ -75,8 +77,8 @@ HEADERS  += \
 	Global.h \
 	Logger.h \
 	Main.h \
-	Version.h \
-	MutexDataPair.h
+	MutexDataPair.h \
+	Version.h
 
 RESOURCES += \
 	resources.qrc

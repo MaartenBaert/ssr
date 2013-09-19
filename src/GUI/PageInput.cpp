@@ -71,17 +71,6 @@ PageInput::PageInput(MainWindow* main_window)
 	m_grabbing = false;
 	m_selecting_window = false;
 
-	m_pulseaudio_sources = PulseAudioInput::GetSourceList();
-	if(m_pulseaudio_sources.empty()) {
-		m_pulseaudio_available = false;
-		PulseAudioInput::Source source;
-		source.name = "";
-		source.description = "(no sources found)";
-		m_pulseaudio_sources.push_back(source);
-	} else {
-		m_pulseaudio_available = true;
-	}
-
 	m_glinject_command = "";
 	m_glinject_max_megapixels = 0;
 
@@ -97,7 +86,7 @@ PageInput::PageInput(MainWindow* main_window)
 		m_buttongroup_video_area->addButton(radio_area_cursor, VIDEO_AREA_CURSOR);
 		m_buttongroup_video_area->addButton(radio_area_glinject, VIDEO_AREA_GLINJECT);
 		m_combobox_screens = new QComboBoxWithSignal(group_video);
-		m_combobox_screens->setToolTip("This settings allows you to select what monitor should be recorded in a multi-monitor configuration.");
+		m_combobox_screens->setToolTip("Select what monitor should be recorded in a multi-monitor configuration.");
 		m_pushbutton_video_select_rectangle = new QPushButton("Select rectangle...", group_video);
 		m_pushbutton_video_select_rectangle->setToolTip("Use the mouse to select the recorded rectangle.");
 		m_pushbutton_video_select_window = new QPushButton("Select window...", group_video);
@@ -147,26 +136,26 @@ PageInput::PageInput(MainWindow* main_window)
 		m_spinbox_video_scaled_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_checkbox_record_cursor = new QCheckBox("Record cursor", group_video);
 
-		connect(m_buttongroup_video_area, SIGNAL(buttonClicked(int)), this, SLOT(UpdateVideoAreaFields()));
-		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(UpdateVideoAreaFields()));
-		connect(m_combobox_screens, SIGNAL(popupShown()), this, SLOT(IdentifyScreens()));
-		connect(m_combobox_screens, SIGNAL(popupHidden()), this, SLOT(StopIdentifyScreens()));
-		connect(m_spinbox_video_x, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_x, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_x, SIGNAL(valueChanged(int)), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_y, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_y, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_y, SIGNAL(valueChanged(int)), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_w, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_w, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_w, SIGNAL(valueChanged(int)), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_h, SIGNAL(focusIn()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_h, SIGNAL(focusOut()), this, SLOT(UpdateRecordingFrame()));
-		connect(m_spinbox_video_h, SIGNAL(valueChanged(int)), this, SLOT(UpdateRecordingFrame()));
-		connect(m_pushbutton_video_select_rectangle, SIGNAL(clicked()), this, SLOT(StartSelectRectangle()));
-		connect(m_pushbutton_video_select_window, SIGNAL(clicked()), this, SLOT(StartSelectWindow()));
-		connect(m_pushbutton_video_opengl_settings, SIGNAL(clicked()), this, SLOT(GLInjectDialog()));
-		connect(m_checkbox_scale, SIGNAL(clicked()), this, SLOT(UpdateVideoScaleFields()));
+		connect(m_buttongroup_video_area, SIGNAL(buttonClicked(int)), this, SLOT(OnUpdateVideoAreaFields()));
+		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoAreaFields()));
+		connect(m_combobox_screens, SIGNAL(popupShown()), this, SLOT(OnIdentifyScreens()));
+		connect(m_combobox_screens, SIGNAL(popupHidden()), this, SLOT(OnStopIdentifyScreens()));
+		connect(m_spinbox_video_x, SIGNAL(focusIn()), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_x, SIGNAL(focusOut()), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_x, SIGNAL(valueChanged(int)), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_y, SIGNAL(focusIn()), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_y, SIGNAL(focusOut()), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_y, SIGNAL(valueChanged(int)), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_w, SIGNAL(focusIn()), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_w, SIGNAL(focusOut()), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_w, SIGNAL(valueChanged(int)), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_h, SIGNAL(focusIn()), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_h, SIGNAL(focusOut()), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_spinbox_video_h, SIGNAL(valueChanged(int)), this, SLOT(OnUpdateRecordingFrame()));
+		connect(m_pushbutton_video_select_rectangle, SIGNAL(clicked()), this, SLOT(OnStartSelectRectangle()));
+		connect(m_pushbutton_video_select_window, SIGNAL(clicked()), this, SLOT(OnStartSelectWindow()));
+		connect(m_pushbutton_video_opengl_settings, SIGNAL(clicked()), this, SLOT(OnGLInjectDialog()));
+		connect(m_checkbox_scale, SIGNAL(clicked()), this, SLOT(OnUpdateVideoScaleFields()));
 
 		QVBoxLayout *layout = new QVBoxLayout(group_video);
 		{
@@ -221,7 +210,7 @@ PageInput::PageInput(MainWindow* main_window)
 		label_audio_backend = new QLabel("Backend:", group_audio);
 		m_combobox_audio_backend = new QComboBox(group_audio);
 		m_combobox_audio_backend->addItem("ALSA");
-		m_combobox_audio_backend->addItem((m_pulseaudio_available)? "PulseAudio" : "PulseAudio (unavailable)");
+		m_combobox_audio_backend->addItem("PulseAudio");
 		m_combobox_audio_backend->setToolTip("The audio backend that will be used for recording.\n"
 											 "The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.");
 		m_label_alsa_device = new QLabel("Device:", group_audio);
@@ -230,15 +219,15 @@ PageInput::PageInput(MainWindow* main_window)
 										   "You can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).");
 		m_label_pulseaudio_source = new QLabel("Source:", group_audio);
 		m_combobox_pulseaudio_source = new QComboBox(group_audio);
-		for(unsigned int i = 0; i < m_pulseaudio_sources.size(); ++i) {
-			m_combobox_pulseaudio_source->addItem(m_pulseaudio_sources[i].description);
-		}
 		m_combobox_pulseaudio_source->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_combobox_pulseaudio_source->setToolTip("The PulseAudio source that will be used for recording.\n"
 												 "A 'monitor' is a source that records the audio played by other applications.");
+		m_pushbutton_pulseaudio_refresh = new QPushButton("Refresh", group_audio);
+		m_pushbutton_pulseaudio_refresh->setToolTip("Refreshes the list of PulseAudio sources.");
 
-		connect(m_checkbox_audio_enable, SIGNAL(clicked(bool)), this, SLOT(UpdateAudioFields()));
-		connect(m_combobox_audio_backend, SIGNAL(activated(int)), this, SLOT(UpdateAudioFields()));
+		connect(m_checkbox_audio_enable, SIGNAL(clicked()), this, SLOT(OnUpdateAudioFields()));
+		connect(m_combobox_audio_backend, SIGNAL(activated(int)), this, SLOT(OnUpdateAudioFields()));
+		connect(m_pushbutton_pulseaudio_refresh, SIGNAL(clicked()), this, SLOT(OnUpdatePulseAudioSources()));
 
 		QVBoxLayout *layout = new QVBoxLayout(group_audio);
 		layout->addWidget(m_checkbox_audio_enable);
@@ -246,22 +235,19 @@ PageInput::PageInput(MainWindow* main_window)
 			QGridLayout *layout2 = new QGridLayout();
 			layout->addLayout(layout2);
 			layout2->addWidget(label_audio_backend, 0, 0);
-			layout2->addWidget(m_combobox_audio_backend, 0, 1);
+			layout2->addWidget(m_combobox_audio_backend, 0, 1, 1, 2);
 			layout2->addWidget(m_label_alsa_device, 1, 0);
-			layout2->addWidget(m_lineedit_alsa_device, 1, 1);
+			layout2->addWidget(m_lineedit_alsa_device, 1, 1, 1, 2);
 			layout2->addWidget(m_label_pulseaudio_source, 2, 0);
 			layout2->addWidget(m_combobox_pulseaudio_source, 2, 1);
+			layout2->addWidget(m_pushbutton_pulseaudio_refresh, 2, 2);
 		}
 	}
 	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), "Back", this);
 	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), "Continue", this);
 
-	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(UpdateScreenConfiguration()));
-	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(UpdateScreenConfiguration()));
-	UpdateScreenConfiguration();
-
 	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageWelcome()));
-	connect(button_continue, SIGNAL(clicked()), this, SLOT(Continue()));
+	connect(button_continue, SIGNAL(clicked()), this, SLOT(OnContinue()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(group_video);
@@ -274,9 +260,14 @@ PageInput::PageInput(MainWindow* main_window)
 		layout2->addWidget(button_continue);
 	}
 
-	UpdateVideoAreaFields();
-	UpdateVideoScaleFields();
-	UpdateAudioFields();
+	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(OnUpdateScreenConfiguration()));
+	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(OnUpdateScreenConfiguration()));
+	LoadScreenConfigurations();
+	LoadPulseAudioSources();
+
+	OnUpdateVideoAreaFields();
+	OnUpdateVideoScaleFields();
+	OnUpdateAudioFields();
 
 }
 
@@ -295,16 +286,16 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetAudioEnabled(settings->value("input/audio_enabled", true).toBool());
 	SetAudioBackend((enum_audio_backend) settings->value("input/audio_backend", (m_pulseaudio_available)? AUDIO_BACKEND_PULSEAUDIO : AUDIO_BACKEND_ALSA).toUInt());
 	SetALSADevice(settings->value("input/audio_alsa_device", "default").toString());
-	SetPulseAudioSource(settings->value("input/audio_pulseaudio_source", 0).toUInt());
+	SetPulseAudioSource(FindPulseAudioSource(settings->value("input/audio_pulseaudio_source", QString()).toString()));
 	SetGLInjectCommand(settings->value("input/glinject_command", "").toString());
 	SetGLInjectRunCommand(settings->value("input/glinject_run_command", true).toBool());
 	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
 	SetGLInjectMaxMegaPixels(settings->value("input/glinject_max_megapixels", 2).toUInt());
 	SetGLInjectCaptureFront(settings->value("input/glinject_capture_front", false).toBool());
 	SetGLInjectLimitFPS(settings->value("input/glinject_limit_fps", false).toBool());
-	UpdateVideoAreaFields();
-	UpdateVideoScaleFields();
-	UpdateAudioFields();
+	OnUpdateVideoAreaFields();
+	OnUpdateVideoScaleFields();
+	OnUpdateAudioFields();
 }
 
 void PageInput::SaveSettings(QSettings* settings) {
@@ -322,7 +313,7 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/audio_enabled", GetAudioEnabled());
 	settings->setValue("input/audio_backend", GetAudioBackend());
 	settings->setValue("input/audio_alsa_device", GetALSADevice());
-	settings->setValue("input/audio_pulseaudio_source", GetPulseAudioSource());
+	settings->setValue("input/audio_pulseaudio_source", GetPulseAudioSourceName());
 	settings->setValue("input/glinject_command", GetGLInjectCommand());
 	settings->setValue("input/glinject_run_command", GetGLInjectRunCommand());
 	settings->setValue("input/glinject_relax_permissions", GetGLInjectRelaxPermissions());
@@ -333,6 +324,14 @@ void PageInput::SaveSettings(QSettings* settings) {
 
 QString PageInput::GetPulseAudioSourceName() {
 	return m_pulseaudio_sources[GetPulseAudioSource()].name;
+}
+
+unsigned int PageInput::FindPulseAudioSource(const QString &name) {
+	for(unsigned int i = 0; i < m_pulseaudio_sources.size(); ++i) {
+		if(m_pulseaudio_sources[i].name == name)
+			return i;
+	}
+	return 0;
 }
 
 // Tries to find the real window that corresponds to a top-level window (the actual window without window manager decorations).
@@ -533,7 +532,40 @@ void PageInput::SetVideoAreaFromRubberBand() {
 	SetVideoH(r.height());
 }
 
-void PageInput::UpdateRecordingFrame() {
+void PageInput::LoadScreenConfigurations() {
+	QRect rect = QApplication::desktop()->screenGeometry(0);
+	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
+		rect |= QApplication::desktop()->screenGeometry(i);
+	}
+	m_combobox_screens->clear();
+	m_combobox_screens->addItem("All screens: " + QString::number(rect.width()) + "x" + QString::number(rect.height()));
+	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
+		rect = QApplication::desktop()->screenGeometry(i);
+		m_combobox_screens->addItem("Screen " + QString::number(i + 1) + ": " + QString::number(rect.width()) + "x" + QString::number(rect.height())
+									+ " at " + QString::number(rect.left()) + "," + QString::number(rect.top()));
+	}
+	// update the video x/y/w/h in case the position or size of the selected screen changed
+	OnUpdateVideoAreaFields();
+}
+
+void PageInput::LoadPulseAudioSources() {
+	m_pulseaudio_sources = PulseAudioInput::GetSourceList();
+	if(m_pulseaudio_sources.empty()) {
+		m_pulseaudio_available = false;
+		PulseAudioInput::Source source;
+		source.name = "";
+		source.description = "(no sources found)";
+		m_pulseaudio_sources.push_back(source);
+	} else {
+		m_pulseaudio_available = true;
+	}
+	m_combobox_pulseaudio_source->clear();
+	for(unsigned int i = 0; i < m_pulseaudio_sources.size(); ++i) {
+		m_combobox_pulseaudio_source->addItem(m_pulseaudio_sources[i].description);
+	}
+}
+
+void PageInput::OnUpdateRecordingFrame() {
 	if(m_spinbox_video_x->hasFocus() || m_spinbox_video_y->hasFocus() || m_spinbox_video_w->hasFocus() || m_spinbox_video_h->hasFocus()) {
 		if(m_recording_frame == NULL) {
 			m_recording_frame.reset(new QRubberBand(QRubberBand::Rectangle));
@@ -547,7 +579,7 @@ void PageInput::UpdateRecordingFrame() {
 	}
 }
 
-void PageInput::UpdateVideoAreaFields() {
+void PageInput::OnUpdateVideoAreaFields() {
 	switch(GetVideoArea()) {
 		case VIDEO_AREA_SCREEN: {
 			m_combobox_screens->setEnabled(true);
@@ -602,12 +634,12 @@ void PageInput::UpdateVideoAreaFields() {
 	}
 }
 
-void PageInput::UpdateVideoScaleFields() {
+void PageInput::OnUpdateVideoScaleFields() {
 	bool enabled = GetVideoScalingEnabled();
 	GroupEnabled({m_spinbox_video_scaled_w, m_spinbox_video_scaled_h}, enabled);
 }
 
-void PageInput::UpdateAudioFields() {
+void PageInput::OnUpdateAudioFields() {
 	bool enabled = GetAudioEnabled();
 	enum_audio_backend backend = GetAudioBackend();
 	GroupEnabled({m_combobox_audio_backend, m_label_alsa_device, m_lineedit_alsa_device, m_label_pulseaudio_source, m_combobox_pulseaudio_source}, enabled);
@@ -617,24 +649,20 @@ void PageInput::UpdateAudioFields() {
 	});
 }
 
-void PageInput::UpdateScreenConfiguration() {
-	m_combobox_screens->clear();
-	QRect rect = QApplication::desktop()->screenGeometry(0);
-	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
-		rect |= QApplication::desktop()->screenGeometry(i);
-	}
-	m_combobox_screens->addItem("All screens: " + QString::number(rect.width()) + "x" + QString::number(rect.height()));
-	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
-		rect = QApplication::desktop()->screenGeometry(i);
-		m_combobox_screens->addItem("Screen " + QString::number(i + 1) + ": " + QString::number(rect.width()) + "x" + QString::number(rect.height())
-									+ " at " + QString::number(rect.left()) + "," + QString::number(rect.top()));
-	}
-	// update the video x/y/w/h in case the position or size of the selected screen changed
-	UpdateVideoAreaFields();
+void PageInput::OnUpdateScreenConfiguration() {
+	unsigned int selected_screen = GetVideoAreaScreen();
+	LoadScreenConfigurations();
+	SetVideoAreaScreen(selected_screen);
 }
 
-void PageInput::IdentifyScreens() {
-	StopIdentifyScreens();
+void PageInput::OnUpdatePulseAudioSources() {
+	QString selected_source = GetPulseAudioSourceName();
+	LoadPulseAudioSources();
+	SetPulseAudioSource(FindPulseAudioSource(selected_source));
+}
+
+void PageInput::OnIdentifyScreens() {
+	OnStopIdentifyScreens();
 	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
 		QRect rect = QApplication::desktop()->screenGeometry(i);
 		WidgetScreenLabel *label = new WidgetScreenLabel(this, "Screen " + QString::number(i + 1));
@@ -644,29 +672,29 @@ void PageInput::IdentifyScreens() {
 	}
 }
 
-void PageInput::StopIdentifyScreens() {
+void PageInput::OnStopIdentifyScreens() {
 	for(unsigned int i = 0; i < m_screen_labels.size(); ++i) {
 		delete m_screen_labels[i];
 	}
 	m_screen_labels.clear();
 }
 
-void PageInput::StartSelectRectangle() {
+void PageInput::OnStartSelectRectangle() {
 	m_selecting_window = false;
 	StartGrabbing();
 }
 
-void PageInput::StartSelectWindow() {
+void PageInput::OnStartSelectWindow() {
 	m_selecting_window = true;
 	StartGrabbing();
 }
 
-void PageInput::GLInjectDialog() {
+void PageInput::OnGLInjectDialog() {
 	DialogGLInject dialog(this);
 	dialog.exec();
 }
 
-void PageInput::Continue() {
+void PageInput::OnContinue() {
 	if(GetVideoArea() == VIDEO_AREA_GLINJECT && GetGLInjectCommand().isEmpty()) {
 		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION,
 							  "You did not enter a command to start the OpenGL application that you want to record.\n"

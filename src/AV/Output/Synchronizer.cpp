@@ -224,7 +224,8 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 
 		// check the timestamp
 		if(lock->m_segment_video_started && timestamp < lock->m_segment_video_last_timestamp) {
-			Logger::LogWarning("[Synchronizer::ReadVideoFrame] Warning: Received video frame with non-monotonic timestamp.");
+			if(timestamp < lock->m_segment_video_last_timestamp - 10000)
+				Logger::LogWarning("[Synchronizer::ReadVideoFrame] Warning: Received video frame with non-monotonic timestamp.");
 			timestamp = lock->m_segment_video_last_timestamp;
 		}
 
@@ -314,7 +315,8 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 
 	// check the timestamp
 	if(lock->m_segment_audio_started && timestamp < lock->m_segment_audio_last_timestamp) {
-		Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Received audio samples with non-monotonic timestamp.");
+		if(timestamp < lock->m_segment_audio_last_timestamp - 10000)
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Received audio samples with non-monotonic timestamp.");
 		timestamp = lock->m_segment_audio_last_timestamp;
 	}
 

@@ -181,9 +181,9 @@ PageOutput::PageOutput(MainWindow* main_window)
 		}
 		m_combobox_container_av->setToolTip("For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.");
 
-		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(UpdateSuffixAndContainerFields()));
-		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(UpdateSuffixAndContainerFields()));
-		connect(button_browse, SIGNAL(clicked()), this, SLOT(Browse()));
+		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
+		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
+		connect(button_browse, SIGNAL(clicked()), this, SLOT(OnBrowse()));
 
 		QGridLayout *layout = new QGridLayout(groupbox_file);
 		layout->addWidget(label_file, 0, 0);
@@ -254,7 +254,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 														  "This increases the file size and CPU usage, but reduces the latency for live streams.\n"
 														  "It shouldn't affect the appearance of the video.");
 
-		connect(m_combobox_video_codec, SIGNAL(activated(int)), this, SLOT(UpdateVideoCodecFields()));
+		connect(m_combobox_video_codec, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoCodecFields()));
 		connect(m_slider_h264_crf, SIGNAL(valueChanged(int)), m_label_h264_crf_value, SLOT(setNum(int)));
 
 		QGridLayout *layout = new QGridLayout(groupbox_video);
@@ -304,7 +304,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		m_lineedit_audio_options = new QLineEdit(m_groupbox_audio);
 		m_lineedit_audio_options->setToolTip("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)");
 
-		connect(m_combobox_audio_codec, SIGNAL(activated(int)), this, SLOT(UpdateAudioCodecFields()));
+		connect(m_combobox_audio_codec, SIGNAL(activated(int)), this, SLOT(OnUpdateAudioCodecFields()));
 
 		QGridLayout *layout = new QGridLayout(m_groupbox_audio);
 		layout->addWidget(label_audio_codec, 0, 0);
@@ -320,7 +320,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), "Continue", this);
 
 	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageInput()));
-	connect(button_continue, SIGNAL(clicked()), this, SLOT(Continue()));
+	connect(button_continue, SIGNAL(clicked()), this, SLOT(OnContinue()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(groupbox_file);
@@ -334,9 +334,9 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout2->addWidget(button_continue);
 	}
 
-	UpdateContainerFields();
-	UpdateVideoCodecFields();
-	UpdateAudioCodecFields();
+	OnUpdateContainerFields();
+	OnUpdateVideoCodecFields();
+	OnUpdateAudioCodecFields();
 
 }
 
@@ -368,11 +368,11 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	// load settings
 	SetFile(settings->value("output/file", "").toString());
 	SetSeparateFiles(settings->value("output/separate_files", false).toBool());
-	SetContainer(FindContainer(settings->value("output/container").toString(), default_container));
-	SetContainerAV(FindContainerAV(settings->value("output/container_av").toString()));
+	SetContainer(FindContainer(settings->value("output/container", QString()).toString(), default_container));
+	SetContainerAV(FindContainerAV(settings->value("output/container_av", QString()).toString()));
 
-	SetVideoCodec(FindVideoCodec(settings->value("output/video_codec").toString(), default_video_codec));
-	SetVideoCodecAV(FindVideoCodecAV(settings->value("output/video_codec_av").toString()));
+	SetVideoCodec(FindVideoCodec(settings->value("output/video_codec", QString()).toString(), default_video_codec));
+	SetVideoCodecAV(FindVideoCodecAV(settings->value("output/video_codec_av", QString()).toString()));
 	SetVideoKBitRate(settings->value("output/video_kbit_rate", 5000).toUInt());
 	SetH264CRF(settings->value("output/video_h264_crf", 23).toUInt());
 	SetH264Preset((enum_h264_preset) settings->value("output/video_h264_preset", H264_PRESET_SUPERFAST).toUInt());
@@ -380,15 +380,15 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	SetVideoOptions(settings->value("output/video_options", "").toString());
 	SetVideoAllowFrameSkipping(settings->value("output/video_allow_frame_skipping", true).toBool());
 
-	SetAudioCodec(FindAudioCodec(settings->value("output/audio_codec").toString(), default_audio_codec));
-	SetAudioCodecAV(FindAudioCodecAV(settings->value("output/audio_codec_av").toString()));
+	SetAudioCodec(FindAudioCodec(settings->value("output/audio_codec", QString()).toString(), default_audio_codec));
+	SetAudioCodecAV(FindAudioCodecAV(settings->value("output/audio_codec_av", QString()).toString()));
 	SetAudioKBitRate(settings->value("output/audio_kbit_rate", 128).toUInt());
 	SetAudioOptions(settings->value("output/audio_options", "").toString());
 
 	// update things
-	UpdateContainerFields();
-	UpdateVideoCodecFields();
-	UpdateAudioCodecFields();
+	OnUpdateContainerFields();
+	OnUpdateVideoCodecFields();
+	OnUpdateAudioCodecFields();
 
 }
 
@@ -458,7 +458,7 @@ QString PageOutput::GetH264PresetName() {
 	return H264_PRESET_STRINGS[GetH264Preset()];
 }
 
-PageOutput::enum_container PageOutput::FindContainer(QString name, enum_container fallback) {
+PageOutput::enum_container PageOutput::FindContainer(const QString& name, enum_container fallback) {
 	for(unsigned int i = 0; i < CONTAINER_COUNT; ++i) {
 		if(m_containers[i].avname == name)
 			return (enum_container) i;
@@ -466,7 +466,7 @@ PageOutput::enum_container PageOutput::FindContainer(QString name, enum_containe
 	return fallback;
 }
 
-unsigned int PageOutput::FindContainerAV(QString name) {
+unsigned int PageOutput::FindContainerAV(const QString& name) {
 	for(unsigned int i = 0; i < m_containers_av.size(); ++i) {
 		if(m_containers_av[i].avname == name)
 			return i;
@@ -474,7 +474,7 @@ unsigned int PageOutput::FindContainerAV(QString name) {
 	return 0;
 }
 
-PageOutput::enum_video_codec PageOutput::FindVideoCodec(QString name, enum_video_codec fallback) {
+PageOutput::enum_video_codec PageOutput::FindVideoCodec(const QString& name, enum_video_codec fallback) {
 	for(unsigned int i = 0; i < VIDEO_CODEC_COUNT; ++i) {
 		if(m_video_codecs[i].avname == name)
 			return (enum_video_codec) i;
@@ -482,7 +482,7 @@ PageOutput::enum_video_codec PageOutput::FindVideoCodec(QString name, enum_video
 	return fallback;
 }
 
-unsigned int PageOutput::FindVideoCodecAV(QString name) {
+unsigned int PageOutput::FindVideoCodecAV(const QString& name) {
 	for(unsigned int i = 0; i < m_video_codecs_av.size(); ++i) {
 		if(m_video_codecs_av[i].avname == name)
 			return i;
@@ -490,7 +490,7 @@ unsigned int PageOutput::FindVideoCodecAV(QString name) {
 	return 0;
 }
 
-PageOutput::enum_audio_codec PageOutput::FindAudioCodec(QString name, enum_audio_codec fallback) {
+PageOutput::enum_audio_codec PageOutput::FindAudioCodec(const QString& name, enum_audio_codec fallback) {
 	for(unsigned int i = 0; i < AUDIO_CODEC_COUNT; ++i) {
 		if(m_audio_codecs[i].avname == name)
 			return (enum_audio_codec) i;
@@ -498,7 +498,7 @@ PageOutput::enum_audio_codec PageOutput::FindAudioCodec(QString name, enum_audio
 	return fallback;
 }
 
-unsigned int PageOutput::FindAudioCodecAV(QString name) {
+unsigned int PageOutput::FindAudioCodecAV(const QString& name) {
 	for(unsigned int i = 0; i < m_audio_codecs_av.size(); ++i) {
 		if(m_audio_codecs_av[i].avname == name)
 			return i;
@@ -506,7 +506,7 @@ unsigned int PageOutput::FindAudioCodecAV(QString name) {
 	return 0;
 }
 
-void PageOutput::UpdateSuffixAndContainerFields() {
+void PageOutput::OnUpdateSuffixAndContainerFields() {
 
 	// change file extension
 	enum_container new_container = GetContainer();
@@ -527,11 +527,11 @@ void PageOutput::UpdateSuffixAndContainerFields() {
 	}
 
 	// update fields
-	UpdateContainerFields();
+	OnUpdateContainerFields();
 
 }
 
-void PageOutput::UpdateContainerFields() {
+void PageOutput::OnUpdateContainerFields() {
 
 	enum_container container = GetContainer();
 	unsigned int container_av = GetContainerAV();
@@ -562,7 +562,7 @@ void PageOutput::UpdateContainerFields() {
 
 }
 
-void PageOutput::UpdateVideoCodecFields() {
+void PageOutput::OnUpdateVideoCodecFields() {
 	enum_video_codec codec = GetVideoCodec();
 	MultiGroupVisible({
 		{{m_label_video_kbit_rate, m_lineedit_video_kbit_rate}, (codec != VIDEO_CODEC_H264)},
@@ -572,7 +572,7 @@ void PageOutput::UpdateVideoCodecFields() {
 	});
 }
 
-void PageOutput::UpdateAudioCodecFields() {
+void PageOutput::OnUpdateAudioCodecFields() {
 	enum_audio_codec codec = GetAudioCodec();
 	MultiGroupVisible({
 		{{m_label_audio_kbit_rate, m_lineedit_audio_kbit_rate}, (codec != AUDIO_CODEC_UNCOMPRESSED)},
@@ -580,7 +580,7 @@ void PageOutput::UpdateAudioCodecFields() {
 	});
 }
 
-void PageOutput::Browse() {
+void PageOutput::OnBrowse() {
 
 	QString filters;
 	for(int i = 0; i < CONTAINER_OTHER; ++i) {
@@ -629,11 +629,11 @@ void PageOutput::Browse() {
 	}
 	SetFile(selected_file);
 
-	UpdateContainerFields();
+	OnUpdateContainerFields();
 
 }
 
-void PageOutput::Continue() {
+void PageOutput::OnContinue() {
 	QString file = GetFile();
 	if(file.isEmpty()) {
 		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION, "You did not select an output file!", QMessageBox::Ok);

@@ -36,7 +36,6 @@ else
 	fi
 fi
 
-
 echo "Detecting x86/x64 ..."
 case "$( uname -m )" in
 	"i386" )	SSR_USE_X86_ASM=1 ;;

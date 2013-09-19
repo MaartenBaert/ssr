@@ -215,6 +215,11 @@ inline int64_t round_int64(T x) {
 	return (int64_t) rint(x);
 }
 
+inline void GroupEnabled(std::initializer_list<QAction*> actions, bool enabled) {
+	for(QAction *a : actions) {
+		a->setEnabled(enabled);
+	}
+}
 inline void GroupEnabled(std::initializer_list<QWidget*> widgets, bool enabled) {
 	for(QWidget *w : widgets) {
 		w->setEnabled(enabled);

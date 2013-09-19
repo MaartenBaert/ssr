@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "Main.h"
 
+#include "Icons.h"
 #include "MainWindow.h"
 #include "Logger.h"
 
@@ -32,8 +33,15 @@ int main(int argc, char* argv[]) {
 	QCoreApplication::setOrganizationName("SimpleScreenRecorder");
 	QCoreApplication::setApplicationName("SimpleScreenRecorder");
 
+	// Qt doesn't count hidden windows, so if the main window is hidden and a dialog box is closed, Qt thinks the application should quit.
+	// That's not what we want, so disable this and do it manually.
+	QApplication::setQuitOnLastWindowClosed(false);
+
 	Logger logger;
 	Q_UNUSED(logger);
+
+	// load icons
+	LoadIcons();
 
 	// initialize default command-line options
 	bool commandline_logfile = false;
@@ -90,14 +98,16 @@ int main(int argc, char* argv[]) {
 		QString file3 = dir + "/log3.txt";
 		rename(qPrintable(file2), qPrintable(file3));
 		rename(qPrintable(file1), qPrintable(file2));
-		FILE *f = freopen(qPrintable(file1), "w", stderr);
-		Q_UNUSED(f);
-		dup2(2, 1); // this redirects stdout to stderr
+		FILE *f = fopen(qPrintable(file1), "w");
+		dup2(fileno(f), 1); // redirect stdout
+		dup2(fileno(f), 2); // redirect stderr
 	}
 
 	// warning for glitch with proprietary NVIDIA drivers
 	if(DetectNVIDIAFlipping()) {
-		if(QMessageBox::warning(NULL, MainWindow::WINDOW_CAPTION, "SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?",
+		if(QMessageBox::warning(NULL, MainWindow::WINDOW_CAPTION,
+								"SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. "
+								"This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?",
 								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
 			if(!DisableNVIDIAFlipping()) {
 				QMessageBox::warning(NULL, MainWindow::WINDOW_CAPTION, "I couldn't disable flipping for some reason - sorry! Try disabling it from the NVIDIA control panel.", QMessageBox::Ok);

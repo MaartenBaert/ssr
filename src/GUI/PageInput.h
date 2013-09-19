@@ -105,6 +105,7 @@ private:
 	QLineEdit *m_lineedit_alsa_device;
 	QLabel *m_label_pulseaudio_source;
 	QComboBox *m_combobox_pulseaudio_source;
+	QPushButton *m_pushbutton_pulseaudio_refresh;
 
 public:
 	PageInput(MainWindow* main_window);
@@ -113,6 +114,9 @@ public:
 	void SaveSettings(QSettings* settings);
 
 	QString GetPulseAudioSourceName();
+
+private:
+	unsigned int FindPulseAudioSource(const QString& name);
 
 public:
 	inline enum_video_area GetVideoArea() { return (enum_video_area) clamp(m_buttongroup_video_area->checkedId(), 0, VIDEO_AREA_COUNT - 1); }
@@ -170,20 +174,24 @@ private:
 	void StopGrabbing();
 	void SetVideoAreaFromRubberBand();
 
+	void LoadScreenConfigurations();
+	void LoadPulseAudioSources();
+
 public slots:
-	void UpdateRecordingFrame();
-	void UpdateVideoAreaFields();
-	void UpdateVideoScaleFields();
-	void UpdateAudioFields();
+	void OnUpdateRecordingFrame();
+	void OnUpdateVideoAreaFields();
+	void OnUpdateVideoScaleFields();
+	void OnUpdateAudioFields();
 
 private slots:
-	void UpdateScreenConfiguration();
-	void IdentifyScreens();
-	void StopIdentifyScreens();
-	void StartSelectRectangle();
-	void StartSelectWindow();
-	void GLInjectDialog();
-	void Continue();
+	void OnUpdateScreenConfiguration();
+	void OnUpdatePulseAudioSources();
+	void OnIdentifyScreens();
+	void OnStopIdentifyScreens();
+	void OnStartSelectRectangle();
+	void OnStartSelectWindow();
+	void OnGLInjectDialog();
+	void OnContinue();
 
 };
 

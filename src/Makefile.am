@@ -61,6 +61,8 @@ simplescreenrecorder_SOURCES = \
 	GUI/ElidedLabel.h \
 	GUI/HotkeyListener.cpp \
 	GUI/HotkeyListener.h \
+	GUI/Icons.cpp \
+	GUI/Icons.h \
 	GUI/MainWindow.cpp \
 	GUI/MainWindow.h \
 	GUI/PageDone.cpp \
@@ -97,7 +99,8 @@ nodist_simplescreenrecorder_SOURCES += \
 
 qrc_resources.cpp: $(srcdir)/resources.qrc \
 		$(top_srcdir)/data/img/header.png \
-		$(top_srcdir)/data/img/icon.png \
+		$(top_srcdir)/data/img/icon-ssr.png \
+		$(top_srcdir)/data/img/icon-ssr-recording.png \
 		$(top_srcdir)/data/about.htm
 	$(SED) "s|%DATADIR%|$(top_srcdir)/data|" "$(srcdir)/resources.qrc" > "resources_generated.qrc"
 	$(RCC) -name resources "resources_generated.qrc" -o "qrc_resources.cpp"

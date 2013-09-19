@@ -284,7 +284,8 @@ top_srcdir = @top_srcdir@
 ########## Data files used by 'src' ##########
 @ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = \
 @ENABLE_SSRPROGRAM_TRUE@	img/header.png \
-@ENABLE_SSRPROGRAM_TRUE@	img/icon.png \
+@ENABLE_SSRPROGRAM_TRUE@	img/icon-ssr.png \
+@ENABLE_SSRPROGRAM_TRUE@	img/icon-ssr-recording.png \
 @ENABLE_SSRPROGRAM_TRUE@	about.htm
 
 all: all-am
@@ -527,7 +528,7 @@ uninstall-am: uninstall-dist_desktopDATA uninstall-nodist_icon256DATA
 	uninstall-nodist_icon256DATA
 
 
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder.png: $(srcdir)/img/icon.png
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder.png: $(srcdir)/img/icon-ssr.png
 @ENABLE_SSRPROGRAM_TRUE@	cp "$<" "$@"
 
 @ENABLE_SSRPROGRAM_TRUE@clean-local:
