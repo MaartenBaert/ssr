@@ -628,7 +628,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 void Synchronizer::SynchronizerThread() {
 	try {
 
-		Logger::LogInfo("[Synchronizer::run] Synchronizer thread started.");
+		Logger::LogInfo("[Synchronizer::SynchronizerThread] Synchronizer thread started.");
 
 		while(!m_should_stop) {
 
@@ -641,13 +641,13 @@ void Synchronizer::SynchronizerThread() {
 
 		}
 
-		Logger::LogInfo("[Synchronizer::run] Synchronizer thread stopped.");
+		Logger::LogInfo("[Synchronizer::SynchronizerThread] Synchronizer thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError(QString("[Synchronizer::run] Exception '") + e.what() + "' in synchronizer thread.");
+		Logger::LogError(QString("[Synchronizer::SynchronizerThread] Exception '") + e.what() + "' in synchronizer thread.");
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[Synchronizer::run] Unknown exception in synchronizer thread.");
+		Logger::LogError("[Synchronizer::SynchronizerThread] Unknown exception in synchronizer thread.");
 	}
 }

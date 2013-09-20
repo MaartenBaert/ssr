@@ -113,7 +113,7 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 	}
 
 	// connect the stream
-	if(pa_stream_connect_record(*stream, qPrintable(source_name), &buffer_attr,
+	if(pa_stream_connect_record(*stream, source_name.toAscii().constData(), &buffer_attr,
 								(pa_stream_flags_t) (PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE | PA_STREAM_ADJUST_LATENCY)) < 0) {
 		Logger::LogError(QString("[PulseAudioConnectStream] Error: Could not connect stream! Reason: ") + pa_strerror(pa_context_errno(context)));
 		throw PulseAudioException();
@@ -135,6 +135,7 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 
 static void PulseAudioDisconnectStream(pa_stream** stream) {
 	if(*stream != NULL) {
+		pa_stream_disconnect(*stream);
 		pa_stream_unref(*stream);
 		*stream = NULL;
 	}
@@ -258,6 +259,12 @@ void PulseAudioInput::Init() {
 	PulseAudioConnectStream(m_pa_mainloop, m_pa_context, &m_pa_stream, m_source_name,
 							m_sample_rate, m_channels, m_pa_period_size);
 
+	m_stream_suspended = false;
+	m_stream_moved = false;
+
+	pa_stream_set_suspended_callback(m_pa_stream, SuspendedCallback, this);
+	pa_stream_set_moved_callback(m_pa_stream, MovedCallback, this);
+
 	// start input thread
 	m_should_stop = false;
 	m_error_occurred = false;
@@ -270,10 +277,22 @@ void PulseAudioInput::Free() {
 	PulseAudioDisconnect(&m_pa_mainloop, &m_pa_context);
 }
 
+void PulseAudioInput::SuspendedCallback(pa_stream* stream, void* userdata) {
+	PulseAudioInput *input = (PulseAudioInput*) userdata;
+	if(pa_stream_is_suspended(stream))
+		input->m_stream_suspended = true;
+}
+
+void PulseAudioInput::MovedCallback(pa_stream* stream, void* userdata) {
+	Q_UNUSED(stream);
+	PulseAudioInput *input = (PulseAudioInput*) userdata;
+	input->m_stream_moved = true;
+}
+
 void PulseAudioInput::InputThread() {
 	try {
 
-		Logger::LogInfo("[PulseAudioInput::run] Input thread started.");
+		Logger::LogInfo("[PulseAudioInput::InputThread] Input thread started.");
 
 		std::vector<uint8_t> buffer;
 		bool has_first_samples = false;
@@ -348,19 +367,27 @@ void PulseAudioInput::InputThread() {
 			}
 
 			// is the stream suspended?
-			if(pa_stream_is_suspended(m_pa_stream)) {
+			if(m_stream_suspended) {
+				m_stream_suspended = false;
+				Logger::LogWarning("[PulseAudioInput::InputThread] Warning: Audio source was suspended. The current segment will be stopped until the source comes back.");
 				PushAudioHole();
+			}
+			if(m_stream_moved) {
+				m_stream_moved = false;
+				Logger::LogWarning("[PulseAudioInput::InputThread] Warning: Stream was moved to a different source.");
+				//TODO// not sure whether segment cuts are a good idea here, needs more testing
+				//PushAudioHole();
 			}
 
 		}
 
-		Logger::LogInfo("[PulseAudioInput::run] Input thread stopped.");
+		Logger::LogInfo("[PulseAudioInput::InputThread] Input thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError(QString("[PulseAudioInput::run] Exception '") + e.what() + "' in input thread.");
+		Logger::LogError(QString("[PulseAudioInput::InputThread] Exception '") + e.what() + "' in input thread.");
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[PulseAudioInput::run] Unknown exception in input thread.");
+		Logger::LogError("[PulseAudioInput::InputThread] Unknown exception in input thread.");
 	}
 }

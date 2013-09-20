@@ -334,7 +334,7 @@ void X11Input::UpdateScreenConfiguration() {
 void X11Input::InputThread() {
 	try {
 
-		Logger::LogInfo("[X11Input::run] Input thread started.");
+		Logger::LogInfo("[X11Input::InputThread] Input thread started.");
 
 		unsigned int grab_x = m_x, grab_y = m_y;
 
@@ -381,7 +381,7 @@ void X11Input::InputThread() {
 					m_x11_shm_server_attached = true;
 				}
 				if(!XShmGetImage(m_x11_display, m_x11_root, m_x11_image, grab_x, grab_y, AllPlanes)) {
-					Logger::LogError("[X11Input::run] Error: Can't get image (using shared memory)!\n"
+					Logger::LogError("[X11Input::InputThread] Error: Can't get image (using shared memory)!\n"
 									 "    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?");
 					throw X11Exception();
 				}
@@ -392,7 +392,7 @@ void X11Input::InputThread() {
 				}
 				m_x11_image = XGetImage(m_x11_display, m_x11_root, grab_x, grab_y, m_width, m_height, AllPlanes, ZPixmap);
 				if(m_x11_image == NULL) {
-					Logger::LogError("[X11Input::run] Error: Can't get image (not using shared memory)!\n"
+					Logger::LogError("[X11Input::InputThread] Error: Can't get image (not using shared memory)!\n"
 									 "    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?");
 					throw X11Exception();
 				}
@@ -422,13 +422,13 @@ void X11Input::InputThread() {
 
 		}
 
-		Logger::LogInfo("[X11Input::run] Input thread stopped.");
+		Logger::LogInfo("[X11Input::InputThread] Input thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError(QString("[X11Input::run] Exception '") + e.what() + "' in input thread.");
+		Logger::LogError(QString("[X11Input::InputThread] Exception '") + e.what() + "' in input thread.");
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[X11Input::run] Unknown exception in input thread.");
+		Logger::LogError("[X11Input::InputThread] Unknown exception in input thread.");
 	}
 }

@@ -187,7 +187,7 @@ void ALSAInput::Free() {
 void ALSAInput::InputThread() {
 	try {
 
-		Logger::LogInfo("[ALSAInput::run] Input thread started.");
+		Logger::LogInfo("[ALSAInput::InputThread] Input thread started.");
 
 		std::vector<uint8_t> buffer(m_alsa_period_size * m_channels * 2);
 		bool has_first_samples = false;
@@ -200,7 +200,7 @@ void ALSAInput::InputThread() {
 			// this function has a timeout value. This means the input thread won't hang if the device turns out to be dead.
 			int res = snd_pcm_wait(m_alsa_pcm, 1000);
 			if(res == 0) {
-				Logger::LogInfo("[ALSAInput::run] No samples after waiting for 1000ms, the device is probably dead.");
+				Logger::LogInfo("[ALSAInput::InputThread] No samples after waiting for 1000ms, the device is probably dead.");
 				continue;
 			}
 			if(res < 0) {
@@ -208,7 +208,7 @@ void ALSAInput::InputThread() {
 					ALSARecoverAfterOverrun(m_alsa_pcm);
 					PushAudioHole();
 				} else {
-					Logger::LogError("[ALSAInput::run] Error: Can't check whether samples are available!");
+					Logger::LogError("[ALSAInput::InputThread] Error: Can't check whether samples are available!");
 					throw ALSAException();
 				}
 				continue;
@@ -221,7 +221,7 @@ void ALSAInput::InputThread() {
 					ALSARecoverAfterOverrun(m_alsa_pcm);
 					PushAudioHole();
 				} else {
-					Logger::LogError("[ALSAInput::run] Error: Can't read samples!");
+					Logger::LogError("[ALSAInput::InputThread] Error: Can't read samples!");
 					throw ALSAException();
 				}
 				continue;
@@ -247,13 +247,13 @@ void ALSAInput::InputThread() {
 
 		}
 
-		Logger::LogInfo("[ALSAInput::run] Input thread stopped.");
+		Logger::LogInfo("[ALSAInput::InputThread] Input thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError(QString("[ALSAInput::run] Exception '") + e.what() + "' in input thread.");
+		Logger::LogError(QString("[ALSAInput::InputThread] Exception '") + e.what() + "' in input thread.");
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[ALSAInput::run] Unknown exception in input thread.");
+		Logger::LogError("[ALSAInput::InputThread] Unknown exception in input thread.");
 	}
 }

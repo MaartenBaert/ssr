@@ -48,6 +48,8 @@ private:
 	pa_stream *m_pa_stream;
 	unsigned int m_pa_period_size;
 
+	bool m_stream_suspended, m_stream_moved;
+
 	std::thread m_thread;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
@@ -65,6 +67,9 @@ public:
 private:
 	void Init();
 	void Free();
+
+	static void SuspendedCallback(pa_stream* stream, void* userdata);
+	static void MovedCallback(pa_stream* stream, void* userdata);
 
 	void InputThread();
 

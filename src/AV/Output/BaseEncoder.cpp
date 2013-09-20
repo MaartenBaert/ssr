@@ -157,7 +157,7 @@ void BaseEncoder::EncoderThread() {
 
 	try {
 
-		Logger::LogInfo("[BaseEncoder::run] Encoder thread started.");
+		Logger::LogInfo("[BaseEncoder::EncoderThread] Encoder thread started.");
 
 		// normal encoding
 		while(!m_should_stop) {
@@ -186,21 +186,21 @@ void BaseEncoder::EncoderThread() {
 
 		// flush the encoder
 		if(!m_should_stop && m_delayed_packets) {
-			Logger::LogInfo("[BaseEncoder::run] Flushing encoder ...");
+			Logger::LogInfo("[BaseEncoder::EncoderThread] Flushing encoder ...");
 			while(!m_should_stop && EncodeFrame(NULL));
 		}
 
 		// tell the others that we're done
 		m_is_done = true;
 
-		Logger::LogInfo("[BaseEncoder::run] Encoder thread stopped.");
+		Logger::LogInfo("[BaseEncoder::EncoderThread] Encoder thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError(QString("[BaseEncoder::run] Exception '") + e.what() + "' in encoder thread.");
+		Logger::LogError(QString("[BaseEncoder::EncoderThread] Exception '") + e.what() + "' in encoder thread.");
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[BaseEncoder::run] Unknown exception in encoder thread.");
+		Logger::LogError("[BaseEncoder::EncoderThread] Unknown exception in encoder thread.");
 	}
 
 	// always end the stream, even if there was an error, otherwise the muxer will wait forever

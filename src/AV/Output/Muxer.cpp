@@ -97,7 +97,7 @@ void Muxer::Start() {
 
 	// write header
 	if(avformat_write_header(m_format_context, NULL) != 0) {
-		Logger::LogError("[Muxer::run] Error: Can't write header!");
+		Logger::LogError("[Muxer::Start] Error: Can't write header!");
 		throw LibavException();
 	}
 
@@ -254,7 +254,7 @@ void Muxer::Free() {
 void Muxer::MuxerThread() {
 	try {
 
-		Logger::LogInfo("[Muxer::run] Muxer thread started.");
+		Logger::LogInfo("[Muxer::MuxerThread] Muxer thread started.");
 
 		// start muxing
 		for( ; ; ) {
@@ -308,7 +308,7 @@ void Muxer::MuxerThread() {
 			// The packet should already be interleaved now, but containers can have custom interleaving specifications,
 			// so it's a good idea to call av_interleaved_write_frame anyway.
 			if(av_interleaved_write_frame(m_format_context, packet->GetPacket()) != 0) {
-				Logger::LogError("[Muxer::run] Error: Can't write frame to muxer!");
+				Logger::LogError("[Muxer::MuxerThread] Error: Can't write frame to muxer!");
 				throw LibavException();
 			}
 
@@ -336,13 +336,13 @@ void Muxer::MuxerThread() {
 		// tell the others that we're done
 		m_is_done = true;
 
-		Logger::LogInfo("[Muxer::run] Muxer thread stopped.");
+		Logger::LogInfo("[Muxer::MuxerThread] Muxer thread stopped.");
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError(QString("[Muxer::run] Exception '") + e.what() + "' in muxer thread.");
+		Logger::LogError(QString("[Muxer::MuxerThread] Exception '") + e.what() + "' in muxer thread.");
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[Muxer::run] Unknown exception in muxer thread.");
+		Logger::LogError("[Muxer::MuxerThread] Unknown exception in muxer thread.");
 	}
 }
