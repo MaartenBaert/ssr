@@ -63,8 +63,8 @@ private:
 
 private:
 	static const double DESYNC_CORRECTION_P, DESYNC_CORRECTION_I;
+	static const double DESYNC_ERROR_THRESHOLD;
 	static const size_t MAX_VIDEO_FRAMES_BUFFERED, MAX_AUDIO_SAMPLES_BUFFERED;
-	static const int64_t AUDIO_GAP_THRESHOLD;
 	static const int64_t MAX_FRAME_DELAY;
 
 private:

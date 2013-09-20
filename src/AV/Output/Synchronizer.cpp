@@ -34,17 +34,17 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 const double Synchronizer::DESYNC_CORRECTION_P = 0.5;
 const double Synchronizer::DESYNC_CORRECTION_I = 0.5 * 0.5 / 4.0;
 
+// The maximum audio/video desynchronization allowed, in seconds. If the error is greater than this value, the synchronizer will cut the segment
+// rather than relying on normal time correction. This is something that should be avoided since it will result in the loss of some video/audio,
+// so it should only be triggered when something is completely wrong. If the error is smaller, the synchronizer will do nothing and the
+// time correction system will take care of it (eventually).
+const double Synchronizer::DESYNC_ERROR_THRESHOLD = 0.5;
+
 // The maximum number of video frames and audio samples that will be buffered. This should be enough to cope with the fact that video and
 // audio don't arrive at the same time, but not too high because that would cause memory problems if one of the inputs fails.
 // The limit for audio can be set very high, because audio uses almost no memory.
 const size_t Synchronizer::MAX_VIDEO_FRAMES_BUFFERED = 30;
 const size_t Synchronizer::MAX_AUDIO_SAMPLES_BUFFERED = 1000000;
-
-// The maximum allowed time between two audio timestamps (in microseconds). If the time difference is greater than this value,
-// the synchronizer will assume that there is a gap in the audio stream and will cut the segment to avoid excessive desynchronization.
-// If the difference is smaller, the synchronizer will do nothing and the speed correction system will take care of it (eventually).
-// PulseAudio creates these gaps when a VT-switch or user switch occurs (it simply freezes all audio streams, this causes problems with many other applications as well).
-const int64_t Synchronizer::AUDIO_GAP_THRESHOLD = 500000;
 
 // The maximum delay between video frames, in microseconds. If the delay is longer, duplicates will be inserted.
 // This is needed because some video codecs/players can't handle long delays.
@@ -327,7 +327,8 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 	// avoid memory problems by limiting the audio buffer size
 	if(lock->m_audio_buffer.GetSize() / m_audio_sample_size >= MAX_AUDIO_SAMPLES_BUFFERED) {
 		if(lock->m_segment_video_started) {
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.");
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video "
+							   "(some video and/or audio may be lost). The video input seems to be too slow.");
 			NewSegment(lock.get());
 		} else {
 			// If the video hasn't started yet, it makes more sense to drop the oldest samples.
@@ -339,10 +340,33 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 		}
 	}
 
-	// detect audio gaps
-	if(lock->m_segment_audio_started && timestamp > lock->m_segment_audio_last_timestamp + AUDIO_GAP_THRESHOLD) {
-		Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Detected hole in audio stream based on timestamps, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).");
-		NewSegment(lock.get());
+	// do speed correction (i.e. do the calculations so the video can synchronize to it)
+	// The point of speed correction is to keep video and audio in sync even when the clocks are not running at exactly the same speed.
+	// This can happen because the sample rate of the sound card is not always 100% accurate. Even a 0.1% error will result in audio that is
+	// seconds too early or too late at the end of a one hour video. This problem doesn't occur on all computers though (I'm not sure why).
+	// Another cause of desynchronization is problems/glitches with PulseAudio (e.g. jumps in time when switching between sources).
+	if(lock->m_segment_audio_started) {
+		double sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
+		double time_length = (double) (timestamp - lock->m_segment_audio_start_time) * 1.0e-6;
+		double current_error = (sample_length - time_length) - lock->m_av_desync;
+		if(fabs(current_error) > DESYNC_ERROR_THRESHOLD) {
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Desynchronization is too high, starting new segment to keep the audio "
+							   "in sync with the video (some video and/or audio may be lost).");
+			NewSegment(lock.get());
+		} else {
+			double dt = (double) (timestamp - lock->m_segment_audio_last_timestamp) * 1.0e-6;
+			lock->m_av_desync_i = clamp(lock->m_av_desync_i + DESYNC_CORRECTION_I * current_error * dt, -1.0, 1.0);
+			lock->m_av_desync += (DESYNC_CORRECTION_P * current_error + lock->m_av_desync_i) * dt;
+			if(lock->m_av_desync_i < -0.05 && lock->m_warn_desync) {
+				lock->m_warn_desync = false;
+				Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio input is more than 5% too slow!");
+			}
+			if(lock->m_av_desync_i > 0.05 && lock->m_warn_desync) {
+				lock->m_warn_desync = false;
+				Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio input is more than 5% too fast!");
+			}
+			//qDebug() << hrt_time_micro() << current_error << (sample_length - time_length) << lock->m_av_desync << lock->m_av_desync_i;
+		}
 	}
 
 	// start audio
@@ -352,34 +376,12 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 		lock->m_segment_audio_stop_time = timestamp;
 	}
 
-	// do speed correction (i.e. do the calculations so the video can synchronize to it)
-	// The point of speed correction is to keep video and audio in sync even when the clocks are not running at exactly the same speed.
-	// This can happen because the sample rate of the sound card is not always 100% accurate. Even a 0.1% error will result in audio that is
-	// seconds too early or too late at the end of a one hour video. This problem doesn't occur on all computers though (I'm not sure why).
-	double sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
-	double time_length = (double) (timestamp - lock->m_segment_audio_start_time) * 1.0e-6;
-	if(lock->m_segment_audio_last_timestamp != (int64_t) AV_NOPTS_VALUE) {
-		double dt = (double) (timestamp - lock->m_segment_audio_last_timestamp) * 1.0e-6;
-		double current_error = (sample_length - time_length) - lock->m_av_desync;
-		lock->m_av_desync_i = clamp(lock->m_av_desync_i + DESYNC_CORRECTION_I * current_error * dt, -1.0, 1.0);
-		lock->m_av_desync += (DESYNC_CORRECTION_P * current_error + lock->m_av_desync_i) * dt;
-		if(lock->m_av_desync_i < -0.05 && lock->m_warn_desync) {
-			lock->m_warn_desync = false;
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio input is more than 5% too slow!");
-		}
-		if(lock->m_av_desync_i > 0.05 && lock->m_warn_desync) {
-			lock->m_warn_desync = false;
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio input is more than 5% too fast!");
-		}
-		//qDebug() << hrt_time_micro() << current_error << (sample_length - time_length) << lock->m_av_desync << lock->m_av_desync_i;
-	}
-
 	// store the samples
 	lock->m_segment_audio_last_timestamp = timestamp;
 	lock->m_audio_buffer.Write((const char*) data, sample_count * m_audio_sample_size);
 
 	// increase segment stop time
-	sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
+	double sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
 	lock->m_segment_audio_stop_time = lock->m_segment_audio_start_time + (int64_t) round(sample_length * 1.0e6);
 
 	//Logger::LogInfo("[Synchronizer::ReadAudioSamples] Added audio samples at " + QString::number(timestamp) + ".");
