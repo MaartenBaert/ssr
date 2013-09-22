@@ -61,10 +61,6 @@ MainWindow::~MainWindow() {
 
 }
 
-void MainWindow::SetStatsFile(const QString& stats_file) {
-	m_page_record->SetStatsFile(stats_file);
-}
-
 void MainWindow::LoadSettings() {
 	QSettings settings(GetApplicationUserDir() + "/settings.conf", QSettings::IniFormat);
 	m_page_input->LoadSettings(&settings);

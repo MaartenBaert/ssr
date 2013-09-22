@@ -642,10 +642,10 @@ void PageInput::OnUpdateVideoScaleFields() {
 void PageInput::OnUpdateAudioFields() {
 	bool enabled = GetAudioEnabled();
 	enum_audio_backend backend = GetAudioBackend();
-	GroupEnabled({m_combobox_audio_backend, m_label_alsa_device, m_lineedit_alsa_device, m_label_pulseaudio_source, m_combobox_pulseaudio_source}, enabled);
+	GroupEnabled({m_combobox_audio_backend, m_label_alsa_device, m_lineedit_alsa_device, m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh}, enabled);
 	MultiGroupVisible({
 		{{m_label_alsa_device, m_lineedit_alsa_device}, (backend == AUDIO_BACKEND_ALSA)},
-		{{m_label_pulseaudio_source, m_combobox_pulseaudio_source}, (backend == AUDIO_BACKEND_PULSEAUDIO)}
+		{{m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh}, (backend == AUDIO_BACKEND_PULSEAUDIO)}
 	});
 }
 

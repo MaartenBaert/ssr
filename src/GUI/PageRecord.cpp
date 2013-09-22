@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "PageRecord.h"
 
+#include "Main.h"
 #include "Icons.h"
 #include "MainWindow.h"
 #include "PageInput.h"
@@ -111,8 +112,6 @@ PageRecord::PageRecord(MainWindow* main_window)
 	: QWidget(main_window->centralWidget()) {
 
 	m_main_window = main_window;
-
-	m_stats_file = QString();
 
 	m_page_started = false;
 	m_capturing = false;
@@ -358,10 +357,6 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	settings->setValue("record/preview_frame_rate", GetPreviewFrameRate());
 }
 
-void PageRecord::SetStatsFile(const QString& stats_file) {
-	m_stats_file = stats_file;
-}
-
 void PageRecord::PageStart() {
 
 	if(m_page_started)
@@ -559,9 +554,9 @@ void PageRecord::RecordStart() {
 	if(m_recording)
 		return;
 
-	Logger::LogInfo("[PageRecord::RecordStart] Starting recording ...");
-
 	try {
+
+		Logger::LogInfo("[PageRecord::RecordStart] Starting recording ...");
 
 		if(m_output_manager == NULL) {
 
@@ -655,14 +650,14 @@ void PageRecord::CaptureStart() {
 	if(m_capturing || !m_page_started)
 		return;
 
-	Logger::LogInfo("[PageRecord::CaptureStart] Starting capturing ...");
-
 	Q_ASSERT(m_x11_input == NULL);
 	Q_ASSERT(m_gl_inject_input == NULL);
 	Q_ASSERT(m_alsa_input == NULL);
 	Q_ASSERT(m_pulseaudio_input == NULL);
 
 	try {
+
+		Logger::LogInfo("[PageRecord::CaptureStart] Starting capturing ...");
 
 		// start the video input
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
@@ -919,7 +914,7 @@ void PageRecord::OnUpdateInformation() {
 		m_label_info_file_size->setText(ReadableSize(total_bytes, "B"));
 		m_label_info_bit_rate->setText(ReadableSize(bit_rate, "bps"));
 
-		if(!m_stats_file.isNull()) {
+		if(!g_option_statsfile.isNull()) {
 			QString str = QString() +
 					"capturing\t" + ((m_capturing)? "1" : "0") + "\n"
 					"recording\t" + ((m_recording)? "1" : "0") + "\n"
@@ -934,8 +929,8 @@ void PageRecord::OnUpdateInformation() {
 					"file_size\t" + QString::number(total_bytes) + "\n"
 					"bit_rate\t" + QString::number(bit_rate) + "\n";
 			QByteArray data = str.toLocal8Bit();
-			QByteArray old_file = m_stats_file.toLocal8Bit();
-			QByteArray new_file = (m_stats_file + "-new").toLocal8Bit();
+			QByteArray old_file = g_option_statsfile.toLocal8Bit();
+			QByteArray new_file = (g_option_statsfile + "-new").toLocal8Bit();
 			// Qt doesn't get the permissions right (you can only change the permissions after creating the file, that's too late),
 			// and it doesn't allow renaming a file over another file, so don't bother with QFile and just use POSIX and C functions.
 			int fd = open(new_file.constData(), O_WRONLY | O_CREAT, 0600);
@@ -957,8 +952,8 @@ void PageRecord::OnUpdateInformation() {
 		m_label_info_file_size->clear();
 		m_label_info_bit_rate->clear();
 
-		if(!m_stats_file.isNull()) {
-			QByteArray old_file = m_stats_file.toLocal8Bit();
+		if(!g_option_statsfile.isNull()) {
+			QByteArray old_file = g_option_statsfile.toLocal8Bit();
 			remove(old_file.constData());
 		}
 

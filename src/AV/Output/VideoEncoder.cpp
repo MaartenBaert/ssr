@@ -186,7 +186,7 @@ bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 		// set the keyframe flag
 		//TODO// is this needed?
 		if(GetCodecContext()->coded_frame->key_frame && !(packet->GetPacket()->flags & AV_PKT_FLAG_KEY))
-			qDebug() << "keyframe flag was not set!";
+			Logger::LogError("[VideoEncoder::EncodeFrame] Error: Keyframe flag was not set!");
 
 		if(GetCodecContext()->coded_frame->key_frame)
 			packet->GetPacket()->flags |= AV_PKT_FLAG_KEY;

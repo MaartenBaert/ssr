@@ -20,9 +20,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "Synchronizer.h"
 
+#include "Main.h"
 #include "Logger.h"
 #include "VideoEncoder.h"
 #include "AudioEncoder.h"
+
+#include "SyncDiagram.h"
 
 // These values change how fast the synchronizer does time correction.
 // If this value is too low, the error will not be corrected fast enough. But if the value is too high, the video
@@ -164,22 +167,28 @@ void Synchronizer::Init() {
 	// initialize shared data
 	{
 		SharedLock lock(&m_shared_data);
+
 		lock->m_partial_audio_frame.resize(m_audio_required_frame_size * m_audio_sample_size);
 		lock->m_partial_audio_frame_samples = 0;
 		lock->m_video_pts = 0;
 		lock->m_audio_samples = 0;
 		lock->m_time_offset = 0;
-		lock->m_segment_video_started = (m_video_encoder == NULL);
-		lock->m_segment_audio_started = (m_audio_encoder == NULL);
-		lock->m_segment_audio_can_drop = true;
-		lock->m_segment_audio_samples_read = 0;
-		lock->m_segment_video_last_timestamp = AV_NOPTS_VALUE;
-		lock->m_segment_audio_last_timestamp = AV_NOPTS_VALUE;
-		lock->m_segment_video_accumulated_delay = 0;
-		lock->m_av_desync = 0.0;
-		lock->m_av_desync_i = 0.0;
+
+		InitSegment(lock.get());
+
 		lock->m_warn_drop_video = true;
 		lock->m_warn_desync = true;
+
+		// create sync diagram
+		if(g_option_syncdiagram) {
+			lock->m_sync_diagram.reset(new SyncDiagram(4));
+			lock->m_sync_diagram->SetChannelName(0, "Video in");
+			lock->m_sync_diagram->SetChannelName(1, "Audio in");
+			lock->m_sync_diagram->SetChannelName(2, "Video out");
+			lock->m_sync_diagram->SetChannelName(3, "Audio out");
+			lock->m_sync_diagram->show();
+		}
+
 	}
 
 	// start synchronizer thread
@@ -200,13 +209,7 @@ void Synchronizer::NewSegment() {
 
 int64_t Synchronizer::GetTotalTime() {
 	SharedLock lock(&m_shared_data);
-	if(lock->m_segment_video_started && lock->m_segment_audio_started) {
-		int64_t segment_start_time, segment_stop_time;
-		GetSegmentStartStop(lock.get(), &segment_start_time, &segment_stop_time);
-		return lock->m_time_offset + (segment_stop_time - segment_start_time);
-	} else {
-		return lock->m_time_offset;
-	}
+	return GetTotalTime(lock.get());
 }
 
 int64_t Synchronizer::GetNextVideoTimestamp() {
@@ -221,6 +224,10 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	int64_t corrected_timestamp;
 	{
 		SharedLock lock(&m_shared_data);
+
+		if(lock->m_sync_diagram != NULL) {
+			lock->m_sync_diagram->AddBlock(0, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6 + 1.0 / (double) m_video_frame_rate, QColor(255, 0, 0));
+		}
 
 		// check the timestamp
 		if(lock->m_segment_video_started && timestamp < lock->m_segment_video_last_timestamp) {
@@ -294,8 +301,12 @@ void Synchronizer::ReadVideoPing(int64_t timestamp) {
 	Q_ASSERT(m_video_encoder != NULL);
 	SharedLock lock(&m_shared_data);
 
+	if(lock->m_sync_diagram != NULL) {
+		lock->m_sync_diagram->AddBlock(0, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6, QColor(255, 0, 0));
+	}
+
 	// if the video has not been started, ignore it
-	if(lock->m_segment_video_started)
+	if(!lock->m_segment_video_started)
 		return;
 
 	// do time correction
@@ -309,6 +320,10 @@ void Synchronizer::ReadVideoPing(int64_t timestamp) {
 void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) {
 	Q_ASSERT(m_audio_encoder != NULL);
 	SharedLock lock(&m_shared_data);
+
+	if(lock->m_sync_diagram != NULL) {
+		lock->m_sync_diagram->AddBlock(1, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6 + (double) sample_count / (double) m_audio_sample_rate, QColor(0, 255, 0));
+	}
 
 	if(sample_count == 0)
 		return;
@@ -354,7 +369,7 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 							   "in sync with the video (some video and/or audio may be lost).");
 			NewSegment(lock.get());
 		} else {
-			double dt = (double) (timestamp - lock->m_segment_audio_last_timestamp) * 1.0e-6;
+			double dt = std::min((double) (timestamp - lock->m_segment_audio_last_timestamp) * 1.0e-6, 0.5);
 			lock->m_av_desync_i = clamp(lock->m_av_desync_i + DESYNC_CORRECTION_I * current_error * dt, -1.0, 1.0);
 			lock->m_av_desync += (DESYNC_CORRECTION_P * current_error + lock->m_av_desync_i) * dt;
 			if(lock->m_av_desync_i < -0.05 && lock->m_warn_desync) {
@@ -365,7 +380,6 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 				lock->m_warn_desync = false;
 				Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Audio input is more than 5% too fast!");
 			}
-			//qDebug() << hrt_time_micro() << current_error << (sample_length - time_length) << lock->m_av_desync << lock->m_av_desync_i;
 		}
 	}
 
@@ -391,10 +405,14 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 void Synchronizer::ReadAudioHole() {
 	Q_ASSERT(m_audio_encoder != NULL);
 	SharedLock lock(&m_shared_data);
-	if(lock->m_segment_audio_started) {
-		Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Received hole in audio stream, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).");
-		NewSegment(lock.get());
-	}
+
+	// if the audio has not been started, ignore it
+	if(!lock->m_segment_audio_started)
+		return;
+
+	Logger::LogWarning("[Synchronizer::ReadAudioSamples] Warning: Received hole in audio stream, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).");
+	NewSegment(lock.get());
+
 }
 
 void Synchronizer::NewSegment(SharedData* lock) {
@@ -402,19 +420,37 @@ void Synchronizer::NewSegment(SharedData* lock) {
 	if(lock->m_segment_video_started && lock->m_segment_audio_started) {
 		int64_t segment_start_time, segment_stop_time;
 		GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
-		lock->m_time_offset += segment_stop_time - segment_start_time;
+		lock->m_time_offset += std::max((int64_t) 0, segment_stop_time - segment_start_time);
 	}
 	lock->m_video_buffer.clear();
 	lock->m_audio_buffer.Clear();
+	InitSegment(lock);
+}
+
+void Synchronizer::InitSegment(SharedData* lock) {
 	lock->m_segment_video_started = (m_video_encoder == NULL);
 	lock->m_segment_audio_started = (m_audio_encoder == NULL);
+	lock->m_segment_video_start_time = AV_NOPTS_VALUE;
+	lock->m_segment_audio_start_time = AV_NOPTS_VALUE;
+	lock->m_segment_video_stop_time = AV_NOPTS_VALUE;
+	lock->m_segment_audio_stop_time = AV_NOPTS_VALUE;
 	lock->m_segment_audio_can_drop = true;
 	lock->m_segment_audio_samples_read = 0;
 	lock->m_segment_video_last_timestamp = AV_NOPTS_VALUE;
 	lock->m_segment_audio_last_timestamp = AV_NOPTS_VALUE;
 	lock->m_segment_video_accumulated_delay = 0;
 	lock->m_av_desync = 0.0;
-	// don't reset m_av_desync_i because it is usually still accurate
+	lock->m_av_desync_i = 0.0;
+}
+
+int64_t Synchronizer::GetTotalTime(Synchronizer::SharedData* lock) {
+	if(lock->m_segment_video_started && lock->m_segment_audio_started) {
+		int64_t segment_start_time, segment_stop_time;
+		GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
+		return lock->m_time_offset + std::max((int64_t) 0, segment_stop_time - segment_start_time);
+	} else {
+		return lock->m_time_offset;
+	}
 }
 
 void Synchronizer::GetSegmentStartStop(SharedData* lock, int64_t* segment_start_time, int64_t* segment_stop_time) {
@@ -476,6 +512,11 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 				std::unique_ptr<AVFrameWrapper> duplicate_frame = CreateVideoFrameYUV(m_video_width, m_video_height, &lock->m_last_video_frame_data);
 				duplicate_frame->GetFrame()->pts = lock->m_video_pts + m_video_max_frames_skipped;
 
+				if(lock->m_sync_diagram != NULL) {
+					double t = (double) duplicate_frame->GetFrame()->pts / (double) m_video_frame_rate;
+					lock->m_sync_diagram->AddBlock(2, t, t + 1.0 / (double) m_video_frame_rate, QColor(255, 196, 0));
+				}
+
 				lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - (duplicate_frame->GetFrame()->pts - lock->m_video_pts) * delay_time_per_frame);
 				lock->m_video_pts = duplicate_frame->GetFrame()->pts + 1;
 				//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(duplicate_frame->GetFrame()->pts) + "] (duplicate) acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
@@ -507,6 +548,11 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 		if(lock->m_video_pts == 0)
 			frame->GetFrame()->pts = 0;
 
+		if(lock->m_sync_diagram != NULL) {
+			double t = (double) frame->GetFrame()->pts / (double) m_video_frame_rate;
+			lock->m_sync_diagram->AddBlock(2, t, t + 1.0 / (double) m_video_frame_rate, QColor(255, 0, 0));
+		}
+
 		// send the frame to the encoder
 		lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - (frame->GetFrame()->pts - lock->m_video_pts) * delay_time_per_frame);
 		lock->m_video_pts = frame->GetFrame()->pts + 1;
@@ -518,7 +564,7 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	// flush audio
 	double sample_length = (double) (segment_stop_time - lock->m_segment_audio_start_time) * 1.0e-6;
 	int64_t samples_max = (int64_t) ceil(sample_length * (double) m_audio_sample_rate) - lock->m_segment_audio_samples_read;
-	if(lock->m_audio_buffer.GetSize() > 0 && samples_max > 0) {
+	if(lock->m_audio_buffer.GetSize() > 0) {
 
 		// Normally, the correct way to calculate the position of the first sample would be:
 		//     int64_t timestamp = lock->m_segment_audio_start_time + (int64_t) round((double) lock->m_segment_audio_samples_read / (double) m_audio_sample_rate * 1.0e6);
@@ -545,8 +591,13 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 
 		}
 
-		// send the samples to the encoder
 		int64_t samples_left = std::min(samples_max, (int64_t) lock->m_audio_buffer.GetSize() / m_audio_sample_size);
+		if(lock->m_sync_diagram != NULL && samples_left > 0) {
+			double t = (double) lock->m_audio_samples / (double) m_audio_sample_rate;
+			lock->m_sync_diagram->AddBlock(3, t, t + (double) samples_left / (double) m_audio_sample_rate, QColor(0, 255, 0));
+		}
+
+		// send the samples to the encoder
 		while(samples_left > 0) {
 
 			lock->m_segment_audio_can_drop = false;
@@ -637,6 +688,15 @@ void Synchronizer::SynchronizerThread() {
 			{
 				SharedLock lock(&m_shared_data);
 				FlushBuffers(lock.get());
+				if(lock->m_sync_diagram != NULL) {
+					double time_in = (double) hrt_time_micro() * 1.0e-6;
+					double time_out = (double) GetTotalTime(lock.get()) * 1.0e-6;
+					lock->m_sync_diagram->SetCurrentTime(0, time_in);
+					lock->m_sync_diagram->SetCurrentTime(1, time_in);
+					lock->m_sync_diagram->SetCurrentTime(2, time_out);
+					lock->m_sync_diagram->SetCurrentTime(3, time_out);
+					lock->m_sync_diagram->Update();
+				}
 			}
 
 			usleep(10000);

@@ -44,8 +44,6 @@ public:
 	MainWindow();
 	~MainWindow();
 
-	void SetStatsFile(const QString& stats_file);
-
 	void LoadSettings();
 	void SaveSettings();
 

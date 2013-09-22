@@ -21,6 +21,7 @@ SOURCES += \
 	AV/Output/BaseEncoder.cpp \
 	AV/Output/Muxer.cpp \
 	AV/Output/OutputManager.cpp \
+	AV/Output/SyncDiagram.cpp \
 	AV/Output/Synchronizer.cpp \
 	AV/Output/VideoEncoder.cpp \
 	AV/Output/X264Presets.cpp \
@@ -55,6 +56,7 @@ HEADERS  += \
 	AV/Output/Muxer.h \
 	AV/Output/OutputManager.h \
 	AV/Output/OutputSettings.h \
+	AV/Output/SyncDiagram.h \
 	AV/Output/Synchronizer.h \
 	AV/Output/VideoEncoder.h \
 	AV/Output/X264Presets.h \

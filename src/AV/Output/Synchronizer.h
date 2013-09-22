@@ -28,6 +28,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 class VideoEncoder;
 class AudioEncoder;
+class SyncDiagram;
 
 class Synchronizer : public VideoSink, public AudioSink {
 
@@ -40,8 +41,8 @@ private:
 		std::deque<std::unique_ptr<AVFrameWrapper> > m_video_buffer;
 		ByteQueue m_audio_buffer;
 		int64_t m_video_pts, m_audio_samples; // video and audio position in the final stream (encoded frames and samples, including the partial audio frame)
-
 		int64_t m_time_offset; // the length of all previous segments combined (in microseconds)
+
 		bool m_segment_video_started, m_segment_audio_started; // whether video and audio have started (always true if the corresponding stream is disabled)
 		int64_t m_segment_video_start_time, m_segment_audio_start_time; // the start time of video and audio (real-time, in microseconds)
 		int64_t m_segment_video_stop_time, m_segment_audio_stop_time; // the stop time of video and audio (real-time, in microseconds)
@@ -49,13 +50,13 @@ private:
 		int64_t m_segment_audio_samples_read; // the number of samples that have been read from the audio buffer (including dropped samples)
 		int64_t m_segment_video_last_timestamp, m_segment_audio_last_timestamp; // the timestamp of the last received video/audio frame (for gap detection)
 		int64_t m_segment_video_accumulated_delay; // sum of all video frame delays that were applied so far
-		//int64_t m_segment_video_next_timestamp; // the (ideal) timestamp of the next video frame
 
 		double m_av_desync, m_av_desync_i;
 
 		std::shared_ptr<AVFrameData> m_last_video_frame_data;
 
 		bool m_warn_drop_video, m_warn_desync;
+		std::unique_ptr<SyncDiagram> m_sync_diagram;
 
 	};
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
@@ -123,6 +124,8 @@ public: // internal
 
 private:
 	void NewSegment(SharedData* lock);
+	void InitSegment(SharedData* lock);
+	int64_t GetTotalTime(SharedData* lock);
 	void GetSegmentStartStop(SharedData* lock, int64_t* segment_start_time, int64_t* segment_stop_time);
 	void FlushBuffers(SharedData* lock);
 

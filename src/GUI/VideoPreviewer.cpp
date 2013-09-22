@@ -44,7 +44,7 @@ VideoPreviewer::VideoPreviewer(QWidget* parent)
 		lock->m_frame_rate = 10;
 	}
 
-	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
 	connect(this, SIGNAL(NeedsUpdate()), this, SLOT(update()), Qt::QueuedConnection);
 

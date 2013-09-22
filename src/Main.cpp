@@ -21,8 +21,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Main.h"
 
 #include "Icons.h"
-#include "MainWindow.h"
 #include "Logger.h"
+#include "MainWindow.h"
+
+bool g_option_logfile;
+QString g_option_statsfile;
+bool g_option_syncdiagram;
 
 int main(int argc, char* argv[]) {
 
@@ -44,8 +48,9 @@ int main(int argc, char* argv[]) {
 	LoadIcons();
 
 	// initialize default command-line options
-	bool commandline_logfile = false;
-	QString commandline_statsfile = QString();
+	g_option_logfile = false;
+	g_option_statsfile = QString();
+	g_option_syncdiagram = false;
 
 	// read command-line arguments
 	QStringList args = QCoreApplication::arguments();
@@ -69,13 +74,19 @@ int main(int argc, char* argv[]) {
 					Logger::LogError("[main] Error: Option 'logfile' does not take a value!");
 					return 1;
 				}
-				commandline_logfile = true;
+				g_option_logfile = true;
 			} else if(option == "statsfile") {
 				if(value.isNull()) {
-					commandline_statsfile = "/dev/shm/simplescreenrecorder-stats-" + QString::number(QCoreApplication::applicationPid());
+					g_option_statsfile = "/dev/shm/simplescreenrecorder-stats-" + QString::number(QCoreApplication::applicationPid());
 				} else {
-					commandline_statsfile = value;
+					g_option_statsfile = value;
 				}
+			} else if(option == "syncdiagram") {
+				if(!value.isNull()) {
+					Logger::LogError("[main] Error: Option 'syncdiagram' does not take a value!");
+					return 1;
+				}
+				g_option_syncdiagram = true;
 			} else {
 				Logger::LogError("[main] Error: Unknown command-line option '" + option + "'!");
 				return 1;
@@ -91,7 +102,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// redirect stdout and stderr to a log file
-	if(commandline_logfile) {
+	if(g_option_logfile) {
 		QString dir = GetApplicationUserDir();
 		QString file1 = dir + "/log1.txt";
 		QString file2 = dir + "/log2.txt";
@@ -118,7 +129,6 @@ int main(int argc, char* argv[]) {
 	Logger::LogInfo("==================== Starting SSR ====================");
 
 	MainWindow mainwindow;
-	mainwindow.SetStatsFile(commandline_statsfile);
 	mainwindow.show();
 	int ret = application.exec();
 

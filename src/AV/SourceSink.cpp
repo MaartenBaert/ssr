@@ -31,6 +31,7 @@ BaseSource::~BaseSource() {
 
 BaseSink::BaseSink() {
 	m_source = NULL;
+	m_priority = 0;
 }
 BaseSink::~BaseSink() {
 	// Classes that inherit a sink should disconnect themselves in the destructor before doing anything else,

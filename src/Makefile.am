@@ -39,6 +39,8 @@ simplescreenrecorder_SOURCES = \
 	AV/Output/OutputManager.cpp \
 	AV/Output/OutputManager.h \
 	AV/Output/OutputSettings.h \
+	AV/Output/SyncDiagram.cpp \
+	AV/Output/SyncDiagram.h \
 	AV/Output/Synchronizer.cpp \
 	AV/Output/Synchronizer.h \
 	AV/Output/VideoEncoder.cpp \
@@ -113,6 +115,7 @@ clean-qrc-extra:
 
 nodist_simplescreenrecorder_SOURCES += \
 	moc_X11Input.cpp \
+	moc_SyncDiagram.cpp \
 	moc_AudioPreviewer.cpp \
 	moc_ElidedLabel.cpp \
 	moc_HotkeyListener.cpp \
@@ -126,6 +129,8 @@ nodist_simplescreenrecorder_SOURCES += \
 	moc_Logger.cpp
 
 moc_X11Input.cpp: $(srcdir)/AV/Input/X11Input.h
+	$(MOC) "$<" -o "$@"
+moc_SyncDiagram.cpp: $(srcdir)/AV/Output/SyncDiagram.h
 	$(MOC) "$<" -o "$@"
 moc_AudioPreviewer.cpp: $(srcdir)/GUI/AudioPreviewer.h
 	$(MOC) "$<" -o "$@"

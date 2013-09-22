@@ -20,6 +20,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+extern bool g_option_logfile;
+extern QString g_option_statsfile;
+extern bool g_option_syncdiagram;
+
 QString GetApplicationUserDir();
 bool DetectNVIDIAFlipping();
 bool DisableNVIDIAFlipping();

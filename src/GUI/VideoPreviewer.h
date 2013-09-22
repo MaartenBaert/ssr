@@ -62,7 +62,6 @@ public:
 	// This function is thread-safe.
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;
 
-	virtual QSize minimumSizeHint() const override { return QSize(100, 100); }
 	virtual QSize sizeHint() const override { return QSize(100, 100); }
 
 protected:
