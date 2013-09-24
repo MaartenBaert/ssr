@@ -19,8 +19,8 @@ libtool
 .dirstamp
 stamp-h1
 
-simplescreenrecorder
-simplescreenrecorder.png
-resources_generated.qrc
+build/src/simplescreenrecorder
+build/src/resources_generated.qrc
+build/data/simplescreenrecorder.png
 
 private-*

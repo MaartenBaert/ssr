@@ -1,0 +1,11 @@
+post_install() {
+	update-desktop-database -q
+	gtk-update-icon-cache -q -f usr/share/icons/hicolor
+	ldconfig
+}
+post_upgrade() {
+	post_install
+}
+post_remove() {
+	post_install
+}
