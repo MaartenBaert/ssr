@@ -1,4 +1,4 @@
-AC_INIT([simplescreenrecorder], [0.0.7], [maarten-baert@hotmail.com])
+AC_INIT([simplescreenrecorder], [0.1.0], [maarten-baert@hotmail.com])
 AC_CONFIG_SRCDIR([src/Main.cpp])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
