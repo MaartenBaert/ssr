@@ -36,6 +36,25 @@ function exec_check($cmd, &$lines) {
 		die("Command '$cmd' failed!\n");
 }
 
+// --------------------------------------------------------
+
+$upload = false;
+
+for($i = 1; $i < $_SERVER["argc"]; ++$i) {
+	$opt = $_SERVER["argv"][$i];
+	switch($opt) {
+		case "upload": {
+			$upload = true;
+			break;
+		}
+		default: {
+			die("Unknown option '$opt'!\n");
+		}
+	}
+}
+
+// --------------------------------------------------------
+
 exec_check("$ssr_dir/configure --version", $lines);
 assert(preg_match("/^simplescreenrecorder configure ([0-9\.]+)$/", $lines[0], $match));
 $version = $match[1];

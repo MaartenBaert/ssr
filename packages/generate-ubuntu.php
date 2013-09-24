@@ -128,12 +128,12 @@ function ubuntu_create_package($dir, $lib, $version, $subversion, $ubuntuversion
 	$packagedate = date("r");
 	$multiarch = ($lib)? "same" : "";
 	$builddepends = "debhelper (>= 9), dpkg-dev (>= 1.16.0), build-essential, pkg-config, libx11-dev, libxext-dev, libxfixes-dev"
-			. ($lib)? ", libgl1-mesa-dev, libglu1-mesa-dev"
-					: ", qt4-qmake, libqt4-dev, libavformat-dev, libavcodec-dev, libavutil-dev, libswscale-dev, libasound2-dev, libpulse-dev";
+			. (($lib)? ", libgl1-mesa-dev, libglu1-mesa-dev"
+					 : ", qt4-qmake, libqt4-dev, libavformat-dev, libavcodec-dev, libavutil-dev, libswscale-dev, libasound2-dev, libpulse-dev");
 	$predepends = "\${misc:Pre-Depends}";
 	$depends = "\${shlibs:Depends}, \${misc:Depends}, libx11-6, libxext6, libxfixes3"
-			. ($lib)? ", libgl1-mesa-glx | libgl1, libglu1-mesa | libglu1"
-					: ", libqtgui4, libavformat53 | libavformat-extra-53, libavcodec53 | libavcodec-extra-53, libavutil51 | libavutil-extra-51, libswscale2 | libswscale-extra-2, libasound2, libpulse";
+			. (($lib)? ", libgl1-mesa-glx | libgl1, libglu1-mesa | libglu1"
+					: ", libqtgui4, libavformat53 | libavformat-extra-53, libavcodec53 | libavcodec-extra-53, libavutil51 | libavutil-extra-51, libswscale2 | libswscale-extra-2, libasound2, libpulse");
 	$recommends = ($lib)? "" : "simplescreenrecorder-lib";
 	$extradescription = ($lib)? "This package contains the GLInject library."
 							  : "This package contains the main program.";
