@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "PageWelcome.h"
 
+#include "Main.h"
 #include "MainWindow.h"
 
 #include "Version.h"
@@ -89,12 +90,7 @@ DialogAbout::DialogAbout(PageWelcome* parent)
 	}
 
 	html_about.replace("%VERSION%", SSR_VERSION);
-	html_about.replace("%VERSIONINFO%", QString() +
-					   "Qt version: headers " + QT_VERSION_STR + ", libraries " + qVersion() + "<br>\n"
-					   "libavformat: " + LIBAVFORMAT_IDENT + "<br>\n"
-					   "libavcodec: " + LIBAVCODEC_IDENT + "<br>\n"
-					   "libavutil: " + LIBAVUTIL_IDENT + "<br>\n"
-					   "libswscale: " + LIBSWSCALE_IDENT);
+	html_about.replace("%VERSIONINFO%", GetVersionInfo().replace("\n", "<br>\n"));
 
 	QTextBrowser *textbrowser = new QTextBrowser(this);
 	textbrowser->setHtml(html_about);

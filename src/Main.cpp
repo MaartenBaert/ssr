@@ -24,6 +24,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "MainWindow.h"
 
+#include "Version.h"
+
 bool g_option_logfile;
 QString g_option_statsfile;
 bool g_option_syncdiagram;
@@ -127,6 +129,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	Logger::LogInfo("==================== Starting SSR ====================");
+	Logger::LogInfo(GetVersionInfo());
 
 	MainWindow mainwindow;
 	mainwindow.show();
@@ -144,6 +147,21 @@ QString GetApplicationUserDir() {
 		throw 0;
 	}
 	return dir;
+}
+
+// see definition of AV_VERSION_INT() in libavutil/version.h
+inline QString av_version(unsigned int ver) {
+	return QString::number((ver >> 16) & 0xff) + "." + QString::number((ver >> 8) & 0xff) + "." + QString::number(ver & 0xff);
+}
+
+QString GetVersionInfo() {
+	return QString() +
+			"SimpleScreenRecorder: " + SSR_VERSION + "\n"
+			"Qt: header " + QT_VERSION_STR + ", lib " + qVersion() + "\n"
+			"libavformat: header " + av_version(LIBAVFORMAT_VERSION_INT) + ", lib " + av_version(avformat_version()) + "\n"
+			"libavcodec: header " + av_version(LIBAVCODEC_VERSION_INT) + ", lib " + av_version(avcodec_version()) + "\n"
+			"libavutil: header " + av_version(LIBAVUTIL_VERSION_INT) + ", lib " + av_version(avutil_version()) + "\n"
+			"libswscale: header " + av_version(LIBSWSCALE_VERSION_INT) + ", lib " + av_version(swscale_version());
 }
 
 bool DetectNVIDIAFlipping() {

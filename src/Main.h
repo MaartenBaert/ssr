@@ -25,5 +25,7 @@ extern QString g_option_statsfile;
 extern bool g_option_syncdiagram;
 
 QString GetApplicationUserDir();
+QString GetVersionInfo();
+
 bool DetectNVIDIAFlipping();
 bool DisableNVIDIAFlipping();

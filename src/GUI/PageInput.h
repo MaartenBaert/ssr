@@ -92,14 +92,16 @@ private:
 	QButtonGroup *m_buttongroup_video_area;
 	QComboBoxWithSignal *m_combobox_screens;
 	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window, *m_pushbutton_video_opengl_settings;
+	QLabel *m_label_video_x, *m_label_video_y, *m_label_video_w, *m_label_video_h;
 	QSpinBoxWithSignal *m_spinbox_video_x, *m_spinbox_video_y, *m_spinbox_video_w, *m_spinbox_video_h;
 	QSpinBox *m_spinbox_video_frame_rate;
 	QCheckBox *m_checkbox_scale;
+	QLabel *m_label_video_scaled_w, *m_label_video_scaled_h;
 	QSpinBox *m_spinbox_video_scaled_w, *m_spinbox_video_scaled_h;
 	QCheckBox *m_checkbox_record_cursor;
 
 	QCheckBox *m_checkbox_audio_enable;
-	QLabel *label_audio_backend;
+	QLabel *m_label_audio_backend;
 	QComboBox *m_combobox_audio_backend;
 	QLabel *m_label_alsa_device;
 	QLineEdit *m_lineedit_alsa_device;

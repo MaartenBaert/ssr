@@ -562,6 +562,10 @@ void PageRecord::RecordStart() {
 
 			// for OpenGL recording, detect the application size
 			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT && !m_video_scaling) {
+				if(m_gl_inject_launcher == NULL) {
+					Logger::LogError("[PageRecord::RecordStart] Error: Could not get the size of the OpenGL application because GLInject has not been started.");
+					throw GLInjectException();
+				}
 				m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 				if(m_video_in_width == 0 && m_video_in_height == 0) {
 					Logger::LogError("[PageRecord::RecordStart] Error: Could not get the size of the OpenGL application. Either the "
@@ -661,6 +665,10 @@ void PageRecord::CaptureStart() {
 
 		// start the video input
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
+			if(m_gl_inject_launcher == NULL) {
+				Logger::LogError("[PageRecord::CaptureStart] Error: Could not create a GLInject input because GLInject has not been started.");
+				throw GLInjectException();
+			}
 			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get()));
 		} else {
 			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
@@ -875,9 +883,10 @@ void PageRecord::OnUpdateInformation() {
 		int64_t timestamp = hrt_time_micro();
 		if(timestamp - m_info_last_timestamp > 10000) {
 			uint32_t frame_counter;
-			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
+			if(m_gl_inject_launcher != NULL) {
 				frame_counter = m_gl_inject_launcher->GetFrameCounter();
 			} else if(m_capturing) {
+				Q_ASSERT(m_x11_input != NULL);
 				frame_counter = m_x11_input->GetFrameCounter();
 			} else {
 				frame_counter = 0;
@@ -901,7 +910,7 @@ void PageRecord::OnUpdateInformation() {
 		QString file_name = (m_file_protocol.isNull())? QFileInfo(m_output_settings.file).fileName() : "(" + m_file_protocol + ")";
 
 		// for OpenGL recording, update the application size
-		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
+		if(m_gl_inject_launcher != NULL) {
 			m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 		}
 
