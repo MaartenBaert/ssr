@@ -40,9 +40,9 @@ void Logger::Log(enum_type type, const QString& str) {
 	std::lock_guard<std::mutex> lock(s_instance->m_mutex);
 	Q_UNUSED(lock);
 	switch(type) {
-		case TYPE_INFO:     fprintf(stderr, "%s\n", qPrintable(str));                   break;
-		case TYPE_WARNING:  fprintf(stderr, "\033[1;33m%s\033[0m\n", qPrintable(str));  break;
-		case TYPE_ERROR:    fprintf(stderr, "\033[1;31m%s\033[0m\n", qPrintable(str));  break;
+		case TYPE_INFO:     fprintf(stderr, "%s\n", str.toLocal8Bit().constData());                   break;
+		case TYPE_WARNING:  fprintf(stderr, "\033[1;33m%s\033[0m\n", str.toLocal8Bit().constData());  break;
+		case TYPE_ERROR:    fprintf(stderr, "\033[1;31m%s\033[0m\n", str.toLocal8Bit().constData());  break;
 	}
 	emit s_instance->NewLine(type, str);
 }

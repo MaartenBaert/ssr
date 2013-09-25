@@ -35,7 +35,15 @@ int main(int argc, char* argv[]) {
 	XInitThreads();
 
 	QApplication application(argc, argv);
+
+	// SSR uses two separate character encodings:
+	// - UTF-8: Used for all internal strings.
+	//   Used by QString::fromAscii and QString::toAscii, and all implicit conversions from C-strings to QString.
+	// - Local character encoding: Used for file names and logs. In practice this will almost always be UTF-8 as well.
+	//   Used by QString::fromLocal8Bit and QString::toLocal8Bit.
+	// If it is not clear what encoding an external library uses, I use UTF-8 except when it is a file name.
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+
 	QCoreApplication::setOrganizationName("SimpleScreenRecorder");
 	QCoreApplication::setApplicationName("SimpleScreenRecorder");
 
@@ -103,16 +111,19 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	// redirect stdout and stderr to a log file
+	// redirect stderr to a log file
 	if(g_option_logfile) {
-		QString dir = GetApplicationUserDir();
-		QString file1 = dir + "/log1.txt";
-		QString file2 = dir + "/log2.txt";
-		QString file3 = dir + "/log3.txt";
-		rename(qPrintable(file2), qPrintable(file3));
-		rename(qPrintable(file1), qPrintable(file2));
-		FILE *f = fopen(qPrintable(file1), "w");
-		dup2(fileno(f), 1); // redirect stdout
+		QDateTime now = QDateTime::currentDateTime();
+		QDir dir(GetApplicationUserDir());
+		dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
+		dir.setNameFilters(QStringList("log-*.txt"));
+		for(QString oldfile : dir.entryList()) {
+			if(QFileInfo(dir.path() + "/" + oldfile).lastModified().daysTo(now) > 30) {
+				QFile(dir.path() + "/" + oldfile).remove();
+			}
+		}
+		QString file = dir.path() + "/log-" + now.toString(Qt::ISODate) + ".txt";
+		FILE *f = fopen(file.toLocal8Bit().constData(), "w");
 		dup2(fileno(f), 2); // redirect stderr
 	}
 

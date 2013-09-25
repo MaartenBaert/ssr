@@ -77,7 +77,7 @@ void BaseEncoder::Destruct() {
 void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options) {
 
 	// get the codec we want
-	AVCodec *codec = avcodec_find_encoder_by_name(qPrintable(codec_name));
+	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
 	if(codec == NULL) {
 		Logger::LogError("[BaseEncoder::CreateCodec] Error: Can't find codec!");
 		throw LibavException();

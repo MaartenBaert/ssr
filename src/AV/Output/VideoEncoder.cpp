@@ -72,9 +72,9 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 					m_opt_preset = codec_options[i].second;
 				if(codec_options[i].first == "threads")
 					m_opt_threads = codec_options[i].second.toUInt();
-				av_dict_set(&options, qPrintable(codec_options[i].first), qPrintable(codec_options[i].second), 0);
+				av_dict_set(&options, codec_options[i].first.toAscii().constData(), codec_options[i].second.toAscii().constData(), 0);
 			}
-			CreateCodec(qPrintable(codec_name), &options);
+			CreateCodec(codec_name, &options);
 			av_dict_free(&options);
 		} catch(...) {
 			av_dict_free(&options);
@@ -122,7 +122,7 @@ int64_t VideoEncoder::GetFrameDelay() {
 }
 
 bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(qPrintable(codec_name));
+	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
 	if(codec == NULL)
 		return false;
 	for(unsigned int i = 0; i < SUPPORTED_PIXEL_FORMATS.size(); ++i) {
@@ -154,7 +154,7 @@ void VideoEncoder::FillCodecContext(AVCodec* codec) {
 
 	if(m_opt_preset != "") {
 #if !SSR_USE_AVCODEC_OPT_PRESET
-		X264Preset(GetCodecContext(), qPrintable(m_opt_preset));
+		X264Preset(GetCodecContext(), m_opt_preset.toAscii().constData());
 #endif
 	}
 

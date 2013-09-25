@@ -190,7 +190,7 @@ unsigned int Muxer::GetQueuedPacketCount(unsigned int stream_index) {
 void Muxer::Init() {
 
 	// get the format we want (this is just a pointer, we don't have to free this)
-	AVOutputFormat *format = av_guess_format(qPrintable(m_container_name), NULL, NULL);
+	AVOutputFormat *format = av_guess_format(m_container_name.toAscii().constData(), NULL, NULL);
 	if(format == NULL) {
 		Logger::LogError("[Muxer::Init] Error: Can't find chosen output format!");
 		throw LibavException();
@@ -207,7 +207,7 @@ void Muxer::Init() {
 	m_format_context->oformat = format;
 
 	// open file
-	if(avio_open(&m_format_context->pb, qPrintable(m_output_file), AVIO_FLAG_WRITE) < 0) {
+	if(avio_open(&m_format_context->pb, m_output_file.toLocal8Bit().constData(), AVIO_FLAG_WRITE) < 0) {
 		Logger::LogError("[Muxer::Init] Error: Can't open output file!");
 		throw LibavException();
 	}

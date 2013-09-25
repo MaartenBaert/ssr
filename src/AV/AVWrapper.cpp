@@ -78,11 +78,11 @@ AVPacketWrapper::~AVPacketWrapper() {
 }
 
 bool AVFormatIsInstalled(const QString& format_name) {
-	return (av_guess_format(qPrintable(format_name), NULL, NULL) != NULL);
+	return (av_guess_format(format_name.toAscii().constData(), NULL, NULL) != NULL);
 }
 
 bool AVCodecIsInstalled(const QString& codec_name) {
-	return (avcodec_find_encoder_by_name(qPrintable(codec_name)) != NULL);
+	return (avcodec_find_encoder_by_name(codec_name.toAscii().constData()) != NULL);
 }
 
 bool AVCodecSupportsPixelFormat(AVCodec* codec, PixelFormat pixel_fmt) {
