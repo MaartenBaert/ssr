@@ -979,7 +979,8 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString str) {
 }
 
 void PageRecord::OnCheckGLInjectEvents() {
-	Q_ASSERT(m_video_area == PageInput::VIDEO_AREA_GLINJECT);
+	if(m_gl_inject_launcher == NULL)
+		return;
 	if(m_gl_inject_launcher->GetHotkeyPressed()) {
 		OnRecordStartPause();
 	}
