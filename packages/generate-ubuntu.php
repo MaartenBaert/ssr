@@ -133,7 +133,7 @@ function ubuntu_create_package($dir, $lib, $version, $subversion, $ubuntuversion
 	$predepends = "\${misc:Pre-Depends}";
 	$depends = "\${shlibs:Depends}, \${misc:Depends}, libx11-6, libxext6, libxfixes3"
 			. (($lib)? ", libgl1-mesa-glx | libgl1, libglu1-mesa | libglu1"
-					: ", libqtgui4, libavformat53 | libavformat-extra-53, libavcodec53 | libavcodec-extra-53, libavutil51 | libavutil-extra-51, libswscale2 | libswscale-extra-2, libasound2, libpulse");
+					: ", libqtgui4, libavformat53 | libavformat-extra-53, libavcodec53 | libavcodec-extra-53, libavutil51 | libavutil-extra-51, libswscale2 | libswscale-extra-2, libasound2, libpulse0");
 	$recommends = ($lib)? "" : "simplescreenrecorder-lib";
 	$extradescription = ($lib)? "This package contains the GLInject library."
 							  : "This package contains the main program.";

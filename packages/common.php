@@ -10,7 +10,7 @@ $package_ubuntu_dir = "$packages_dir/package-ubuntu";
 $build_arch_dir = "$packages_dir/private-build-arch";
 $build_ubuntu_dir = "$packages_dir/private-build-ubuntu";
 
-$ubuntuversions = array("precise", "quantal", "raring");
+$ubuntuversions = array("precise", "quantal", "raring", "saucy");
 
 error_reporting(E_ALL);
 function error_handler($errno, $errstr, $file, $line) {

@@ -12,7 +12,7 @@ Package: simplescreenrecorder
 Architecture: i386 amd64
 Multi-Arch: 
 Pre-Depends: ${misc:Pre-Depends}
-Depends: ${shlibs:Depends}, ${misc:Depends}, libx11-6, libxext6, libxfixes3, libqtgui4, libavformat53 | libavformat-extra-53, libavcodec53 | libavcodec-extra-53, libavutil51 | libavutil-extra-51, libswscale2 | libswscale-extra-2, libasound2, libpulse
+Depends: ${shlibs:Depends}, ${misc:Depends}, libx11-6, libxext6, libxfixes3, libqtgui4, libavformat53 | libavformat-extra-53, libavcodec53 | libavcodec-extra-53, libavutil51 | libavutil-extra-51, libswscale2 | libswscale-extra-2, libasound2, libpulse0
 Recommends: simplescreenrecorder-lib
 Description: A feature-rich screen recorder that supports X11 and OpenGL.
  SimpleScreenRecorder is a feature-rich screen recorder that supports X11 and OpenGL. It has a Qt-based graphical user interface. It can record the entire screen or part of it, or record OpenGL applications directly. The recording can be paused and resumed at any time. Many different file formats and codecs are supported.
