@@ -38,6 +38,7 @@ class GLInjectLauncher;
 class GLInjectInput;
 class ALSAInput;
 class PulseAudioInput;
+class JACKInput;
 class VideoPreviewer;
 class AudioPreviewer;
 
@@ -83,6 +84,7 @@ private:
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
 	std::unique_ptr<ALSAInput> m_alsa_input;
 	std::unique_ptr<PulseAudioInput> m_pulseaudio_input;
+	std::unique_ptr<JACKInput> m_jack_input;
 
 	QPushButton *m_pushbutton_start_pause;
 

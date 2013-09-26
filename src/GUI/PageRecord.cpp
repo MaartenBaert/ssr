@@ -37,6 +37,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLInjectInput.h"
 #include "ALSAInput.h"
 #include "PulseAudioInput.h"
+#include "JACKInput.h"
 #include "VideoPreviewer.h"
 #include "AudioPreviewer.h"
 
@@ -658,6 +659,7 @@ void PageRecord::CaptureStart() {
 	Q_ASSERT(m_gl_inject_input == NULL);
 	Q_ASSERT(m_alsa_input == NULL);
 	Q_ASSERT(m_pulseaudio_input == NULL);
+	Q_ASSERT(m_jack_input == NULL);
 
 	try {
 
@@ -680,7 +682,8 @@ void PageRecord::CaptureStart() {
 				m_alsa_input.reset(new ALSAInput(m_alsa_device, m_audio_sample_rate));
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
 				m_pulseaudio_input.reset(new PulseAudioInput(m_pulseaudio_source, m_audio_sample_rate));
-			//TODO// jack input
+			if(m_audio_backend == PageInput::AUDIO_BACKEND_JACK)
+				m_jack_input.reset(new JACKInput(m_audio_sample_rate));
 		}
 
 		Logger::LogInfo("[PageRecord::CaptureStart] Started capturing.");
@@ -693,6 +696,7 @@ void PageRecord::CaptureStart() {
 		m_gl_inject_input.reset();
 		m_alsa_input.reset();
 		m_pulseaudio_input.reset();
+		m_jack_input.reset();
 		return;
 	}
 
@@ -713,6 +717,7 @@ void PageRecord::CaptureStop() {
 	m_gl_inject_input.reset();
 	m_alsa_input.reset();
 	m_pulseaudio_input.reset();
+	m_jack_input.reset();
 
 	Logger::LogInfo("[PageRecord::CaptureStop] Stopped capturing.");
 
@@ -741,6 +746,8 @@ void PageRecord::UpdateCapture() {
 			audio_source = m_alsa_input.get();
 		if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
 			audio_source = m_pulseaudio_input.get();
+		if(m_audio_backend == PageInput::AUDIO_BACKEND_JACK)
+			audio_source = m_jack_input.get();
 	}
 
 	// connect sinks
