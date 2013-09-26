@@ -26,6 +26,8 @@ simplescreenrecorder_SOURCES = \
 	AV/Input/GLInjectInput.h \
 	AV/Input/GLInjectLauncher.cpp \
 	AV/Input/GLInjectLauncher.h \
+	AV/Input/JACKInput.cpp \
+	AV/Input/JACKInput.h \
 	AV/Input/PulseAudioInput.cpp \
 	AV/Input/PulseAudioInput.h \
 	AV/Input/X11Input.cpp \

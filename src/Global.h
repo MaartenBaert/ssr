@@ -173,6 +173,12 @@ public:
 		return "PulseAudioException";
 	}
 };
+class JACKException : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "JACKException";
+	}
+};
 
 // high resolution timer
 inline int64_t hrt_time_micro() {

@@ -98,7 +98,8 @@ PROGRAMS = $(bin_PROGRAMS)
 am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	AV/Input/ALSAInput.h AV/Input/GLInjectInput.cpp \
 	AV/Input/GLInjectInput.h AV/Input/GLInjectLauncher.cpp \
-	AV/Input/GLInjectLauncher.h AV/Input/PulseAudioInput.cpp \
+	AV/Input/GLInjectLauncher.h AV/Input/JACKInput.cpp \
+	AV/Input/JACKInput.h AV/Input/PulseAudioInput.cpp \
 	AV/Input/PulseAudioInput.h AV/Input/X11Input.cpp \
 	AV/Input/X11Input.h AV/Output/AudioEncoder.cpp \
 	AV/Output/AudioEncoder.h AV/Output/BaseEncoder.cpp \
@@ -125,6 +126,7 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectLauncher.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-JACKInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-PulseAudioInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-X11Input.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-AudioEncoder.$(OBJEXT) \
@@ -415,6 +417,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectLauncher.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectLauncher.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Input/JACKInput.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Input/JACKInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/PulseAudioInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/PulseAudioInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/X11Input.cpp \
@@ -589,6 +593,8 @@ AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-GLInjectLauncher.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
+AV/Input/simplescreenrecorder-JACKInput.$(OBJEXT):  \
+	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-PulseAudioInput.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-X11Input.$(OBJEXT):  \
@@ -699,6 +705,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-ALSAInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectLauncher.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-PulseAudioInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-X11Input.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Po@am__quote@
@@ -786,6 +793,20 @@ AV/Input/simplescreenrecorder-GLInjectLauncher.obj: AV/Input/GLInjectLauncher.cp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/GLInjectLauncher.cpp' object='AV/Input/simplescreenrecorder-GLInjectLauncher.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-GLInjectLauncher.obj `if test -f 'AV/Input/GLInjectLauncher.cpp'; then $(CYGPATH_W) 'AV/Input/GLInjectLauncher.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/GLInjectLauncher.cpp'; fi`
+
+AV/Input/simplescreenrecorder-JACKInput.o: AV/Input/JACKInput.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-JACKInput.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Tpo -c -o AV/Input/simplescreenrecorder-JACKInput.o `test -f 'AV/Input/JACKInput.cpp' || echo '$(srcdir)/'`AV/Input/JACKInput.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/JACKInput.cpp' object='AV/Input/simplescreenrecorder-JACKInput.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-JACKInput.o `test -f 'AV/Input/JACKInput.cpp' || echo '$(srcdir)/'`AV/Input/JACKInput.cpp
+
+AV/Input/simplescreenrecorder-JACKInput.obj: AV/Input/JACKInput.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-JACKInput.obj -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Tpo -c -o AV/Input/simplescreenrecorder-JACKInput.obj `if test -f 'AV/Input/JACKInput.cpp'; then $(CYGPATH_W) 'AV/Input/JACKInput.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/JACKInput.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/JACKInput.cpp' object='AV/Input/simplescreenrecorder-JACKInput.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-JACKInput.obj `if test -f 'AV/Input/JACKInput.cpp'; then $(CYGPATH_W) 'AV/Input/JACKInput.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/JACKInput.cpp'; fi`
 
 AV/Input/simplescreenrecorder-PulseAudioInput.o: AV/Input/PulseAudioInput.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-PulseAudioInput.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-PulseAudioInput.Tpo -c -o AV/Input/simplescreenrecorder-PulseAudioInput.o `test -f 'AV/Input/PulseAudioInput.cpp' || echo '$(srcdir)/'`AV/Input/PulseAudioInput.cpp
