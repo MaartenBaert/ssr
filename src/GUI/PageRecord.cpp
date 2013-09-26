@@ -680,6 +680,7 @@ void PageRecord::CaptureStart() {
 				m_alsa_input.reset(new ALSAInput(m_alsa_device, m_audio_sample_rate));
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
 				m_pulseaudio_input.reset(new PulseAudioInput(m_pulseaudio_source, m_audio_sample_rate));
+			//TODO// jack input
 		}
 
 		Logger::LogInfo("[PageRecord::CaptureStart] Started capturing.");

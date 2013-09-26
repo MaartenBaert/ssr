@@ -69,6 +69,7 @@ public:
 	enum enum_audio_backend {
 		AUDIO_BACKEND_ALSA,
 		AUDIO_BACKEND_PULSEAUDIO,
+		AUDIO_BACKEND_JACK,
 		AUDIO_BACKEND_COUNT // must be last
 	};
 
