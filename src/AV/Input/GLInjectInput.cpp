@@ -36,7 +36,7 @@ GLInjectInput::GLInjectInput(GLInjectLauncher *launcher) {
 
 	m_launcher = launcher;
 
-	m_cbuffer_size = m_launcher->GetCBufferSize();
+	m_ring_buffer_size = m_launcher->GetRingBufferSize();
 	m_max_bytes = m_launcher->GetMaxBytes();
 
 	try {
@@ -68,11 +68,11 @@ void GLInjectInput::Init() {
 	m_shm_main_ptr = m_launcher->GetMainSharedPointer();
 
 	// get the frame shared memory
-	for(unsigned int i = 0; i < m_cbuffer_size; ++i) {
+	for(unsigned int i = 0; i < m_ring_buffer_size; ++i) {
 		m_shm_frame_ptrs.push_back(m_launcher->GetFrameSharedPointer(i));
 	}
 
-	// flush the circular buffer
+	// flush the ring buffer
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	std::atomic_thread_fence(std::memory_order_acquire);
 	header->read_pos = header->write_pos;
@@ -103,7 +103,7 @@ void GLInjectInput::InputThread() {
 			unsigned int read_pos = header->read_pos;
 			unsigned int write_pos = header->write_pos;
 			std::atomic_thread_fence(std::memory_order_release);
-			unsigned int frames_ready = positive_mod((int) write_pos - (int) read_pos, (int) m_cbuffer_size * 2);
+			unsigned int frames_ready = positive_mod((int) write_pos - (int) read_pos, (int) m_ring_buffer_size * 2);
 			if(frames_ready == 0) {
 				PushVideoPing(hrt_time_micro() - MAX_COMMUNICATION_LATENCY);
 				usleep(10000);
@@ -113,7 +113,7 @@ void GLInjectInput::InputThread() {
 			std::atomic_thread_fence(std::memory_order_acquire); // start reading frame
 
 			// get the frame info
-			unsigned int current_frame = read_pos % m_cbuffer_size;
+			unsigned int current_frame = read_pos % m_ring_buffer_size;
 			GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
 			int64_t timestamp = frameinfo->timestamp;
 			unsigned int frame_width = frameinfo->width;
@@ -147,7 +147,7 @@ void GLInjectInput::InputThread() {
 
 			// go to the next frame
 			std::atomic_thread_fence(std::memory_order_acquire);
-			header->read_pos = (read_pos + 1) % (m_cbuffer_size * 2);
+			header->read_pos = (read_pos + 1) % (m_ring_buffer_size * 2);
 			std::atomic_thread_fence(std::memory_order_release);
 
 		}

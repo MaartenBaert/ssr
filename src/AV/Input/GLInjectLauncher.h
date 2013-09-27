@@ -23,7 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class GLInjectLauncher {
 
 public:
-	static const unsigned int CBUFFER_SIZE;
+	static const unsigned int RING_BUFFER_SIZE;
 
 private:
 	struct ShmFrame {
@@ -64,8 +64,8 @@ public:
 	// Returns the maximum number of bytes.
 	inline unsigned int GetMaxBytes() { return m_max_bytes; }
 
-	// Returns the number of frames in the circular buffer.
-	inline unsigned int GetCBufferSize() { return CBUFFER_SIZE; }
+	// Returns the number of frames in the ring buffer.
+	inline unsigned int GetRingBufferSize() { return RING_BUFFER_SIZE; }
 
 	// Returns a pointer to the main shared memory block used for communication with the injected library.
 	inline char* GetMainSharedPointer() { return m_shm_main_ptr; }

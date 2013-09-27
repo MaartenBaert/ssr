@@ -643,8 +643,8 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 							int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data() + p;
 							int16_t *data_out = (int16_t*) audio_frame->GetFrame()->data[p];
 							for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
-								*data_out = *data_in;
-								data_in += planes; data_out++;
+								*(data_out++) = *data_in;
+								data_in += planes;
 							}
 						}
 						break;
@@ -654,8 +654,8 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 							int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data() + p;
 							float *data_out = (float*) audio_frame->GetFrame()->data[p];
 							for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
-								*data_out = (float) *data_in / 32768.0f;
-								data_in += planes; data_out++;
+								*(data_out++) = (float) *data_in / 32768.0f;
+								data_in += planes;
 							}
 						}
 						break;

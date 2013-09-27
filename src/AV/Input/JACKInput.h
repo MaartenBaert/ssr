@@ -27,11 +27,35 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 class JACKInput : public AudioSource {
 
+public:
+	static const unsigned int RING_BUFFER_SIZE;
+
+private:
+	struct Command {
+		bool m_is_hole;
+		int64_t m_timestamp;
+		unsigned int m_sample_rate;
+		std::vector<uint8_t> m_data;
+		Command() = default;
+		Command(Command&&) = default;
+		Command& operator=(Command&&) = default;
+	};
+	struct SharedData {
+		std::deque<Command> m_commands;
+	};
+
 private:
 	unsigned int m_sample_rate, m_channels;
 
+	jack_client_t *m_jack_client;
+	std::vector<jack_port_t*> m_jack_ports;
+
 	std::thread m_thread;
+	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
+
+	std::vector<Command> m_command_ring;
+	unsigned int m_command_ring_read_pos, m_command_ring_write_pos;
 
 public:
 	JACKInput(unsigned int sample_rate);
@@ -44,6 +68,12 @@ public:
 private:
 	void Init();
 	void Free();
+
+	void WriteCommand(bool is_hole, jack_nframes_t nframes = 0);
+
+	static int ProcessCallback(jack_nframes_t nframes, void* arg);
+	static int SampleRateCallback(jack_nframes_t nframes, void* arg);
+	static int XRunCallback(void* arg);
 
 	void InputThread();
 

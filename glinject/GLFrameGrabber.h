@@ -24,7 +24,7 @@ private:
 	unsigned int m_width, m_height;
 
 	bool m_debug;
-	unsigned int m_cbuffer_size, m_max_bytes;
+	unsigned int m_ring_buffer_size, m_max_bytes;
 	unsigned int m_target_fps;
 	unsigned int m_flags;
 

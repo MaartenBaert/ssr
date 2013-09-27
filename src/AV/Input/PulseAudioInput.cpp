@@ -106,7 +106,7 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 	buffer_attr.tlength = (uint32_t) -1;
 
 	// create a stream
-	*stream = pa_stream_new(context, "SimpleScreenRecorder audio input", &sample_spec, NULL);
+	*stream = pa_stream_new(context, "SimpleScreenRecorder input", &sample_spec, NULL);
 	if(*stream == NULL) {
 		Logger::LogError(QString("[PulseAudioConnectStream] Error: Could not create stream! Reason: ") + pa_strerror(pa_context_errno(context)));
 		throw PulseAudioException();

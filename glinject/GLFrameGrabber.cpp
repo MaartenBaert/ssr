@@ -149,26 +149,26 @@ GLFrameGrabber::GLFrameGrabber(Display* display, Window window, GLXDrawable draw
 	// read the header
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
 	std::atomic_thread_fence(std::memory_order_acquire);
-	m_cbuffer_size = header->cbuffer_size;
+	m_ring_buffer_size = header->ring_buffer_size;
 	m_max_bytes = header->max_bytes;
 	m_target_fps = header->target_fps;
 	m_flags = header->flags;
 	std::atomic_thread_fence(std::memory_order_release);
-	if(m_cbuffer_size <= 0 || m_cbuffer_size > 1000) {
-		fprintf(stderr, "[SSR-GLInject] Error: Circular buffer size %u is invalid!\n", m_cbuffer_size);
+	if(m_ring_buffer_size <= 0 || m_ring_buffer_size > 1000) {
+		fprintf(stderr, "[SSR-GLInject] Error: Ring buffer size %u is invalid!\n", m_ring_buffer_size);
 		exit(-181818181);
 	}
 	if(m_max_bytes > 1024 * 1024 * 1024) {
 		fprintf(stderr, "[SSR-GLInject] Error: Maximum byte count %u is invalid!\n", m_max_bytes);
 		exit(-181818181);
 	}
-	if(shm_main_size != sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * m_cbuffer_size) {
-		fprintf(stderr, "[SSR-GLInject] Error: Main shared memory is not the correct size to contain %u frames!\n", m_cbuffer_size);
+	if(shm_main_size != sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * m_ring_buffer_size) {
+		fprintf(stderr, "[SSR-GLInject] Error: Main shared memory is not the correct size to contain %u frames!\n", m_ring_buffer_size);
 		exit(-181818181);
 	}
 
 	// get frame shared memory
-	for(unsigned int i = 0; i < m_cbuffer_size; ++i) {
+	for(unsigned int i = 0; i < m_ring_buffer_size; ++i) {
 		m_shm_frame_ptrs.push_back((char*) -1);
 		GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * i);
 		int shm_frame_id = frameinfo->shm_id;
@@ -263,13 +263,13 @@ void GLFrameGrabber::GrabFrame() {
 
 	//int64_t t3 = hrt_time_micro();
 
-	// is there space in the circular buffer?
+	// is there space in the ring buffer?
 	std::atomic_thread_fence(std::memory_order_acquire);
 	unsigned int read_pos = header->read_pos;
 	unsigned int write_pos = header->write_pos;
 	std::atomic_thread_fence(std::memory_order_release);
-	unsigned int frames_ready = positive_mod((int) write_pos - (int) read_pos, (int) m_cbuffer_size * 2);
-	if(frames_ready >= m_cbuffer_size)
+	unsigned int frames_ready = positive_mod((int) write_pos - (int) read_pos, (int) m_ring_buffer_size * 2);
+	if(frames_ready >= m_ring_buffer_size)
 		return;
 
 	// get the timestamp
@@ -317,7 +317,7 @@ void GLFrameGrabber::GrabFrame() {
 	std::atomic_thread_fence(std::memory_order_acquire); // start reading frame
 
 	// initialize the frame
-	unsigned int current_frame = write_pos % m_cbuffer_size;
+	unsigned int current_frame = write_pos % m_ring_buffer_size;
 	GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
 	frameinfo->timestamp = timestamp;
 	frameinfo->width = m_width;
@@ -341,7 +341,7 @@ void GLFrameGrabber::GrabFrame() {
 
 	// go to the next frame
 	std::atomic_thread_fence(std::memory_order_acquire);
-	header->write_pos = (write_pos + 1) % (m_cbuffer_size * 2);
+	header->write_pos = (write_pos + 1) % (m_ring_buffer_size * 2);
 	std::atomic_thread_fence(std::memory_order_release);
 
 	//int64_t t7 = hrt_time_micro();
