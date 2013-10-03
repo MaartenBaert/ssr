@@ -127,7 +127,7 @@ function ubuntu_create_package($dir, $lib, $version, $subversion, $ubuntuversion
 	$packageversion = "$version-$subversion~ppa1~${ubuntuversion}1";
 	$packagedate = date("r");
 	$multiarch = ($lib)? "same" : "";
-	$builddepends = "debhelper (>= 9), dpkg-dev (>= 1.16.0), build-essential, pkg-config, libx11-dev, libxext-dev, libxfixes-dev"
+	$builddepends = "debhelper (>= 9), dpkg-dev (>= 1.16.0), build-essential, pkg-config, cmake, libx11-dev, libxext-dev, libxfixes-dev"
 			. (($lib)? ", libgl1-mesa-dev, libglu1-mesa-dev"
 					 : ", qt4-qmake, libqt4-dev, libavformat-dev, libavcodec-dev, libavutil-dev, libswscale-dev, libasound2-dev, libpulse-dev");
 	$predepends = "\${misc:Pre-Depends}";

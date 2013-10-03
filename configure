@@ -17257,7 +17257,7 @@ fi
 
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile data/Makefile glinject/Makefile src/Makefile"
+ac_config_files="$ac_config_files Makefile 3rdparty/Makefile data/Makefile glinject/Makefile src/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -18383,6 +18383,7 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+    "3rdparty/Makefile") CONFIG_FILES="$CONFIG_FILES 3rdparty/Makefile" ;;
     "data/Makefile") CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
     "glinject/Makefile") CONFIG_FILES="$CONFIG_FILES glinject/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;

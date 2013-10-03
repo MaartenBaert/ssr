@@ -28,8 +28,8 @@ function arch_generate_pkgbuild($lib32, $packagename, $version, $subversion) {
 		$out .= "	optdepends=(\"lib32-simplescreenrecorder: OpenGL recording of 32-bit applications\")\n";
 		$out .= "fi\n";
 	}
-	$out .= ($lib32)? "makedepends=(\"git\" \"gcc-multilib\")\n"
-					: "makedepends=(\"git\")\n";
+	$out .= ($lib32)? "makedepends=(\"git\" \"cmake\" \"gcc-multilib\")\n"
+					: "makedepends=(\"git\" \"cmake\")\n";
 	$out .= "options=(\"!libtool\")\n";
 	$out .= "install=$packagename.install\n";
 	$out .= "\n";

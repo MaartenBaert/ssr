@@ -392,6 +392,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS = \
 @ENABLE_SSRPROGRAM_TRUE@	$(QT4_CFLAGS) \
+@ENABLE_SSRPROGRAM_TRUE@	-I$(top_builddir)/3rdparty \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Output \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV \
@@ -408,6 +409,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = \
 @ENABLE_SSRPROGRAM_TRUE@	-pthread \
 @ENABLE_SSRPROGRAM_TRUE@	$(QT4_LIBS) \
+@ENABLE_SSRPROGRAM_TRUE@	-L$(top_builddir)/3rdparty \
 @ENABLE_SSRPROGRAM_TRUE@	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound -lpulse -ljack
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_SOURCES = \

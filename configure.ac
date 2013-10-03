@@ -78,5 +78,5 @@ AM_COND_IF([ENABLE_GLINJECTLIB], [
 ])
 
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile data/Makefile glinject/Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile 3rdparty/Makefile data/Makefile glinject/Makefile src/Makefile])
 AC_OUTPUT

@@ -4,6 +4,7 @@ bin_PROGRAMS = simplescreenrecorder
 
 simplescreenrecorder_CPPFLAGS = \
 	$(QT4_CFLAGS) \
+	-I$(top_builddir)/3rdparty \
 	-I$(srcdir)/AV/Input \
 	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
@@ -17,6 +18,7 @@ simplescreenrecorder_CXXFLAGS = \
 simplescreenrecorder_LDFLAGS = \
 	-pthread \
 	$(QT4_LIBS) \
+	-L$(top_builddir)/3rdparty \
 	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound -lpulse -ljack
 
 simplescreenrecorder_SOURCES = \
