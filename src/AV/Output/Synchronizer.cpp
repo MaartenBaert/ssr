@@ -168,8 +168,10 @@ void Synchronizer::Init() {
 	{
 		SharedLock lock(&m_shared_data);
 
-		lock->m_partial_audio_frame.resize(m_audio_required_frame_size * m_audio_sample_size);
-		lock->m_partial_audio_frame_samples = 0;
+		if(m_audio_encoder != NULL) {
+			lock->m_partial_audio_frame.resize(m_audio_required_frame_size * m_audio_sample_size);
+			lock->m_partial_audio_frame_samples = 0;
+		}
 		lock->m_video_pts = 0;
 		lock->m_audio_samples = 0;
 		lock->m_time_offset = 0;
@@ -470,6 +472,23 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	if(!lock->m_segment_video_started || !lock->m_segment_audio_started)
 		return;
 
+	int64_t segment_start_time, segment_stop_time;
+	GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
+
+	// flush video
+	if(m_video_encoder != NULL) {
+		FlushVideoBuffer(lock, segment_start_time, segment_stop_time);
+	}
+
+	// flush audio
+	if(m_audio_encoder != NULL) {
+		FlushAudioBuffer(lock, segment_start_time, segment_stop_time);
+	}
+
+}
+
+void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData *lock, int64_t segment_start_time, int64_t segment_stop_time) {
+
 	// Sometimes long delays between video frames can occur, e.g. when a game is showing a loading screen.
 	// Not all codecs/players can handle that. It's also a problem for streaming. To fix this, long delays should be avoided by
 	// duplicating the previous frame a few times when needed. Whenever a video frame is sent to the encoder, it is also copied,
@@ -483,10 +502,6 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	// (2) The queue is empty and the last timestamp is too long ago (relative to the end of the video segment).
 	// It is perfectly possible that *both* happen, each possibly multiple times, in just one function call.
 
-	int64_t segment_start_time, segment_stop_time;
-	GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
-
-	// flush video
 	//int64_t segment_stop_video_pts = (int64_t) round((double) (lock->m_time_offset + (segment_stop_time - segment_start_time)) * 1.0e-6 * (double) m_video_frame_rate);
 	int64_t segment_stop_video_pts = (lock->m_time_offset + (segment_stop_time - segment_start_time)) * (int64_t) m_video_frame_rate / (int64_t) 1000000;
 	int64_t delay_time_per_frame = 1000000 / m_video_frame_rate + 1; // add one to avoid endless accumulation
@@ -561,7 +576,10 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 
 	}
 
-	// flush audio
+}
+
+void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData *lock, int64_t segment_start_time, int64_t segment_stop_time) {
+
 	double sample_length = (double) (segment_stop_time - lock->m_segment_audio_start_time) * 1.0e-6;
 	int64_t samples_max = (int64_t) ceil(sample_length * (double) m_audio_sample_rate) - lock->m_segment_audio_samples_read;
 	if(lock->m_audio_buffer.GetSize() > 0) {
