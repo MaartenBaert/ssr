@@ -26,6 +26,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "ByteQueue.h"
 #include "AVWrapper.h"
 
+#include <soxr.h>
+
 class VideoEncoder;
 class AudioEncoder;
 class SyncDiagram;
@@ -59,8 +61,9 @@ private:
 		std::unique_ptr<SyncDiagram> m_sync_diagram;
 
 	};
-	typedef MutexDataPair<SharedData>::Lock SharedLock;
 	typedef MutexDataPair<FastScaler>::Lock FastScalerLock;
+	typedef MutexDataPair<ResamplerData>::Lock ResamplerLock;
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
 	static const double DESYNC_CORRECTION_P, DESYNC_CORRECTION_I;
@@ -83,6 +86,7 @@ private:
 
 	std::thread m_thread;
 	MutexDataPair<FastScaler> m_fast_scaler;
+	MutexDataPair<ResamplerData> m_resampler_data;
 	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 

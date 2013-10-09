@@ -99,6 +99,11 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 	m_audio_encoder = audio_encoder;
 	m_allow_frame_skipping = allow_frame_skipping;
 
+	{
+		ResamplerLock lock(&m_resampler_data);
+		lock->m_soxr = NULL;
+	}
+
 	try {
 		Init();
 	} catch(...) {
@@ -165,6 +170,16 @@ void Synchronizer::Init() {
 	}
 
 	// initialize shared data
+	{
+		ResamplerLock lock(&m_resampler_data);
+
+		lock->m_last_sample_rate = m_audio_sample_rate;
+
+		soxr_error_t error;
+		soxr_quality_spec_t quality = soxr_quality_spec(SOXR_HQ, SOXR_VR);
+		lock->m_soxr = soxr_create(10.0, 1.0, m_audio_channels, &error, NULL, &quality, NULL);
+
+	}
 	{
 		SharedLock lock(&m_shared_data);
 

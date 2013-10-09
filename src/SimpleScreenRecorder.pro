@@ -8,8 +8,8 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++0x -D__STDC_CONSTANT_MACROS -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
-INCLUDEPATH += AV AV/Input AV/Output GUI
-DEPENDPATH += AV AV/Input AV/Output GUI
+INCLUDEPATH += AV AV/Input AV/Output GUI ../build/3rdparty
+DEPENDPATH += AV AV/Input AV/Output GUI ../build/3rdparty
 
 SOURCES += \
 	AV/Input/ALSAInput.cpp \
@@ -30,6 +30,7 @@ SOURCES += \
 	AV/ByteQueue.cpp \
 	AV/DetectCPUFeatures.cpp \
 	AV/FastScaler.cpp \
+	AV/Resampler.cpp \
 	AV/SourceSink.cpp \
 	GUI/AudioPreviewer.cpp \
 	GUI/ElidedLabel.cpp \
@@ -66,6 +67,7 @@ HEADERS  += \
 	AV/ByteQueue.h \
 	AV/DetectCPUFeatures.h \
 	AV/FastScaler.h \
+	AV/Resampler.h \
 	AV/SourceSink.h \
 	GUI/AudioPreviewer.h \
 	GUI/ElidedLabel.h \

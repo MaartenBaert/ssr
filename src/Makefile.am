@@ -59,6 +59,8 @@ simplescreenrecorder_SOURCES = \
 	AV/DetectCPUFeatures.h \
 	AV/FastScaler.cpp \
 	AV/FastScaler.h \
+	AV/Resampler.cpp \
+	AV/Resampler.h \
 	AV/SourceSink.cpp \
 	AV/SourceSink.h \
 	GUI/AudioPreviewer.cpp \

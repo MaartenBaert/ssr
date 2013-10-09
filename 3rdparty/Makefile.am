@@ -10,10 +10,10 @@ nodist_noinst_DATA = \
 	soxr.h
 
 libsoxr.a: $(srcdir)/soxr
-	mkdir -p "$(srcdir)/soxr/build"
-	cd "$(srcdir)/soxr/build"; cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=FALSE ..
-	cd "$(srcdir)/soxr/build"; $(MAKE)
-	cp "$(srcdir)/soxr/build/src/libsoxr.a" "$@"
+	mkdir -p "$(srcdir)/soxr/Release"
+	cd "$(srcdir)/soxr/Release"; cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=FALSE ..
+	cd "$(srcdir)/soxr/Release"; $(MAKE)
+	cp "$(srcdir)/soxr/Release/src/libsoxr.a" "$@"
 
 soxr.h: $(srcdir)/soxr/src/soxr.h
 	cp "$<" "$@"
