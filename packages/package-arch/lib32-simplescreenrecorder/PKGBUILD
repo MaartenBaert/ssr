@@ -1,11 +1,11 @@
 pkgname=lib32-simplescreenrecorder
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1
 pkgdesc="OpenGL recording of 32-bit applications with SimpleScreenRecorder."
 arch=("x86_64")
 url="http://www.maartenbaert.be/simplescreenrecorder/"
 license=("GPL3")
-source=("git+https://github.com/MaartenBaert/ssr.git#tag=0.1.0")
+source=("git+https://github.com/MaartenBaert/ssr.git#tag=0.1.1")
 md5sums=("SKIP")
 depends=("lib32-libgl" "lib32-glu" "lib32-libx11" "lib32-libxext" "lib32-libxfixes")
 makedepends=("git" "gcc-multilib")

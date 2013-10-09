@@ -132,6 +132,8 @@ private:
 	int64_t GetTotalTime(SharedData* lock);
 	void GetSegmentStartStop(SharedData* lock, int64_t* segment_start_time, int64_t* segment_stop_time);
 	void FlushBuffers(SharedData* lock);
+	void FlushVideoBuffer(SharedData* lock, int64_t segment_start_time, int64_t segment_stop_time);
+	void FlushAudioBuffer(SharedData* lock, int64_t segment_start_time, int64_t segment_stop_time);
 
 private:
 	void SynchronizerThread();
