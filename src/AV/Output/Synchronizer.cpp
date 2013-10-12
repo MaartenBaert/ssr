@@ -99,11 +99,6 @@ Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_enco
 	m_audio_encoder = audio_encoder;
 	m_allow_frame_skipping = allow_frame_skipping;
 
-	{
-		ResamplerLock lock(&m_resampler_data);
-		lock->m_soxr = NULL;
-	}
-
 	try {
 		Init();
 	} catch(...) {
@@ -151,8 +146,8 @@ void Synchronizer::Init() {
 	if(m_audio_encoder != NULL) {
 		m_audio_sample_rate = m_audio_encoder->GetSampleRate();
 		m_audio_channels = 2; //TODO// never larger than AV_NUM_DATA_POINTERS
-		m_audio_sample_size = m_audio_channels * 2;
-		m_audio_required_frame_size = m_audio_encoder->GetRequiredFrameSize();
+		m_audio_sample_size = m_audio_channels * sizeof(float);
+		m_audio_required_frame_samples = m_audio_encoder->GetRequiredFrameSamples();
 		m_audio_required_sample_format = m_audio_encoder->GetRequiredSampleFormat();
 		switch(m_audio_required_sample_format) {
 			case AV_SAMPLE_FMT_S16:
@@ -171,20 +166,10 @@ void Synchronizer::Init() {
 
 	// initialize shared data
 	{
-		ResamplerLock lock(&m_resampler_data);
-
-		lock->m_last_sample_rate = m_audio_sample_rate;
-
-		soxr_error_t error;
-		soxr_quality_spec_t quality = soxr_quality_spec(SOXR_HQ, SOXR_VR);
-		lock->m_soxr = soxr_create(10.0, 1.0, m_audio_channels, &error, NULL, &quality, NULL);
-
-	}
-	{
 		SharedLock lock(&m_shared_data);
 
 		if(m_audio_encoder != NULL) {
-			lock->m_partial_audio_frame.resize(m_audio_required_frame_size * m_audio_sample_size);
+			lock->m_partial_audio_frame.resize(m_audio_required_frame_samples * m_audio_sample_size);
 			lock->m_partial_audio_frame_samples = 0;
 		}
 		lock->m_video_pts = 0;
@@ -354,7 +339,7 @@ void Synchronizer::ReadAudioSamples(unsigned int sample_rate, unsigned int chann
 
 	Q_ASSERT(sample_rate == m_audio_sample_rate); // resampling isn't supported
 	Q_ASSERT(channels == m_audio_channels); // remixing isn't supported
-	Q_ASSERT(format == AV_SAMPLE_FMT_S16); // only S16 is currently supported
+	Q_ASSERT(format == AV_SAMPLE_FMT_FLT); // only float is currently supported
 
 	// avoid memory problems by limiting the audio buffer size
 	if(lock->m_audio_buffer.GetSize() / m_audio_sample_size >= MAX_AUDIO_SAMPLES_BUFFERED) {
@@ -636,7 +621,7 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData *lock, int64_t segm
 			lock->m_segment_audio_can_drop = false;
 
 			// copy samples until either the partial frame is full or there are no samples left
-			int64_t n = std::min((int64_t) (m_audio_required_frame_size - lock->m_partial_audio_frame_samples), samples_left);
+			int64_t n = std::min((int64_t) (m_audio_required_frame_samples - lock->m_partial_audio_frame_samples), samples_left);
 			lock->m_audio_buffer.Read(lock->m_partial_audio_frame.data() + lock->m_partial_audio_frame_samples * m_audio_sample_size, n * m_audio_sample_size);
 			lock->m_segment_audio_samples_read += n;
 			lock->m_partial_audio_frame_samples += n;
@@ -644,7 +629,7 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData *lock, int64_t segm
 			samples_left -= n;
 
 			// is the partial frame full?
-			if(lock->m_partial_audio_frame_samples == m_audio_required_frame_size) {
+			if(lock->m_partial_audio_frame_samples == m_audio_required_frame_samples) {
 
 				// allocate a frame
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
@@ -653,43 +638,37 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData *lock, int64_t segm
 #else
 				unsigned int planes = 1;
 #endif
-				std::unique_ptr<AVFrameWrapper> audio_frame = CreateAudioFrame(planes, m_audio_required_frame_size, m_audio_required_sample_size, m_audio_required_sample_format);
+				std::unique_ptr<AVFrameWrapper> audio_frame = CreateAudioFrame(planes, m_audio_required_frame_samples, m_audio_required_sample_size, m_audio_required_sample_format);
 				audio_frame->GetFrame()->pts = lock->m_audio_samples;
 
 				// copy/convert the samples
 				switch(m_audio_required_sample_format) {
 					case AV_SAMPLE_FMT_S16: {
-						memcpy(audio_frame->GetFrame()->data[0], lock->m_partial_audio_frame.data(), m_audio_required_frame_size * m_audio_required_sample_size);
+						float *data_in = (float*) lock->m_partial_audio_frame.data();
+						int16_t *data_out = (int16_t*) audio_frame->GetFrame()->data[0];
+						SampleCopy(data_in, 1, data_out, 1, m_audio_required_frame_samples * m_audio_channels);
 						break;
 					}
 					case AV_SAMPLE_FMT_FLT: {
-						int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data();
+						float *data_in = (float*) lock->m_partial_audio_frame.data();
 						float *data_out = (float*) audio_frame->GetFrame()->data[0];
-						for(unsigned int i = 0; i < m_audio_required_frame_size * m_audio_channels; ++i) {
-							*(data_out++) = (float) *(data_in++) / 32768.0f;
-						}
+						memcpy(data_out, data_in, m_audio_required_frame_samples * m_audio_required_sample_size);
 						break;
 					}
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
 					case AV_SAMPLE_FMT_S16P: {
 						for(unsigned int p = 0; p < planes; ++p) {
-							int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data() + p;
+							float *data_in = (float*) lock->m_partial_audio_frame.data() + p;
 							int16_t *data_out = (int16_t*) audio_frame->GetFrame()->data[p];
-							for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
-								*(data_out++) = *data_in;
-								data_in += planes;
-							}
+							SampleCopy(data_in, planes, data_out, 1, m_audio_required_frame_samples);
 						}
 						break;
 					}
 					case AV_SAMPLE_FMT_FLTP: {
 						for(unsigned int p = 0; p < planes; ++p) {
-							int16_t *data_in = (int16_t*) lock->m_partial_audio_frame.data() + p;
+							float *data_in = (float*) lock->m_partial_audio_frame.data() + p;
 							float *data_out = (float*) audio_frame->GetFrame()->data[p];
-							for(unsigned int i = 0; i < m_audio_required_frame_size; ++i) {
-								*(data_out++) = (float) *data_in / 32768.0f;
-								data_in += planes;
-							}
+							SampleCopy(data_in, planes, data_out, 1, m_audio_required_frame_samples);
 						}
 						break;
 					}

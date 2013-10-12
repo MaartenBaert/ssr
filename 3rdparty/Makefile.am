@@ -9,16 +9,20 @@ nodist_noinst_DATA = \
 	libsoxr.a \
 	soxr.h
 
-libsoxr.a: $(srcdir)/soxr
-	mkdir -p "$(srcdir)/soxr/Release"
-	cd "$(srcdir)/soxr/Release"; cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=FALSE ..
-	cd "$(srcdir)/soxr/Release"; $(MAKE)
+soxr-make:
+	$(MAKE) -C "$(srcdir)/soxr/Release"
+soxr-make-clean:
+	$(MAKE) -C "$(srcdir)/soxr/Release" clean
+soxr-make-distclean:
+	$(MAKE) -C "$(srcdir)/soxr/Release" distclean
+libsoxr.a: soxr-make
 	cp "$(srcdir)/soxr/Release/src/libsoxr.a" "$@"
-
 soxr.h: $(srcdir)/soxr/src/soxr.h
 	cp "$<" "$@"
 
-clean-local:
-	rm -f "libsoxr.a" "soxr.h"
+clean-local: soxr-make-clean
+distclean-local: soxr-make-distclean
+
+.PHONY: soxr-make soxr-make-clean soxr-make-distclean
 
 endif

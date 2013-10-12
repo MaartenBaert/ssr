@@ -20,6 +20,59 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include <soxr.h>
+
+template<typename IN, typename OUT> OUT SampleCast(IN x);
+template<typename T> inline T       SampleCast<T,       T      >(T       x) { return x; }
+template<>           inline int16_t SampleCast<float  , int16_t>(float   x) { return lrint(fmin(fmax(x * 32768.0f, -32768.0f), 32767.0f)); }
+template<>           inline float   SampleCast<int16_t, float  >(int16_t x) { return (float) x * (1.0f / 32768.0f); }
+
+template<typename IN, typename OUT>
+inline void SampleCopy(const IN* in_data, int in_step, OUT* out_data, int out_step, unsigned int sample_count) {
+	for(unsigned int i = 0; i < sample_count; ++i) {
+		*out_data = SampleCast<IN, OUT>(*in_data);
+		in_data += in_step;
+		out_data += out_step;
+	}
+}
+
+// Simple class that allocates temporary buffers efficiently by reusing memory to avoid new memory allocations.
+// It is more efficient than std::vector because it doesn't copy data or initialize it to zero.
+class TempBuffer {
+
+private:
+	uint8_t *m_data;
+	size_t m_size;
+
+public:
+	inline TempBuffer() {
+		m_data = NULL;
+		m_size = 0;
+	}
+	inline ~TempBuffer() {
+		free(m_data);
+	}
+	inline void resize(size_t size) {
+		if(size > m_size) {
+			free(m_data);
+			m_data = (uint8_t*) malloc(size + size / 4);
+			if(m_data == NULL) {
+				m_size = 0;
+				throw std::bad_alloc();
+			}
+			m_size = size;
+		}
+	}
+
+	inline uint8_t* data() { return m_data; }
+	inline size_t size() { return m_size; }
+
+	// noncopyable
+	TempBuffer(const TempBuffer&) = delete;
+	TempBuffer& operator=(const TempBuffer&) = delete;
+
+};
+
 class Resampler {
 
 private:
@@ -28,7 +81,8 @@ private:
 
 	soxr_t m_soxr;
 
-	std::vector<uint8_t> m_temp_data;
+	TempBuffer m_in_data;
+	TempBuffer m_out_data;
 
 public:
 	Resampler();

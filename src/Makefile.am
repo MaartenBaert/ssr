@@ -164,4 +164,6 @@ moc_Logger.cpp: $(srcdir)/Logger.h
 clean-moc-extra:
 	rm -f moc_*.cpp
 
+.PHONY: clean-qrc-extra clean-moc-extra
+
 endif

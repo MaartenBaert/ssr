@@ -23,6 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 #include "FastScaler.h"
+#include "Resampler.h"
 #include "ByteQueue.h"
 #include "AVWrapper.h"
 
@@ -62,7 +63,7 @@ private:
 
 	};
 	typedef MutexDataPair<FastScaler>::Lock FastScalerLock;
-	typedef MutexDataPair<ResamplerData>::Lock ResamplerLock;
+	typedef MutexDataPair<Resampler>::Lock ResamplerLock;
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
@@ -81,12 +82,12 @@ private:
 	int64_t m_video_max_frames_skipped;
 
 	unsigned int m_audio_sample_rate, m_audio_channels, m_audio_sample_size;
-	unsigned int m_audio_required_frame_size, m_audio_required_sample_size;
+	unsigned int m_audio_required_frame_samples, m_audio_required_sample_size;
 	AVSampleFormat m_audio_required_sample_format;
 
 	std::thread m_thread;
 	MutexDataPair<FastScaler> m_fast_scaler;
-	MutexDataPair<ResamplerData> m_resampler_data;
+	MutexDataPair<Resampler> m_resampler;
 	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 

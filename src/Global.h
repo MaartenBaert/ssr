@@ -149,6 +149,12 @@ public:
 		return "LibavException";
 	}
 };
+class SoxrException : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "SoxrException";
+	}
+};
 class X11Exception : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {

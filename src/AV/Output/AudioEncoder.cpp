@@ -84,7 +84,7 @@ AudioEncoder::~AudioEncoder() {
 	Destruct(); // destruct the base class first
 }
 
-unsigned int AudioEncoder::GetRequiredFrameSize() {
+unsigned int AudioEncoder::GetRequiredFrameSamples() {
 #if SSR_USE_AVCODEC_ENCODE_AUDIO2
 	return (GetCodecContext()->codec->capabilities & CODEC_CAP_VARIABLE_FRAME_SIZE)? 1024 : GetCodecContext()->frame_size;
 #else

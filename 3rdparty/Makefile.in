@@ -361,6 +361,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@ENABLE_SSRPROGRAM_FALSE@distclean-local:
 @ENABLE_SSRPROGRAM_FALSE@clean-local:
 clean: clean-am
 
@@ -368,7 +369,7 @@ clean-am: clean-generic clean-libtool clean-local mostlyclean-am
 
 distclean: distclean-am
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic
+distclean-am: clean-am distclean-generic distclean-local
 
 dvi: dvi-am
 
@@ -432,28 +433,33 @@ uninstall-am:
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	clean-local cscopelist-am ctags-am distclean distclean-generic \
-	distclean-libtool distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags-am uninstall uninstall-am
+	distclean-libtool distclean-local distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
+	uninstall-am
 
 
-@ENABLE_SSRPROGRAM_TRUE@libsoxr.a: $(srcdir)/soxr
-@ENABLE_SSRPROGRAM_TRUE@	mkdir -p "$(srcdir)/soxr/build"
-@ENABLE_SSRPROGRAM_TRUE@	cd "$(srcdir)/soxr/build"; cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=FALSE ..
-@ENABLE_SSRPROGRAM_TRUE@	cd "$(srcdir)/soxr/build"; $(MAKE)
-@ENABLE_SSRPROGRAM_TRUE@	cp "$(srcdir)/soxr/build/src/libsoxr.a" "$@"
-
+@ENABLE_SSRPROGRAM_TRUE@soxr-make:
+@ENABLE_SSRPROGRAM_TRUE@	$(MAKE) -C "$(srcdir)/soxr/Release"
+@ENABLE_SSRPROGRAM_TRUE@soxr-make-clean:
+@ENABLE_SSRPROGRAM_TRUE@	$(MAKE) -C "$(srcdir)/soxr/Release" clean
+@ENABLE_SSRPROGRAM_TRUE@soxr-make-distclean:
+@ENABLE_SSRPROGRAM_TRUE@	$(MAKE) -C "$(srcdir)/soxr/Release" distclean
+@ENABLE_SSRPROGRAM_TRUE@libsoxr.a: soxr-make
+@ENABLE_SSRPROGRAM_TRUE@	cp "$(srcdir)/soxr/Release/src/libsoxr.a" "$@"
 @ENABLE_SSRPROGRAM_TRUE@soxr.h: $(srcdir)/soxr/src/soxr.h
 @ENABLE_SSRPROGRAM_TRUE@	cp "$<" "$@"
 
-@ENABLE_SSRPROGRAM_TRUE@clean-local:
-@ENABLE_SSRPROGRAM_TRUE@	rm -f "libsoxr.a" "soxr.h"
+@ENABLE_SSRPROGRAM_TRUE@clean-local: soxr-make-clean
+@ENABLE_SSRPROGRAM_TRUE@distclean-local: soxr-make-distclean
+
+@ENABLE_SSRPROGRAM_TRUE@.PHONY: soxr-make soxr-make-clean soxr-make-distclean
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
