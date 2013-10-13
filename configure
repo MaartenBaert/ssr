@@ -644,6 +644,14 @@ QT4_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
+ENABLE_PULSEAUDIO_FALSE
+ENABLE_PULSEAUDIO_TRUE
+ENABLE_FFMPEG_VERSIONS_FALSE
+ENABLE_FFMPEG_VERSIONS_TRUE
+ENABLE_X86_ASM_FALSE
+ENABLE_X86_ASM_TRUE
+ENABLE_ASSERT_FALSE
+ENABLE_ASSERT_TRUE
 ENABLE_SSRPROGRAM_FALSE
 ENABLE_SSRPROGRAM_TRUE
 ENABLE_GLINJECTLIB_FALSE
@@ -786,6 +794,10 @@ with_sysroot
 enable_libtool_lock
 enable_glinjectlib
 enable_ssrprogram
+enable_assert
+enable_x86_asm
+enable_ffmpeg_versions
+enable_pulseaudio
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1440,6 +1452,12 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --disable-glinjectlib   don't build the GLInject library
   --disable-ssrprogram    don't build the SimpleScreenRecorder program
+  --disable-assert        don't use assertions meant for debugging
+  --disable-x86-asm       don't use x86/x64 assembly instructions
+  --disable-ffmpeg-versions
+                          use Libav version numbers instead of FFmpeg version
+                          numbers
+  --disable-pulseaudio    don't use PulseAudio
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -16193,6 +16211,26 @@ if test "${enable_ssrprogram+set}" = set; then :
   enableval=$enable_ssrprogram;
 fi
 
+# Check whether --enable-assert was given.
+if test "${enable_assert+set}" = set; then :
+  enableval=$enable_assert;
+fi
+
+# Check whether --enable-x86-asm was given.
+if test "${enable_x86_asm+set}" = set; then :
+  enableval=$enable_x86_asm;
+fi
+
+# Check whether --enable-ffmpeg-versions was given.
+if test "${enable_ffmpeg_versions+set}" = set; then :
+  enableval=$enable_ffmpeg_versions;
+fi
+
+# Check whether --enable-pulseaudio was given.
+if test "${enable_pulseaudio+set}" = set; then :
+  enableval=$enable_pulseaudio;
+fi
+
  if test x"$enable_glinjectlib" != x"no"; then
   ENABLE_GLINJECTLIB_TRUE=
   ENABLE_GLINJECTLIB_FALSE='#'
@@ -16207,6 +16245,38 @@ fi
 else
   ENABLE_SSRPROGRAM_TRUE='#'
   ENABLE_SSRPROGRAM_FALSE=
+fi
+
+ if test x"$enable_assert" != x"no"; then
+  ENABLE_ASSERT_TRUE=
+  ENABLE_ASSERT_FALSE='#'
+else
+  ENABLE_ASSERT_TRUE='#'
+  ENABLE_ASSERT_FALSE=
+fi
+
+ if test x"$enable_x86_asm" != x"no"; then
+  ENABLE_X86_ASM_TRUE=
+  ENABLE_X86_ASM_FALSE='#'
+else
+  ENABLE_X86_ASM_TRUE='#'
+  ENABLE_X86_ASM_FALSE=
+fi
+
+ if test x"$enable_ffmpeg_versions" != x"no"; then
+  ENABLE_FFMPEG_VERSIONS_TRUE=
+  ENABLE_FFMPEG_VERSIONS_FALSE='#'
+else
+  ENABLE_FFMPEG_VERSIONS_TRUE='#'
+  ENABLE_FFMPEG_VERSIONS_FALSE=
+fi
+
+ if test x"$enable_pulseaudio" != x"no"; then
+  ENABLE_PULSEAUDIO_TRUE=
+  ENABLE_PULSEAUDIO_FALSE='#'
+else
+  ENABLE_PULSEAUDIO_TRUE='#'
+  ENABLE_PULSEAUDIO_FALSE=
 fi
 
 
@@ -17079,7 +17149,9 @@ else
   as_fn_error $? "required library missing" "$LINENO" 5
 fi
 
-	ac_fn_c_check_header_mongrel "$LINENO" "pulse/context.h" "ac_cv_header_pulse_context_h" "$ac_includes_default"
+	if test -z "$ENABLE_PULSEAUDIO_TRUE"; then :
+
+		ac_fn_c_check_header_mongrel "$LINENO" "pulse/context.h" "ac_cv_header_pulse_context_h" "$ac_includes_default"
 if test "x$ac_cv_header_pulse_context_h" = xyes; then :
 
 else
@@ -17087,7 +17159,7 @@ else
 fi
 
 
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for pa_context_new in -lpulse" >&5
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for pa_context_new in -lpulse" >&5
 $as_echo_n "checking for pa_context_new in -lpulse... " >&6; }
 if ${ac_cv_lib_pulse_pa_context_new+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -17129,6 +17201,8 @@ else
   as_fn_error $? "required library missing" "$LINENO" 5
 fi
 
+
+fi
 
 fi
 
@@ -17410,6 +17484,22 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${ENABLE_SSRPROGRAM_TRUE}" && test -z "${ENABLE_SSRPROGRAM_FALSE}"; then
   as_fn_error $? "conditional \"ENABLE_SSRPROGRAM\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_ASSERT_TRUE}" && test -z "${ENABLE_ASSERT_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_ASSERT\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_X86_ASM_TRUE}" && test -z "${ENABLE_X86_ASM_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_X86_ASM\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_FFMPEG_VERSIONS_TRUE}" && test -z "${ENABLE_FFMPEG_VERSIONS_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_FFMPEG_VERSIONS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_PULSEAUDIO_TRUE}" && test -z "${ENABLE_PULSEAUDIO_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_PULSEAUDIO\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

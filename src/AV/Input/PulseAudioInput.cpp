@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "PulseAudioInput.h"
 
+#if SSR_USE_PULSEAUDIO
+
 #include "Logger.h"
 
 // Artificial delay after the first samples have been received (in microseconds). Any samples received during this time will be dropped.
@@ -391,3 +393,5 @@ void PulseAudioInput::InputThread() {
 		Logger::LogError("[PulseAudioInput::InputThread] Unknown exception in input thread.");
 	}
 }
+
+#endif

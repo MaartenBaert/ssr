@@ -18,8 +18,32 @@ simplescreenrecorder_CXXFLAGS = \
 simplescreenrecorder_LDFLAGS = \
 	-pthread \
 	$(QT4_LIBS) \
-	-L$(top_builddir)/3rdparty \
-	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound -lpulse -ljack
+	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
+
+if ! ENABLE_ASSERT
+simplescreenrecorder_CPPFLAGS += -DNDEBUG -DQT_NO_DEBUG
+endif
+
+if ENABLE_X86_ASM
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_X86_ASM=1
+else
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_X86_ASM=0
+endif
+
+if ENABLE_FFMPEG_VERSIONS
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_FFMPEG_VERSIONS=1
+else
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_FFMPEG_VERSIONS=0
+endif
+
+if ENABLE_PULSEAUDIO
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_PULSEAUDIO=1
+simplescreenrecorder_LDFLAGS += -lpulse
+else
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_PULSEAUDIO=0
+endif
+
+simplescreenrecorder_LDFLAGS += -ljack
 
 simplescreenrecorder_SOURCES = \
 	AV/Input/ALSAInput.cpp \

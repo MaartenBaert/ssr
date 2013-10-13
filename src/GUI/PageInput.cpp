@@ -210,7 +210,9 @@ PageInput::PageInput(MainWindow* main_window)
 		m_label_audio_backend = new QLabel("Backend:", group_audio);
 		m_combobox_audio_backend = new QComboBox(group_audio);
 		m_combobox_audio_backend->addItem("ALSA");
+#if SSR_USE_PULSEAUDIO
 		m_combobox_audio_backend->addItem("PulseAudio");
+#endif
 		m_combobox_audio_backend->addItem("JACK");
 		m_combobox_audio_backend->setToolTip("The audio backend that will be used for recording.\n"
 											 "The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.");
@@ -218,6 +220,7 @@ PageInput::PageInput(MainWindow* main_window)
 		m_lineedit_alsa_device = new QLineEdit(group_audio);
 		m_lineedit_alsa_device->setToolTip("The ALSA device that will be used for recording. Normally this should be 'default'.\n"
 										   "You can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).");
+#if SSR_USE_PULSEAUDIO
 		m_label_pulseaudio_source = new QLabel("Source:", group_audio);
 		m_combobox_pulseaudio_source = new QComboBox(group_audio);
 		m_combobox_pulseaudio_source->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -225,10 +228,13 @@ PageInput::PageInput(MainWindow* main_window)
 												 "A 'monitor' is a source that records the audio played by other applications.");
 		m_pushbutton_pulseaudio_refresh = new QPushButton("Refresh", group_audio);
 		m_pushbutton_pulseaudio_refresh->setToolTip("Refreshes the list of PulseAudio sources.");
+#endif
 
 		connect(m_checkbox_audio_enable, SIGNAL(clicked()), this, SLOT(OnUpdateAudioFields()));
 		connect(m_combobox_audio_backend, SIGNAL(activated(int)), this, SLOT(OnUpdateAudioFields()));
+#if SSR_USE_PULSEAUDIO
 		connect(m_pushbutton_pulseaudio_refresh, SIGNAL(clicked()), this, SLOT(OnUpdatePulseAudioSources()));
+#endif
 
 		QVBoxLayout *layout = new QVBoxLayout(group_audio);
 		layout->addWidget(m_checkbox_audio_enable);
@@ -239,9 +245,11 @@ PageInput::PageInput(MainWindow* main_window)
 			layout2->addWidget(m_combobox_audio_backend, 0, 1, 1, 2);
 			layout2->addWidget(m_label_alsa_device, 1, 0);
 			layout2->addWidget(m_lineedit_alsa_device, 1, 1, 1, 2);
+#if SSR_USE_PULSEAUDIO
 			layout2->addWidget(m_label_pulseaudio_source, 2, 0);
 			layout2->addWidget(m_combobox_pulseaudio_source, 2, 1);
 			layout2->addWidget(m_pushbutton_pulseaudio_refresh, 2, 2);
+#endif
 		}
 	}
 	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), "Back", this);
@@ -264,7 +272,9 @@ PageInput::PageInput(MainWindow* main_window)
 	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(OnUpdateScreenConfiguration()));
 	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(OnUpdateScreenConfiguration()));
 	LoadScreenConfigurations();
+#if SSR_USE_PULSEAUDIO
 	LoadPulseAudioSources();
+#endif
 
 	OnUpdateVideoAreaFields();
 	OnUpdateVideoScaleFields();
@@ -273,6 +283,15 @@ PageInput::PageInput(MainWindow* main_window)
 }
 
 void PageInput::LoadSettings(QSettings* settings) {
+
+	// choose default audio backend
+#if SSR_USE_PULSEAUDIO
+	enum_audio_backend default_audio_backend = (m_pulseaudio_available)? AUDIO_BACKEND_PULSEAUDIO : AUDIO_BACKEND_ALSA;
+#else
+	enum_audio_backend default_audio_backend = AUDIO_BACKEND_ALSA;
+#endif
+
+	// load settings
 	SetVideoArea((enum_video_area) settings->value("input/video_area", VIDEO_AREA_SCREEN).toUInt());
 	SetVideoAreaScreen(settings->value("input/video_area_screen", 0).toUInt());
 	SetVideoX(settings->value("input/video_x", 0).toUInt());
@@ -285,18 +304,23 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetVideoScaledH(settings->value("input/video_scaled_h", 480).toUInt());
 	SetVideoRecordCursor(settings->value("input/video_record_cursor", true).toBool());
 	SetAudioEnabled(settings->value("input/audio_enabled", true).toBool());
-	SetAudioBackend((enum_audio_backend) settings->value("input/audio_backend", (m_pulseaudio_available)? AUDIO_BACKEND_PULSEAUDIO : AUDIO_BACKEND_ALSA).toUInt());
+	SetAudioBackend((enum_audio_backend) settings->value("input/audio_backend", default_audio_backend).toUInt());
 	SetALSADevice(settings->value("input/audio_alsa_device", "default").toString());
+#if SSR_USE_PULSEAUDIO
 	SetPulseAudioSource(FindPulseAudioSource(settings->value("input/audio_pulseaudio_source", QString()).toString()));
+#endif
 	SetGLInjectCommand(settings->value("input/glinject_command", "").toString());
 	SetGLInjectRunCommand(settings->value("input/glinject_run_command", true).toBool());
 	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
 	SetGLInjectMaxMegaPixels(settings->value("input/glinject_max_megapixels", 2).toUInt());
 	SetGLInjectCaptureFront(settings->value("input/glinject_capture_front", false).toBool());
 	SetGLInjectLimitFPS(settings->value("input/glinject_limit_fps", false).toBool());
+
+	// update things
 	OnUpdateVideoAreaFields();
 	OnUpdateVideoScaleFields();
 	OnUpdateAudioFields();
+
 }
 
 void PageInput::SaveSettings(QSettings* settings) {
@@ -314,7 +338,9 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/audio_enabled", GetAudioEnabled());
 	settings->setValue("input/audio_backend", GetAudioBackend());
 	settings->setValue("input/audio_alsa_device", GetALSADevice());
+#if SSR_USE_PULSEAUDIO
 	settings->setValue("input/audio_pulseaudio_source", GetPulseAudioSourceName());
+#endif
 	settings->setValue("input/glinject_command", GetGLInjectCommand());
 	settings->setValue("input/glinject_run_command", GetGLInjectRunCommand());
 	settings->setValue("input/glinject_relax_permissions", GetGLInjectRelaxPermissions());
@@ -322,6 +348,8 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/glinject_capture_front", GetGLInjectCaptureFront());
 	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
 }
+
+#if SSR_USE_PULSEAUDIO
 
 QString PageInput::GetPulseAudioSourceName() {
 	return m_pulseaudio_sources[GetPulseAudioSource()].name;
@@ -334,6 +362,8 @@ unsigned int PageInput::FindPulseAudioSource(const QString &name) {
 	}
 	return 0;
 }
+
+#endif
 
 // Tries to find the real window that corresponds to a top-level window (the actual window without window manager decorations).
 // Returns None if it can't find the window (probably because the window is not handled by the window manager).
@@ -549,6 +579,8 @@ void PageInput::LoadScreenConfigurations() {
 	OnUpdateVideoAreaFields();
 }
 
+#if SSR_USE_PULSEAUDIO
+
 void PageInput::LoadPulseAudioSources() {
 	m_pulseaudio_sources = PulseAudioInput::GetSourceList();
 	if(m_pulseaudio_sources.empty()) {
@@ -565,6 +597,8 @@ void PageInput::LoadPulseAudioSources() {
 		m_combobox_pulseaudio_source->addItem(m_pulseaudio_sources[i].description);
 	}
 }
+
+#endif
 
 void PageInput::OnUpdateRecordingFrame() {
 	if(m_spinbox_video_x->hasFocus() || m_spinbox_video_y->hasFocus() || m_spinbox_video_w->hasFocus() || m_spinbox_video_h->hasFocus()) {
@@ -646,11 +680,17 @@ void PageInput::OnUpdateVideoScaleFields() {
 void PageInput::OnUpdateAudioFields() {
 	bool enabled = GetAudioEnabled();
 	enum_audio_backend backend = GetAudioBackend();
-	GroupEnabled({m_label_audio_backend, m_combobox_audio_backend, m_label_alsa_device, m_lineedit_alsa_device,
-				  m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh}, enabled);
+	GroupEnabled({
+		m_label_audio_backend, m_combobox_audio_backend, m_label_alsa_device, m_lineedit_alsa_device,
+#if SSR_USE_PULSEAUDIO
+		m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh,
+#endif
+	}, enabled);
 	MultiGroupVisible({
 		{{m_label_alsa_device, m_lineedit_alsa_device}, (backend == AUDIO_BACKEND_ALSA)},
+#if SSR_USE_PULSEAUDIO
 		{{m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh}, (backend == AUDIO_BACKEND_PULSEAUDIO)}
+#endif
 	});
 }
 
@@ -660,11 +700,15 @@ void PageInput::OnUpdateScreenConfiguration() {
 	SetVideoAreaScreen(selected_screen);
 }
 
+#if SSR_USE_PULSEAUDIO
+
 void PageInput::OnUpdatePulseAudioSources() {
 	QString selected_source = GetPulseAudioSourceName();
 	LoadPulseAudioSources();
 	SetPulseAudioSource(FindPulseAudioSource(selected_source));
 }
+
+#endif
 
 void PageInput::OnIdentifyScreens() {
 	OnStopIdentifyScreens();

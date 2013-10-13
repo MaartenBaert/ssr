@@ -20,7 +20,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#if SSR_USE_PULSEAUDIO
 #include "PulseAudioInput.h"
+#endif
 
 class QComboBoxWithSignal : public QComboBox {
 	Q_OBJECT
@@ -68,7 +70,9 @@ public:
 	};
 	enum enum_audio_backend {
 		AUDIO_BACKEND_ALSA,
+#if SSR_USE_PULSEAUDIO
 		AUDIO_BACKEND_PULSEAUDIO,
+#endif
 		AUDIO_BACKEND_JACK,
 		AUDIO_BACKEND_COUNT // must be last
 	};
@@ -80,8 +84,10 @@ private:
 	std::unique_ptr<QRubberBand> m_rubber_band, m_recording_frame;
 	QRect m_rubber_band_rect, m_select_window_outer_rect, m_select_window_inner_rect;
 
+#if SSR_USE_PULSEAUDIO
 	bool m_pulseaudio_available;
 	std::vector<PulseAudioInput::Source> m_pulseaudio_sources;
+#endif
 
 	QString m_glinject_command;
 	bool m_glinject_run_command, m_glinject_relax_permissions;
@@ -106,9 +112,11 @@ private:
 	QComboBox *m_combobox_audio_backend;
 	QLabel *m_label_alsa_device;
 	QLineEdit *m_lineedit_alsa_device;
+#if SSR_USE_PULSEAUDIO
 	QLabel *m_label_pulseaudio_source;
 	QComboBox *m_combobox_pulseaudio_source;
 	QPushButton *m_pushbutton_pulseaudio_refresh;
+#endif
 
 public:
 	PageInput(MainWindow* main_window);
@@ -116,10 +124,14 @@ public:
 	void LoadSettings(QSettings* settings);
 	void SaveSettings(QSettings* settings);
 
+#if SSR_USE_PULSEAUDIO
 	QString GetPulseAudioSourceName();
+#endif
 
 private:
+#if SSR_USE_PULSEAUDIO
 	unsigned int FindPulseAudioSource(const QString& name);
+#endif
 
 public:
 	inline enum_video_area GetVideoArea() { return (enum_video_area) clamp(m_buttongroup_video_area->checkedId(), 0, VIDEO_AREA_COUNT - 1); }
@@ -136,7 +148,9 @@ public:
 	inline bool GetAudioEnabled() { return m_checkbox_audio_enable->isChecked(); }
 	inline enum_audio_backend GetAudioBackend() { return (enum_audio_backend) clamp(m_combobox_audio_backend->currentIndex(), 0, AUDIO_BACKEND_COUNT - 1); }
 	inline QString GetALSADevice() { return m_lineedit_alsa_device->text(); }
+#if SSR_USE_PULSEAUDIO
 	inline unsigned int GetPulseAudioSource() { return clamp(m_combobox_pulseaudio_source->currentIndex(), 0, (int) m_pulseaudio_sources.size() - 1); }
+#endif
 	inline QString GetGLInjectCommand() { return m_glinject_command; }
 	inline bool GetGLInjectRunCommand() { return m_glinject_run_command; }
 	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
@@ -158,7 +172,9 @@ public:
 	inline void SetAudioEnabled(bool enable) { m_checkbox_audio_enable->setChecked(enable); }
 	inline void SetAudioBackend(enum_audio_backend backend) { m_combobox_audio_backend->setCurrentIndex(clamp((int) backend, 0, AUDIO_BACKEND_COUNT - 1)); }
 	inline void SetALSADevice(const QString& device) { m_lineedit_alsa_device->setText(device); }
+#if SSR_USE_PULSEAUDIO
 	inline void SetPulseAudioSource(unsigned int source) { m_combobox_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
+#endif
 	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
 	inline void SetGLInjectRunCommand(bool run_command) { m_glinject_run_command = run_command; }
 	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
@@ -178,7 +194,9 @@ private:
 	void SetVideoAreaFromRubberBand();
 
 	void LoadScreenConfigurations();
+#if SSR_USE_PULSEAUDIO
 	void LoadPulseAudioSources();
+#endif
 
 public slots:
 	void OnUpdateRecordingFrame();
@@ -188,7 +206,9 @@ public slots:
 
 private slots:
 	void OnUpdateScreenConfiguration();
+#if SSR_USE_PULSEAUDIO
 	void OnUpdatePulseAudioSources();
+#endif
 	void OnIdentifyScreens();
 	void OnStopIdentifyScreens();
 	void OnStartSelectRectangle();

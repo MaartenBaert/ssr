@@ -17,8 +17,16 @@ AC_PROG_INSTALL
 
 AC_ARG_ENABLE([glinjectlib], AS_HELP_STRING([--disable-glinjectlib], [don't build the GLInject library]))
 AC_ARG_ENABLE([ssrprogram], AS_HELP_STRING([--disable-ssrprogram], [don't build the SimpleScreenRecorder program]))
+AC_ARG_ENABLE([assert], AS_HELP_STRING([--disable-assert], [don't use assertions meant for debugging]))
+AC_ARG_ENABLE([x86-asm], AS_HELP_STRING([--disable-x86-asm], [don't use x86/x64 assembly instructions]))
+AC_ARG_ENABLE([ffmpeg-versions], AS_HELP_STRING([--disable-ffmpeg-versions], [use Libav version numbers instead of FFmpeg version numbers]))
+AC_ARG_ENABLE([pulseaudio], AS_HELP_STRING([--disable-pulseaudio], [don't use PulseAudio]))
 AM_CONDITIONAL([ENABLE_GLINJECTLIB], [test x"$enable_glinjectlib" != x"no"])
 AM_CONDITIONAL([ENABLE_SSRPROGRAM], [test x"$enable_ssrprogram" != x"no"])
+AM_CONDITIONAL([ENABLE_ASSERT], [test x"$enable_assert" != x"no"])
+AM_CONDITIONAL([ENABLE_X86_ASM], [test x"$enable_x86_asm" != x"no"])
+AM_CONDITIONAL([ENABLE_FFMPEG_VERSIONS], [test x"$enable_ffmpeg_versions" != x"no"])
+AM_CONDITIONAL([ENABLE_PULSEAUDIO], [test x"$enable_pulseaudio" != x"no"])
 
 AM_COND_IF([ENABLE_SSRPROGRAM], [
 	PKG_PROG_PKG_CONFIG
@@ -64,8 +72,10 @@ AM_COND_IF([ENABLE_SSRPROGRAM], [
 AM_COND_IF([ENABLE_SSRPROGRAM], [
 	AC_CHECK_HEADER([alsa/asoundlib.h], [ ], [AC_MSG_ERROR([required header missing])])
 	AC_CHECK_LIB([asound], [snd_pcm_open], [ ], [AC_MSG_ERROR([required library missing])])
-	AC_CHECK_HEADER([pulse/context.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([pulse], [pa_context_new], [ ], [AC_MSG_ERROR([required library missing])])
+	AM_COND_IF([ENABLE_PULSEAUDIO], [
+		AC_CHECK_HEADER([pulse/context.h], [ ], [AC_MSG_ERROR([required header missing])])
+		AC_CHECK_LIB([pulse], [pa_context_new], [ ], [AC_MSG_ERROR([required library missing])])
+	])
 ])
 
 AM_COND_IF([ENABLE_GLINJECTLIB], [
