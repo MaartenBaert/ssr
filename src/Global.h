@@ -53,13 +53,18 @@ extern "C" {
 
 // Whether x86/x64 specific instructions should be used.
 #ifndef SSR_USE_X86_ASM
-#define SSR_USE_X86_ASM 1
+#error SSR_USE_X86_ASM should be defined!
 #endif
 
 // Whether ffmpeg or libav version numbers should be used for tests. The ffmpeg version number is usually slightly higher,
 // so that's the default (deprecation warnings are better than compilation errors).
 #ifndef SSR_USE_FFMPEG_VERSIONS
-#define SSR_USE_FFMPEG_VERSIONS 1
+#error SSR_USE_FFMPEG_VERSIONS should be defined!
+#endif
+
+// Whether PulseAudio should be used.
+#ifndef SSR_USE_PULSEAUDIO
+#error SSR_USE_PULSEAUDIO should be defined!
 #endif
 
 // generic macro to test version numbers
@@ -167,12 +172,14 @@ public:
 		return "ALSAException";
 	}
 };
+#if SSR_USE_PULSEAUDIO
 class PulseAudioException : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
 		return "PulseAudioException";
 	}
 };
+#endif
 
 // high resolution timer
 inline int64_t hrt_time_micro() {

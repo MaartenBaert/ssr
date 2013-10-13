@@ -79,6 +79,14 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @ENABLE_SSRPROGRAM_TRUE@bin_PROGRAMS = simplescreenrecorder$(EXEEXT)
+@ENABLE_ASSERT_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_1 = -DNDEBUG -DQT_NO_DEBUG
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_2 = -DSSR_USE_X86_ASM=1
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_FALSE@am__append_3 = -DSSR_USE_X86_ASM=0
+@ENABLE_FFMPEG_VERSIONS_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_4 = -DSSR_USE_FFMPEG_VERSIONS=1
+@ENABLE_FFMPEG_VERSIONS_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_5 = -DSSR_USE_FFMPEG_VERSIONS=0
+@ENABLE_PULSEAUDIO_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_6 = -DSSR_USE_PULSEAUDIO=1
+@ENABLE_PULSEAUDIO_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_7 = -lpulse
+@ENABLE_PULSEAUDIO_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_8 = -DSSR_USE_PULSEAUDIO=0
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/build-aux/depcomp
@@ -388,13 +396,13 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS = \
-@ENABLE_SSRPROGRAM_TRUE@	$(QT4_CFLAGS) \
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS = $(QT4_CFLAGS) \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
-@ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Output \
-@ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV \
-@ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/GUI
-
+@ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Output -I$(srcdir)/AV \
+@ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/GUI $(am__append_1) \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_2) $(am__append_3) \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_4) $(am__append_5) \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_6) $(am__append_8)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = \
 @ENABLE_SSRPROGRAM_TRUE@	-pthread
 
@@ -403,11 +411,10 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	-std=c++0x \
 @ENABLE_SSRPROGRAM_TRUE@	-flax-vector-conversions
 
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = \
-@ENABLE_SSRPROGRAM_TRUE@	-pthread \
-@ENABLE_SSRPROGRAM_TRUE@	$(QT4_LIBS) \
-@ENABLE_SSRPROGRAM_TRUE@	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound -lpulse
-
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread \
+@ENABLE_SSRPROGRAM_TRUE@	$(QT4_LIBS) -lrt -lavformat -lavcodec \
+@ENABLE_SSRPROGRAM_TRUE@	-lavutil -lswscale -lX11 -lXext \
+@ENABLE_SSRPROGRAM_TRUE@	-lXfixes -lasound $(am__append_7)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_SOURCES = \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.h \

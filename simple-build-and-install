@@ -11,6 +11,17 @@ if [ x"$( whoami )" = x"root" ]; then
 	exit 1
 fi
 
+echo "Detecting x86/x64 ..."
+case "$( uname -m )" in
+	"i386" )	ENABLE_X86_ASM="--enable-x86-asm" ;;
+	"i486" )	ENABLE_X86_ASM="--enable-x86-asm" ;;
+	"i586" )	ENABLE_X86_ASM="--enable-x86-asm" ;;
+	"i686" )	ENABLE_X86_ASM="--enable-x86-asm" ;;
+	"x86_64" )	ENABLE_X86_ASM="--enable-x86-asm" ;;
+	* )			ENABLE_X86_ASM="--disable-x86-asm --disable-glinjectlib" ;;
+esac
+echo "x86/x64 = $ENABLE_X86_ASM"
+
 echo "Detecting ffmpeg/libav ..."
 if [ ! -f /usr/include/libavcodec/avcodec.h ]; then
 	echo "Error: libavcodec header not found, make sure that ffmpeg or libav is installed."
@@ -24,41 +35,28 @@ if [ $HAS_FFMPEG -gt 0 ]; then
 		exit 1
 	else
 		echo "Detected ffmpeg."
-		SSR_USE_FFMPEG_VERSIONS=1
+		ENABLE_FFMPEG_VERSIONS="--enable-ffmpeg-versions"
 	fi
 else
 	if [ $HAS_LIBAV -gt 0 ]; then
 		echo "Detected libav."
-		SSR_USE_FFMPEG_VERSIONS=0
+		ENABLE_FFMPEG_VERSIONS="--disable-ffmpeg-versions"
 	else
 		echo "Detection failed."
 		exit 1
 	fi
 fi
 
-echo "Detecting x86/x64 ..."
-case "$( uname -m )" in
-	"i386" )	SSR_USE_X86_ASM=1 ;;
-	"i486" )	SSR_USE_X86_ASM=1 ;;
-	"i586" )	SSR_USE_X86_ASM=1 ;;
-	"i686" )	SSR_USE_X86_ASM=1 ;;
-	"x86_64" )	SSR_USE_X86_ASM=1 ;;
-	* )			SSR_USE_X86_ASM=0 ;;
-esac
-echo "x86/x64 = $SSR_USE_X86_ASM"
+CONFIGURE_OPTIONS="--disable-assert $ENABLE_X86_ASM $ENABLE_FFMPEG_VERSIONS"
 
-export CPPFLAGS="-DNDEBUG -DQT_NO_DEBUG -DSSR_USE_FFMPEG_VERSIONS=$SSR_USE_FFMPEG_VERSIONS -DSSR_USE_X86_ASM=$SSR_USE_X86_ASM"
 export CFLAGS="-Wall -O2 -pipe"
 export CXXFLAGS="-Wall -O2 -pipe"
 
 mkdir -p build
 cd build
 echo "Configuring ..."
-if [ "$SSR_USE_X86_ASM" = "1" ]; then
-	../configure --prefix=/usr "$@"
-else
-	../configure --prefix=/usr --disable-glinjectlib "$@"
-fi
+../configure --prefix=/usr $CONFIGURE_OPTIONS "$@"
+
 echo "Compiling ..."
 make -j "$( grep -c "^processor" /proc/cpuinfo )"
 cd ..
@@ -68,7 +66,7 @@ if [ x"$( uname -m )" = x"x86_64" ]; then
 	cd build32
 	echo "Configuring 32-bit GLInject library ..."
 	CC="gcc -m32" CXX="g++ -m32" PKG_CONFIG_PATH="/usr/lib32/pkgconfig" \
-		../configure --prefix=/usr --libdir=/usr/lib32 --disable-ssrprogram "$@"
+		../configure --prefix=/usr --libdir=/usr/lib32 --disable-ssrprogram $CONFIGURE_OPTIONS "$@"
 	echo "Compiling 32-bit GLInject library ..."
 	make -j "$( grep -c "^processor" /proc/cpuinfo )"
 	cd ..
