@@ -41,9 +41,17 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		m_height = height;
 		m_frame_rate = frame_rate;
 
-		m_opt_crf = (unsigned int) -1;
-		m_opt_preset = "";
 		m_opt_threads = std::max(1u, std::thread::hardware_concurrency());
+		m_opt_minrate = (unsigned int) -1;
+		m_opt_maxrate = (unsigned int) -1;
+		m_opt_bufsize = (unsigned int) -1;
+
+#if !SSR_USE_AVCODEC_PRIVATE_CRF
+		m_opt_crf = (unsigned int) -1;
+#endif
+#if !SSR_USE_AVCODEC_PRIVATE_PRESET
+		m_opt_preset = "";
+#endif
 
 		if(m_width == 0 || m_height == 0) {
 			Logger::LogError("[VideoEncoder::Init] Error: Width or height is zero.");
@@ -66,13 +74,24 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		AVDictionary *options = NULL;
 		try {
 			for(unsigned int i = 0; i < codec_options.size(); ++i) {
-				if(codec_options[i].first == "crf")
-					m_opt_crf = codec_options[i].second.toUInt();
-				if(codec_options[i].first == "preset")
-					m_opt_preset = codec_options[i].second;
 				if(codec_options[i].first == "threads")
 					m_opt_threads = codec_options[i].second.toUInt();
-				av_dict_set(&options, codec_options[i].first.toAscii().constData(), codec_options[i].second.toAscii().constData(), 0);
+				else if(codec_options[i].first == "minrate")
+					m_opt_minrate = codec_options[i].second.toUInt() * 1024; // kbps
+				else if(codec_options[i].first == "maxrate")
+					m_opt_maxrate = codec_options[i].second.toUInt() * 1024; // kbps
+				else if(codec_options[i].first == "bufsize")
+					m_opt_bufsize = codec_options[i].second.toUInt() * 1024; // kbit
+#if !SSR_USE_AVCODEC_PRIVATE_PRESET
+				else if(codec_options[i].first == "crf")
+					m_opt_crf = codec_options[i].second.toUInt();
+#endif
+#if !SSR_USE_AVCODEC_PRIVATE_PRESET
+				else if(codec_options[i].first == "preset")
+					m_opt_preset = codec_options[i].second;
+#endif
+				else
+					av_dict_set(&options, codec_options[i].first.toAscii().constData(), codec_options[i].second.toAscii().constData(), 0);
 			}
 			CreateCodec(codec_name, &options);
 			av_dict_free(&options);
@@ -138,25 +157,29 @@ void VideoEncoder::FillCodecContext(AVCodec* codec) {
 	GetCodecContext()->height = m_height;
 	GetCodecContext()->time_base.num = 1;
 	GetCodecContext()->time_base.den = m_frame_rate;
+	GetCodecContext()->bit_rate = m_bit_rate;
 	GetCodecContext()->pix_fmt = PIX_FMT_YUV420P;
 	GetCodecContext()->sample_aspect_ratio.num = 1;
 	GetCodecContext()->sample_aspect_ratio.den = 1;
 	GetCodecContext()->flags |= CODEC_FLAG_LOOP_FILTER;
 	GetCodecContext()->thread_count = m_opt_threads;
 
-	if(m_opt_crf != (unsigned int) -1) {
-#if !SSR_USE_AVCODEC_OPT_CRF
+
+	if(m_opt_minrate != (unsigned int) -1)
+		GetCodecContext()->rc_min_rate = m_opt_minrate;
+	if(m_opt_maxrate != (unsigned int) -1)
+		GetCodecContext()->rc_max_rate = m_opt_maxrate;
+	if(m_opt_bufsize != (unsigned int) -1)
+		GetCodecContext()->rc_buffer_size = m_opt_bufsize;
+
+#if !SSR_USE_AVCODEC_PRIVATE_CRF
+	if(m_opt_crf != (unsigned int) -1)
 		GetCodecContext()->crf = m_opt_crf;
 #endif
-	} else {
-		GetCodecContext()->bit_rate = m_bit_rate;
-	}
-
-	if(m_opt_preset != "") {
-#if !SSR_USE_AVCODEC_OPT_PRESET
+#if !SSR_USE_AVCODEC_PRIVATE_PRESET
+	if(m_opt_preset != "")
 		X264Preset(GetCodecContext(), m_opt_preset.toAscii().constData());
 #endif
-	}
 
 }
 

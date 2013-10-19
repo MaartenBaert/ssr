@@ -32,9 +32,15 @@ private:
 	unsigned int m_bit_rate;
 	unsigned int m_width, m_height, m_frame_rate;
 
-	unsigned int m_opt_crf;
-	QString m_opt_preset;
 	unsigned int m_opt_threads;
+	unsigned int m_opt_minrate, m_opt_maxrate, m_opt_bufsize;
+
+#if !SSR_USE_AVCODEC_PRIVATE_CRF
+	unsigned int m_opt_crf;
+#endif
+#if !SSR_USE_AVCODEC_PRIVATE_PRESET
+	QString m_opt_preset;
+#endif
 
 #if !SSR_USE_AVCODEC_ENCODE_VIDEO2
 	std::vector<uint8_t> m_temp_buffer;

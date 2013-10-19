@@ -26,11 +26,16 @@ constexpr double SyncDiagram::PIXELS_PER_SECOND;
 
 SyncDiagram::SyncDiagram(size_t channels) {
 
-	m_time_channels.resize(channels);
-	for(auto &c : m_time_channels) {
-		c.m_name = "";
-		c.m_current_time = 0.0;
+	{
+		SharedLock lock(&m_shared_data);
+		lock->m_time_channels.resize(channels);
+		for(auto &c : lock->m_time_channels) {
+			c.m_name = "";
+			c.m_current_time = 0.0;
+		}
 	}
+
+	m_height = CHANNEL_SPACING + (CHANNEL_HEIGHT + CHANNEL_SPACING) * channels;
 
 	m_font = QFont("Sans");
 	m_font.setPixelSize(14);
@@ -38,7 +43,10 @@ SyncDiagram::SyncDiagram(size_t channels) {
 	setWindowTitle("Sync Diagram - " + MainWindow::WINDOW_CAPTION);
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	connect(this, SIGNAL(NeedsUpdate()), this, SLOT(update()), Qt::QueuedConnection);
+	m_update_timer = new QTimer(this);
+	m_update_timer->setSingleShot(true);
+	connect(this, SIGNAL(NeedsUpdate()), this, SLOT(DelayedUpdate()), Qt::QueuedConnection);
+	connect(m_update_timer, SIGNAL(timeout()), this, SLOT(update()));
 
 	setMinimumSize(minimumSizeHint()); // workaround for Qt bug
 
@@ -49,23 +57,26 @@ SyncDiagram::~SyncDiagram() {
 }
 
 void SyncDiagram::SetChannelName(size_t channel, const QString& name) {
-	Q_ASSERT(channel < m_time_channels.size());
-	m_time_channels[channel].m_name = name;
+	SharedLock lock(&m_shared_data);
+	Q_ASSERT(channel < lock->m_time_channels.size());
+	lock->m_time_channels[channel].m_name = name;
 }
 
 void SyncDiagram::SetCurrentTime(size_t channel, double current_time) {
-	Q_ASSERT(channel < m_time_channels.size());
-	m_time_channels[channel].m_current_time = current_time;
+	SharedLock lock(&m_shared_data);
+	Q_ASSERT(channel < lock->m_time_channels.size());
+	lock->m_time_channels[channel].m_current_time = current_time;
 	double time_min = current_time - (double) (width() - MARGIN_RIGHT) / PIXELS_PER_SECOND;
-	auto &blocks = m_time_channels[channel].m_time_blocks;
+	auto &blocks = lock->m_time_channels[channel].m_time_blocks;
 	while(!blocks.empty() && blocks.front().m_time_end < time_min) {
 		blocks.pop_front();
 	}
 }
 
 void SyncDiagram::AddBlock(size_t channel, double time_begin, double time_end, const QColor& color) {
-	Q_ASSERT(channel < m_time_channels.size());
-	m_time_channels[channel].m_time_blocks.push_back(TimeBlock{time_begin, time_end, color});
+	SharedLock lock(&m_shared_data);
+	Q_ASSERT(channel < lock->m_time_channels.size());
+	lock->m_time_channels[channel].m_time_blocks.push_back(TimeBlock{time_begin, time_end, color});
 }
 
 void SyncDiagram::Update() {
@@ -77,8 +88,10 @@ void SyncDiagram::paintEvent(QPaintEvent* event) {
 	QPainter painter(this);
 	painter.fillRect(rect(), QColor(255, 255, 255));
 
+	SharedLock lock(&m_shared_data);
+
 	int y = CHANNEL_SPACING;
-	for(auto &c : m_time_channels) {
+	for(auto &c : lock->m_time_channels) {
 
 		// calculate time limits
 		double time_min = c.m_current_time - (double) (width() - MARGIN_RIGHT) / PIXELS_PER_SECOND;
@@ -117,4 +130,9 @@ void SyncDiagram::paintEvent(QPaintEvent* event) {
 		y += CHANNEL_HEIGHT + CHANNEL_SPACING;
 	}
 
+}
+
+void SyncDiagram::DelayedUpdate() {
+	if(!m_update_timer->isActive())
+		m_update_timer->start(50);
 }

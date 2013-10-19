@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "MutexDataPair.h"
+
 class SyncDiagram : public QWidget {
 	Q_OBJECT
 
@@ -33,15 +35,21 @@ private:
 		double m_current_time;
 		std::deque<TimeBlock> m_time_blocks;
 	};
+	struct SharedData {
+		std::vector<TimeChannel> m_time_channels;
+	};
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
 	static constexpr int CHANNEL_HEIGHT = 20, CHANNEL_SPACING = 10, MARGIN_RIGHT = 50;
 	static constexpr double PIXELS_PER_SECOND = 400.0;
 
 private:
-	std::vector<TimeChannel> m_time_channels;
+	MutexDataPair<SharedData> m_shared_data;
 
+	int m_height;
 	QFont m_font;
+	QTimer *m_update_timer;
 
 public:
 	SyncDiagram(size_t channels);
@@ -53,13 +61,16 @@ public:
 	void Update();
 
 public:
-	virtual QSize minimumSizeHint() const override { return QSize(200, CHANNEL_SPACING + (CHANNEL_HEIGHT + CHANNEL_SPACING) * m_time_channels.size()); }
-	virtual QSize sizeHint() const override { return QSize(800, CHANNEL_SPACING + (CHANNEL_HEIGHT + CHANNEL_SPACING) * m_time_channels.size()); }
+	virtual QSize minimumSizeHint() const override { return QSize(200, m_height); }
+	virtual QSize sizeHint() const override { return QSize(800, m_height); }
 
 protected:
 	virtual void paintEvent(QPaintEvent* event) override;
 
 signals:
 	void NeedsUpdate();
+
+private slots:
+	void DelayedUpdate();
 
 };

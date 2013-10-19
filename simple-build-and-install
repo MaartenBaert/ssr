@@ -5,6 +5,7 @@
 # run configure (or this script) with --enable-maintainer-mode.
 
 set -e
+cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 if [ x"$( whoami )" = x"root" ]; then
 	echo "Error: don't run this script as root, this will mess up file permissions"

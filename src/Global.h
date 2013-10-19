@@ -100,36 +100,36 @@ inline void atomic_thread_fence_replacement(memory_order) {
 #endif
 
 // avformat_network_init: lavf 53.19.0 / 53.13.0
-#define SSR_USE_AVFORMAT_NETWORK_INIT  TEST_AV_VERSION(LIBAVFORMAT, 53, 19, 53, 13)
+#define SSR_USE_AVFORMAT_NETWORK_INIT    TEST_AV_VERSION(LIBAVFORMAT, 53, 19, 53, 13)
 // avformat_new_stream: lavf 53.17.0 / 53.10.0
-#define SSR_USE_AVFORMAT_NEW_STREAM    TEST_AV_VERSION(LIBAVFORMAT, 53, 17, 53, 10)
+#define SSR_USE_AVFORMAT_NEW_STREAM      TEST_AV_VERSION(LIBAVFORMAT, 53, 17, 53, 10)
 // avformat_query_codec: lavf 53.11.0 / 53.8.0
-#define SSR_USE_AVFORMAT_QUERY_CODEC   TEST_AV_VERSION(LIBAVFORMAT, 53, 11, 53, 8)
+#define SSR_USE_AVFORMAT_QUERY_CODEC     TEST_AV_VERSION(LIBAVFORMAT, 53, 11, 53, 8)
 
 // avcodec_free_frame: lavc 54.59.100 / 54.28.0
-#define SSR_USE_AVCODEC_FREE_FRAME     TEST_AV_VERSION(LIBAVCODEC, 54, 59, 54, 28)
+#define SSR_USE_AVCODEC_FREE_FRAME       TEST_AV_VERSION(LIBAVCODEC, 54, 59, 54, 28)
 // av_codec_is_encoder: lavc 54.8.100 / 54.7.0
-#define SSR_USE_AV_CODEC_IS_ENCODER    TEST_AV_VERSION(LIBAVCODEC, 54, 8, 54, 7)
+#define SSR_USE_AV_CODEC_IS_ENCODER      TEST_AV_VERSION(LIBAVCODEC, 54, 8, 54, 7)
 // avcodec_encode_video2: lavc 54.2.100 / 54.1.0
-#define SSR_USE_AVCODEC_ENCODE_VIDEO2  TEST_AV_VERSION(LIBAVCODEC, 54, 2, 54, 1)
+#define SSR_USE_AVCODEC_ENCODE_VIDEO2    TEST_AV_VERSION(LIBAVCODEC, 54, 2, 54, 1)
 // avcodec_encode_audio2: lavc 53.56.105 / 53.34.0
-#define SSR_USE_AVCODEC_ENCODE_AUDIO2  TEST_AV_VERSION(LIBAVCODEC, 53, 56, 53, 34)
+#define SSR_USE_AVCODEC_ENCODE_AUDIO2    TEST_AV_VERSION(LIBAVCODEC, 53, 56, 53, 34)
 // AVFrame::format: lavc 53.31 / 53.31
 // - ffmpeg: missing, commit: http://git.videolan.org/?p=ffmpeg.git;a=commit;h=8a4a5f6ff756fdba44254015c714f173b2db6f64
 // - libav: APIchanges says 53.31
-#define SSR_USE_AVFRAME_FORMAT         TEST_AV_VERSION(LIBAVCODEC, 53, 31, 53, 31)
+#define SSR_USE_AVFRAME_FORMAT           TEST_AV_VERSION(LIBAVCODEC, 53, 31, 53, 31)
 // AVFrame::nb_samples, AVFrame::extended_data and avcodec_decode_audio4: lavc 53.40.0 / 53.25.0
-#define SSR_USE_AVFRAME_NB_SAMPLES     TEST_AV_VERSION(LIBAVCODEC, 53, 40, 53, 25)
-#define SSR_USE_AVFRAME_EXTENDED_DATA  SSR_USE_AVFRAME_NB_SAMPLES
-#define SSR_USE_AVCODEC_DECODE_AUDIO4  SSR_USE_AVFRAME_NB_SAMPLES
+#define SSR_USE_AVFRAME_NB_SAMPLES       TEST_AV_VERSION(LIBAVCODEC, 53, 40, 53, 25)
+#define SSR_USE_AVFRAME_EXTENDED_DATA    SSR_USE_AVFRAME_NB_SAMPLES
+#define SSR_USE_AVCODEC_DECODE_AUDIO4    SSR_USE_AVFRAME_NB_SAMPLES
 // the 'preset' private option: lavc 53.8 / 53.8
 // - ffmpeg: missing, commit: http://git.videolan.org/?p=ffmpeg.git;a=commit;h=07a227b432e49f4c0f35bbef48009f4d8438b32e
 // - libav: missing, commit: https://git.libav.org/?p=libav.git;a=commit;h=07a227b432e49f4c0f35bbef48009f4d8438b32e
-#define SSR_USE_AVCODEC_OPT_PRESET     TEST_AV_VERSION(LIBAVCODEC, 53, 8, 53, 8)
+#define SSR_USE_AVCODEC_PRIVATE_PRESET   TEST_AV_VERSION(LIBAVCODEC, 53, 8, 53, 8)
 // the 'crf' private option: lavc 53.8 / 53.8
 // - ffmpeg: missing, commit: http://git.videolan.org/?p=ffmpeg.git;a=commit;h=d5dc8cc2974c816ba964692b75c9f17f40830414
 // - libav: missing, commit: https://git.libav.org/?p=libav.git;a=commit;f=libavcodec/libx264.c;h=d5dc8cc2974c816ba964692b75c9f17f40830414
-#define SSR_USE_AVCODEC_OPT_CRF        TEST_AV_VERSION(LIBAVCODEC, 53, 8, 53, 8)
+#define SSR_USE_AVCODEC_PRIVATE_CRF      TEST_AV_VERSION(LIBAVCODEC, 53, 8, 53, 8)
 
 // planar sample formats: lavu 51.27.0 / 51.17.0
 #define SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT TEST_AV_VERSION(LIBAVUTIL, 51, 27, 51, 17)
