@@ -203,9 +203,7 @@ public slots:
 
 private slots:
 	void OnUpdateScreenConfiguration();
-#if SSR_USE_PULSEAUDIO
-	void OnUpdatePulseAudioSources();
-#endif
+	void OnUpdatePulseAudioSources(); // conditional compilation of slots is hard, so we keep the slot
 	void OnIdentifyScreens();
 	void OnStopIdentifyScreens();
 	void OnStartSelectRectangle();
