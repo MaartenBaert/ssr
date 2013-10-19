@@ -303,9 +303,9 @@ void Synchronizer::ReadVideoPing(int64_t timestamp) {
 	Q_ASSERT(m_video_encoder != NULL);
 	SharedLock lock(&m_shared_data);
 
-	if(lock->m_sync_diagram != NULL) {
+	/*if(lock->m_sync_diagram != NULL) {
 		lock->m_sync_diagram->AddBlock(0, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6, QColor(255, 0, 0));
-	}
+	}*/
 
 	// if the video has not been started, ignore it
 	if(!lock->m_segment_video_started)

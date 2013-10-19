@@ -24,7 +24,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 constexpr int SyncDiagram::CHANNEL_HEIGHT, SyncDiagram::CHANNEL_SPACING, SyncDiagram::MARGIN_RIGHT;
 constexpr double SyncDiagram::PIXELS_PER_SECOND;
 
+inline double floormod(double x, double y) {
+	return x - floor(x / y) * y;
+}
+
 SyncDiagram::SyncDiagram(size_t channels) {
+	Q_ASSERT(channels > 0);
 
 	{
 		SharedLock lock(&m_shared_data);
@@ -32,13 +37,14 @@ SyncDiagram::SyncDiagram(size_t channels) {
 		for(auto &c : lock->m_time_channels) {
 			c.m_name = "";
 			c.m_current_time = 0.0;
+			c.m_time_shift = nan("");
 		}
 	}
 
 	m_height = CHANNEL_SPACING + (CHANNEL_HEIGHT + CHANNEL_SPACING) * channels;
 
 	m_font = QFont("Sans");
-	m_font.setPixelSize(14);
+	m_font.setPixelSize(12);
 
 	setWindowTitle("Sync Diagram - " + MainWindow::WINDOW_CAPTION);
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -96,6 +102,12 @@ void SyncDiagram::paintEvent(QPaintEvent* event) {
 		// calculate time limits
 		double time_min = c.m_current_time - (double) (width() - MARGIN_RIGHT) / PIXELS_PER_SECOND;
 		double time_max = c.m_current_time + (double) MARGIN_RIGHT / PIXELS_PER_SECOND;
+		double ts = lock->m_time_channels[0].m_current_time - c.m_current_time;
+		if(isnan(c.m_time_shift) || fabs(ts - c.m_time_shift) > 0.2)
+			c.m_time_shift = ts;
+		else
+			c.m_time_shift += 0.05 * (ts - c.m_time_shift);
+		double pixel_wrap = (double) width();
 
 		// draw blocks
 		for(auto &b : c.m_time_blocks) {
@@ -104,23 +116,26 @@ void SyncDiagram::paintEvent(QPaintEvent* event) {
 			fill.setAlpha(64);
 			painter.setPen(edge);
 			painter.setBrush(fill);
-			double x1 = (b.m_time_begin - time_min) * (double) PIXELS_PER_SECOND;
-			double x2 = (b.m_time_end - time_min) * (double) PIXELS_PER_SECOND;
+			double x1 = floormod((b.m_time_begin + c.m_time_shift) * (double) PIXELS_PER_SECOND, pixel_wrap);
+			double x2 = x1 + (b.m_time_end - b.m_time_begin) * (double) PIXELS_PER_SECOND;
 			painter.drawRect(QRectF(QPointF(x1, y), QPointF(x2, y + CHANNEL_HEIGHT)));
 		}
 
 		// draw grid lines
 		painter.setPen(QColor(0, 0, 0));
 		for(double t = ceil(time_min); t <= time_max; t += 1.0) {
-			double x = (t - time_min) * (double) PIXELS_PER_SECOND;
+			double x = floormod((t + c.m_time_shift) * (double) PIXELS_PER_SECOND, pixel_wrap);
 			painter.drawLine(QPointF(x, y - CHANNEL_SPACING / 2),
 							 QPointF(x, y + CHANNEL_HEIGHT + CHANNEL_SPACING / 2));
 		}
 
 		// draw the current time
-		painter.setPen(QColor(255, 0, 0));
-		painter.drawLine(QPointF(width() - MARGIN_RIGHT, y - CHANNEL_SPACING / 2),
-						 QPointF(width() - MARGIN_RIGHT, y + CHANNEL_HEIGHT + CHANNEL_SPACING / 2));
+		{
+			double x = floormod((c.m_current_time + c.m_time_shift) * (double) PIXELS_PER_SECOND, pixel_wrap);
+			painter.setPen(QColor(255, 0, 0));
+			painter.drawLine(QPointF(x, y - CHANNEL_SPACING / 2),
+							 QPointF(x, y + CHANNEL_HEIGHT + CHANNEL_SPACING / 2));
+		}
 
 		// draw channel name
 		painter.setPen(QColor(0, 0, 0));
