@@ -214,8 +214,7 @@ X11Input::~X11Input() {
 }
 
 uint32_t X11Input::GetFrameCounter() {
-	SharedLock lock(&m_shared_data);
-	return lock->m_frame_counter;
+	return m_frame_counter;
 }
 
 void X11Input::Init() {
@@ -272,10 +271,7 @@ void X11Input::Init() {
 	UpdateScreenConfiguration();
 
 	// initialize frame counter
-	{
-		SharedLock lock(&m_shared_data);
-		lock->m_frame_counter = 0;
-	}
+	m_frame_counter = 0;
 
 	// start input thread
 	m_should_stop = false;
@@ -358,10 +354,9 @@ void X11Input::InputThread() {
 				}
 			}
 
-			SharedLock lock(&m_shared_data);
-
 			// follow the cursor
 			if(m_follow_cursor) {
+				SharedLock lock(&m_shared_data);
 				int mouse_x, mouse_y, dummy;
 				Window dummy_win;
 				unsigned int dummy_mask;
@@ -397,16 +392,16 @@ void X11Input::InputThread() {
 					throw X11Exception();
 				}
 			}
-			uint8_t *image_data = (uint8_t*) m_x11_image->data;
-			int image_stride = m_x11_image->bytes_per_line;
-			PixelFormat x11_image_format = X11ImageGetPixelFormat(m_x11_image);
 
 			// clear the dead space
-			QRect clip_rect(0, 0, m_width, m_height);
-			for(int i = 0; i < lock->m_screen_dead_space.size(); ++i) {
-				QRect r = lock->m_screen_dead_space[i].translated(-grab_x, -grab_y).intersected(clip_rect);
-				if(r.width() > 0 && r.height() > 0)
-					X11ImageClearRectangle(m_x11_image, r.x(), r.y(), r.width(), r.height());
+			{
+				SharedLock lock(&m_shared_data);
+				QRect clip_rect(0, 0, m_width, m_height);
+				for(int i = 0; i < lock->m_screen_dead_space.size(); ++i) {
+					QRect r = lock->m_screen_dead_space[i].translated(-grab_x, -grab_y).intersected(clip_rect);
+					if(r.width() > 0 && r.height() > 0)
+						X11ImageClearRectangle(m_x11_image, r.x(), r.y(), r.width(), r.height());
+				}
 			}
 
 			// draw the cursor
@@ -414,11 +409,14 @@ void X11Input::InputThread() {
 				X11ImageDrawCursor(m_x11_display, m_x11_image, grab_x, grab_y);
 			}
 
-			// push out the frame
-			PushVideoFrame(m_width, m_height, image_data, image_stride, x11_image_format, timestamp);
+			// increase the frame counter
+			++m_frame_counter;
 
-			// increase frame counter
-			++lock->m_frame_counter;
+			// push the frame
+			uint8_t *image_data = (uint8_t*) m_x11_image->data;
+			int image_stride = m_x11_image->bytes_per_line;
+			PixelFormat x11_image_format = X11ImageGetPixelFormat(m_x11_image);
+			PushVideoFrame(m_width, m_height, image_data, image_stride, x11_image_format, timestamp);
 
 		}
 

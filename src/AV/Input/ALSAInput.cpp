@@ -235,7 +235,7 @@ void ALSAInput::InputThread() {
 			if(has_first_samples) {
 				if(timestamp > first_timestamp + START_DELAY) {
 
-					// send the samples to the synchronizer
+					// push the samples
 					int64_t time = timestamp - (int64_t) samples_read * (int64_t) 1000000 / (int64_t) m_sample_rate;
 					PushAudioSamples(m_sample_rate, m_channels, samples_read, buffer.data(), AV_SAMPLE_FMT_S16, time);
 

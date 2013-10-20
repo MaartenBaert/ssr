@@ -346,7 +346,7 @@ void PulseAudioInput::InputThread() {
 						pa_stream_get_latency(m_pa_stream, &latency_magnitude, &latency_negative);
 						int64_t latency = (latency_negative)? -(int64_t) latency_magnitude : latency_magnitude;
 
-						// send the samples to the synchronizer
+						// push the samples
 						int64_t time = timestamp - latency;
 						PushAudioSamples(m_sample_rate, m_channels, samples, push_data, AV_SAMPLE_FMT_S16, time);
 
