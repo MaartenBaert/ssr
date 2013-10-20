@@ -12,25 +12,25 @@ Build dependencies
 ------------------
 
 This list may be incomplete. All instructions and package names are for Ubuntu 12.04/12.10/13.04, it could be different for other versions/distros.
-- GCC and make (package build-essential)
-- pkg-config (package pkg-config)
-- Qt 4 (package qt4-qmake, libqt4-dev)
-- libavformat (package libavformat-dev)
-- libavcodec (package libavcodec-dev)
-- libavutil (package libavutil-dev)
-- libswscale (package libswscale-dev)
-- ALSA library (package libasound2-dev)
-- PulseAudio library (package libpulse-dev)
-- libGL (32/64) (package libgl1-mesa-dev)
-- libGLU (32/64) (package libglu1-mesa-dev)
-- libX11 (32/64) (package libx11-dev)
-- libXext (32/64) (package libxext-dev)
-- libXfixes (32/64) (package libxfixes-dev)
-- 32-bit libraries (package g++-multilib, ia32-libs)
+- GCC and make
+- pkg-config
+- Qt 4
+- ffmpeg or libav (libavformat, libavcodec, libavutil, libswscale)
+- ALSA library
+- PulseAudio library
+- libGL (32/64)
+- libGLU (32/64)
+- libX11 (32/64)
+- libXext (32/64)
+- libXfixes (32/64)
 
-Everything combined:
+For Ubuntu 12.04 - 13.04:
 
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
+
+For Ubuntu 13.10:
+
+    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib libx11-6:i368 libxext6:i386 libxfixes3:i386
 
 If the 32-bit version of some library isn't found, but 64-bit works fine, try this:
 
@@ -62,6 +62,17 @@ If the 32-bit version of some library isn't found, but 64-bit works fine, try th
     sudo ldconfig
 
 I don't know whether this is the right way to do it, but it works for me. If you are using a combination of open-source and proprietary drivers (e.g. for laptops with Intel + NVIDIA GPUs a.k.a. 'Optimus'), follow only the steps for the open-source drivers.
+
+For OpenSUSE (incomplete list but usually enough):
+
+    sudo zypper install gcc gcc-32bit libffmpeg-devel libqt4-devel libpulse-devel glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXext-devel libXext-devel-32bit libXfixes-devel libXfixes-devel-32bit libstdc++47-devel-32bit
+
+    cd /usr/lib/i386-linux-gnu
+    sudo ln -s libGLU.so.1 libGLU.so
+    sudo ln -s libX11.so.6 libX11.so
+    sudo ln -s libXext.so.6 libXext.so
+    sudo ln -s libXfixes.so.3 libXfixes.so
+    sudo ldconfig
 
 Compiling and installing
 ------------------------
