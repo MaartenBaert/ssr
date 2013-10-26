@@ -1,7 +1,10 @@
 SimpleScreenRecorder
 ====================
 
-A screen recorder for Linux. Despite the name, this program is actually quite complex. It's 'simple' in the sense that it's easier to use than ffmpeg/avconv or VLC :).
+SimpleScreenRecorder is a screen recorder for Linux. Despite the name, this program is actually quite complex. It's 'simple' in the sense that it's easier to use than ffmpeg/avconv or VLC :).
+
+There is a separate repository for SimpleScreenRecorder packages:
+https://github.com/MaartenBaert/ssr-packages
 
 License
 -------
