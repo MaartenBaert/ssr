@@ -1,7 +1,10 @@
 SimpleScreenRecorder
 ====================
 
-A screen recorder for Linux. Despite the name, this program is actually quite complex. It's 'simple' in the sense that it's easier to use than ffmpeg/avconv or VLC :).
+SimpleScreenRecorder is a screen recorder for Linux. Despite the name, this program is actually quite complex. It's 'simple' in the sense that it's easier to use than ffmpeg/avconv or VLC :).
+
+There is a separate repository for SimpleScreenRecorder packages:
+https://github.com/MaartenBaert/ssr-packages
 
 License
 -------
@@ -11,7 +14,7 @@ GNU GPL v3 - read 'COPYING' for more info.
 Build dependencies
 ------------------
 
-This list may be incomplete. All instructions and package names are for Ubuntu 12.04/12.10/13.04, it could be different for other versions/distros.
+This list may be incomplete - if you find something that is missing, please tell me.
 - GCC and make
 - pkg-config
 - Qt 4
@@ -63,6 +66,20 @@ If the 32-bit version of some library isn't found, but 64-bit works fine, try th
 
 I don't know whether this is the right way to do it, but it works for me. If you are using a combination of open-source and proprietary drivers (e.g. for laptops with Intel + NVIDIA GPUs a.k.a. 'Optimus'), follow only the steps for the open-source drivers.
 
+For Debian:
+
+    sudo dpkg --add-architecture i386
+    sudo apt-get update
+    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
+
+    cd /usr/lib/i386-linux-gnu
+    ln -s libGL.so.1 libGL.so
+    ln -s libGLU.so.1 libGLU.so
+    ln -s libX11.so.6 libX11.so
+    ln -s libXext.so.6 libXext.so
+    ln -s libXfixes.so.3 libXfixes.so
+    ldconfig
+
 For OpenSUSE (incomplete list but usually enough):
 
     sudo zypper install gcc gcc-32bit libffmpeg-devel libqt4-devel libpulse-devel glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXext-devel libXext-devel-32bit libXfixes-devel libXfixes-devel-32bit libstdc++47-devel-32bit
@@ -73,6 +90,10 @@ For OpenSUSE (incomplete list but usually enough):
     sudo ln -s libXext.so.6 libXext.so
     sudo ln -s libXfixes.so.3 libXfixes.so
     sudo ldconfig
+
+Some packages (e.g. ffmpeg) are not in the official repository, but can be installed from the [Packman repository](http://packman.links2linux.org/). You can add the Packman repository with this command:
+
+    zypper addrepo -f http://ftp.gwdg.de/pub/linux/packman/suse/12.3/ packman
 
 Compiling and installing
 ------------------------

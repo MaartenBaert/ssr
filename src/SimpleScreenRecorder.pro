@@ -5,7 +5,8 @@ QT += core gui
 TARGET = SimpleScreenRecorder
 TEMPLATE = app
 
-QMAKE_CXXFLAGS += -std=c++0x -flax-vector-conversions -DSSR_USE_X86_ASM=1 -DSSR_USE_FFMPEG_VERSIONS=1 -DSSR_USE_PULSEAUDIO=1
+DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_PULSEAUDIO=1
+QMAKE_CXXFLAGS += -std=c++0x -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
 INCLUDEPATH += AV AV/Input AV/Output GUI ../build/3rdparty

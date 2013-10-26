@@ -594,7 +594,9 @@ void PageInput::LoadPulseAudioSources() {
 	}
 	m_combobox_pulseaudio_source->clear();
 	for(unsigned int i = 0; i < m_pulseaudio_sources.size(); ++i) {
-		m_combobox_pulseaudio_source->addItem(m_pulseaudio_sources[i].description);
+		// limit the width of the strings (PulseAudio can generate really long names)
+		QString elided = m_combobox_pulseaudio_source->fontMetrics().elidedText(m_pulseaudio_sources[i].description, Qt::ElideMiddle, 400);
+		m_combobox_pulseaudio_source->addItem(elided);
 	}
 }
 
@@ -700,15 +702,13 @@ void PageInput::OnUpdateScreenConfiguration() {
 	SetVideoAreaScreen(selected_screen);
 }
 
-#if SSR_USE_PULSEAUDIO
-
 void PageInput::OnUpdatePulseAudioSources() {
+#if SSR_USE_PULSEAUDIO
 	QString selected_source = GetPulseAudioSourceName();
 	LoadPulseAudioSources();
 	SetPulseAudioSource(FindPulseAudioSource(selected_source));
-}
-
 #endif
+}
 
 void PageInput::OnIdentifyScreens() {
 	OnStopIdentifyScreens();

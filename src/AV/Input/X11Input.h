@@ -30,7 +30,6 @@ private:
 	struct SharedData {
 		QRect m_screen_bbox;
 		QVector<QRect> m_screen_dead_space;
-		uint32_t m_frame_counter;
 	};
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
@@ -51,6 +50,7 @@ private:
 	std::thread m_thread;
 	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
+	std::atomic<uint32_t> m_frame_counter;
 
 public:
 	X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor);

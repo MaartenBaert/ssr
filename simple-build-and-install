@@ -5,6 +5,7 @@
 # run configure (or this script) with --enable-maintainer-mode.
 
 set -e
+cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 if [ x"$( whoami )" = x"root" ]; then
 	echo "Error: don't run this script as root, this will mess up file permissions"
@@ -49,8 +50,17 @@ fi
 
 CONFIGURE_OPTIONS="--disable-assert $ENABLE_X86_ASM $ENABLE_FFMPEG_VERSIONS"
 
+export CPPFLAGS=""
 export CFLAGS="-Wall -O2 -pipe"
 export CXXFLAGS="-Wall -O2 -pipe"
+export LDFLAGS=""
+
+if [ -d "/usr/include/ffmpeg" ]; then
+	export CPPFLAGS="$CPPFLAGS -I/usr/include/ffmpeg"
+fi
+if [ -d "/usr/lib/ffmpeg" ]; then
+	export LDFLAGS="$LDFLAGS -L/usr/lib/ffmpeg"
+fi
 
 mkdir -p build
 cd build

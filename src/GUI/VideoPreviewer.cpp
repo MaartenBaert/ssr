@@ -75,37 +75,40 @@ int64_t VideoPreviewer::GetNextVideoTimestamp() {
 
 void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
 	Q_UNUSED(timestamp);
-	SharedLock lock(&m_shared_data);
 
-	// don't do anything if the preview window is invisible
-	if(!lock->m_is_visible)
-		return;
+	QSize image_size;
+	{
+		SharedLock lock(&m_shared_data);
 
-	// check the size
-	if(width < 2 || height < 2 || lock->m_widget_size.width() < 2 || lock->m_widget_size.height() < 2)
-		return;
-
-	// check the timestamp
-	if(lock->m_next_frame_time == SINK_TIMESTAMP_ANY) {
-		lock->m_next_frame_time = timestamp + 1000000 / lock->m_frame_rate;
-	} else {
-		if(timestamp < lock->m_next_frame_time - 1000000 / lock->m_frame_rate)
+		// don't do anything if the preview window is invisible
+		if(!lock->m_is_visible)
 			return;
-		lock->m_next_frame_time = std::max(lock->m_next_frame_time + 1000000 / lock->m_frame_rate, timestamp);
-	}
 
-	// calculate the scaled size
-	lock->m_source_size = QSize(width, height);
-	QSize image_size = CalculateScaledSize(lock->m_source_size, lock->m_widget_size);
+		// check the size
+		if(width < 2 || height < 2 || lock->m_widget_size.width() < 2 || lock->m_widget_size.height() < 2)
+			return;
+
+		// check the timestamp
+		if(lock->m_next_frame_time == SINK_TIMESTAMP_ANY) {
+			lock->m_next_frame_time = timestamp + 1000000 / lock->m_frame_rate;
+		} else {
+			if(timestamp < lock->m_next_frame_time - 1000000 / lock->m_frame_rate)
+				return;
+			lock->m_next_frame_time = std::max(lock->m_next_frame_time + 1000000 / lock->m_frame_rate, timestamp);
+		}
+
+		// calculate the scaled size
+		lock->m_source_size = QSize(width, height);
+		image_size = CalculateScaledSize(lock->m_source_size, lock->m_widget_size);
+
+	}
 
 	// allocate the image
-	if(lock->m_image.size() != image_size) {
-		lock->m_image = QImage(image_size, QImage::Format_RGB32);
-	}
+	QImage image(image_size, QImage::Format_RGB32);
 
 	// scale the image
-	uint8_t *out_data = lock->m_image.bits();
-	int out_stride = lock->m_image.bytesPerLine();
+	uint8_t *out_data = image.bits();
+	int out_stride = image.bytesPerLine();
 	m_fast_scaler.Scale(width, height, &data, &stride, format,
 						image_size.width(), image_size.height(), &out_data, &out_stride, PIX_FMT_BGRA);
 
@@ -114,11 +117,15 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	// I'm not sure whether Qt cares about this, apparently Qt 4.8 with the 'native' back-end doesn't,
 	// but I'm not sure about the other back-ends.
 	for(int y = 0; y < image_size.height(); ++y) {
-		uint8_t *row = lock->m_image.scanLine(y);
+		uint8_t *row = out_data + out_stride * y;
 		for(int x = 0; x < image_size.width(); ++x) {
 			row[x * 4 + 3] = 0xff; // third byte is alpha because we're little-endian
 		}
 	}
+
+	// store the image
+	SharedLock lock(&m_shared_data);
+	lock->m_image = image; image = QImage();
 
 	emit NeedsUpdate();
 

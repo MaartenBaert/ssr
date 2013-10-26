@@ -140,7 +140,7 @@ void GLInjectInput::InputThread() {
 			image_data += image_stride * (frame_height - 1);
 			image_stride = -image_stride;
 
-			// push out the frame
+			// push the frame
 			PushVideoFrame(frame_width, frame_height, image_data, image_stride, PIX_FMT_BGRA, timestamp);
 
 			std::atomic_thread_fence(std::memory_order_release); // stop reading frame
