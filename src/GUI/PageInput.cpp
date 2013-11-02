@@ -206,7 +206,7 @@ PageInput::PageInput(MainWindow* main_window)
 	}
 	QGroupBox *group_audio = new QGroupBox("Audio input", this);
 	{
-		m_checkbox_audio_enable = new QCheckBox("Record microphone", group_audio);
+		m_checkbox_audio_enable = new QCheckBox("Record audio", group_audio);
 		m_label_audio_backend = new QLabel("Backend:", group_audio);
 		m_combobox_audio_backend = new QComboBox(group_audio);
 		m_combobox_audio_backend->addItem("ALSA");

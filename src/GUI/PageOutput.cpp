@@ -91,7 +91,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 	// load AV container list
 	m_containers_av.clear();
 	for(AVOutputFormat *format = av_oformat_next(NULL); format != NULL; format = av_oformat_next(format)) {
-		if(format->video_codec == CODEC_ID_NONE)
+		if(format->video_codec == AV_CODEC_ID_NONE)
 			continue;
 		ContainerData c;
 		c.name = format->long_name;

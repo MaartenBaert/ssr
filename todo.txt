@@ -1,20 +1,21 @@
 Testing:
-- preview even when not recording yet (i.e. detach input from output)
-- Separate file for each clip.
+- PulseAudio input.
 
 In progress:
-- PulseAudio input (+ 2 inputs?)
 
 Todo:
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
 - Play start/stop sound (optional). [https://github.com/MaartenBaert/ssr/issues/26]
-- Command-line options for recording.
+- Command-line options for recording + skipping pages + systray.
 - Move SHM from GLFrameGrabber to GLInject.
+- Multiple audio inputs.
+- JACK support.
+- X11Input should track resolution changes.
+- Input + output profiles.
 
 Wishlist:
 - Improve interface for small screens.
 - Check disk space (Muxer).
-- Systray icon.
 - FPS counter of GLInject (overlay + option to record?)
 - Built-in re-encoding after recording
 - clean up Global.h
@@ -23,12 +24,10 @@ Wishlist:
 - Easier GLInject application selection (as an alternative to entering the command).
 - Timelapse recording, i.e. recording at a slow speed but playing it back faster (without sound obviously).
 - maybe rewrite YUVConverter in assembly instead of using GCC vector extensions
-- X11Input should track resolution change.
-- Synchronizer should be a separate thread (and handle inserting duplicate frames instead of GLInjectInput).
 - Planar sample/pixel formats for inputs (source/sink).
 - Keep encoders completely inside the muxer.
 - Multiple synchronization methods.
-- JACK support.
+- Multiple audio streams (output).
 
 Not sure yet:
 - Fixed cursor position when using 'follow cursor'?
