@@ -29,13 +29,13 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 const int64_t ALSAInput::START_DELAY = 100000;
 
 static void ALSARecoverAfterOverrun(snd_pcm_t* pcm) {
-	Logger::LogWarning("[ALSARecoverAfterOverrun] Warning: Overrun occurred, some samples were lost.");
+	Logger::LogWarning("[ALSARecoverAfterOverrun] " + QObject::tr("Warning: An overrun has occurred, some samples were lost.", "Don't translate 'overrun'"));
 	if(snd_pcm_prepare(pcm) < 0) {
-		Logger::LogError("[ALSARecoverAfterOverrun] Error: Can't recover device after overrun!");
+		Logger::LogError("[ALSARecoverAfterOverrun] " + QObject::tr("Error: Can't recover device after overrun!", "Don't translate 'overrun'"));
 		throw ALSAException();
 	}
 	if(snd_pcm_start(pcm) < 0) {
-		Logger::LogError("[ALSARecoverAfterOverrun] Error: Can't start PCM device after overrun!");
+		Logger::LogError("[ALSARecoverAfterOverrun] " + QObject::tr("Error: Can't start PCM device after overrun!", "Don't translate 'overrun'"));
 		throw ALSAException();
 	}
 }
@@ -63,7 +63,7 @@ ALSAInput::~ALSAInput() {
 
 	// tell the thread to stop
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[ALSAInput::~ALSAInput] Telling input thread to stop ...");
+		Logger::LogInfo("[ALSAInput::~ALSAInput] " + QObject::tr("Stopping input thread ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}
@@ -86,69 +86,75 @@ void ALSAInput::Init() {
 
 		// open PCM device
 		if(snd_pcm_open(&m_alsa_pcm, m_device_name.toAscii().constData(), SND_PCM_STREAM_CAPTURE, 0) < 0) {
-			Logger::LogError("[ALSAInput::Init] Error: Can't open PCM device!");
+			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't open PCM device!"));
 			throw ALSAException();
 		}
 		if(snd_pcm_hw_params_any(m_alsa_pcm, alsa_hw_params) < 0) {
-			Logger::LogError("[ALSAInput::Init] Error: Can't get PCM hardware parameters!");
+			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't get PCM hardware parameters!"));
 			throw ALSAException();
 		}
 
 		// set access type
 		if(snd_pcm_hw_params_set_access(m_alsa_pcm, alsa_hw_params, SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
-			Logger::LogError("[ALSAInput::Init] Error: Can't set access type!");
+			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't set access type!"));
 			throw ALSAException();
 		}
 
 		// set sample format
 		if(snd_pcm_hw_params_set_format(m_alsa_pcm, alsa_hw_params, SND_PCM_FORMAT_S16_LE) < 0) {
-			Logger::LogError("[ALSAInput::Init] Error: Can't set sample format!");
+			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't set sample format!"));
 			throw ALSAException();
 		}
 
 		// set sample rate
 		unsigned int rate = m_sample_rate;
 		if(snd_pcm_hw_params_set_rate_near(m_alsa_pcm, alsa_hw_params, &rate, NULL) < 0) {
-			Logger::LogError("[ALSAInput::Init] Error: Can't set sample rate!");
+			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't set sample rate!"));
 			throw ALSAException();
 		}
 		if(rate != m_sample_rate) {
-			Logger::LogWarning("[ALSAInput::Init] Warning: Sample rate " + QString::number(m_sample_rate) + " is not supported, using " + QString::number(rate) + " instead. This could be a problem if the difference is large.");
+			Logger::LogWarning("[ALSAInput::Init] " + QObject::tr("Warning: Sample rate %1 is not supported, using %2 instead. "
+																  "This could be a problem if the difference is large.")
+							   .arg(m_sample_rate).arg(rate));
 			//TODO// enable once resampling is ready
 			//m_sample_rate = rate;
 		}
 
-		// set channels
+		// set channel count
 		if(snd_pcm_hw_params_set_channels(m_alsa_pcm, alsa_hw_params, m_channels) < 0) {
-			Logger::LogError("[ALSAInput::Init] Error: Can't set channels!");
+			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't set channel count!"));
 			throw ALSAException();
 		}
 
-		// set periods
+		// set period count
 		unsigned int periods = m_alsa_periods;
 		if(snd_pcm_hw_params_set_periods_near(m_alsa_pcm, alsa_hw_params, &periods, NULL) < 0) {
-			Logger::LogError("[ALSAInput::Init] Error: Can't set periods!");
+			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't set period count!"));
 			throw ALSAException();
 		}
 		if(periods != m_alsa_periods) {
-			Logger::LogWarning("[ALSAInput::Init] Warning: Period count " + QString::number(m_alsa_periods) + " is not supported, using " + QString::number(periods) + " instead. This is not a problem.");
+			Logger::LogWarning("[ALSAInput::Init] " + QObject::tr("Warning: Period count %1 is not supported, using %2 instead. "
+																  "This is not a problem.")
+							   .arg(m_alsa_periods).arg(periods));
 			m_alsa_periods = periods;
 		}
 
 		// set period size
 		snd_pcm_uframes_t period_size = m_alsa_period_size;
 		if(snd_pcm_hw_params_set_period_size_near(m_alsa_pcm, alsa_hw_params, &period_size, NULL) < 0) {
-			Logger::LogError("[ALSAInput::Init] Error: Can't set period size!");
+			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't set period size!"));
 			throw ALSAException();
 		}
 		if(period_size != m_alsa_period_size) {
-			Logger::LogWarning("[ALSAInput::Init] Warning: Period size " + QString::number(m_alsa_period_size) + " is not supported, using " + QString::number(period_size) + " instead. This is not a problem.");
+			Logger::LogWarning("[ALSAInput::Init] " + QObject::tr("Warning: Period size %1 is not supported, using %2 instead. "
+																  "This is not a problem.")
+							   .arg(m_alsa_period_size).arg(period_size));
 			m_alsa_period_size = period_size;
 		}
 
 		// apply parameters
 		if(snd_pcm_hw_params(m_alsa_pcm, alsa_hw_params) < 0) {
-			Logger::LogError("[ALSAInput::Init] Error: Can't apply PCM hardware parameters!");
+			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't apply PCM hardware parameters!"));
 			throw ALSAException();
 		}
 
@@ -166,7 +172,7 @@ void ALSAInput::Init() {
 
 	// start PCM device
 	if(snd_pcm_start(m_alsa_pcm) < 0) {
-		Logger::LogError("[ALSAInput::Init] Error: Can't start PCM device!");
+		Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't start PCM device!"));
 		throw ALSAException();
 	}
 
@@ -187,7 +193,7 @@ void ALSAInput::Free() {
 void ALSAInput::InputThread() {
 	try {
 
-		Logger::LogInfo("[ALSAInput::InputThread] Input thread started.");
+		Logger::LogInfo("[ALSAInput::InputThread] " + QObject::tr("Input thread started."));
 
 		std::vector<uint8_t> buffer(m_alsa_period_size * m_channels * 2);
 		bool has_first_samples = false;
@@ -200,7 +206,6 @@ void ALSAInput::InputThread() {
 			// this function has a timeout value. This means the input thread won't hang if the device turns out to be dead.
 			int res = snd_pcm_wait(m_alsa_pcm, 1000);
 			if(res == 0) {
-				Logger::LogInfo("[ALSAInput::InputThread] No samples after waiting for 1000ms, the device is probably dead.");
 				continue;
 			}
 			if(res < 0) {
@@ -208,7 +213,7 @@ void ALSAInput::InputThread() {
 					ALSARecoverAfterOverrun(m_alsa_pcm);
 					PushAudioHole();
 				} else {
-					Logger::LogError("[ALSAInput::InputThread] Error: Can't check whether samples are available!");
+					Logger::LogError("[ALSAInput::InputThread] " + QObject::tr("Error: Can't check whether samples are available!"));
 					throw ALSAException();
 				}
 				continue;
@@ -221,7 +226,7 @@ void ALSAInput::InputThread() {
 					ALSARecoverAfterOverrun(m_alsa_pcm);
 					PushAudioHole();
 				} else {
-					Logger::LogError("[ALSAInput::InputThread] Error: Can't read samples!");
+					Logger::LogError("[ALSAInput::InputThread] " + QObject::tr("Error: Can't read samples!"));
 					throw ALSAException();
 				}
 				continue;
@@ -247,13 +252,13 @@ void ALSAInput::InputThread() {
 
 		}
 
-		Logger::LogInfo("[ALSAInput::InputThread] Input thread stopped.");
+		Logger::LogInfo("[ALSAInput::InputThread] " + QObject::tr("Input thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError(QString("[ALSAInput::InputThread] Exception '") + e.what() + "' in input thread.");
+		Logger::LogError("[ALSAInput::InputThread] " + QObject::tr("Exception '%1' in input thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[ALSAInput::InputThread] Unknown exception in input thread.");
+		Logger::LogError("[ALSAInput::InputThread] " + QObject::tr("Unknown exception in input thread."));
 	}
 }

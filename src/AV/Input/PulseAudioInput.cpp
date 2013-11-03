@@ -32,15 +32,15 @@ const int64_t PulseAudioInput::START_DELAY = 100000;
 
 static void PulseAudioIterate(pa_mainloop* mainloop) {
 	if(pa_mainloop_prepare(mainloop, 1000) < 0) {
-		Logger::LogError("[PulseAudioIterate] Error: Main loop prepare failed!");
+		Logger::LogError("[PulseAudioIterate] " + QObject::tr("Error: pa_mainloop_prepare failed!", "Don't translate 'pa_mainloop_prepare'"));
 		throw PulseAudioException();
 	}
 	if(pa_mainloop_poll(mainloop) < 0) {
-		Logger::LogError("[PulseAudioIterate] Error: Main loop poll failed!");
+		Logger::LogError("[PulseAudioIterate] " + QObject::tr("Error: pa_mainloop_poll failed!", "Don't translate 'pa_mainloop_poll'"));
 		throw PulseAudioException();
 	}
 	if(pa_mainloop_dispatch(mainloop) < 0) {
-		Logger::LogError("[PulseAudioIterate] Error: Main loop dispatch failed!");
+		Logger::LogError("[PulseAudioIterate] " + QObject::tr("Error: pa_mainloop_dispatch failed!", "Don't translate 'pa_mainloop_dispatch'"));
 		throw PulseAudioException();
 	}
 }
@@ -50,19 +50,20 @@ static void PulseAudioConnect(pa_mainloop** mainloop, pa_context** context) {
 	// create PulseAudio main loop
 	*mainloop = pa_mainloop_new();
 	if(*mainloop == NULL) {
-		Logger::LogError("[PulseAudioConnect] Error: Could not create main loop!");
+		Logger::LogError("[PulseAudioConnect] " + QObject::tr("Error: Could not create main loop!"));
 		throw PulseAudioException();
 	}
 
 	// connect to PulseAudio
 	*context = pa_context_new(pa_mainloop_get_api(*mainloop), "SimpleScreenRecorder");
 	if(*context == NULL) {
-		Logger::LogError("[PulseAudioConnect] Error: Could not create context!");
+		Logger::LogError("[PulseAudioConnect] " + QObject::tr("Error: Could not create context!"));
 		throw PulseAudioException();
 	}
 	if(pa_context_connect(*context, NULL, PA_CONTEXT_NOAUTOSPAWN , NULL) < 0) {
-		Logger::LogError(QString("[PulseAudioConnect] Error: Could not connect! Reason: ") + pa_strerror(pa_context_errno(*context)) + "\n"
-						 "It is possible that your system doesn't use PulseAudio. Try using the ALSA backend instead.");
+		Logger::LogError("[PulseAudioConnect] " + QObject::tr("Error: Could not connect! Reason: %1\n"
+															  "It is possible that your system doesn't use PulseAudio. Try using the ALSA backend instead.")
+						 .arg(pa_strerror(pa_context_errno(*context))));
 		throw PulseAudioException();
 	}
 
@@ -73,7 +74,7 @@ static void PulseAudioConnect(pa_mainloop** mainloop, pa_context** context) {
 		if(state == PA_CONTEXT_READY)
 			break;
 		if(!PA_CONTEXT_IS_GOOD(state)) {
-			Logger::LogError(QString("[PulseAudioConnect] Error: Connection attempt failed! Reason: ") + pa_strerror(pa_context_errno(*context)));
+			Logger::LogError("[PulseAudioConnect] " + QObject::tr("Error: Connection attempt failed! Reason: %1").arg(pa_strerror(pa_context_errno(*context))));
 			throw PulseAudioException();
 		}
 	}
@@ -110,14 +111,14 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 	// create a stream
 	*stream = pa_stream_new(context, "SimpleScreenRecorder audio input", &sample_spec, NULL);
 	if(*stream == NULL) {
-		Logger::LogError(QString("[PulseAudioConnectStream] Error: Could not create stream! Reason: ") + pa_strerror(pa_context_errno(context)));
+		Logger::LogError("[PulseAudioConnectStream] " + QObject::tr("Error: Could not create stream! Reason: %1").arg(pa_strerror(pa_context_errno(context))));
 		throw PulseAudioException();
 	}
 
 	// connect the stream
 	if(pa_stream_connect_record(*stream, source_name.toAscii().constData(), &buffer_attr,
 								(pa_stream_flags_t) (PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE | PA_STREAM_ADJUST_LATENCY)) < 0) {
-		Logger::LogError(QString("[PulseAudioConnectStream] Error: Could not connect stream! Reason: ") + pa_strerror(pa_context_errno(context)));
+		Logger::LogError("[PulseAudioConnectStream] " + QObject::tr("Error: Could not connect stream! Reason: %1").arg(pa_strerror(pa_context_errno(context))));
 		throw PulseAudioException();
 	}
 
@@ -128,7 +129,7 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 		if(state == PA_STREAM_READY)
 			break;
 		if(!PA_STREAM_IS_GOOD(state)) {
-			Logger::LogError(QString("[PulseAudioConnectStream] Error: Stream connection attempt failed! Reason: ") + pa_strerror(pa_context_errno(context)));
+			Logger::LogError("[PulseAudioConnectStream] " + QObject::tr("Error: Stream connection attempt failed! Reason: %1").arg(pa_strerror(pa_context_errno(context))));
 			throw PulseAudioException();
 		}
 	}
@@ -206,7 +207,7 @@ PulseAudioInput::~PulseAudioInput() {
 
 	// tell the thread to stop
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[PulseAudioInput::~PulseAudioInput] Telling input thread to stop ...");
+		Logger::LogInfo("[PulseAudioInput::~PulseAudioInput] Stopping input thread ...");
 		m_should_stop = true;
 		m_thread.join();
 	}
@@ -240,7 +241,7 @@ std::vector<PulseAudioInput::Source> PulseAudioInput::GetSourceList() {
 
 		operation = pa_context_get_source_info_list(context, SourceNamesCallback, &list);
 		if(operation == NULL) {
-			Logger::LogError(QString("[PulseAudioInput::GetSourceList] Error: Could not get names of sources! Reason: ") + pa_strerror(pa_context_errno(context)));
+			Logger::LogError("[PulseAudioInput::GetSourceList] " + QObject::tr("Error: Could not get names of sources! Reason: %1").arg(pa_strerror(pa_context_errno(context))));
 			throw PulseAudioException();
 		}
 		PulseAudioCompleteOperation(mainloop, &operation);
@@ -294,7 +295,7 @@ void PulseAudioInput::MovedCallback(pa_stream* stream, void* userdata) {
 void PulseAudioInput::InputThread() {
 	try {
 
-		Logger::LogInfo("[PulseAudioInput::InputThread] Input thread started.");
+		Logger::LogInfo("[PulseAudioInput::InputThread] " + QObject::tr("Input thread started."));
 
 		std::vector<uint8_t> buffer;
 		bool has_first_samples = false;
@@ -308,7 +309,7 @@ void PulseAudioInput::InputThread() {
 			const void *data;
 			size_t bytes;
 			if(pa_stream_peek(m_pa_stream, &data, &bytes) < 0) {
-				Logger::LogError("[PulseAudioInput::InputThread] Error: Stream peek failed!");
+				Logger::LogError("[PulseAudioInput::InputThread] " + QObject::tr("Error: pa_stream_peek failed!", "Don't translate 'pa_stream_peek'"));
 				throw PulseAudioException();
 			}
 			if(data == NULL) {
@@ -371,26 +372,26 @@ void PulseAudioInput::InputThread() {
 			// is the stream suspended?
 			if(m_stream_suspended) {
 				m_stream_suspended = false;
-				Logger::LogWarning("[PulseAudioInput::InputThread] Warning: Audio source was suspended. The current segment will be stopped until the source comes back.");
+				Logger::LogWarning("[PulseAudioInput::InputThread] " + QObject::tr("Warning: Audio source was suspended. The current segment will be stopped until the source is resumed."));
 				PushAudioHole();
 			}
 			if(m_stream_moved) {
 				m_stream_moved = false;
-				Logger::LogWarning("[PulseAudioInput::InputThread] Warning: Stream was moved to a different source.");
+				Logger::LogWarning("[PulseAudioInput::InputThread] " + QObject::tr("Warning: Stream was moved to a different source."));
 				//TODO// not sure whether segment cuts are a good idea here, needs more testing
 				//PushAudioHole();
 			}
 
 		}
 
-		Logger::LogInfo("[PulseAudioInput::InputThread] Input thread stopped.");
+		Logger::LogInfo("[PulseAudioInput::InputThread] " + QObject::tr("Input thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError(QString("[PulseAudioInput::InputThread] Exception '") + e.what() + "' in input thread.");
+		Logger::LogError("[PulseAudioInput::InputThread] " + QObject::tr("Exception '%1' in input thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[PulseAudioInput::InputThread] Unknown exception in input thread.");
+		Logger::LogError("[PulseAudioInput::InputThread] " + QObject::tr("Unknown exception in input thread."));
 	}
 }
 

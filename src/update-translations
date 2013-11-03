@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+
+cd translations
+lupdate-qt4 .. -ts @list.txt

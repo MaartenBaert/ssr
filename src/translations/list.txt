@@ -1,0 +1,2 @@
+simplescreenrecorder_nl.ts
+simplescreenrecorder_de.ts

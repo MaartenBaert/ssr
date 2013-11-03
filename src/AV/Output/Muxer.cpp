@@ -69,14 +69,14 @@ Muxer::~Muxer() {
 	if(m_started) {
 
 		// stop the encoders
-		Logger::LogInfo("[Muxer::~Muxer] Stopping encoders ...");
+		Logger::LogInfo("[Muxer::~Muxer] " + QObject::tr("Stopping encoders ..."));
 		for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 			m_encoders[i]->Stop(); // no deadlock: nothing in Muxer is locked in this thread (and BaseEncoder::Stop is lock-free, but that could change)
 		}
 
 		// wait for the thread to stop
 		if(m_thread.joinable()) {
-			Logger::LogInfo("[Muxer::~Muxer] Waiting for muxer thread to stop by itself ...");
+			Logger::LogInfo("[Muxer::~Muxer] " + QObject::tr("Waiting for muxer thread to stop by itself ..."));
 			m_thread.join();
 		}
 
@@ -97,7 +97,7 @@ void Muxer::Start() {
 
 	// write header
 	if(avformat_write_header(m_format_context, NULL) != 0) {
-		Logger::LogError("[Muxer::Start] Error: Can't write header!");
+		Logger::LogError("[Muxer::Start] " + QObject::tr("Error: Can't write header!"));
 		throw LibavException();
 	}
 
@@ -108,7 +108,7 @@ void Muxer::Start() {
 
 void Muxer::Finish() {
 	Q_ASSERT(m_started);
-	Logger::LogInfo("[Muxer::Finish] Telling encoders to finish ...");
+	Logger::LogInfo("[Muxer::Finish] " + QObject::tr("Finishing encoders ..."));
 	for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 		Q_ASSERT(m_encoders[i] != NULL);
 		m_encoders[i]->Finish(); // no deadlock: nothing in Muxer is locked in this thread (and BaseEncoder::Finish is lock-free, but that could change)
@@ -140,13 +140,13 @@ AVStream* Muxer::CreateStream(AVCodec* codec) {
 	AVStream *stream = av_new_stream(m_format_context, m_format_context->nb_streams);
 #endif
 	if(stream == NULL) {
-		Logger::LogError("[Muxer::AddStream] Error: Can't create new stream!");
+		Logger::LogError("[Muxer::AddStream] " + QObject::tr("Error: Can't create new stream!"));
 		throw LibavException();
 	}
 
 #if !SSR_USE_AVFORMAT_NEW_STREAM
 	if(avcodec_get_context_defaults3(stream->codec, codec) < 0) {
-		Logger::LogError("[Muxer::AddStream] Error: Can't get codec context defaults!");
+		Logger::LogError("[Muxer::AddStream] " + QObject::tr("Error: Can't get codec context defaults!"));
 		throw LibavException();
 	}
 	stream->codec->codec_id = codec->id;
@@ -192,23 +192,23 @@ void Muxer::Init() {
 	// get the format we want (this is just a pointer, we don't have to free this)
 	AVOutputFormat *format = av_guess_format(m_container_name.toAscii().constData(), NULL, NULL);
 	if(format == NULL) {
-		Logger::LogError("[Muxer::Init] Error: Can't find chosen output format!");
+		Logger::LogError("[Muxer::Init] " + QObject::tr("Error: Can't find chosen output format!"));
 		throw LibavException();
 	}
 
-	Logger::LogInfo(QString("[Muxer::Init] Using format ") + format->name + " (" + format->long_name + ").");
+	Logger::LogInfo("[Muxer::Init] " + QObject::tr("Using format %1 (%2).").arg(format->name).arg(format->long_name));
 
 	// allocate format context
 	m_format_context = avformat_alloc_context();
 	if(m_format_context == NULL) {
-		Logger::LogError("[Muxer::Init] Error: Can't allocate format context!");
+		Logger::LogError("[Muxer::Init] " + QObject::tr("Error: Can't allocate format context!"));
 		throw LibavException();
 	}
 	m_format_context->oformat = format;
 
 	// open file
 	if(avio_open(&m_format_context->pb, m_output_file.toLocal8Bit().constData(), AVIO_FLAG_WRITE) < 0) {
-		Logger::LogError("[Muxer::Init] Error: Can't open output file!");
+		Logger::LogError("[Muxer::Init] " + QObject::tr("Error: Can't open output file!"));
 		throw LibavException();
 	}
 
@@ -221,7 +221,7 @@ void Muxer::Free() {
 		if(m_started) {
 			if(av_write_trailer(m_format_context) != 0) {
 				// we can't throw exceptions here because this is called from the destructor
-				Logger::LogError("[Muxer::Free] Error: Can't write trailer, continuing anyway.");
+				Logger::LogError("[Muxer::Free] " + QObject::tr("Error: Can't write trailer, continuing anyway."));
 			}
 			m_started = false;
 		}
@@ -254,7 +254,7 @@ void Muxer::Free() {
 void Muxer::MuxerThread() {
 	try {
 
-		Logger::LogInfo("[Muxer::MuxerThread] Muxer thread started.");
+		Logger::LogInfo("[Muxer::MuxerThread] " + QObject::tr("Muxer thread started."));
 
 		// start muxing
 		for( ; ; ) {
@@ -308,7 +308,7 @@ void Muxer::MuxerThread() {
 			// The packet should already be interleaved now, but containers can have custom interleaving specifications,
 			// so it's a good idea to call av_interleaved_write_frame anyway.
 			if(av_interleaved_write_frame(m_format_context, packet->GetPacket()) != 0) {
-				Logger::LogError("[Muxer::MuxerThread] Error: Can't write frame to muxer!");
+				Logger::LogError("[Muxer::MuxerThread] " + QObject::tr("Error: Can't write frame to muxer!"));
 				throw LibavException();
 			}
 
@@ -336,13 +336,13 @@ void Muxer::MuxerThread() {
 		// tell the others that we're done
 		m_is_done = true;
 
-		Logger::LogInfo("[Muxer::MuxerThread] Muxer thread stopped.");
+		Logger::LogInfo("[Muxer::MuxerThread] " + QObject::tr("Muxer thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError(QString("[Muxer::MuxerThread] Exception '") + e.what() + "' in muxer thread.");
+		Logger::LogError("[Muxer::MuxerThread] " + QObject::tr("Exception '%1' in muxer thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[Muxer::MuxerThread] Unknown exception in muxer thread.");
+		Logger::LogError("[Muxer::MuxerThread] " + QObject::tr("Unknown exception in muxer thread."));
 	}
 }

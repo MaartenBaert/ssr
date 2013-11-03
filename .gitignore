@@ -6,6 +6,7 @@
 *.tar.gz
 *.user
 *.orig
+*.qm
 qrc_*
 moc_*
 Makefile

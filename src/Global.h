@@ -67,6 +67,11 @@ extern "C" {
 #error SSR_USE_PULSEAUDIO should be defined!
 #endif
 
+// Path to translation files.
+#ifndef SSR_TRANSLATIONS_PATH
+#error SSR_TRANSLATIONS_PATH should be defined!
+#endif
+
 // generic macro to test version numbers
 #define TEST_MAJOR_MINOR(major, minor, required_major, required_minor) (major > required_major || (major == required_major && minor >= required_minor))
 

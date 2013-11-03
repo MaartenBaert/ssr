@@ -55,32 +55,32 @@ PageOutput::PageOutput(MainWindow* main_window)
 
 	// main codecs
 	m_containers = {
-		{"Matroska (MKV)", "matroska", {"mkv"}, "Matroska files (*.mkv)",
+		{"Matroska (MKV)", "matroska", {"mkv"}, "Matroska " + tr("files", "This appears in the file dialog, e.g. 'MP4 files'") + " (*.mkv)",
 			{VIDEO_CODEC_H264, VIDEO_CODEC_VP8, VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC, AUDIO_CODEC_UNCOMPRESSED}},
-		{"MP4", "mp4", {"mp4"}, "MP4 files (*.mp4)",
+		{"MP4", "mp4", {"mp4"}, "MP4 " + tr("files", "This appears in the file dialog, e.g. 'MP4 files'") + " (*.mp4)",
 			{VIDEO_CODEC_H264},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC}},
-		{"WebM", "webm", {"webm"}, "WebM files (*.webm)",
+		{"WebM", "webm", {"webm"}, "WebM " + tr("files", "This appears in the file dialog, e.g. 'MP4 files'") + " (*.webm)",
 			{VIDEO_CODEC_VP8},
 			{AUDIO_CODEC_VORBIS}},
-		{"OGG", "ogg", {"ogg"}, "OGG files (*.ogg)",
+		{"OGG", "ogg", {"ogg"}, "OGG " + tr("files", "This appears in the file dialog, e.g. 'MP4 files'") + " (*.ogg)",
 			{VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS}},
-		{"Other...", "other", {}, "", {}, {}},
+		{tr("Other..."), "other", {}, "", {}, {}},
 	};
 	m_video_codecs = {
-		{"H.264"   , "libx264"  },
-		{"VP8"     , "libvpx"   },
-		{"Theora"  , "libtheora"},
-		{"Other...", "other"    },
+		{"H.264"       , "libx264"  },
+		{"VP8"         , "libvpx"   },
+		{"Theora"      , "libtheora"},
+		{tr("Other..."), "other"    },
 	};
 	m_audio_codecs = {
-		{"Vorbis"      , "libvorbis"   },
-		{"MP3"         , "libmp3lame"  },
-		{"AAC"         , "libvo_aacenc"},
-		{"Uncompressed", "pcm_s16le"   },
-		{"Other..."    , "other"       },
+		{"Vorbis"          , "libvorbis"   },
+		{"MP3"             , "libmp3lame"  },
+		{"AAC"             , "libvo_aacenc"},
+		{tr("Uncompressed"), "pcm_s16le"   },
+		{tr("Other...")    , "other"       },
 	};
 
 	// alternative aac codec
@@ -100,7 +100,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		if(c.suffixes.isEmpty()) {
 			c.filter = "";
 		} else {
-			c.filter = c.avname + " files (*." + c.suffixes[0];
+			c.filter = c.avname + " " + tr("files", "This appears in the file dialog, e.g. 'MP4 files'") + " (*." + c.suffixes[0];
 			for(int i = 1; i < c.suffixes.size(); ++i) {
 				c.suffixes[i] = c.suffixes[i].trimmed(); // needed because libav/ffmpeg isn't very consistent when they say 'comma-separated'
 				c.filter += " *." + c.suffixes[i];
@@ -134,29 +134,29 @@ PageOutput::PageOutput(MainWindow* main_window)
 	std::sort(m_audio_codecs_av.begin(), m_audio_codecs_av.end());
 
 	if(m_containers_av.empty()) {
-		Logger::LogError("[PageOutput::PageOutput] Error: Could not find any suitable container in libavformat!");
+		Logger::LogError("[PageOutput::PageOutput] " + tr("Error: Could not find any suitable container in libavformat!"));
 		throw LibavException();
 	}
 	if(m_video_codecs_av.empty()) {
-		Logger::LogError("[PageOutput::PageOutput] Error: Could not find any suitable video codec in libavcodec!");
+		Logger::LogError("[PageOutput::PageOutput] " + tr("Error: Could not find any suitable video codec in libavcodec!"));
 		throw LibavException();
 	}
 	if(m_audio_codecs_av.empty()) {
-		Logger::LogError("[PageOutput::PageOutput] Error: Could not find any suitable audio codec in libavcodec!");
+		Logger::LogError("[PageOutput::PageOutput] " + tr("Error: Could not find any suitable audio codec in libavcodec!"));
 		throw LibavException();
 	}
 
-	QGroupBox *groupbox_file = new QGroupBox("File", this);
+	QGroupBox *groupbox_file = new QGroupBox(tr("File"), this);
 	{
-		QLabel *label_file = new QLabel("Save as:", groupbox_file);
+		QLabel *label_file = new QLabel(tr("Save as:"), groupbox_file);
 		m_lineedit_file = new QLineEdit(groupbox_file);
-		m_lineedit_file->setToolTip("The recording will be saved to this location.");
-		QPushButton *button_browse = new QPushButton("Browse...", groupbox_file);
-		m_checkbox_separate_files = new QCheckBox("Separate file per segment", groupbox_file);
-		m_checkbox_separate_files->setToolTip("If checked, a separate video file will be created every time you pause and resume the recording.\n"
-											  "If the original file name is 'test.mkv', the segments will be saved as 'test-0001.mkv', 'test-0002.mkv', ...\n"
-											  "File names that exist already will be skipped.");
-		QLabel *label_container = new QLabel("Container:", groupbox_file);
+		m_lineedit_file->setToolTip(tr("The recording will be saved to this location."));
+		QPushButton *button_browse = new QPushButton(tr("Browse..."), groupbox_file);
+		m_checkbox_separate_files = new QCheckBox(tr("Separate file per segment"), groupbox_file);
+		m_checkbox_separate_files->setToolTip(tr("If checked, a separate video file will be created every time you pause and resume the recording.\n"
+												 "If the original file name is 'test.mkv', the segments will be saved as 'test-0001.mkv', 'test-0002.mkv', ...\n"
+												 "File names that exist already will be skipped."));
+		QLabel *label_container = new QLabel(tr("Container:"), groupbox_file);
 		m_combobox_container = new QComboBox(groupbox_file);
 		for(unsigned int i = 0; i < CONTAINER_COUNT; ++i) {
 			QString name = m_containers[i].name;
@@ -164,22 +164,22 @@ PageOutput::PageOutput(MainWindow* main_window)
 				name += " (not installed)";
 			m_combobox_container->addItem(name);
 		}
-		m_combobox_container->setToolTip("The container (file format) that will be used to save the recording.\n"
-										 "Note that not all codecs are supported by all containers, and that not all media players can read all file formats.\n"
-										 "- Matroska (MKV) supports all the codecs, but is less well-known.\n"
-										 "- MP4 is the most well-known format and will play on almost any modern media player, but supports only H.264 video\n"
-										 "   (and many media players only support AAC audio).\n"
-										 "- WebM is intended for embedding video into websites (with the HTML5 <video> tag). The format was created by Google.\n"
-										 "   WebM is supported by default in Firefox, Chrome and Opera, and plugins are available for Internet Explorer and Safari.\n"
-										 "   It supports only VP8 and Vorbis.\n"
-										 "- OGG supports only Theora and Vorbis.");
-		m_label_container_av = new QLabel("Container name:", groupbox_file);
+		m_combobox_container->setToolTip(tr("The container (file format) that will be used to save the recording.\n"
+											"Note that not all codecs are supported by all containers, and that not all media players can read all file formats.\n"
+											"- Matroska (MKV) supports all the codecs, but is less well-known.\n"
+											"- MP4 is the most well-known format and will play on almost any modern media player, but supports only H.264 video\n"
+											"   (and many media players only support AAC audio).\n"
+											"- WebM is intended for embedding video into websites (with the HTML5 <video> tag). The format was created by Google.\n"
+											"   WebM is supported by default in Firefox, Chrome and Opera, and plugins are available for Internet Explorer and Safari.\n"
+											"   It supports only VP8 and Vorbis.\n"
+											"- OGG supports only Theora and Vorbis."));
+		m_label_container_av = new QLabel(tr("Container name:"), groupbox_file);
 		m_combobox_container_av = new QComboBox(groupbox_file);
 		for(unsigned int i = 0; i < m_containers_av.size(); ++i) {
 			ContainerData &c = m_containers_av[i];
 			m_combobox_container_av->addItem(c.avname);
 		}
-		m_combobox_container_av->setToolTip("For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.");
+		m_combobox_container_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work."));
 
 		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
 		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
@@ -195,64 +195,64 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout->addWidget(m_label_container_av, 3, 0);
 		layout->addWidget(m_combobox_container_av, 3, 1, 1, 2);
 	}
-	QGroupBox *groupbox_video = new QGroupBox("Video", this);
+	QGroupBox *groupbox_video = new QGroupBox(tr("Video"), this);
 	{
-		QLabel *label_video_codec = new QLabel("Codec:", groupbox_video);
+		QLabel *label_video_codec = new QLabel(tr("Codec:"), groupbox_video);
 		m_combobox_video_codec = new QComboBox(groupbox_video);
 		for(unsigned int i = 0; i < VIDEO_CODEC_COUNT; ++i) {
 			m_combobox_video_codec->addItem(m_video_codecs[i].name);
 		}
-		m_combobox_video_codec->setToolTip("The codec that will be used to compress the video stream.\n"
-										   "- H.264 (libx264) is by far the best codec - high quality and very fast.\n"
-										   "- VP8 (libvpx) is quite good but also quite slow.\n"
-										   "- Theora (libtheora) isn't really recommended because the quality isn't very good.");
-		m_label_video_codec_av = new QLabel("Codec name:", groupbox_video);
+		m_combobox_video_codec->setToolTip(tr("The codec that will be used to compress the video stream.\n"
+											  "- H.264 (libx264) is by far the best codec - high quality and very fast.\n"
+											  "- VP8 (libvpx) is quite good but also quite slow.\n"
+											  "- Theora (libtheora) isn't really recommended because the quality isn't very good."));
+		m_label_video_codec_av = new QLabel(tr("Codec name:"), groupbox_video);
 		m_combobox_video_codec_av = new QComboBox(groupbox_video);
 		for(unsigned int i = 0; i < m_video_codecs_av.size(); ++i) {
 			VideoCodecData &c = m_video_codecs_av[i];
 			m_combobox_video_codec_av->addItem(c.avname);
 		}
-		m_combobox_video_codec_av->setToolTip("For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.");
-		m_label_video_kbit_rate = new QLabel("Bit rate (in kbps):", groupbox_video);
+		m_combobox_video_codec_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work."));
+		m_label_video_kbit_rate = new QLabel(tr("Bit rate (in kbps):"), groupbox_video);
 		m_lineedit_video_kbit_rate = new QLineEdit(groupbox_video);
-		m_lineedit_video_kbit_rate->setToolTip("The video bit rate (in kilobit per second). A higher value means a higher quality."
-											 "\nIf you have no idea where to start, try 5000 and change it if needed.");
-		m_label_h264_crf = new QLabel("Constant rate factor:", groupbox_video);
+		m_lineedit_video_kbit_rate->setToolTip(tr("The video bit rate (in kilobit per second). A higher value means a higher quality."
+												  "\nIf you have no idea where to start, try 5000 and change it if needed."));
+		m_label_h264_crf = new QLabel(tr("Constant rate factor:", "libx264 setting: don't translate this unless you can come up with something sensible"), groupbox_video);
 		m_slider_h264_crf = new QSlider(Qt::Horizontal, groupbox_video);
 		m_slider_h264_crf->setRange(0, 51);
 		m_slider_h264_crf->setSingleStep(1);
 		m_slider_h264_crf->setPageStep(5);
-		m_slider_h264_crf->setToolTip("This setting changes the video quality. A lower value means a higher quality.\n"
-										"The allowed range is 0-51 (0 means lossless, the default is 23).");
+		m_slider_h264_crf->setToolTip(tr("This setting changes the video quality. A lower value means a higher quality.\n"
+										 "The allowed range is 0-51 (0 means lossless, the default is 23)."));
 		m_label_h264_crf_value = new QLabel(groupbox_video);
 		m_label_h264_crf_value->setNum(m_slider_h264_crf->value());
 		m_label_h264_crf_value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		m_label_h264_crf_value->setMinimumWidth(QFontMetrics(m_label_h264_crf_value->font()).width("99") + 2);
-		m_label_h264_preset = new QLabel("Preset:", groupbox_video);
+		m_label_h264_preset = new QLabel(tr("Preset:", "libx264 setting: don't translate this unless you can come up with something sensible"), groupbox_video);
 		m_combobox_h264_preset = new QComboBox(groupbox_video);
 		for(unsigned int i = 0; i < H264_PRESET_COUNT; ++i) {
 			m_combobox_h264_preset->addItem(H264_PRESET_STRINGS[i]);
 		}
-		m_combobox_h264_preset->setToolTip("The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),\n"
-										   "but results in larger files. The quality shouldn't be affected too much.");
-		m_label_vp8_cpu_used = new QLabel("CPU used:", groupbox_video);
+		m_combobox_h264_preset->setToolTip(tr("The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),\n"
+											  "but results in larger files. The quality shouldn't be affected too much."));
+		m_label_vp8_cpu_used = new QLabel(tr("CPU used:", "libvpx setting: don't translate this unless you can come up with something sensible"), groupbox_video);
 		m_combobox_vp8_cpu_used = new QComboBox(groupbox_video);
-		m_combobox_vp8_cpu_used->addItem("5 (fastest)");
+		m_combobox_vp8_cpu_used->addItem("5 (" + tr("fastest") + ")");
 		m_combobox_vp8_cpu_used->addItem("4");
 		m_combobox_vp8_cpu_used->addItem("3");
 		m_combobox_vp8_cpu_used->addItem("2");
 		m_combobox_vp8_cpu_used->addItem("1");
-		m_combobox_vp8_cpu_used->addItem("0 (slowest)");
-		m_combobox_vp8_cpu_used->setToolTip("The encoding speed. A higher value uses *less* CPU  (I didn't choose the name, this is the name\n"
-											"used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.");
-		m_label_video_options = new QLabel("Custom options:", groupbox_video);
+		m_combobox_vp8_cpu_used->addItem("0 (" + tr("slowest") + ")");
+		m_combobox_vp8_cpu_used->setToolTip(tr("The encoding speed. A higher value uses *less* CPU-time. (I didn't choose the name, this is the name\n"
+											   "used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too."));
+		m_label_video_options = new QLabel(tr("Custom options:"), groupbox_video);
 		m_lineedit_video_options = new QLineEdit(groupbox_video);
-		m_lineedit_video_options->setToolTip("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)");
-		m_checkbox_video_allow_frame_skipping = new QCheckBox("Allow frame skipping", groupbox_video);
-		m_checkbox_video_allow_frame_skipping->setToolTip("If checked, the video encoder will be allowed to skip frames if the input frame rate is\n"
-														  "lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.\n"
-														  "This increases the file size and CPU usage, but reduces the latency for live streams in some cases.\n"
-														  "It shouldn't affect the appearance of the video.");
+		m_lineedit_video_options->setToolTip(tr("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)"));
+		m_checkbox_video_allow_frame_skipping = new QCheckBox(tr("Allow frame skipping"), groupbox_video);
+		m_checkbox_video_allow_frame_skipping->setToolTip(tr("If checked, the video encoder will be allowed to skip frames if the input frame rate is\n"
+															 "lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.\n"
+															 "This increases the file size and CPU usage, but reduces the latency for live streams in some cases.\n"
+															 "It shouldn't affect the appearance of the video."));
 
 		connect(m_combobox_video_codec, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoCodecFields()));
 		connect(m_slider_h264_crf, SIGNAL(valueChanged(int)), m_label_h264_crf_value, SLOT(setNum(int)));
@@ -275,34 +275,34 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout->addWidget(m_lineedit_video_options, 6, 1, 1, 2);
 		layout->addWidget(m_checkbox_video_allow_frame_skipping, 7, 0, 1, 3);
 	}
-	m_groupbox_audio = new QGroupBox("Audio");
+	m_groupbox_audio = new QGroupBox(tr("Audio"));
 	{
-		QLabel *label_audio_codec = new QLabel("Codec:", m_groupbox_audio);
+		QLabel *label_audio_codec = new QLabel(tr("Codec:"), m_groupbox_audio);
 		m_combobox_audio_codec = new QComboBox(m_groupbox_audio);
 		for(unsigned int i = 0; i < AUDIO_CODEC_COUNT; ++i) {
 			m_combobox_audio_codec->addItem(m_audio_codecs[i].name);
 		}
-		m_combobox_audio_codec->setToolTip("The codec that will be used to compress the audio stream. You shouldn't worry too much about\n"
-										   "this, because the size of the audio data is usually negligible compared to the size of the video data.\n"
-										   "And if you're only recording your own voice (i.e. no music), the quality won't matter that much anyway.\n"
-										   "- Vorbis (libvorbis) is great, this is the recommended codec.\n"
-										   "- MP3 (libmp3lame) is reasonably good.\n"
-										   "- AAC is a good codec, but the implementations used here (libvo_aacenc or the experimental ffmpeg aac encoder)\n"
-										   "   are pretty bad. Only use it if you have no other choice.\n"
-										   "- Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it's very fast.");
-		m_label_audio_codec_av = new QLabel("Codec name:", m_groupbox_audio);
+		m_combobox_audio_codec->setToolTip(tr("The codec that will be used to compress the audio stream. You shouldn't worry too much about\n"
+											  "this, because the size of the audio data is usually negligible compared to the size of the video data.\n"
+											  "And if you're only recording your own voice (i.e. no music), the quality won't matter that much anyway.\n"
+											  "- Vorbis (libvorbis) is great, this is the recommended codec.\n"
+											  "- MP3 (libmp3lame) is reasonably good.\n"
+											  "- AAC is a good codec, but the implementations used here (libvo_aacenc or the experimental ffmpeg aac encoder)\n"
+											  "   are pretty bad. Only use it if you have no other choice.\n"
+											  "- Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it's very fast."));
+		m_label_audio_codec_av = new QLabel(tr("Codec name:"), m_groupbox_audio);
 		m_combobox_audio_codec_av = new QComboBox(m_groupbox_audio);
 		for(unsigned int i = 0; i < m_audio_codecs_av.size(); ++i) {
 			AudioCodecData &c = m_audio_codecs_av[i];
 			m_combobox_audio_codec_av->addItem(c.avname);
 		}
-		m_combobox_audio_codec_av->setToolTip("For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work.");
-		m_label_audio_kbit_rate = new QLabel("Bit rate (in kbps):", m_groupbox_audio);
+		m_combobox_audio_codec_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work."));
+		m_label_audio_kbit_rate = new QLabel(tr("Bit rate (in kbps):"), m_groupbox_audio);
 		m_lineedit_audio_kbit_rate = new QLineEdit(m_groupbox_audio);
-		m_lineedit_audio_kbit_rate->setToolTip("The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.");
-		m_label_audio_options = new QLabel("Custom options:", m_groupbox_audio);
+		m_lineedit_audio_kbit_rate->setToolTip(tr("The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128."));
+		m_label_audio_options = new QLabel(tr("Custom options:"), m_groupbox_audio);
 		m_lineedit_audio_options = new QLineEdit(m_groupbox_audio);
-		m_lineedit_audio_options->setToolTip("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)");
+		m_lineedit_audio_options->setToolTip(tr("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)"));
 
 		connect(m_combobox_audio_codec, SIGNAL(activated(int)), this, SLOT(OnUpdateAudioCodecFields()));
 
@@ -316,8 +316,8 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout->addWidget(m_label_audio_options, 3, 0);
 		layout->addWidget(m_lineedit_audio_options, 3, 1);
 	}
-	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), "Back", this);
-	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), "Continue", this);
+	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), tr("Back"), this);
+	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), tr("Continue"), this);
 
 	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageInput()));
 	connect(button_continue, SIGNAL(clicked()), this, SLOT(OnContinue()));
@@ -543,17 +543,17 @@ void PageOutput::OnUpdateContainerFields() {
 	for(unsigned int i = 0; i < VIDEO_CODEC_OTHER; ++i) {
 		QString name = m_video_codecs[i].name;
 		if(!AVCodecIsInstalled(m_video_codecs[i].avname))
-			name += " (not installed)";
+			name += " (" + tr("not installed") + ")";
 		else if(container != CONTAINER_OTHER && !m_containers[container].supported_video_codecs.count((enum_video_codec) i))
-			name += " (not supported by container)";
+			name += " (" + tr("not supported by container") + ")";
 		m_combobox_video_codec->setItemText(i, name);
 	}
 	for(unsigned int i = 0; i < AUDIO_CODEC_OTHER; ++i) {
 		QString name = m_audio_codecs[i].name;
 		if(!AVCodecIsInstalled(m_audio_codecs[i].avname))
-			name += " (not installed)";
+			name += " (" + tr("not installed") + ")";
 		else if(container != CONTAINER_OTHER && !m_containers[container].supported_audio_codecs.count((enum_audio_codec) i))
-			name += " (not supported by container)";
+			name += " (" + tr("not supported by container") + ")";
 		m_combobox_audio_codec->setItemText(i, name);
 	}
 
@@ -596,7 +596,7 @@ void PageOutput::OnBrowse() {
 	enum_container container = GetContainer();
 	unsigned int container_av = GetContainerAV();
 	QString selected_filter = (container == CONTAINER_OTHER)? m_containers_av[container_av].filter : m_containers[container].filter;
-	QString selected_file = QFileDialog::getSaveFileName(this, "Save recording as",
+	QString selected_file = QFileDialog::getSaveFileName(this, tr("Save recording as"),
 		GetFile(), filters, &selected_filter, QFileDialog::DontConfirmOverwrite);
 
 	if(selected_file.isNull())
@@ -636,11 +636,11 @@ void PageOutput::OnBrowse() {
 void PageOutput::OnContinue() {
 	QString file = GetFile();
 	if(file.isEmpty()) {
-		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION, "You did not select an output file!", QMessageBox::Ok);
+		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION, tr("You did not select an output file!"), QMessageBox::Ok);
 		return;
 	}
 	if(GetFileProtocol().isNull() && !GetSeparateFiles() && QFileInfo(file).exists()) {
-		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, "The file '" + QFileInfo(file).fileName() + "' already exists. Are you sure you want to overwrite it?",
+		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, tr("The file '%1' already exists. Are you sure that you want to overwrite it?").arg(QFileInfo(file).fileName()),
 								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
 			return;
 		}

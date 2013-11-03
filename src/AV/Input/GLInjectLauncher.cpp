@@ -99,12 +99,12 @@ void GLInjectLauncher::Init() {
 	// allocate main shared memory
 	m_shm_main_id = shmget(IPC_PRIVATE, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * CBUFFER_SIZE, IPC_CREAT | ((m_relax_permissions)? 0777 : 0700));
 	if(m_shm_main_id == -1) {
-		Logger::LogError("[GLInjectLauncher::Init] Error: Can't get main shared memory!");
+		Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't get main shared memory!"));
 		throw GLInjectException();
 	}
 	m_shm_main_ptr = (char*) shmat(m_shm_main_id, NULL, SHM_RND);
 	if(m_shm_main_ptr == (char*) -1) {
-		Logger::LogError("[GLInjectLauncher::Init] Error: Can't attach to main shared memory!");
+		Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't attach to main shared memory!"));
 		throw GLInjectException();
 	}
 	memset(m_shm_main_ptr, 0, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * CBUFFER_SIZE);
@@ -114,12 +114,12 @@ void GLInjectLauncher::Init() {
 		m_shm_frames.push_back(ShmFrame());
 		m_shm_frames.back().m_id = shmget(IPC_PRIVATE, m_max_bytes, IPC_CREAT | ((m_relax_permissions)? 0777 : 0700));
 		if(m_shm_frames.back().m_id == -1) {
-			Logger::LogError("[GLInjectLauncher::Init] Error: Can't get frame shared memory!");
+			Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't get frame shared memory!"));
 			throw GLInjectException();
 		}
 		m_shm_frames.back().m_shm_ptr = (char*) shmat(m_shm_frames.back().m_id, NULL, SHM_RND);
 		if(m_shm_frames.back().m_shm_ptr == (char*) -1) {
-			Logger::LogError("[GLInjectLauncher::Init] Error: Can't attach to frame shared memory!");
+			Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't attach to frame shared memory!"));
 			throw GLInjectException();
 		}
 		GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * i);
@@ -146,7 +146,7 @@ void GLInjectLauncher::Init() {
 
 	// generate the full command
 	QString full_command = "LD_PRELOAD=libssr-glinject.so SSR_GLINJECT_SHM=" + QString::number(m_shm_main_id) + " " + m_command;
-	Logger::LogInfo("[GLInjectLauncher::Init] Full command: " + full_command);
+	Logger::LogInfo("[GLInjectLauncher::Init] " + QObject::tr("Full command") + ": " + full_command);
 
 	// run it
 	if(m_run_command) {
@@ -154,7 +154,7 @@ void GLInjectLauncher::Init() {
 		args.push_back("-c");
 		args.push_back(full_command);
 		if(!QProcess::startDetached("/bin/sh", args, QDir::homePath())) {
-			Logger::LogError("[GLInjectLauncher::Init] Error: Can't run command!");
+			Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't run command!"));
 			throw GLInjectException();
 		}
 	}

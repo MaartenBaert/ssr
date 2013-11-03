@@ -74,67 +74,67 @@ PageInput::PageInput(MainWindow* main_window)
 	m_glinject_command = "";
 	m_glinject_max_megapixels = 0;
 
-	QGroupBox *group_video = new QGroupBox("Video input", this);
+	QGroupBox *group_video = new QGroupBox(tr("Video input"), this);
 	{
 		m_buttongroup_video_area = new QButtonGroup(group_video);
-		QRadioButton *radio_area_screen = new QRadioButton("Record the entire screen", group_video);
-		QRadioButton *radio_area_fixed = new QRadioButton("Record a fixed rectangle", group_video);
-		QRadioButton *radio_area_cursor = new QRadioButton("Follow the cursor", group_video);
-		QRadioButton *radio_area_glinject = new QRadioButton("Record OpenGL (experimental)", group_video);
+		QRadioButton *radio_area_screen = new QRadioButton(tr("Record the entire screen"), group_video);
+		QRadioButton *radio_area_fixed = new QRadioButton(tr("Record a fixed rectangle"), group_video);
+		QRadioButton *radio_area_cursor = new QRadioButton(tr("Follow the cursor"), group_video);
+		QRadioButton *radio_area_glinject = new QRadioButton(tr("Record OpenGL (experimental)"), group_video);
 		m_buttongroup_video_area->addButton(radio_area_screen, VIDEO_AREA_SCREEN);
 		m_buttongroup_video_area->addButton(radio_area_fixed, VIDEO_AREA_FIXED);
 		m_buttongroup_video_area->addButton(radio_area_cursor, VIDEO_AREA_CURSOR);
 		m_buttongroup_video_area->addButton(radio_area_glinject, VIDEO_AREA_GLINJECT);
 		m_combobox_screens = new QComboBoxWithSignal(group_video);
-		m_combobox_screens->setToolTip("Select what monitor should be recorded in a multi-monitor configuration.");
-		m_pushbutton_video_select_rectangle = new QPushButton("Select rectangle...", group_video);
-		m_pushbutton_video_select_rectangle->setToolTip("Use the mouse to select the recorded rectangle.");
-		m_pushbutton_video_select_window = new QPushButton("Select window...", group_video);
-		m_pushbutton_video_select_window->setToolTip("Use the mouse to select a window to record.\n"
-													 "Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only\n"
-													 "the client area of the window will be recorded.");
-		m_pushbutton_video_opengl_settings = new QPushButton("OpenGL settings...", group_video);
-		m_pushbutton_video_opengl_settings->setToolTip("Change the settings for OpenGL recording.");
-		m_label_video_x = new QLabel("Left:", group_video);
+		m_combobox_screens->setToolTip(tr("Select what monitor should be recorded in a multi-monitor configuration."));
+		m_pushbutton_video_select_rectangle = new QPushButton(tr("Select rectangle..."), group_video);
+		m_pushbutton_video_select_rectangle->setToolTip(tr("Use the mouse to select the recorded rectangle."));
+		m_pushbutton_video_select_window = new QPushButton(tr("Select window..."), group_video);
+		m_pushbutton_video_select_window->setToolTip(tr("Use the mouse to select a window to record.\n"
+														"Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only\n"
+														"the client area of the window will be recorded."));
+		m_pushbutton_video_opengl_settings = new QPushButton(tr("OpenGL settings..."), group_video);
+		m_pushbutton_video_opengl_settings->setToolTip(tr("Change the settings for OpenGL recording."));
+		m_label_video_x = new QLabel(tr("Left:"), group_video);
 		m_spinbox_video_x = new QSpinBoxWithSignal(group_video);
 		m_spinbox_video_x->setRange(0, 10000);
 		m_spinbox_video_x->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_spinbox_video_x->setToolTip("The x coordinate of the upper-left corner of the recorded rectangle.\n"
-									  "Hint: You can also change this value with the scroll wheel or the up/down arrows.");
-		m_label_video_y = new QLabel("Top:", group_video);
+		m_spinbox_video_x->setToolTip(tr("The x coordinate of the upper-left corner of the recorded rectangle.\n"
+										 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
+		m_label_video_y = new QLabel(tr("Top:"), group_video);
 		m_spinbox_video_y = new QSpinBoxWithSignal(group_video);
 		m_spinbox_video_y->setRange(0, 10000);
 		m_spinbox_video_y->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_spinbox_video_y->setToolTip("The y coordinate of the upper-left corner of the recorded rectangle.\n"
-									  "Hint: You can also change this value with the scroll wheel or the up/down arrows.");
-		m_label_video_w = new QLabel("Width:", group_video);
+		m_spinbox_video_y->setToolTip(tr("The y coordinate of the upper-left corner of the recorded rectangle.\n"
+										 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
+		m_label_video_w = new QLabel(tr("Width:"), group_video);
 		m_spinbox_video_w = new QSpinBoxWithSignal(group_video);
 		m_spinbox_video_w->setRange(0, 10000);
 		m_spinbox_video_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_spinbox_video_w->setToolTip("The width of the recorded rectangle.\n"
-									  "Hint: You can also change this value with the scroll wheel or the up/down arrows.");
-		m_label_video_h = new QLabel("Height:", group_video);
+		m_spinbox_video_w->setToolTip(tr("The width of the recorded rectangle.\n"
+										 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
+		m_label_video_h = new QLabel(tr("Height:"), group_video);
 		m_spinbox_video_h = new QSpinBoxWithSignal(group_video);
 		m_spinbox_video_h->setRange(0, 10000);
 		m_spinbox_video_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_spinbox_video_h->setToolTip("The height of the recorded rectangle.\n"
-									  "Hint: You can also change this value with the scroll wheel or the up/down arrows.");
-		QLabel *label_frame_rate = new QLabel("Frame rate:", group_video);
+		m_spinbox_video_h->setToolTip(tr("The height of the recorded rectangle.\n"
+										 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
+		QLabel *label_frame_rate = new QLabel(tr("Frame rate:"), group_video);
 		m_spinbox_video_frame_rate = new QSpinBox(group_video);
 		m_spinbox_video_frame_rate->setRange(1, 1000);
 		m_spinbox_video_frame_rate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_spinbox_video_frame_rate->setToolTip("The number of frames per second in the final video. Higher frame rates use more CPU time.");
-		m_checkbox_scale = new QCheckBox("Scale video", group_video);
-		m_checkbox_scale->setToolTip("Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.");
-		m_label_video_scaled_w = new QLabel("Scaled width:", group_video);
+		m_spinbox_video_frame_rate->setToolTip(tr("The number of frames per second in the final video. Higher frame rates use more CPU time."));
+		m_checkbox_scale = new QCheckBox(tr("Scale video"), group_video);
+		m_checkbox_scale->setToolTip(tr("Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster."));
+		m_label_video_scaled_w = new QLabel(tr("Scaled width:"), group_video);
 		m_spinbox_video_scaled_w = new QSpinBox(group_video);
 		m_spinbox_video_scaled_w->setRange(0, 10000);
 		m_spinbox_video_scaled_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_label_video_scaled_h = new QLabel("Scaled height:", group_video);
+		m_label_video_scaled_h = new QLabel(tr("Scaled height:"), group_video);
 		m_spinbox_video_scaled_h = new QSpinBox(group_video);
 		m_spinbox_video_scaled_h->setRange(0, 10000);
 		m_spinbox_video_scaled_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_checkbox_record_cursor = new QCheckBox("Record cursor", group_video);
+		m_checkbox_record_cursor = new QCheckBox(tr("Record cursor"), group_video);
 
 		connect(m_buttongroup_video_area, SIGNAL(buttonClicked(int)), this, SLOT(OnUpdateVideoAreaFields()));
 		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoAreaFields()));
@@ -204,29 +204,29 @@ PageInput::PageInput(MainWindow* main_window)
 		}
 		layout->addWidget(m_checkbox_record_cursor);
 	}
-	QGroupBox *group_audio = new QGroupBox("Audio input", this);
+	QGroupBox *group_audio = new QGroupBox(tr("Audio input"), this);
 	{
-		m_checkbox_audio_enable = new QCheckBox("Record audio", group_audio);
-		m_label_audio_backend = new QLabel("Backend:", group_audio);
+		m_checkbox_audio_enable = new QCheckBox(tr("Record audio"), group_audio);
+		m_label_audio_backend = new QLabel(tr("Backend:"), group_audio);
 		m_combobox_audio_backend = new QComboBox(group_audio);
 		m_combobox_audio_backend->addItem("ALSA");
 #if SSR_USE_PULSEAUDIO
 		m_combobox_audio_backend->addItem("PulseAudio");
 #endif
-		m_combobox_audio_backend->setToolTip("The audio backend that will be used for recording.\n"
-											 "The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.");
-		m_label_alsa_device = new QLabel("Device:", group_audio);
+		m_combobox_audio_backend->setToolTip(tr("The audio backend that will be used for recording.\n"
+												"The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly."));
+		m_label_alsa_device = new QLabel(tr("Device:"), group_audio);
 		m_lineedit_alsa_device = new QLineEdit(group_audio);
-		m_lineedit_alsa_device->setToolTip("The ALSA device that will be used for recording. Normally this should be 'default'.\n"
-										   "You can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).");
+		m_lineedit_alsa_device->setToolTip(tr("The ALSA device that will be used for recording. Normally this should be 'default'.\n"
+											  "You can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).", "Don't translate 'default' and 'plughw'"));
 #if SSR_USE_PULSEAUDIO
-		m_label_pulseaudio_source = new QLabel("Source:", group_audio);
+		m_label_pulseaudio_source = new QLabel(tr("Source:"), group_audio);
 		m_combobox_pulseaudio_source = new QComboBox(group_audio);
 		m_combobox_pulseaudio_source->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_combobox_pulseaudio_source->setToolTip("The PulseAudio source that will be used for recording.\n"
-												 "A 'monitor' is a source that records the audio played by other applications.");
-		m_pushbutton_pulseaudio_refresh = new QPushButton("Refresh", group_audio);
-		m_pushbutton_pulseaudio_refresh->setToolTip("Refreshes the list of PulseAudio sources.");
+		m_combobox_pulseaudio_source->setToolTip(tr("The PulseAudio source that will be used for recording.\n"
+													"A 'monitor' is a source that records the audio played by other applications.", "Don't translate 'monitor' unless PulseAudio does this as well"));
+		m_pushbutton_pulseaudio_refresh = new QPushButton(tr("Refresh"), group_audio);
+		m_pushbutton_pulseaudio_refresh->setToolTip(tr("Refreshes the list of PulseAudio sources."));
 #endif
 
 		connect(m_checkbox_audio_enable, SIGNAL(clicked()), this, SLOT(OnUpdateAudioFields()));
@@ -251,8 +251,8 @@ PageInput::PageInput(MainWindow* main_window)
 #endif
 		}
 	}
-	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), "Back", this);
-	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), "Continue", this);
+	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), tr("Back"), this);
+	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), tr("Continue"), this);
 
 	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageWelcome()));
 	connect(button_continue, SIGNAL(clicked()), this, SLOT(OnContinue()));
@@ -568,11 +568,12 @@ void PageInput::LoadScreenConfigurations() {
 		rect |= QApplication::desktop()->screenGeometry(i);
 	}
 	m_combobox_screens->clear();
-	m_combobox_screens->addItem("All screens: " + QString::number(rect.width()) + "x" + QString::number(rect.height()));
+	m_combobox_screens->addItem(tr("All screens: %1x%2", "This appears in the screen selection combobox")
+								.arg(rect.width()).arg(rect.height()));
 	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
 		rect = QApplication::desktop()->screenGeometry(i);
-		m_combobox_screens->addItem("Screen " + QString::number(i + 1) + ": " + QString::number(rect.width()) + "x" + QString::number(rect.height())
-									+ " at " + QString::number(rect.left()) + "," + QString::number(rect.top()));
+		m_combobox_screens->addItem(tr("Screen %1: %2x%3 at %4,%5", "This appears in the screen selection combobox")
+									.arg(i + 1).arg(rect.width()).arg(rect.height()).arg(rect.left()).arg(rect.top()));
 	}
 	// update the video x/y/w/h in case the position or size of the selected screen changed
 	OnUpdateVideoAreaFields();
@@ -713,7 +714,7 @@ void PageInput::OnIdentifyScreens() {
 	OnStopIdentifyScreens();
 	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
 		QRect rect = QApplication::desktop()->screenGeometry(i);
-		WidgetScreenLabel *label = new WidgetScreenLabel(this, "Screen " + QString::number(i + 1));
+		WidgetScreenLabel *label = new WidgetScreenLabel(this, tr("Screen %1", "This appears in the screen labels").arg(i + 1));
 		label->move(rect.left(), rect.top());
 		label->show();
 		m_screen_labels.push_back(label);
@@ -745,8 +746,8 @@ void PageInput::OnGLInjectDialog() {
 void PageInput::OnContinue() {
 	if(GetVideoArea() == VIDEO_AREA_GLINJECT && GetGLInjectCommand().isEmpty()) {
 		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION,
-							  "You did not enter a command to start the OpenGL application that you want to record.\n"
-							  "Press the 'OpenGL settings' button and enter a command.", QMessageBox::Ok);
+							  tr("You did not enter a command to start the OpenGL application that you want to record.\n"
+								 "Click the 'OpenGL settings' button and enter a command."), QMessageBox::Ok);
 		return;
 	}
 	m_main_window->GoPageOutput();
@@ -776,52 +777,52 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 
 	m_parent = parent;
 
-	setWindowTitle("OpenGL Settings");
+	setWindowTitle(tr("OpenGL Settings"));
 
 	QLabel *label_info = new QLabel(this);
-	label_info->setText("<p>Warning: OpenGL recording works by injecting a library into the program that will be recorded. "
-						"This library will override some system functions in order to capture the frames before they are "
-						"displayed on the screen. If you are trying to record a game that tries to detect hacking attempts "
-						"on the client side, it's (theoretically) possible that the game will consider this a hack. This "
-						"might even get you banned, so it's a good idea to make sure that the program you want to record "
-						"won't ban you, *before* you try to record it. You've been warned :).</p>\n\n"
-						"<p>Another warning: OpenGL recording is experimental, it may not work or even crash the program you "
-						"are recording. If you are worried about losing program data, make a backup first!</p>\n\n"
-						"<p>If you want to record Steam games, <a href=\"http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/\">read this first</a>.</p>");
+	label_info->setText(tr("<p>Warning: OpenGL recording works by injecting a library into the program that will be recorded. "
+						   "This library will override some system functions in order to capture the frames before they are "
+						   "displayed on the screen. If you are trying to record a game that tries to detect hacking attempts "
+						   "on the client side, it's (theoretically) possible that the game will consider this a hack. This "
+						   "might even get you banned, so it's a good idea to make sure that the program you want to record "
+						   "won't ban you, *before* you try to record it. You've been warned :).</p>\n\n"
+						   "<p>Another warning: OpenGL recording is experimental, it may not work or even crash the program you "
+						   "are recording. If you are worried about losing program data, make a backup first!</p>\n\n"
+						   "<p>If you want to record Steam games, <a href=\"http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/\">read this first</a>.</p>"));
 	label_info->setWordWrap(true);
 	label_info->setTextFormat(Qt::RichText);
 	label_info->setTextInteractionFlags(Qt::TextBrowserInteraction);
 	label_info->setOpenExternalLinks(true);
-	QLabel *label_command = new QLabel("Command:", this);
+	QLabel *label_command = new QLabel(tr("Command:"), this);
 	m_lineedit_command = new QLineEdit(m_parent->GetGLInjectCommand(), this);
-	m_lineedit_command->setToolTip("This command will be executed to start the program that should be recorded.");
+	m_lineedit_command->setToolTip(tr("This command will be executed to start the program that should be recorded."));
 	m_lineedit_command->setMinimumWidth(300);
-	m_checkbox_run_command = new QCheckBox("Start the OpenGL application automatically", this);
-	m_checkbox_run_command->setToolTip("If checked, the above command will be executed automatically (combined with some environment variables). If not checked,\n"
-									   "you have to start the OpenGL application yourself (the full command, including the required environment variables, is shown in the log).");
+	m_checkbox_run_command = new QCheckBox(tr("Start the OpenGL application automatically"), this);
+	m_checkbox_run_command->setToolTip(tr("If checked, the above command will be executed automatically (combined with some environment variables). If not checked,\n"
+										  "you have to start the OpenGL application yourself (the full command, including the required environment variables, is shown in the log)."));
 	m_checkbox_run_command->setChecked(m_parent->GetGLInjectRunCommand());
-	m_checkbox_relax_permissions = new QCheckBox("Relax shared memory permissions (insecure)", this);
-	m_checkbox_relax_permissions->setToolTip("If checked, other users on the same machine will be able to attach to the shared memory that's used for communication with the OpenGL program.\n"
-											 "This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.\n"
-											 "This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user.");
+	m_checkbox_relax_permissions = new QCheckBox(tr("Relax shared memory permissions (insecure)"), this);
+	m_checkbox_relax_permissions->setToolTip(tr("If checked, other users on the same machine will be able to attach to the shared memory that's used for communication with the OpenGL program.\n"
+												"This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.\n"
+												"This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user."));
 	m_checkbox_relax_permissions->setChecked(m_parent->GetGLInjectRelaxPermissions());
-	QLabel *label_max_pixels = new QLabel("Maximum image size (megapixels):", this);
+	QLabel *label_max_pixels = new QLabel(tr("Maximum image size (megapixels):"), this);
 	m_lineedit_max_megapixels = new QLineEdit(QString::number(m_parent->GetGLInjectMaxMegaPixels()), this);
-	m_lineedit_max_megapixels->setToolTip("This setting changes the amount of shared memory that will be allocated to send frames back to the main program.\n"
-										  "The size of the shared memory can't be changed anymore once the program has been started, so if the program you\n"
-										  "are trying to record is too large, recording won't work. 2 megapixels should be enough in almost all cases. Be careful,\n"
-										  "high values will use a lot of memory!");
+	m_lineedit_max_megapixels->setToolTip(tr("This setting changes the amount of shared memory that will be allocated to send frames back to the main program.\n"
+											 "The size of the shared memory can't be changed anymore once the program has been started, so if the program you\n"
+											 "are trying to record is too large, recording won't work. 2 megapixels should be enough in almost all cases. Be careful,\n"
+											 "high values will use a lot of memory!"));
 	m_checkbox_capture_front = new QCheckBox("Capture front buffer instead of back buffer", this);
-	m_checkbox_capture_front->setToolTip("If checked, the injected library will read the front buffer (the frame that's currently on the screen) rather than the back buffer\n"
-										 "(the new frame). This may be useful for some special applications that draw directly to the screen.");
+	m_checkbox_capture_front->setToolTip(tr("If checked, the injected library will read the front buffer (the frame that's currently on the screen) rather than the back buffer\n"
+											"(the new frame). This may be useful for some special applications that draw directly to the screen."));
 	m_checkbox_capture_front->setChecked(m_parent->GetGLInjectCaptureFront());
-	m_checkbox_limit_fps = new QCheckBox("Limit application frame rate", this);
-	m_checkbox_limit_fps->setToolTip("If checked, the injected library will slow down the application so the frame rate doesn't become higher than the recording frame rate.\n"
-									 "This stops the application from wasting CPU time for frames that won't be recorded, and sometimes results in smoother video\n"
-									 "(this depends on the application).");
+	m_checkbox_limit_fps = new QCheckBox(tr("Limit application frame rate"), this);
+	m_checkbox_limit_fps->setToolTip(tr("If checked, the injected library will slow down the application so the frame rate doesn't become higher than the recording frame rate.\n"
+										"This stops the application from wasting CPU time for frames that won't be recorded, and sometimes results in smoother video\n"
+										"(this depends on the application)."));
 	m_checkbox_limit_fps->setChecked(m_parent->GetGLInjectLimitFPS());
 
-	QPushButton *pushbutton_close = new QPushButton("Close", this);
+	QPushButton *pushbutton_close = new QPushButton(tr("Close"), this);
 
 	connect(pushbutton_close, SIGNAL(clicked()), this, SLOT(accept()));
 	connect(this, SIGNAL(accepted()), this, SLOT(WriteBack()));

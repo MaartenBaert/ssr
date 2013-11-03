@@ -41,11 +41,24 @@ int main(int argc, char* argv[]) {
 	//   Used by QString::fromAscii and QString::toAscii, and all implicit conversions from C-strings to QString.
 	// - Local character encoding: Used for file names and logs. In practice this will almost always be UTF-8 as well.
 	//   Used by QString::fromLocal8Bit and QString::toLocal8Bit.
-	// If it is not clear what encoding an external library uses, I use UTF-8 except when it is a file name.
+	// If it is not clear what encoding an external library uses, I use the local encoding for file names and UTF-8 for everything else.
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 
+	// set the application name
 	QCoreApplication::setOrganizationName("SimpleScreenRecorder");
 	QCoreApplication::setApplicationName("SimpleScreenRecorder");
+
+	// set the language
+	QTranslator translator;
+	qDebug() << QLocale::system().name() << QCoreApplication::applicationDirPath();
+	if(!translator.load(QLocale::system(), "simplescreenrecorder", "_", QCoreApplication::applicationDirPath())) {
+		qDebug() << "load 1 failed";
+		if(!translator.load(QLocale::system(), "simplescreenrecorder", "_", SSR_TRANSLATIONS_PATH)) {
+			qDebug() << "load 2 failed";
+		}
+	}
+	QApplication::installTranslator(&translator);
 
 	// Qt doesn't count hidden windows, so if the main window is hidden and a dialog box is closed, Qt thinks the application should quit.
 	// That's not what we want, so disable this and do it manually.
@@ -141,11 +154,12 @@ int main(int argc, char* argv[]) {
 
 	Logger::LogInfo("==================== Starting SSR ====================");
 	Logger::LogInfo(GetVersionInfo());
-
-	MainWindow mainwindow;
-	mainwindow.show();
-	int ret = application.exec();
-
+	int ret;
+	{
+		MainWindow mainwindow;
+		mainwindow.show();
+		ret = application.exec();
+	}
 	Logger::LogInfo("==================== Stopping SSR ====================");
 
 	return ret;
