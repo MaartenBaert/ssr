@@ -812,7 +812,7 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 											 "The size of the shared memory can't be changed anymore once the program has been started, so if the program you\n"
 											 "are trying to record is too large, recording won't work. 2 megapixels should be enough in almost all cases. Be careful,\n"
 											 "high values will use a lot of memory!"));
-	m_checkbox_capture_front = new QCheckBox("Capture front buffer instead of back buffer", this);
+	m_checkbox_capture_front = new QCheckBox(tr("Capture front buffer instead of back buffer"), this);
 	m_checkbox_capture_front->setToolTip(tr("If checked, the injected library will read the front buffer (the frame that's currently on the screen) rather than the back buffer\n"
 											"(the new frame). This may be useful for some special applications that draw directly to the screen."));
 	m_checkbox_capture_front->setChecked(m_parent->GetGLInjectCaptureFront());

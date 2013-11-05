@@ -99,12 +99,12 @@ void GLInjectLauncher::Init() {
 	// allocate main shared memory
 	m_shm_main_id = shmget(IPC_PRIVATE, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * CBUFFER_SIZE, IPC_CREAT | ((m_relax_permissions)? 0777 : 0700));
 	if(m_shm_main_id == -1) {
-		Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't get main shared memory!"));
+		Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't get shared memory!"));
 		throw GLInjectException();
 	}
 	m_shm_main_ptr = (char*) shmat(m_shm_main_id, NULL, SHM_RND);
 	if(m_shm_main_ptr == (char*) -1) {
-		Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't attach to main shared memory!"));
+		Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't attach to shared memory!"));
 		throw GLInjectException();
 	}
 	memset(m_shm_main_ptr, 0, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * CBUFFER_SIZE);

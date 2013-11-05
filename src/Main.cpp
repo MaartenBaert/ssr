@@ -51,13 +51,8 @@ int main(int argc, char* argv[]) {
 
 	// set the language
 	QTranslator translator;
-	qDebug() << QLocale::system().name() << QCoreApplication::applicationDirPath();
-	if(!translator.load(QLocale::system(), "simplescreenrecorder", "_", QCoreApplication::applicationDirPath())) {
-		qDebug() << "load 1 failed";
-		if(!translator.load(QLocale::system(), "simplescreenrecorder", "_", SSR_TRANSLATIONS_PATH)) {
-			qDebug() << "load 2 failed";
-		}
-	}
+	if(!translator.load(QLocale::system(), "simplescreenrecorder", "_", QCoreApplication::applicationDirPath()))
+		translator.load(QLocale::system(), "simplescreenrecorder", "_", SSR_TRANSLATIONS_PATH);
 	QApplication::installTranslator(&translator);
 
 	// Qt doesn't count hidden windows, so if the main window is hidden and a dialog box is closed, Qt thinks the application should quit.
@@ -94,7 +89,7 @@ int main(int argc, char* argv[]) {
 			// handle options
 			if(option == "logfile") {
 				if(!value.isNull()) {
-					Logger::LogError("[main] Error: Option 'logfile' does not take a value!");
+					Logger::LogError("[main] " + QObject::tr("Error: Command-line option '%1' does not take a value!").arg(option));
 					return 1;
 				}
 				g_option_logfile = true;
@@ -106,19 +101,19 @@ int main(int argc, char* argv[]) {
 				}
 			} else if(option == "syncdiagram") {
 				if(!value.isNull()) {
-					Logger::LogError("[main] Error: Option 'syncdiagram' does not take a value!");
+					Logger::LogError("[main] " + QObject::tr("Error: Command-line option '%1' does not take a value!").arg(option));
 					return 1;
 				}
 				g_option_syncdiagram = true;
 			} else {
-				Logger::LogError("[main] Error: Unknown command-line option '" + option + "'!");
+				Logger::LogError("[main] " + QObject::tr("Error: Unknown command-line option '%1'!").arg(option));
 				return 1;
 			}
 
 		} else {
 
 			// handle other arguments
-			Logger::LogError("[main] Error: Unknown command-line argument '" + arg + "'!");
+			Logger::LogError("[main] " + QObject::tr("Error: Unknown command-line argument '%1'!").arg(arg));
 			return 1;
 
 		}
@@ -143,16 +138,18 @@ int main(int argc, char* argv[]) {
 	// warning for glitch with proprietary NVIDIA drivers
 	if(DetectNVIDIAFlipping()) {
 		if(QMessageBox::warning(NULL, MainWindow::WINDOW_CAPTION,
-								"SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. "
-								"This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?",
+								QObject::tr("SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. "
+											"This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?\n\n"
+											"You can also change this option manually in the NVIDIA control panel.", "Don't translate 'flipping' unless NVIDIA does the same"),
 								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
 			if(!DisableNVIDIAFlipping()) {
-				QMessageBox::warning(NULL, MainWindow::WINDOW_CAPTION, "I couldn't disable flipping for some reason - sorry! Try disabling it from the NVIDIA control panel.", QMessageBox::Ok);
+				QMessageBox::warning(NULL, MainWindow::WINDOW_CAPTION, QObject::tr("I couldn't disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.",
+																				   "Don't translate 'flipping' unless NVIDIA does the same"), QMessageBox::Ok);
 			}
 		}
 	}
 
-	Logger::LogInfo("==================== Starting SSR ====================");
+	Logger::LogInfo("==================== " + QObject::tr("SSR started") + " ====================");
 	Logger::LogInfo(GetVersionInfo());
 	int ret;
 	{
@@ -160,7 +157,7 @@ int main(int argc, char* argv[]) {
 		mainwindow.show();
 		ret = application.exec();
 	}
-	Logger::LogInfo("==================== Stopping SSR ====================");
+	Logger::LogInfo("==================== " + QObject::tr("SSR stopped") + " ====================");
 
 	return ret;
 }
@@ -168,7 +165,7 @@ int main(int argc, char* argv[]) {
 QString GetApplicationUserDir() {
 	QString dir = QDir::homePath() + "/.ssr";
 	if(!QDir::root().mkpath(dir)) {
-		Logger::LogError("[GetApplicationUserDir] Error: Can't create .ssr directory!");
+		Logger::LogError("[GetApplicationUserDir] " + QObject::tr("Error: Can't create .ssr directory!"));
 		throw 0;
 	}
 	return dir;

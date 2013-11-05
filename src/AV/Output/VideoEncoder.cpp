@@ -54,19 +54,19 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 #endif
 
 		if(m_width == 0 || m_height == 0) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is zero."));
+			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is zero!"));
 			throw LibavException();
 		}
 		if(m_width > 10000 || m_height > 10000) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is too large, the maximum width and height is 10000."));
+			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
 			throw LibavException();
 		}
 		if(m_width % 2 != 0 || m_height % 2 != 0) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is not an even number."));
+			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is not an even number!"));
 			throw LibavException();
 		}
 		if(m_frame_rate == 0) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Frame rate it zero."));
+			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Frame rate it zero!"));
 			throw LibavException();
 		}
 
@@ -205,11 +205,6 @@ bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 
 	// do we have a packet?
 	if(got_packet) {
-
-		// set the keyframe flag
-		//TODO// is this needed?
-		if(GetCodecContext()->coded_frame->key_frame && !(packet->GetPacket()->flags & AV_PKT_FLAG_KEY))
-			Logger::LogError("[VideoEncoder::EncodeFrame] " + QObject::tr("Error: Keyframe flag was not set!"));
 
 		if(GetCodecContext()->coded_frame->key_frame)
 			packet->GetPacket()->flags |= AV_PKT_FLAG_KEY;

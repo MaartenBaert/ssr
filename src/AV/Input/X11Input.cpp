@@ -182,11 +182,11 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 	m_x11_image = NULL;
 
 	if(m_width == 0 || m_height == 0) {
-		Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Width or height is zero."));
+		Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Width or height is zero!"));
 		throw X11Exception();
 	}
 	if(m_width > 10000 || m_height > 10000) {
-		Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Width or height is too large, the maximum width and height is 10000."));
+		Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
 		throw X11Exception();
 	}
 
@@ -259,7 +259,7 @@ void X11Input::Init() {
 	if(m_record_cursor) {
 		int event, error;
 		if(!XFixesQueryExtension(m_x11_display, &event, &error)) {
-			Logger::LogWarning("[X11Input::Init] " + QObject::tr("Warning: XFixes is not supported by server, the cursor has been hidden."));
+			Logger::LogWarning("[X11Input::Init] " + QObject::tr("Warning: XFixes is not supported by server, the cursor has been hidden.", "Don't translate 'XFixes'"));
 			m_record_cursor = false;
 		}
 	}

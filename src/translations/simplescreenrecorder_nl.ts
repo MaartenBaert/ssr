@@ -2,6 +2,44 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="nl_NL">
 <context>
+    <name>DialogAbout</name>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="80"/>
+        <source>About SimpleScreenRecorder</source>
+        <translation>Over SimpleScreenRecorder</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="89"/>
+        <source>For more information:</source>
+        <translation>Voor meer informatie:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="90"/>
+        <source>The source code of this program can be found at:</source>
+        <translation>De broncode van dit programma kan gevonden worden op:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="91"/>
+        <source>This program uses:</source>
+        <translation>Dit programma gebruikt:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="92"/>
+        <source>%1 for the graphical user interface</source>
+        <translation>%1 voor de grafische gebruikersinterface</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="93"/>
+        <source>%1 or %2 (depending on your distribution) for video/audio encoding</source>
+        <translation>%1 of %2 (afhankelijk van je distributie) voor video/audio-encoding</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="94"/>
+        <source>%1 for hooking system functions for OpenGL recording</source>
+        <translation>%1 voor het hooken van systeemfuncties voor OpenGL opnames</translation>
+    </message>
+</context>
+<context>
     <name>DialogGLInject</name>
     <message>
         <location filename="../GUI/PageInput.cpp" line="780"/>
@@ -74,6 +112,11 @@ op te nemen te groot is, dan zal de opname mislukken. 2 megapixels zou genoeg mo
 zullen veel geheugen gebruiken!</translation>
     </message>
     <message>
+        <location filename="../GUI/PageInput.cpp" line="815"/>
+        <source>Capture front buffer instead of back buffer</source>
+        <translation>Neem de front buffer op in plaats van de back buffer</translation>
+    </message>
+    <message>
         <location filename="../GUI/PageInput.cpp" line="816"/>
         <source>If checked, the injected library will read the front buffer (the frame that&apos;s currently on the screen) rather than the back buffer
 (the new frame). This may be useful for some special applications that draw directly to the screen.</source>
@@ -83,14 +126,14 @@ zullen veel geheugen gebruiken!</translation>
     <message>
         <location filename="../GUI/PageInput.cpp" line="819"/>
         <source>Limit application frame rate</source>
-        <translation type="unfinished">Limiteer de framerate van de applicatie</translation>
+        <translation>Limiteer beelden per seconde van de applicatie</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="820"/>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
-        <translation>Indien ingeschakeld zal de geinjecteerde library de applicatie vertragen zodat de frame rate niet hoger wordt dan de frame rate van de opname.
+        <translation>Indien ingeschakeld zal de geinjecteerde library de applicatie vertragen zodat het aantal beelden per seconde niet hoger wordt dan de frame rate van de opname.
 Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenomen zullen worden, en resulteert soms in vloeiendere video
 (dit hangt af van de applicatie).</translation>
     </message>
@@ -230,7 +273,7 @@ Hint: Je kan deze waarde ook aanpassen met het scrollwiel of de omhoog/omlaag-pi
     <message>
         <location filename="../GUI/PageInput.cpp" line="122"/>
         <source>Frame rate:</source>
-        <translation type="unfinished">Framerate:</translation>
+        <translation>Beelden per seconde:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="126"/>
@@ -282,7 +325,7 @@ Hint: Je kan deze waarde ook aanpassen met het scrollwiel of de omhoog/omlaag-pi
         <source>The ALSA device that will be used for recording. Normally this should be &apos;default&apos;.
 You can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).</source>
         <comment>Don&apos;t translate &apos;default&apos; and &apos;plughw&apos;</comment>
-        <translation type="unfinished">Het ALSA-apparaat dat gebruikt zal worden om op te nemen. Normaal hoort dit &apos;default&apos; te zijn.
+        <translation>Het ALSA-apparaat dat gebruikt zal worden om op te nemen. Normaal hoort dit &apos;default&apos; te zijn.
 Je kan dit veranderen naar iets zoals plughw:0,0 (dit betekent geluidskaard 0 input 0 met plugins ingeschakeld).</translation>
     </message>
     <message>
@@ -290,32 +333,33 @@ Je kan dit veranderen naar iets zoals plughw:0,0 (dit betekent geluidskaard 0 in
         <source>The PulseAudio source that will be used for recording.
 A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
         <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
-        <translation type="unfinished">De PulseAudio-bron die gebruikt zal worden om op te nemen.
+        <translation>De PulseAudio-bron die gebruikt zal worden om op te nemen.
 Een &apos;monitor&apos; is een bron die de audio opneemt die wordt afgespeeld door andere applicaties.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="571"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation type="unfinished">Alle schermen: %1x%2</translation>
+        <translation>Alle schermen: %1x%2</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="575"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation type="unfinished">Scherm %1: %2x%3 at %4,%5</translation>
+        <translation>Scherm %1: %2x%3 op %4,%5</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="717"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
-        <translation type="unfinished">Scherm %1</translation>
+        <translation>Scherm %1</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="749"/>
         <source>You did not enter a command to start the OpenGL application that you want to record.
 Click the &apos;OpenGL settings&apos; button and enter a command.</source>
-        <translation type="unfinished"></translation>
+        <translation>Je hebt geen commando ingegeven om de OpenGL-applicatie die je wil opnemen te starten.
+Klik op de &apos;OpenGL instellingen&apos; knop en geef een commando in.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="216"/>
@@ -330,21 +374,9 @@ De ALSA-backend zal ook werken op systemen die PulseAudio gebruiken, maar het is
         <translation>Apparaat:</translation>
     </message>
     <message>
-        <source>The ALSA device that will be used for recording. Normally this should be &apos;default&apos;.
-You can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).</source>
-        <translation type="obsolete">Het ALSA-apparaat dat gebruikt zal worden om op te nemen. Normaal hoort dit &apos;default&apos; te zijn.
-Je kan dit veranderen naar iets zoals plughw:0,0 (dit betekent geluidskaard 0 input 0 met plugins ingeschakeld).</translation>
-    </message>
-    <message>
         <location filename="../GUI/PageInput.cpp" line="223"/>
         <source>Source:</source>
         <translation>Bron:</translation>
-    </message>
-    <message>
-        <source>The PulseAudio source that will be used for recording.
-A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
-        <translation type="obsolete">De PulseAudio-bron die gebruikt zal worden om op te nemen.
-Een &apos;monitor&apos; is een bron die de audio opneemt die wordt afgespeeld door andere applicaties.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="228"/>
@@ -366,26 +398,6 @@ Een &apos;monitor&apos; is een bron die de audio opneemt die wordt afgespeeld do
         <source>Continue</source>
         <translation>Verder</translation>
     </message>
-    <message>
-        <source>All screens: %1x%2</source>
-        <comment>this appears in the screen selection combobox</comment>
-        <translation type="obsolete">Alle schermen: %1x%2</translation>
-    </message>
-    <message>
-        <source>Screen %1: %2x%3 at %4,%5</source>
-        <comment>this appears in the screen selection combobox</comment>
-        <translation type="obsolete">Scherm %1: %2x%3 at %4,%5</translation>
-    </message>
-    <message>
-        <source>Screen %1</source>
-        <translation type="obsolete">Scherm %1</translation>
-    </message>
-    <message>
-        <source>You did not enter a command to start the OpenGL application that you want to record.
-Press the &apos;OpenGL settings&apos; button and enter a command.</source>
-        <translation type="obsolete">Je hebt geen commando ingegeven om de OpenGL-applicatie die je wil opnemen te starten.
-Klik op de &apos;OpenGL instellingen&apos; knop en geef een commando in.</translation>
-    </message>
 </context>
 <context>
     <name>PageOutput</name>
@@ -402,11 +414,6 @@ Klik op de &apos;OpenGL instellingen&apos; knop en geef een commando in.</transl
         <translation>Ongecomprimeerd</translation>
     </message>
     <message>
-        <source>files</source>
-        <comment>this appears in the file dialog, e.g. &apos;h264 files&apos;</comment>
-        <translation type="obsolete">bestanden</translation>
-    </message>
-    <message>
         <location filename="../GUI/PageOutput.cpp" line="58"/>
         <location filename="../GUI/PageOutput.cpp" line="61"/>
         <location filename="../GUI/PageOutput.cpp" line="64"/>
@@ -414,7 +421,7 @@ Klik op de &apos;OpenGL instellingen&apos; knop en geef een commando in.</transl
         <location filename="../GUI/PageOutput.cpp" line="103"/>
         <source>files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation type="unfinished">bestanden</translation>
+        <translation>bestanden</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="137"/>
@@ -532,7 +539,7 @@ Merk op dat niet alle codecs ondersteund worden door alle containers, en dat nie
     <message>
         <location filename="../GUI/PageOutput.cpp" line="215"/>
         <source>For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.</source>
-        <translation type="unfinished">Voor gevorderde gebruikers. Je kan elke libav/ffmpeg-videocodec gebruiken, maar veel zijn niet nuttig of werken niet.</translation>
+        <translation>Voor gevorderde gebruikers. Je kan elke libav/ffmpeg-videocodec gebruiken, maar veel zijn niet nuttig of werken niet.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="216"/>
@@ -551,39 +558,36 @@ Als je geen idee hebt waar je moet beginnen, probeer dan 5000 en verander het in
         <location filename="../GUI/PageOutput.cpp" line="220"/>
         <source>Constant rate factor:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished">Constant rate factor:</translation>
+        <translation>Constant rate factor:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="231"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished">Preset:</translation>
+        <translation>Preset:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="238"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished">CPU-gebruik:</translation>
+        <translation>CPU-gebruik:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="240"/>
         <source>fastest</source>
-        <translation type="unfinished"></translation>
+        <translation>snelste</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="245"/>
         <source>slowest</source>
-        <translation type="unfinished"></translation>
+        <translation>traagste</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="246"/>
-        <source>The encoding speed. A higher value uses *less* CPU-time. (I didn&apos;t choose the name, this is the name
+        <source>The encoding speed. A higher value uses *less* CPU time. (I didn&apos;t choose the name, this is the name
 used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Constant rate factor:</source>
-        <translation type="obsolete">Constant rate factor:</translation>
+        <translation>De encodeersnelheid. Een hogere waarde gebruikt *minder* CPU-tijd. (Ik heb de naam niet gekozen, dit is de naam
+die gebruikt wordt door de VP8-encoder). Hogere waarden resulteren in lagere beeldkwaliteit, tenzij je de bitrate ook verhoogt.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="225"/>
@@ -593,25 +597,11 @@ The allowed range is 0-51 (0 means lossless, the default is 23).</source>
 Het toegestane bereik is 0-51 (0 betekent verliesvrij, de standaardwaarde is 23).</translation>
     </message>
     <message>
-        <source>Preset:</source>
-        <translation type="obsolete">Preset:</translation>
-    </message>
-    <message>
         <location filename="../GUI/PageOutput.cpp" line="236"/>
         <source>The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),
 but results in larger files. The quality shouldn&apos;t be affected too much.</source>
-        <translation>De encodeersnelheid. Een hogere snelheid gebruikt minder CPU (waardoor hogere opname-framerates mogelijk worden),
+        <translation>De encodeersnelheid. Een hogere snelheid gebruikt minder CPU (waardoor meer beelden per seconde opgenomen kunnen worden),
 maar resulteert in grotere bestanden. De kwaliteit verandert normaal gezien niet veel.</translation>
-    </message>
-    <message>
-        <source>CPU used:</source>
-        <translation type="obsolete">CPU-gebruik:</translation>
-    </message>
-    <message>
-        <source>The encoding speed. A higher value uses *less* CPU  (I didn&apos;t choose the name, this is the name
-used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
-        <translation type="obsolete">De encodeersnelheid. Een hogere waarde gebruikt *minder* CPU-tijd. (Ik heb de naam niet gekozen, dit is de naam
-die gebruikt wordt door de VP8-encoder). Hogere waarden resulteren in lagere beeldkwaliteit, tenzij je de bitrate ook verhoogt.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="248"/>
@@ -636,8 +626,8 @@ die gebruikt wordt door de VP8-encoder). Hogere waarden resulteren in lagere bee
 lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.
 This increases the file size and CPU usage, but reduces the latency for live streams in some cases.
 It shouldn&apos;t affect the appearance of the video.</source>
-        <translation>Indien aangevinkt zal de video-encoder beelden overslaan als de input framerate lager is
-dan de output framerate. Indien niet aangevinkt zullen input frames worden verdubbeld om de gaten op te vullen.
+        <translation>Indien aangevinkt zal de video-encoder beelden overslaan als de input-FPS lager is
+dan de output-FPS. Indien niet aangevinkt zullen inputbeelden worden verdubbeld om de gaten op te vullen.
 Dit verhoogt de bestandsgrootte en het CPU-gebruik, maar vermindert de vertraging voor live streams in sommige gevallen.
 Het heeft normaal gezien geen effect op de videobeelden zelf.</translation>
     </message>
@@ -714,6 +704,285 @@ En als je enkel je eigen stem opneemt (d.w.z. geen muziek), dan zal de kwaliteit
     </message>
 </context>
 <context>
+    <name>PageRecord</name>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="123"/>
+        <source>Recording</source>
+        <translation>Opname</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="127"/>
+        <source>Enable recording hotkey</source>
+        <translation>Opname-sneltoets inschakelen</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="128"/>
+        <source>Hotkey:</source>
+        <translation>Sneltoets:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="129"/>
+        <source>Ctrl +</source>
+        <translation>Ctrl +</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="130"/>
+        <source>Shift +</source>
+        <translation>Shift +</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="131"/>
+        <source>Alt +</source>
+        <translation>Alt +</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="132"/>
+        <source>Super +</source>
+        <translation>Super +</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="134"/>
+        <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
+The program that you are recording will not receive the key press.</source>
+        <translation>De toets die je moet indrukken (in combinatie met de gegeven modifiers) om de opname te starten of te pauzeren.
+Het programma dat je aan het opnemen bent zal de toets niet ontvangen.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="168"/>
+        <source>Information</source>
+        <translation>Informatie</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="170"/>
+        <source>Total time:</source>
+        <translation>Totale tijd:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="172"/>
+        <source>FPS in:</source>
+        <translation>FPS in:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="174"/>
+        <source>FPS out:</source>
+        <translation>FPS uit:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="176"/>
+        <source>Size in:</source>
+        <translation>Grootte in:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="178"/>
+        <source>Size out:</source>
+        <translation>Grootte uit:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="180"/>
+        <source>File name:</source>
+        <translation>Bestandsnaam:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="183"/>
+        <source>File size:</source>
+        <translation>Bestandsgrootte:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="185"/>
+        <source>Bit rate:</source>
+        <translation>Bitrate:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="208"/>
+        <source>Preview</source>
+        <translation>Voorbeeld</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="212"/>
+        <source>Preview frame rate:</source>
+        <translation>Voorbeeld FPS:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="216"/>
+        <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
+        <translation>Opmerking: Voorbeeld vereist extra CPU-tijd (vooral bij hoge FPS).</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="265"/>
+        <source>Log</source>
+        <translation>Log</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="280"/>
+        <location filename="../GUI/PageRecord.cpp" line="288"/>
+        <source>Cancel recording</source>
+        <translation>Opname annuleren</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="281"/>
+        <location filename="../GUI/PageRecord.cpp" line="287"/>
+        <source>Save recording</source>
+        <translation>Opname opslaan</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="331"/>
+        <source>You have not saved the current recording yet, if you quit now it will be lost.
+Are you sure that you want to quit?</source>
+        <translation>Je hebt de huidige opname nog niet opgeslagen, als je het programma nu sluit zal deze verloren gaan.
+Weet je zeker dat je het programma wilt sluiten?</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="563"/>
+        <source>Starting output ...</source>
+        <translation>Output starten ...</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="611"/>
+        <source>Started output.</source>
+        <translation>Output gestart.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="630"/>
+        <source>Stopping output ...</source>
+        <translation>Output stoppen ...</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="648"/>
+        <source>Stopped output.</source>
+        <translation>Output gestopt.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="670"/>
+        <source>Starting input ...</source>
+        <translation>Input starten ...</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="693"/>
+        <source>Started input.</source>
+        <translation>Input gestart.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="715"/>
+        <source>Stopping input ...</source>
+        <translation>Input stoppen ...</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="728"/>
+        <source>Stopped input.</source>
+        <translation>Input gestopt.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="480"/>
+        <source>Starting page ...</source>
+        <translation>Pagina starten ...</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="488"/>
+        <source>Error: Something went wrong during GLInject initialization.</source>
+        <translation>Fout: Er ging iets fout tijdens de GLInject initialisatie.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="493"/>
+        <source>Started page.</source>
+        <translation>Pagina gestart.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="521"/>
+        <source>Stopping page ...</source>
+        <translation>Pagina stoppen ...</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="542"/>
+        <source>Stopped page.</source>
+        <translation>Pagina gestopt.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="570"/>
+        <source>Error: Could not get the size of the OpenGL application because GLInject has not been started.</source>
+        <translation>Fout: Kan de grootte van de OpenGL-applicatie niet krijgen omdat GLInject niet gestart is.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="575"/>
+        <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
+        <translation>Fout: Kon de grootte van de OpenGL-applicatie niet krijgen. Ofwel is de applicatie niet correct gestart, ofwel heeft de applicatie nog geen OpenGL-venster gemaakt. Als je wil beginnen met opnemen voordat de applicatie is gestart, dan moet je schalen inschakelen en manueel de videogrootte instellen.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="619"/>
+        <location filename="../GUI/PageRecord.cpp" line="698"/>
+        <source>Error: Something went wrong during initialization.</source>
+        <translation>Fout: Er ging iets fout tijdens de initialisatie.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="675"/>
+        <source>Error: Could not create a GLInject input because GLInject has not been started.</source>
+        <translation>Fout: Kan geen GLInject input maken omdat GLInject niet gestart is.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="785"/>
+        <location filename="../GUI/PageRecord.cpp" line="788"/>
+        <source>Pause recording</source>
+        <translation>Opname pauzeren</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="790"/>
+        <location filename="../GUI/PageRecord.cpp" line="793"/>
+        <source>Start recording</source>
+        <translation>Opname starten</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="801"/>
+        <source>Stop preview</source>
+        <translation>Voorbeeld stoppen</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="804"/>
+        <source>Start preview</source>
+        <translation>Voorbeeld starten</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="863"/>
+        <source>Are you sure that you want to cancel this recording?</source>
+        <translation>Weet je zeker dat je deze opname wilt annuleren?</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="876"/>
+        <source>You haven&apos;t recorded anything, there is nothing to save.
+
+The start button is at the top ;).</source>
+        <translation>Je hebt nog niets opgenomen, er is niets om op te slaan.
+
+De startknop staat bovenaan ;).</translation>
+    </message>
+</context>
+<context>
+    <name>PageWelcome</name>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="36"/>
+        <source>&lt;p&gt;Welcome to SimpleScreenRecorder!&lt;/p&gt;
+
+&lt;p&gt;Despite the name, this program actually has a lot of options. Don&apos;t worry though, there are really just two things that you need to know. One, the default settings are usually fine. If you don&apos;t know what something does, just use the default. Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.&lt;/p&gt;
+
+&lt;p&gt;For more information:&lt;br&gt;
+%1&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Welkom bij SimpleScreenRecorder&lt;/p&gt;
+
+&lt;p&gt;Ondanks de naam heeft dit programma behoorlijk veel opties. Maar maak je geen zorgen, er zijn maar twee dingen die je moet weten. Eén, de standaardinstellingen zijn meestal oké. Als je niet weet wat iets doet, neem dan de standaardwaarde. Twee, bijna alle instellingen hebben tooltips. Hou gewoon de muis boven iets om te weten wat het doet.&lt;/p&gt;
+
+&lt;p&gt;Voor meer informatie:&lt;br&gt;
+%1&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="46"/>
+        <source>About SimpleScreenRecorder</source>
+        <translation>Over SimpleScreenRecorder</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="47"/>
+        <source>Continue</source>
+        <translation>Verder</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../AV/DetectCPUFeatures.cpp" line="39"/>
@@ -739,34 +1008,19 @@ En als je enkel je eigen stem opneemt (d.w.z. geen muziek), dan zal de kwaliteit
         <location filename="../AV/FastScaler.cpp" line="73"/>
         <source>Using swscale for scaling.</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
-        <translation type="unfinished">Gebruik swscale voor schalen.</translation>
+        <translation>Gebruik swscale voor schalen.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="82"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
-        <translation type="unfinished">Fout: Kan geen swscale context krijgen!</translation>
+        <translation>Fout: Kan geen swscale context krijgen!</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="113"/>
         <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
         <comment>Don&apos;t translate &apos;fallback&apos;</comment>
-        <translation type="unfinished">Waarschuwing: Geheugen is niet goed uitgelijnd voor SSE, de fallback converter wordt gebruikt in de plaats. Dit is geen probleem, maar performantie zal slechter zijn.</translation>
-    </message>
-    <message>
-        <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
-        <comment>don&apos;t translate &apos;fallback&apos;</comment>
-        <translation type="obsolete">Waarschuwing: Geheugen is niet goed uitgelijnd voor SSE, de fallback converter wordt gebruikt in de plaats. Dit is geen probleem, maar performantie zal slechter zijn.</translation>
-    </message>
-    <message>
-        <source>Using swscale for scaling.</source>
-        <comment>don&apos;t translate &apos;swscale&apos;</comment>
-        <translation type="obsolete">Gebruik swscale voor schalen.</translation>
-    </message>
-    <message>
-        <source>Error: Can&apos;t get swscale context!</source>
-        <comment>don&apos;t translate &apos;swscale&apos;</comment>
-        <translation type="obsolete">Fout: Kan geen swscale context krijgen!</translation>
+        <translation>Waarschuwing: Geheugen is niet goed uitgelijnd voor SSE, de fallback converter wordt gebruikt in de plaats. Dit is geen probleem, maar performantie zal slechter zijn.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="89"/>
@@ -799,37 +1053,22 @@ En als je enkel je eigen stem opneemt (d.w.z. geen muziek), dan zal de kwaliteit
         <translation>Waarschuwing: Samplefrequentie %1 wordt niet ondersteund, %2 wordt gebruikt in de plaats. Dit kan een probleem zijn als het verschil groot is.</translation>
     </message>
     <message>
-        <source>Warning: An overrun has occurred, some samples were lost.</source>
-        <comment>don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="obsolete">Waarschuwing: Er was een overrun, een aantal samples gingen verloren.</translation>
-    </message>
-    <message>
-        <source>Error: Can&apos;t recover device after overrun!</source>
-        <comment>don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="obsolete">Fout: Kan apparaat niet herstellen na overrun!</translation>
-    </message>
-    <message>
-        <source>Error: Can&apos;t start PCM device after overrun!</source>
-        <comment>don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="obsolete">Fout: Kan het PCM apparaat niet starten na overrun!</translation>
-    </message>
-    <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="32"/>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Waarschuwing: Er was een overrun, een aantal samples gingen verloren.</translation>
+        <translation>Waarschuwing: Er was een overrun, een aantal samples gingen verloren.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="34"/>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Fout: Kan apparaat niet herstellen na overrun!</translation>
+        <translation>Fout: Kan apparaat niet herstellen na overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="38"/>
         <source>Error: Can&apos;t start PCM device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Fout: Kan het PCM apparaat niet starten na overrun!</translation>
+        <translation>Fout: Kan het PCM apparaat niet starten na overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="66"/>
@@ -905,7 +1144,7 @@ En als je enkel je eigen stem opneemt (d.w.z. geen muziek), dan zal de kwaliteit
         <location filename="../AV/Input/PulseAudioInput.cpp" line="391"/>
         <location filename="../AV/Input/X11Input.cpp" line="427"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
-        <translation>Fout: Exceptie &apos;%1&apos; in input thread.</translation>
+        <translation>Exceptie &apos;%1&apos; in input thread.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="262"/>
@@ -928,447 +1167,487 @@ En als je enkel je eigen stem opneemt (d.w.z. geen muziek), dan zal de kwaliteit
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="134"/>
         <source>Error: Image doesn&apos;t fit in memory!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="102"/>
-        <source>Error: Can&apos;t get main shared memory!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="107"/>
-        <source>Error: Can&apos;t attach to main shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: De afbeelding past niet in het geheugen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="117"/>
         <source>Error: Can&apos;t get frame shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen frame gedeeld geheugen krijgen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="122"/>
         <source>Error: Can&apos;t attach to frame shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan niet vastmaken aan frame gedeeld geheugen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="149"/>
         <source>Full command</source>
-        <translation type="unfinished"></translation>
+        <translation>Volledig commando</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="157"/>
         <source>Error: Can&apos;t run command!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan commando niet uitvoeren!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="35"/>
         <source>Error: pa_mainloop_prepare failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_prepare&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: pa_mainloop_prepare mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="39"/>
         <source>Error: pa_mainloop_poll failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_poll&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: pa_mainloop_poll mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="43"/>
         <source>Error: pa_mainloop_dispatch failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_dispatch&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: pa_mainloop_dispatch mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="53"/>
         <source>Error: Could not create main loop!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen hoofdlus maken!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="60"/>
         <source>Error: Could not create context!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen context maken!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="64"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA backend instead.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan niet verbinden! Reden: %1
+Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-backend te gebruiken in de plaats.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="77"/>
         <source>Error: Connection attempt failed! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Verbindingspoging mislukt! Reden: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="114"/>
         <source>Error: Could not create stream! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen stream maken! Reden: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="121"/>
         <source>Error: Could not connect stream! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan stream niet verbinden! Reden: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="132"/>
         <source>Error: Stream connection attempt failed! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Stream verbindingspoging mislukt! Reden: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="244"/>
         <source>Error: Could not get names of sources! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen namen van bronnen krijgen! Reden: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="312"/>
         <source>Error: pa_stream_peek failed!</source>
         <comment>Don&apos;t translate &apos;pa_stream_peek&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: pa_stream_peek mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="375"/>
         <source>Warning: Audio source was suspended. The current segment will be stopped until the source is resumed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: De audiobron werd gestopt. Het huidige segment zal gestopt worden totdat de bron herstart.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="380"/>
         <source>Warning: Stream was moved to a different source.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Stream werd verplaatst naar een andere bron.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="74"/>
         <source>Error: Unsupported X11 image pixel format!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/X11Input.cpp" line="185"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="57"/>
-        <source>Error: Width or height is zero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/X11Input.cpp" line="189"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="61"/>
-        <source>Error: Width or height is too large, the maximum width and height is 10000.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: X11-afbeeldingspixelformaat wordt niet ondersteund!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="226"/>
         <source>Error: Can&apos;t open X display!</source>
         <comment>Don&apos;t translate &apos;display&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan X display niet openen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="235"/>
         <source>Using X11 shared memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik X11 gedeeld geheugen.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="238"/>
         <source>Error: Can&apos;t create shared image!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen gedeelde afbeelding maken!</translation>
     </message>
     <message>
+        <location filename="../AV/Input/GLInjectLauncher.cpp" line="102"/>
         <location filename="../AV/Input/X11Input.cpp" line="243"/>
         <source>Error: Can&apos;t get shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen gedeeld geheugen krijgen!</translation>
     </message>
     <message>
+        <location filename="../AV/Input/GLInjectLauncher.cpp" line="107"/>
         <location filename="../AV/Input/X11Input.cpp" line="248"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan niet vastmaken aan gedeeld geheugen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="254"/>
         <source>Not using X11 shared memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik geen X11 gedeeld geheugen.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="185"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="57"/>
+        <source>Error: Width or height is zero!</source>
+        <translation>Fout: Breedte of hoogte is nul!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="189"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="61"/>
+        <source>Error: Width or height is too large, the maximum width and height is %1!</source>
+        <translation>Fout: Breedte of hoogte is te groot, de maximum breedte en hoogte is %1!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="262"/>
         <source>Warning: XFixes is not supported by server, the cursor has been hidden.</source>
-        <translation type="unfinished"></translation>
+        <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
+        <translation>Waarschuwing: XFixes wordt niet ondersteund door de server, de cursor is verborgen.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="317"/>
         <source>Error: Invalid screen bounding box!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Ongeldige schermrechthoek!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="373"/>
         <source>Error: Can&apos;t attach server to shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan server niet vastmaken aan gedeeld geheugen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="379"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen afbeelding krijgen (met gedeeld geheugen)!
+    Meestal betekent dit dat het opgenomen gebied niet volledig binnen het scherm is. Of heb je de schermresolutie veranderd?</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="390"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen afbeelding krijgen (zonder gedeeld geheugen)!
+    Meestal betekent dit dat het opgenomen gebied niet volledig binnen het scherm is. Of heb je de schermresolutie veranderd?</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="45"/>
         <source>Error: Sample rate it zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Samplefrequentie is nul.</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="126"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Encoder vereist een sampleformaat dat niet ondersteund wordt!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="149"/>
         <location filename="../AV/Output/AudioEncoder.cpp" line="170"/>
         <source>Error: Encoding of audio frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Encoderen van audioframe mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="62"/>
         <source>Stopping encoder thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop encoder thread ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="82"/>
         <source>Error: Can&apos;t find codec!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan de codec niet vinden!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="87"/>
         <source>Using codec %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik codec %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Deze codec wordt gezien als experimenteel door libav/ffmpeg.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="106"/>
         <source>Error: Can&apos;t open codec!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan codec niet openen!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="160"/>
         <source>Encoder thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Encoder thread gestart.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="189"/>
         <source>Flushing encoder ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Encoder afwerken ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="196"/>
         <source>Encoder thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Encoder thread gestopt.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="200"/>
         <source>Exception &apos;%1&apos; in encoder thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exceptie &apos;%1&apos; in encoder thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="203"/>
         <source>Unknown exception in encoder thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekende exceptie in encoder thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="72"/>
         <source>Stopping encoders ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Encoders stoppen ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="79"/>
-        <source>Waiting for muxer thread to stop by itself ...</source>
-        <translation type="unfinished"></translation>
+        <source>Waiting for muxer thread to stop ...</source>
+        <translation>Wacht tot muxer thread stopt ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="100"/>
         <source>Error: Can&apos;t write header!</source>
-        <translation type="unfinished"></translation>
+        <comment>Don&apos;t translate &apos;header&apos;</comment>
+        <translation>Fout: Kan header niet schrijven!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="111"/>
         <source>Finishing encoders ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Encoders afwerken ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="143"/>
         <source>Error: Can&apos;t create new stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen nieuwe stream maken!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="149"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan codec-context standaardwaarden niet krijgen!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="195"/>
         <source>Error: Can&apos;t find chosen output format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan gekozen outputformaat niet vinden!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="199"/>
         <source>Using format %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik formaat %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="204"/>
         <source>Error: Can&apos;t allocate format context!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen formaat-context maken!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="211"/>
         <source>Error: Can&apos;t open output file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan outputbestand niet openen!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="224"/>
         <source>Error: Can&apos;t write trailer, continuing anyway.</source>
-        <translation type="unfinished"></translation>
+        <comment>Don&apos;t translate &apos;trailer&apos;</comment>
+        <translation>Fout: Kan trailer niet schrijven, ga toch verder.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="257"/>
         <source>Muxer thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Muxer thread gestart.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="311"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen frame naar de muxer schrijven!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="339"/>
         <source>Muxer thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Muxer thread gestopt.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="343"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exceptie &apos;%1&apos; in muxer thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="346"/>
         <source>Unknown exception in muxer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekende exceptie in muxer thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="119"/>
         <source>Stopping synchronizer thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronisator thread stoppen ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="237"/>
         <source>Warning: Received video frame with non-monotonic timestamp.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Videobeeld met niet-monotone tijdswaarde ontvangen.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="269"/>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Video buffer overflow, sommige beelden zullen verloren gaan. De audio-input lijkt te traag te zijn.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="334"/>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Audiosamples met niet-monotone tijdswaarde ontvangen.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="345"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Audio buffer overflow, begin een nieuw segment om de audio synchroon met de video te houden (sommige video en/of audio kan verloren gaan). De video-input lijkt te traag te zijn.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="368"/>
         <source>Warning: Desynchronization is too high, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Desynchronisatie is te groot, begin een nieuw segment om de audio synchroon met de video te houden (sommige video en/of audio kan verloren gaan).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="377"/>
         <source> Warning: Audio input is more than 5% too slow!</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Audio-input is meer dan 5% te traag!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="381"/>
         <source>Warning: Audio input is more than 5% too fast!</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Audio-input is meer dan 5% te snel!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="411"/>
         <source>Warning: Received hole in audio stream, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Gat in de audiostream ontvangen, begin een nieuw segment om de audio synchroon met de video te houden (sommige video en/of audio kan verloren gaan).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="697"/>
         <source>Synchronizer thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronisator thread gestart.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="719"/>
         <source>Synchronizer thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronisator thread gestopt.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="723"/>
         <source>Exception &apos;%1&apos; in synchronizer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exceptie &apos;%1&apos; in synchronisator thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="726"/>
         <source>Unknown exception in synchronizer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekende exceptie in synchronisator thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="65"/>
-        <source>Error: Width or height is not an even number.</source>
-        <translation type="unfinished"></translation>
+        <source>Error: Width or height is not an even number!</source>
+        <translation>Fout: Breedte of hoogte is geen even getal!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="69"/>
-        <source>Error: Frame rate it zero.</source>
-        <translation type="unfinished"></translation>
+        <source>Error: Frame rate it zero!</source>
+        <translation>Fout: Beelden per seconde is nul!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="202"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="230"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="225"/>
         <source>Error: Encoding of video frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Encoderen van videobeeld mislukt!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="212"/>
-        <source>Error: Keyframe flag was not set!</source>
-        <translation type="unfinished"></translation>
+        <location filename="../Main.cpp" line="92"/>
+        <location filename="../Main.cpp" line="104"/>
+        <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
+        <translation>Fout: Command-line optie &apos;%1&apos; neemt geen waarde aan!</translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="109"/>
+        <source>Error: Unknown command-line option &apos;%1&apos;!</source>
+        <translation>Fout: Onbekende command-line optie &apos;%1&apos;!</translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="116"/>
+        <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
+        <translation>Fout: Onbekend command-line argument &apos;%1&apos;!</translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="141"/>
+        <source>SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?
+
+You can also change this option manually in the NVIDIA control panel.</source>
+        <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
+        <translation>SimpleScreenRecorder heeft gedetecteerd dat je de propriëtaire NVIDIA-driver gebruikt met flipping ingeschakeld. Het is bekend dat dit storingen veroorzaakt tijdens de opname. Het is aangeraden om flipping uit te schakelen. Wil je dat ik dit voor je doe?
+
+Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="146"/>
+        <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
+        <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
+        <translation>Ik kon flipping niet uitschakelen om een of andere reden - sorry! Probeer om het uit te schakelen in het NVIDIA-controlepaneel.</translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="152"/>
+        <source>SSR started</source>
+        <translation>SSR gestart</translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="160"/>
+        <source>SSR stopped</source>
+        <translation>SSR gestopt</translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="168"/>
+        <source>Error: Can&apos;t create .ssr directory!</source>
+        <translation>Fout: Kan geen .ssr-map maken!</translation>
     </message>
 </context>
 <context>
     <name>SyncDiagram</name>
     <message>
-        <location filename="../AV/Output/SyncDiagram.cpp" line="49"/>
-        <source>Sync Diagram</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="187"/>
         <source>Video in</source>
-        <translation type="unfinished"></translation>
+        <translation>Video in</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="188"/>
         <source>Audio in</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio in</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="189"/>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>Video uit</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="190"/>
         <source>Audio out</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio uit</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/SyncDiagram.cpp" line="49"/>
+        <source>Synchronization Diagram</source>
+        <translation>Synchronisatie-diagram</translation>
     </message>
 </context>
 </TS>

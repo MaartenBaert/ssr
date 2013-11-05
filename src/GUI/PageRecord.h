@@ -52,7 +52,7 @@ private:
 private:
 	MainWindow *m_main_window;
 
-	bool m_page_started, m_capturing, m_recording, m_previewing;
+	bool m_page_started, m_input_started, m_output_started, m_previewing;
 	bool m_recorded_something;
 
 	PageInput::enum_video_area m_video_area;
@@ -126,15 +126,15 @@ public:
 	void LoadSettings(QSettings* settings);
 	void SaveSettings(QSettings* settings);
 
-	void PageStart();
-	void PageStop(bool save);
-	void RecordStart();
-	void RecordStop(bool final);
-	void CaptureStart();
-	void CaptureStop();
+	void StartPage();
+	void StopPage(bool save);
+	void StartOutput();
+	void StopOutput(bool final);
+	void StartInput();
+	void StopInput();
 
 private:
-	void UpdateCapture();
+	void UpdateInput();
 	void UpdateSysTray();
 	void UpdateRecordPauseButton();
 	void UpdatePreview();

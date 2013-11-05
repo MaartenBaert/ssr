@@ -76,7 +76,7 @@ Muxer::~Muxer() {
 
 		// wait for the thread to stop
 		if(m_thread.joinable()) {
-			Logger::LogInfo("[Muxer::~Muxer] " + QObject::tr("Waiting for muxer thread to stop by itself ..."));
+			Logger::LogInfo("[Muxer::~Muxer] " + QObject::tr("Waiting for muxer thread to stop ..."));
 			m_thread.join();
 		}
 
@@ -97,7 +97,7 @@ void Muxer::Start() {
 
 	// write header
 	if(avformat_write_header(m_format_context, NULL) != 0) {
-		Logger::LogError("[Muxer::Start] " + QObject::tr("Error: Can't write header!"));
+		Logger::LogError("[Muxer::Start] " + QObject::tr("Error: Can't write header!", "Don't translate 'header'"));
 		throw LibavException();
 	}
 
@@ -221,7 +221,7 @@ void Muxer::Free() {
 		if(m_started) {
 			if(av_write_trailer(m_format_context) != 0) {
 				// we can't throw exceptions here because this is called from the destructor
-				Logger::LogError("[Muxer::Free] " + QObject::tr("Error: Can't write trailer, continuing anyway."));
+				Logger::LogError("[Muxer::Free] " + QObject::tr("Error: Can't write trailer, continuing anyway.", "Don't translate 'trailer'"));
 			}
 			m_started = false;
 		}

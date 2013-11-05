@@ -33,18 +33,18 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 	QLabel *label_logo = new QLabel(this);
 	label_logo->setPixmap(QPixmap(":/img/header.png"));
 	QLabel *label_welcome = new QLabel(this);
-	label_welcome->setText("<p>Welcome to SimpleScreenRecorder!</p>\n\n"
-						   "<p>Despite the name, this program actually has a lot of options. Don't worry though, there are really just two things that you "
-						   "need to know. One, the default settings are usually fine. If you don't know what something does, just use the default. "
-						   "Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.</p>\n\n"
-						   "<p>For more information:<br>\n"
-						   "<a href=\"http://www.maartenbaert.be/simplescreenrecorder/\">http://www.maartenbaert.be/simplescreenrecorder/</a></p>");
+	label_welcome->setText(tr("<p>Welcome to SimpleScreenRecorder!</p>\n\n"
+							  "<p>Despite the name, this program actually has a lot of options. Don't worry though, there are really just two things that you "
+							  "need to know. One, the default settings are usually fine. If you don't know what something does, just use the default. "
+							  "Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.</p>\n\n"
+							  "<p>For more information:<br>\n"
+							  "%1</p>").arg("<a href=\"http://www.maartenbaert.be/simplescreenrecorder/\">http://www.maartenbaert.be/simplescreenrecorder/</a>"));
 	label_welcome->setWordWrap(true);
 	label_welcome->setTextFormat(Qt::RichText);
 	label_welcome->setTextInteractionFlags(Qt::TextBrowserInteraction);
 	label_welcome->setOpenExternalLinks(true);
-	QPushButton *button_about = new QPushButton("About SimpleScreenRecorder", this);
-	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), "Continue", this);
+	QPushButton *button_about = new QPushButton(tr("About SimpleScreenRecorder"), this);
+	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), tr("Continue"), this);
 
 	connect(button_about, SIGNAL(clicked()), this, SLOT(AboutDialog()));
 	connect(button_continue, SIGNAL(clicked()), m_main_window, SLOT(GoPageInput()));
@@ -77,18 +77,21 @@ void PageWelcome::AboutDialog() {
 DialogAbout::DialogAbout(PageWelcome* parent)
 	: QDialog(parent) {
 
-	setWindowTitle("About SimpleScreenRecorder");
+	setWindowTitle(tr("About SimpleScreenRecorder"));
 
 	QString html_about;
 	{
 		QFile file(":/about.htm");
-		if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-			html_about = "Error: Can't load about dialog text.";
-		} else {
+		if(file.open(QIODevice::ReadOnly | QIODevice::Text))
 			html_about = file.readAll();
-		}
 	}
 
+	html_about.replace("%MOREINFO%", tr("For more information:"));
+	html_about.replace("%SOURCECODE%", tr("The source code of this program can be found at:"));
+	html_about.replace("%USES%", tr("This program uses:"));
+	html_about.replace("%USES_QT4%", tr("%1 for the graphical user interface").arg("<a href=\"https://qt-project.org/\">Qt 4</a>"));
+	html_about.replace("%USES_LIBAV_FFMPEG%", tr("%1 or %2 (depending on your distribution) for video/audio encoding").arg("<a href=\"http://libav.org/\">libav</a>").arg("<a href=\"http://ffmpeg.org/\">ffmpeg</a>"));
+	html_about.replace("%USES_ELFHACKS%", tr("%1 for hooking system functions for OpenGL recording").arg("<a href=\"https://github.com/nullkey/elfhacks\">elfhacks</a>"));
 	html_about.replace("%VERSION%", SSR_VERSION);
 	html_about.replace("%VERSIONINFO%", GetVersionInfo().replace("\n", "<br>\n"));
 

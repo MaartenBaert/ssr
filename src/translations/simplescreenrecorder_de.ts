@@ -2,6 +2,44 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de_DE">
 <context>
+    <name>DialogAbout</name>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="80"/>
+        <source>About SimpleScreenRecorder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="89"/>
+        <source>For more information:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="90"/>
+        <source>The source code of this program can be found at:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="91"/>
+        <source>This program uses:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="92"/>
+        <source>%1 for the graphical user interface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="93"/>
+        <source>%1 or %2 (depending on your distribution) for video/audio encoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="94"/>
+        <source>%1 for hooking system functions for OpenGL recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DialogGLInject</name>
     <message>
         <location filename="../GUI/PageInput.cpp" line="780"/>
@@ -61,6 +99,11 @@ This even applies to users that are logged in remotely (ssh). You should only en
 The size of the shared memory can&apos;t be changed anymore once the program has been started, so if the program you
 are trying to record is too large, recording won&apos;t work. 2 megapixels should be enough in almost all cases. Be careful,
 high values will use a lot of memory!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageInput.cpp" line="815"/>
+        <source>Capture front buffer instead of back buffer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -503,12 +546,6 @@ If you have no idea where to start, try 5000 and change it if needed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="246"/>
-        <source>The encoding speed. A higher value uses *less* CPU-time. (I didn&apos;t choose the name, this is the name
-used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../GUI/PageOutput.cpp" line="225"/>
         <source>This setting changes the video quality. A lower value means a higher quality.
 The allowed range is 0-51 (0 means lossless, the default is 23).</source>
@@ -518,6 +555,12 @@ The allowed range is 0-51 (0 means lossless, the default is 23).</source>
         <location filename="../GUI/PageOutput.cpp" line="236"/>
         <source>The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),
 but results in larger files. The quality shouldn&apos;t be affected too much.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="246"/>
+        <source>The encoding speed. A higher value uses *less* CPU time. (I didn&apos;t choose the name, this is the name
+used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -607,6 +650,276 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageOutput.cpp" line="643"/>
         <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PageRecord</name>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="123"/>
+        <source>Recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="127"/>
+        <source>Enable recording hotkey</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="128"/>
+        <source>Hotkey:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="129"/>
+        <source>Ctrl +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="130"/>
+        <source>Shift +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="131"/>
+        <source>Alt +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="132"/>
+        <source>Super +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="168"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="170"/>
+        <source>Total time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="172"/>
+        <source>FPS in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="174"/>
+        <source>FPS out:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="176"/>
+        <source>Size in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="178"/>
+        <source>Size out:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="180"/>
+        <source>File name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="183"/>
+        <source>File size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="185"/>
+        <source>Bit rate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="208"/>
+        <source>Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="212"/>
+        <source>Preview frame rate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="216"/>
+        <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="265"/>
+        <source>Log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="280"/>
+        <location filename="../GUI/PageRecord.cpp" line="288"/>
+        <source>Cancel recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="281"/>
+        <location filename="../GUI/PageRecord.cpp" line="287"/>
+        <source>Save recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="331"/>
+        <source>You have not saved the current recording yet, if you quit now it will be lost.
+Are you sure that you want to quit?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="563"/>
+        <source>Starting output ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="611"/>
+        <source>Started output.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="630"/>
+        <source>Stopping output ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="648"/>
+        <source>Stopped output.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="670"/>
+        <source>Starting input ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="693"/>
+        <source>Started input.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="715"/>
+        <source>Stopping input ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="728"/>
+        <source>Stopped input.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="480"/>
+        <source>Starting page ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="134"/>
+        <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
+The program that you are recording will not receive the key press.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="488"/>
+        <source>Error: Something went wrong during GLInject initialization.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="493"/>
+        <source>Started page.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="521"/>
+        <source>Stopping page ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="542"/>
+        <source>Stopped page.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="570"/>
+        <source>Error: Could not get the size of the OpenGL application because GLInject has not been started.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="575"/>
+        <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="619"/>
+        <location filename="../GUI/PageRecord.cpp" line="698"/>
+        <source>Error: Something went wrong during initialization.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="675"/>
+        <source>Error: Could not create a GLInject input because GLInject has not been started.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="785"/>
+        <location filename="../GUI/PageRecord.cpp" line="788"/>
+        <source>Pause recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="790"/>
+        <location filename="../GUI/PageRecord.cpp" line="793"/>
+        <source>Start recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="801"/>
+        <source>Stop preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="804"/>
+        <source>Start preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="863"/>
+        <source>Are you sure that you want to cancel this recording?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="876"/>
+        <source>You haven&apos;t recorded anything, there is nothing to save.
+
+The start button is at the top ;).</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PageWelcome</name>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="36"/>
+        <source>&lt;p&gt;Welcome to SimpleScreenRecorder!&lt;/p&gt;
+
+&lt;p&gt;Despite the name, this program actually has a lot of options. Don&apos;t worry though, there are really just two things that you need to know. One, the default settings are usually fine. If you don&apos;t know what something does, just use the default. Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.&lt;/p&gt;
+
+&lt;p&gt;For more information:&lt;br&gt;
+%1&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="46"/>
+        <source>About SimpleScreenRecorder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageWelcome.cpp" line="47"/>
+        <source>Continue</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -798,16 +1111,6 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="102"/>
-        <source>Error: Can&apos;t get main shared memory!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="107"/>
-        <source>Error: Can&apos;t attach to main shared memory!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="117"/>
         <source>Error: Can&apos;t get frame shared memory!</source>
         <translation type="unfinished"></translation>
@@ -908,18 +1211,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="185"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="57"/>
-        <source>Error: Width or height is zero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/X11Input.cpp" line="189"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="61"/>
-        <source>Error: Width or height is too large, the maximum width and height is 10000.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../AV/Input/X11Input.cpp" line="226"/>
         <source>Error: Can&apos;t open X display!</source>
         <comment>Don&apos;t translate &apos;display&apos;</comment>
@@ -936,11 +1227,13 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../AV/Input/GLInjectLauncher.cpp" line="102"/>
         <location filename="../AV/Input/X11Input.cpp" line="243"/>
         <source>Error: Can&apos;t get shared memory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../AV/Input/GLInjectLauncher.cpp" line="107"/>
         <location filename="../AV/Input/X11Input.cpp" line="248"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
         <translation type="unfinished"></translation>
@@ -951,8 +1244,21 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../AV/Input/X11Input.cpp" line="185"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="57"/>
+        <source>Error: Width or height is zero!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="189"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="61"/>
+        <source>Error: Width or height is too large, the maximum width and height is %1!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../AV/Input/X11Input.cpp" line="262"/>
         <source>Warning: XFixes is not supported by server, the cursor has been hidden.</source>
+        <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1050,12 +1356,13 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="79"/>
-        <source>Waiting for muxer thread to stop by itself ...</source>
+        <source>Waiting for muxer thread to stop ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="100"/>
         <source>Error: Can&apos;t write header!</source>
+        <comment>Don&apos;t translate &apos;header&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1096,6 +1403,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="224"/>
         <source>Error: Can&apos;t write trailer, continuing anyway.</source>
+        <comment>Don&apos;t translate &apos;trailer&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1190,33 +1498,68 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="65"/>
-        <source>Error: Width or height is not an even number.</source>
+        <source>Error: Width or height is not an even number!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="69"/>
-        <source>Error: Frame rate it zero.</source>
+        <source>Error: Frame rate it zero!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="202"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="230"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="225"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="212"/>
-        <source>Error: Keyframe flag was not set!</source>
+        <location filename="../Main.cpp" line="92"/>
+        <location filename="../Main.cpp" line="104"/>
+        <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="109"/>
+        <source>Error: Unknown command-line option &apos;%1&apos;!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="116"/>
+        <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="141"/>
+        <source>SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?
+
+You can also change this option manually in the NVIDIA control panel.</source>
+        <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="146"/>
+        <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
+        <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="152"/>
+        <source>SSR started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="160"/>
+        <source>SSR stopped</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Main.cpp" line="168"/>
+        <source>Error: Can&apos;t create .ssr directory!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SyncDiagram</name>
-    <message>
-        <location filename="../AV/Output/SyncDiagram.cpp" line="49"/>
-        <source>Sync Diagram</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="187"/>
         <source>Video in</source>
@@ -1235,6 +1578,11 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="190"/>
         <source>Audio out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/SyncDiagram.cpp" line="49"/>
+        <source>Synchronization Diagram</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

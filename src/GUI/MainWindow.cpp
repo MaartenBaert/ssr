@@ -98,7 +98,7 @@ void MainWindow::GoPageOutput() {
 }
 void MainWindow::GoPageRecord() {
 	m_stacked_layout->setCurrentWidget(m_page_record);
-	m_page_record->PageStart();
+	m_page_record->StartPage();
 }
 void MainWindow::GoPageDone() {
 	m_stacked_layout->setCurrentWidget(m_page_done);

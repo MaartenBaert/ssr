@@ -243,7 +243,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		m_combobox_vp8_cpu_used->addItem("2");
 		m_combobox_vp8_cpu_used->addItem("1");
 		m_combobox_vp8_cpu_used->addItem("0 (" + tr("slowest") + ")");
-		m_combobox_vp8_cpu_used->setToolTip(tr("The encoding speed. A higher value uses *less* CPU-time. (I didn't choose the name, this is the name\n"
+		m_combobox_vp8_cpu_used->setToolTip(tr("The encoding speed. A higher value uses *less* CPU time. (I didn't choose the name, this is the name\n"
 											   "used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too."));
 		m_label_video_options = new QLabel(tr("Custom options:"), groupbox_video);
 		m_lineedit_video_options = new QLineEdit(groupbox_video);
