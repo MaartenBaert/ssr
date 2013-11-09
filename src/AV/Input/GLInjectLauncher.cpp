@@ -27,9 +27,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 const unsigned int GLInjectLauncher::CBUFFER_SIZE = 5;
 
-GLInjectLauncher::GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps) {
+GLInjectLauncher::GLInjectLauncher(const QString& command, const QString& working_directory, bool run_command, bool relax_permissions, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps) {
 
 	m_command = command;
+	m_working_directory = working_directory;
 	m_run_command = run_command;
 	m_relax_permissions = relax_permissions;
 	m_max_bytes = max_bytes;
@@ -153,7 +154,7 @@ void GLInjectLauncher::Init() {
 		QStringList args;
 		args.push_back("-c");
 		args.push_back(full_command);
-		if(!QProcess::startDetached("/bin/sh", args, QDir::homePath())) {
+		if(!QProcess::startDetached("/bin/sh", args, m_working_directory)) {
 			Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't run command!"));
 			throw GLInjectException();
 		}

@@ -309,6 +309,7 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetPulseAudioSource(FindPulseAudioSource(settings->value("input/audio_pulseaudio_source", QString()).toString()));
 #endif
 	SetGLInjectCommand(settings->value("input/glinject_command", "").toString());
+	SetGLInjectWorkingDirectory(settings->value("input/glinject_working_directory", "").toString());
 	SetGLInjectRunCommand(settings->value("input/glinject_run_command", true).toBool());
 	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
 	SetGLInjectMaxMegaPixels(settings->value("input/glinject_max_megapixels", 2).toUInt());
@@ -341,6 +342,7 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/audio_pulseaudio_source", GetPulseAudioSourceName());
 #endif
 	settings->setValue("input/glinject_command", GetGLInjectCommand());
+	settings->setValue("input/glinject_working_directory", GetGLInjectWorkingDirectory());
 	settings->setValue("input/glinject_run_command", GetGLInjectRunCommand());
 	settings->setValue("input/glinject_relax_permissions", GetGLInjectRelaxPermissions());
 	settings->setValue("input/glinject_max_megapixels", GetGLInjectMaxMegaPixels());
@@ -797,6 +799,10 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	m_lineedit_command = new QLineEdit(m_parent->GetGLInjectCommand(), this);
 	m_lineedit_command->setToolTip(tr("This command will be executed to start the program that should be recorded."));
 	m_lineedit_command->setMinimumWidth(300);
+	QLabel *label_working_directory = new QLabel(tr("Working directory:"), this);
+	m_lineedit_working_directory = new QLineEdit(m_parent->GetGLInjectWorkingDirectory(), this);
+	m_lineedit_working_directory->setToolTip(tr("The command will be executed in this directory. If you leave this empty, the working directory won't be changed."));
+	m_lineedit_working_directory->setMinimumWidth(300);
 	m_checkbox_run_command = new QCheckBox(tr("Start the OpenGL application automatically"), this);
 	m_checkbox_run_command->setToolTip(tr("If checked, the above command will be executed automatically (combined with some environment variables). If not checked,\n"
 										  "you have to start the OpenGL application yourself (the full command, including the required environment variables, is shown in the log)."));
@@ -831,10 +837,12 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(label_info);
 	{
-		QHBoxLayout *layout2 = new QHBoxLayout();
+		QGridLayout *layout2 = new QGridLayout();
 		layout->addLayout(layout2);
-		layout2->addWidget(label_command);
-		layout2->addWidget(m_lineedit_command);
+		layout2->addWidget(label_command, 0, 0);
+		layout2->addWidget(m_lineedit_command, 0, 1);
+		layout2->addWidget(label_working_directory, 1, 0);
+		layout2->addWidget(m_lineedit_working_directory, 1, 1);
 	}
 	layout->addWidget(m_checkbox_run_command);
 	layout->addWidget(m_checkbox_relax_permissions);
@@ -861,6 +869,7 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 
 void DialogGLInject::WriteBack() {
 	m_parent->SetGLInjectCommand(m_lineedit_command->text());
+	m_parent->SetGLInjectWorkingDirectory(m_lineedit_working_directory->text());
 	m_parent->SetGLInjectRunCommand(m_checkbox_run_command->isChecked());
 	m_parent->SetGLInjectRelaxPermissions(m_checkbox_relax_permissions->isChecked());
 	m_parent->SetGLInjectMaxMegaPixels(m_lineedit_max_megapixels->text().toUInt());
