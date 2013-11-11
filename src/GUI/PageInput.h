@@ -89,7 +89,7 @@ private:
 	std::vector<PulseAudioInput::Source> m_pulseaudio_sources;
 #endif
 
-	QString m_glinject_command;
+	QString m_glinject_command, m_glinject_working_directory;
 	bool m_glinject_run_command, m_glinject_relax_permissions;
 	unsigned int m_glinject_max_megapixels;
 	bool m_glinject_capture_front, m_glinject_limit_fps;
@@ -152,6 +152,7 @@ public:
 	inline unsigned int GetPulseAudioSource() { return clamp(m_combobox_pulseaudio_source->currentIndex(), 0, (int) m_pulseaudio_sources.size() - 1); }
 #endif
 	inline QString GetGLInjectCommand() { return m_glinject_command; }
+	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
 	inline bool GetGLInjectRunCommand() { return m_glinject_run_command; }
 	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
 	inline unsigned int GetGLInjectMaxMegaPixels() { return m_glinject_max_megapixels; }
@@ -176,6 +177,7 @@ public:
 	inline void SetPulseAudioSource(unsigned int source) { m_combobox_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
 #endif
 	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
+	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
 	inline void SetGLInjectRunCommand(bool run_command) { m_glinject_run_command = run_command; }
 	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
 	inline void SetGLInjectMaxMegaPixels(unsigned int max_megapixels) { m_glinject_max_megapixels = clamp(max_megapixels, 1u, 100u); }
@@ -237,7 +239,7 @@ class DialogGLInject : public QDialog {
 private:
 	PageInput *m_parent;
 
-	QLineEdit *m_lineedit_command;
+	QLineEdit *m_lineedit_command, *m_lineedit_working_directory;
 	QCheckBox *m_checkbox_run_command, *m_checkbox_relax_permissions;
 	QLineEdit *m_lineedit_max_megapixels;
 	QCheckBox *m_checkbox_capture_front, *m_checkbox_limit_fps;

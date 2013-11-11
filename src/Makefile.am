@@ -188,6 +188,25 @@ moc_Logger.cpp: $(srcdir)/Logger.h
 clean-moc-extra:
 	rm -f moc_*.cpp
 
+########## Qt translation system ##########
+
+simplescreenrecorder_CPPFLAGS += -DSSR_TRANSLATIONS_PATH=\"$(pkgdatadir)\"
+
+translationsdir = $(pkgdatadir)/simplescreenrecorder/translations
+
+nodist_translations_DATA = \
+	simplescreenrecorder_de.qm \
+	simplescreenrecorder_nl.qm
+
+EXTRA_DIST += \
+	translations/simplescreenrecorder_de.ts \
+	translations/simplescreenrecorder_nl.ts
+
+simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
+	$(LRELEASE) "$<" -qm "$@"
+simplescreenrecorder_nl.qm: $(srcdir)/translations/simplescreenrecorder_nl.ts
+	$(LRELEASE) "$<" -qm "$@"
+
 .PHONY: clean-qrc-extra clean-moc-extra
 
 endif

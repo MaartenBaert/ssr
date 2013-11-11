@@ -186,7 +186,9 @@ LIBTOOL = @LIBTOOL@
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LIPO = @LIPO@
 LN_S = @LN_S@
+LRELEASE = @LRELEASE@
 LTLIBOBJS = @LTLIBOBJS@
+LUPDATE = @LUPDATE@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -272,8 +274,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@ENABLE_SSRPROGRAM_TRUE@desktopdir = $(prefix)/share/applications
-@ENABLE_SSRPROGRAM_TRUE@icon256dir = $(prefix)/share/icons/hicolor/256x256/apps
+@ENABLE_SSRPROGRAM_TRUE@desktopdir = $(pkgdatadir)/applications
+@ENABLE_SSRPROGRAM_TRUE@icon256dir = $(pkgdatadir)/icons/hicolor/256x256/apps
 @ENABLE_SSRPROGRAM_TRUE@dist_desktop_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder.desktop
 

@@ -46,7 +46,7 @@ SyncDiagram::SyncDiagram(size_t channels) {
 	m_font = QFont("Sans");
 	m_font.setPixelSize(12);
 
-	setWindowTitle("Sync Diagram - " + MainWindow::WINDOW_CAPTION);
+	setWindowTitle(tr("Synchronization Diagram") + " - " + MainWindow::WINDOW_CAPTION);
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	m_update_timer = new QTimer(this);

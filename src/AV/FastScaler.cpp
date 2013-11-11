@@ -35,13 +35,10 @@ FastScaler::FastScaler() {
 	CPUFeatures features;
 	DetectCPUFeatures(&features);
 	m_bgra_yuv420_use_ssse3 = (features.sse2 && features.ssse3);
-	if(m_bgra_yuv420_use_ssse3)
-		Logger::LogInfo("[FastScaler::FastScaler] BGRA to YUV420 converter: SSSE3");
-	else
-		Logger::LogInfo("[FastScaler::FastScaler] BGRA to YUV420 converter: Fallback");
+	Logger::LogInfo("[FastScaler::FastScaler] " + QObject::tr("BGRA to YUV420 converter") + ": " + ((m_bgra_yuv420_use_ssse3)? "SSSE3" : "Fallback"));
 	m_warn_alignment = true;
 #else
-	Logger::LogInfo("[FastScaler::FastScaler] X86-specific instructions are disabled.");
+	Logger::LogInfo("[FastScaler::FastScaler] " + QObject::tr("X86-specific instructions are disabled."));
 #endif
 
 	m_warn_swscale = true;
@@ -69,10 +66,11 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, const uint
 	if(m_warn_swscale) {
 		m_warn_swscale = false;
 		if(in_width == out_width && in_height == out_height) {
-			Logger::LogWarning("[FastScaler::Scale] Warning: Pixel format is not supported (" + QString::number(in_format) + " -> " + QString::number(out_format)
-							   + "), falling back to swscale. This is not a problem but performance will be worse.");
+			Logger::LogWarning("[FastScaler::Scale] " + QObject::tr("Warning: Pixel format is not supported (%1 -> %2), using swscale instead. "
+																	"This is not a problem, but performance will be worse.")
+							   .arg(in_format).arg(out_format));
 		} else {
-			Logger::LogInfo("[FastScaler::Scale] Using swscale for scaling.");
+			Logger::LogInfo("[FastScaler::Scale] " + QObject::tr("Using swscale for scaling.", "Don't translate 'swscale'"));
 		}
 	}
 
@@ -81,7 +79,7 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, const uint
 										 out_width, out_height, out_format,
 										 SWS_BILINEAR, NULL, NULL, NULL);
 	if(m_sws_context == NULL) {
-		Logger::LogError("[FastScaler::Scale] Error: Can't get swscale context!");
+		Logger::LogError("[FastScaler::Scale] " + QObject::tr("Error: Can't get swscale context!", "Don't translate 'swscale'"));
 		throw LibavException();
 	}
 	sws_scale(m_sws_context, in_data, in_stride, 0, in_height, out_data, out_stride);
@@ -112,7 +110,8 @@ void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, co
 		} else {
 			if(m_warn_alignment) {
 				m_warn_alignment = false;
-				Logger::LogWarning("[FastScaler::Scale] Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem but performance will be worse.");
+				Logger::LogWarning("[FastScaler::Scale] " + QObject::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
+																		"This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
 			}
 			Convert_BGRA_YUV420_Fallback(width, height, in_data, in_stride, out_data, out_stride);
 		}

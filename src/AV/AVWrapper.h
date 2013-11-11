@@ -91,3 +91,7 @@ inline int av_codec_is_encoder(const AVCodec* codec) {
 	return (codec != NULL && (codec->encode != NULL || codec->encode2 != NULL));
 }
 #endif
+
+#if !SSR_USE_AV_CODEC_ID
+#define AV_CODEC_ID_NONE CODEC_ID_NONE
+#endif

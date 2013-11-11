@@ -156,7 +156,9 @@ LIBTOOL = @LIBTOOL@
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LIPO = @LIPO@
 LN_S = @LN_S@
+LRELEASE = @LRELEASE@
 LTLIBOBJS = @LTLIBOBJS@
+LUPDATE = @LUPDATE@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -361,8 +363,8 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@ENABLE_SSRPROGRAM_FALSE@clean-local:
 @ENABLE_SSRPROGRAM_FALSE@distclean-local:
+@ENABLE_SSRPROGRAM_FALSE@clean-local:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am

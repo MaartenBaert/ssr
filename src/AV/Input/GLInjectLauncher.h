@@ -33,7 +33,7 @@ private:
 	};
 
 private:
-	QString m_command;
+	QString m_command, m_working_directory;
 	bool m_run_command, m_relax_permissions;
 	unsigned int m_max_bytes;
 	unsigned int m_target_fps;
@@ -46,7 +46,7 @@ private:
 	std::vector<ShmFrame> m_shm_frames;
 
 public:
-	GLInjectLauncher(const QString& command, bool run_command, bool relax_permissions, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps);
+	GLInjectLauncher(const QString& command, const QString& working_directory, bool run_command, bool relax_permissions, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps);
 	~GLInjectLauncher();
 
 	// Reads the current size of the OpenGL application. If the application hasn't been started yet, this will be 0x0.

@@ -1,4 +1,4 @@
-AC_INIT([simplescreenrecorder], [0.1.1], [maarten-baert@hotmail.com])
+AC_INIT([simplescreenrecorder], [0.1.2], [maarten-baert@hotmail.com])
 AC_CONFIG_SRCDIR([src/Main.cpp])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
@@ -35,6 +35,8 @@ AM_COND_IF([ENABLE_SSRPROGRAM], [
 		AC_PATH_PROGS([MOC], [moc-qt4 moc], [moc], [$QT_PATH/bin])
 		AC_PATH_PROGS([RCC], [rcc-qt4 rcc], [rcc], [$QT_PATH/bin])
 		AC_PATH_PROGS([UIC], [uic-qt4 uic], [uic], [$QT_PATH/bin])
+		AC_PATH_PROGS([LUPDATE], [lupdate-qt4 lupdate], [lupdate], [$QT_PATH/bin])
+		AC_PATH_PROGS([LRELEASE], [lrelease-qt4 lrelease], [lrelease], [$QT_PATH/bin])
 	], [
 		AC_MSG_ERROR([Qt 4 not found])
 	])

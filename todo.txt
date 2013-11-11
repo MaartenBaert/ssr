@@ -1,16 +1,17 @@
 Testing:
-- PulseAudio input
-- Systray icon.
 
 In progress:
 - JACK support.
+- Resampler.
 
 Todo:
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
 - Play start/stop sound (optional). [https://github.com/MaartenBaert/ssr/issues/26]
-- Command-line options for recording.
+- Command-line options for recording + skipping pages + systray.
 - Move SHM from GLFrameGrabber to GLInject.
-- X11Input should track resolution change.
+- Multiple audio inputs.
+- X11Input should track resolution changes.
+- Input + output profiles.
 - Show recorded area while recording.
 
 Wishlist:
@@ -25,6 +26,7 @@ Wishlist:
 - Timelapse recording, i.e. recording at a slow speed but playing it back faster (without sound obviously).
 - maybe rewrite YUVConverter in assembly instead of using GCC vector extensions
 - Multiple synchronization methods.
+- Multiple audio streams (output).
 
 Not sure yet:
 - Keep encoders completely inside the muxer.

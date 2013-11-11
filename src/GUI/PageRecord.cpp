@@ -117,25 +117,25 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_main_window = main_window;
 
 	m_page_started = false;
-	m_capturing = false;
-	m_recording = false;
+	m_input_started = false;
+	m_output_started = false;
 	m_previewing = false;
 
-	QGroupBox *group_recording = new QGroupBox("Recording", this);
+	QGroupBox *group_recording = new QGroupBox(tr("Recording"), this);
 	{
 		m_pushbutton_start_pause = new QPushButton(group_recording);
 
-		m_checkbox_hotkey_enable = new QCheckBox("Enable recording hotkey", group_recording);
-		QLabel *label_hotkey = new QLabel("Hotkey:", group_recording);
-		m_checkbox_hotkey_ctrl = new QCheckBox("Ctrl +", group_recording);
-		m_checkbox_hotkey_shift = new QCheckBox("Shift +", group_recording);
-		m_checkbox_hotkey_alt = new QCheckBox("Alt +", group_recording);
-		m_checkbox_hotkey_super = new QCheckBox("Super +", group_recording);
+		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), group_recording);
+		QLabel *label_hotkey = new QLabel(tr("Hotkey:"), group_recording);
+		m_checkbox_hotkey_ctrl = new QCheckBox(tr("Ctrl +"), group_recording);
+		m_checkbox_hotkey_shift = new QCheckBox(tr("Shift +"), group_recording);
+		m_checkbox_hotkey_alt = new QCheckBox(tr("Alt +"), group_recording);
+		m_checkbox_hotkey_super = new QCheckBox(tr("Super +"), group_recording);
 		m_combobox_hotkey_key = new QComboBox(group_recording);
-		m_combobox_hotkey_key->setToolTip("The key that you have to press (combined with the given modifiers) to start or pause recording. The program that you are\n"
-										  "recording will not receive the key press.\n\n"
-										  "Note: The choice of keys is currently rather limited, because capturing key presses session-wide is a bit harder than it looks. For\n"
-										  "example, applications are not allowed to capture the F1-F12 keys (on Ubuntu at least). The A-Z keys don't have this limitation apparently.");
+		m_combobox_hotkey_key->setToolTip(tr("The key that you have to press (combined with the given modifiers) to start or pause recording.\n"
+											 "The program that you are recording will not receive the key press."));
+		// Note: The choice of keys is currently rather limited, because capturing key presses session-wide is a bit harder than it looks.
+		// For example, applications are not allowed to capture the F1-F12 keys (on Ubuntu at least). The A-Z keys don't have this limitation apparently.
 		for(unsigned int i = 0; i < 26; ++i) {
 			m_combobox_hotkey_key->addItem(QString('A' + i));
 		}
@@ -166,24 +166,24 @@ PageRecord::PageRecord(MainWindow* main_window)
 	{
 		QSplitter *splitter_horizontal = new QSplitter(Qt::Horizontal, splitter_vertical);
 		{
-			QGroupBox *group_information = new QGroupBox("Information", splitter_horizontal);
+			QGroupBox *group_information = new QGroupBox(tr("Information"), splitter_horizontal);
 			{
-				QLabel *label_total_time = new QLabel("Total time:", group_information);
+				QLabel *label_total_time = new QLabel(tr("Total time:"), group_information);
 				m_label_info_total_time = new QLabel(group_information);
-				QLabel *label_frame_rate_in = new QLabel("FPS in:", group_information);
+				QLabel *label_frame_rate_in = new QLabel(tr("FPS in:"), group_information);
 				m_label_info_frame_rate_in = new QLabel(group_information);
-				QLabel *label_frame_rate_out = new QLabel("FPS out:", group_information);
+				QLabel *label_frame_rate_out = new QLabel(tr("FPS out:"), group_information);
 				m_label_info_frame_rate_out = new QLabel(group_information);
-				QLabel *label_size_in = new QLabel("Size in:", group_information);
+				QLabel *label_size_in = new QLabel(tr("Size in:"), group_information);
 				m_label_info_size_in = new QLabel(group_information);
-				QLabel *label_size_out = new QLabel("Size out:", group_information);
+				QLabel *label_size_out = new QLabel(tr("Size out:"), group_information);
 				m_label_info_size_out = new QLabel(group_information);
-				QLabel *label_file_name = new QLabel("File name:", group_information);
+				QLabel *label_file_name = new QLabel(tr("File name:"), group_information);
 				m_label_info_file_name = new ElidedLabel(QString(), Qt::ElideMiddle, group_information);
 				m_label_info_file_name->setMinimumWidth(100);
-				QLabel *label_file_size = new QLabel("File size:", group_information);
+				QLabel *label_file_size = new QLabel(tr("File size:"), group_information);
 				m_label_info_file_size = new QLabel(group_information);
-				QLabel *label_bit_rate = new QLabel("Bit rate:", group_information);
+				QLabel *label_bit_rate = new QLabel(tr("Bit rate:"), group_information);
 				m_label_info_bit_rate = new QLabel(group_information);
 
 				QGridLayout *layout = new QGridLayout(group_information);
@@ -206,15 +206,15 @@ PageRecord::PageRecord(MainWindow* main_window)
 				layout->setColumnStretch(1, 1);
 				layout->setRowStretch(8, 1);
 			}
-			QGroupBox *group_preview = new QGroupBox("Preview", splitter_horizontal);
+			QGroupBox *group_preview = new QGroupBox(tr("Preview"), splitter_horizontal);
 			{
 				m_preview_page1 = new QWidget(group_preview);
 				{
-					QLabel *label_preview_frame_rate = new QLabel("Preview frame rate:", m_preview_page1);
+					QLabel *label_preview_frame_rate = new QLabel(tr("Preview frame rate:"), m_preview_page1);
 					m_spinbox_preview_frame_rate = new QSpinBox(m_preview_page1);
 					m_spinbox_preview_frame_rate->setRange(1, 1000);
 					m_spinbox_preview_frame_rate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-					QLabel *label_preview_note = new QLabel("Note: Previewing requires extra CPU time (especially at high frame rates).", m_preview_page1);
+					QLabel *label_preview_note = new QLabel(tr("Note: Previewing requires extra CPU time (especially at high frame rates)."), m_preview_page1);
 					label_preview_note->setWordWrap(true);
 					label_preview_note->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 					label_preview_note->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding);
@@ -263,7 +263,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 			splitter_horizontal->setStretchFactor(0, 1);
 			splitter_horizontal->setStretchFactor(1, 3);
 		}
-		QGroupBox *group_log = new QGroupBox("Log", splitter_vertical);
+		QGroupBox *group_log = new QGroupBox(tr("Log"), splitter_vertical);
 		{
 			m_textedit_log = new QTextEditSmall(group_log);
 			m_textedit_log->setReadOnly(true);
@@ -278,15 +278,15 @@ PageRecord::PageRecord(MainWindow* main_window)
 		splitter_vertical->setStretchFactor(1, 1);
 	}
 
-	QPushButton *button_cancel = new QPushButton(QIcon::fromTheme("process-stop"), "Cancel recording", this);
-	QPushButton *button_save = new QPushButton(QIcon::fromTheme("document-save"), "Save recording", this);
+	QPushButton *button_cancel = new QPushButton(QIcon::fromTheme("process-stop"), tr("Cancel recording"), this);
+	QPushButton *button_save = new QPushButton(QIcon::fromTheme("document-save"), tr("Save recording"), this);
 
 	m_systray_icon = new QSystemTrayIcon(m_main_window);
 	{
 		QMenu *menu = new QMenu(m_main_window);
 		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
-		m_systray_action_save = menu->addAction("Save recording", this, SLOT(OnSave()));
-		m_systray_action_cancel = menu->addAction("Cancel recording", this, SLOT(OnCancel()));
+		m_systray_action_save = menu->addAction(tr("Save recording"), this, SLOT(OnSave()));
+		m_systray_action_cancel = menu->addAction(tr("Cancel recording"), this, SLOT(OnCancel()));
 		menu->addSeparator();
 		menu->addAction("Quit", m_main_window, SLOT(close()));
 		m_systray_icon->setContextMenu(menu);
@@ -322,15 +322,15 @@ PageRecord::PageRecord(MainWindow* main_window)
 }
 
 PageRecord::~PageRecord() {
-	PageStop(false);
+	StopPage(false);
 }
 
 bool PageRecord::ShouldBlockClose() {
 
 	if(m_output_manager != NULL) {
 		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION,
-								"You have not saved the current recording yet, if you quit now it will be lost.\n"
-								"Are you sure you want to quit?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+								tr("You have not saved the current recording yet, if you quit now it will be lost.\n"
+								   "Are you sure that you want to quit?"), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
 			return true;
 		}
 	}
@@ -360,13 +360,13 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	settings->setValue("record/preview_frame_rate", GetPreviewFrameRate());
 }
 
-void PageRecord::PageStart() {
+void PageRecord::StartPage() {
 
 	if(m_page_started)
 		return;
 
-	Q_ASSERT(!m_capturing);
-	Q_ASSERT(!m_recording);
+	Q_ASSERT(!m_input_started);
+	Q_ASSERT(!m_output_started);
 
 	// save the settings in case libav/ffmpeg decides to kill the process
 	m_main_window->SaveSettings();
@@ -409,6 +409,7 @@ void PageRecord::PageStart() {
 
 	// get the glinject settings
 	QString glinject_command = page_input->GetGLInjectCommand();
+	QString glinject_working_directory = page_input->GetGLInjectWorkingDirectory();
 	bool glinject_run_command = page_input->GetGLInjectRunCommand();
 	bool glinject_relax_permissions = page_input->GetGLInjectRelaxPermissions();
 	unsigned int glinject_megapixels = page_input->GetGLInjectMaxMegaPixels();
@@ -478,27 +479,27 @@ void PageRecord::PageStart() {
 	// hide the audio previewer if there is no audio
 	GroupVisible({m_label_mic_icon, m_audio_previewer}, m_audio_enabled);
 
-	Logger::LogInfo("[PageRecord::PageStart] Starting page ...");
+	Logger::LogInfo("[PageRecord::StartPage] " + tr("Starting page ..."));
 
 	// for OpenGL recording, allocate shared memory and start the program now
 	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 		try {
-			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_run_command, glinject_relax_permissions, glinject_megapixels * 4 * 1024 * 1024,
+			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_working_directory, glinject_run_command, glinject_relax_permissions, glinject_megapixels * 4 * 1024 * 1024,
 															m_video_frame_rate, m_video_record_cursor, glinject_capture_front, glinject_limit_fps));
 		} catch(...) {
-			Logger::LogError("[PageRecord::PageStart] Error: Something went wrong during GLInject initialization.");
+			Logger::LogError("[PageRecord::StartPage] " + tr("Error: Something went wrong during GLInject initialization."));
 			m_gl_inject_launcher.reset();
 		}
 	}
 
-	Logger::LogInfo("[PageRecord::PageStart] Started page.");
+	Logger::LogInfo("[PageRecord::StartPage] " + tr("Started page."));
 
 	m_page_started = true;
 	m_recorded_something = false;
 	UpdateSysTray();
 	OnUpdateHotkey();
 
-	UpdateCapture();
+	UpdateInput();
 
 	m_info_last_timestamp = hrt_time_micro();
 	m_info_last_frame_counter = 0;
@@ -511,15 +512,15 @@ void PageRecord::PageStart() {
 
 }
 
-void PageRecord::PageStop(bool save) {
+void PageRecord::StopPage(bool save) {
 
 	if(!m_page_started)
 		return;
 
-	RecordStop(true);
-	CaptureStop();
+	StopOutput(true);
+	StopInput();
 
-	Logger::LogInfo("[PageRecord::PageStop] Stopping page ...");
+	Logger::LogInfo("[PageRecord::StopPage] " + tr("Stopping page ..."));
 
 	if(m_output_manager != NULL) {
 
@@ -540,7 +541,7 @@ void PageRecord::PageStop(bool save) {
 	// This doesn't stop the program, and the memory is only actually freed when the recorded program stops too.
 	m_gl_inject_launcher.reset();
 
-	Logger::LogInfo("[PageRecord::PageStop] Stopped page.");
+	Logger::LogInfo("[PageRecord::StopPage] " + tr("Stopped page."));
 
 	m_page_started = false;
 	UpdateSysTray();
@@ -553,30 +554,30 @@ void PageRecord::PageStop(bool save) {
 
 }
 
-void PageRecord::RecordStart() {
+void PageRecord::StartOutput() {
 	Q_ASSERT(m_page_started);
 
-	if(m_recording)
+	if(m_output_started)
 		return;
 
 	try {
 
-		Logger::LogInfo("[PageRecord::RecordStart] Starting recording ...");
+		Logger::LogInfo("[PageRecord::StartOutput] " + tr("Starting output ..."));
 
 		if(m_output_manager == NULL) {
 
 			// for OpenGL recording, detect the application size
 			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT && !m_video_scaling) {
 				if(m_gl_inject_launcher == NULL) {
-					Logger::LogError("[PageRecord::RecordStart] Error: Could not get the size of the OpenGL application because GLInject has not been started.");
+					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application because GLInject has not been started."));
 					throw GLInjectException();
 				}
 				m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 				if(m_video_in_width == 0 && m_video_in_height == 0) {
-					Logger::LogError("[PageRecord::RecordStart] Error: Could not get the size of the OpenGL application. Either the "
-									  "application wasn't started correctly, or the application hasn't created an OpenGL window yet. If "
-									  "you want to start recording before starting the application, you have to enable scaling and enter "
-									  "the video size manually.");
+					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application. Either the "
+									 "application wasn't started correctly, or the application hasn't created an OpenGL window yet. If "
+									 "you want to start recording before starting the application, you have to enable scaling and enter "
+									 "the video size manually."));
 					throw GLInjectException();
 				}
 			}
@@ -609,28 +610,28 @@ void PageRecord::RecordStart() {
 
 		}
 
-		Logger::LogInfo("[PageRecord::RecordStart] Started recording.");
+		Logger::LogInfo("[PageRecord::StartOutput] " + tr("Started output."));
 
-		m_recording = true;
+		m_output_started = true;
 		m_recorded_something = true;
 		UpdateRecordPauseButton();
-		UpdateCapture();
+		UpdateInput();
 
 	} catch(...) {
-		Logger::LogError("[PageRecord::RecordStart] Error: Something went wrong during initialization.");
+		Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Something went wrong during initialization."));
 	}
 
 }
 
-void PageRecord::RecordStop(bool final) {
+void PageRecord::StopOutput(bool final) {
 	Q_ASSERT(m_page_started);
 
-	if(!m_recording)
+	if(!m_output_started)
 		return;
 
-	Logger::LogInfo("[PageRecord::RecordStop] Stopping recording ...");
+	Logger::LogInfo("[PageRecord::StopOutput] " + tr("Stopping output ..."));
 
-	// if final, then PageStop will stop the output (and delete the file if needed)
+	// if final, then StopPage will stop the output (and delete the file if needed)
 	if(m_separate_files && !final) {
 
 		// stop the output
@@ -646,17 +647,17 @@ void PageRecord::RecordStop(bool final) {
 
 	}
 
-	Logger::LogInfo("[PageRecord::RecordStart] Stopped recording.");
+	Logger::LogInfo("[PageRecord::StopOutput] " + tr("Stopped output."));
 
-	m_recording = false;
+	m_output_started = false;
 	UpdateRecordPauseButton();
-	UpdateCapture();
+	UpdateInput();
 
 }
 
-void PageRecord::CaptureStart() {
+void PageRecord::StartInput() {
 
-	if(m_capturing || !m_page_started)
+	if(m_input_started || !m_page_started)
 		return;
 
 	Q_ASSERT(m_x11_input == NULL);
@@ -669,12 +670,12 @@ void PageRecord::CaptureStart() {
 
 	try {
 
-		Logger::LogInfo("[PageRecord::CaptureStart] Starting capturing ...");
+		Logger::LogInfo("[PageRecord::StartInput] " + tr("Starting input ..."));
 
 		// start the video input
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 			if(m_gl_inject_launcher == NULL) {
-				Logger::LogError("[PageRecord::CaptureStart] Error: Could not create a GLInject input because GLInject has not been started.");
+				Logger::LogError("[PageRecord::StartInput] " + tr("Error: Could not create a GLInject input because GLInject has not been started."));
 				throw GLInjectException();
 			}
 			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get()));
@@ -694,12 +695,12 @@ void PageRecord::CaptureStart() {
 				m_jack_input.reset(new JACKInput(m_audio_sample_rate));
 		}
 
-		Logger::LogInfo("[PageRecord::CaptureStart] Started capturing.");
+		Logger::LogInfo("[PageRecord::StartInput] " + tr("Started input."));
 
-		m_capturing = true;
+		m_input_started = true;
 
 	} catch(...) {
-		Logger::LogError("[PageRecord::CaptureStart] Error: Something went wrong during initialization.");
+		Logger::LogError("[PageRecord::StartInput] " + tr("Error: Something went wrong during initialization."));
 		m_x11_input.reset();
 		m_gl_inject_input.reset();
 		m_alsa_input.reset();
@@ -712,12 +713,12 @@ void PageRecord::CaptureStart() {
 
 }
 
-void PageRecord::CaptureStop() {
+void PageRecord::StopInput() {
 
-	if(!m_capturing || !m_page_started)
+	if(!m_input_started || !m_page_started)
 		return;
 
-	Logger::LogInfo("[PageRecord::CaptureStop] Stopping capturing ...");
+	Logger::LogInfo("[PageRecord::StopInput] " + tr("Stopping input ..."));
 
 	if(m_video_area != PageInput::VIDEO_AREA_GLINJECT) {
 		m_info_last_frame_counter -= m_x11_input->GetFrameCounter();
@@ -731,18 +732,18 @@ void PageRecord::CaptureStop() {
 #endif
 	m_jack_input.reset();
 
-	Logger::LogInfo("[PageRecord::CaptureStop] Stopped capturing.");
+	Logger::LogInfo("[PageRecord::StopInput] " + tr("Stopped input."));
 
-	m_capturing = false;
+	m_input_started = false;
 
 }
 
-void PageRecord::UpdateCapture() {
+void PageRecord::UpdateInput() {
 
-	if(m_recording || m_previewing) {
-		CaptureStart();
+	if(m_output_started || m_previewing) {
+		StartInput();
 	} else {
-		CaptureStop();
+		StopInput();
 	}
 
 	// get sources
@@ -766,7 +767,7 @@ void PageRecord::UpdateCapture() {
 
 	// connect sinks
 	if(m_output_manager != NULL) {
-		if(m_recording) {
+		if(m_output_started) {
 			m_output_manager->GetSynchronizer()->ConnectVideoSource(video_source, PRIORITY_RECORD);
 			m_output_manager->GetSynchronizer()->ConnectAudioSource(audio_source, PRIORITY_RECORD);
 		} else {
@@ -789,16 +790,16 @@ void PageRecord::UpdateSysTray() {
 }
 
 void PageRecord::UpdateRecordPauseButton() {
-	if(m_recording) {
-		m_pushbutton_start_pause->setText("Pause recording");
+	if(m_output_started) {
+		m_pushbutton_start_pause->setText(tr("Pause recording"));
 		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-playback-pause"));
 		m_systray_icon->setIcon(g_icon_ssr_recording);
-		m_systray_action_start_pause->setText("Pause recording");
+		m_systray_action_start_pause->setText(tr("Pause recording"));
 	} else {
-		m_pushbutton_start_pause->setText("Start recording");
+		m_pushbutton_start_pause->setText(tr("Start recording"));
 		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-record"));
 		m_systray_icon->setIcon(g_icon_ssr);
-		m_systray_action_start_pause->setText("Start recording");
+		m_systray_action_start_pause->setText(tr("Start recording"));
 	}
 }
 
@@ -806,10 +807,10 @@ void PageRecord::UpdatePreview() {
 	if(m_previewing) {
 		m_video_previewer->SetFrameRate(GetPreviewFrameRate());
 		m_stacked_layout_preview->setCurrentWidget(m_preview_page2);
-		m_pushbutton_preview_start_stop->setText("Stop preview");
+		m_pushbutton_preview_start_stop->setText(tr("Stop preview"));
 	} else {
 		m_stacked_layout_preview->setCurrentWidget(m_preview_page1);
-		m_pushbutton_preview_start_stop->setText("Start preview");
+		m_pushbutton_preview_start_stop->setText(tr("Start preview"));
 	}
 }
 
@@ -847,10 +848,10 @@ void PageRecord::OnUpdateHotkey() {
 void PageRecord::OnRecordStartPause() {
 	if(!m_page_started)
 		return;
-	if(m_recording) {
-		RecordStop(false);
+	if(m_output_started) {
+		StopOutput(false);
 	} else {
-		RecordStart();
+		StartOutput();
 	}
 }
 
@@ -861,19 +862,19 @@ void PageRecord::OnPreviewStartStop() {
 	m_audio_previewer->Reset();
 	m_previewing = !m_previewing;
 	UpdatePreview();
-	UpdateCapture();
+	UpdateInput();
 }
 
 void PageRecord::OnCancel() {
 	if(!m_page_started)
 		return;
 	if(m_output_manager != NULL) {
-		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, "Are you sure you want to cancel this recording?",
+		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to cancel this recording?"),
 								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
 			return;
 		}
 	}
-	PageStop(false);
+	StopPage(false);
 	m_main_window->GoPageOutput();
 }
 
@@ -881,11 +882,11 @@ void PageRecord::OnSave() {
 	if(!m_page_started)
 		return;
 	if(!m_recorded_something) {
-		QMessageBox::information(this, MainWindow::WINDOW_CAPTION, "You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;).",
+		QMessageBox::information(this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;)."),
 								 QMessageBox::Ok);
 		return;
 	}
-	PageStop(true);
+	StopPage(true);
 	m_main_window->GoPageDone();
 }
 
@@ -907,7 +908,7 @@ void PageRecord::OnUpdateInformation() {
 			uint32_t frame_counter;
 			if(m_gl_inject_launcher != NULL) {
 				frame_counter = m_gl_inject_launcher->GetFrameCounter();
-			} else if(m_capturing) {
+			} else if(m_input_started) {
 				Q_ASSERT(m_x11_input != NULL);
 				frame_counter = m_x11_input->GetFrameCounter();
 			} else {
@@ -947,8 +948,8 @@ void PageRecord::OnUpdateInformation() {
 
 		if(!g_option_statsfile.isNull()) {
 			QString str = QString() +
-					"capturing\t" + ((m_capturing)? "1" : "0") + "\n"
-					"recording\t" + ((m_recording)? "1" : "0") + "\n"
+					"capturing\t" + ((m_input_started)? "1" : "0") + "\n"
+					"recording\t" + ((m_output_started)? "1" : "0") + "\n"
 					"total_time\t" + QString::number(total_time) + "\n"
 					"frame_rate_in\t" + QString::number(m_info_input_frame_rate, 'f', 8) + "\n"
 					"frame_rate_out\t" + QString::number(frame_rate, 'f', 8) + "\n"
