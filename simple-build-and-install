@@ -23,13 +23,16 @@ case "$( uname -m )" in
 esac
 echo "x86/x64 = $ENABLE_X86_ASM"
 
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig
+
 echo "Detecting ffmpeg/libav ..."
-if [ ! -f /usr/include/libavcodec/avcodec.h ]; then
-	echo "Error: libavcodec header not found, make sure that ffmpeg or libav is installed."
+if ! pkg-config --exists libavcodec; then
+	echo "Error: libavcodec development package not found, make sure ffmpeg or libav development packages are installed."
 	exit 1
 fi
-HAS_FFMPEG=$( grep -c "This file is part of FFmpeg." /usr/include/libavcodec/avcodec.h || true )
-HAS_LIBAV=$( grep -c "This file is part of Libav." /usr/include/libavcodec/avcodec.h || true )
+LIBAVCODEC_INCLUDE_DIR=`pkg-config --variable=includedir libavcodec`
+HAS_FFMPEG=$( grep -c "This file is part of FFmpeg." ${LIBAVCODEC_INCLUDE_DIR}/libavcodec/avcodec.h || true )
+HAS_LIBAV=$( grep -c "This file is part of Libav." ${LIBAVCODEC_INCLUDE_DIR}/libavcodec/avcodec.h || true )
 if [ $HAS_FFMPEG -gt 0 ]; then
 	if [ $HAS_LIBAV -gt 0 ]; then
 		echo "Detected ffmpeg AND libav, this should not happen."
@@ -55,12 +58,8 @@ export CFLAGS="-Wall -O2 -pipe"
 export CXXFLAGS="-Wall -O2 -pipe"
 export LDFLAGS=""
 
-if [ -d "/usr/include/ffmpeg" ]; then
-	export CPPFLAGS="$CPPFLAGS -I/usr/include/ffmpeg"
-fi
-if [ -d "/usr/lib/ffmpeg" ]; then
-	export LDFLAGS="$LDFLAGS -L/usr/lib/ffmpeg"
-fi
+export CPPFLAGS="$CPPFLAGS `pkg-config --cflags libavcodec`"
+export LDFLAGS="$LDFLAGS `pkg-config --libs libavcodec`"
 
 mkdir -p build
 cd build
@@ -71,12 +70,18 @@ echo "Compiling ..."
 make -j "$( grep -c "^processor" /proc/cpuinfo )"
 cd ..
 
+if [ -d "/usr/lib32" ]; then
+  LIB32DIR=/usr/lib32
+else
+  LIB32DIR=/usr/lib
+fi
+
 if [ x"$( uname -m )" = x"x86_64" ]; then
 	mkdir -p build32
 	cd build32
 	echo "Configuring 32-bit GLInject library ..."
-	CC="gcc -m32" CXX="g++ -m32" PKG_CONFIG_PATH="/usr/lib32/pkgconfig" \
-		../configure --prefix=/usr --libdir=/usr/lib32 --disable-ssrprogram $CONFIGURE_OPTIONS "$@"
+	CC="gcc -m32" CXX="g++ -m32" PKG_CONFIG_PATH="$LIB32DIR/pkgconfig" \
+		../configure --prefix=/usr --libdir=$LIB32DIR --disable-ssrprogram $CONFIGURE_OPTIONS "$@"
 	echo "Compiling 32-bit GLInject library ..."
 	make -j "$( grep -c "^processor" /proc/cpuinfo )"
 	cd ..
