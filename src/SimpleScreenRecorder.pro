@@ -44,7 +44,8 @@ SOURCES += \
 	GUI/VideoPreviewer.cpp \
 	Logger.cpp \
 	Main.cpp \
-	Version.cpp
+	Version.cpp \
+    Utils.cpp
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
@@ -81,7 +82,8 @@ HEADERS  += \
 	Logger.h \
 	Main.h \
 	MutexDataPair.h \
-	Version.h
+	Version.h \
+    Utils.h
 
 RESOURCES += \
 	resources.qrc

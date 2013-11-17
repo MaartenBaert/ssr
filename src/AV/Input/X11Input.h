@@ -37,6 +37,7 @@ private:
 	unsigned int m_x, m_y, m_width, m_height;
 	bool m_record_cursor, m_follow_cursor;
 
+    char *m_x11_display_name;
 	Display *m_x11_display;
 	int m_x11_screen;
 	Qt::HANDLE m_x11_root;
@@ -53,7 +54,7 @@ private:
 	std::atomic<uint32_t> m_frame_counter;
 
 public:
-	X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor);
+    X11Input(const QString& display_name, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor);
 	~X11Input();
 
 	// Returns the total number of captured frames.

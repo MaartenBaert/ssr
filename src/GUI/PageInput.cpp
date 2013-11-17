@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Global.h"
 #include "PageInput.h"
+#include "Utils.h"
 
 #include "MainWindow.h"
 
@@ -78,13 +79,17 @@ PageInput::PageInput(MainWindow* main_window)
 	{
 		m_buttongroup_video_area = new QButtonGroup(group_video);
 		QRadioButton *radio_area_screen = new QRadioButton(tr("Record the entire screen"), group_video);
-		QRadioButton *radio_area_fixed = new QRadioButton(tr("Record a fixed rectangle"), group_video);
-		QRadioButton *radio_area_cursor = new QRadioButton(tr("Follow the cursor"), group_video);
+        QRadioButton *radio_area_fixed = new QRadioButton(tr("Record a fixed rectangle"), group_video);
+        QRadioButton *radio_area_cursor = new QRadioButton(tr("Follow the cursor"), group_video);
+        QRadioButton *radio_area_other_x = new QRadioButton(tr("Record a fixed rectangle on another X server"), group_video);
 		QRadioButton *radio_area_glinject = new QRadioButton(tr("Record OpenGL (experimental)"), group_video);
 		m_buttongroup_video_area->addButton(radio_area_screen, VIDEO_AREA_SCREEN);
-		m_buttongroup_video_area->addButton(radio_area_fixed, VIDEO_AREA_FIXED);
-		m_buttongroup_video_area->addButton(radio_area_cursor, VIDEO_AREA_CURSOR);
+        m_buttongroup_video_area->addButton(radio_area_fixed, VIDEO_AREA_FIXED);
+        m_buttongroup_video_area->addButton(radio_area_cursor, VIDEO_AREA_CURSOR);
+        m_buttongroup_video_area->addButton(radio_area_other_x, VIDEO_AREA_OTHER_X);
 		m_buttongroup_video_area->addButton(radio_area_glinject, VIDEO_AREA_GLINJECT);
+        m_lineedit_display_name = new QLineEdit(group_video);
+        m_lineedit_display_name->setToolTip(tr("X server display name."));
 		m_combobox_screens = new QComboBoxWithSignal(group_video);
 		m_combobox_screens->setToolTip(tr("Select what monitor should be recorded in a multi-monitor configuration."));
 		m_pushbutton_video_select_rectangle = new QPushButton(tr("Select rectangle..."), group_video);
@@ -140,7 +145,8 @@ PageInput::PageInput(MainWindow* main_window)
 		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoAreaFields()));
 		connect(m_combobox_screens, SIGNAL(popupShown()), this, SLOT(OnIdentifyScreens()));
 		connect(m_combobox_screens, SIGNAL(popupHidden()), this, SLOT(OnStopIdentifyScreens()));
-		connect(m_spinbox_video_x, SIGNAL(focusIn()), this, SLOT(OnUpdateRecordingFrame()));
+        connect(m_lineedit_display_name, SIGNAL(textChanged(QString)), this, SLOT(OnUpdateVideoAreaFields()));
+        connect(m_spinbox_video_x, SIGNAL(focusIn()), this, SLOT(OnUpdateRecordingFrame()));
 		connect(m_spinbox_video_x, SIGNAL(focusOut()), this, SLOT(OnUpdateRecordingFrame()));
 		connect(m_spinbox_video_x, SIGNAL(valueChanged(int)), this, SLOT(OnUpdateRecordingFrame()));
 		connect(m_spinbox_video_y, SIGNAL(focusIn()), this, SLOT(OnUpdateRecordingFrame()));
@@ -166,7 +172,13 @@ PageInput::PageInput(MainWindow* main_window)
 		}
 		layout->addWidget(radio_area_fixed);
 		layout->addWidget(radio_area_cursor);
-		layout->addWidget(radio_area_glinject);
+        {
+            QHBoxLayout *layout2 = new QHBoxLayout();
+            layout->addLayout(layout2);
+            layout2->addWidget(radio_area_other_x);
+            layout2->addWidget(m_lineedit_display_name);
+        }
+        layout->addWidget(radio_area_glinject);
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
 			layout->addLayout(layout2);
@@ -201,8 +213,8 @@ PageInput::PageInput(MainWindow* main_window)
 			layout2->addWidget(m_spinbox_video_scaled_w, 0, 1);
 			layout2->addWidget(m_label_video_scaled_h, 0, 2);
 			layout2->addWidget(m_spinbox_video_scaled_h, 0, 3);
-		}
-		layout->addWidget(m_checkbox_record_cursor);
+        }
+        layout->addWidget(m_checkbox_record_cursor);
 	}
 	QGroupBox *group_audio = new QGroupBox(tr("Audio input"), this);
 	{
@@ -291,6 +303,7 @@ void PageInput::LoadSettings(QSettings* settings) {
 #endif
 
 	// load settings
+    SetDisplayNameGui(settings->value("input_display_name", ":0").toString());
 	SetVideoArea((enum_video_area) settings->value("input/video_area", VIDEO_AREA_SCREEN).toUInt());
 	SetVideoAreaScreen(settings->value("input/video_area_screen", 0).toUInt());
 	SetVideoX(settings->value("input/video_x", 0).toUInt());
@@ -324,7 +337,8 @@ void PageInput::LoadSettings(QSettings* settings) {
 }
 
 void PageInput::SaveSettings(QSettings* settings) {
-	settings->setValue("input/video_area", GetVideoArea());
+    settings->setValue("input/video_display_name", GetDisplayNameGui());
+    settings->setValue("input/video_area", GetVideoArea());
 	settings->setValue("input/video_area_screen", GetVideoAreaScreen());
 	settings->setValue("input/video_x", GetVideoX());
 	settings->setValue("input/video_y", GetVideoY());
@@ -606,13 +620,15 @@ void PageInput::LoadPulseAudioSources() {
 
 void PageInput::OnUpdateRecordingFrame() {
 	if(m_spinbox_video_x->hasFocus() || m_spinbox_video_y->hasFocus() || m_spinbox_video_w->hasFocus() || m_spinbox_video_h->hasFocus()) {
-		if(m_recording_frame == NULL) {
-			m_recording_frame.reset(new QRubberBand(QRubberBand::Rectangle));
-			m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
-			m_recording_frame->show();
-		} else {
-			m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
-		}
+        if(GetVideoArea() != VIDEO_AREA_OTHER_X) {
+            if(m_recording_frame == NULL) {
+                m_recording_frame.reset(new QRubberBand(QRubberBand::Rectangle));
+                m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
+                m_recording_frame->show();
+            } else {
+                m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
+            }
+        }
 	} else {
 		m_recording_frame.reset();
 	}
@@ -623,8 +639,9 @@ void PageInput::OnUpdateVideoAreaFields() {
 		case VIDEO_AREA_SCREEN: {
 			m_combobox_screens->setEnabled(true);
 			m_pushbutton_video_select_rectangle->setEnabled(false);
-			m_pushbutton_video_select_window->setEnabled(false);
-			m_pushbutton_video_opengl_settings->setEnabled(false);
+            m_pushbutton_video_select_window->setEnabled(false);
+            m_pushbutton_video_opengl_settings->setEnabled(false);
+            m_lineedit_display_name->setEnabled(false);
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, false);
 			int sc = m_combobox_screens->currentIndex();
@@ -641,15 +658,36 @@ void PageInput::OnUpdateVideoAreaFields() {
 			SetVideoY(rect.top());
 			SetVideoW(rect.width());
 			SetVideoH(rect.height());
+            SetDisplayName("this");
 			break;
-		}
+        }
+
+        case VIDEO_AREA_OTHER_X: {
+            m_combobox_screens->setEnabled(false);
+            m_pushbutton_video_select_rectangle->setEnabled(false);
+            m_pushbutton_video_select_window->setEnabled(false);
+            m_pushbutton_video_opengl_settings->setEnabled(false);
+            m_lineedit_display_name->setEnabled(true);
+            GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
+                          m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
+            SetVideoX(0);
+            SetVideoY(0);
+            int w,h;
+            getDisplaySize(m_lineedit_display_name->text(), &w, &h); // TODO
+            if(w>0) SetVideoW(w);
+            if(h>0) SetVideoH(h);
+            SetDisplayName(m_lineedit_display_name->text()); //TODO
+            break;
+        }
 		case VIDEO_AREA_FIXED: {
 			m_combobox_screens->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
 			m_pushbutton_video_opengl_settings->setEnabled(false);
-			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
+            m_lineedit_display_name->setEnabled(false);
+            GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
+            SetDisplayName("this");
 			break;
 		}
 		case VIDEO_AREA_CURSOR: {
@@ -657,20 +695,24 @@ void PageInput::OnUpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
 			m_pushbutton_video_opengl_settings->setEnabled(false);
-			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y}, false);
+            m_lineedit_display_name->setEnabled(false);
+            GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y}, false);
 			GroupEnabled({m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
 			SetVideoX(0);
 			SetVideoY(0);
-			break;
+            SetDisplayName("this");
+            break;
 		}
 		case VIDEO_AREA_GLINJECT: {
 			m_combobox_screens->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
 			m_pushbutton_video_opengl_settings->setEnabled(true);
-			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
+            m_lineedit_display_name->setEnabled(false);
+            GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, false);
-			break;
+            SetDisplayName("this");
+            break;
 		}
 		default: break;
 	}

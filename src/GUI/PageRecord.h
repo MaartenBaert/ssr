@@ -56,6 +56,7 @@ private:
 	bool m_recorded_something;
 
 	PageInput::enum_video_area m_video_area;
+    QString m_x11_display_name;
 	unsigned int m_video_x, m_video_y, m_video_in_width, m_video_in_height;
 	unsigned int m_video_frame_rate;
 	bool m_video_scaling;

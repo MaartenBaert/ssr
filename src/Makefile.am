@@ -108,6 +108,8 @@ simplescreenrecorder_SOURCES = \
 	Main.cpp \
 	Main.h \
 	MutexDataPair.h \
+	Utils.cpp \
+	Utils.h \
 	Version.cpp \
 	Version.h
 nodist_simplescreenrecorder_SOURCES =
