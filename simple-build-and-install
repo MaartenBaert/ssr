@@ -58,23 +58,40 @@ export CFLAGS="-Wall -O2 -pipe"
 export CXXFLAGS="-Wall -O2 -pipe"
 export LDFLAGS=""
 
-export CPPFLAGS="$CPPFLAGS `pkg-config --cflags libavcodec`"
-export LDFLAGS="$LDFLAGS `pkg-config --libs libavcodec`"
+export CPPFLAGS="$CPPFLAGS `pkg-config --cflags-only-I libavformat libavcodec libavutil libswscale`"
+export LDFLAGS="$LDFLAGS `pkg-config --libs-only-L libavformat libavcodec libavutil libswscale`"
 
 mkdir -p build
 cd build
 echo "Configuring ..."
-../configure --prefix=/usr $CONFIGURE_OPTIONS "$@"
+if [ x"$( uname -m )" = x"x86_64" ]; then
+
+  if [ -d "/usr/lib32" ]; then
+    LIB32DIR=/usr/lib32
+  else
+    LIB32DIR=/usr/lib
+  fi
+
+  if [ -d "/usr/lib64" ]; then
+    LIB64DIR=/usr/lib64
+  else
+    LIB64DIR=/usr/lib
+  fi
+
+  if [ "$LIB32DIR" == "$LIB64DIR" ]; then
+    echo "Same lib directories found for 32-bit and 64-bit. This should not be happening"
+    exit 1
+  fi
+
+  PKG_CONFIG_PATH="$LIB64DIR/pkgconfig" \
+    ../configure --prefix=/usr --libdir=$LIB64DIR $CONFIGURE_OPTIONS "$@"
+else
+  ../configure --prefix=/usr $CONFIGURE_OPTIONS "$@"
+fi
 
 echo "Compiling ..."
 make -j "$( grep -c "^processor" /proc/cpuinfo )"
 cd ..
-
-if [ -d "/usr/lib32" ]; then
-  LIB32DIR=/usr/lib32
-else
-  LIB32DIR=/usr/lib
-fi
 
 if [ x"$( uname -m )" = x"x86_64" ]; then
 	mkdir -p build32
