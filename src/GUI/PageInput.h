@@ -66,6 +66,7 @@ public:
 		VIDEO_AREA_FIXED,
 		VIDEO_AREA_CURSOR,
 		VIDEO_AREA_GLINJECT,
+        VIDEO_AREA_OTHER_X,
 		VIDEO_AREA_COUNT // must be last
 	};
 	enum enum_audio_backend {
@@ -87,6 +88,7 @@ private:
 #endif
 
 	QString m_glinject_command, m_glinject_working_directory;
+    QString m_display_name;
 	bool m_glinject_run_command, m_glinject_relax_permissions;
 	unsigned int m_glinject_max_megapixels;
 	bool m_glinject_capture_front, m_glinject_limit_fps;
@@ -97,7 +99,8 @@ private:
 	QComboBoxWithSignal *m_combobox_screens;
 	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window, *m_pushbutton_video_opengl_settings;
 	QLabel *m_label_video_x, *m_label_video_y, *m_label_video_w, *m_label_video_h;
-	QSpinBoxWithSignal *m_spinbox_video_x, *m_spinbox_video_y, *m_spinbox_video_w, *m_spinbox_video_h;
+    QLineEdit *m_lineedit_display_name;
+    QSpinBoxWithSignal *m_spinbox_video_x, *m_spinbox_video_y, *m_spinbox_video_w, *m_spinbox_video_h;
 	QSpinBox *m_spinbox_video_frame_rate;
 	QCheckBox *m_checkbox_scale;
 	QLabel *m_label_video_scaled_w, *m_label_video_scaled_h;
@@ -150,7 +153,9 @@ public:
 #endif
 	inline QString GetGLInjectCommand() { return m_glinject_command; }
 	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
-	inline bool GetGLInjectRunCommand() { return m_glinject_run_command; }
+    inline QString GetDisplayName() { return m_display_name; }
+    inline QString GetDisplayNameGui() { return m_lineedit_display_name->text(); }
+    inline bool GetGLInjectRunCommand() { return m_glinject_run_command; }
 	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
 	inline unsigned int GetGLInjectMaxMegaPixels() { return m_glinject_max_megapixels; }
 	inline bool GetGLInjectCaptureFront() { return m_glinject_capture_front; }
@@ -174,8 +179,10 @@ public:
 	inline void SetPulseAudioSource(unsigned int source) { m_combobox_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
 #endif
 	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
-	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
-	inline void SetGLInjectRunCommand(bool run_command) { m_glinject_run_command = run_command; }
+    inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
+    inline void SetDisplayName(const QString& display_name) { m_display_name = display_name; }
+    inline void SetDisplayNameGui(const QString& display_name) { m_lineedit_display_name->setText(display_name); }
+    inline void SetGLInjectRunCommand(bool run_command) { m_glinject_run_command = run_command; }
 	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
 	inline void SetGLInjectMaxMegaPixels(unsigned int max_megapixels) { m_glinject_max_megapixels = clamp(max_megapixels, 1u, 100u); }
 	inline void SetGLInjectCaptureFront(bool capture_front) { m_glinject_capture_front = capture_front; }

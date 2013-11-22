@@ -41,6 +41,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <X11/Xutil.h>
 #include <X11/extensions/Xfixes.h>
+#include <QByteArray>
 
 /*
 The code in this file is based on the MIT-SHM example code and the x11grab device in libav/ffmpeg (which is GPL):
@@ -167,8 +168,15 @@ static void X11ImageDrawCursor(Display* dpy, XImage* image, int recording_area_x
 
 }
 
-X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor) {
+X11Input::X11Input(const QString& display_name, unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor) {
 
+    if(display_name=="this"){
+        m_x11_display_name = NULL;
+    } else {
+        m_x11_display_name = new char[display_name.length()+1];
+        QByteArray ba = display_name.toAscii();
+        strcpy(m_x11_display_name, ba.data());
+    }
 	m_x = x;
 	m_y = y;
 	m_width = width;
@@ -221,7 +229,7 @@ void X11Input::Init() {
 
 	// do the X11 stuff
 	// we need a separate display because the existing one would interfere with what Qt is doing in some cases
-	m_x11_display = XOpenDisplay(NULL); //QX11Info::display();
+    m_x11_display = XOpenDisplay(m_x11_display_name); //QX11Info::display();
 	if(m_x11_display == NULL) {
 		Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Can't open X display!", "Don't translate 'display'"));
 		throw X11Exception();
@@ -301,6 +309,10 @@ void X11Input::Free() {
 		XCloseDisplay(m_x11_display);
 		m_x11_display = NULL;
 	}
+    if(m_x11_display_name != NULL) {
+        delete m_x11_display_name;
+        m_x11_display_name = NULL;
+    }
 }
 
 void X11Input::UpdateScreenConfiguration() {

@@ -129,7 +129,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	GUI/PageRecord.cpp GUI/PageRecord.h GUI/PageWelcome.cpp \
 	GUI/PageWelcome.h GUI/VideoPreviewer.cpp GUI/VideoPreviewer.h \
 	Global.h Logger.cpp Logger.h Main.cpp Main.h MutexDataPair.h \
-	Version.cpp Version.h
+	Utils.cpp Utils.h Version.cpp Version.h
 am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT) \
@@ -162,6 +162,7 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-VideoPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Logger.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Main.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Utils.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Version.$(OBJEXT)
 @ENABLE_SSRPROGRAM_TRUE@nodist_simplescreenrecorder_OBJECTS = simplescreenrecorder-qrc_resources.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_X11Input.$(OBJEXT) \
@@ -515,6 +516,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	Main.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	Main.h \
 @ENABLE_SSRPROGRAM_TRUE@	MutexDataPair.h \
+@ENABLE_SSRPROGRAM_TRUE@	Utils.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	Utils.h \
 @ENABLE_SSRPROGRAM_TRUE@	Version.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	Version.h
 
@@ -722,6 +725,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Logger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Version.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_ElidedLabel.Po@am__quote@
@@ -1224,6 +1228,20 @@ simplescreenrecorder-Main.obj: Main.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Main.cpp' object='simplescreenrecorder-Main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-Main.obj `if test -f 'Main.cpp'; then $(CYGPATH_W) 'Main.cpp'; else $(CYGPATH_W) '$(srcdir)/Main.cpp'; fi`
+
+simplescreenrecorder-Utils.o: Utils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-Utils.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-Utils.Tpo -c -o simplescreenrecorder-Utils.o `test -f 'Utils.cpp' || echo '$(srcdir)/'`Utils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-Utils.Tpo $(DEPDIR)/simplescreenrecorder-Utils.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Utils.cpp' object='simplescreenrecorder-Utils.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-Utils.o `test -f 'Utils.cpp' || echo '$(srcdir)/'`Utils.cpp
+
+simplescreenrecorder-Utils.obj: Utils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-Utils.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-Utils.Tpo -c -o simplescreenrecorder-Utils.obj `if test -f 'Utils.cpp'; then $(CYGPATH_W) 'Utils.cpp'; else $(CYGPATH_W) '$(srcdir)/Utils.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-Utils.Tpo $(DEPDIR)/simplescreenrecorder-Utils.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Utils.cpp' object='simplescreenrecorder-Utils.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-Utils.obj `if test -f 'Utils.cpp'; then $(CYGPATH_W) 'Utils.cpp'; else $(CYGPATH_W) '$(srcdir)/Utils.cpp'; fi`
 
 simplescreenrecorder-Version.o: Version.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-Version.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-Version.Tpo -c -o simplescreenrecorder-Version.o `test -f 'Version.cpp' || echo '$(srcdir)/'`Version.cpp

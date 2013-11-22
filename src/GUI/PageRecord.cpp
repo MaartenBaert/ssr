@@ -381,6 +381,7 @@ void PageRecord::StartPage() {
 	PageOutput *page_output = m_main_window->GetPageOutput();
 
 	// get the video input settings
+    m_x11_display_name = page_input->GetDisplayName();
 	m_video_area = page_input->GetVideoArea();
 	m_video_x = page_input->GetVideoX();
 	m_video_y = page_input->GetVideoY();
@@ -678,7 +679,7 @@ void PageRecord::StartInput() {
 			}
 			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get()));
 		} else {
-			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
+            m_x11_input.reset(new X11Input(m_x11_display_name, m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
 		}
 
 		// start the audio input
