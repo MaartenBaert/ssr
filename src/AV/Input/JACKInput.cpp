@@ -20,13 +20,17 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "JACKInput.h"
 
+#if SSR_USE_JACK
+
+#include "Resampler.h"
+
 #include "Logger.h"
 
 const unsigned int JACKInput::RING_BUFFER_SIZE = 50;
 
-JACKInput::JACKInput(unsigned int sample_rate) {
+JACKInput::JACKInput() {
 
-	m_sample_rate = sample_rate;
+	m_sample_rate = 0; // the sample rate is set by JACK
 	m_channels = 2; // always 2 channels because the synchronizer and encoder don't support anything else at this point
 
 	m_jack_client = NULL;
@@ -130,14 +134,9 @@ void JACKInput::WriteCommand(bool is_hole, jack_nframes_t nframes) {
 		cmd.m_is_hole = false;
 		cmd.m_timestamp = hrt_time_micro() - (int64_t) nframes * (int64_t) 1000000 / (int64_t) m_sample_rate;
 		cmd.m_sample_rate = m_sample_rate;
-		cmd.m_data.resize(nframes * m_channels * 2);
+		cmd.m_data.resize(nframes * m_channels * sizeof(float));
 		for(unsigned int p = 0; p < m_channels; ++p) {
-			float *data_in = (float*) jack_port_get_buffer(m_jack_ports[p], nframes);
-			int16_t *data_out = (int16_t*) cmd.m_data.data() + p;
-			for(jack_nframes_t i = 0; i < nframes; ++i) {
-				*data_out = clamp((int) lrint(*(data_in++) * 32768.0f), -32768, 32767);
-				data_out += m_channels;
-			}
+			SampleCopy<float, float>(nframes, (float*) jack_port_get_buffer(m_jack_ports[p], nframes), 1, (float*) cmd.m_data.data() + p, m_channels);
 		}
 	}
 	std::atomic_thread_fence(std::memory_order_acq_rel);
@@ -157,7 +156,7 @@ int JACKInput::ProcessCallback(jack_nframes_t nframes, void* arg) {
 int JACKInput::SampleRateCallback(jack_nframes_t nframes, void* arg) {
 	JACKInput *input = (JACKInput*) arg;
 	input->m_sample_rate = nframes;
-	input->WriteCommand(true);
+	//input->WriteCommand(true);
 	return 0;
 }
 
@@ -184,7 +183,7 @@ void JACKInput::InputThread() {
 			if(cmd.m_is_hole) {
 				PushAudioHole();
 			} else {
-				PushAudioSamples(cmd.m_sample_rate, m_channels, cmd.m_data.size() / (m_channels * 2), cmd.m_data.data(), AV_SAMPLE_FMT_S16, cmd.m_timestamp);
+				PushAudioSamples(m_channels, cmd.m_sample_rate, AV_SAMPLE_FMT_FLT, cmd.m_data.size() / (m_channels * sizeof(float)), cmd.m_data.data(), cmd.m_timestamp);
 			}
 			std::atomic_thread_fence(std::memory_order_acq_rel);
 			m_command_ring_read_pos = (m_command_ring_read_pos + 1) % (RING_BUFFER_SIZE * 2);
@@ -202,3 +201,5 @@ void JACKInput::InputThread() {
 		Logger::LogError("[JACKInput::InputThread] Unknown exception in input thread.");
 	}
 }
+
+#endif

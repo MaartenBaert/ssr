@@ -66,7 +66,7 @@ void AudioPreviewer::SetFrameRate(unsigned int frame_rate) {
 	lock->m_frame_rate = std::max(1u, frame_rate);
 }
 
-void AudioPreviewer::ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) {
+void AudioPreviewer::ReadAudioSamples(unsigned int channels, unsigned int sample_rate, AVSampleFormat format, unsigned int sample_count, const uint8_t* data, int64_t timestamp) {
 	Q_UNUSED(sample_rate);
 	Q_UNUSED(timestamp);
 	SharedLock lock(&m_shared_data);
@@ -75,17 +75,38 @@ void AudioPreviewer::ReadAudioSamples(unsigned int sample_rate, unsigned int cha
 		return;
 
 	Q_ASSERT(channels == 2); // only stereo is currently supported
-	Q_ASSERT(format == AV_SAMPLE_FMT_S16); // only S16 is currently supported
 
 	// save the samples
-	int16_t *data_in = (int16_t*) data;
-	for(size_t i = 0; i < sample_count; ++i) {
-		for(unsigned int channel = 0; channel < 2; ++channel) {
-			double val = (double) *(data_in++) / 32768.0;
-			if(val < lock->m_next_low[channel])
-				lock->m_next_low[channel] = val;
-			if(val > lock->m_next_high[channel])
-				lock->m_next_high[channel] = val;
+	switch(format) {
+		case AV_SAMPLE_FMT_S16: {
+			int16_t *data_in = (int16_t*) data;
+			for(size_t i = 0; i < sample_count; ++i) {
+				for(unsigned int channel = 0; channel < 2; ++channel) {
+					double val = (double) *(data_in++) / 32768.0;
+					if(val < lock->m_next_low[channel])
+						lock->m_next_low[channel] = val;
+					if(val > lock->m_next_high[channel])
+						lock->m_next_high[channel] = val;
+				}
+			}
+			break;
+		}
+		case AV_SAMPLE_FMT_FLT: {
+			float *data_in = (float*) data;
+			for(size_t i = 0; i < sample_count; ++i) {
+				for(unsigned int channel = 0; channel < 2; ++channel) {
+					double val = *(data_in++);
+					if(val < lock->m_next_low[channel])
+						lock->m_next_low[channel] = val;
+					if(val > lock->m_next_high[channel])
+						lock->m_next_high[channel] = val;
+				}
+			}
+			break;
+		}
+		default: {
+			Q_ASSERT(false); // unsupported sample format
+			break;
 		}
 	}
 

@@ -5,12 +5,12 @@ QT += core gui
 TARGET = SimpleScreenRecorder
 TEMPLATE = app
 
-DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_PULSEAUDIO=1 SSR_TRANSLATIONS_PATH=\"/usr/share/simplescreenrecorder/translations\"
+DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_PULSEAUDIO=1 SSR_USE_JACK=1 SSR_TRANSLATIONS_PATH=\"/usr/share/simplescreenrecorder/translations\"
 QMAKE_CXXFLAGS += -std=c++0x -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
-INCLUDEPATH += AV AV/Input AV/Output GUI ../build/3rdparty
-DEPENDPATH += AV AV/Input AV/Output GUI ../build/3rdparty
+INCLUDEPATH += AV AV/Input AV/Output common GUI ../build/3rdparty
+DEPENDPATH += AV AV/Input AV/Output common GUI ../build/3rdparty
 
 SOURCES += \
 	AV/Input/ALSAInput.cpp \
@@ -28,11 +28,12 @@ SOURCES += \
 	AV/Output/VideoEncoder.cpp \
 	AV/Output/X264Presets.cpp \
 	AV/AVWrapper.cpp \
-	AV/ByteQueue.cpp \
-	AV/DetectCPUFeatures.cpp \
 	AV/FastScaler.cpp \
 	AV/Resampler.cpp \
 	AV/SourceSink.cpp \
+	common/ByteQueue.cpp \
+	common/DetectCPUFeatures.cpp \
+	common/Logger.cpp \
 	GUI/AudioPreviewer.cpp \
 	GUI/ElidedLabel.cpp \
 	GUI/HotkeyListener.cpp \
@@ -44,7 +45,6 @@ SOURCES += \
 	GUI/PageRecord.cpp \
 	GUI/PageWelcome.cpp \
 	GUI/VideoPreviewer.cpp \
-	Logger.cpp \
 	Main.cpp \
 	Version.cpp
 
@@ -65,11 +65,14 @@ HEADERS  += \
 	AV/Output/VideoEncoder.h \
 	AV/Output/X264Presets.h \
 	AV/AVWrapper.h \
-	AV/ByteQueue.h \
-	AV/DetectCPUFeatures.h \
 	AV/FastScaler.h \
 	AV/Resampler.h \
 	AV/SourceSink.h \
+	common/ByteQueue.h \
+	common/DetectCPUFeatures.h \
+	common/Logger.h \
+	common/MutexDataPair.h \
+	common/TempBuffer.h \
 	GUI/AudioPreviewer.h \
 	GUI/ElidedLabel.h \
 	GUI/HotkeyListener.h \
@@ -82,9 +85,7 @@ HEADERS  += \
 	GUI/PageWelcome.h \
 	GUI/VideoPreviewer.h \
 	Global.h \
-	Logger.h \
 	Main.h \
-	MutexDataPair.h \
 	Version.h
 
 RESOURCES += \

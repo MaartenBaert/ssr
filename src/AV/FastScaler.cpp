@@ -53,8 +53,8 @@ FastScaler::~FastScaler() {
 	}
 }
 
-void FastScaler::Scale(unsigned int in_width, unsigned int in_height, const uint8_t* const* in_data, const int* in_stride, PixelFormat in_format,
-					   unsigned int out_width, unsigned int out_height, uint8_t* const* out_data, const int* out_stride, PixelFormat out_format) {
+void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelFormat in_format, const uint8_t* const* in_data, const int* in_stride,
+					   unsigned int out_width, unsigned int out_height, PixelFormat out_format, uint8_t* const* out_data, const int* out_stride) {
 
 	// faster BGRA to YUV conversion
 	if(in_format == PIX_FMT_BGRA && out_format == PIX_FMT_YUV420P && in_width == out_width && in_height == out_height) {
@@ -129,8 +129,8 @@ static void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const u
 	const int y_offset = 128 + (16 << 8), u_offset = 512 + (128 << 10), v_offset = 512 + (128 << 10);
 
 	for(unsigned int j = 0; j < h / 2; ++j) {
-		uint32_t *rgb1 = (uint32_t*)(in_data + in_stride * (int) j * 2);
-		uint32_t *rgb2 = (uint32_t*)(in_data + in_stride * ((int) j * 2 + 1));
+		const uint32_t *rgb1 = (const uint32_t*)(in_data + in_stride * (int) j * 2);
+		const uint32_t *rgb2 = (const uint32_t*)(in_data + in_stride * ((int) j * 2 + 1));
 		uint8_t *yuv_y1 = out_data[0] + out_stride[0] * (int) j * 2;
 		uint8_t *yuv_y2 = out_data[0] + out_stride[0] * ((int) j * 2 + 1);
 		uint8_t *yuv_u = out_data[1] + out_stride[1] * (int) j;

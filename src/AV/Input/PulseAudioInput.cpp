@@ -349,7 +349,7 @@ void PulseAudioInput::InputThread() {
 
 						// push the samples
 						int64_t time = timestamp - latency;
-						PushAudioSamples(m_sample_rate, m_channels, samples, push_data, AV_SAMPLE_FMT_S16, time);
+						PushAudioSamples(m_channels, m_sample_rate, AV_SAMPLE_FMT_S16, samples, push_data, time);
 
 					}
 				} else {

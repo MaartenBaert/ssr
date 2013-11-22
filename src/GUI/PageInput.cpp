@@ -213,7 +213,9 @@ PageInput::PageInput(MainWindow* main_window)
 #if SSR_USE_PULSEAUDIO
 		m_combobox_audio_backend->addItem("PulseAudio");
 #endif
+#if SSR_USE_JACK
 		m_combobox_audio_backend->addItem("JACK");
+#endif
 		m_combobox_audio_backend->setToolTip(tr("The audio backend that will be used for recording.\n"
 												"The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly."));
 		m_label_alsa_device = new QLabel(tr("Device:"), group_audio);

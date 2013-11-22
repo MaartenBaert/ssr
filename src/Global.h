@@ -67,6 +67,11 @@ extern "C" {
 #error SSR_USE_PULSEAUDIO should be defined!
 #endif
 
+// Whether JACK should be used.
+#ifndef SSR_USE_JACK
+#error SSR_USE_JACK should be defined!
+#endif
+
 // Path to translation files.
 #ifndef SSR_TRANSLATIONS_PATH
 #error SSR_TRANSLATIONS_PATH should be defined!

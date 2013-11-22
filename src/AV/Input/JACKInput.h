@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#if SSR_USE_JACK
+
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 
@@ -58,7 +60,7 @@ private:
 	unsigned int m_command_ring_read_pos, m_command_ring_write_pos;
 
 public:
-	JACKInput(unsigned int sample_rate);
+	JACKInput();
 	~JACKInput();
 
 	// Returns whether an error has occurred in the input thread.
@@ -78,3 +80,5 @@ private:
 	void InputThread();
 
 };
+
+#endif

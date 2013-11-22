@@ -73,7 +73,9 @@ public:
 #if SSR_USE_PULSEAUDIO
 		AUDIO_BACKEND_PULSEAUDIO,
 #endif
+#if SSR_USE_JACK
 		AUDIO_BACKEND_JACK,
+#endif
 		AUDIO_BACKEND_COUNT // must be last
 	};
 

@@ -19,11 +19,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Resampler.h"
 
+#include "Logger.h"
+
 Resampler::Resampler() {
 
-	m_channels = 0;
-	m_in_sample_rate = 0;
-	m_out_sample_rate = 0;
+	m_started = false;
 
 	m_soxr = NULL;
 
@@ -36,77 +36,125 @@ Resampler::~Resampler() {
 	}
 }
 
-void Resampler::Resample(unsigned int channels,
-						 unsigned int in_sample_rate, unsigned int in_sample_count, const uint8_t* in_data, AVSampleFormat in_format,
-						 unsigned int out_sample_rate, unsigned int* out_sample_count, const uint8_t** out_data, AVSampleFormat out_format) {
+void Resampler::Resample(unsigned int in_channels, unsigned int in_sample_rate, AVSampleFormat in_format, unsigned int in_sample_count, const uint8_t* in_data,
+						 unsigned int out_channels, unsigned int out_sample_rate, AVSampleFormat out_format, unsigned int* out_sample_count, const uint8_t** out_data) {
+	Q_ASSERT(in_channels > 0 && out_channels > 0);
+	Q_ASSERT(in_sample_rate > 0 && out_sample_rate > 0);
+	Q_ASSERT(in_channels == out_channels);
+	Q_ASSERT(out_format == AV_SAMPLE_FMT_FLT);
 
-	if(m_channels == 0) {
-		m_channels = channels;
+	if(m_started) {
+		Q_ASSERT(m_out_channels == out_channels);
+		Q_ASSERT(m_out_sample_rate == out_sample_rate);
 	} else {
-		Q_ASSERT(m_channels == channels);
-	}
-	if(m_in_sample_rate != in_sample_rate || m_out_sample_rate != out_sample_rate) {
-		m_in_sample_rate = in_sample_rate;
+		m_started = true;
+		m_in_sample_rate = 0; // trigger creation of new resampler
+		m_out_channels = out_channels;
 		m_out_sample_rate = out_sample_rate;
-		Logger::LogInfo("[Resampler::Resample] Resampling " + QString::number(m_in_sample_rate) + " to " + QString::number(m_out_sample_rate) + ".");
-	}
-
-	// prepare input samples
-	float *in_float;
-	if(in_format == AV_SAMPLE_FMT_FLT) {
-		in_float = (float*) in_data;
-	} else if(in_format == AV_SAMPLE_FMT_S16) {
-		m_in_data.resize(in_sample_count * channels * sizeof(float));
-		SampleCopy((const int16_t*) in_data, 1, (float*) m_in_data.data(), 1, in_sample_count * channels);
-		in_float = (float*) m_in_data.data();
-	} else {
-		Q_ASSERT(false); // unsupported input format
 	}
 
 	// prepare output samples
-	float *out_float;
-	unsigned int out_sample_count_estimate = (uint64_t) in_sample_count * (uint64_t) out_sample_rate / (uint64_t) in_sample_rate + 100;
-	out_sample_count_estimate += out_sample_count_estimate / 4;
-	if(out_format == AV_SAMPLE_FMT_FLT) {
-		m_out_data.resize(out_sample_count_estimate * channels * sizeof(float));
-		out_float = (float*) m_out_data.data();
-		*out_data = m_out_data.data();
+	unsigned int out_pos = 0;
+	m_out_data.alloc(1000);
+
+	// do we need a new resampler?
+	if(in_sample_rate != m_in_sample_rate) {
+
+		// delete old resampler
+		if(m_soxr != NULL) {
+
+			// flush resampler
+			for( ; ; ) {
+				size_t out_done;
+				soxr_error_t error = soxr_process(m_soxr,
+												  NULL, 0, NULL,
+												  m_out_data.data() + out_pos * out_channels * sizeof(float), m_out_data.size() / (out_channels * sizeof(float)) - out_pos, &out_done);
+				if(error != NULL) {
+					Logger::LogError("[Resampler::Resample] " + QObject::tr("Error: Flushing resampler failed! Reason: %s").arg(soxr_strerror(error)));
+					throw SoxrException();
+				}
+				out_pos += out_done;
+				if(out_pos < m_out_data.size() / (out_channels * sizeof(float)))
+					break;
+				Logger::LogWarning("[Resampler::Resample] " + QObject::tr("Warning: Flush output buffer was not large enough, enlarging to %1 bytes.").arg(m_out_data.size() * 2));
+				m_out_data.realloc(m_out_data.size() * 2);
+			}
+
+			soxr_delete(m_soxr);
+			m_soxr = NULL;
+		}
+
+		m_in_sample_rate = in_sample_rate;
+
+		// do we really need a resampler?
+		if(m_in_sample_rate != m_out_sample_rate) {
+			Logger::LogInfo("[Resampler::Resampler] " + QObject::tr("Resampling from %1 to %2.").arg(m_in_sample_rate).arg(m_out_sample_rate));
+			soxr_error_t error;
+			soxr_quality_spec_t quality = soxr_quality_spec(SOXR_MQ, 0);
+			m_soxr = soxr_create((double) m_in_sample_rate, (double) m_out_sample_rate, out_channels, &error, NULL, &quality, NULL);
+			if(m_soxr == NULL || error != NULL) {
+				m_in_sample_rate = 0;
+				Logger::LogError("[Resampler::Resampler] " + QObject::tr("Error: Can't create resampler! Reason: %s").arg(soxr_strerror(error)));
+				throw SoxrException();
+			}
+		} else {
+			Logger::LogInfo("[Resampler::Resampler] " + QObject::tr("Resampling not needed."));
+		}
+
+	}
+
+	// prepare input samples
+	uint8_t *in_data_float;
+	unsigned int in_pos = 0;
+	if(in_format == AV_SAMPLE_FMT_FLT) {
+		in_data_float = (uint8_t*) in_data;
+	} else if(in_format == AV_SAMPLE_FMT_S16) {
+		m_in_data.alloc(in_sample_count * out_channels * sizeof(float));
+		SampleCopy(in_sample_count * out_channels, (const int16_t*) in_data, 1, (float*) m_in_data.data(), 1);
+		in_data_float = (uint8_t*) m_in_data.data();
 	} else {
 		Q_ASSERT(false); // unsupported input format
 	}
 
+	// no resampling needed?
 	if(m_in_sample_rate == m_out_sample_rate) {
-
-		//TODO// flush
-
-		if(in_format == out_format) {
+		if(out_pos == 0) {
 			*out_sample_count = in_sample_count;
-			*out_data = in_data;
+			*out_data = in_data_float;
+		} else {
+			m_out_data.realloc((out_pos + in_sample_count) * out_channels * sizeof(float));
+			memcpy(m_out_data.data() + out_pos * out_channels * sizeof(float), in_data_float, in_sample_count * out_channels * sizeof(float));
+			*out_sample_count = out_pos + in_sample_count;
+			*out_data = m_out_data.data();
 		}
-
-	} else {
-
-		// create the resampler if it doesn't exist yet
-		if(lock->m_soxr == NULL) {
-			soxr_error_t error;
-			soxr_quality_spec_t quality = soxr_quality_spec(SOXR_HQ, SOXR_VR);
-			lock->m_soxr = soxr_create(100.0, 1.0, m_audio_channels, &error, NULL, &quality, NULL);
-			if(lock->m_soxr == NULL || error != NULL) {
-				Logger::LogError("[FastScaler::Scale] Error: Can't get swscale context!");
-				throw SoxrException();
-			}
-		}
-
-		// set the new ratio
-		soxr_set_io_ratio(lock->m_soxr, (double) in_sample_rate)
-
-		size_t in_processed, out_processed;
-		error = soxr_process(lock->m_soxr, in_float, in_sample_count, &in_processed, out_float, out_sample_count, &out_processed);
-		if(error != NULL) {
-			Logger::LogError("[FastScaler::Scale] Error: Can't get swscale context!");
-			throw SoxrException();
-		}
-
+		return;
 	}
 
+	// resample
+	for( ; ; ) {
+		size_t in_done, out_done;
+		soxr_error_t error = soxr_process(m_soxr,
+										  in_data_float + in_pos * out_channels * sizeof(float), in_sample_count - in_pos, &in_done,
+										  m_out_data.data() + out_pos * out_channels * sizeof(float), m_out_data.size() / (out_channels * sizeof(float)) - out_pos, &out_done);
+		if(error != NULL) {
+			Logger::LogError("[Resampler::Resample] " + QObject::tr("Error: Resampling failed!"));
+			throw SoxrException();
+		}
+		in_pos += in_done;
+		out_pos += out_done;
+		if(in_pos == in_sample_count)
+			break;
+		Logger::LogWarning("[Resampler::Resample] " + QObject::tr("Warning: Output buffer was not large enough, enlarging to %1 bytes.").arg(m_out_data.size() * 2));
+		m_out_data.realloc(m_out_data.size() * 2);
+	}
+
+	*out_sample_count = out_pos;
+	*out_data = m_out_data.data();
+
+}
+
+double Resampler::GetDelayedSamples() {
+	if(m_soxr == NULL)
+		return 0.0;
+	return soxr_delay(m_soxr);
 }
