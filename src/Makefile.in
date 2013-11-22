@@ -534,11 +534,13 @@ top_srcdir = @top_srcdir@
 ########## Qt resource system ##########
 @ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = resources.qrc \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_de.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_nl.ts
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_nl.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_cn.ts
 @ENABLE_SSRPROGRAM_TRUE@translationsdir = $(pkgdatadir)/simplescreenrecorder/translations
 @ENABLE_SSRPROGRAM_TRUE@nodist_translations_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_de.qm \
-@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_nl.qm
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_nl.qm \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_cn.qm
 
 all: all-am
 
@@ -1727,6 +1729,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_nl.qm: $(srcdir)/translations/simplescreenrecorder_nl.ts
+@ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_cn.qm: $(srcdir)/translations/simplescreenrecorder_cn.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
