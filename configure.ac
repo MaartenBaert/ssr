@@ -80,6 +80,10 @@ AM_COND_IF([ENABLE_SSRPROGRAM], [
 		AC_CHECK_HEADER([pulse/context.h], [ ], [AC_MSG_ERROR([required header missing])])
 		AC_CHECK_LIB([pulse], [pa_context_new], [ ], [AC_MSG_ERROR([required library missing])])
 	])
+	AM_COND_IF([ENABLE_JACK], [
+		AC_CHECK_HEADER([jack/jack.h], [ ], [AC_MSG_ERROR([required header missing])])
+		AC_CHECK_LIB([jack], [jack_client_open], [ ], [AC_MSG_ERROR([required library missing])])
+	])
 ])
 
 AM_COND_IF([ENABLE_GLINJECTLIB], [
