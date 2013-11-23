@@ -35,7 +35,7 @@ HAS_FFMPEG=$( grep -c "This file is part of FFmpeg." ${LIBAVCODEC_INCLUDE_DIR}/l
 HAS_LIBAV=$( grep -c "This file is part of Libav." ${LIBAVCODEC_INCLUDE_DIR}/libavcodec/avcodec.h || true )
 if [ $HAS_FFMPEG -gt 0 ]; then
 	if [ $HAS_LIBAV -gt 0 ]; then
-		echo "Detected ffmpeg AND libav, this should not happen."
+		echo "Fatal: Detected ffmpeg AND libav, this should not happen!"
 		exit 1
 	else
 		echo "Detected ffmpeg."
@@ -46,7 +46,7 @@ else
 		echo "Detected libav."
 		ENABLE_FFMPEG_VERSIONS="--disable-ffmpeg-versions"
 	else
-		echo "Detection failed."
+		echo "Fatal: Detection failed."
 		exit 1
 	fi
 fi
@@ -78,8 +78,8 @@ if [ x"$( uname -m )" = x"x86_64" ]; then
     LIB64DIR=/usr/lib
   fi
 
-  if [ "$LIB32DIR" == "$LIB64DIR" ]; then
-    echo "Same lib directories found for 32-bit and 64-bit. This should not be happening"
+  if [ x"$LIB32DIR" == x"$LIB64DIR" ]; then
+    echo "Fatal: Same lib directories found for 32-bit and 64-bit. This should not happen!"
     exit 1
   fi
 

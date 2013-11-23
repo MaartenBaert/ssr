@@ -16,11 +16,13 @@ Build dependencies
 
 This list may be incomplete - if you find something that is missing, please tell me.
 - GCC and make
+- cmake (for libsoxr)
 - pkg-config
 - Qt 4
 - ffmpeg or libav (libavformat, libavcodec, libavutil, libswscale)
 - ALSA library
-- PulseAudio library
+- PulseAudio library (optional, disable with --disable-pulseaudio)
+- JACK library (optional, disable with --disable-jack)
 - libGL (32/64)
 - libGLU (32/64)
 - libX11 (32/64)
@@ -29,11 +31,11 @@ This list may be incomplete - if you find something that is missing, please tell
 
 For Ubuntu 12.04 - 13.04:
 
-    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
+    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
 
 For Ubuntu 13.10:
 
-    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib libx11-6:i368 libxext6:i386 libxfixes3:i386
+    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib libx11-6:i368 libxext6:i386 libxfixes3:i386
 
 If the 32-bit version of some library isn't found, but 64-bit works fine, try this:
 
