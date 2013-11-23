@@ -21,12 +21,14 @@ AC_ARG_ENABLE([assert], AS_HELP_STRING([--disable-assert], [don't use assertions
 AC_ARG_ENABLE([x86-asm], AS_HELP_STRING([--disable-x86-asm], [don't use x86/x64 assembly instructions]))
 AC_ARG_ENABLE([ffmpeg-versions], AS_HELP_STRING([--disable-ffmpeg-versions], [use Libav version numbers instead of FFmpeg version numbers]))
 AC_ARG_ENABLE([pulseaudio], AS_HELP_STRING([--disable-pulseaudio], [don't use PulseAudio]))
+AC_ARG_ENABLE([jack], AS_HELP_STRING([--disable-jack], [don't use JACK]))
 AM_CONDITIONAL([ENABLE_GLINJECTLIB], [test x"$enable_glinjectlib" != x"no"])
 AM_CONDITIONAL([ENABLE_SSRPROGRAM], [test x"$enable_ssrprogram" != x"no"])
 AM_CONDITIONAL([ENABLE_ASSERT], [test x"$enable_assert" != x"no"])
 AM_CONDITIONAL([ENABLE_X86_ASM], [test x"$enable_x86_asm" != x"no"])
 AM_CONDITIONAL([ENABLE_FFMPEG_VERSIONS], [test x"$enable_ffmpeg_versions" != x"no"])
 AM_CONDITIONAL([ENABLE_PULSEAUDIO], [test x"$enable_pulseaudio" != x"no"])
+AM_CONDITIONAL([ENABLE_JACK], [test x"$enable_jack" != x"no"])
 
 AM_COND_IF([ENABLE_SSRPROGRAM], [
 	PKG_PROG_PKG_CONFIG
@@ -90,5 +92,8 @@ AM_COND_IF([ENABLE_GLINJECTLIB], [
 ])
 
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile data/Makefile glinject/Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile 3rdparty/Makefile data/Makefile glinject/Makefile src/Makefile])
+AM_COND_IF([ENABLE_SSRPROGRAM], [
+	AC_CONFIG_SUBDIRS([3rdparty/soxr])
+])
 AC_OUTPUT

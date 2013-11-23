@@ -19,7 +19,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 struct GLInjectHeader {
 	// input
-	uint32_t cbuffer_size, max_bytes;
+	uint32_t ring_buffer_size, max_bytes;
 	uint32_t target_fps;
 	uint32_t flags;
 	uint32_t hotkey_enabled;

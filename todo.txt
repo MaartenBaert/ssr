@@ -1,7 +1,8 @@
 Testing:
-- PulseAudio input.
 
 In progress:
+- JACK support.
+- Resampler.
 
 Todo:
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
@@ -9,9 +10,9 @@ Todo:
 - Command-line options for recording + skipping pages + systray.
 - Move SHM from GLFrameGrabber to GLInject.
 - Multiple audio inputs.
-- JACK support.
 - X11Input should track resolution changes.
 - Input + output profiles.
+- Show recorded area while recording.
 
 Wishlist:
 - Improve interface for small screens.
@@ -24,14 +25,14 @@ Wishlist:
 - Easier GLInject application selection (as an alternative to entering the command).
 - Timelapse recording, i.e. recording at a slow speed but playing it back faster (without sound obviously).
 - maybe rewrite YUVConverter in assembly instead of using GCC vector extensions
-- Planar sample/pixel formats for inputs (source/sink).
-- Keep encoders completely inside the muxer.
 - Multiple synchronization methods.
 - Multiple audio streams (output).
 
 Not sure yet:
+- Keep encoders completely inside the muxer.
 - Fixed cursor position when using 'follow cursor'?
 - skip microphone startup click?
 - redesigned interface? (https://github.com/swick/glc2/issues/1)
 - equalizer?
 - if possible, force fixed size on OpenGL applications? (optional of course)
+- Planar sample/pixel formats for inputs (source/sink). (why?)

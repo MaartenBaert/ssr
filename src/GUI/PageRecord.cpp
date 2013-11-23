@@ -39,6 +39,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #if SSR_USE_PULSEAUDIO
 #include "PulseAudioInput.h"
 #endif
+#if SSR_USE_JACK
+#include "JACKInput.h"
+#endif
 #include "VideoPreviewer.h"
 #include "AudioPreviewer.h"
 
@@ -665,6 +668,9 @@ void PageRecord::StartInput() {
 #if SSR_USE_PULSEAUDIO
 	Q_ASSERT(m_pulseaudio_input == NULL);
 #endif
+#if SSR_USE_JACK
+	Q_ASSERT(m_jack_input == NULL);
+#endif
 
 	try {
 
@@ -689,6 +695,10 @@ void PageRecord::StartInput() {
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
 				m_pulseaudio_input.reset(new PulseAudioInput(m_pulseaudio_source, m_audio_sample_rate));
 #endif
+#if SSR_USE_JACK
+			if(m_audio_backend == PageInput::AUDIO_BACKEND_JACK)
+				m_jack_input.reset(new JACKInput());
+#endif
 		}
 
 		Logger::LogInfo("[PageRecord::StartInput] " + tr("Started input."));
@@ -702,6 +712,9 @@ void PageRecord::StartInput() {
 		m_alsa_input.reset();
 #if SSR_USE_PULSEAUDIO
 		m_pulseaudio_input.reset();
+#endif
+#if SSR_USE_JACK
+		m_jack_input.reset();
 #endif
 		return;
 	}
@@ -724,6 +737,9 @@ void PageRecord::StopInput() {
 	m_alsa_input.reset();
 #if SSR_USE_PULSEAUDIO
 	m_pulseaudio_input.reset();
+#endif
+#if SSR_USE_JACK
+	m_jack_input.reset();
 #endif
 
 	Logger::LogInfo("[PageRecord::StopInput] " + tr("Stopped input."));
@@ -754,6 +770,10 @@ void PageRecord::UpdateInput() {
 #if SSR_USE_PULSEAUDIO
 		if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
 			audio_source = m_pulseaudio_input.get();
+#endif
+#if SSR_USE_JACK
+		if(m_audio_backend == PageInput::AUDIO_BACKEND_JACK)
+			audio_source = m_jack_input.get();
 #endif
 	}
 

@@ -90,7 +90,7 @@ class AudioSource : private BaseSource {
 	friend class AudioSink;
 protected:
 	AudioSource() {}
-	void PushAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp);
+	void PushAudioSamples(unsigned int channels, unsigned int sample_rate, AVSampleFormat format, unsigned int sample_count, const uint8_t* data, int64_t timestamp);
 	void PushAudioHole();
 };
 
@@ -101,6 +101,6 @@ protected:
 public:
 	inline void ConnectAudioSource(AudioSource* source, int priority = 0) { ConnectBaseSource(source, priority); }
 public:
-	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) = 0;
+	virtual void ReadAudioSamples(unsigned int channels, unsigned int sample_rate, AVSampleFormat format, unsigned int sample_count, const uint8_t* data, int64_t timestamp) = 0;
 	virtual void ReadAudioHole() {}
 };

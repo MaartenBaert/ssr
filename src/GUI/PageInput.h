@@ -70,7 +70,12 @@ public:
 	};
 	enum enum_audio_backend {
 		AUDIO_BACKEND_ALSA,
-		AUDIO_BACKEND_PULSEAUDIO, // always defined, even if it isn't used, because the values are fixed
+#if SSR_USE_PULSEAUDIO
+		AUDIO_BACKEND_PULSEAUDIO,
+#endif
+#if SSR_USE_JACK
+		AUDIO_BACKEND_JACK,
+#endif
 		AUDIO_BACKEND_COUNT // must be last
 	};
 

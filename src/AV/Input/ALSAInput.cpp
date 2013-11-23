@@ -107,17 +107,16 @@ void ALSAInput::Init() {
 		}
 
 		// set sample rate
-		unsigned int rate = m_sample_rate;
+		unsigned int rate = 48000; //TODO//m_sample_rate;
 		if(snd_pcm_hw_params_set_rate_near(m_alsa_pcm, alsa_hw_params, &rate, NULL) < 0) {
 			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't set sample rate!"));
 			throw ALSAException();
 		}
 		if(rate != m_sample_rate) {
 			Logger::LogWarning("[ALSAInput::Init] " + QObject::tr("Warning: Sample rate %1 is not supported, using %2 instead. "
-																  "This could be a problem if the difference is large.")
+																  "This is not a problem.")
 							   .arg(m_sample_rate).arg(rate));
-			//TODO// enable once resampling is ready
-			//m_sample_rate = rate;
+			m_sample_rate = rate;
 		}
 
 		// set channel count
@@ -242,7 +241,7 @@ void ALSAInput::InputThread() {
 
 					// push the samples
 					int64_t time = timestamp - (int64_t) samples_read * (int64_t) 1000000 / (int64_t) m_sample_rate;
-					PushAudioSamples(m_sample_rate, m_channels, samples_read, buffer.data(), AV_SAMPLE_FMT_S16, time);
+					PushAudioSamples(m_channels, m_sample_rate, AV_SAMPLE_FMT_S16, samples_read, buffer.data(), time);
 
 				}
 			} else {

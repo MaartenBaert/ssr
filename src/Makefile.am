@@ -4,9 +4,11 @@ bin_PROGRAMS = simplescreenrecorder
 
 simplescreenrecorder_CPPFLAGS = \
 	$(QT4_CFLAGS) \
+	-I$(top_builddir)/3rdparty \
 	-I$(srcdir)/AV/Input \
 	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
+	-I$(srcdir)/common \
 	-I$(srcdir)/GUI
 simplescreenrecorder_CFLAGS = \
 	-pthread
@@ -17,7 +19,8 @@ simplescreenrecorder_CXXFLAGS = \
 simplescreenrecorder_LDFLAGS = \
 	-pthread \
 	$(QT4_LIBS) \
-	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
+	-L$(top_builddir)/3rdparty \
+	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound -lsoxr
 
 if ! ENABLE_ASSERT
 simplescreenrecorder_CPPFLAGS += -DNDEBUG -DQT_NO_DEBUG
@@ -42,6 +45,13 @@ else
 simplescreenrecorder_CPPFLAGS += -DSSR_USE_PULSEAUDIO=0
 endif
 
+if ENABLE_JACK
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_JACK=1
+simplescreenrecorder_LDFLAGS += -ljack
+else
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_JACK=0
+endif
+
 simplescreenrecorder_SOURCES = \
 	AV/Input/ALSAInput.cpp \
 	AV/Input/ALSAInput.h \
@@ -49,6 +59,8 @@ simplescreenrecorder_SOURCES = \
 	AV/Input/GLInjectInput.h \
 	AV/Input/GLInjectLauncher.cpp \
 	AV/Input/GLInjectLauncher.h \
+	AV/Input/JACKInput.cpp \
+	AV/Input/JACKInput.h \
 	AV/Input/PulseAudioInput.cpp \
 	AV/Input/PulseAudioInput.h \
 	AV/Input/X11Input.cpp \
@@ -72,14 +84,20 @@ simplescreenrecorder_SOURCES = \
 	AV/Output/X264Presets.h \
 	AV/AVWrapper.cpp \
 	AV/AVWrapper.h \
-	AV/ByteQueue.cpp \
-	AV/ByteQueue.h \
-	AV/DetectCPUFeatures.cpp \
-	AV/DetectCPUFeatures.h \
 	AV/FastScaler.cpp \
 	AV/FastScaler.h \
+	AV/Resampler.cpp \
+	AV/Resampler.h \
 	AV/SourceSink.cpp \
 	AV/SourceSink.h \
+	common/ByteQueue.cpp \
+	common/ByteQueue.h \
+	common/DetectCPUFeatures.cpp \
+	common/DetectCPUFeatures.h \
+	common/Logger.cpp \
+	common/Logger.h \
+	common/MutexDataPair.h \
+	common/TempBuffer.h \
 	GUI/AudioPreviewer.cpp \
 	GUI/AudioPreviewer.h \
 	GUI/ElidedLabel.cpp \
@@ -103,11 +121,8 @@ simplescreenrecorder_SOURCES = \
 	GUI/VideoPreviewer.cpp \
 	GUI/VideoPreviewer.h \
 	Global.h \
-	Logger.cpp \
-	Logger.h \
 	Main.cpp \
 	Main.h \
-	MutexDataPair.h \
 	Version.cpp \
 	Version.h
 nodist_simplescreenrecorder_SOURCES =
@@ -139,6 +154,7 @@ clean-qrc-extra:
 nodist_simplescreenrecorder_SOURCES += \
 	moc_X11Input.cpp \
 	moc_SyncDiagram.cpp \
+	moc_Logger.cpp \
 	moc_AudioPreviewer.cpp \
 	moc_ElidedLabel.cpp \
 	moc_HotkeyListener.cpp \
@@ -148,12 +164,13 @@ nodist_simplescreenrecorder_SOURCES += \
 	moc_PageOutput.cpp \
 	moc_PageRecord.cpp \
 	moc_PageWelcome.cpp \
-	moc_VideoPreviewer.cpp \
-	moc_Logger.cpp
+	moc_VideoPreviewer.cpp
 
 moc_X11Input.cpp: $(srcdir)/AV/Input/X11Input.h
 	$(MOC) "$<" -o "$@"
 moc_SyncDiagram.cpp: $(srcdir)/AV/Output/SyncDiagram.h
+	$(MOC) "$<" -o "$@"
+moc_Logger.cpp: $(srcdir)/common/Logger.h
 	$(MOC) "$<" -o "$@"
 moc_AudioPreviewer.cpp: $(srcdir)/GUI/AudioPreviewer.h
 	$(MOC) "$<" -o "$@"
@@ -174,8 +191,6 @@ moc_PageRecord.cpp: $(srcdir)/GUI/PageRecord.h
 moc_PageWelcome.cpp: $(srcdir)/GUI/PageWelcome.h
 	$(MOC) "$<" -o "$@"
 moc_VideoPreviewer.cpp: $(srcdir)/GUI/VideoPreviewer.h
-	$(MOC) "$<" -o "$@"
-moc_Logger.cpp: $(srcdir)/Logger.h
 	$(MOC) "$<" -o "$@"
 
 clean-moc-extra:
@@ -199,5 +214,7 @@ simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
 	$(LRELEASE) "$<" -qm "$@"
 simplescreenrecorder_nl.qm: $(srcdir)/translations/simplescreenrecorder_nl.ts
 	$(LRELEASE) "$<" -qm "$@"
+
+.PHONY: clean-qrc-extra clean-moc-extra
 
 endif

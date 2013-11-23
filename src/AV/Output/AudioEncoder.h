@@ -43,7 +43,7 @@ public:
 	~AudioEncoder();
 
 	// Returns the required frame size, i.e. the number of samples (for each channel).
-	unsigned int GetRequiredFrameSize();
+	unsigned int GetRequiredFrameSamples();
 
 	// Returns the required sample format.
 	AVSampleFormat GetRequiredSampleFormat();

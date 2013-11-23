@@ -109,8 +109,8 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	// scale the image
 	uint8_t *out_data = image.bits();
 	int out_stride = image.bytesPerLine();
-	m_fast_scaler.Scale(width, height, &data, &stride, format,
-						image_size.width(), image_size.height(), &out_data, &out_stride, PIX_FMT_BGRA);
+	m_fast_scaler.Scale(width, height, format, &data, &stride,
+						image_size.width(), image_size.height(), PIX_FMT_BGRA, &out_data, &out_stride);
 
 	// set the alpha channel to 0xff (just to be sure)
 	// Some applications (e.g. firefox) generate alpha values that are not 0xff.

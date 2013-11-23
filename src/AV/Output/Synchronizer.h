@@ -23,8 +23,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 #include "FastScaler.h"
+#include "Resampler.h"
 #include "ByteQueue.h"
 #include "AVWrapper.h"
+
+#include <soxr.h>
 
 class VideoEncoder;
 class AudioEncoder;
@@ -59,8 +62,9 @@ private:
 		std::unique_ptr<SyncDiagram> m_sync_diagram;
 
 	};
-	typedef MutexDataPair<SharedData>::Lock SharedLock;
 	typedef MutexDataPair<FastScaler>::Lock FastScalerLock;
+	typedef MutexDataPair<Resampler>::Lock ResamplerLock;
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
 	static const double DESYNC_CORRECTION_P, DESYNC_CORRECTION_I;
@@ -78,11 +82,12 @@ private:
 	int64_t m_video_max_frames_skipped;
 
 	unsigned int m_audio_sample_rate, m_audio_channels, m_audio_sample_size;
-	unsigned int m_audio_required_frame_size, m_audio_required_sample_size;
+	unsigned int m_audio_required_frame_samples, m_audio_required_sample_size;
 	AVSampleFormat m_audio_required_sample_format;
 
 	std::thread m_thread;
 	MutexDataPair<FastScaler> m_fast_scaler;
+	MutexDataPair<Resampler> m_resampler;
 	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
@@ -119,7 +124,7 @@ public: // internal
 	virtual int64_t GetNextVideoTimestamp() override;
 	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;
 	virtual void ReadVideoPing(int64_t timestamp) override;
-	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) override;
+	virtual void ReadAudioSamples(unsigned int channels, unsigned int sample_rate, AVSampleFormat format, unsigned int sample_count, const uint8_t* data, int64_t timestamp) override;
 	virtual void ReadAudioHole() override;
 
 private:

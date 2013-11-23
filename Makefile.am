@@ -1,4 +1,4 @@
-SUBDIRS = data glinject src
+SUBDIRS = 3rdparty data glinject src
 
 EXTRA_DIST = \
 	COPYING \

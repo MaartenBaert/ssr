@@ -67,6 +67,11 @@ extern "C" {
 #error SSR_USE_PULSEAUDIO should be defined!
 #endif
 
+// Whether JACK should be used.
+#ifndef SSR_USE_JACK
+#error SSR_USE_JACK should be defined!
+#endif
+
 // Path to translation files.
 #ifndef SSR_TRANSLATIONS_PATH
 #error SSR_TRANSLATIONS_PATH should be defined!
@@ -161,6 +166,12 @@ public:
 		return "LibavException";
 	}
 };
+class SoxrException : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "SoxrException";
+	}
+};
 class X11Exception : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
@@ -187,6 +198,12 @@ public:
 	}
 };
 #endif
+class JACKException : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "JACKException";
+	}
+};
 
 // high resolution timer
 inline int64_t hrt_time_micro() {

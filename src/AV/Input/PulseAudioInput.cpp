@@ -109,7 +109,7 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 	buffer_attr.tlength = (uint32_t) -1;
 
 	// create a stream
-	*stream = pa_stream_new(context, "SimpleScreenRecorder audio input", &sample_spec, NULL);
+	*stream = pa_stream_new(context, "SimpleScreenRecorder input", &sample_spec, NULL);
 	if(*stream == NULL) {
 		Logger::LogError("[PulseAudioConnectStream] " + QObject::tr("Error: Could not create stream! Reason: %1").arg(pa_strerror(pa_context_errno(context))));
 		throw PulseAudioException();
@@ -349,7 +349,7 @@ void PulseAudioInput::InputThread() {
 
 						// push the samples
 						int64_t time = timestamp - latency;
-						PushAudioSamples(m_sample_rate, m_channels, samples, push_data, AV_SAMPLE_FMT_S16, time);
+						PushAudioSamples(m_channels, m_sample_rate, AV_SAMPLE_FMT_S16, samples, push_data, time);
 
 					}
 				} else {

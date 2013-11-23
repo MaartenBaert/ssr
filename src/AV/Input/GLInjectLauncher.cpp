@@ -25,7 +25,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "../glinject/ShmStructs.h"
 
-const unsigned int GLInjectLauncher::CBUFFER_SIZE = 5;
+const unsigned int GLInjectLauncher::RING_BUFFER_SIZE = 5;
 
 GLInjectLauncher::GLInjectLauncher(const QString& command, const QString& working_directory, bool run_command, bool relax_permissions, unsigned int max_bytes, unsigned int target_fps, bool record_cursor, bool capture_front, bool limit_fps) {
 
@@ -98,7 +98,7 @@ bool GLInjectLauncher::GetHotkeyPressed() {
 void GLInjectLauncher::Init() {
 
 	// allocate main shared memory
-	m_shm_main_id = shmget(IPC_PRIVATE, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * CBUFFER_SIZE, IPC_CREAT | ((m_relax_permissions)? 0777 : 0700));
+	m_shm_main_id = shmget(IPC_PRIVATE, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * RING_BUFFER_SIZE, IPC_CREAT | ((m_relax_permissions)? 0777 : 0700));
 	if(m_shm_main_id == -1) {
 		Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't get shared memory!"));
 		throw GLInjectException();
@@ -108,10 +108,10 @@ void GLInjectLauncher::Init() {
 		Logger::LogError("[GLInjectLauncher::Init] " + QObject::tr("Error: Can't attach to shared memory!"));
 		throw GLInjectException();
 	}
-	memset(m_shm_main_ptr, 0, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * CBUFFER_SIZE);
+	memset(m_shm_main_ptr, 0, sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * RING_BUFFER_SIZE);
 
 	// allocate frame shared memory
-	for(unsigned int i = 0; i < CBUFFER_SIZE; ++i) {
+	for(unsigned int i = 0; i < RING_BUFFER_SIZE; ++i) {
 		m_shm_frames.push_back(ShmFrame());
 		m_shm_frames.back().m_id = shmget(IPC_PRIVATE, m_max_bytes, IPC_CREAT | ((m_relax_permissions)? 0777 : 0700));
 		if(m_shm_frames.back().m_id == -1) {
@@ -130,7 +130,7 @@ void GLInjectLauncher::Init() {
 
 	// initialize the memory
 	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
-	header->cbuffer_size = CBUFFER_SIZE;
+	header->ring_buffer_size = RING_BUFFER_SIZE;
 	header->max_bytes = m_max_bytes;
 	header->target_fps = m_target_fps;
 	header->flags = ((m_record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((m_capture_front)? GLINJECT_FLAG_CAPTURE_FRONT : 0) | ((m_limit_fps)? GLINJECT_FLAG_LIMIT_FPS : 0);

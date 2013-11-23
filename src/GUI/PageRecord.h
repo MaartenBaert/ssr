@@ -40,6 +40,9 @@ class ALSAInput;
 #if SSR_USE_PULSEAUDIO
 class PulseAudioInput;
 #endif
+#if SSR_USE_JACK
+class JACKInput;
+#endif
 class VideoPreviewer;
 class AudioPreviewer;
 
@@ -88,6 +91,9 @@ private:
 	std::unique_ptr<ALSAInput> m_alsa_input;
 #if SSR_USE_PULSEAUDIO
 	std::unique_ptr<PulseAudioInput> m_pulseaudio_input;
+#endif
+#if SSR_USE_JACK
+	std::unique_ptr<JACKInput> m_jack_input;
 #endif
 
 	QPushButton *m_pushbutton_start_pause;

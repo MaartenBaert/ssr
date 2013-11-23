@@ -119,7 +119,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	// redirect stderr to a log file
+	// redirect stdout and stderr to a log file
 	if(g_option_logfile) {
 		QDateTime now = QDateTime::currentDateTime();
 		QDir dir(GetApplicationUserDir());
@@ -132,6 +132,7 @@ int main(int argc, char* argv[]) {
 		}
 		QString file = dir.path() + "/log-" + now.toString(Qt::ISODate) + ".txt";
 		FILE *f = fopen(file.toLocal8Bit().constData(), "w");
+		dup2(fileno(f), 1); // redirect stdout
 		dup2(fileno(f), 2); // redirect stderr
 	}
 

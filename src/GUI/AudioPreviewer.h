@@ -53,7 +53,7 @@ public:
 
 	// Reads audio samples from the audio source.
 	// This function is thread-safe.
-	virtual void ReadAudioSamples(unsigned int sample_rate, unsigned int channels, unsigned int sample_count, const uint8_t* data, AVSampleFormat format, int64_t timestamp) override;
+	virtual void ReadAudioSamples(unsigned int channels, unsigned int sample_rate, AVSampleFormat format, unsigned int sample_count, const uint8_t* data, int64_t timestamp) override;
 
 	virtual QSize minimumSizeHint() const override { return QSize(100, 17); }
 	virtual QSize sizeHint() const override { return QSize(100, 17); }
