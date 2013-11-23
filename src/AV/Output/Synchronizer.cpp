@@ -387,7 +387,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 		if(fabs(current_error) > DESYNC_ERROR_THRESHOLD) {
 			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Desynchronization is too high, starting new segment to keep the audio "
 							   "in sync with the video (some video and/or audio may be lost)."));
-			qDebug() << sample_length << time_length << (sample_length - time_length) << lock->m_av_desync << lock->m_av_desync_i;
+			//qDebug() << sample_length << time_length << (sample_length - time_length) << lock->m_av_desync << lock->m_av_desync_i;
 			NewSegment(lock.get());
 		} else {
 			double dt = std::min((double) (timestamp - lock->m_segment_audio_last_timestamp) * 1.0e-6, 0.5);
