@@ -1,0 +1,14 @@
+#!/bin/bash
+# Wrapper around cmake to make configuration easier
+
+SRCDIR="."
+
+for OPT in "$@"
+do
+if [ x"${OPT:0:9}" == x"--srcdir=" ]
+then
+SRCDIR="${OPT:9}"
+fi
+done
+
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=FALSE -DWITH_OPENMP=FALSE "$SRCDIR"

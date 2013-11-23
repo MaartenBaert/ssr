@@ -21,5 +21,6 @@ libtool
 stamp-h1
 
 build/
+build32/
 
 private-*
