@@ -107,7 +107,7 @@ void ALSAInput::Init() {
 		}
 
 		// set sample rate
-		unsigned int rate = 48000; //TODO//m_sample_rate;
+		unsigned int rate = m_sample_rate;
 		if(snd_pcm_hw_params_set_rate_near(m_alsa_pcm, alsa_hw_params, &rate, NULL) < 0) {
 			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't set sample rate!"));
 			throw ALSAException();

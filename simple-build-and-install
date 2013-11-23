@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Run this if you just want to build and install the program and you don't care about all the details.
 # Any additional arguments will be passed on to 'configure'.
 # If you want to modify configure.ac or Makefile.am, you will need the correct version of autotools, and you should
