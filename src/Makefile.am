@@ -202,9 +202,8 @@ clean-moc-extra:
 
 ########## Qt translation system ##########
 
-simplescreenrecorder_CPPFLAGS += -DSSR_TRANSLATIONS_PATH=\"$(pkgdatadir)\"
-
-translationsdir = $(pkgdatadir)/simplescreenrecorder/translations
+translationsdir = $(pkgdatadir)/translations
+simplescreenrecorder_CPPFLAGS += -DSSR_TRANSLATIONS_PATH=\"$(translationsdir)\"
 
 nodist_translations_DATA = \
 	simplescreenrecorder_de.qm \

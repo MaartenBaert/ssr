@@ -1,7 +1,7 @@
 if ENABLE_SSRPROGRAM
 
-desktopdir = $(pkgdatadir)/applications
-icon256dir = $(pkgdatadir)/icons/hicolor/256x256/apps
+desktopdir = $(datadir)/applications
+icon256dir = $(datadir)/icons/hicolor/256x256/apps
 
 dist_desktop_DATA = \
 	simplescreenrecorder.desktop
