@@ -51,8 +51,9 @@ int main(int argc, char* argv[]) {
 
 	// set the language
 	QTranslator translator;
-	if(!translator.load(QLocale::system(), "simplescreenrecorder", "_", QCoreApplication::applicationDirPath()))
-		translator.load(QLocale::system(), "simplescreenrecorder", "_", SSR_TRANSLATIONS_PATH);
+	QString qmFile = "simplescreenrecorder-" + QLocale::system().name();
+	if(!translator.load(qmFile, QCoreApplication::applicationDirPath()))
+		translator.load(qmFile, SSR_TRANSLATIONS_PATH);
 	QApplication::installTranslator(&translator);
 
 	// Qt doesn't count hidden windows, so if the main window is hidden and a dialog box is closed, Qt thinks the application should quit.

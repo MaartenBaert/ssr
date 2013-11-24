@@ -275,8 +275,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@ENABLE_SSRPROGRAM_TRUE@desktopdir = $(pkgdatadir)/applications
-@ENABLE_SSRPROGRAM_TRUE@icon256dir = $(pkgdatadir)/icons/hicolor/256x256/apps
+@ENABLE_SSRPROGRAM_TRUE@desktopdir = $(datadir)/applications
+@ENABLE_SSRPROGRAM_TRUE@icon256dir = $(datadir)/icons/hicolor/256x256/apps
 @ENABLE_SSRPROGRAM_TRUE@dist_desktop_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder.desktop
 
