@@ -29,6 +29,8 @@ SOURCES += \
 	AV/Output/X264Presets.cpp \
 	AV/AVWrapper.cpp \
 	AV/FastScaler.cpp \
+	AV/FastScaler_Convert.cpp \
+	AV/FastScaler_Scale.cpp \
 	AV/Resampler.cpp \
 	AV/SourceSink.cpp \
 	common/ByteQueue.cpp \
@@ -66,6 +68,8 @@ HEADERS  += \
 	AV/Output/X264Presets.h \
 	AV/AVWrapper.h \
 	AV/FastScaler.h \
+	AV/FastScaler_Convert.h \
+	AV/FastScaler_Scale.h \
 	AV/Resampler.h \
 	AV/SourceSink.h \
 	common/ByteQueue.h \

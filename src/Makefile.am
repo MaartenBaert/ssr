@@ -86,6 +86,10 @@ simplescreenrecorder_SOURCES = \
 	AV/AVWrapper.h \
 	AV/FastScaler.cpp \
 	AV/FastScaler.h \
+	AV/FastScaler_Convert.cpp \
+	AV/FastScaler_Convert.h \
+	AV/FastScaler_Scale.cpp \
+	AV/FastScaler_Scale.h \
 	AV/Resampler.cpp \
 	AV/Resampler.h \
 	AV/SourceSink.cpp \

@@ -20,26 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-class FastScaler {
+void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]);
 
-private:
 #if SSR_USE_X86_ASM
-	bool m_use_ssse3;
-	bool m_warn_alignment;
+void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) __attribute__((__target__("sse,sse2,sse3,ssse3")));
 #endif
-
-	bool m_warn_swscale;
-	SwsContext *m_sws_context;
-
-public:
-	FastScaler();
-	~FastScaler();
-	void Scale(unsigned int in_width, unsigned int in_height, PixelFormat in_format, const uint8_t* const* in_data, const int* in_stride,
-			   unsigned int out_width, unsigned int out_height, PixelFormat out_format, uint8_t* const* out_data, const int* out_stride);
-
-private:
-	void Convert_BGRA_YUV420(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]);
-	void Scale_BGRA(unsigned int in_width, unsigned int in_height, const uint8_t* in_data, int in_stride,
-					unsigned int out_width, unsigned int out_height, uint8_t* out_data, int out_stride);
-
-};

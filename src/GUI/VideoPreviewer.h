@@ -23,17 +23,27 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 #include "FastScaler.h"
+#include "TempBuffer.h"
 
 class VideoPreviewer : public QWidget, public VideoSink {
 	Q_OBJECT
 
 private:
 	struct SharedData {
-		QImage m_image;
+
+		// current image
+		std::shared_ptr<TempBuffer<uint8_t> > m_image_buffer;
+		int m_image_stride;
+		QSize m_image_size;
+
+		// frame rate control
+		unsigned int m_frame_rate;
 		int64_t m_next_frame_time;
+
+		// widget properties
 		bool m_is_visible;
 		QSize m_source_size, m_widget_size;
-		unsigned int m_frame_rate;
+
 	};
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
 

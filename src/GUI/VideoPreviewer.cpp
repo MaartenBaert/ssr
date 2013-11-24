@@ -37,11 +37,11 @@ VideoPreviewer::VideoPreviewer(QWidget* parent)
 
 	{
 		SharedLock lock(&m_shared_data);
+		lock->m_frame_rate = 10;
 		lock->m_next_frame_time = SINK_TIMESTAMP_ANY;
 		lock->m_is_visible = false;
 		lock->m_source_size = QSize(0, 0);
 		lock->m_widget_size = QSize(0, 0);
-		lock->m_frame_rate = 10;
 	}
 
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -59,7 +59,7 @@ VideoPreviewer::~VideoPreviewer() {
 
 void VideoPreviewer::Reset() {
 	SharedLock lock(&m_shared_data);
-	lock->m_image = QImage();
+	lock->m_image_buffer.reset();
 	emit NeedsUpdate();
 }
 
@@ -84,7 +84,7 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 		if(!lock->m_is_visible)
 			return;
 
-		// check the size
+		// check the size (the scaler can't handle sizes below 2)
 		if(width < 2 || height < 2 || lock->m_widget_size.width() < 2 || lock->m_widget_size.height() < 2)
 			return;
 
@@ -104,20 +104,21 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	}
 
 	// allocate the image
-	QImage image(image_size, QImage::Format_RGB32);
+	int image_stride = grow_align16(image_size.width() * 4);
+	std::shared_ptr<TempBuffer<uint8_t> > image_buffer = std::make_shared<TempBuffer<uint8_t> >();
+	image_buffer->alloc(image_stride * image_size.height());
+	uint8_t *image_data = image_buffer->data();
 
 	// scale the image
-	uint8_t *out_data = image.bits();
-	int out_stride = image.bytesPerLine();
 	m_fast_scaler.Scale(width, height, format, &data, &stride,
-						image_size.width(), image_size.height(), PIX_FMT_BGRA, &out_data, &out_stride);
+						image_size.width(), image_size.height(), PIX_FMT_BGRA, &image_data, &image_stride);
 
 	// set the alpha channel to 0xff (just to be sure)
 	// Some applications (e.g. firefox) generate alpha values that are not 0xff.
 	// I'm not sure whether Qt cares about this, apparently Qt 4.8 with the 'native' back-end doesn't,
 	// but I'm not sure about the other back-ends.
 	for(int y = 0; y < image_size.height(); ++y) {
-		uint8_t *row = out_data + out_stride * y;
+		uint8_t *row = image_data + image_stride * y;
 		for(int x = 0; x < image_size.width(); ++x) {
 			row[x * 4 + 3] = 0xff; // third byte is alpha because we're little-endian
 		}
@@ -125,7 +126,9 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 
 	// store the image
 	SharedLock lock(&m_shared_data);
-	lock->m_image = image; image = QImage();
+	lock->m_image_buffer = std::move(image_buffer); image_buffer.reset();
+	lock->m_image_stride = image_stride;
+	lock->m_image_size = image_size;
 
 	emit NeedsUpdate();
 
@@ -153,17 +156,22 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 	Q_UNUSED(event);
 	QPainter painter(this);
 
-	// Copy the image so the lock isn't held while actually drawing the image.
-	// This is fast because QImage is reference counted.
-	QImage img;
-	QSize source_size;
+	// copy the image data so the lock isn't held while actually drawing the image
+	std::shared_ptr<TempBuffer<uint8_t> > image_buffer;
+	int image_stride;
+	QSize image_size, source_size;
 	{
 		SharedLock lock(&m_shared_data);
-		img = lock->m_image;
+		image_buffer = lock->m_image_buffer; // shared pointer copy is cheap
+		image_stride = lock->m_image_stride;
+		image_size = lock->m_image_size;
 		source_size = lock->m_source_size;
 	}
 
-	if(!img.isNull()) {
+	if(image_buffer != NULL) {
+
+		// create image (data is not copied)
+		QImage img(image_buffer->data(), image_size.width(), image_size.height(), image_stride, QImage::Format_RGB32);
 
 		// draw the image
 		// Scaling is only used if the widget was resized after the image was captured, which is unlikely

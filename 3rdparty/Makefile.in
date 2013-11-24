@@ -549,7 +549,7 @@ clean: clean-recursive
 
 clean-am: clean-generic clean-libtool mostlyclean-am
 
-@ENABLE_SSRPROGRAM_FALSE@distclean: distclean-recursive
+distclean: distclean-recursive
 	-rm -f Makefile
 distclean-am: clean-am distclean-generic distclean-tags
 
@@ -593,7 +593,7 @@ install-ps-am:
 
 installcheck-am:
 
-@ENABLE_SSRPROGRAM_FALSE@maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-recursive
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -647,28 +647,6 @@ uninstall-am:
 
 # Overwrite check target. We do not want to run the tests from the libraries.
 @ENABLE_SSRPROGRAM_TRUE@check:
-
-# Overwrite distclean rule to avoid running distclean for unconfigured libraries
-# (and then failing due to the missing Makefile).
-@ENABLE_SSRPROGRAM_TRUE@distclean:
-@ENABLE_SSRPROGRAM_TRUE@	@for subdir in $(SUBDIRS); do \
-@ENABLE_SSRPROGRAM_TRUE@	if test -f $$subdir/Makefile; then \
-@ENABLE_SSRPROGRAM_TRUE@	echo "Making $@ in $$subdir"; \
-@ENABLE_SSRPROGRAM_TRUE@	$(MAKE) $(AM_MAKEFLAGS) -C $$subdir $@ || exit 1; \
-@ENABLE_SSRPROGRAM_TRUE@	fi; \
-@ENABLE_SSRPROGRAM_TRUE@	done
-@ENABLE_SSRPROGRAM_TRUE@	rm -f Makefile
-
-# Overwrite maintainer-clean rule to avoid running maintainer-clean for
-# unconfigured libraries (and then failing due to the missing Makefile).
-@ENABLE_SSRPROGRAM_TRUE@maintainer-clean:
-@ENABLE_SSRPROGRAM_TRUE@	@for subdir in $(SUBDIRS); do \
-@ENABLE_SSRPROGRAM_TRUE@	if test -f $$subdir/Makefile; then \
-@ENABLE_SSRPROGRAM_TRUE@	echo "Making $@ in $$subdir"; \
-@ENABLE_SSRPROGRAM_TRUE@	$(MAKE) $(AM_MAKEFLAGS) -C $$subdir $@ || exit 1; \
-@ENABLE_SSRPROGRAM_TRUE@	fi; \
-@ENABLE_SSRPROGRAM_TRUE@	done
-@ENABLE_SSRPROGRAM_TRUE@	rm -f Makefile
 
 @ENABLE_SSRPROGRAM_TRUE@.PHONY: check install install-dvi install-data install-exec install-html install-info install-ps install-pdf installdirs uninstall distclean maintainer-clean
 

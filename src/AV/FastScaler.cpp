@@ -22,23 +22,18 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.h"
 #include "DetectCPUFeatures.h"
+#include "TempBuffer.h"
 
-static void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]);
-
-#if SSR_USE_X86_ASM
-static void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) __attribute__((__target__("sse2,ssse3")));
-#endif
+#include "FastScaler_Convert.h"
+#include "FastScaler_Scale.h"
 
 FastScaler::FastScaler() {
 
 #if SSR_USE_X86_ASM
 	CPUFeatures features;
 	DetectCPUFeatures(&features);
-	m_bgra_yuv420_use_ssse3 = (features.sse2 && features.ssse3);
-	Logger::LogInfo("[FastScaler::FastScaler] " + QObject::tr("BGRA to YUV420 converter") + ": " + ((m_bgra_yuv420_use_ssse3)? "SSSE3" : "Fallback"));
+	m_use_ssse3 = (features.sse && features.sse2 && features.sse3 && features.ssse3);
 	m_warn_alignment = true;
-#else
-	Logger::LogInfo("[FastScaler::FastScaler] " + QObject::tr("X86-specific instructions are disabled."));
 #endif
 
 	m_warn_swscale = true;
@@ -56,22 +51,30 @@ FastScaler::~FastScaler() {
 void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelFormat in_format, const uint8_t* const* in_data, const int* in_stride,
 					   unsigned int out_width, unsigned int out_height, PixelFormat out_format, uint8_t* const* out_data, const int* out_stride) {
 
+	// faster BGRA scaling
+	if(in_format == PIX_FMT_BGRA && out_format == PIX_FMT_BGRA) {
+		Scale_BGRA(in_width, in_height, in_data[0], in_stride[0], out_width, out_height, out_data[0], out_stride[0]);
+		return;
+	}
+
 	// faster BGRA to YUV conversion
-	if(in_format == PIX_FMT_BGRA && out_format == PIX_FMT_YUV420P && in_width == out_width && in_height == out_height) {
-		Q_ASSERT(in_width % 2 == 0 && in_height % 2 == 0);
-		Convert_BGRA_YUV420(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
+	if(in_format == PIX_FMT_BGRA && out_format == PIX_FMT_YUV420P) {
+		if(in_width == out_width && in_height == out_height) {
+			Convert_BGRA_YUV420(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
+		} else {
+			TempBuffer<uint8_t> scaled;
+			int scaled_stride = grow_align16(out_width * 4);
+			scaled.alloc(scaled_stride * out_height);
+			Scale_BGRA(in_width, in_height, in_data[0], in_stride[0], out_width, out_height, scaled.data(), scaled_stride);
+			Convert_BGRA_YUV420(out_width, out_height, scaled.data(), scaled_stride, out_data, out_stride);
+		}
 		return;
 	}
 
 	if(m_warn_swscale) {
 		m_warn_swscale = false;
-		if(in_width == out_width && in_height == out_height) {
-			Logger::LogWarning("[FastScaler::Scale] " + QObject::tr("Warning: Pixel format is not supported (%1 -> %2), using swscale instead. "
-																	"This is not a problem, but performance will be worse.")
-							   .arg(in_format).arg(out_format));
-		} else {
-			Logger::LogInfo("[FastScaler::Scale] " + QObject::tr("Using swscale for scaling.", "Don't translate 'swscale'"));
-		}
+		Logger::LogWarning("[FastScaler::Scale] " + QObject::tr("Warning: Pixel format is not supported (%1 -> %2), using swscale instead. "
+																"This is not a problem, but performance will be worse.").arg(in_format).arg(out_format));
 	}
 
 	m_sws_context = sws_getCachedContext(m_sws_context,
@@ -87,31 +90,19 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 }
 
 void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
+	Q_ASSERT(width % 2 == 0 && height % 2 == 0);
 
 #if SSR_USE_X86_ASM
-	if(m_bgra_yuv420_use_ssse3) {
-		if((uintptr_t)(in_data) % 16 == 0 && in_stride % 16 == 0 &&
-		   (uintptr_t)(out_data[0]) % 16 == 0 && out_stride[0] % 16 == 0 &&
-		   (uintptr_t)(out_data[1]) % 16 == 0 && out_stride[1] % 16 == 0 &&
-		   (uintptr_t)(out_data[2]) % 16 == 0 && out_stride[2] % 16 == 0) {
-
-			unsigned int width_16 = (width / 16) * 16;
-			Convert_BGRA_YUV420_SSSE3(width_16, height, in_data, in_stride, out_data, out_stride);
-			if(width != width_16) {
-				const uint8_t* in_data_b = in_data + 4 * width_16;
-				uint8_t* out_data_b[3] = {
-					out_data[0] + width_16,
-					out_data[1] + width_16 / 2,
-					out_data[2] + width_16 / 2,
-				};
-				Convert_BGRA_YUV420_Fallback(width - width_16, height, in_data_b, in_stride, out_data_b, out_stride);
-			}
-
+	if(m_use_ssse3) {
+		if((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0 &&
+		   (uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0 &&
+		   (uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0) {
+			Convert_BGRA_YUV420_SSSE3(width, height, in_data, in_stride, out_data, out_stride);
 		} else {
 			if(m_warn_alignment) {
 				m_warn_alignment = false;
-				Logger::LogWarning("[FastScaler::Scale] " + QObject::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
-																		"This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
+				Logger::LogWarning("[FastScaler::Convert_BGRA_YUV420] " + QObject::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
+																					  "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
 			}
 			Convert_BGRA_YUV420_Fallback(width, height, in_data, in_stride, out_data, out_stride);
 		}
@@ -123,165 +114,25 @@ void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, co
 
 }
 
-static void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
-	Q_ASSERT(w % 2 == 0 && h % 2 == 0);
-
-	const int y_offset = 128 + (16 << 8), u_offset = 512 + (128 << 10), v_offset = 512 + (128 << 10);
-
-	for(unsigned int j = 0; j < h / 2; ++j) {
-		const uint32_t *rgb1 = (const uint32_t*)(in_data + in_stride * (int) j * 2);
-		const uint32_t *rgb2 = (const uint32_t*)(in_data + in_stride * ((int) j * 2 + 1));
-		uint8_t *yuv_y1 = out_data[0] + out_stride[0] * (int) j * 2;
-		uint8_t *yuv_y2 = out_data[0] + out_stride[0] * ((int) j * 2 + 1);
-		uint8_t *yuv_u = out_data[1] + out_stride[1] * (int) j;
-		uint8_t *yuv_v = out_data[2] + out_stride[2] * (int) j;
-		for(unsigned int i = 0; i < w / 2; ++i) {
-			uint32_t c[4] = {rgb1[0], rgb1[1], rgb2[0], rgb2[1]};
-			int r[4] = {(int) ((c[0] >> 16) & 0xff), (int) ((c[1] >> 16) & 0xff), (int) ((c[2] >> 16) & 0xff), (int) ((c[3] >> 16) & 0xff)};
-			int g[4] = {(int) ((c[0] >>  8) & 0xff), (int) ((c[1] >>  8) & 0xff), (int) ((c[2] >>  8) & 0xff), (int) ((c[3] >>  8) & 0xff)};
-			int b[4] = {(int) ((c[0]      ) & 0xff), (int) ((c[1]      ) & 0xff), (int) ((c[2]      ) & 0xff), (int) ((c[3]      ) & 0xff)};
-			yuv_y1[0] = (66 * r[0] + 129 * g[0] + 25 * b[0] + y_offset) >> 8;
-			yuv_y1[1] = (66 * r[1] + 129 * g[1] + 25 * b[1] + y_offset) >> 8;
-			yuv_y2[0] = (66 * r[2] + 129 * g[2] + 25 * b[2] + y_offset) >> 8;
-			yuv_y2[1] = (66 * r[3] + 129 * g[3] + 25 * b[3] + y_offset) >> 8;
-			int sr = r[0] + r[1] + r[2] + r[3];
-			int sg = g[0] + g[1] + g[2] + g[3];
-			int sb = b[0] + b[1] + b[2] + b[3];
-			*yuv_u = (-38 * sr + -74 * sg + 112 * sb + u_offset) >> 10;
-			*yuv_v = (112 * sr + -94 * sg + -18 * sb + v_offset) >> 10;
-			rgb1 += 2; rgb2 += 2;
-			yuv_y1 += 2; yuv_y2 += 2;
-			++yuv_u; ++yuv_v;
-		}
-	}
-
-}
+void FastScaler::Scale_BGRA(unsigned int in_width, unsigned int in_height, const uint8_t* in_data, int in_stride,
+							unsigned int out_width, unsigned int out_height, uint8_t* out_data, int out_stride) {
 
 #if SSR_USE_X86_ASM
-
-/*
-My SSE2/SSSE3-optimized BGRA-to-YUV converter: about 4 times faster than the fallback implementation on my CPU (first gen Intel Core i5),
-and 8 times faster than swscale.
-
-This code is GCC-only, unfortunately. I don't know much about assembly, so I'm using GCC's build-in functions and vector extensions:
-http://gcc.gnu.org/onlinedocs/gcc/X86-Built_002din-Functions.html
-http://gcc.gnu.org/onlinedocs/gcc/Vector-Extensions.html
-
-To use this converter, the data for each row (both input and output) should be 16-byte aligned, the width should be a multiple
-of 16 and the height should be a multiple of 2. Note that the convertor may write slightly past the end of the data block,
-into the padding bytes.
-
-This file should be compiled with the option -flax-vector-conversions.
-
-The vector integer instructions are SSE2. The horizontal addition and byte-shuffle instructions are SSSE3.
-The code uses interleaving to reduce the number of shuffles. So for example the order for red is [ r0 r4 r1 r5 r2 r6 r3 r7 ].
-For the averaging of 2x2 blocks, I use 32-bit horizontal addition instead of 16-bit because of this interleaving.
-The order of the final result is [ sr0 sr2 sr1 sr3 sr4 sr6 sr5 sr7 ].
-*/
-
-typedef uint32_t v4u32 __attribute__((vector_size(16)));
-typedef int32_t  v4i32 __attribute__((vector_size(16)));
-typedef uint16_t v8u16 __attribute__((vector_size(16)));
-typedef int16_t  v8i16 __attribute__((vector_size(16)));
-typedef uint8_t  v16u8 __attribute__((vector_size(16)));
-typedef int8_t   v16i8 __attribute__((vector_size(16)));
-
-#define vec2(x) {(x), (x)}
-#define vec4(x) {(x), (x), (x), (x)}
-#define vec8(x) {(x), (x), (x), (x), (x), (x), (x), (x)}
-#define vecmem(v, p) (*((v*)(p)))
-
-#define SSSE3_ReadRGB(ca, cb, r, g, b)\
-	v8u16 r = (__builtin_ia32_psrldi128(ca, 16) & v_0xff) | (                         cb      & v_0xff0000);\
-	v8u16 g = (__builtin_ia32_psrldi128(ca,  8) & v_0xff) | (__builtin_ia32_pslldi128(cb,  8) & v_0xff0000);\
-	v8u16 b = (                         ca      & v_0xff) | (__builtin_ia32_pslldi128(cb, 16) & v_0xff0000);
-#define SSSE3_CalcY(r, g, b, y)\
-	v16u8 y = v_66 * r + v_129 * g + v_25 * b + y_offset;
-#define SSSE3_WriteY(ptr, yl, yr)\
-	vecmem(v16u8, ptr) = __builtin_ia32_pshufb128(yl, v_shuffle1) | __builtin_ia32_pshufb128(yr, v_shuffle2);
-
-#define SSSE3_Convert(rgb1, rgb2, yuv_y1, yuv_y2, up, vp) {\
-	\
-	v4i32 c0a = vecmem(v4i32, (rgb1)), c0b = vecmem(v4i32, (rgb1) + 16);\
-	SSSE3_ReadRGB(c0a, c0b, r0, g0, b0);\
-	SSSE3_CalcY(r0, g0, b0, y0);\
-	v4i32 c1a = vecmem(v4i32, (rgb1) + 32), c1b = vecmem(v4i32, (rgb1) + 48);\
-	SSSE3_ReadRGB(c1a, c1b, r1, g1, b1);\
-	SSSE3_CalcY(r1, g1, b1, y1);\
-	SSSE3_WriteY((yuv_y1), y0, y1);\
-	v8u16 r01 = (v8u16)(__builtin_ia32_phaddd128(r0, r1));\
-	v8u16 g01 = (v8u16)(__builtin_ia32_phaddd128(g0, g1));\
-	v8u16 b01 = (v8u16)(__builtin_ia32_phaddd128(b0, b1));\
-	\
-	v4i32 c2a = vecmem(v4i32, (rgb2)), c2b = vecmem(v4i32, (rgb2) + 16);\
-	SSSE3_ReadRGB(c2a, c2b, r2, g2, b2);\
-	SSSE3_CalcY(r2, g2, b2, y2);\
-	v4i32 c3a = vecmem(v4i32, (rgb2) + 32), c3b = vecmem(v4i32, (rgb2) + 48);\
-	SSSE3_ReadRGB(c3a, c3b, r3, g3, b3);\
-	SSSE3_CalcY(r3, g3, b3, y3);\
-	SSSE3_WriteY((yuv_y2), y2, y3);\
-	v8u16 r23 = (v8u16)(__builtin_ia32_phaddd128(r2, r3));\
-	v8u16 g23 = (v8u16)(__builtin_ia32_phaddd128(g2, g3));\
-	v8u16 b23 = (v8u16)(__builtin_ia32_phaddd128(b2, b3));\
-	\
-	v8i16 sr = __builtin_ia32_psrlwi128(r01 + r23 + v_2, 2);\
-	v8i16 sg = __builtin_ia32_psrlwi128(g01 + g23 + v_2, 2);\
-	v8i16 sb = __builtin_ia32_psrlwi128(b01 + b23 + v_2, 2);\
-	up = v_n38 * sr + v_n74 * sg + v_112 * sb + uv_offset;\
-	vp = v_112 * sr + v_n94 * sg + v_n18 * sb + uv_offset;\
-	\
-}
-
-static void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
-	Q_ASSERT(w % 16 == 0 && h % 2 == 0);
-	Q_ASSERT((uintptr_t)(in_data) % 16 == 0 && in_stride % 16 == 0);
-	Q_ASSERT((uintptr_t)(out_data[0]) % 16 == 0 && out_stride[0] % 16 == 0);
-	Q_ASSERT((uintptr_t)(out_data[1]) % 16 == 0 && out_stride[1] % 16 == 0);
-	Q_ASSERT((uintptr_t)(out_data[2]) % 16 == 0 && out_stride[2] % 16 == 0);
-
-	v8u16 y_offset = vec8(128 + (16 << 8));
-	v8i16 uv_offset = vec8((int16_t)(128 + (128 << 8))); // the value doesn't fit in int16_t but it works :)
-	v4u32 v_0xff = vec4(0xff);
-	v4u32 v_0xff0000 = vec4(0xff0000);
-	v8u16 v_66 = vec8(66);
-	v8u16 v_129 = vec8(129);
-	v8u16 v_25 = vec8(25);
-	v8u16 v_2 = vec8(2);
-	v8i16 v_n38 = vec8(-38);
-	v8i16 v_n74 = vec8(-74);
-	v8i16 v_112 = vec8(112);
-	v8i16 v_n94 = vec8(-94);
-	v8i16 v_n18 = vec8(-18);
-	v16u8 v_shuffle1 = {1, 5, 9, 13, 3, 7, 11, 15, 255, 255, 255, 255, 255, 255, 255, 255};
-	v16u8 v_shuffle2 = {255, 255, 255, 255, 255, 255, 255, 255, 1, 5, 9, 13, 3, 7, 11, 15};
-	v16u8 v_shuffle3 = {1, 5, 3, 7, 9, 13, 11, 15, 255, 255, 255, 255, 255, 255, 255, 255};
-	v16u8 v_shuffle4 = {255, 255, 255, 255, 255, 255, 255, 255, 1, 5, 3, 7, 9, 13, 11, 15};
-
-	for(unsigned int j = 0; j < h / 2; ++j) {
-		const uint8_t *rgb1 = in_data + in_stride * (int) j * 2;
-		const uint8_t *rgb2 = in_data + in_stride * ((int) j * 2 + 1);
-		uint8_t *yuv_y1 = out_data[0] + out_stride[0] * (int) j * 2;
-		uint8_t *yuv_y2 = out_data[0] + out_stride[0] * ((int) j * 2 + 1);
-		uint8_t *yuv_u = out_data[1] + out_stride[1] * (int) j;
-		uint8_t *yuv_v = out_data[2] + out_stride[2] * (int) j;
-		for(unsigned int i = 0; i < w / 32; ++i) {
-			v16u8 up1, vp1, up2, vp2;
-			SSSE3_Convert(rgb1, rgb2, yuv_y1, yuv_y2, up1, vp1);
-			SSSE3_Convert(rgb1 + 64, rgb2 + 64, yuv_y1 + 16, yuv_y2 + 16, up2, vp2);
-			vecmem(v16u8, yuv_u) = __builtin_ia32_pshufb128(up1, v_shuffle3) | __builtin_ia32_pshufb128(up2, v_shuffle4);
-			vecmem(v16u8, yuv_v) = __builtin_ia32_pshufb128(vp1, v_shuffle3) | __builtin_ia32_pshufb128(vp2, v_shuffle4);
-			rgb1 += 128; rgb2 += 128;
-			yuv_y1 += 32; yuv_y2 += 32;
-			yuv_u += 16; yuv_v += 16;
+	if(m_use_ssse3) {
+		if((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0) {
+			Scale_BGRA_SSSE3(in_width, in_height, in_data, in_stride, out_width, out_height, out_data, out_stride);
+		} else {
+			if(m_warn_alignment) {
+				m_warn_alignment = false;
+				Logger::LogWarning("[FastScaler::Scale_BGRA] " + QObject::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
+																			 "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
+			}
+			Scale_BGRA_Fallback(in_width, in_height, in_data, in_stride, out_width, out_height, out_data, out_stride);
 		}
-		if((w / 16) & 1) {
-			v16u8 up1, vp1;
-			SSSE3_Convert(rgb1, rgb2, yuv_y1, yuv_y2, up1, vp1);
-			vecmem(v16u8, yuv_u) = __builtin_ia32_pshufb128(up1, v_shuffle3);
-			vecmem(v16u8, yuv_v) = __builtin_ia32_pshufb128(vp1, v_shuffle3);
-		}
+		return;
 	}
+#endif
+
+	Scale_BGRA_Fallback(in_width, in_height, in_data, in_stride, out_width, out_height, out_data, out_stride);
 
 }
-
-#endif
