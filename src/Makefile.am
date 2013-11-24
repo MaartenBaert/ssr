@@ -207,20 +207,20 @@ translationsdir = $(pkgdatadir)/translations
 simplescreenrecorder_CPPFLAGS += -DSSR_TRANSLATIONS_PATH=\"$(translationsdir)\"
 
 nodist_translations_DATA = \
-	simplescreenrecorder-de_DE.qm \
-	simplescreenrecorder-nl_NL.qm \
-	simplescreenrecorder-zh_CN.qm
+	simplescreenrecorder_de.qm \
+	simplescreenrecorder_nl.qm \
+	simplescreenrecorder_zh_CN.qm
 
 EXTRA_DIST += \
-	translations/simplescreenrecorder-de_DE.ts \
-	translations/simplescreenrecorder-nl_NL.ts \
-	translations/simplescreenrecorder-zh_CN.ts
+	translations/simplescreenrecorder_de.ts \
+	translations/simplescreenrecorder_nl.ts \
+	translations/simplescreenrecorder_zh_CN.ts
 
-simplescreenrecorder-de_DE.qm: $(srcdir)/translations/simplescreenrecorder-de_DE.ts
+simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
 	$(LRELEASE) "$<" -qm "$@"
-simplescreenrecorder-nl_NL.qm: $(srcdir)/translations/simplescreenrecorder-nl_NL.ts
+simplescreenrecorder_nl.qm: $(srcdir)/translations/simplescreenrecorder_nl.ts
 	$(LRELEASE) "$<" -qm "$@"
-simplescreenrecorder-zh_CN.qm: $(srcdir)/translations/simplescreenrecorder-zh_CN.ts
+simplescreenrecorder_zh_CN.qm: $(srcdir)/translations/simplescreenrecorder_zh_CN.ts
 	$(LRELEASE) "$<" -qm "$@"
 
 .PHONY: clean-qrc-extra clean-moc-extra

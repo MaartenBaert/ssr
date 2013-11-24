@@ -1,3 +1,3 @@
 simplescreenrecorder_de.ts
 simplescreenrecorder_nl.ts
-simplescreenrecorder_cn.ts
+simplescreenrecorder_zh_CN.ts
