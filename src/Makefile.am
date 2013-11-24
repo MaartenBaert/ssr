@@ -183,25 +183,25 @@ clean-moc-extra:
 
 ########## Qt translation system ##########
 
-simplescreenrecorder_CPPFLAGS += -DSSR_TRANSLATIONS_PATH=\"$(pkgdatadir)\"
+translationsdir = $(pkgdatadir)/translations
 
-translationsdir = $(pkgdatadir)/simplescreenrecorder/translations
+simplescreenrecorder_CPPFLAGS += -DSSR_TRANSLATIONS_PATH=\"$(translationsdir)\"
 
 nodist_translations_DATA = \
-	simplescreenrecorder_de.qm \
-	simplescreenrecorder_nl.qm \
-	simplescreenrecorder_cn.qm
+	simplescreenrecorder-de_DE.qm \
+	simplescreenrecorder-nl_NL.qm \
+	simplescreenrecorder-zh_CN.qm
 
 EXTRA_DIST += \
-	translations/simplescreenrecorder_de.ts \
-	translations/simplescreenrecorder_nl.ts \
-	translations/simplescreenrecorder_cn.ts
+	translations/simplescreenrecorder-de_DE.ts \
+	translations/simplescreenrecorder-nl_NL.ts \
+	translations/simplescreenrecorder-zh_CN.ts
 
-simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
+simplescreenrecorder-de_DE.qm: $(srcdir)/translations/simplescreenrecorder-de_DE.ts
 	$(LRELEASE) "$<" -qm "$@"
-simplescreenrecorder_nl.qm: $(srcdir)/translations/simplescreenrecorder_nl.ts
+simplescreenrecorder-nl_NL.qm: $(srcdir)/translations/simplescreenrecorder-nl_NL.ts
 	$(LRELEASE) "$<" -qm "$@"
-simplescreenrecorder_cn.qm: $(srcdir)/translations/simplescreenrecorder_cn.ts
+simplescreenrecorder-zh_CN.qm: $(srcdir)/translations/simplescreenrecorder-zh_CN.ts
 	$(LRELEASE) "$<" -qm "$@"
 
 endif

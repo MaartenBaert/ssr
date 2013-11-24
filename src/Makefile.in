@@ -436,7 +436,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_2) $(am__append_3) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_4) $(am__append_5) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_6) $(am__append_8) \
-@ENABLE_SSRPROGRAM_TRUE@	-DSSR_TRANSLATIONS_PATH=\"$(pkgdatadir)\"
+@ENABLE_SSRPROGRAM_TRUE@	-DSSR_TRANSLATIONS_PATH=\"$(translationsdir)\"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = \
 @ENABLE_SSRPROGRAM_TRUE@	-pthread
 
@@ -533,14 +533,14 @@ top_srcdir = @top_srcdir@
 
 ########## Qt resource system ##########
 @ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = resources.qrc \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_de.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_nl.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_cn.ts
-@ENABLE_SSRPROGRAM_TRUE@translationsdir = $(pkgdatadir)/simplescreenrecorder/translations
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder-de_DE.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder-nl_NL.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder-zh_CN.ts
+@ENABLE_SSRPROGRAM_TRUE@translationsdir = $(pkgdatadir)/translations
 @ENABLE_SSRPROGRAM_TRUE@nodist_translations_DATA = \
-@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_de.qm \
-@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_nl.qm \
-@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_cn.qm
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-de_DE.qm \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-nl_NL.qm \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-zh_CN.qm
 
 all: all-am
 
@@ -1726,11 +1726,11 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 @ENABLE_SSRPROGRAM_TRUE@clean-moc-extra:
 @ENABLE_SSRPROGRAM_TRUE@	rm -f moc_*.cpp
 
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder-de_DE.qm: $(srcdir)/translations/simplescreenrecorder-de_DE.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_nl.qm: $(srcdir)/translations/simplescreenrecorder_nl.ts
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder-nl_NL.qm: $(srcdir)/translations/simplescreenrecorder-nl_NL.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_cn.qm: $(srcdir)/translations/simplescreenrecorder_cn.ts
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder-zh_CN.qm: $(srcdir)/translations/simplescreenrecorder-zh_CN.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
