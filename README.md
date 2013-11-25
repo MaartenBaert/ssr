@@ -72,7 +72,7 @@ For Debian:
 
     sudo dpkg --add-architecture i386
     sudo apt-get update
-    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
+    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
 
     cd /usr/lib/i386-linux-gnu
     ln -s libGL.so.1 libGL.so
@@ -84,7 +84,7 @@ For Debian:
 
 For OpenSUSE (incomplete list but usually enough):
 
-    sudo zypper install gcc gcc-32bit libffmpeg-devel libqt4-devel libpulse-devel glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXext-devel libXext-devel-32bit libXfixes-devel libXfixes-devel-32bit libstdc++47-devel-32bit
+    sudo zypper install gcc gcc-32bit libffmpeg-devel libqt4-devel libpulse-devel libjack-devel glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXext-devel libXext-devel-32bit libXfixes-devel libXfixes-devel-32bit libstdc++47-devel-32bit
 
     cd /usr/lib/i386-linux-gnu
     sudo ln -s libGLU.so.1 libGLU.so
