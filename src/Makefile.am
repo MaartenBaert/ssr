@@ -38,6 +38,13 @@ else
 simplescreenrecorder_CPPFLAGS += -DSSR_USE_FFMPEG_VERSIONS=0
 endif
 
+if ENABLE_WAYLAND
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_WAYLAND=1
+simplescreenrecorder_LDFLAGS += -lwayland-client
+else
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_WAYLAND=0
+endif
+
 if ENABLE_PULSEAUDIO
 simplescreenrecorder_CPPFLAGS += -DSSR_USE_PULSEAUDIO=1
 simplescreenrecorder_LDFLAGS += -lpulse
@@ -63,6 +70,8 @@ simplescreenrecorder_SOURCES = \
 	AV/Input/JACKInput.h \
 	AV/Input/PulseAudioInput.cpp \
 	AV/Input/PulseAudioInput.h \
+	AV/Input/WaylandInput.cpp \
+	AV/Input/WaylandInput.h \
 	AV/Input/X11Input.cpp \
 	AV/Input/X11Input.h \
 	AV/Output/AudioEncoder.cpp \

@@ -34,6 +34,9 @@ class VideoEncoder;
 class AudioEncoder;
 class Synchronizer;
 class X11Input;
+#if SSR_USE_WAYLAND
+class WaylandInput;
+#endif
 class GLInjectLauncher;
 class GLInjectInput;
 class ALSAInput;
@@ -86,6 +89,9 @@ private:
 	QTimer *m_info_timer, *m_glinject_event_timer;
 
 	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
+#if SSR_USE_WAYLAND
+	std::unique_ptr<WaylandInput> m_wayland_input;
+#endif
 	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
 	std::unique_ptr<ALSAInput> m_alsa_input;

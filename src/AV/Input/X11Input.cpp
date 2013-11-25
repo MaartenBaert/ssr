@@ -33,11 +33,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "X11Input.h"
 
 #include "Logger.h"
-#include "AVWrapper.h"
-#include "Synchronizer.h"
-#include "VideoEncoder.h"
-
-#include "VideoPreviewer.h"
 
 #include <X11/Xutil.h>
 #include <X11/extensions/Xfixes.h>
@@ -181,12 +176,12 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 	m_x11_shm_server_attached = false;
 	m_x11_image = NULL;
 
-	if(m_width == 0 || m_height == 0) {
-		Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Width or height is zero!"));
+	if(m_width < 2 || m_height < 2) {
+		Logger::LogError("[X11Input::X11Input] " + QObject::tr("Error: Width or height is too small, the minimum width and height is %1!").arg(2));
 		throw X11Exception();
 	}
 	if(m_width > 10000 || m_height > 10000) {
-		Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
+		Logger::LogError("[X11Input::X11Input] " + QObject::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
 		throw X11Exception();
 	}
 

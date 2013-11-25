@@ -5,7 +5,7 @@ QT += core gui
 TARGET = SimpleScreenRecorder
 TEMPLATE = app
 
-DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_PULSEAUDIO=1 SSR_USE_JACK=1 SSR_TRANSLATIONS_PATH=\"/usr/share/simplescreenrecorder/translations\"
+DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_WAYLAND=1 SSR_USE_PULSEAUDIO=1 SSR_USE_JACK=1 SSR_TRANSLATIONS_PATH=\"/usr/share/simplescreenrecorder/translations\"
 QMAKE_CXXFLAGS += -std=c++0x -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
@@ -48,7 +48,8 @@ SOURCES += \
 	GUI/PageWelcome.cpp \
 	GUI/VideoPreviewer.cpp \
 	Main.cpp \
-	Version.cpp
+	Version.cpp \
+	AV/Input/WaylandInput.cpp
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
@@ -90,7 +91,8 @@ HEADERS  += \
 	GUI/VideoPreviewer.h \
 	Global.h \
 	Main.h \
-	Version.h
+	Version.h \
+	AV/Input/WaylandInput.h
 
 RESOURCES += \
 	resources.qrc

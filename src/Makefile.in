@@ -85,12 +85,15 @@ host_triplet = @host@
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_FALSE@am__append_3 = -DSSR_USE_X86_ASM=0
 @ENABLE_FFMPEG_VERSIONS_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_4 = -DSSR_USE_FFMPEG_VERSIONS=1
 @ENABLE_FFMPEG_VERSIONS_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_5 = -DSSR_USE_FFMPEG_VERSIONS=0
-@ENABLE_PULSEAUDIO_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_6 = -DSSR_USE_PULSEAUDIO=1
-@ENABLE_PULSEAUDIO_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_7 = -lpulse
-@ENABLE_PULSEAUDIO_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_8 = -DSSR_USE_PULSEAUDIO=0
-@ENABLE_JACK_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_9 = -DSSR_USE_JACK=1
-@ENABLE_JACK_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_10 = -ljack
-@ENABLE_JACK_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_11 = -DSSR_USE_JACK=0
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_WAYLAND_TRUE@am__append_6 = -DSSR_USE_WAYLAND=1
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_WAYLAND_TRUE@am__append_7 = -lwayland-client
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_WAYLAND_FALSE@am__append_8 = -DSSR_USE_WAYLAND=0
+@ENABLE_PULSEAUDIO_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_9 = -DSSR_USE_PULSEAUDIO=1
+@ENABLE_PULSEAUDIO_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_10 = -lpulse
+@ENABLE_PULSEAUDIO_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_11 = -DSSR_USE_PULSEAUDIO=0
+@ENABLE_JACK_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_12 = -DSSR_USE_JACK=1
+@ENABLE_JACK_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_13 = -ljack
+@ENABLE_JACK_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_14 = -DSSR_USE_JACK=0
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/build-aux/depcomp
@@ -112,7 +115,8 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	AV/Input/GLInjectInput.h AV/Input/GLInjectLauncher.cpp \
 	AV/Input/GLInjectLauncher.h AV/Input/JACKInput.cpp \
 	AV/Input/JACKInput.h AV/Input/PulseAudioInput.cpp \
-	AV/Input/PulseAudioInput.h AV/Input/X11Input.cpp \
+	AV/Input/PulseAudioInput.h AV/Input/WaylandInput.cpp \
+	AV/Input/WaylandInput.h AV/Input/X11Input.cpp \
 	AV/Input/X11Input.h AV/Output/AudioEncoder.cpp \
 	AV/Output/AudioEncoder.h AV/Output/BaseEncoder.cpp \
 	AV/Output/BaseEncoder.h AV/Output/Muxer.cpp AV/Output/Muxer.h \
@@ -144,6 +148,7 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectLauncher.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-JACKInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-PulseAudioInput.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-WaylandInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-X11Input.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-AudioEncoder.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-BaseEncoder.$(OBJEXT) \
@@ -449,7 +454,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_3) $(am__append_4) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_5) $(am__append_6) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_8) $(am__append_9) \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_11) \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_11) $(am__append_12) \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_14) \
 @ENABLE_SSRPROGRAM_TRUE@	-DSSR_TRANSLATIONS_PATH=\"$(translationsdir)\"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = \
 @ENABLE_SSRPROGRAM_TRUE@	-pthread
@@ -464,7 +470,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	-lrt -lavformat -lavcodec -lavutil \
 @ENABLE_SSRPROGRAM_TRUE@	-lswscale -lX11 -lXext -lXfixes \
 @ENABLE_SSRPROGRAM_TRUE@	-lasound -lsoxr $(am__append_7) \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_10)
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_10) $(am__append_13)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_SOURCES = \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.h \
@@ -476,6 +482,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/JACKInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/PulseAudioInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/PulseAudioInput.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Input/WaylandInput.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Input/WaylandInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/X11Input.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/X11Input.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Output/AudioEncoder.cpp \
@@ -670,6 +678,8 @@ AV/Input/simplescreenrecorder-JACKInput.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-PulseAudioInput.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
+AV/Input/simplescreenrecorder-WaylandInput.$(OBJEXT):  \
+	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-X11Input.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Output/$(am__dirstamp):
@@ -795,6 +805,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectLauncher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-PulseAudioInput.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-WaylandInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-X11Input.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Po@am__quote@
@@ -912,6 +923,20 @@ AV/Input/simplescreenrecorder-PulseAudioInput.obj: AV/Input/PulseAudioInput.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/PulseAudioInput.cpp' object='AV/Input/simplescreenrecorder-PulseAudioInput.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-PulseAudioInput.obj `if test -f 'AV/Input/PulseAudioInput.cpp'; then $(CYGPATH_W) 'AV/Input/PulseAudioInput.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/PulseAudioInput.cpp'; fi`
+
+AV/Input/simplescreenrecorder-WaylandInput.o: AV/Input/WaylandInput.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-WaylandInput.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-WaylandInput.Tpo -c -o AV/Input/simplescreenrecorder-WaylandInput.o `test -f 'AV/Input/WaylandInput.cpp' || echo '$(srcdir)/'`AV/Input/WaylandInput.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-WaylandInput.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-WaylandInput.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/WaylandInput.cpp' object='AV/Input/simplescreenrecorder-WaylandInput.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-WaylandInput.o `test -f 'AV/Input/WaylandInput.cpp' || echo '$(srcdir)/'`AV/Input/WaylandInput.cpp
+
+AV/Input/simplescreenrecorder-WaylandInput.obj: AV/Input/WaylandInput.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-WaylandInput.obj -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-WaylandInput.Tpo -c -o AV/Input/simplescreenrecorder-WaylandInput.obj `if test -f 'AV/Input/WaylandInput.cpp'; then $(CYGPATH_W) 'AV/Input/WaylandInput.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/WaylandInput.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-WaylandInput.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-WaylandInput.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/WaylandInput.cpp' object='AV/Input/simplescreenrecorder-WaylandInput.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-WaylandInput.obj `if test -f 'AV/Input/WaylandInput.cpp'; then $(CYGPATH_W) 'AV/Input/WaylandInput.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/WaylandInput.cpp'; fi`
 
 AV/Input/simplescreenrecorder-X11Input.o: AV/Input/X11Input.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-X11Input.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-X11Input.Tpo -c -o AV/Input/simplescreenrecorder-X11Input.o `test -f 'AV/Input/X11Input.cpp' || echo '$(srcdir)/'`AV/Input/X11Input.cpp

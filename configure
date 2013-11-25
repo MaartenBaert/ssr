@@ -652,6 +652,8 @@ ENABLE_JACK_FALSE
 ENABLE_JACK_TRUE
 ENABLE_PULSEAUDIO_FALSE
 ENABLE_PULSEAUDIO_TRUE
+ENABLE_WAYLAND_FALSE
+ENABLE_WAYLAND_TRUE
 ENABLE_FFMPEG_VERSIONS_FALSE
 ENABLE_FFMPEG_VERSIONS_TRUE
 ENABLE_X86_ASM_FALSE
@@ -803,6 +805,7 @@ enable_ssrprogram
 enable_assert
 enable_x86_asm
 enable_ffmpeg_versions
+enable_wayland
 enable_pulseaudio
 enable_jack
 '
@@ -1464,6 +1467,7 @@ Optional Features:
   --disable-ffmpeg-versions
                           use Libav version numbers instead of FFmpeg version
                           numbers
+  --disable-wayland       don't use Wayland
   --disable-pulseaudio    don't use PulseAudio
   --disable-jack          don't use JACK
 
@@ -16234,6 +16238,11 @@ if test "${enable_ffmpeg_versions+set}" = set; then :
   enableval=$enable_ffmpeg_versions;
 fi
 
+# Check whether --enable-wayland was given.
+if test "${enable_wayland+set}" = set; then :
+  enableval=$enable_wayland;
+fi
+
 # Check whether --enable-pulseaudio was given.
 if test "${enable_pulseaudio+set}" = set; then :
   enableval=$enable_pulseaudio;
@@ -16282,6 +16291,14 @@ fi
 else
   ENABLE_FFMPEG_VERSIONS_TRUE='#'
   ENABLE_FFMPEG_VERSIONS_FALSE=
+fi
+
+ if test x"$enable_wayland" != x"no"; then
+  ENABLE_WAYLAND_TRUE=
+  ENABLE_WAYLAND_FALSE='#'
+else
+  ENABLE_WAYLAND_TRUE='#'
+  ENABLE_WAYLAND_FALSE=
 fi
 
  if test x"$enable_pulseaudio" != x"no"; then
@@ -17671,6 +17688,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${ENABLE_FFMPEG_VERSIONS_TRUE}" && test -z "${ENABLE_FFMPEG_VERSIONS_FALSE}"; then
   as_fn_error $? "conditional \"ENABLE_FFMPEG_VERSIONS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_WAYLAND_TRUE}" && test -z "${ENABLE_WAYLAND_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_WAYLAND\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${ENABLE_PULSEAUDIO_TRUE}" && test -z "${ENABLE_PULSEAUDIO_FALSE}"; then

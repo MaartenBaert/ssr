@@ -62,6 +62,11 @@ extern "C" {
 #error SSR_USE_FFMPEG_VERSIONS should be defined!
 #endif
 
+// Whether Wayland should be used.
+#ifndef SSR_USE_WAYLAND
+#error SSR_USE_WAYLAND should be defined!
+#endif
+
 // Whether PulseAudio should be used.
 #ifndef SSR_USE_PULSEAUDIO
 #error SSR_USE_PULSEAUDIO should be defined!
@@ -178,6 +183,14 @@ public:
 		return "X11Exception";
 	}
 };
+#if SSR_USE_WAYLAND
+class WaylandException : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "WaylandException";
+	}
+};
+#endif
 class GLInjectException : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
@@ -198,12 +211,14 @@ public:
 	}
 };
 #endif
+#if SSR_USE_JACK
 class JACKException : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
 		return "JACKException";
 	}
 };
+#endif
 
 // high resolution timer
 inline int64_t hrt_time_micro() {

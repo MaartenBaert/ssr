@@ -53,20 +53,20 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		m_opt_preset = "";
 #endif
 
-		if(m_width == 0 || m_height == 0) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is zero!"));
+		if(m_width < 2 || m_height < 2) {
+			Logger::LogError("[VideoEncoder::VideoEncoder] " + QObject::tr("Error: Width or height is too small, the minimum width and height is %1!").arg(2));
 			throw LibavException();
 		}
 		if(m_width > 10000 || m_height > 10000) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
+			Logger::LogError("[VideoEncoder::VideoEncoder] " + QObject::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
 			throw LibavException();
 		}
 		if(m_width % 2 != 0 || m_height % 2 != 0) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is not an even number!"));
+			Logger::LogError("[VideoEncoder::VideoEncoder] " + QObject::tr("Error: Width or height is not an even number!"));
 			throw LibavException();
 		}
 		if(m_frame_rate == 0) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Frame rate it zero!"));
+			Logger::LogError("[VideoEncoder::VideoEncoder] " + QObject::tr("Error: Frame rate it zero!"));
 			throw LibavException();
 		}
 

@@ -33,6 +33,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AudioEncoder.h"
 #include "Synchronizer.h"
 #include "X11Input.h"
+#if SSR_USE_WAYLAND
+#include "WaylandInput.h"
+#endif
 #include "GLInjectLauncher.h"
 #include "GLInjectInput.h"
 #include "ALSAInput.h"
@@ -667,6 +670,9 @@ void PageRecord::StartInput() {
 		return;
 
 	Q_ASSERT(m_x11_input == NULL);
+#if SSR_USE_WAYLAND
+	Q_ASSERT(m_wayland_input == NULL);
+#endif
 	Q_ASSERT(m_gl_inject_input == NULL);
 	Q_ASSERT(m_alsa_input == NULL);
 #if SSR_USE_PULSEAUDIO
@@ -688,7 +694,11 @@ void PageRecord::StartInput() {
 			}
 			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get()));
 		} else {
+#if SSR_USE_WAYLAND
+			m_wayland_input.reset(new WaylandInput(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
+#else
 			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
+#endif
 		}
 
 		// start the audio input
@@ -712,6 +722,7 @@ void PageRecord::StartInput() {
 	} catch(...) {
 		Logger::LogError("[PageRecord::StartInput] " + tr("Error: Something went wrong during initialization."));
 		m_x11_input.reset();
+		m_wayland_input.reset();
 		m_gl_inject_input.reset();
 		m_alsa_input.reset();
 #if SSR_USE_PULSEAUDIO
@@ -732,11 +743,14 @@ void PageRecord::StopInput() {
 
 	Logger::LogInfo("[PageRecord::StopInput] " + tr("Stopping input ..."));
 
-	if(m_video_area != PageInput::VIDEO_AREA_GLINJECT) {
+	if(m_x11_input != NULL) {
 		m_info_last_frame_counter -= m_x11_input->GetFrameCounter();
+	} else if(m_wayland_input != NULL) {
+		m_info_last_frame_counter -= m_wayland_input->GetFrameCounter();
 	}
 
 	m_x11_input.reset();
+	m_wayland_input.reset();
 	m_gl_inject_input.reset();
 	m_alsa_input.reset();
 #if SSR_USE_PULSEAUDIO
@@ -763,10 +777,12 @@ void PageRecord::UpdateInput() {
 	// get sources
 	VideoSource *video_source = NULL;
 	AudioSource *audio_source = NULL;
-	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
+	if(m_gl_inject_input != NULL) {
 		video_source = m_gl_inject_input.get();
-	} else {
+	} else if(m_x11_input != NULL) {
 		video_source = m_x11_input.get();
+	} else if(m_wayland_input != NULL) {
+		video_source = m_wayland_input.get();
 	}
 	if(m_audio_enabled) {
 		if(m_audio_backend == PageInput::AUDIO_BACKEND_ALSA)
@@ -929,9 +945,10 @@ void PageRecord::OnUpdateInformation() {
 			uint32_t frame_counter;
 			if(m_gl_inject_launcher != NULL) {
 				frame_counter = m_gl_inject_launcher->GetFrameCounter();
-			} else if(m_input_started) {
-				Q_ASSERT(m_x11_input != NULL);
+			} else if(m_x11_input != NULL) {
 				frame_counter = m_x11_input->GetFrameCounter();
+			} else if(m_wayland_input != NULL) {
+				frame_counter = m_wayland_input->GetFrameCounter();
 			} else {
 				frame_counter = 0;
 			}
