@@ -55,7 +55,7 @@ void Resampler::Resample(unsigned int in_channels, unsigned int in_sample_rate, 
 
 	// prepare output samples
 	unsigned int out_pos = 0;
-	m_out_data.alloc(1000);
+	m_out_data.alloc(16 * 1024);
 
 	// do we need a new resampler?
 	if(in_sample_rate != m_in_sample_rate) {
@@ -76,7 +76,6 @@ void Resampler::Resample(unsigned int in_channels, unsigned int in_sample_rate, 
 				out_pos += out_done;
 				if(out_pos < m_out_data.size() / (out_channels * sizeof(float)))
 					break;
-				Logger::LogWarning("[Resampler::Resample] " + QObject::tr("Warning: Flush output buffer was not large enough, enlarging to %1 bytes.").arg(m_out_data.size() * 2));
 				m_out_data.realloc(m_out_data.size() * 2);
 			}
 
@@ -144,7 +143,6 @@ void Resampler::Resample(unsigned int in_channels, unsigned int in_sample_rate, 
 		out_pos += out_done;
 		if(in_pos == in_sample_count)
 			break;
-		Logger::LogWarning("[Resampler::Resample] " + QObject::tr("Warning: Output buffer was not large enough, enlarging to %1 bytes.").arg(m_out_data.size() * 2));
 		m_out_data.realloc(m_out_data.size() * 2);
 	}
 
