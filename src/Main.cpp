@@ -29,6 +29,25 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 bool g_option_logfile;
 QString g_option_statsfile;
 bool g_option_syncdiagram;
+bool g_option_systray;
+bool g_option_start_hidden;
+
+void PrintOptionHelp() {
+	Logger::LogInfo(
+				"Usage: simplescreenrecorder [OPTIONS]\n"
+				"\n"
+				"Options:\n"
+				"  --help              Show this help message.\n"
+				"  --logfile           Write log to ~/.ssr/log-ISOTIME.txt instead of stdout.\n"
+				"  --statsfile[=FILE]  Write recording statistics to FILE. If FILE is omitted,\n"
+				"                      /dev/shm/simplescreenrecorder-stats-PID is used. It will\n"
+				"                      be updated continuously and deleted when the recording\n"
+				"                      page is closed.\n"
+				"  --syncdiagram       Show synchronization diagram (for debugging).\n"
+				"  --no-systray        Don't show the system tray icon.\n"
+				"  --start-hidden      Start the application in hidden form.\n"
+	);
+}
 
 int main(int argc, char* argv[]) {
 
@@ -38,7 +57,7 @@ int main(int argc, char* argv[]) {
 
 	// SSR uses two separate character encodings:
 	// - UTF-8: Used for all internal strings.
-	//   Used by QString::fromAscii and QString::toAscii, and all implicit conversions from C-strings to QString.
+	//   Used by QString::fromAscii and QString::toAscii, and all implicit conversions from C-strings to QString. Also used for translations.
 	// - Local character encoding: Used for file names and logs. In practice this will almost always be UTF-8 as well.
 	//   Used by QString::fromLocal8Bit and QString::toLocal8Bit.
 	// If it is not clear what encoding an external library uses, I use the local encoding for file names and UTF-8 for everything else.
@@ -69,6 +88,8 @@ int main(int argc, char* argv[]) {
 	g_option_logfile = false;
 	g_option_statsfile = QString();
 	g_option_syncdiagram = false;
+	g_option_systray = true;
+	g_option_start_hidden = false;
 
 	// read command-line arguments
 	QStringList args = QCoreApplication::arguments();
@@ -84,14 +105,23 @@ int main(int argc, char* argv[]) {
 			} else {
 				option = arg.mid(2, p - 2);
 				value = arg.mid(p + 1);
+				if(value.isNull())
+					value = "";
+			}
+
+#define NOVALUE \
+			if(!value.isNull()) { \
+				Logger::LogError("[main] " + QObject::tr("Error: Command-line option '%1' does not take a value!").arg("--" + option)); \
+				PrintOptionHelp(); \
+				return 1; \
 			}
 
 			// handle options
-			if(option == "logfile") {
-				if(!value.isNull()) {
-					Logger::LogError("[main] " + QObject::tr("Error: Command-line option '%1' does not take a value!").arg(option));
-					return 1;
-				}
+			if(option == "help") {
+				PrintOptionHelp();
+				return 0;
+			} else if(option == "logfile") {
+				NOVALUE
 				g_option_logfile = true;
 			} else if(option == "statsfile") {
 				if(value.isNull()) {
@@ -100,20 +130,27 @@ int main(int argc, char* argv[]) {
 					g_option_statsfile = value;
 				}
 			} else if(option == "syncdiagram") {
-				if(!value.isNull()) {
-					Logger::LogError("[main] " + QObject::tr("Error: Command-line option '%1' does not take a value!").arg(option));
-					return 1;
-				}
+				NOVALUE
 				g_option_syncdiagram = true;
+			} else if(option == "no-systray") {
+				NOVALUE
+				g_option_systray = false;
+			} else if(option == "start-hidden") {
+				NOVALUE
+				g_option_start_hidden = true;
 			} else {
-				Logger::LogError("[main] " + QObject::tr("Error: Unknown command-line option '%1'!").arg(option));
+				Logger::LogError("[main] " + QObject::tr("Error: Unknown command-line option '%1'!").arg("--" + option));
+				PrintOptionHelp();
 				return 1;
 			}
+
+#undef NOVALUE
 
 		} else {
 
 			// handle other arguments
 			Logger::LogError("[main] " + QObject::tr("Error: Unknown command-line argument '%1'!").arg(arg));
+			PrintOptionHelp();
 			return 1;
 
 		}
@@ -131,7 +168,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		QString file = dir.path() + "/log-" + now.toString(Qt::ISODate) + ".txt";
-		FILE *f = fopen(file.toLocal8Bit().constData(), "w");
+		FILE *f = fopen(file.toLocal8Bit().constData(), "a");
 		dup2(fileno(f), 1); // redirect stdout
 		dup2(fileno(f), 2); // redirect stderr
 	}
@@ -155,7 +192,8 @@ int main(int argc, char* argv[]) {
 	int ret;
 	{
 		MainWindow mainwindow;
-		mainwindow.show();
+		if(!g_option_start_hidden)
+			mainwindow.show();
 		ret = application.exec();
 	}
 	Logger::LogInfo("==================== " + QObject::tr("SSR stopped") + " ====================");

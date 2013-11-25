@@ -23,6 +23,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 extern bool g_option_logfile;
 extern QString g_option_statsfile;
 extern bool g_option_syncdiagram;
+extern bool g_option_systray;
+extern bool g_option_start_hidden;
 
 QString GetApplicationUserDir();
 QString GetVersionInfo();

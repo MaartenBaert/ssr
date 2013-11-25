@@ -283,8 +283,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 	QPushButton *button_cancel = new QPushButton(QIcon::fromTheme("process-stop"), tr("Cancel recording"), this);
 	QPushButton *button_save = new QPushButton(QIcon::fromTheme("document-save"), tr("Save recording"), this);
 
-	m_systray_icon = new QSystemTrayIcon(m_main_window);
-	{
+	if(g_option_systray) {
+		m_systray_icon = new QSystemTrayIcon(m_main_window);
 		QMenu *menu = new QMenu(m_main_window);
 		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
 		m_systray_action_save = menu->addAction(tr("Save recording"), this, SLOT(OnSave()));
@@ -292,11 +292,14 @@ PageRecord::PageRecord(MainWindow* main_window)
 		menu->addSeparator();
 		menu->addAction("Quit", m_main_window, SLOT(close()));
 		m_systray_icon->setContextMenu(menu);
+	} else {
+		m_systray_icon = NULL;
 	}
 
 	connect(button_cancel, SIGNAL(clicked()), this, SLOT(OnCancel()));
 	connect(button_save, SIGNAL(clicked()), this, SLOT(OnSave()));
-	connect(m_systray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
+	if(m_systray_icon != NULL)
+		connect(m_systray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(group_recording);
@@ -319,7 +322,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 	connect(&g_hotkey_listener, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()));
 	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(OnNewLogLine(Logger::enum_type,QString)), Qt::QueuedConnection);
 
-	m_systray_icon->show();
+	if(m_systray_icon != NULL)
+		m_systray_icon->show();
 
 }
 
@@ -798,20 +802,25 @@ void PageRecord::UpdateInput() {
 }
 
 void PageRecord::UpdateSysTray() {
-	GroupEnabled({m_systray_action_start_pause, m_systray_action_save, m_systray_action_cancel}, m_page_started);
+	if(m_systray_icon != NULL)
+		GroupEnabled({m_systray_action_start_pause, m_systray_action_save, m_systray_action_cancel}, m_page_started);
 }
 
 void PageRecord::UpdateRecordPauseButton() {
 	if(m_output_started) {
 		m_pushbutton_start_pause->setText(tr("Pause recording"));
 		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-playback-pause"));
-		m_systray_icon->setIcon(g_icon_ssr_recording);
-		m_systray_action_start_pause->setText(tr("Pause recording"));
+		if(m_systray_icon != NULL) {
+			m_systray_icon->setIcon(g_icon_ssr_recording);
+			m_systray_action_start_pause->setText(tr("Pause recording"));
+		}
 	} else {
 		m_pushbutton_start_pause->setText(tr("Start recording"));
 		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-record"));
-		m_systray_icon->setIcon(g_icon_ssr);
-		m_systray_action_start_pause->setText(tr("Start recording"));
+		if(m_systray_icon != NULL) {
+			m_systray_icon->setIcon(g_icon_ssr);
+			m_systray_action_start_pause->setText(tr("Start recording"));
+		}
 	}
 }
 
