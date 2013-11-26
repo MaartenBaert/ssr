@@ -65,7 +65,7 @@ void JACKInput::Init() {
 	m_command_ring_write_pos = 0;
 	std::atomic_thread_fence(std::memory_order_release);
 
-	m_jack_client = jack_client_open("SimpleScreenRecorder", JackNullOption, NULL);
+	m_jack_client = jack_client_open("SimpleScreenRecorder", JackNoStartServer, NULL);
 	if(m_jack_client == NULL) {
 		Logger::LogError("[JACKInput::Init] Error: Could not connect to JACK!");
 		throw JACKException();

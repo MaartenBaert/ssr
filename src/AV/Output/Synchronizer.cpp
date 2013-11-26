@@ -217,7 +217,7 @@ int64_t Synchronizer::GetTotalTime() {
 int64_t Synchronizer::GetNextVideoTimestamp() {
 	Q_ASSERT(m_video_encoder != NULL);
 	SharedLock lock(&m_shared_data);
-	return (lock->m_segment_video_started)? lock->m_segment_video_stop_time - (int64_t) round(lock->m_av_desync * 1.0e6) : SINK_TIMESTAMP_ANY;
+	return (lock->m_segment_video_started)? lock->m_segment_video_stop_time - (int64_t) round(lock->m_av_desync * 1.0e6) : SINK_TIMESTAMP_ASAP;
 }
 
 void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
@@ -332,7 +332,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 		SharedLock lock(&m_shared_data);
 
 		if(lock->m_sync_diagram != NULL) {
-			lock->m_sync_diagram->AddBlock(1, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6 + (double) sample_count / (double) m_audio_sample_rate, QColor(0, 255, 0));
+			lock->m_sync_diagram->AddBlock(1, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6 + (double) sample_count / (double) sample_rate, QColor(0, 255, 0));
 		}
 
 		// check the timestamp

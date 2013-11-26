@@ -38,7 +38,7 @@ VideoPreviewer::VideoPreviewer(QWidget* parent)
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_frame_rate = 10;
-		lock->m_next_frame_time = SINK_TIMESTAMP_ANY;
+		lock->m_next_frame_time = SINK_TIMESTAMP_ASAP;
 		lock->m_is_visible = false;
 		lock->m_source_size = QSize(0, 0);
 		lock->m_widget_size = QSize(0, 0);
@@ -70,6 +70,10 @@ void VideoPreviewer::SetFrameRate(unsigned int frame_rate) {
 
 int64_t VideoPreviewer::GetNextVideoTimestamp() {
 	SharedLock lock(&m_shared_data);
+	if(!lock->m_is_visible)
+		return SINK_TIMESTAMP_NONE;
+	if(lock->m_widget_size.width() < 2 || lock->m_widget_size.height() < 2)
+		return SINK_TIMESTAMP_NONE;
 	return lock->m_next_frame_time;
 }
 
@@ -80,6 +84,15 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	{
 		SharedLock lock(&m_shared_data);
 
+		// check the timestamp
+		if(lock->m_next_frame_time == SINK_TIMESTAMP_ASAP) {
+			lock->m_next_frame_time = timestamp + 1000000 / lock->m_frame_rate;
+		} else {
+			if(timestamp < lock->m_next_frame_time - 1000000 / lock->m_frame_rate)
+				return;
+			lock->m_next_frame_time = std::max(lock->m_next_frame_time + 1000000 / lock->m_frame_rate, timestamp);
+		}
+
 		// don't do anything if the preview window is invisible
 		if(!lock->m_is_visible)
 			return;
@@ -87,15 +100,6 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 		// check the size (the scaler can't handle sizes below 2)
 		if(width < 2 || height < 2 || lock->m_widget_size.width() < 2 || lock->m_widget_size.height() < 2)
 			return;
-
-		// check the timestamp
-		if(lock->m_next_frame_time == SINK_TIMESTAMP_ANY) {
-			lock->m_next_frame_time = timestamp + 1000000 / lock->m_frame_rate;
-		} else {
-			if(timestamp < lock->m_next_frame_time - 1000000 / lock->m_frame_rate)
-				return;
-			lock->m_next_frame_time = std::max(lock->m_next_frame_time + 1000000 / lock->m_frame_rate, timestamp);
-		}
 
 		// calculate the scaled size
 		lock->m_source_size = QSize(width, height);

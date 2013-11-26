@@ -487,15 +487,28 @@ void PageRecord::StartPage() {
 
 	Logger::LogInfo("[PageRecord::StartPage] " + tr("Starting page ..."));
 
-	// for OpenGL recording, allocate shared memory and start the program now
-	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
-		try {
+
+	try {
+
+		// for OpenGL recording, allocate shared memory and start the program now
+		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
 			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_working_directory, glinject_run_command, glinject_relax_permissions, glinject_megapixels * 4 * 1024 * 1024,
 															m_video_frame_rate, m_video_record_cursor, glinject_capture_front, glinject_limit_fps));
-		} catch(...) {
-			Logger::LogError("[PageRecord::StartPage] " + tr("Error: Something went wrong during GLInject initialization."));
-			m_gl_inject_launcher.reset();
+
+		if(m_audio_enabled) {
+#if SSR_USE_JACK
+			// for JACK, start the input now
+			if(m_audio_backend == PageInput::AUDIO_BACKEND_JACK)
+				m_jack_input.reset(new JACKInput());
+#endif
 		}
+
+	} catch(...) {
+		Logger::LogError("[PageRecord::StartPage] " + tr("Error: Something went wrong during initialization."));
+		m_gl_inject_launcher.reset();
+#if SSR_USE_JACK
+		m_jack_input.reset();
+#endif
 	}
 
 	Logger::LogInfo("[PageRecord::StartPage] " + tr("Started page."));
@@ -546,6 +559,11 @@ void PageRecord::StopPage(bool save) {
 	// free the shared memory for OpenGL recording
 	// This doesn't stop the program, and the memory is only actually freed when the recorded program stops too.
 	m_gl_inject_launcher.reset();
+
+	// stop JACK input
+#if SSR_USE_JACK
+	m_jack_input.reset();
+#endif
 
 	Logger::LogInfo("[PageRecord::StopPage] " + tr("Stopped page."));
 
@@ -662,8 +680,9 @@ void PageRecord::StopOutput(bool final) {
 }
 
 void PageRecord::StartInput() {
+	Q_ASSERT(m_page_started);
 
-	if(m_input_started || !m_page_started)
+	if(m_input_started)
 		return;
 
 	Q_ASSERT(m_x11_input == NULL);
@@ -672,9 +691,9 @@ void PageRecord::StartInput() {
 #if SSR_USE_PULSEAUDIO
 	Q_ASSERT(m_pulseaudio_input == NULL);
 #endif
-#if SSR_USE_JACK
+/*#if SSR_USE_JACK
 	Q_ASSERT(m_jack_input == NULL);
-#endif
+#endif*/
 
 	try {
 
@@ -699,10 +718,7 @@ void PageRecord::StartInput() {
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
 				m_pulseaudio_input.reset(new PulseAudioInput(m_pulseaudio_source, m_audio_sample_rate));
 #endif
-#if SSR_USE_JACK
-			if(m_audio_backend == PageInput::AUDIO_BACKEND_JACK)
-				m_jack_input.reset(new JACKInput());
-#endif
+			// JACK was started when the page was started
 		}
 
 		Logger::LogInfo("[PageRecord::StartInput] " + tr("Started input."));
@@ -726,8 +742,9 @@ void PageRecord::StartInput() {
 }
 
 void PageRecord::StopInput() {
+	Q_ASSERT(m_page_started);
 
-	if(!m_input_started || !m_page_started)
+	if(!m_input_started)
 		return;
 
 	Logger::LogInfo("[PageRecord::StopInput] " + tr("Stopping input ..."));
@@ -742,9 +759,7 @@ void PageRecord::StopInput() {
 #if SSR_USE_PULSEAUDIO
 	m_pulseaudio_input.reset();
 #endif
-#if SSR_USE_JACK
-	m_jack_input.reset();
-#endif
+	// JACK shouldn't stop until the page stops
 
 	Logger::LogInfo("[PageRecord::StopInput] " + tr("Stopped input."));
 
@@ -753,6 +768,7 @@ void PageRecord::StopInput() {
 }
 
 void PageRecord::UpdateInput() {
+	Q_ASSERT(m_page_started);
 
 	if(m_output_started || m_previewing) {
 		StartInput();

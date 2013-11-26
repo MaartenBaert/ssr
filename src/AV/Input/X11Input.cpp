@@ -342,7 +342,7 @@ void X11Input::InputThread() {
 			if(next_timestamp == SINK_TIMESTAMP_NONE) {
 				usleep(10000);
 				continue;
-			} else if(next_timestamp != SINK_TIMESTAMP_ANY) {
+			} else if(next_timestamp != SINK_TIMESTAMP_ASAP) {
 				int64_t wait = next_timestamp - timestamp;
 				if(wait > 11000) {
 					// the thread can't sleep for too long because it still has to check the m_should_stop flag periodically

@@ -26,8 +26,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 // It decides where new frames should be sent. Using these connections is thread-safe,
 // however only ONE thread should ever create or destroy connections (this includes destroying sources or sinks).
 
-#define SINK_TIMESTAMP_NONE  ((int64_t) 0x8000000000000000ll)
-#define SINK_TIMESTAMP_ANY   ((int64_t) 0x8000000000000001ll)
+#define SINK_TIMESTAMP_NONE  ((int64_t) 0x8000000000000000ull)  // the sink doesn't want any new frames at the moment
+#define SINK_TIMESTAMP_ASAP  ((int64_t) 0x8000000000000001ull)  // the sink wants a new frame as soon as possible
 
 class BaseSource;
 class BaseSink;
