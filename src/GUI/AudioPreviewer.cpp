@@ -160,6 +160,7 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 	painter.setPen(Qt::NoPen);
 	painter.setBrush(grad);
 	for(unsigned int channel = 0; channel < 2; ++channel) {
+		// the scale goes down to 60dB which corresponds to 1.0e-3 (for sound pressure, 20dB = 10x)
 		double val = log10(std::max(1.0e-3, (lock->m_current_high[channel] - lock->m_current_low[channel]) / 2.0)) / 3.0 + 1.0;
 		painter.drawRect(0, h * channel / 2, (int) round((double) w * val), h * (channel + 1) / 2 - h * channel / 2);
 	}
