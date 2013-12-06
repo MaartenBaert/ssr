@@ -5,7 +5,7 @@ QT += core gui
 TARGET = SimpleScreenRecorder
 TEMPLATE = app
 
-DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_PULSEAUDIO=1 SSR_USE_JACK=1 SSR_TRANSLATIONS_PATH=\"/usr/share/simplescreenrecorder/translations\"
+DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_DRM=1 SSR_USE_PULSEAUDIO=1 SSR_USE_JACK=1 SSR_TRANSLATIONS_PATH=\"/usr/share/simplescreenrecorder/translations\"
 QMAKE_CXXFLAGS += -std=c++0x -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
@@ -14,6 +14,7 @@ DEPENDPATH += AV AV/Input AV/Output common GUI ../build/3rdparty
 
 SOURCES += \
 	AV/Input/ALSAInput.cpp \
+	AV/Input/DRMInput.cpp \
 	AV/Input/GLInjectInput.cpp \
 	AV/Input/GLInjectLauncher.cpp \
 	AV/Input/JACKInput.cpp \
@@ -52,6 +53,7 @@ SOURCES += \
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
+	AV/Input/DRMInput.h \
 	AV/Input/GLInjectInput.h \
 	AV/Input/GLInjectLauncher.h \
 	AV/Input/JACKInput.h \

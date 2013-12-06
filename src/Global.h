@@ -62,6 +62,11 @@ extern "C" {
 #error SSR_USE_FFMPEG_VERSIONS should be defined!
 #endif
 
+// Whether Direct Rendering Manager should be used.
+#ifndef SSR_USE_DRM
+#error SSR_USE_DRM should be defined!
+#endif
+
 // Whether PulseAudio should be used.
 #ifndef SSR_USE_PULSEAUDIO
 #error SSR_USE_PULSEAUDIO should be defined!
@@ -184,6 +189,14 @@ public:
 		return "GLInjectException";
 	}
 };
+#if SSR_USE_DRM
+class DRMException : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "DRMException";
+	}
+};
+#endif
 class ALSAException : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {

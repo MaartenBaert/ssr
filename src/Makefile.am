@@ -38,6 +38,13 @@ else
 simplescreenrecorder_CPPFLAGS += -DSSR_USE_FFMPEG_VERSIONS=0
 endif
 
+if ENABLE_DRM
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_DRM=1
+simplescreenrecorder_LDFLAGS += -ldrm
+else
+simplescreenrecorder_CPPFLAGS += -DSSR_USE_DRM=0
+endif
+
 if ENABLE_PULSEAUDIO
 simplescreenrecorder_CPPFLAGS += -DSSR_USE_PULSEAUDIO=1
 simplescreenrecorder_LDFLAGS += -lpulse

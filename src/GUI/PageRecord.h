@@ -36,6 +36,9 @@ class Synchronizer;
 class X11Input;
 class GLInjectLauncher;
 class GLInjectInput;
+#if SSR_USE_DRM
+class DRMInput;
+#endif
 class ALSAInput;
 #if SSR_USE_PULSEAUDIO
 class PulseAudioInput;
@@ -88,6 +91,7 @@ private:
 	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
 	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
+	std::unique_ptr<DRMInput> m_drm_input;
 	std::unique_ptr<ALSAInput> m_alsa_input;
 #if SSR_USE_PULSEAUDIO
 	std::unique_ptr<PulseAudioInput> m_pulseaudio_input;
