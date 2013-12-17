@@ -301,7 +301,7 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetVideoW(settings->value("input/video_w", 800).toUInt());
 	SetVideoH(settings->value("input/video_h", 600).toUInt());
 	SetVideoFrameRate(settings->value("input/video_frame_rate", 30).toUInt());
-	SetVideoScalingEnabled(settings->value("input_video/scale", false).toBool());
+	SetVideoScalingEnabled(settings->value("input/video_scale", false).toBool());
 	SetVideoScaledW(settings->value("input/video_scaled_w", 854).toUInt());
 	SetVideoScaledH(settings->value("input/video_scaled_h", 480).toUInt());
 	SetVideoRecordCursor(settings->value("input/video_record_cursor", true).toBool());
