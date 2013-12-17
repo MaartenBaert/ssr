@@ -614,8 +614,10 @@ void PageRecord::StartOutput() {
 	if(m_output_started)
 		return;
 
-	if(m_simple_synth != NULL)
+	if(m_simple_synth != NULL) {
 		m_simple_synth->PlaySequence(SEQUENCE_RECORD_START.data(), SEQUENCE_RECORD_START.size());
+		usleep(250000);
+	}
 
 	try {
 
