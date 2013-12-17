@@ -47,8 +47,8 @@ ALSAInput::ALSAInput(const QString& device_name, unsigned int sample_rate) {
 	m_channels = 2; // always 2 channels because the synchronizer and encoder don't support anything else at this point
 
 	m_alsa_pcm = NULL;
-	m_alsa_periods = 10;
 	m_alsa_period_size = 1024; // number of samples per period
+	m_alsa_buffer_size = m_alsa_period_size * 8; // number of samples in the buffer
 
 	try {
 		Init();
@@ -125,19 +125,6 @@ void ALSAInput::Init() {
 			throw ALSAException();
 		}
 
-		// set period count
-		unsigned int periods = m_alsa_periods;
-		if(snd_pcm_hw_params_set_periods_near(m_alsa_pcm, alsa_hw_params, &periods, NULL) < 0) {
-			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't set period count!"));
-			throw ALSAException();
-		}
-		if(periods != m_alsa_periods) {
-			Logger::LogWarning("[ALSAInput::Init] " + QObject::tr("Warning: Period count %1 is not supported, using %2 instead. "
-																  "This is not a problem.")
-							   .arg(m_alsa_periods).arg(periods));
-			m_alsa_periods = periods;
-		}
-
 		// set period size
 		snd_pcm_uframes_t period_size = m_alsa_period_size;
 		if(snd_pcm_hw_params_set_period_size_near(m_alsa_pcm, alsa_hw_params, &period_size, NULL) < 0) {
@@ -149,6 +136,19 @@ void ALSAInput::Init() {
 																  "This is not a problem.")
 							   .arg(m_alsa_period_size).arg(period_size));
 			m_alsa_period_size = period_size;
+		}
+
+		// set buffer size
+		snd_pcm_uframes_t buffer_size = m_alsa_buffer_size;
+		if(snd_pcm_hw_params_set_buffer_size_near(m_alsa_pcm, alsa_hw_params, &buffer_size) < 0) {
+			Logger::LogError("[ALSAInput::Init] " + QObject::tr("Error: Can't set buffer size!"));
+			throw ALSAException();
+		}
+		if(buffer_size != m_alsa_buffer_size) {
+			Logger::LogWarning("[ALSAInput::Init] " + QObject::tr("Warning: Buffer size %1 is not supported, using %2 instead. "
+																  "This is not a problem.")
+							   .arg(m_alsa_buffer_size).arg(buffer_size));
+			m_alsa_buffer_size = buffer_size;
 		}
 
 		// apply parameters
@@ -194,15 +194,15 @@ void ALSAInput::InputThread() {
 
 		Logger::LogInfo("[ALSAInput::InputThread] " + QObject::tr("Input thread started."));
 
-		std::vector<uint8_t> buffer(m_alsa_period_size * m_channels * 2);
+		std::vector<uint16_t> buffer(m_alsa_period_size * m_channels);
 		bool has_first_samples = false;
 		int64_t first_timestamp = 0; // value won't be used, but GCC gives a warning otherwise
 
 		while(!m_should_stop) {
 
 			// wait until samples are available
-			// This is not actually required since snd_pcm_readi is blocking, but unlike snd_pcm_read,
-			// this function has a timeout value. This means the input thread won't hang if the device turns out to be dead.
+			// This is not actually required since snd_pcm_readi is blocking, but unlike snd_pcm_readi,
+			// this function has a timeout value. This means the thread won't hang if the device turns out to be dead.
 			int res = snd_pcm_wait(m_alsa_pcm, 1000);
 			if(res == 0) {
 				continue;
@@ -241,7 +241,7 @@ void ALSAInput::InputThread() {
 
 					// push the samples
 					int64_t time = timestamp - (int64_t) samples_read * (int64_t) 1000000 / (int64_t) m_sample_rate;
-					PushAudioSamples(m_channels, m_sample_rate, AV_SAMPLE_FMT_S16, samples_read, buffer.data(), time);
+					PushAudioSamples(m_channels, m_sample_rate, AV_SAMPLE_FMT_S16, samples_read, (uint8_t*) buffer.data(), time);
 
 				}
 			} else {

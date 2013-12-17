@@ -42,6 +42,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #if SSR_USE_JACK
 #include "JACKInput.h"
 #endif
+#include "SimpleSynth.h"
 #include "VideoPreviewer.h"
 #include "AudioPreviewer.h"
 
@@ -110,6 +111,21 @@ public:
 
 };
 
+// sound notification sequences
+static const std::array<SimpleSynth::Note, 1> SEQUENCE_RECORD_START = {{
+	{0    , 500, 10000, 440.0f * exp2f( 3.0f / 12.0f), 0.5f}, // C5
+}};
+static const std::array<SimpleSynth::Note, 2> SEQUENCE_RECORD_STOP = {{
+	{0    , 500, 20000, 440.0f * exp2f( 3.0f / 12.0f), 0.5f}, // C5
+	{10000, 500, 20000, 440.0f * exp2f(-2.0f / 12.0f), 0.5f}, // G4
+}};
+static const std::array<SimpleSynth::Note, 4> SEQUENCE_RECORD_ERROR = {{
+	{0    , 500, 20000, 440.0f * exp2f(-2.0f / 12.0f), 0.5f}, // G4
+	{10000, 500, 20000, 440.0f * exp2f(-2.0f / 12.0f), 0.5f}, // G4
+	{20000, 500, 20000, 440.0f * exp2f(-6.0f / 12.0f), 0.3f}, // D#4
+	{20000, 500, 20000, 440.0f * exp2f(-9.0f / 12.0f), 0.5f}, // C4
+}};
+
 const int PageRecord::PRIORITY_RECORD = 0;
 const int PageRecord::PRIORITY_PREVIEW = -1;
 
@@ -123,11 +139,14 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_output_started = false;
 	m_previewing = false;
 
+	m_last_error_sound = std::numeric_limits<int64_t>::min();
+
 	QGroupBox *group_recording = new QGroupBox(tr("Recording"), this);
 	{
 		m_pushbutton_start_pause = new QPushButton(group_recording);
 
 		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), group_recording);
+		m_checkbox_sound_notifications_enable = new QCheckBox(tr("Enable sound notifications"), group_recording);
 		QLabel *label_hotkey = new QLabel(tr("Hotkey:"), group_recording);
 		m_checkbox_hotkey_ctrl = new QCheckBox(tr("Ctrl +"), group_recording);
 		m_checkbox_hotkey_shift = new QCheckBox(tr("Shift +"), group_recording);
@@ -144,6 +163,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 		connect(m_pushbutton_start_pause, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
 		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(OnUpdateHotkeyFields()));
+		connect(m_checkbox_sound_notifications_enable, SIGNAL(clicked()), this, SLOT(OnUpdateSoundNotifications()));
 		connect(m_checkbox_hotkey_ctrl, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
 		connect(m_checkbox_hotkey_shift, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
 		connect(m_checkbox_hotkey_alt, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
@@ -152,7 +172,12 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 		QVBoxLayout *layout = new QVBoxLayout(group_recording);
 		layout->addWidget(m_pushbutton_start_pause);
-		layout->addWidget(m_checkbox_hotkey_enable);
+		{
+			QHBoxLayout *layout2 = new QHBoxLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(m_checkbox_hotkey_enable);
+			layout2->addWidget(m_checkbox_sound_notifications_enable);
+		}
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
 			layout->addLayout(layout2);
@@ -352,8 +377,10 @@ void PageRecord::LoadSettings(QSettings *settings) {
 	SetHotkeyAltEnabled(settings->value("record/hotkey_alt", false).toBool());
 	SetHotkeySuperEnabled(settings->value("record/hotkey_super", false).toBool());
 	SetHotkeyKey(settings->value("record/hotkey_key", 'r' - 'a').toUInt());
+	SetSoundNotificationsEnabled(settings->value("record/sound_notifications_enable", true).toBool());
 	SetPreviewFrameRate(settings->value("record/preview_frame_rate", 10).toUInt());
 	OnUpdateHotkeyFields();
+	OnUpdateSoundNotifications();
 }
 
 void PageRecord::SaveSettings(QSettings *settings) {
@@ -363,6 +390,7 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	settings->setValue("record/hotkey_alt", IsHotkeyAltEnabled());
 	settings->setValue("record/hotkey_super", IsHotkeySuperEnabled());
 	settings->setValue("record/hotkey_key", GetHotkeyKey());
+	settings->setValue("record/sound_notifications_enable", AreSoundNotificationsEnabled());
 	settings->setValue("record/preview_frame_rate", GetPreviewFrameRate());
 }
 
@@ -517,6 +545,7 @@ void PageRecord::StartPage() {
 	m_recorded_something = false;
 	UpdateSysTray();
 	OnUpdateHotkey();
+	OnUpdateSoundNotifications();
 
 	UpdateInput();
 
@@ -570,6 +599,7 @@ void PageRecord::StopPage(bool save) {
 	m_page_started = false;
 	UpdateSysTray();
 	OnUpdateHotkey();
+	OnUpdateSoundNotifications();
 
 	m_info_timer->stop();
 	OnUpdateInformation();
@@ -583,6 +613,9 @@ void PageRecord::StartOutput() {
 
 	if(m_output_started)
 		return;
+
+	if(m_simple_synth != NULL)
+		m_simple_synth->PlaySequence(SEQUENCE_RECORD_START.data(), SEQUENCE_RECORD_START.size());
 
 	try {
 
@@ -672,6 +705,9 @@ void PageRecord::StopOutput(bool final) {
 	}
 
 	Logger::LogInfo("[PageRecord::StopOutput] " + tr("Stopped output."));
+
+	if(m_simple_synth != NULL)
+		m_simple_synth->PlaySequence(SEQUENCE_RECORD_STOP.data(), SEQUENCE_RECORD_STOP.size());
 
 	m_output_started = false;
 	UpdateRecordPauseButton();
@@ -852,16 +888,12 @@ void PageRecord::UpdatePreview() {
 }
 
 void PageRecord::OnUpdateHotkeyFields() {
-
 	bool enabled = IsHotkeyEnabled();
 	GroupEnabled({m_checkbox_hotkey_ctrl, m_checkbox_hotkey_shift, m_checkbox_hotkey_alt, m_checkbox_hotkey_super, m_combobox_hotkey_key}, enabled);
-
 	OnUpdateHotkey();
-
 }
 
 void PageRecord::OnUpdateHotkey() {
-
 	if(m_page_started && IsHotkeyEnabled()) {
 
 		unsigned int modifiers = 0;
@@ -875,11 +907,22 @@ void PageRecord::OnUpdateHotkey() {
 			m_gl_inject_launcher->UpdateHotkey(IsHotkeyEnabled(), XK_A + GetHotkeyKey(), modifiers);
 
 	} else {
-
 		g_hotkey_listener.DisableHotkey();
-
 	}
+}
 
+void PageRecord::OnUpdateSoundNotifications() {
+	if(m_page_started && AreSoundNotificationsEnabled()) {
+		if(m_simple_synth == NULL) {
+			try {
+				m_simple_synth.reset(new SimpleSynth("default", 44100));
+			} catch(...) {
+				Logger::LogError("[PageRecord::OnUpdateSoundNotifications] " + tr("Error: Something went wrong while creating the synth."));
+			}
+		}
+	} else {
+		m_simple_synth.reset();
+	}
 }
 
 void PageRecord::OnRecordStartPause() {
@@ -1031,6 +1074,15 @@ void PageRecord::OnUpdateInformation() {
 }
 
 void PageRecord::OnNewLogLine(Logger::enum_type type, QString str) {
+
+	// play sound for errors
+	int64_t time = hrt_time_micro();
+	if(m_simple_synth != NULL && type == Logger::TYPE_ERROR && time > m_last_error_sound + 1000000) {
+		m_simple_synth->PlaySequence(SEQUENCE_RECORD_ERROR.data(), SEQUENCE_RECORD_ERROR.size());
+		m_last_error_sound = time;
+	}
+
+	// add line to log
 	QTextCursor cursor = m_textedit_log->textCursor();
 	QTextCharFormat format;
 	bool should_scroll = (m_textedit_log->verticalScrollBar()->value() >= m_textedit_log->verticalScrollBar()->maximum());
@@ -1045,6 +1097,7 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString str) {
 	cursor.insertText(str, format);
 	if(should_scroll)
 		m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
+
 }
 
 void PageRecord::OnCheckGLInjectEvents() {

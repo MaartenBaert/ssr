@@ -32,6 +32,7 @@ SOURCES += \
 	AV/FastScaler_Convert.cpp \
 	AV/FastScaler_Scale.cpp \
 	AV/Resampler.cpp \
+	AV/SimpleSynth.cpp \
 	AV/SourceSink.cpp \
 	common/ByteQueue.cpp \
 	common/DetectCPUFeatures.cpp \
@@ -71,6 +72,7 @@ HEADERS  += \
 	AV/FastScaler_Convert.h \
 	AV/FastScaler_Scale.h \
 	AV/Resampler.h \
+	AV/SimpleSynth.h \
 	AV/SourceSink.h \
 	common/ByteQueue.h \
 	common/DetectCPUFeatures.h \

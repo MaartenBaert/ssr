@@ -113,6 +113,7 @@ void Resampler::Resample(unsigned int in_channels, unsigned int in_sample_rate, 
 		in_data_float = (uint8_t*) m_in_data.data();
 	} else {
 		Q_ASSERT(false); // unsupported input format
+		return;
 	}
 
 	// no resampling needed?

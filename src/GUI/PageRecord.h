@@ -43,6 +43,7 @@ class PulseAudioInput;
 #if SSR_USE_JACK
 class JACKInput;
 #endif
+class SimpleSynth;
 class VideoPreviewer;
 class AudioPreviewer;
 
@@ -96,9 +97,12 @@ private:
 	std::unique_ptr<JACKInput> m_jack_input;
 #endif
 
+	std::unique_ptr<SimpleSynth> m_simple_synth;
+	int64_t m_last_error_sound;
+
 	QPushButton *m_pushbutton_start_pause;
 
-	QCheckBox *m_checkbox_hotkey_enable;
+	QCheckBox *m_checkbox_hotkey_enable, *m_checkbox_sound_notifications_enable;
 	QCheckBox *m_checkbox_hotkey_ctrl, *m_checkbox_hotkey_shift, *m_checkbox_hotkey_alt, *m_checkbox_hotkey_super;
 	QComboBox *m_combobox_hotkey_key;
 
@@ -152,6 +156,7 @@ public:
 	inline bool IsHotkeyAltEnabled() { return m_checkbox_hotkey_alt->isChecked(); }
 	inline bool IsHotkeySuperEnabled() { return m_checkbox_hotkey_super->isChecked(); }
 	inline unsigned int GetHotkeyKey() { return m_combobox_hotkey_key->currentIndex(); }
+	inline bool AreSoundNotificationsEnabled() { return m_checkbox_sound_notifications_enable->isChecked(); }
 	inline unsigned int GetPreviewFrameRate() { return m_spinbox_preview_frame_rate->value(); }
 
 	inline void SetHotkeyEnabled(bool enable) { m_checkbox_hotkey_enable->setChecked(enable); }
@@ -160,11 +165,13 @@ public:
 	inline void SetHotkeyAltEnabled(bool enable) { m_checkbox_hotkey_alt->setChecked(enable); }
 	inline void SetHotkeySuperEnabled(bool enable) { m_checkbox_hotkey_super->setChecked(enable); }
 	inline void SetHotkeyKey(unsigned int key) { m_combobox_hotkey_key->setCurrentIndex(clamp(key, 0u, 25u)); }
+	inline void SetSoundNotificationsEnabled(bool enable) { m_checkbox_sound_notifications_enable->setChecked(enable); }
 	inline void SetPreviewFrameRate(unsigned int frame_rate) { m_spinbox_preview_frame_rate->setValue(frame_rate); }
 
 public slots:
 	void OnUpdateHotkeyFields();
 	void OnUpdateHotkey();
+	void OnUpdateSoundNotifications();
 
 private slots:
 	void OnRecordStartPause();

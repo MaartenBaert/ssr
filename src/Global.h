@@ -30,6 +30,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/shm.h>
 
 #include <limits>
+#include <array>
 #include <vector>
 #include <deque>
 #include <set>

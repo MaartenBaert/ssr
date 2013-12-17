@@ -92,6 +92,8 @@ simplescreenrecorder_SOURCES = \
 	AV/FastScaler_Scale.h \
 	AV/Resampler.cpp \
 	AV/Resampler.h \
+	AV/SimpleSynth.cpp \
+	AV/SimpleSynth.h \
 	AV/SourceSink.cpp \
 	AV/SourceSink.h \
 	common/ByteQueue.cpp \

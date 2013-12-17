@@ -20,38 +20,47 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "SourceSink.h"
 #include "MutexDataPair.h"
 
 #include <alsa/asoundlib.h>
 
-class ALSAInput : public AudioSource {
+class SimpleSynth {
+
+public:
+	struct Note {
+		unsigned int m_time, m_duration_in, m_duration_out;
+		float m_frequency, m_amplitude;
+	};
 
 private:
-	static const int64_t START_DELAY;
+	struct SharedData {
+		std::vector<Note> m_notes;
+		unsigned int m_current_time;
+	};
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
 	QString m_device_name;
-	unsigned int m_sample_rate, m_channels;
+	unsigned int m_sample_rate;
 
 	snd_pcm_t *m_alsa_pcm;
 	unsigned int m_alsa_period_size, m_alsa_buffer_size;
 
 	std::thread m_thread;
+	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
-	ALSAInput(const QString& device_name, unsigned int sample_rate);
-	~ALSAInput();
+	SimpleSynth(const QString& device_name, unsigned int sample_rate);
+	~SimpleSynth();
 
-	// Returns whether an error has occurred in the input thread.
 	// This function is thread-safe.
-	inline bool HasErrorOccurred() { return m_error_occurred; }
+	void PlaySequence(const Note* notes, unsigned int note_count);
 
 private:
 	void Init();
 	void Free();
 
-	void InputThread();
+	void SynthThread();
 
 };

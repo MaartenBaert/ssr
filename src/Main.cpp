@@ -78,6 +78,7 @@ int main(int argc, char* argv[]) {
 	// That's not what we want, so disable this and do it manually.
 	QApplication::setQuitOnLastWindowClosed(false);
 
+	// create logger
 	Logger logger;
 	Q_UNUSED(logger);
 
