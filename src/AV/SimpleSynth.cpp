@@ -211,38 +211,42 @@ void SimpleSynth::SynthThread() {
 			}
 
 			// generate the samples
-			memset(buffer_float.data(), 0, m_alsa_period_size * sizeof(float));
 			{
 				SharedLock lock(&m_shared_data);
-				for(unsigned int i = 0; i < lock->m_notes.size(); ) {
-					Note &n = lock->m_notes[i];
-					int trel = n.m_time - lock->m_current_time;
-					int t1 = clamp(trel, 0, (int) m_alsa_period_size);
-					int t2 = clamp(trel + (int) n.m_duration_in, 0, (int) m_alsa_period_size);
-					int t3 = clamp(trel + (int) n.m_duration_in + (int) n.m_duration_out, 0, (int) m_alsa_period_size);
-					if(t1 == (int) m_alsa_period_size) { // beep not started yet
+				if(lock->m_notes.empty()) { // faster version
+					memset(buffer_int16.data(), 0, m_alsa_period_size * sizeof(int16_t));
+				} else {
+					memset(buffer_float.data(), 0, m_alsa_period_size * sizeof(float));
+					for(unsigned int i = 0; i < lock->m_notes.size(); ) {
+						Note &n = lock->m_notes[i];
+						int trel = n.m_time - lock->m_current_time;
+						int t1 = clamp(trel, 0, (int) m_alsa_period_size);
+						int t2 = clamp(trel + (int) n.m_duration_in, 0, (int) m_alsa_period_size);
+						int t3 = clamp(trel + (int) n.m_duration_in + (int) n.m_duration_out, 0, (int) m_alsa_period_size);
+						if(t1 == (int) m_alsa_period_size) { // beep not started yet
+							++i;
+							continue;
+						}
+						if(t3 == 0) { // beep done
+							if(i != lock->m_notes.size() - 1)
+								n = lock->m_notes.back();
+							lock->m_notes.pop_back();
+							continue;
+						}
+						float k = 2.0f * M_PI * n.m_frequency / (float) m_sample_rate;
+						float amp_low = log2(n.m_amplitude * 0.001f), amp_high = log2(n.m_amplitude);
+						for(int t = t1; t < t2; ++t) {
+							buffer_float[t] += sin((float) (t - trel) * k) * exp2(amp_low + (amp_high - amp_low) * (float) (t - trel) / (float) n.m_duration_in);
+						}
+						for(int t = t2; t < t3; ++t) {
+							buffer_float[t] += sin((float) (t - trel) * k) * exp2(amp_high + (amp_low - amp_high) * (float) (t - trel - (int) n.m_duration_in) / (float) n.m_duration_out);
+						}
 						++i;
-						continue;
 					}
-					if(t3 == 0) { // beep done
-						if(i != lock->m_notes.size() - 1)
-							n = lock->m_notes.back();
-						lock->m_notes.pop_back();
-						continue;
-					}
-					float k = 2.0f * M_PI * n.m_frequency / (float) m_sample_rate;
-					float amp_low = log2(n.m_amplitude * 0.001f), amp_high = log2(n.m_amplitude);
-					for(int t = t1; t < t2; ++t) {
-						buffer_float[t] += sin((float) (t - trel) * k) * exp2(amp_low + (amp_high - amp_low) * (float) (t - trel) / (float) n.m_duration_in);
-					}
-					for(int t = t2; t < t3; ++t) {
-						buffer_float[t] += sin((float) (t - trel) * k) * exp2(amp_high + (amp_low - amp_high) * (float) (t - trel - (int) n.m_duration_in) / (float) n.m_duration_out);
-					}
-					++i;
+					lock->m_current_time += m_alsa_period_size;
+					SampleCopy(m_alsa_period_size, buffer_float.data(), 1, buffer_int16.data(), 1);
 				}
-				lock->m_current_time += m_alsa_period_size;
 			}
-			SampleCopy(m_alsa_period_size, buffer_float.data(), 1, buffer_int16.data(), 1);
 
 			// write the samples
 			snd_pcm_sframes_t samples_written = snd_pcm_writei(m_alsa_pcm, buffer_int16.data(), m_alsa_period_size);
