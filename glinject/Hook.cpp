@@ -112,7 +112,6 @@ void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
 }
 
 GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name) {
-	glinject_init_hooks();
 	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
 		if(strcmp(hook_table[i].name, (const char*) proc_name) == 0) {
 			fprintf(stderr, "[SSR-GLInject] Hooked: glXGetProcAddressARB(%s).\n", proc_name);
@@ -134,18 +133,22 @@ int glinject_my_XNextEvent(Display* display, XEvent* event_return) {
 // override existing functions
 
 extern "C" GLXWindow glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
+	glinject_init_hooks();
 	return glinject_my_glXCreateWindow(dpy, config, win, attrib_list);
 }
 
 extern "C" void glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
+	glinject_init_hooks();
 	glinject_my_glXSwapBuffers(dpy, drawable);
 }
 
 extern "C" GLXextFuncPtr glXGetProcAddressARB(const GLubyte *proc_name) {
+	glinject_init_hooks();
 	return glinject_my_glXGetProcAddressARB(proc_name);
 }
 
 extern "C" int XNextEvent(Display* display, XEvent* event_return) {
+	glinject_init_hooks();
 	return glinject_my_XNextEvent(display, event_return);
 }
 
