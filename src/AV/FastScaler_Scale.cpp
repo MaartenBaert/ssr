@@ -61,11 +61,12 @@ inline void Bilinear_MapIndex(unsigned int out_i, unsigned int in_w, unsigned in
 	unsigned int div = out_w << mipmap;
 	int64_t ii = (int64_t) ((inter + (uint64_t) (div >> 1)) / (uint64_t) div) - 128;
 	int off = ii >> 8;
+	int max_offset = ((in_w - 1) >> mipmap) - 1;
 	if(off < 0) {
 		offset = 0;
 		fraction = 0;
-	} else if(off > (int) ((in_w - 2) >> mipmap)) {
-		offset = (in_w - 2) >> mipmap;
+	} else if(off > max_offset) {
+		offset = (in_w - 1) >> mipmap;
 		fraction = 256;
 	} else {
 		offset = off;
