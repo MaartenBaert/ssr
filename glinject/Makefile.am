@@ -20,12 +20,14 @@ endif
 libssr_glinject_la_SOURCES = \
 	elfhacks.c \
 	elfhacks.h \
-	GLFrameGrabber.cpp \
-	GLFrameGrabber.h \
 	GLInject.cpp \
 	GLInject.h \
 	Global.h \
+	GLXFrameGrabber.cpp \
+	GLXFrameGrabber.h \
 	Hook.cpp \
-	ShmStructs.h
+	ShmStructs.h \
+	SSRVideoStreamWriter.cpp \
+	SSRVideoStreamWriter.h
 
 endif

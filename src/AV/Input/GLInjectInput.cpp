@@ -21,23 +21,22 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLInjectInput.h"
 
 #include "Logger.h"
-#include "AVWrapper.h"
-#include "Synchronizer.h"
-#include "VideoEncoder.h"
-#include "GLInjectLauncher.h"
-#include "VideoPreviewer.h"
+#include "SSRVideoStreamReader.h"
 
 #include "../glinject/ShmStructs.h"
 
 // The highest expected latency between GLInject and the input thread.
 const int64_t GLInjectInput::MAX_COMMUNICATION_LATENCY = 100000;
 
-GLInjectInput::GLInjectInput(GLInjectLauncher *launcher) {
+GLInjectInput::GLInjectInput(const QString& pid, const QString& source, const QString& program_name, bool record_cursor, bool limit_fps, unsigned int target_fps) {
 
-	m_launcher = launcher;
+	m_pid = pid;
+	m_source = source;
+	m_program_name = program_name;
+	m_flags = ((record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((limit_fps)? GLINJECT_FLAG_LIMIT_FPS : 0);
+	m_target_fps = target_fps;
 
-	m_ring_buffer_size = m_launcher->GetRingBufferSize();
-	m_max_bytes = m_launcher->GetMaxBytes();
+	m_stream_reader = NULL;
 
 	try {
 		Init();
@@ -62,21 +61,30 @@ GLInjectInput::~GLInjectInput() {
 
 }
 
+void GLInjectInput::GetCurrentSize(unsigned int* width, unsigned int* height) {
+	m_stream_reader->GetCurrentSize(width, height);
+}
+
+double GLInjectInput::GetFPS() {
+	return m_stream_reader->GetFPS();
+}
+
+void GLInjectInput::Start() {
+	m_stream_reader->ChangeCaptureParameters(m_flags | GLINJECT_FLAG_CAPTURE_ENABLED, m_target_fps);
+}
+
+void GLInjectInput::Stop() {
+	m_stream_reader->ChangeCaptureParameters(m_flags, m_target_fps);
+}
+
 void GLInjectInput::Init() {
 
-	// get the main shared memory
-	m_shm_main_ptr = m_launcher->GetMainSharedPointer();
+	// create the stream reader
+	m_stream_reader = new SSRVideoStreamReader(m_pid.toStdString(), m_source.toStdString(), m_program_name.toStdString());
 
-	// get the frame shared memory
-	for(unsigned int i = 0; i < m_ring_buffer_size; ++i) {
-		m_shm_frame_ptrs.push_back(m_launcher->GetFrameSharedPointer(i));
-	}
-
-	// flush the ring buffer
-	GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
-	std::atomic_thread_fence(std::memory_order_acquire);
-	header->read_pos = header->write_pos;
-	std::atomic_thread_fence(std::memory_order_release);
+	// start the stream
+	m_stream_reader->ChangeCaptureParameters(m_flags, m_target_fps);
+	m_stream_reader->Clear();
 
 	// start input thread
 	m_should_stop = false;
@@ -86,7 +94,11 @@ void GLInjectInput::Init() {
 }
 
 void GLInjectInput::Free() {
-
+	if(m_stream_reader != NULL) {
+		m_stream_reader->ChangeCaptureParameters(0, 0);
+		delete m_stream_reader;
+		m_stream_reader = NULL;
+	}
 }
 
 void GLInjectInput::InputThread() {
@@ -98,57 +110,27 @@ void GLInjectInput::InputThread() {
 		while(!m_should_stop) {
 
 			// is a frame ready?
-			GLInjectHeader *header = (GLInjectHeader*) m_shm_main_ptr;
-			std::atomic_thread_fence(std::memory_order_acquire);
-			unsigned int read_pos = header->read_pos;
-			unsigned int write_pos = header->write_pos;
-			std::atomic_thread_fence(std::memory_order_release);
-			unsigned int frames_ready = positive_mod((int) write_pos - (int) read_pos, (int) m_ring_buffer_size * 2);
-			if(frames_ready == 0) {
+			int64_t timestamp;
+			unsigned int width, height;
+			int stride;
+			void *data = m_stream_reader->GetFrame(&timestamp, &width, &height, &stride);
+			if(data == NULL) {
 				PushVideoPing(hrt_time_micro() - MAX_COMMUNICATION_LATENCY);
 				usleep(10000);
 				continue;
 			}
 
-			std::atomic_thread_fence(std::memory_order_acquire); // start reading frame
-
-			// get the frame info
-			unsigned int current_frame = read_pos % m_ring_buffer_size;
-			GLInjectFrameInfo *frameinfo = (GLInjectFrameInfo*) (m_shm_main_ptr + sizeof(GLInjectHeader) + sizeof(GLInjectFrameInfo) * current_frame);
-			int64_t timestamp = frameinfo->timestamp;
-			unsigned int frame_width = frameinfo->width;
-			unsigned int frame_height = frameinfo->height;
-			if(frame_width < 2 || frame_height < 2) {
-				Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Error: Image is too small!"));
-				throw GLInjectException();
-			}
-			if(frame_width > 10000 || frame_height > 10000) {
-				Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Error: Image is too large!"));
-				throw GLInjectException();
-			}
-
-			// get the image
-			uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];
-			int image_stride = grow_align16(frame_width * 4);
-			if(image_stride * frame_height > m_max_bytes) {
-				Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Error: Image doesn't fit in memory!"));
-				throw GLInjectException();
-			}
-
-			// flip the image upside down by changing the pointer and stride
+			// if the stride is negative, change the pointer
 			// this is needed because OpenGL stores frames upside-down
-			image_data += image_stride * (frame_height - 1);
-			image_stride = -image_stride;
+			if(stride < 0) {
+				data = (char*) data + (size_t) (-stride) * (size_t) (height - 1);
+			}
 
 			// push the frame
-			PushVideoFrame(frame_width, frame_height, image_data, image_stride, PIX_FMT_BGRA, timestamp);
-
-			std::atomic_thread_fence(std::memory_order_release); // stop reading frame
+			PushVideoFrame(width, height, (uint8_t*) data, stride, PIX_FMT_BGRA, timestamp);
 
 			// go to the next frame
-			std::atomic_thread_fence(std::memory_order_acquire);
-			header->read_pos = (read_pos + 1) % (m_ring_buffer_size * 2);
-			std::atomic_thread_fence(std::memory_order_release);
+			m_stream_reader->NextFrame();
 
 		}
 

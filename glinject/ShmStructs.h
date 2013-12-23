@@ -8,36 +8,58 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #pragma once
 
-#include <atomic>
+/*
+A captured video stream is transmitted to SimpleScreenRecorder using shared memory files (i.e. files in /dev/shm). The system is entirely lock-free and thread-safe, but supports only a single reader and a single writer.
+
+There are two types of files:
+
+>>>> /dev/shm/ssr-video-PID-SOURCE-DESCRIPTION <<<<
+> PID is the process ID of the application, SOURCE is the source of the stream (should be unique for this process), DESCRIPTION can be anything.
+> This file contains a GLInjectHeader struct followed by a GLInjectFrameInfo struct for each frame in the ring buffer.
+
+>>>> /dev/shm/ssr-videoframeNUM-PID-SOURCE-DESCRIPTION <<<<
+> NUM is the position of the frame in the ring buffer (starting from zero).
+> This file contains one video frame. The file size is not constant, it may be enlarged when the video frame size changes. The size can only increase, not decrease.
+
+*/
 
 // Disable padding to make sure the 32-bit and 64-bit libs are compatible.
 #pragma pack(push, 1)
 
-#define GLINJECT_FLAG_RECORD_CURSOR  0x0001
-#define GLINJECT_FLAG_CAPTURE_FRONT  0x0002
-#define GLINJECT_FLAG_LIMIT_FPS      0x0004
+#define GLINJECT_RING_BUFFER_SIZE 4
+
+#define GLINJECT_FLAG_CAPTURE_ENABLED  0x0001
+#define GLINJECT_FLAG_RECORD_CURSOR    0x0002
+#define GLINJECT_FLAG_LIMIT_FPS        0x0004
 
 struct GLInjectHeader {
-	// input
-	uint32_t ring_buffer_size, max_bytes;
-	uint32_t target_fps;
-	uint32_t flags;
-	uint32_t hotkey_enabled;
-	uint32_t hotkey_keycode;
-	uint32_t hotkey_modifiers;
-	// input/output
-	uint32_t read_pos, write_pos;
-	// output
+
+	// ring buffer
+	uint32_t ring_buffer_read_pos, ring_buffer_write_pos;
+
+	// video stream info: set by the captured application
 	uint32_t current_width, current_height;
 	uint32_t frame_counter;
-	uint32_t hotkey_counter;
+
+	// capture parameters: set by SimpleScreenRecorder
+	uint32_t capture_flags;
+	uint32_t capture_target_fps;
+
+	// X11 hotkey support: set by SimpleScreenRecorder, counter is updated by the captured application
+	uint32_t x11hotkey_enabled;
+	uint32_t x11hotkey_keycode;
+	uint32_t x11hotkey_modifiers;
+	uint32_t x11hotkey_counter;
+
 };
+
 struct GLInjectFrameInfo {
-	// input
-	int32_t shm_id;
-	// output
+
+	// frame info: set by the captured application
 	int64_t timestamp;
 	uint32_t width, height;
+	int32_t stride; // stride can be negative, this means the frame is upside-down (this is typical for OpenGL)
+
 };
 
 #pragma pack(pop)

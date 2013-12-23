@@ -72,6 +72,8 @@ private:
 #if SSR_USE_PULSEAUDIO
 	QString m_pulseaudio_source;
 #endif
+	QString m_glinject_pid, m_glinject_source, m_glinject_program_name;
+	bool m_glinject_limit_fps;
 
 	OutputSettings m_output_settings;
 	std::unique_ptr<OutputManager> m_output_manager;
@@ -81,12 +83,8 @@ private:
 	bool m_separate_files;
 	unsigned int m_file_segment_counter;
 
-	int64_t m_info_last_timestamp;
-	uint32_t m_info_last_frame_counter;
-	double m_info_input_frame_rate;
 	QTimer *m_info_timer, *m_glinject_event_timer;
 
-	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
 	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
 	std::unique_ptr<ALSAInput> m_alsa_input;

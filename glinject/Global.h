@@ -9,31 +9,24 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#define __STDC_FORMAT_MACROS
 #define GL_GLEXT_PROTOTYPES
-
-//#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
-#include <GL/glx.h>
-#include <X11/X.h>
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <stdint.h>
-#include <unistd.h>
-#include <dlfcn.h>
-#include <sys/shm.h>
 
-#include <memory>
-#include <vector>
+#include <dlfcn.h>
+#include <unistd.h>
 
 #include <atomic>
-
-typedef void (*GLXextFuncPtr)(void);
+#include <exception>
+#include <iomanip>
+#include <iostream>
+#include <memory>
+#include <sstream>
+#include <vector>
 
 // generic macro to test version numbers
 #define TEST_MAJOR_MINOR(major, minor, required_major, required_minor) (major > required_major || (major == required_major && minor >= required_minor))
@@ -56,7 +49,18 @@ inline void atomic_thread_fence_replacement(memory_order) {
 }
 #endif
 
-// simple function to do n-byte alignment
+#define GLINJECT_PRINT(message) { \
+	std::cerr << "[SSR-GLInject] " << message << std::endl; \
+}
+
+class SSRStreamException : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "SSRStreamException";
+	}
+};
+
+// simple function to do 16-byte alignment
 inline size_t grow_align16(size_t size) {
 	return (size_t) (size + 15) & ~((size_t) 15);
 }

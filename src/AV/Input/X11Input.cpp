@@ -213,8 +213,14 @@ X11Input::~X11Input() {
 
 }
 
-uint32_t X11Input::GetFrameCounter() {
-	return m_frame_counter;
+double X11Input::GetFPS() {
+	int64_t timestamp = hrt_time_micro();
+	uint32_t frame_counter = m_frame_counter;
+	unsigned int time = timestamp - m_info_last_timestamp;
+	unsigned int frames = frame_counter - m_last_frame_counter;
+	m_info_last_timestamp = timestamp;
+	m_last_frame_counter = frame_counter;
+	return (double) frames / ((double) time * 1.0e-6);
 }
 
 void X11Input::Init() {
@@ -272,6 +278,8 @@ void X11Input::Init() {
 
 	// initialize frame counter
 	m_frame_counter = 0;
+	m_info_last_timestamp = hrt_time_micro();
+	m_last_frame_counter = 0;
 
 	// start input thread
 	m_should_stop = false;

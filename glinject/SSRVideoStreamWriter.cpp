@@ -1,0 +1,292 @@
+/*
+Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*/
+
+#include "SSRVideoStreamWriter.h"
+
+#include <fcntl.h>
+#include <sys/file.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+// Returns the program name (i.e. filename of the binary)
+static std::string GetProgramName() {
+	std::vector<char> temp(10000);
+	ssize_t size = readlink("/proc/self/exe", temp.data(), temp.size());
+	if(size < 0)
+		return std::string();
+	std::string path(temp.data(), size);
+	size_t p = path.find_last_of('/');
+	if(p == std::string::npos)
+		return path;
+	return path.substr(p + 1);
+}
+
+SSRVideoStreamWriter::SSRVideoStreamWriter(const std::string& source) {
+
+	std::string program_name = GetProgramName();
+
+	m_filename_main = "/dev/shm/ssr-video-" + std::to_string(getpid()) + "-" + source + "-" + program_name;
+	m_page_size = sysconf(_SC_PAGE_SIZE);
+	m_width = 0;
+	m_height = 0;
+	m_stride = 0;
+	m_next_frame_time = hrt_time_micro();
+
+	m_file_main = -1;
+	m_mmap_ptr_main = MAP_FAILED;
+	m_mmap_size_main = 0;
+
+	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
+		FrameData &fd = m_frame_data[i];
+		fd.m_filename_frame = "/dev/shm/ssr-videoframe" + std::to_string(i) + "-" + std::to_string(getpid()) + "-" + source + "-" + program_name;
+		fd.m_file_frame = -1;
+		fd.m_mmap_ptr_frame = MAP_FAILED;
+		fd.m_mmap_size_frame = 0;
+	}
+
+	try {
+		Init();
+	} catch(...) {
+		Free();
+		throw;
+	}
+
+}
+
+SSRVideoStreamWriter::~SSRVideoStreamWriter() {
+	Free();
+}
+
+void SSRVideoStreamWriter::Init() {
+
+	GLINJECT_PRINT("[" << m_filename_main << "] Created video stream.");
+
+	int file_mode = 0600;
+	{
+		char *ssr_stream_relax_permissions = getenv("SSR_STREAM_RELAX_PERMISSIONS");
+		if(ssr_stream_relax_permissions != NULL && atoi(ssr_stream_relax_permissions) > 0) {
+			GLINJECT_PRINT("Warning: Using relaxed file permissions, any user on this machine will be able to read or manipulate the stream!");
+			file_mode = 0666;
+		}
+	}
+
+	// open main file
+	m_file_main = open(m_filename_main.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, file_mode);
+	if(m_file_main == -1) {
+		GLINJECT_PRINT("Error: Can't open video stream file!");
+		throw SSRStreamException();
+	}
+
+	// lock
+	if(flock(m_file_main, LOCK_EX) == -1) {
+		GLINJECT_PRINT("Error: Can't lock video stream file!");
+		throw SSRStreamException();
+	}
+
+	// resize main file
+	m_mmap_size_main = (sizeof(GLInjectHeader) + GLINJECT_RING_BUFFER_SIZE * sizeof(GLInjectFrameInfo) + m_page_size - 1) / m_page_size * m_page_size;
+	if(ftruncate(m_file_main, m_mmap_size_main) == -1) {
+		GLINJECT_PRINT("Error: Can't resize video stream file!");
+		throw SSRStreamException();
+	}
+
+	// map main file
+	m_mmap_ptr_main = mmap(NULL, m_mmap_size_main, PROT_READ | PROT_WRITE, MAP_SHARED, m_file_main, 0);
+	if(m_mmap_ptr_main == MAP_FAILED) {
+		GLINJECT_PRINT("Error: Can't memory-map video stream file!");
+		throw SSRStreamException();
+	}
+
+	// open frame files
+	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
+		FrameData &fd = m_frame_data[i];
+		fd.m_file_frame = open(fd.m_filename_frame.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, file_mode);
+		if(fd.m_file_frame == -1) {
+			GLINJECT_PRINT("Error: Can't open video frame file!");
+			throw SSRStreamException();
+		}
+	}
+
+	// initialize header
+	GLInjectHeader *header = GetGLInjectHeader();
+	header->ring_buffer_read_pos = 0;
+	header->ring_buffer_write_pos = 0;
+	header->current_width = m_width;
+	header->current_height = m_height;
+	header->frame_counter = 0;
+	header->capture_flags = 0;
+	header->capture_target_fps = 0;
+	header->x11hotkey_enabled = false;
+	header->x11hotkey_keycode = 0;
+	header->x11hotkey_modifiers = 0;
+	header->x11hotkey_counter = 0;
+
+	// initialize frame info
+	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
+		GLInjectFrameInfo *frameinfo = GetGLInjectFrameInfo(i);
+		frameinfo->timestamp = 0;
+		frameinfo->width = 0;
+		frameinfo->height = 0;
+		frameinfo->stride = 0;
+	}
+
+	std::atomic_thread_fence(std::memory_order_release);
+
+	// unlock
+	flock(m_file_main, LOCK_UN);
+
+}
+
+void SSRVideoStreamWriter::Free() {
+
+	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
+		FrameData &fd = m_frame_data[i];
+
+		// unmap frame file
+		if(fd.m_mmap_ptr_frame != MAP_FAILED) {
+			munmap(fd.m_mmap_ptr_frame, fd.m_mmap_size_frame);
+			fd.m_mmap_ptr_frame = MAP_FAILED;
+		}
+
+		// close and unlink frame file
+		if(fd.m_file_frame != -1) {
+			close(fd.m_file_frame);
+			fd.m_file_frame = -1;
+			unlink(fd.m_filename_frame.c_str());
+		}
+
+	}
+
+	// unmap main file
+	if(m_mmap_ptr_main != MAP_FAILED) {
+		munmap(m_mmap_ptr_main, m_mmap_size_main);
+		m_mmap_ptr_main = MAP_FAILED;
+	}
+
+	// close and unlink main file
+	if(m_file_main != -1) {
+		close(m_file_main);
+		m_file_main = -1;
+		unlink(m_filename_main.c_str());
+	}
+
+	GLINJECT_PRINT("[" << m_filename_main << "] Destroyed video stream.");
+
+}
+
+GLInjectHeader* SSRVideoStreamWriter::GetGLInjectHeader() {
+	return (GLInjectHeader*) m_mmap_ptr_main;
+}
+
+GLInjectFrameInfo* SSRVideoStreamWriter::GetGLInjectFrameInfo(unsigned int frame) {
+	return (GLInjectFrameInfo*) ((char*) m_mmap_ptr_main + sizeof(GLInjectHeader) + frame * sizeof(GLInjectFrameInfo));
+}
+
+void SSRVideoStreamWriter::UpdateSize(unsigned int width, unsigned int height, int stride) {
+	if(m_width != width || m_height != height) {
+		GLINJECT_PRINT("[" << m_filename_main << "] frame size = " << width << "x" << height << ".");
+		m_width = width;
+		m_height = height;
+		GLInjectHeader *header = GetGLInjectHeader();
+		header->current_width = m_width;
+		header->current_height = m_height;
+		std::atomic_thread_fence(std::memory_order_release);
+	}
+	m_stride = stride;
+}
+
+void* SSRVideoStreamWriter::NewFrame(unsigned int* flags) {
+
+	// increment the frame counter
+	GLInjectHeader *header = GetGLInjectHeader();
+	++header->frame_counter;
+	std::atomic_thread_fence(std::memory_order_release);
+
+	// get capture parameters
+	std::atomic_thread_fence(std::memory_order_acquire);
+	*flags = header->capture_flags;
+	if(!(*flags & GLINJECT_FLAG_CAPTURE_ENABLED))
+		return NULL;
+
+	// make sure that at least one frame is available
+	unsigned int read_pos = header->ring_buffer_read_pos;
+	unsigned int write_pos = header->ring_buffer_write_pos;
+	unsigned int frames_used = positive_mod((int) write_pos - (int) read_pos, GLINJECT_RING_BUFFER_SIZE * 2);
+	if(frames_used >= GLINJECT_RING_BUFFER_SIZE)
+		return NULL;
+
+	// check the timestamp and maybe limit the fps
+	unsigned int target_fps = header->capture_target_fps;
+	int64_t timestamp = hrt_time_micro();
+	if(target_fps > 0) {
+		int64_t interval = 1000000 / target_fps;
+		if(*flags & GLINJECT_FLAG_LIMIT_FPS) {
+			if(timestamp < m_next_frame_time) {
+				usleep(m_next_frame_time - timestamp);
+				timestamp = hrt_time_micro();
+			}
+		} else {
+			if(timestamp < m_next_frame_time - interval)
+				return NULL;
+		}
+		m_next_frame_time = std::max(m_next_frame_time + interval, timestamp);
+	}
+
+	// write frame info
+	GLInjectFrameInfo *frameinfo = GetGLInjectFrameInfo(write_pos % GLINJECT_RING_BUFFER_SIZE);
+	frameinfo->timestamp = timestamp;
+	frameinfo->width = m_width;
+	frameinfo->height = m_height;
+	frameinfo->stride = m_stride;
+
+	// prepare the frame file
+	FrameData &fd = m_frame_data[write_pos % GLINJECT_RING_BUFFER_SIZE];
+	size_t required_size = (size_t) abs(m_stride) * (size_t) m_height;
+	if(required_size > fd.m_mmap_size_frame) {
+
+		// calculate new size
+		required_size = (required_size + required_size / 4 + m_page_size - 1) / m_page_size * m_page_size;
+
+		// unmap frame file
+		fd.m_mmap_size_frame = 0;
+		if(fd.m_mmap_ptr_frame != MAP_FAILED) {
+			munmap(fd.m_mmap_ptr_frame, fd.m_mmap_size_frame);
+			fd.m_mmap_ptr_frame = MAP_FAILED;
+		}
+
+		// resize frame file
+		if(ftruncate(fd.m_file_frame, required_size) == -1) {
+			GLINJECT_PRINT("Error: Can't resize video frame file!");
+			throw SSRStreamException();
+		}
+
+		// map frame file
+		fd.m_mmap_ptr_frame = mmap(NULL, required_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd.m_file_frame, 0);
+		if(fd.m_mmap_ptr_frame == MAP_FAILED) {
+			GLINJECT_PRINT("Error: Can't memory-map video frame file!");
+			throw SSRStreamException();
+		}
+		fd.m_mmap_size_frame = required_size;
+
+	}
+
+	return fd.m_mmap_ptr_frame;
+}
+
+void SSRVideoStreamWriter::NextFrame() {
+
+	// make sure all changes are visible
+	std::atomic_thread_fence(std::memory_order_release);
+
+	// go to the next frame
+	GLInjectHeader *header = GetGLInjectHeader();
+	header->ring_buffer_write_pos = (header->ring_buffer_write_pos + 1) % (GLINJECT_RING_BUFFER_SIZE * 2);
+	std::atomic_thread_fence(std::memory_order_release);
+
+}

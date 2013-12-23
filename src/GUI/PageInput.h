@@ -91,10 +91,10 @@ private:
 	std::vector<PulseAudioInput::Source> m_pulseaudio_sources;
 #endif
 
+	QString m_glinject_pid, m_glinject_source, m_glinject_program_name;
+	bool m_glinject_limit_fps;
 	QString m_glinject_command, m_glinject_working_directory;
-	bool m_glinject_run_command, m_glinject_relax_permissions;
-	unsigned int m_glinject_max_megapixels;
-	bool m_glinject_capture_front, m_glinject_limit_fps;
+	bool m_glinject_relax_permissions;
 
 	std::vector<WidgetScreenLabel*> m_screen_labels;
 
@@ -153,13 +153,13 @@ public:
 #if SSR_USE_PULSEAUDIO
 	inline unsigned int GetPulseAudioSource() { return clamp(m_combobox_pulseaudio_source->currentIndex(), 0, (int) m_pulseaudio_sources.size() - 1); }
 #endif
+	inline QString GetGLInjectPid() { return m_glinject_pid; }
+	inline QString GetGLInjectSource() { return m_glinject_source; }
+	inline QString GetGLInjectProgramName() { return m_glinject_program_name; }
+	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
 	inline QString GetGLInjectCommand() { return m_glinject_command; }
 	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
-	inline bool GetGLInjectRunCommand() { return m_glinject_run_command; }
 	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
-	inline unsigned int GetGLInjectMaxMegaPixels() { return m_glinject_max_megapixels; }
-	inline bool GetGLInjectCaptureFront() { return m_glinject_capture_front; }
-	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
 
 	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
 	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_screens->count() - 1)); }
@@ -178,13 +178,13 @@ public:
 #if SSR_USE_PULSEAUDIO
 	inline void SetPulseAudioSource(unsigned int source) { m_combobox_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
 #endif
+	inline void SetGLInjectPid(const QString& pid) { m_glinject_pid = pid; }
+	inline void SetGLInjectSource(const QString& source) { m_glinject_source = source; }
+	inline void SetGLInjectProgramName(const QString& program_name) { m_glinject_program_name = program_name; }
+	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
 	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
 	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
-	inline void SetGLInjectRunCommand(bool run_command) { m_glinject_run_command = run_command; }
 	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
-	inline void SetGLInjectMaxMegaPixels(unsigned int max_megapixels) { m_glinject_max_megapixels = clamp(max_megapixels, 1u, 100u); }
-	inline void SetGLInjectCaptureFront(bool capture_front) { m_glinject_capture_front = capture_front; }
-	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
 
 protected:
 	virtual void mousePressEvent(QMouseEvent* event) override;
@@ -241,15 +241,17 @@ class DialogGLInject : public QDialog {
 private:
 	PageInput *m_parent;
 
+	QLineEdit *m_lineedit_pid, *m_lineedit_source, *m_lineedit_program_name;
+	QCheckBox *m_checkbox_limit_fps;
+
 	QLineEdit *m_lineedit_command, *m_lineedit_working_directory;
 	QCheckBox *m_checkbox_run_command, *m_checkbox_relax_permissions;
-	QLineEdit *m_lineedit_max_megapixels;
-	QCheckBox *m_checkbox_capture_front, *m_checkbox_limit_fps;
 
 public:
 	DialogGLInject(PageInput* parent);
 
 private slots:
-	void WriteBack();
+	void OnWriteBack();
+	void OnLaunch();
 
 };

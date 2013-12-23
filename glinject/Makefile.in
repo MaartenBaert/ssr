@@ -124,13 +124,15 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libssr_glinject_la_LIBADD =
 am__libssr_glinject_la_SOURCES_DIST = elfhacks.c elfhacks.h \
-	GLFrameGrabber.cpp GLFrameGrabber.h GLInject.cpp GLInject.h \
-	Global.h Hook.cpp ShmStructs.h
+	GLInject.cpp GLInject.h Global.h GLXFrameGrabber.cpp \
+	GLXFrameGrabber.h Hook.cpp ShmStructs.h \
+	SSRVideoStreamWriter.cpp SSRVideoStreamWriter.h
 @ENABLE_GLINJECTLIB_TRUE@am_libssr_glinject_la_OBJECTS =  \
 @ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-elfhacks.lo \
-@ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-GLFrameGrabber.lo \
 @ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-GLInject.lo \
-@ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-Hook.lo
+@ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-GLXFrameGrabber.lo \
+@ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-Hook.lo \
+@ENABLE_GLINJECTLIB_TRUE@	libssr_glinject_la-SSRVideoStreamWriter.lo
 libssr_glinject_la_OBJECTS = $(am_libssr_glinject_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -371,13 +373,15 @@ top_srcdir = @top_srcdir@
 @ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_SOURCES = \
 @ENABLE_GLINJECTLIB_TRUE@	elfhacks.c \
 @ENABLE_GLINJECTLIB_TRUE@	elfhacks.h \
-@ENABLE_GLINJECTLIB_TRUE@	GLFrameGrabber.cpp \
-@ENABLE_GLINJECTLIB_TRUE@	GLFrameGrabber.h \
 @ENABLE_GLINJECTLIB_TRUE@	GLInject.cpp \
 @ENABLE_GLINJECTLIB_TRUE@	GLInject.h \
 @ENABLE_GLINJECTLIB_TRUE@	Global.h \
+@ENABLE_GLINJECTLIB_TRUE@	GLXFrameGrabber.cpp \
+@ENABLE_GLINJECTLIB_TRUE@	GLXFrameGrabber.h \
 @ENABLE_GLINJECTLIB_TRUE@	Hook.cpp \
-@ENABLE_GLINJECTLIB_TRUE@	ShmStructs.h
+@ENABLE_GLINJECTLIB_TRUE@	ShmStructs.h \
+@ENABLE_GLINJECTLIB_TRUE@	SSRVideoStreamWriter.cpp \
+@ENABLE_GLINJECTLIB_TRUE@	SSRVideoStreamWriter.h
 
 all: all-am
 
@@ -458,9 +462,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libssr_glinject_la-GLFrameGrabber.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libssr_glinject_la-GLInject.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libssr_glinject_la-GLXFrameGrabber.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libssr_glinject_la-Hook.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libssr_glinject_la-SSRVideoStreamWriter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libssr_glinject_la-elfhacks.Plo@am__quote@
 
 .c.o:
@@ -518,13 +523,6 @@ libssr_glinject_la-elfhacks.lo: elfhacks.c
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
 
-libssr_glinject_la-GLFrameGrabber.lo: GLFrameGrabber.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libssr_glinject_la_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -MT libssr_glinject_la-GLFrameGrabber.lo -MD -MP -MF $(DEPDIR)/libssr_glinject_la-GLFrameGrabber.Tpo -c -o libssr_glinject_la-GLFrameGrabber.lo `test -f 'GLFrameGrabber.cpp' || echo '$(srcdir)/'`GLFrameGrabber.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libssr_glinject_la-GLFrameGrabber.Tpo $(DEPDIR)/libssr_glinject_la-GLFrameGrabber.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GLFrameGrabber.cpp' object='libssr_glinject_la-GLFrameGrabber.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libssr_glinject_la_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -c -o libssr_glinject_la-GLFrameGrabber.lo `test -f 'GLFrameGrabber.cpp' || echo '$(srcdir)/'`GLFrameGrabber.cpp
-
 libssr_glinject_la-GLInject.lo: GLInject.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libssr_glinject_la_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -MT libssr_glinject_la-GLInject.lo -MD -MP -MF $(DEPDIR)/libssr_glinject_la-GLInject.Tpo -c -o libssr_glinject_la-GLInject.lo `test -f 'GLInject.cpp' || echo '$(srcdir)/'`GLInject.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libssr_glinject_la-GLInject.Tpo $(DEPDIR)/libssr_glinject_la-GLInject.Plo
@@ -532,12 +530,26 @@ libssr_glinject_la-GLInject.lo: GLInject.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libssr_glinject_la_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -c -o libssr_glinject_la-GLInject.lo `test -f 'GLInject.cpp' || echo '$(srcdir)/'`GLInject.cpp
 
+libssr_glinject_la-GLXFrameGrabber.lo: GLXFrameGrabber.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libssr_glinject_la_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -MT libssr_glinject_la-GLXFrameGrabber.lo -MD -MP -MF $(DEPDIR)/libssr_glinject_la-GLXFrameGrabber.Tpo -c -o libssr_glinject_la-GLXFrameGrabber.lo `test -f 'GLXFrameGrabber.cpp' || echo '$(srcdir)/'`GLXFrameGrabber.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libssr_glinject_la-GLXFrameGrabber.Tpo $(DEPDIR)/libssr_glinject_la-GLXFrameGrabber.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GLXFrameGrabber.cpp' object='libssr_glinject_la-GLXFrameGrabber.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libssr_glinject_la_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -c -o libssr_glinject_la-GLXFrameGrabber.lo `test -f 'GLXFrameGrabber.cpp' || echo '$(srcdir)/'`GLXFrameGrabber.cpp
+
 libssr_glinject_la-Hook.lo: Hook.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libssr_glinject_la_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -MT libssr_glinject_la-Hook.lo -MD -MP -MF $(DEPDIR)/libssr_glinject_la-Hook.Tpo -c -o libssr_glinject_la-Hook.lo `test -f 'Hook.cpp' || echo '$(srcdir)/'`Hook.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libssr_glinject_la-Hook.Tpo $(DEPDIR)/libssr_glinject_la-Hook.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Hook.cpp' object='libssr_glinject_la-Hook.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libssr_glinject_la_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -c -o libssr_glinject_la-Hook.lo `test -f 'Hook.cpp' || echo '$(srcdir)/'`Hook.cpp
+
+libssr_glinject_la-SSRVideoStreamWriter.lo: SSRVideoStreamWriter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libssr_glinject_la_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -MT libssr_glinject_la-SSRVideoStreamWriter.lo -MD -MP -MF $(DEPDIR)/libssr_glinject_la-SSRVideoStreamWriter.Tpo -c -o libssr_glinject_la-SSRVideoStreamWriter.lo `test -f 'SSRVideoStreamWriter.cpp' || echo '$(srcdir)/'`SSRVideoStreamWriter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libssr_glinject_la-SSRVideoStreamWriter.Tpo $(DEPDIR)/libssr_glinject_la-SSRVideoStreamWriter.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SSRVideoStreamWriter.cpp' object='libssr_glinject_la-SSRVideoStreamWriter.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libssr_glinject_la_CPPFLAGS) $(CPPFLAGS) $(libssr_glinject_la_CXXFLAGS) $(CXXFLAGS) -c -o libssr_glinject_la-SSRVideoStreamWriter.lo `test -f 'SSRVideoStreamWriter.cpp' || echo '$(srcdir)/'`SSRVideoStreamWriter.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -109,10 +109,10 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(translationsdir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	AV/Input/ALSAInput.h AV/Input/GLInjectInput.cpp \
-	AV/Input/GLInjectInput.h AV/Input/GLInjectLauncher.cpp \
-	AV/Input/GLInjectLauncher.h AV/Input/JACKInput.cpp \
+	AV/Input/GLInjectInput.h AV/Input/JACKInput.cpp \
 	AV/Input/JACKInput.h AV/Input/PulseAudioInput.cpp \
-	AV/Input/PulseAudioInput.h AV/Input/X11Input.cpp \
+	AV/Input/PulseAudioInput.h AV/Input/SSRVideoStreamReader.cpp \
+	AV/Input/SSRVideoStreamReader.h AV/Input/X11Input.cpp \
 	AV/Input/X11Input.h AV/Output/AudioEncoder.cpp \
 	AV/Output/AudioEncoder.h AV/Output/BaseEncoder.cpp \
 	AV/Output/BaseEncoder.h AV/Output/Muxer.cpp AV/Output/Muxer.h \
@@ -141,9 +141,9 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectLauncher.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-JACKInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-PulseAudioInput.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-SSRVideoStreamReader.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-X11Input.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-AudioEncoder.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-BaseEncoder.$(OBJEXT) \
@@ -471,12 +471,12 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectInput.h \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectLauncher.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Input/GLInjectLauncher.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/JACKInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/JACKInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/PulseAudioInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/PulseAudioInput.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Input/SSRVideoStreamReader.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Input/SSRVideoStreamReader.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/X11Input.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/X11Input.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Output/AudioEncoder.cpp \
@@ -667,11 +667,11 @@ AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
-AV/Input/simplescreenrecorder-GLInjectLauncher.$(OBJEXT):  \
-	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-JACKInput.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-PulseAudioInput.$(OBJEXT):  \
+	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
+AV/Input/simplescreenrecorder-SSRVideoStreamReader.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
 AV/Input/simplescreenrecorder-X11Input.$(OBJEXT):  \
 	AV/Input/$(am__dirstamp) AV/Input/$(DEPDIR)/$(am__dirstamp)
@@ -798,9 +798,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-SourceSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-ALSAInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectInput.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectLauncher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-PulseAudioInput.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-SSRVideoStreamReader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-X11Input.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-AudioEncoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-BaseEncoder.Po@am__quote@
@@ -877,20 +877,6 @@ AV/Input/simplescreenrecorder-GLInjectInput.obj: AV/Input/GLInjectInput.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-GLInjectInput.obj `if test -f 'AV/Input/GLInjectInput.cpp'; then $(CYGPATH_W) 'AV/Input/GLInjectInput.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/GLInjectInput.cpp'; fi`
 
-AV/Input/simplescreenrecorder-GLInjectLauncher.o: AV/Input/GLInjectLauncher.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-GLInjectLauncher.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectLauncher.Tpo -c -o AV/Input/simplescreenrecorder-GLInjectLauncher.o `test -f 'AV/Input/GLInjectLauncher.cpp' || echo '$(srcdir)/'`AV/Input/GLInjectLauncher.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectLauncher.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectLauncher.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/GLInjectLauncher.cpp' object='AV/Input/simplescreenrecorder-GLInjectLauncher.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-GLInjectLauncher.o `test -f 'AV/Input/GLInjectLauncher.cpp' || echo '$(srcdir)/'`AV/Input/GLInjectLauncher.cpp
-
-AV/Input/simplescreenrecorder-GLInjectLauncher.obj: AV/Input/GLInjectLauncher.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-GLInjectLauncher.obj -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectLauncher.Tpo -c -o AV/Input/simplescreenrecorder-GLInjectLauncher.obj `if test -f 'AV/Input/GLInjectLauncher.cpp'; then $(CYGPATH_W) 'AV/Input/GLInjectLauncher.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/GLInjectLauncher.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectLauncher.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-GLInjectLauncher.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/GLInjectLauncher.cpp' object='AV/Input/simplescreenrecorder-GLInjectLauncher.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-GLInjectLauncher.obj `if test -f 'AV/Input/GLInjectLauncher.cpp'; then $(CYGPATH_W) 'AV/Input/GLInjectLauncher.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/GLInjectLauncher.cpp'; fi`
-
 AV/Input/simplescreenrecorder-JACKInput.o: AV/Input/JACKInput.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-JACKInput.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Tpo -c -o AV/Input/simplescreenrecorder-JACKInput.o `test -f 'AV/Input/JACKInput.cpp' || echo '$(srcdir)/'`AV/Input/JACKInput.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-JACKInput.Po
@@ -918,6 +904,20 @@ AV/Input/simplescreenrecorder-PulseAudioInput.obj: AV/Input/PulseAudioInput.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/PulseAudioInput.cpp' object='AV/Input/simplescreenrecorder-PulseAudioInput.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-PulseAudioInput.obj `if test -f 'AV/Input/PulseAudioInput.cpp'; then $(CYGPATH_W) 'AV/Input/PulseAudioInput.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/PulseAudioInput.cpp'; fi`
+
+AV/Input/simplescreenrecorder-SSRVideoStreamReader.o: AV/Input/SSRVideoStreamReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-SSRVideoStreamReader.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-SSRVideoStreamReader.Tpo -c -o AV/Input/simplescreenrecorder-SSRVideoStreamReader.o `test -f 'AV/Input/SSRVideoStreamReader.cpp' || echo '$(srcdir)/'`AV/Input/SSRVideoStreamReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-SSRVideoStreamReader.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-SSRVideoStreamReader.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/SSRVideoStreamReader.cpp' object='AV/Input/simplescreenrecorder-SSRVideoStreamReader.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-SSRVideoStreamReader.o `test -f 'AV/Input/SSRVideoStreamReader.cpp' || echo '$(srcdir)/'`AV/Input/SSRVideoStreamReader.cpp
+
+AV/Input/simplescreenrecorder-SSRVideoStreamReader.obj: AV/Input/SSRVideoStreamReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-SSRVideoStreamReader.obj -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-SSRVideoStreamReader.Tpo -c -o AV/Input/simplescreenrecorder-SSRVideoStreamReader.obj `if test -f 'AV/Input/SSRVideoStreamReader.cpp'; then $(CYGPATH_W) 'AV/Input/SSRVideoStreamReader.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/SSRVideoStreamReader.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/Input/$(DEPDIR)/simplescreenrecorder-SSRVideoStreamReader.Tpo AV/Input/$(DEPDIR)/simplescreenrecorder-SSRVideoStreamReader.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Input/SSRVideoStreamReader.cpp' object='AV/Input/simplescreenrecorder-SSRVideoStreamReader.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/Input/simplescreenrecorder-SSRVideoStreamReader.obj `if test -f 'AV/Input/SSRVideoStreamReader.cpp'; then $(CYGPATH_W) 'AV/Input/SSRVideoStreamReader.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Input/SSRVideoStreamReader.cpp'; fi`
 
 AV/Input/simplescreenrecorder-X11Input.o: AV/Input/X11Input.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/Input/simplescreenrecorder-X11Input.o -MD -MP -MF AV/Input/$(DEPDIR)/simplescreenrecorder-X11Input.Tpo -c -o AV/Input/simplescreenrecorder-X11Input.o `test -f 'AV/Input/X11Input.cpp' || echo '$(srcdir)/'`AV/Input/X11Input.cpp

@@ -64,8 +64,8 @@ inline void Bilinear_MapIndex(unsigned int out_i, unsigned int in_w, unsigned in
 	if(off < 0) {
 		offset = 0;
 		fraction = 0;
-	} else if(off > (int) ((in_w - 1) >> mipmap)) {
-		offset = (in_w - 1) >> mipmap;
+	} else if(off > (int) ((in_w - 2) >> mipmap)) {
+		offset = (in_w - 2) >> mipmap;
 		fraction = 256;
 	} else {
 		offset = off;

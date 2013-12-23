@@ -147,19 +147,6 @@ inline void atomic_thread_fence_replacement(memory_order) {
 // planar sample formats: lavu 51.27.0 / 51.17.0
 #define SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT TEST_AV_VERSION(LIBAVUTIL, 51, 27, 51, 17)
 
-// simple function to do n-byte alignment
-inline size_t grow_align16(size_t size) {
-	return (size_t) (size + 15) & ~((size_t) 15);
-}
-
-// convert weird types from libav/ffmpeg to doubles
-inline double ToDouble(const AVRational& r) {
-	return (double) r.num / (double) r.den;
-}
-inline double ToDouble(const AVFrac& f) {
-	return (double) f.val + (double) f.num / (double) f.den;
-}
-
 // exception thrown when errors occur in external libraries
 class LibavException : public std::exception {
 public:
@@ -185,6 +172,12 @@ public:
 		return "GLInjectException";
 	}
 };
+class SSRStreamException : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "SSRStreamException";
+	}
+};
 class ALSAException : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
@@ -206,11 +199,30 @@ public:
 	}
 };
 
+// simple function to do n-byte alignment
+inline size_t grow_align16(size_t size) {
+	return (size_t) (size + 15) & ~((size_t) 15);
+}
+
+// convert weird types from libav/ffmpeg to doubles
+inline double ToDouble(const AVRational& r) {
+	return (double) r.num / (double) r.den;
+}
+inline double ToDouble(const AVFrac& f) {
+	return (double) f.val + (double) f.num / (double) f.den;
+}
+
 // high resolution timer
 inline int64_t hrt_time_micro() {
 	timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	return (uint64_t) ts.tv_sec * (uint64_t) 1000000 + (uint64_t) (ts.tv_nsec / 1000);
+}
+
+template<typename T>
+inline T positive_mod(T x, T y) {
+	T z = x % y;
+	return (z < 0)? z + y : z;
 }
 
 template<typename T>
@@ -221,12 +233,6 @@ inline T clamp(T v, T lo, T hi) {
 	if(v > hi)
 		return hi;
 	return v;
-}
-
-template<typename T>
-inline T positive_mod(T x, T y) {
-	T z = x % y;
-	return (z < 0)? z + y : z;
 }
 
 template<typename T>

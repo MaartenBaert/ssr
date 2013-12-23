@@ -71,9 +71,6 @@ PageInput::PageInput(MainWindow* main_window)
 	m_grabbing = false;
 	m_selecting_window = false;
 
-	m_glinject_command = "";
-	m_glinject_max_megapixels = 0;
-
 	QGroupBox *group_video = new QGroupBox(tr("Video input"), this);
 	{
 		m_buttongroup_video_area = new QButtonGroup(group_video);
@@ -311,13 +308,13 @@ void PageInput::LoadSettings(QSettings* settings) {
 #if SSR_USE_PULSEAUDIO
 	SetPulseAudioSource(FindPulseAudioSource(settings->value("input/audio_pulseaudio_source", QString()).toString()));
 #endif
+	SetGLInjectPid(settings->value("input/glinject_pid", "").toString());
+	SetGLInjectSource(settings->value("input/glinject_source", "").toString());
+	SetGLInjectProgramName(settings->value("input/glinject_program_name", "").toString());
+	SetGLInjectLimitFPS(settings->value("input/glinject_limit_fps", false).toBool());
 	SetGLInjectCommand(settings->value("input/glinject_command", "").toString());
 	SetGLInjectWorkingDirectory(settings->value("input/glinject_working_directory", "").toString());
-	SetGLInjectRunCommand(settings->value("input/glinject_run_command", true).toBool());
 	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
-	SetGLInjectMaxMegaPixels(settings->value("input/glinject_max_megapixels", 2).toUInt());
-	SetGLInjectCaptureFront(settings->value("input/glinject_capture_front", false).toBool());
-	SetGLInjectLimitFPS(settings->value("input/glinject_limit_fps", false).toBool());
 
 	// update things
 	OnUpdateVideoAreaFields();
@@ -344,13 +341,13 @@ void PageInput::SaveSettings(QSettings* settings) {
 #if SSR_USE_PULSEAUDIO
 	settings->setValue("input/audio_pulseaudio_source", GetPulseAudioSourceName());
 #endif
+	settings->setValue("input/glinject_pid", GetGLInjectPid());
+	settings->setValue("input/glinject_source", GetGLInjectSource());
+	settings->setValue("input/glinject_program_name", GetGLInjectProgramName());
+	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
 	settings->setValue("input/glinject_command", GetGLInjectCommand());
 	settings->setValue("input/glinject_working_directory", GetGLInjectWorkingDirectory());
-	settings->setValue("input/glinject_run_command", GetGLInjectRunCommand());
 	settings->setValue("input/glinject_relax_permissions", GetGLInjectRelaxPermissions());
-	settings->setValue("input/glinject_max_megapixels", GetGLInjectMaxMegaPixels());
-	settings->setValue("input/glinject_capture_front", GetGLInjectCaptureFront());
-	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
 }
 
 #if SSR_USE_PULSEAUDIO
@@ -798,65 +795,70 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	label_info->setTextFormat(Qt::RichText);
 	label_info->setTextInteractionFlags(Qt::TextBrowserInteraction);
 	label_info->setOpenExternalLinks(true);
-	QLabel *label_command = new QLabel(tr("Command:"), this);
-	m_lineedit_command = new QLineEdit(m_parent->GetGLInjectCommand(), this);
-	m_lineedit_command->setToolTip(tr("This command will be executed to start the program that should be recorded."));
-	m_lineedit_command->setMinimumWidth(300);
-	QLabel *label_working_directory = new QLabel(tr("Working directory:"), this);
-	m_lineedit_working_directory = new QLineEdit(m_parent->GetGLInjectWorkingDirectory(), this);
-	m_lineedit_working_directory->setToolTip(tr("The command will be executed in this directory. If you leave this empty, the working directory won't be changed."));
-	m_lineedit_working_directory->setMinimumWidth(300);
-	m_checkbox_run_command = new QCheckBox(tr("Start the OpenGL application automatically"), this);
-	m_checkbox_run_command->setToolTip(tr("If checked, the above command will be executed automatically (combined with some environment variables). If not checked,\n"
-										  "you have to start the OpenGL application yourself (the full command, including the required environment variables, is shown in the log)."));
-	m_checkbox_run_command->setChecked(m_parent->GetGLInjectRunCommand());
-	m_checkbox_relax_permissions = new QCheckBox(tr("Relax shared memory permissions (insecure)"), this);
-	m_checkbox_relax_permissions->setToolTip(tr("If checked, other users on the same machine will be able to attach to the shared memory that's used for communication with the OpenGL program.\n"
-												"This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.\n"
-												"This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user."));
-	m_checkbox_relax_permissions->setChecked(m_parent->GetGLInjectRelaxPermissions());
-	QLabel *label_max_pixels = new QLabel(tr("Maximum image size (megapixels):"), this);
-	m_lineedit_max_megapixels = new QLineEdit(QString::number(m_parent->GetGLInjectMaxMegaPixels()), this);
-	m_lineedit_max_megapixels->setToolTip(tr("This setting changes the amount of shared memory that will be allocated to send frames back to the main program.\n"
-											 "The size of the shared memory can't be changed anymore once the program has been started, so if the program you\n"
-											 "are trying to record is too large, recording won't work. 2 megapixels should be enough in almost all cases. Be careful,\n"
-											 "high values will use a lot of memory!"));
-	m_checkbox_capture_front = new QCheckBox(tr("Capture front buffer instead of back buffer"), this);
-	m_checkbox_capture_front->setToolTip(tr("If checked, the injected library will read the front buffer (the frame that's currently on the screen) rather than the back buffer\n"
-											"(the new frame). This may be useful for some special applications that draw directly to the screen."));
-	m_checkbox_capture_front->setChecked(m_parent->GetGLInjectCaptureFront());
-	m_checkbox_limit_fps = new QCheckBox(tr("Limit application frame rate"), this);
-	m_checkbox_limit_fps->setToolTip(tr("If checked, the injected library will slow down the application so the frame rate doesn't become higher than the recording frame rate.\n"
-										"This stops the application from wasting CPU time for frames that won't be recorded, and sometimes results in smoother video\n"
-										"(this depends on the application)."));
-	m_checkbox_limit_fps->setChecked(m_parent->GetGLInjectLimitFPS());
+
+	QGroupBox *groupbox_stream = new QGroupBox(tr("Select stream"), this);
+	{
+		QLabel *label_pid = new QLabel(tr("Pid:"), groupbox_stream);
+		m_lineedit_pid = new QLineEdit(m_parent->GetGLInjectPid(), groupbox_stream);
+		QLabel *label_source = new QLabel(tr("Source:"), groupbox_stream);
+		m_lineedit_source = new QLineEdit(m_parent->GetGLInjectSource(), groupbox_stream);
+		QLabel *label_program_name = new QLabel(tr("Program name:"), groupbox_stream);
+		m_lineedit_program_name = new QLineEdit(m_parent->GetGLInjectProgramName(), groupbox_stream);
+		m_checkbox_limit_fps = new QCheckBox(tr("Limit application frame rate"), this);
+		m_checkbox_limit_fps->setToolTip(tr("If checked, the injected library will slow down the application so the frame rate doesn't become higher than the recording frame rate.\n"
+											"This stops the application from wasting CPU time for frames that won't be recorded, and sometimes results in smoother video\n"
+											"(this depends on the application)."));
+		m_checkbox_limit_fps->setChecked(m_parent->GetGLInjectLimitFPS());
+
+		QGridLayout *layout = new QGridLayout(groupbox_stream);
+		layout->addWidget(label_pid, 0, 0);
+		layout->addWidget(m_lineedit_pid, 0, 1);
+		layout->addWidget(label_source, 1, 0);
+		layout->addWidget(m_lineedit_source, 1, 1);
+		layout->addWidget(label_program_name, 2, 0);
+		layout->addWidget(m_lineedit_program_name, 2, 1);
+		layout->addWidget(m_checkbox_limit_fps, 3, 0, 1, 2);
+	}
+
+	QGroupBox *groupbox_launch = new QGroupBox(tr("Launch application"), this);
+	{
+		QLabel *label_command = new QLabel(tr("Command:"), groupbox_launch);
+		m_lineedit_command = new QLineEdit(m_parent->GetGLInjectCommand(), groupbox_launch);
+		m_lineedit_command->setToolTip(tr("This command will be executed to start the program that should be recorded."));
+		m_lineedit_command->setMinimumWidth(300);
+		QLabel *label_working_directory = new QLabel(tr("Working directory:"), groupbox_launch);
+		m_lineedit_working_directory = new QLineEdit(m_parent->GetGLInjectWorkingDirectory(), groupbox_launch);
+		m_lineedit_working_directory->setToolTip(tr("The command will be executed in this directory. If you leave this empty, the working directory won't be changed."));
+		m_lineedit_working_directory->setMinimumWidth(300);
+		m_checkbox_relax_permissions = new QCheckBox(tr("Relax shared memory permissions (insecure)"), groupbox_launch);
+		m_checkbox_relax_permissions->setToolTip(tr("If checked, other users on the same machine will be able to attach to the shared memory that's used for communication with the OpenGL program.\n"
+													"This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.\n"
+													"This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user."));
+		m_checkbox_relax_permissions->setChecked(m_parent->GetGLInjectRelaxPermissions());
+		QPushButton *pushbutton_launch = new QPushButton(tr("Launch"), this);
+
+		connect(pushbutton_launch, SIGNAL(clicked()), this, SLOT(OnLaunch()));
+
+		QGridLayout *layout = new QGridLayout(groupbox_launch);
+		layout->addWidget(label_command, 0, 0);
+		layout->addWidget(m_lineedit_command, 0, 1);
+		layout->addWidget(label_working_directory, 1, 0);
+		layout->addWidget(m_lineedit_working_directory, 1, 1);
+		layout->addWidget(m_checkbox_relax_permissions, 2, 0, 1, 2);
+		layout->addWidget(pushbutton_launch, 3, 0, 1, 2);
+	}
 
 	QPushButton *pushbutton_close = new QPushButton(tr("Close"), this);
+	pushbutton_close->setDefault(true);
 
 	connect(pushbutton_close, SIGNAL(clicked()), this, SLOT(accept()));
-	connect(this, SIGNAL(accepted()), this, SLOT(WriteBack()));
-	connect(this, SIGNAL(rejected()), this, SLOT(WriteBack()));
+	connect(this, SIGNAL(accepted()), this, SLOT(OnWriteBack()));
+	connect(this, SIGNAL(rejected()), this, SLOT(OnWriteBack()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(label_info);
-	{
-		QGridLayout *layout2 = new QGridLayout();
-		layout->addLayout(layout2);
-		layout2->addWidget(label_command, 0, 0);
-		layout2->addWidget(m_lineedit_command, 0, 1);
-		layout2->addWidget(label_working_directory, 1, 0);
-		layout2->addWidget(m_lineedit_working_directory, 1, 1);
-	}
-	layout->addWidget(m_checkbox_run_command);
-	layout->addWidget(m_checkbox_relax_permissions);
-	{
-		QHBoxLayout *layout2 = new QHBoxLayout();
-		layout->addLayout(layout2);
-		layout2->addWidget(label_max_pixels);
-		layout2->addWidget(m_lineedit_max_megapixels);
-	}
-	layout->addWidget(m_checkbox_capture_front);
-	layout->addWidget(m_checkbox_limit_fps);
+	layout->addWidget(groupbox_stream);
+	layout->addWidget(groupbox_launch);
 	layout->addStretch();
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
@@ -870,12 +872,30 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 
 }
 
-void DialogGLInject::WriteBack() {
+void DialogGLInject::OnWriteBack() {
+	m_parent->SetGLInjectPid(m_lineedit_pid->text());
+	m_parent->SetGLInjectSource(m_lineedit_source->text());
+	m_parent->SetGLInjectProgramName(m_lineedit_program_name->text());
+	m_parent->SetGLInjectLimitFPS(m_checkbox_limit_fps->isChecked());
 	m_parent->SetGLInjectCommand(m_lineedit_command->text());
 	m_parent->SetGLInjectWorkingDirectory(m_lineedit_working_directory->text());
-	m_parent->SetGLInjectRunCommand(m_checkbox_run_command->isChecked());
 	m_parent->SetGLInjectRelaxPermissions(m_checkbox_relax_permissions->isChecked());
-	m_parent->SetGLInjectMaxMegaPixels(m_lineedit_max_megapixels->text().toUInt());
-	m_parent->SetGLInjectCaptureFront(m_checkbox_capture_front->isChecked());
-	m_parent->SetGLInjectLimitFPS(m_checkbox_limit_fps->isChecked());
+}
+
+void DialogGLInject::OnLaunch() {
+
+	// prepare command
+	QString command = "LD_PRELOAD=libssr-glinject.so " + m_lineedit_command->text();
+	QString working_directory = m_lineedit_working_directory->text();
+	if(m_checkbox_relax_permissions->isChecked())
+		command = "SSR_STREAM_RELAX_PERMISSIONS=1 " + command;
+
+	// execute it
+	QStringList args;
+	args.push_back("-c");
+	args.push_back(command);
+	if(!QProcess::startDetached("/bin/sh", args, working_directory)) {
+		QMessageBox::critical(NULL, MainWindow::WINDOW_CAPTION, QObject::tr("The application could not be launched."), QMessageBox::Ok);
+	}
+
 }

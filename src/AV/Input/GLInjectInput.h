@@ -23,9 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 
-class Synchronizer;
-class GLInjectLauncher;
-class VideoPreviewer;
+class SSRVideoStreamReader;
 
 class GLInjectInput : public VideoSource {
 
@@ -33,19 +31,31 @@ private:
 	static const int64_t MAX_COMMUNICATION_LATENCY;
 
 private:
-	GLInjectLauncher *m_launcher;
+	QString m_pid, m_source, m_program_name;
+	unsigned int m_flags;
+	unsigned int m_target_fps;
 
-	unsigned int m_ring_buffer_size, m_max_bytes;
-
-	char *m_shm_main_ptr;
-	std::vector<char*> m_shm_frame_ptrs;
+	SSRVideoStreamReader *m_stream_reader;
 
 	std::thread m_thread;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
-	GLInjectInput(GLInjectLauncher* launcher);
+	GLInjectInput(const QString& pid, const QString& source, const QString& program_name, bool record_cursor, bool limit_fps, unsigned int target_fps);
 	~GLInjectInput();
+
+	// Reads the current size of the stream. If the stream hasn't been started yet, this will be 0x0.
+	void GetCurrentSize(unsigned int* width, unsigned int* height);
+
+	// Returns the total number of captured frames.
+	// This function is thread-safe.
+	double GetFPS();
+
+	// Start capturing.
+	void Start();
+
+	// Stop capturing.
+	void Stop();
 
 	// Returns whether an error has occurred in the input thread.
 	// This function is thread-safe.

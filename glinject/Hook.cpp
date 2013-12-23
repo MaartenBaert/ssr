@@ -8,9 +8,17 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #include "Global.h"
 
-#include "GLInject.h"
-#include "GLFrameGrabber.h"
 #include "elfhacks.h"
+#include "GLInject.h"
+#include "GLXFrameGrabber.h"
+
+#include <GL/glx.h>
+#include <X11/X.h>
+
+typedef void (*GLXextFuncPtr)(void);
+
+void InitGLInject();
+void FreeGLInject();
 
 GLXWindow glinject_my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list);
 void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable);
@@ -24,29 +32,26 @@ void (*g_glinject_real_glXSwapBuffers)(Display*, GLXDrawable) = NULL;
 GLXextFuncPtr (*g_glinject_real_glXGetProcAddressARB)(const GLubyte*) = NULL;
 int (*g_glinject_real_XNextEvent)(Display*, XEvent*) = NULL;
 
-int g_glinject_hooks_initialized = 0;
+static GLInject *g_glinject = NULL;
 
-GLFrameGrabber::HotkeyInfo g_hotkey_info;
-bool g_hotkey_pressed = false;
+void InitGLInject() {
 
-void glinject_init_hooks() {
-
-	if(g_glinject_hooks_initialized)
+	if(g_glinject != NULL)
 		return;
 
 	// part 1: get dlsym and dlvsym
 	eh_obj_t libdl;
 	if(eh_find_obj(&libdl, "*/libdl.so*")) {
-		fprintf(stderr, "[SSR-GLInject] Can't open libdl.so!\n");
+		GLINJECT_PRINT("Error: Can't open libdl.so!");
 		exit(-181818181);
 	}
 	if(eh_find_sym(&libdl, "dlsym", (void **) &g_glinject_real_dlsym)) {
-		fprintf(stderr, "[SSR-GLInject] Can't get dlsym address!\n");
+		GLINJECT_PRINT("Error: Can't get dlsym address!");
 		eh_destroy_obj(&libdl);
 		exit(-181818181);
 	}
 	if(eh_find_sym(&libdl, "dlvsym", (void **) &g_glinject_real_dlvsym)) {
-		fprintf(stderr, "[SSR-GLInject] Can't get dlvsym address!\n");
+		GLINJECT_PRINT("Error: Can't get dlvsym address!");
 		eh_destroy_obj(&libdl);
 		exit(-181818181);
 	}
@@ -55,57 +60,62 @@ void glinject_init_hooks() {
 	// part 2: get everything else
 	g_glinject_real_glXCreateWindow = (GLXWindow (*)(Display*, GLXFBConfig, Window, const int*)) g_glinject_real_dlsym(RTLD_NEXT, "glXCreateWindow");
 	if(g_glinject_real_glXCreateWindow == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get glXCreateWindow address!\n");
+		GLINJECT_PRINT("Error: Can't get glXCreateWindow address!");
 		exit(-181818181);
 	}
 	g_glinject_real_glXSwapBuffers = (void (*)(Display*, GLXDrawable)) g_glinject_real_dlsym(RTLD_NEXT, "glXSwapBuffers");
 	if(g_glinject_real_glXSwapBuffers == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get glXSwapBuffers address!\n");
+		GLINJECT_PRINT("Error: Can't get glXSwapBuffers address!");
 		exit(-181818181);
 	}
 	g_glinject_real_glXGetProcAddressARB = (GLXextFuncPtr (*)(const GLubyte*)) g_glinject_real_dlsym(RTLD_NEXT, "glXGetProcAddressARB");
 	if(g_glinject_real_glXGetProcAddressARB == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get glXGetProcAddressARB address!\n");
+		GLINJECT_PRINT("Error: Can't get glXGetProcAddressARB address!");
 		exit(-181818181);
 	}
 	g_glinject_real_XNextEvent = (int (*)(Display*, XEvent*)) g_glinject_real_dlsym(RTLD_NEXT, "XNextEvent");
 	if(g_glinject_real_XNextEvent == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get XNextEvent address!\n");
+		GLINJECT_PRINT("Error: Can't get XNextEvent address!");
 		exit(-181818181);
 	}
 
-	g_glinject_hooks_initialized = 1;
+	g_glinject = new GLInject();
+	
+	atexit(FreeGLInject);
+
+}
+
+void FreeGLInject() {
+	if(g_glinject != NULL) {
+		delete g_glinject;
+		g_glinject = NULL;
+	}
 }
 
 struct Hook {
-	const char* name;
-	void* address;
+	const char *name;
+	void *address;
 };
-Hook hook_table[] = {
-	{"glXCreateWindow", (void*) &glinject_my_glXCreateWindow},
-	{"glXSwapBuffers", (void*) &glinject_my_glXSwapBuffers},
+static Hook hook_table[] = {
+	{"glXCreateWindow"     , (void*) &glinject_my_glXCreateWindow},
+	{"glXSwapBuffers"      , (void*) &glinject_my_glXSwapBuffers},
 	{"glXGetProcAddressARB", (void*) &glinject_my_glXGetProcAddressARB},
-	{"XNextEvent", (void*) &glinject_my_XNextEvent}
+	{"XNextEvent"          , (void*) &glinject_my_XNextEvent}
 };
 
 GLXWindow glinject_my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
 	GLXWindow res = g_glinject_real_glXCreateWindow(dpy, config, win, attrib_list);
 	if(res == 0)
 		return 0;
-	g_glinject.NewGrabber(dpy, win, res);
+	g_glinject->NewGLXFrameGrabber(dpy, win, res);
 	return res;
 }
 
 void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
-	GLFrameGrabber *fg = g_glinject.FindGrabber(dpy, drawable);
+	GLXFrameGrabber *fg = g_glinject->FindGLXFrameGrabber(dpy, drawable);
 	if(fg == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Warning: glXSwapBuffers called without existing frame grabber, creating one assuming window == drawable.\n");
-		fg = g_glinject.NewGrabber(dpy, drawable, drawable);
-	}
-	g_hotkey_info = fg->GetHotkeyInfo();
-	if(g_hotkey_pressed) {
-		fg->TriggerHotkey();
-		g_hotkey_pressed = false;
+		GLINJECT_PRINT("Warning: glXSwapBuffers called without existing frame grabber, creating one assuming window == drawable.");
+		fg = g_glinject->NewGLXFrameGrabber(dpy, drawable, drawable);
 	}
 	fg->GrabFrame();
 	g_glinject_real_glXSwapBuffers(dpy, drawable);
@@ -114,7 +124,7 @@ void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
 GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name) {
 	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
 		if(strcmp(hook_table[i].name, (const char*) proc_name) == 0) {
-			fprintf(stderr, "[SSR-GLInject] Hooked: glXGetProcAddressARB(%s).\n", proc_name);
+			GLINJECT_PRINT("Hooked: glXGetProcAddressARB(" << proc_name << ").");
 			return (GLXextFuncPtr) hook_table[i].address;
 		}
 	}
@@ -123,40 +133,40 @@ GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name) {
 
 int glinject_my_XNextEvent(Display* display, XEvent* event_return) {
 	int res = g_glinject_real_XNextEvent(display, event_return);
-	if(g_hotkey_info.enabled && event_return->type == KeyPress && event_return->xkey.keycode == g_hotkey_info.keycode
+	/*if(g_hotkey_info.enabled && event_return->type == KeyPress && event_return->xkey.keycode == g_hotkey_info.keycode
 			&& (event_return->xkey.state & ~LockMask & ~Mod2Mask) == g_hotkey_info.modifiers) {
 		g_hotkey_pressed = true;
-	}
+	}*/
 	return res;
 }
 
 // override existing functions
 
 extern "C" GLXWindow glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
-	glinject_init_hooks();
+	InitGLInject();
 	return glinject_my_glXCreateWindow(dpy, config, win, attrib_list);
 }
 
 extern "C" void glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
-	glinject_init_hooks();
+	InitGLInject();
 	glinject_my_glXSwapBuffers(dpy, drawable);
 }
 
-extern "C" GLXextFuncPtr glXGetProcAddressARB(const GLubyte *proc_name) {
-	glinject_init_hooks();
+extern "C" GLXextFuncPtr glXGetProcAddressARB(const GLubyte* proc_name) {
+	InitGLInject();
 	return glinject_my_glXGetProcAddressARB(proc_name);
 }
 
 extern "C" int XNextEvent(Display* display, XEvent* event_return) {
-	glinject_init_hooks();
+	InitGLInject();
 	return glinject_my_XNextEvent(display, event_return);
 }
 
 extern "C" void* dlsym(void* handle, const char* symbol) {
-	glinject_init_hooks();
+	InitGLInject();
 	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
 		if(strcmp(hook_table[i].name, symbol) == 0) {
-			fprintf(stderr, "[SSR-GLInject] Hooked: dlsym(%s).\n", symbol);
+			GLINJECT_PRINT("Hooked: dlsym(" << symbol << ").");
 			return hook_table[i].address;
 		}
 	}
@@ -164,10 +174,10 @@ extern "C" void* dlsym(void* handle, const char* symbol) {
 }
 
 extern "C" void* dlvsym(void* handle, const char* symbol, const char* version) {
-	glinject_init_hooks();
+	InitGLInject();
 	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
 		if(strcmp(hook_table[i].name, symbol) == 0) {
-			fprintf(stderr, "[SSR-GLInject] Hooked: dlvsym(%s,%s).\n", symbol, version);
+			GLINJECT_PRINT("Hooked: dlvsym(" << symbol << "," << version << ").");
 			return hook_table[i].address;
 		}
 	}

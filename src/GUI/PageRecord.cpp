@@ -33,7 +33,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AudioEncoder.h"
 #include "Synchronizer.h"
 #include "X11Input.h"
-#include "GLInjectLauncher.h"
 #include "GLInjectInput.h"
 #include "ALSAInput.h"
 #if SSR_USE_PULSEAUDIO
@@ -442,13 +441,10 @@ void PageRecord::StartPage() {
 #endif
 
 	// get the glinject settings
-	QString glinject_command = page_input->GetGLInjectCommand();
-	QString glinject_working_directory = page_input->GetGLInjectWorkingDirectory();
-	bool glinject_run_command = page_input->GetGLInjectRunCommand();
-	bool glinject_relax_permissions = page_input->GetGLInjectRelaxPermissions();
-	unsigned int glinject_megapixels = page_input->GetGLInjectMaxMegaPixels();
-	bool glinject_capture_front = page_input->GetGLInjectCaptureFront();
-	bool glinject_limit_fps = page_input->GetGLInjectLimitFPS();
+	m_glinject_pid = page_input->GetGLInjectPid();
+	m_glinject_source = page_input->GetGLInjectSource();
+	m_glinject_program_name = page_input->GetGLInjectProgramName();
+	m_glinject_limit_fps = page_input->GetGLInjectLimitFPS();
 
 	// get file settings
 	m_file_base = page_output->GetFile();
@@ -518,22 +514,21 @@ void PageRecord::StartPage() {
 
 	try {
 
-		// for OpenGL recording, allocate shared memory and start the program now
+		// for OpenGL recording, create the input now
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
-			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_working_directory, glinject_run_command, glinject_relax_permissions, glinject_megapixels * 4 * 1024 * 1024,
-															m_video_frame_rate, m_video_record_cursor, glinject_capture_front, glinject_limit_fps));
+			m_gl_inject_input.reset(new GLInjectInput(m_glinject_pid, m_glinject_source, m_glinject_program_name, m_video_record_cursor, m_glinject_limit_fps, m_video_frame_rate));
 
-		if(m_audio_enabled) {
 #if SSR_USE_JACK
+		if(m_audio_enabled) {
 			// for JACK, start the input now
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_JACK)
 				m_jack_input.reset(new JACKInput());
-#endif
 		}
+#endif
 
 	} catch(...) {
 		Logger::LogError("[PageRecord::StartPage] " + tr("Error: Something went wrong during initialization."));
-		m_gl_inject_launcher.reset();
+		m_gl_inject_input.reset();
 #if SSR_USE_JACK
 		m_jack_input.reset();
 #endif
@@ -549,9 +544,6 @@ void PageRecord::StartPage() {
 
 	UpdateInput();
 
-	m_info_last_timestamp = hrt_time_micro();
-	m_info_last_frame_counter = 0;
-	m_info_input_frame_rate = 0.0;
 	OnUpdateInformation();
 	m_info_timer->start(1000);
 
@@ -585,9 +577,8 @@ void PageRecord::StopPage(bool save) {
 
 	}
 
-	// free the shared memory for OpenGL recording
-	// This doesn't stop the program, and the memory is only actually freed when the recorded program stops too.
-	m_gl_inject_launcher.reset();
+	// destroy the GLInject input
+	m_gl_inject_input.reset();
 
 	// stop JACK input
 #if SSR_USE_JACK
@@ -627,16 +618,13 @@ void PageRecord::StartOutput() {
 
 			// for OpenGL recording, detect the application size
 			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT && !m_video_scaling) {
-				if(m_gl_inject_launcher == NULL) {
-					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application because GLInject has not been started."));
+				if(m_gl_inject_input == NULL) {
+					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application because the GLInject input has not been created."));
 					throw GLInjectException();
 				}
-				m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+				m_gl_inject_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 				if(m_video_in_width == 0 && m_video_in_height == 0) {
-					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application. Either the "
-									 "application wasn't started correctly, or the application hasn't created an OpenGL window yet. If "
-									 "you want to start recording before starting the application, you have to enable scaling and enter "
-									 "the video size manually."));
+					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application."));
 					throw GLInjectException();
 				}
 			}
@@ -724,14 +712,10 @@ void PageRecord::StartInput() {
 		return;
 
 	Q_ASSERT(m_x11_input == NULL);
-	Q_ASSERT(m_gl_inject_input == NULL);
 	Q_ASSERT(m_alsa_input == NULL);
 #if SSR_USE_PULSEAUDIO
 	Q_ASSERT(m_pulseaudio_input == NULL);
 #endif
-/*#if SSR_USE_JACK
-	Q_ASSERT(m_jack_input == NULL);
-#endif*/
 
 	try {
 
@@ -739,11 +723,11 @@ void PageRecord::StartInput() {
 
 		// start the video input
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
-			if(m_gl_inject_launcher == NULL) {
-				Logger::LogError("[PageRecord::StartInput] " + tr("Error: Could not create a GLInject input because GLInject has not been started."));
+			if(m_gl_inject_input == NULL) {
+				Logger::LogError("[PageRecord::StartInput] " + tr("Error: Could not start the GLInject input because it has not been created."));
 				throw GLInjectException();
 			}
-			m_gl_inject_input.reset(new GLInjectInput(m_gl_inject_launcher.get()));
+			m_gl_inject_input->Start();
 		} else {
 			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
 		}
@@ -766,7 +750,8 @@ void PageRecord::StartInput() {
 	} catch(...) {
 		Logger::LogError("[PageRecord::StartInput] " + tr("Error: Something went wrong during initialization."));
 		m_x11_input.reset();
-		m_gl_inject_input.reset();
+		if(m_gl_inject_input != NULL)
+			m_gl_inject_input->Stop();
 		m_alsa_input.reset();
 #if SSR_USE_PULSEAUDIO
 		m_pulseaudio_input.reset();
@@ -787,12 +772,9 @@ void PageRecord::StopInput() {
 
 	Logger::LogInfo("[PageRecord::StopInput] " + tr("Stopping input ..."));
 
-	if(m_video_area != PageInput::VIDEO_AREA_GLINJECT) {
-		m_info_last_frame_counter -= m_x11_input->GetFrameCounter();
-	}
-
 	m_x11_input.reset();
-	m_gl_inject_input.reset();
+	if(m_gl_inject_input != NULL)
+		m_gl_inject_input->Stop();
 	m_alsa_input.reset();
 #if SSR_USE_PULSEAUDIO
 	m_pulseaudio_input.reset();
@@ -905,8 +887,9 @@ void PageRecord::OnUpdateHotkey() {
 		if(IsHotkeySuperEnabled()) modifiers |= Mod4Mask;
 		g_hotkey_listener.EnableHotkey(XK_A + GetHotkeyKey(), modifiers);
 
-		if(m_gl_inject_launcher != NULL)
-			m_gl_inject_launcher->UpdateHotkey(IsHotkeyEnabled(), XK_A + GetHotkeyKey(), modifiers);
+		//TODO//
+		/*if(m_gl_inject_launcher != NULL)
+			m_gl_inject_launcher->UpdateHotkey(IsHotkeyEnabled(), XK_A + GetHotkeyKey(), modifiers);*/
 
 	} else {
 		g_hotkey_listener.DisableHotkey();
@@ -985,29 +968,20 @@ void PageRecord::OnUpdateInformation() {
 
 	if(m_page_started) {
 
-		int64_t timestamp = hrt_time_micro();
-		if(timestamp - m_info_last_timestamp > 10000) {
-			uint32_t frame_counter;
-			if(m_gl_inject_launcher != NULL) {
-				frame_counter = m_gl_inject_launcher->GetFrameCounter();
-			} else if(m_input_started) {
-				Q_ASSERT(m_x11_input != NULL);
-				frame_counter = m_x11_input->GetFrameCounter();
-			} else {
-				frame_counter = 0;
-			}
-			m_info_input_frame_rate = (double) (frame_counter - m_info_last_frame_counter) / ((double) (timestamp - m_info_last_timestamp) * 1.0e-6);
-			m_info_last_timestamp = timestamp;
-			m_info_last_frame_counter = frame_counter;
-		}
-
 		int64_t total_time = 0;
-		double frame_rate = 0.0;
+		double fps_in = 0.0;
+		double fps_out = 0.0;
 		uint64_t bit_rate = 0, total_bytes = 0;
+
+		if(m_gl_inject_input != NULL) {
+			fps_in = m_gl_inject_input->GetFPS();
+		} else if(m_x11_input != NULL) {
+			fps_in = m_x11_input->GetFPS();
+		}
 
 		if(m_output_manager != NULL) {
 			total_time = m_output_manager->GetSynchronizer()->GetTotalTime();
-			frame_rate = m_output_manager->GetVideoEncoder()->GetActualFrameRate();
+			fps_out = m_output_manager->GetVideoEncoder()->GetActualFrameRate();
 			bit_rate = (uint64_t) (m_output_manager->GetMuxer()->GetActualBitRate() + 0.5);
 			total_bytes = m_output_manager->GetMuxer()->GetTotalBytes();
 		}
@@ -1015,13 +989,13 @@ void PageRecord::OnUpdateInformation() {
 		QString file_name = (m_file_protocol.isNull())? QFileInfo(m_output_settings.file).fileName() : "(" + m_file_protocol + ")";
 
 		// for OpenGL recording, update the application size
-		if(m_gl_inject_launcher != NULL) {
-			m_gl_inject_launcher->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+		if(m_gl_inject_input != NULL) {
+			m_gl_inject_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 		}
 
 		m_label_info_total_time->setText(ReadableTime(total_time));
-		m_label_info_frame_rate_in->setText(QString::number(m_info_input_frame_rate, 'f', 2));
-		m_label_info_frame_rate_out->setText(QString::number(frame_rate, 'f', 2));
+		m_label_info_frame_rate_in->setText(QString::number(fps_in, 'f', 2));
+		m_label_info_frame_rate_out->setText(QString::number(fps_out, 'f', 2));
 		m_label_info_size_in->setText(ReadableWidthHeight(m_video_in_width, m_video_in_height));
 		m_label_info_size_out->setText(ReadableWidthHeight(m_output_settings.video_width, m_output_settings.video_height));
 		m_label_info_file_name->setText(file_name);
@@ -1033,8 +1007,8 @@ void PageRecord::OnUpdateInformation() {
 					"capturing\t" + ((m_input_started)? "1" : "0") + "\n"
 					"recording\t" + ((m_output_started)? "1" : "0") + "\n"
 					"total_time\t" + QString::number(total_time) + "\n"
-					"frame_rate_in\t" + QString::number(m_info_input_frame_rate, 'f', 8) + "\n"
-					"frame_rate_out\t" + QString::number(frame_rate, 'f', 8) + "\n"
+					"frame_rate_in\t" + QString::number(fps_in, 'f', 8) + "\n"
+					"frame_rate_out\t" + QString::number(fps_out, 'f', 8) + "\n"
 					"size_in_width\t" + QString::number(m_video_in_width) + "\n"
 					"size_in_height\t" + QString::number(m_video_in_height) + "\n"
 					"size_out_width\t" + QString::number(m_output_settings.video_width) + "\n"
@@ -1103,9 +1077,10 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString str) {
 }
 
 void PageRecord::OnCheckGLInjectEvents() {
-	if(m_gl_inject_launcher == NULL)
+	//TODO//
+	/*if(m_gl_inject_input == NULL)
 		return;
-	if(m_gl_inject_launcher->GetHotkeyPressed()) {
+	if(m_gl_inject_input->GetHotkeyPressed()) {
 		OnRecordStartPause();
-	}
+	}*/
 }

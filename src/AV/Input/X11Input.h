@@ -37,6 +37,10 @@ private:
 	unsigned int m_x, m_y, m_width, m_height;
 	bool m_record_cursor, m_follow_cursor;
 
+	std::atomic<uint32_t> m_frame_counter;
+	int64_t m_info_last_timestamp;
+	uint32_t m_last_frame_counter;
+
 	Display *m_x11_display;
 	int m_x11_screen;
 	Qt::HANDLE m_x11_root;
@@ -50,7 +54,6 @@ private:
 	std::thread m_thread;
 	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
-	std::atomic<uint32_t> m_frame_counter;
 
 public:
 	X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor);
@@ -58,7 +61,7 @@ public:
 
 	// Returns the total number of captured frames.
 	// This function is thread-safe.
-	uint32_t GetFrameCounter();
+	double GetFPS();
 
 	// Returns whether an error has occurred in the input thread.
 	// This function is thread-safe.

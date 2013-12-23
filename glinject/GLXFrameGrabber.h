@@ -9,42 +9,35 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #pragma once
 #include "Global.h"
 
-class GLFrameGrabber {
+#include "SSRVideoStreamWriter.h"
 
-public:
-	struct HotkeyInfo {
-		bool enabled;
-		unsigned int keycode, modifiers;
-	};
+#include <GL/glx.h>
+#include <X11/X.h>
+
+class GLXFrameGrabber {
 
 private:
+	unsigned int m_id;
 	Display *m_x11_display;
 	Window m_x11_window;
 	GLXDrawable m_glx_drawable;
-	unsigned int m_width, m_height;
-
-	bool m_debug;
-	unsigned int m_ring_buffer_size, m_max_bytes;
-	unsigned int m_target_fps;
-	unsigned int m_flags;
 
 	unsigned int m_gl_version;
-	bool m_has_xfixes;
-
-	char *m_shm_main_ptr;
-	std::vector<char*> m_shm_frame_ptrs;
-
-	int64_t m_next_frame_time;
-
+	bool m_debug, m_has_xfixes;
 	bool m_warn_too_small, m_warn_too_large;
 
-public:
-	GLFrameGrabber(Display* display, Window window, GLXDrawable drawable);
-	~GLFrameGrabber();
+	SSRVideoStreamWriter *m_stream_writer;
 
+public:
+	GLXFrameGrabber(Display* display, Window window, GLXDrawable drawable);
+	~GLXFrameGrabber();
+
+private:
+	void Init();
+	void Free();
+
+public:
 	void GrabFrame();
-	HotkeyInfo GetHotkeyInfo();
-	void TriggerHotkey();
 
 public:
 	inline Display* GetX11Display() { return m_x11_display; }

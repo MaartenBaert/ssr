@@ -9,22 +9,23 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #pragma once
 #include "Global.h"
 
-class GLFrameGrabber;
+#include <GL/glx.h>
+#include <X11/X.h>
+
+class GLXFrameGrabber;
 
 class GLInject {
 
 public:
 
 private:
-	std::vector<GLFrameGrabber*> m_frame_grabbers;
+	std::vector<GLXFrameGrabber*> m_glx_frame_grabbers;
 
 public:
 	GLInject();
 	~GLInject();
 
-	GLFrameGrabber* NewGrabber(Display* display, Window window, GLXDrawable drawable);
-	GLFrameGrabber* FindGrabber(Display* display, GLXDrawable drawable);
+	GLXFrameGrabber* NewGLXFrameGrabber(Display* display, Window window, GLXDrawable drawable);
+	GLXFrameGrabber* FindGLXFrameGrabber(Display* display, GLXDrawable drawable);
 
 };
-
-extern GLInject g_glinject;

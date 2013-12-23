@@ -57,12 +57,12 @@ simplescreenrecorder_SOURCES = \
 	AV/Input/ALSAInput.h \
 	AV/Input/GLInjectInput.cpp \
 	AV/Input/GLInjectInput.h \
-	AV/Input/GLInjectLauncher.cpp \
-	AV/Input/GLInjectLauncher.h \
 	AV/Input/JACKInput.cpp \
 	AV/Input/JACKInput.h \
 	AV/Input/PulseAudioInput.cpp \
 	AV/Input/PulseAudioInput.h \
+	AV/Input/SSRVideoStreamReader.cpp \
+	AV/Input/SSRVideoStreamReader.h \
 	AV/Input/X11Input.cpp \
 	AV/Input/X11Input.h \
 	AV/Output/AudioEncoder.cpp \

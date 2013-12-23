@@ -15,7 +15,6 @@ DEPENDPATH += AV AV/Input AV/Output common GUI ../build/3rdparty
 SOURCES += \
 	AV/Input/ALSAInput.cpp \
 	AV/Input/GLInjectInput.cpp \
-	AV/Input/GLInjectLauncher.cpp \
 	AV/Input/JACKInput.cpp \
 	AV/Input/PulseAudioInput.cpp \
 	AV/Input/X11Input.cpp \
@@ -49,12 +48,12 @@ SOURCES += \
 	GUI/PageWelcome.cpp \
 	GUI/VideoPreviewer.cpp \
 	Main.cpp \
-	Version.cpp
+	Version.cpp \
+    AV/Input/SSRVideoStreamReader.cpp
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
 	AV/Input/GLInjectInput.h \
-	AV/Input/GLInjectLauncher.h \
 	AV/Input/JACKInput.h \
 	AV/Input/PulseAudioInput.h \
 	AV/Input/X11Input.h \
@@ -92,7 +91,8 @@ HEADERS  += \
 	GUI/VideoPreviewer.h \
 	Global.h \
 	Main.h \
-	Version.h
+	Version.h \
+    AV/Input/SSRVideoStreamReader.h
 
 RESOURCES += \
 	resources.qrc
