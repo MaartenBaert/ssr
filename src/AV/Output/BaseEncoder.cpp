@@ -24,6 +24,17 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AVWrapper.h"
 #include "Muxer.h"
 
+int ParseCodecOptionInt(const QString& key, const QString& value, int min, int max, int multiply, int fail) {
+	bool parse_int;
+	int value_int = value.toInt(&parse_int);
+	if(parse_int) {
+		return clamp(value_int, min, max) * multiply;
+	} else {
+		Logger::LogWarning("[ParseCodecOptionInt] " + QObject::tr("Error: Option '%1' could not be parsed!").arg(key));
+		return fail;
+	}
+}
+
 BaseEncoder::BaseEncoder(Muxer* muxer) {
 
 	m_destructed = false;

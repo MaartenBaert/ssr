@@ -50,9 +50,12 @@ AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		AVDictionary *options = NULL;
 		try {
 			for(unsigned int i = 0; i < codec_options.size(); ++i) {
-				if(codec_options[i].first == "threads")
-					m_opt_threads = codec_options[i].second.toUInt();
-				av_dict_set(&options, codec_options[i].first.toAscii().constData(), codec_options[i].second.toAscii().constData(), 0);
+				const QString &key = codec_options[i].first, &value = codec_options[i].second;
+				if(key == "threads") {
+					m_opt_threads = ParseCodecOptionInt(key, value, 1, INT_MAX);
+				} else {
+					av_dict_set(&options, key.toAscii().constData(), value.toAscii().constData(), 0);
+				}
 			}
 			CreateCodec(codec_name, &options);
 			av_dict_free(&options);
@@ -61,7 +64,7 @@ AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::v
 			throw;
 		}
 
-	#if !SSR_USE_AVCODEC_ENCODE_AUDIO2
+#if !SSR_USE_AVCODEC_ENCODE_AUDIO2
 		// allocate a temporary buffer
 		if(GetCodecContext()->frame_size <= 1) {
 			// This is really weird, the old API uses the size of the *output* buffer to determine the number of
@@ -70,7 +73,7 @@ AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		} else {
 			m_temp_buffer.resize(std::max(FF_MIN_BUFFER_SIZE, 256 * 1024));
 		}
-	#endif
+#endif
 
 		GetMuxer()->RegisterEncoder(GetStreamIndex(), this);
 
@@ -108,7 +111,6 @@ bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
 }
 
 void AudioEncoder::FillCodecContext(AVCodec* codec) {
-	Q_UNUSED(codec);
 
 	GetCodecContext()->time_base.num = 1;
 	GetCodecContext()->time_base.den = m_sample_rate;

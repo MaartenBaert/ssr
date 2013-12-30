@@ -27,7 +27,7 @@ class SSRVideoStreamReader {
 private:
 	struct FrameData {
 		std::string m_filename_frame;
-		int m_file_frame;
+		int m_fd_frame;
 		void *m_mmap_ptr_frame;
 		size_t m_mmap_size_frame;
 	};
@@ -39,7 +39,7 @@ private:
 	int64_t m_info_last_timestamp;
 	uint32_t m_last_frame_counter;
 
-	int m_file_main, m_file_lock;
+	int m_fd_main, m_file_lock;
 	void *m_mmap_ptr_main;
 	size_t m_mmap_size_main;
 

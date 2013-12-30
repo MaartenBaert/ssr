@@ -54,8 +54,22 @@ signals:
 
 };
 
+class WidgetScreenLabel : public QWidget {
+	Q_OBJECT
+
+private:
+	QString m_text;
+
+public:
+	WidgetScreenLabel(QWidget* parent, const QString& text);
+
+protected:
+	virtual QSize sizeHint() const override;
+	virtual void paintEvent(QPaintEvent* event) override;
+
+};
+
 class MainWindow;
-class WidgetScreenLabel;
 
 class PageInput : public QWidget {
 	Q_OBJECT
@@ -91,10 +105,10 @@ private:
 	std::vector<PulseAudioInput::Source> m_pulseaudio_sources;
 #endif
 
+	QString m_glinject_command, m_glinject_working_directory;
+	bool m_glinject_relax_permissions, m_glinject_auto_launch;
 	QString m_glinject_pid, m_glinject_source, m_glinject_program_name;
 	bool m_glinject_limit_fps;
-	QString m_glinject_command, m_glinject_working_directory;
-	bool m_glinject_relax_permissions;
 
 	std::vector<WidgetScreenLabel*> m_screen_labels;
 
@@ -153,13 +167,14 @@ public:
 #if SSR_USE_PULSEAUDIO
 	inline unsigned int GetPulseAudioSource() { return clamp(m_combobox_pulseaudio_source->currentIndex(), 0, (int) m_pulseaudio_sources.size() - 1); }
 #endif
+	inline QString GetGLInjectCommand() { return m_glinject_command; }
+	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
+	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
+	inline bool GetGLInjectAutoLaunch() { return m_glinject_auto_launch; }
 	inline QString GetGLInjectPid() { return m_glinject_pid; }
 	inline QString GetGLInjectSource() { return m_glinject_source; }
 	inline QString GetGLInjectProgramName() { return m_glinject_program_name; }
 	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
-	inline QString GetGLInjectCommand() { return m_glinject_command; }
-	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
-	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
 
 	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
 	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_screens->count() - 1)); }
@@ -178,13 +193,14 @@ public:
 #if SSR_USE_PULSEAUDIO
 	inline void SetPulseAudioSource(unsigned int source) { m_combobox_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
 #endif
+	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
+	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
+	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
+	inline void SetGLInjectAutoLaunch(bool auto_launch) { m_glinject_auto_launch = auto_launch; }
 	inline void SetGLInjectPid(const QString& pid) { m_glinject_pid = pid; }
 	inline void SetGLInjectSource(const QString& source) { m_glinject_source = source; }
 	inline void SetGLInjectProgramName(const QString& program_name) { m_glinject_program_name = program_name; }
 	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
-	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
-	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
-	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
 
 protected:
 	virtual void mousePressEvent(QMouseEvent* event) override;
@@ -217,41 +233,5 @@ private slots:
 	void OnStartSelectWindow();
 	void OnGLInjectDialog();
 	void OnContinue();
-
-};
-
-class WidgetScreenLabel : public QWidget {
-	Q_OBJECT
-
-private:
-	QString m_text;
-
-public:
-	WidgetScreenLabel(QWidget* parent, const QString& text);
-
-protected:
-	virtual QSize sizeHint() const override;
-	virtual void paintEvent(QPaintEvent* event) override;
-
-};
-
-class DialogGLInject : public QDialog {
-	Q_OBJECT
-
-private:
-	PageInput *m_parent;
-
-	QLineEdit *m_lineedit_pid, *m_lineedit_source, *m_lineedit_program_name;
-	QCheckBox *m_checkbox_limit_fps;
-
-	QLineEdit *m_lineedit_command, *m_lineedit_working_directory;
-	QCheckBox *m_checkbox_run_command, *m_checkbox_relax_permissions;
-
-public:
-	DialogGLInject(PageInput* parent);
-
-private slots:
-	void OnWriteBack();
-	void OnLaunch();
 
 };

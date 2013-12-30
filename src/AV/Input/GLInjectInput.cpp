@@ -77,12 +77,27 @@ void GLInjectInput::Stop() {
 	m_stream_reader->ChangeCaptureParameters(m_flags, m_target_fps);
 }
 
+bool GLInjectInput::LaunchApplication(const QString& command, const QString& working_directory, bool relax_permissions) {
+
+	// prepare command
+	QString full_command = "LD_PRELOAD=libssr-glinject.so " + command;
+	if(relax_permissions)
+		full_command = "SSR_STREAM_RELAX_PERMISSIONS=1 " + full_command;
+
+	// execute it
+	QStringList args;
+	args.push_back("-c");
+	args.push_back(full_command);
+	return QProcess::startDetached("/bin/sh", args, working_directory);
+
+}
+
 void GLInjectInput::Init() {
 
 	// create the stream reader
 	m_stream_reader = new SSRVideoStreamReader(m_pid.toStdString(), m_source.toStdString(), m_program_name.toStdString());
 
-	// start the stream
+	// initialize the stream
 	m_stream_reader->ChangeCaptureParameters(m_flags, m_target_fps);
 	m_stream_reader->Clear();
 

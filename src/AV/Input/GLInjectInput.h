@@ -61,11 +61,12 @@ public:
 	// This function is thread-safe.
 	inline bool HasErrorOccurred() { return m_error_occurred; }
 
+	static bool LaunchApplication(const QString &command, const QString &working_directory, bool relax_permissions);
+
 private:
 	void Init();
 	void Free();
 
-private:
 	void InputThread();
 
 };

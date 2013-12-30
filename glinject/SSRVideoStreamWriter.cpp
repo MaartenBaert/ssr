@@ -38,14 +38,14 @@ SSRVideoStreamWriter::SSRVideoStreamWriter(const std::string& source) {
 	m_stride = 0;
 	m_next_frame_time = hrt_time_micro();
 
-	m_file_main = -1;
+	m_fd_main = -1;
 	m_mmap_ptr_main = MAP_FAILED;
 	m_mmap_size_main = 0;
 
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
 		FrameData &fd = m_frame_data[i];
 		fd.m_filename_frame = "/dev/shm/ssr-videoframe" + std::to_string(i) + "-" + std::to_string(getpid()) + "-" + source + "-" + program_name;
-		fd.m_file_frame = -1;
+		fd.m_fd_frame = -1;
 		fd.m_mmap_ptr_frame = MAP_FAILED;
 		fd.m_mmap_size_frame = 0;
 	}
@@ -77,27 +77,27 @@ void SSRVideoStreamWriter::Init() {
 	}
 
 	// open main file
-	m_file_main = open(m_filename_main.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, file_mode);
-	if(m_file_main == -1) {
+	m_fd_main = open(m_filename_main.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, file_mode);
+	if(m_fd_main == -1) {
 		GLINJECT_PRINT("Error: Can't open video stream file!");
 		throw SSRStreamException();
 	}
 
 	// lock
-	if(flock(m_file_main, LOCK_EX) == -1) {
+	if(flock(m_fd_main, LOCK_EX) == -1) {
 		GLINJECT_PRINT("Error: Can't lock video stream file!");
 		throw SSRStreamException();
 	}
 
 	// resize main file
 	m_mmap_size_main = (sizeof(GLInjectHeader) + GLINJECT_RING_BUFFER_SIZE * sizeof(GLInjectFrameInfo) + m_page_size - 1) / m_page_size * m_page_size;
-	if(ftruncate(m_file_main, m_mmap_size_main) == -1) {
+	if(ftruncate(m_fd_main, m_mmap_size_main) == -1) {
 		GLINJECT_PRINT("Error: Can't resize video stream file!");
 		throw SSRStreamException();
 	}
 
 	// map main file
-	m_mmap_ptr_main = mmap(NULL, m_mmap_size_main, PROT_READ | PROT_WRITE, MAP_SHARED, m_file_main, 0);
+	m_mmap_ptr_main = mmap(NULL, m_mmap_size_main, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd_main, 0);
 	if(m_mmap_ptr_main == MAP_FAILED) {
 		GLINJECT_PRINT("Error: Can't memory-map video stream file!");
 		throw SSRStreamException();
@@ -106,8 +106,8 @@ void SSRVideoStreamWriter::Init() {
 	// open frame files
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
 		FrameData &fd = m_frame_data[i];
-		fd.m_file_frame = open(fd.m_filename_frame.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, file_mode);
-		if(fd.m_file_frame == -1) {
+		fd.m_fd_frame = open(fd.m_filename_frame.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, file_mode);
+		if(fd.m_fd_frame == -1) {
 			GLINJECT_PRINT("Error: Can't open video frame file!");
 			throw SSRStreamException();
 		}
@@ -139,7 +139,7 @@ void SSRVideoStreamWriter::Init() {
 	std::atomic_thread_fence(std::memory_order_release);
 
 	// unlock
-	flock(m_file_main, LOCK_UN);
+	flock(m_fd_main, LOCK_UN);
 
 }
 
@@ -155,9 +155,9 @@ void SSRVideoStreamWriter::Free() {
 		}
 
 		// close and unlink frame file
-		if(fd.m_file_frame != -1) {
-			close(fd.m_file_frame);
-			fd.m_file_frame = -1;
+		if(fd.m_fd_frame != -1) {
+			close(fd.m_fd_frame);
+			fd.m_fd_frame = -1;
 			unlink(fd.m_filename_frame.c_str());
 		}
 
@@ -170,9 +170,9 @@ void SSRVideoStreamWriter::Free() {
 	}
 
 	// close and unlink main file
-	if(m_file_main != -1) {
-		close(m_file_main);
-		m_file_main = -1;
+	if(m_fd_main != -1) {
+		close(m_fd_main);
+		m_fd_main = -1;
 		unlink(m_filename_main.c_str());
 	}
 
@@ -261,13 +261,13 @@ void* SSRVideoStreamWriter::NewFrame(unsigned int* flags) {
 		}
 
 		// resize frame file
-		if(ftruncate(fd.m_file_frame, required_size) == -1) {
+		if(ftruncate(fd.m_fd_frame, required_size) == -1) {
 			GLINJECT_PRINT("Error: Can't resize video frame file!");
 			throw SSRStreamException();
 		}
 
 		// map frame file
-		fd.m_mmap_ptr_frame = mmap(NULL, required_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd.m_file_frame, 0);
+		fd.m_mmap_ptr_frame = mmap(NULL, required_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd.m_fd_frame, 0);
 		if(fd.m_mmap_ptr_frame == MAP_FAILED) {
 			GLINJECT_PRINT("Error: Can't memory-map video frame file!");
 			throw SSRStreamException();

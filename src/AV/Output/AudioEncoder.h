@@ -31,7 +31,7 @@ private:
 	unsigned int m_bit_rate;
 	unsigned int m_sample_rate;
 
-	unsigned int m_opt_threads;
+	int m_opt_threads;
 
 #if !SSR_USE_AVCODEC_ENCODE_AUDIO2
 	std::vector<uint8_t> m_temp_buffer;

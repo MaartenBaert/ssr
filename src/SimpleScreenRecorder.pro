@@ -17,6 +17,8 @@ SOURCES += \
 	AV/Input/GLInjectInput.cpp \
 	AV/Input/JACKInput.cpp \
 	AV/Input/PulseAudioInput.cpp \
+	AV/Input/SSRVideoStreamReader.cpp \
+	AV/Input/SSRVideoStreamWatcher.cpp \
 	AV/Input/X11Input.cpp \
 	AV/Output/AudioEncoder.cpp \
 	AV/Output/BaseEncoder.cpp \
@@ -37,6 +39,7 @@ SOURCES += \
 	common/DetectCPUFeatures.cpp \
 	common/Logger.cpp \
 	GUI/AudioPreviewer.cpp \
+	GUI/DialogGLInject.cpp \
 	GUI/ElidedLabel.cpp \
 	GUI/HotkeyListener.cpp \
 	GUI/Icons.cpp \
@@ -48,14 +51,15 @@ SOURCES += \
 	GUI/PageWelcome.cpp \
 	GUI/VideoPreviewer.cpp \
 	Main.cpp \
-	Version.cpp \
-    AV/Input/SSRVideoStreamReader.cpp
+	Version.cpp
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
 	AV/Input/GLInjectInput.h \
 	AV/Input/JACKInput.h \
 	AV/Input/PulseAudioInput.h \
+	AV/Input/SSRVideoStreamReader.h \
+	AV/Input/SSRVideoStreamWatcher.h \
 	AV/Input/X11Input.h \
 	AV/Output/AudioEncoder.h \
 	AV/Output/BaseEncoder.h \
@@ -79,6 +83,7 @@ HEADERS  += \
 	common/MutexDataPair.h \
 	common/TempBuffer.h \
 	GUI/AudioPreviewer.h \
+	GUI/DialogGLInject.h \
 	GUI/ElidedLabel.h \
 	GUI/HotkeyListener.h \
 	GUI/Icons.h \
@@ -91,8 +96,7 @@ HEADERS  += \
 	GUI/VideoPreviewer.h \
 	Global.h \
 	Main.h \
-	Version.h \
-    AV/Input/SSRVideoStreamReader.h
+	Version.h
 
 RESOURCES += \
 	resources.qrc

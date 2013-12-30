@@ -63,6 +63,8 @@ simplescreenrecorder_SOURCES = \
 	AV/Input/PulseAudioInput.h \
 	AV/Input/SSRVideoStreamReader.cpp \
 	AV/Input/SSRVideoStreamReader.h \
+	AV/Input/SSRVideoStreamWatcher.cpp \
+	AV/Input/SSRVideoStreamWatcher.h \
 	AV/Input/X11Input.cpp \
 	AV/Input/X11Input.h \
 	AV/Output/AudioEncoder.cpp \
@@ -106,6 +108,8 @@ simplescreenrecorder_SOURCES = \
 	common/TempBuffer.h \
 	GUI/AudioPreviewer.cpp \
 	GUI/AudioPreviewer.h \
+	GUI/DialogGLInject.cpp \
+	GUI/DialogGLInject.h \
 	GUI/ElidedLabel.cpp \
 	GUI/ElidedLabel.h \
 	GUI/HotkeyListener.cpp \
@@ -162,6 +166,7 @@ nodist_simplescreenrecorder_SOURCES += \
 	moc_SyncDiagram.cpp \
 	moc_Logger.cpp \
 	moc_AudioPreviewer.cpp \
+	moc_DialogGLInject.cpp \
 	moc_ElidedLabel.cpp \
 	moc_HotkeyListener.cpp \
 	moc_MainWindow.cpp \
@@ -179,6 +184,8 @@ moc_SyncDiagram.cpp: $(srcdir)/AV/Output/SyncDiagram.h
 moc_Logger.cpp: $(srcdir)/common/Logger.h
 	$(MOC) "$<" -o "$@"
 moc_AudioPreviewer.cpp: $(srcdir)/GUI/AudioPreviewer.h
+	$(MOC) "$<" -o "$@"
+moc_DialogGLInject.cpp: $(srcdir)/GUI/DialogGLInject.h
 	$(MOC) "$<" -o "$@"
 moc_ElidedLabel.cpp: $(srcdir)/GUI/ElidedLabel.h
 	$(MOC) "$<" -o "$@"
