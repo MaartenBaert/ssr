@@ -22,6 +22,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #if SSR_USE_X86_ASM
 
+#ifndef __MMX__
+#define __MMX__
+#endif
 #ifndef __SSE__
 #define __SSE__
 #endif

@@ -25,13 +25,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #if SSR_USE_X86_ASM
 
 void MipMap_BGRA_SSSE3_Dynamic(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
-							   uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) __attribute__((__target__("sse,sse2,sse3,ssse3")));
+							   uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) __attribute__((__target__("mmx,sse,sse2,sse3,ssse3")));
 void MipMap_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
-					   uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) __attribute__((__target__("sse,sse2,sse3,ssse3")));
+					   uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) __attribute__((__target__("mmx,sse,sse2,sse3,ssse3")));
 void Bilinear_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 						 unsigned int out_w, unsigned int out_h, uint8_t* out_data, int out_stride,
-						 unsigned int mx, unsigned int my) __attribute__((__target__("sse,sse2,sse3,ssse3")));
+						 unsigned int mx, unsigned int my) __attribute__((__target__("mmx,sse,sse2,sse3,ssse3")));
 
+#ifndef __MMX__
+#define __MMX__
+#endif
 #ifndef __SSE__
 #define __SSE__
 #endif
