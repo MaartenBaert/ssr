@@ -32,7 +32,7 @@ FastScaler::FastScaler() {
 #if SSR_USE_X86_ASM
 	CPUFeatures features;
 	DetectCPUFeatures(&features);
-	m_use_ssse3 = (features.sse && features.sse2 && features.sse3 && features.ssse3);
+	m_use_ssse3 = (features.mmx && features.sse && features.sse2 && features.sse3 && features.ssse3);
 	m_warn_alignment = true;
 #endif
 
