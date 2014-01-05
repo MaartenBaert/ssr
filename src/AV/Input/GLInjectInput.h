@@ -23,6 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 
+class SSRVideoStreamWatcher;
 class SSRVideoStreamReader;
 
 class GLInjectInput : public VideoSource {
@@ -31,17 +32,18 @@ private:
 	static const int64_t MAX_COMMUNICATION_LATENCY;
 
 private:
-	QString m_pid, m_source, m_program_name;
+	QString m_match_user, m_match_process, m_match_source, m_match_program_name;
 	unsigned int m_flags;
 	unsigned int m_target_fps;
 
-	SSRVideoStreamReader *m_stream_reader;
+	std::unique_ptr<SSRVideoStreamWatcher> m_stream_watcher;
+	std::unique_ptr<SSRVideoStreamReader> m_stream_reader;
 
 	std::thread m_thread;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
-	GLInjectInput(const QString& pid, const QString& source, const QString& program_name, bool record_cursor, bool limit_fps, unsigned int target_fps);
+	GLInjectInput(const QString& match_user, const QString& match_process, const QString& match_source, const QString& match_program_name, bool record_cursor, bool limit_fps, unsigned int target_fps);
 	~GLInjectInput();
 
 	// Reads the current size of the stream. If the stream hasn't been started yet, this will be 0x0.

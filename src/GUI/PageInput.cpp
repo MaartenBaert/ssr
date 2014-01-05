@@ -332,9 +332,10 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetGLInjectWorkingDirectory(settings->value("input/glinject_working_directory", "").toString());
 	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
 	SetGLInjectAutoLaunch(settings->value("input/glinject_auto_launch", false).toBool());
-	SetGLInjectPid(settings->value("input/glinject_pid", "").toString());
-	SetGLInjectSource(settings->value("input/glinject_source", "").toString());
-	SetGLInjectProgramName(settings->value("input/glinject_program_name", "").toString());
+	SetGLInjectMatchUser(settings->value("input/glinject_match_user", "").toString());
+	SetGLInjectMatchProcess(settings->value("input/glinject_match_process", "").toString());
+	SetGLInjectMatchSource(settings->value("input/glinject_match_source", "").toString());
+	SetGLInjectMatchProgramName(settings->value("input/glinject_match_program_name", "").toString());
 	SetGLInjectLimitFPS(settings->value("input/glinject_limit_fps", false).toBool());
 
 	// update things
@@ -366,9 +367,10 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/glinject_working_directory", GetGLInjectWorkingDirectory());
 	settings->setValue("input/glinject_relax_permissions", GetGLInjectRelaxPermissions());
 	settings->setValue("input/glinject_auto_launch", GetGLInjectAutoLaunch());
-	settings->setValue("input/glinject_pid", GetGLInjectPid());
-	settings->setValue("input/glinject_source", GetGLInjectSource());
-	settings->setValue("input/glinject_program_name", GetGLInjectProgramName());
+	settings->setValue("input/glinject_match_user", GetGLInjectMatchUser());
+	settings->setValue("input/glinject_match_process", GetGLInjectMatchProcess());
+	settings->setValue("input/glinject_match_source", GetGLInjectMatchSource());
+	settings->setValue("input/glinject_match_program_name", GetGLInjectMatchProgramName());
 	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
 }
 

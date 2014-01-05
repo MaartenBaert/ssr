@@ -25,7 +25,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <soxr.h>
 
 template<typename IN, typename OUT> inline OUT SampleCast(IN x) { return x; }
-template<> inline int16_t SampleCast<float  , int16_t>(float   x) { return round_int32(fmin(fmax(x * 32768.0f, -32768.0f), 32767.0f)); }
+template<> inline int16_t SampleCast<float  , int16_t>(float   x) { return round_to<int16_t>(fminf(fmaxf(x * 32768.0f, -32768.0f), 32767.0f)); }
 template<> inline float   SampleCast<int16_t, float  >(int16_t x) { return (float) x * (1.0f / 32768.0f); }
 
 template<typename IN, typename OUT>

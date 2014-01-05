@@ -24,8 +24,44 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <dirent.h>
 #include <sys/inotify.h>
 #include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+static bool SSRVideoStreamParse(const std::string& name, SSRVideoStream* stream) {
+
+	// check the prefix
+	std::string prefix = "ssr-video-";
+	if(name.compare(0, prefix.length(), prefix) != 0)
+		return false;
+
+	// split into parts
+	size_t pos = prefix.length();
+	std::array<std::string, 5> parts;
+	for(size_t i = 0; i < parts.size() - 1; ++i) {
+		size_t dash = name.find_first_of('-', pos);
+		if(dash == std::string::npos)
+			return false;
+		parts[i] = name.substr(pos, dash - pos);
+		pos = dash + 1;
+	}
+	parts.back() = name.substr(pos);
+
+	// save the parts
+	if(!StringToNum(parts[0], &stream->m_creation_time))
+		return false;
+	if(!StringToNum(parts[1], &stream->m_user))
+		return false;
+	if(!StringToNum(parts[2], &stream->m_process))
+		return false;
+	stream->m_source = parts[3];
+	stream->m_program_name = parts[4];
+
+	return true;
+}
 
 SSRVideoStreamWatcher::SSRVideoStreamWatcher() {
+
+	m_shm_dir = "/dev/shm";
 
 	m_fd_notify = -1;
 
@@ -52,7 +88,7 @@ void SSRVideoStreamWatcher::Init() {
 	}
 
 	// watch shared memory directory
-	if(inotify_add_watch(m_fd_notify, "/dev/shm", IN_CREATE | IN_DELETE) == -1) {
+	if(inotify_add_watch(m_fd_notify, m_shm_dir.c_str(), IN_CREATE | IN_DELETE) == -1) {
 		Logger::LogError("[SSRVideoStreamWatcher::Init] " + QObject::tr("Error: Can't watch shared memory directory!"));
 		throw SSRStreamException();
 	}
@@ -62,7 +98,7 @@ void SSRVideoStreamWatcher::Init() {
 	try {
 
 		// open directory
-		dir = opendir("/dev/shm");
+		dir = opendir(m_shm_dir.c_str());
 		if(dir == NULL) {
 			Logger::LogError("[SSRVideoStreamWatcher::Init] " + QObject::tr("Error: Can't open shared memory directory!"));
 			throw SSRStreamException();
@@ -77,13 +113,12 @@ void SSRVideoStreamWatcher::Init() {
 				break;
 
 			// parse the name
-			Stream stream;
-			if(!ParseName(d->d_name, &stream))
+			SSRVideoStream stream;
+			if(!SSRVideoStreamParse(d->d_name, &stream))
 				continue;
 
 			// add the stream
 			Logger::LogInfo("[SSRVideoStreamWatcher::Init] " + QObject::tr("Added pre-existing stream %1.").arg(d->d_name));
-			//TODO//add_callback(stream, m_streams.size());
 			m_streams.push_back(stream);
 
 		}
@@ -91,6 +126,9 @@ void SSRVideoStreamWatcher::Init() {
 		// close directory
 		closedir(dir);
 		dir = NULL;
+
+		// sort by creation time
+		std::sort(m_streams.begin(), m_streams.end());
 
 	} catch(...) {
 		if(dir != NULL) {
@@ -109,23 +147,7 @@ void SSRVideoStreamWatcher::Free() {
 	}
 }
 
-bool SSRVideoStreamWatcher::ParseName(const std::string& name, Stream* stream) {
-	std::string prefix = "ssr-video-";
-	if(name.compare(0, prefix.length(), prefix) != 0)
-		return false;
-	size_t p1 = name.find_first_of('-', prefix.length());
-	if(p1 == std::string::npos)
-		return false;
-	size_t p2 = name.find_first_of('-', p1 + 1);
-	if(p2 == std::string::npos)
-		return false;
-	stream->m_pid.assign(name.begin() + prefix.length(), name.begin() + p1);
-	stream->m_source.assign(name.begin() + p1 + 1, name.begin() + p2);
-	stream->m_program_name.assign(name.begin() + p2 + 1, name.end());
-	return true;
-}
-
-void SSRVideoStreamWatcher::HandleChanges(AddCallback add_callback, RemoveCallback remove_callback) {
+void SSRVideoStreamWatcher::HandleChanges(AddCallback add_callback, RemoveCallback remove_callback, void* userdata) {
 
 	// find out how much we can read
 	int len;
@@ -164,32 +186,32 @@ void SSRVideoStreamWatcher::HandleChanges(AddCallback add_callback, RemoveCallba
 			Logger::LogError("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Error: Received partial name from inotify!", "don't translate 'inotify'"));
 			throw SSRStreamException();
 		}
-		std::string name(buffer.data() + pos, event->len - 1);
+		std::string name(buffer.data() + pos); // the name may be padded with null bytes that should be ignored
 		pos += event->len;
 
 		// parse the name
-		Stream stream;
-		if(!ParseName(name, &stream))
+		SSRVideoStream stream;
+		if(!SSRVideoStreamParse(name, &stream))
 			continue;
 
 		// handle events
 		if(event->mask & IN_CREATE) {
 			if(std::find(m_streams.begin(), m_streams.end(), stream) == m_streams.end()) {
 				Logger::LogInfo("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Added stream %1.").arg(QString::fromStdString(name)));
-				add_callback(stream, m_streams.size());
 				m_streams.push_back(stream);
+				add_callback(stream, userdata);
 			} else {
-				Logger::LogWarning("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Warning: Added stream %1, but it exists already!").arg(QString::fromStdString(name)));
+				Logger::LogWarning("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Warning: Tried to add stream %1, but it exists already!").arg(QString::fromStdString(name)));
 			}
 		}
 		if(event->mask & IN_DELETE) {
 			auto p = std::find(m_streams.begin(), m_streams.end(), stream);
 			if(p != m_streams.end()) {
 				Logger::LogInfo("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Removed stream %1.").arg(QString::fromStdString(name)));
-				remove_callback(stream, p - m_streams.begin());
 				m_streams.erase(p);
+				remove_callback(p - m_streams.begin(), userdata);
 			} else {
-				Logger::LogWarning("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Warning: Removed stream %1, but it does not exist!").arg(QString::fromStdString(name)));
+				Logger::LogWarning("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Warning: Tried to remove stream %1, but it does not exist!").arg(QString::fromStdString(name)));
 			}
 		}
 

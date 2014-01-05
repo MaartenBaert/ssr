@@ -43,17 +43,17 @@ void InitGLInject() {
 	eh_obj_t libdl;
 	if(eh_find_obj(&libdl, "*/libdl.so*")) {
 		GLINJECT_PRINT("Error: Can't open libdl.so!");
-		exit(-181818181);
+		exit(1);
 	}
 	if(eh_find_sym(&libdl, "dlsym", (void **) &g_glinject_real_dlsym)) {
 		GLINJECT_PRINT("Error: Can't get dlsym address!");
 		eh_destroy_obj(&libdl);
-		exit(-181818181);
+		exit(1);
 	}
 	if(eh_find_sym(&libdl, "dlvsym", (void **) &g_glinject_real_dlvsym)) {
 		GLINJECT_PRINT("Error: Can't get dlvsym address!");
 		eh_destroy_obj(&libdl);
-		exit(-181818181);
+		exit(1);
 	}
 	eh_destroy_obj(&libdl);
 
@@ -61,22 +61,22 @@ void InitGLInject() {
 	g_glinject_real_glXCreateWindow = (GLXWindow (*)(Display*, GLXFBConfig, Window, const int*)) g_glinject_real_dlsym(RTLD_NEXT, "glXCreateWindow");
 	if(g_glinject_real_glXCreateWindow == NULL) {
 		GLINJECT_PRINT("Error: Can't get glXCreateWindow address!");
-		exit(-181818181);
+		exit(1);
 	}
 	g_glinject_real_glXSwapBuffers = (void (*)(Display*, GLXDrawable)) g_glinject_real_dlsym(RTLD_NEXT, "glXSwapBuffers");
 	if(g_glinject_real_glXSwapBuffers == NULL) {
 		GLINJECT_PRINT("Error: Can't get glXSwapBuffers address!");
-		exit(-181818181);
+		exit(1);
 	}
 	g_glinject_real_glXGetProcAddressARB = (GLXextFuncPtr (*)(const GLubyte*)) g_glinject_real_dlsym(RTLD_NEXT, "glXGetProcAddressARB");
 	if(g_glinject_real_glXGetProcAddressARB == NULL) {
 		GLINJECT_PRINT("Error: Can't get glXGetProcAddressARB address!");
-		exit(-181818181);
+		exit(1);
 	}
 	g_glinject_real_XNextEvent = (int (*)(Display*, XEvent*)) g_glinject_real_dlsym(RTLD_NEXT, "XNextEvent");
 	if(g_glinject_real_XNextEvent == NULL) {
 		GLINJECT_PRINT("Error: Can't get XNextEvent address!");
-		exit(-181818181);
+		exit(1);
 	}
 
 	g_glinject = new GLInject();

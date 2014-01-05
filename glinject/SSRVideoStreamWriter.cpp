@@ -29,9 +29,9 @@ static std::string GetProgramName() {
 
 SSRVideoStreamWriter::SSRVideoStreamWriter(const std::string& source) {
 
-	std::string program_name = GetProgramName();
+	std::string streamname = NumToString(hrt_time_micro()) + "-" + NumToString(geteuid()) + "-" + NumToString(getpid()) + "-" + source + "-" + GetProgramName();
 
-	m_filename_main = "/dev/shm/ssr-video-" + std::to_string(getpid()) + "-" + source + "-" + program_name;
+	m_filename_main = "/dev/shm/ssr-video-" + streamname;
 	m_page_size = sysconf(_SC_PAGE_SIZE);
 	m_width = 0;
 	m_height = 0;
@@ -44,7 +44,7 @@ SSRVideoStreamWriter::SSRVideoStreamWriter(const std::string& source) {
 
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
 		FrameData &fd = m_frame_data[i];
-		fd.m_filename_frame = "/dev/shm/ssr-videoframe" + std::to_string(i) + "-" + std::to_string(getpid()) + "-" + source + "-" + program_name;
+		fd.m_filename_frame = "/dev/shm/ssr-videoframe" + NumToString(i) + "-" + streamname;
 		fd.m_fd_frame = -1;
 		fd.m_mmap_ptr_frame = MAP_FAILED;
 		fd.m_mmap_size_frame = 0;

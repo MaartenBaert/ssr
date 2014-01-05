@@ -36,14 +36,14 @@ static unsigned int GetGLVersion() {
 	const char *str = (const char*) glGetString(GL_VERSION);
 	if(str == NULL) {
 		GLINJECT_PRINT("Error: Could not get OpenGL version, version string is NULL!");
-		exit(-181818181);
+		exit(1);
 	}
 
 	// read major version
 	unsigned int dot1 = strspn(str, "0123456789");
 	if(str[dot1] != '.') {
 		GLINJECT_PRINT("Error: Could not get OpenGL version, version string is '" << str << "'!");
-		exit(-181818181);
+		exit(1);
 	}
 	unsigned int major = atoi(str);
 
@@ -51,7 +51,7 @@ static unsigned int GetGLVersion() {
 	unsigned int dot2 = strspn(str + dot1 + 1, "0123456789") + dot1 + 1;
 	if(str[dot2] != '.' && str[dot2] != ' ' && str[dot2] != '\0') {
 		GLINJECT_PRINT("Error: Could not get OpenGL version, version string is '" << str << "'!");
-		exit(-181818181);
+		exit(1);
 	}
 	unsigned int minor = atoi(str + dot1 + 1);
 
@@ -149,9 +149,9 @@ void GLXFrameGrabber::Init() {
 	{
 		int event, error;
 		if(XFixesQueryExtension(m_x11_display, &event, &error)) {
-			GLINJECT_PRINT("[GLXFrameGrabber " << m_id << "] Warning: XFixes is not supported by server, the cursor will not be recorded.");
 			m_has_xfixes = true;
 		} else {
+			GLINJECT_PRINT("[GLXFrameGrabber " << m_id << "] Warning: XFixes is not supported by server, the cursor will not be recorded.");
 			m_has_xfixes = false;
 		}
 	}

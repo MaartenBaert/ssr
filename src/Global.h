@@ -26,19 +26,20 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstdlib>
 #include <ctime>
 #include <stdint.h>
+
 #include <unistd.h>
 #include <sys/shm.h>
 
-#include <limits>
 #include <array>
-#include <vector>
-#include <deque>
-#include <set>
-#include <memory>
-
 #include <atomic>
-#include <thread>
+#include <deque>
+#include <limits>
+#include <memory>
 #include <mutex>
+#include <set>
+#include <sstream>
+#include <thread>
+#include <vector>
 
 #include <QX11Info>
 #include <X11/Xlib.h>
@@ -199,17 +200,9 @@ public:
 	}
 };
 
-// simple function to do n-byte alignment
+// simple function to do 16-byte alignment
 inline size_t grow_align16(size_t size) {
 	return (size_t) (size + 15) & ~((size_t) 15);
-}
-
-// convert weird types from libav/ffmpeg to doubles
-inline double ToDouble(const AVRational& r) {
-	return (double) r.num / (double) r.den;
-}
-inline double ToDouble(const AVFrac& f) {
-	return (double) f.val + (double) f.num / (double) f.den;
 }
 
 // high resolution timer
@@ -235,22 +228,36 @@ inline T clamp(T v, T lo, T hi) {
 	return v;
 }
 
-template<typename T>
-inline int32_t round_int32(T x) {
-	if(sizeof(long) >= sizeof(int32_t))
+template<typename I, typename F>
+inline I round_to(F x) {
+	if(sizeof(long) >= sizeof(I))
 		return lrint(x);
-	if(sizeof(long long) >= sizeof(int32_t))
+	if(sizeof(long long) >= sizeof(I))
 		return llrint(x);
-	return (int32_t) rint(x);
+	return (I) rint(x);
 }
 
+// Generic number-to-string conversion and vice versa
+// Unlike the standard functions, these are locale-independent, and the functions never throw exceptions.
 template<typename T>
-inline int64_t round_int64(T x) {
-	if(sizeof(long) >= sizeof(int64_t))
-		return lrint(x);
-	if(sizeof(long long) >= sizeof(int64_t))
-		return llrint(x);
-	return (int64_t) rint(x);
+inline std::string NumToString(T number) {
+	std::ostringstream ss;
+	ss << number;
+	return ss.str();
+}
+template<typename T>
+inline bool StringToNum(const std::string& str, T* number) {
+	std::istringstream ss(str);
+	ss >> *number;
+	return !ss.fail();
+}
+
+// convert weird types from libav/ffmpeg to doubles
+inline double ToDouble(const AVRational& r) {
+	return (double) r.num / (double) r.den;
+}
+inline double ToDouble(const AVFrac& f) {
+	return (double) f.val + (double) f.num / (double) f.den;
 }
 
 inline void GroupEnabled(std::initializer_list<QAction*> actions, bool enabled) {

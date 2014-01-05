@@ -92,13 +92,16 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	{
 		QLabel *label_streams = new QLabel(tr("Active streams:"), groupbox_stream);
 		m_treewidget_streams = new QTreeWidget(groupbox_stream);
-		m_treewidget_streams->setHeaderLabels(QStringList({"#", "Pid", "Source", "Program name"}));
-		QLabel *label_pid = new QLabel(tr("Pid:"), groupbox_stream);
-		m_lineedit_pid = new QLineEdit(m_parent->GetGLInjectPid(), groupbox_stream);
-		QLabel *label_source = new QLabel(tr("Source:"), groupbox_stream);
-		m_lineedit_source = new QLineEdit(m_parent->GetGLInjectSource(), groupbox_stream);
-		QLabel *label_program_name = new QLabel(tr("Program name:"), groupbox_stream);
-		m_lineedit_program_name = new QLineEdit(m_parent->GetGLInjectProgramName(), groupbox_stream);
+		m_treewidget_streams->setHeaderLabels(QStringList({"User", "Process", "Source", "Program name"}));
+		QLabel *label_match = new QLabel(tr("Record the latest stream that matches:"), groupbox_stream);
+		QLabel *label_match_user = new QLabel(tr("User:"), groupbox_stream);
+		m_lineedit_match_user = new QLineEdit(m_parent->GetGLInjectMatchUser(), groupbox_stream);
+		QLabel *label_match_process = new QLabel(tr("Process:"), groupbox_stream);
+		m_lineedit_match_process = new QLineEdit(m_parent->GetGLInjectMatchProcess(), groupbox_stream);
+		QLabel *label_match_source = new QLabel(tr("Source:"), groupbox_stream);
+		m_lineedit_match_source = new QLineEdit(m_parent->GetGLInjectMatchSource(), groupbox_stream);
+		QLabel *label_match_program_name = new QLabel(tr("Program name:"), groupbox_stream);
+		m_lineedit_match_program_name = new QLineEdit(m_parent->GetGLInjectMatchProgramName(), groupbox_stream);
 		m_checkbox_limit_fps = new QCheckBox(tr("Limit application frame rate"), this);
 		m_checkbox_limit_fps->setToolTip(tr("If checked, the injected library will slow down the application so the frame rate doesn't become higher than the recording frame rate.\n"
 											"This stops the application from wasting CPU time for frames that won't be recorded, and sometimes results in smoother video\n"
@@ -108,15 +111,18 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 		QVBoxLayout *layout = new QVBoxLayout(groupbox_stream);
 		layout->addWidget(label_streams);
 		layout->addWidget(m_treewidget_streams);
+		layout->addWidget(label_match);
 		{
 			QGridLayout *layout2 = new QGridLayout();
 			layout->addLayout(layout2);
-			layout2->addWidget(label_pid, 0, 0);
-			layout2->addWidget(m_lineedit_pid, 0, 1);
-			layout2->addWidget(label_source, 1, 0);
-			layout2->addWidget(m_lineedit_source, 1, 1);
-			layout2->addWidget(label_program_name, 2, 0);
-			layout2->addWidget(m_lineedit_program_name, 2, 1);
+			layout2->addWidget(label_match_user, 0, 0);
+			layout2->addWidget(m_lineedit_match_user, 0, 1);
+			layout2->addWidget(label_match_process, 1, 0);
+			layout2->addWidget(m_lineedit_match_process, 1, 1);
+			layout2->addWidget(label_match_source, 2, 0);
+			layout2->addWidget(m_lineedit_match_source, 2, 1);
+			layout2->addWidget(label_match_program_name, 3, 0);
+			layout2->addWidget(m_lineedit_match_program_name, 3, 1);
 		}
 		layout->addWidget(m_checkbox_limit_fps);
 	}
@@ -146,14 +152,12 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	m_stream_watcher.reset(new SSRVideoStreamWatcher());
 	auto &streams = m_stream_watcher->GetStreams();
 	for(size_t i = 0; i < streams.size(); ++i) {
-		auto &s = streams[i];
-		new QTreeWidgetItem(m_treewidget_streams, QStringList({
-			QString::number(i + 1), //TODO// real index
-			QString::fromStdString(s.m_pid),
-			QString::fromStdString(s.m_source),
-			QString::fromStdString(s.m_program_name),
-		}));
+		StreamAddCallback(streams[i], this);
 	}
+
+	m_timer_update_streams = new QTimer(this);
+	connect(m_timer_update_streams, SIGNAL(timeout()), this, SLOT(OnUpdateStreams()));
+	m_timer_update_streams->start(200);
 
 }
 
@@ -161,14 +165,32 @@ DialogGLInject::~DialogGLInject() {
 
 }
 
+void DialogGLInject::StreamAddCallback(const SSRVideoStream& stream, void* userdata) {
+	DialogGLInject *dialog = (DialogGLInject*) userdata;
+	QTreeWidgetItem *item = new QTreeWidgetItem(dialog->m_treewidget_streams, QStringList({
+		QString::number(stream.m_user),
+		QString::number(stream.m_process),
+		QString::fromStdString(stream.m_source),
+		QString::fromStdString(stream.m_program_name),
+	}));
+	dialog->m_streams.push_back(item);
+}
+
+void DialogGLInject::StreamRemoveCallback(size_t pos, void* userdata) {
+	DialogGLInject *dialog = (DialogGLInject*) userdata;
+	delete dialog->m_streams[pos];
+	dialog->m_streams.erase(dialog->m_streams.begin() + pos);
+}
+
 void DialogGLInject::OnWriteBack() {
 	m_parent->SetGLInjectCommand(m_lineedit_command->text());
 	m_parent->SetGLInjectWorkingDirectory(m_lineedit_working_directory->text());
 	m_parent->SetGLInjectRelaxPermissions(m_checkbox_relax_permissions->isChecked());
 	m_parent->SetGLInjectAutoLaunch(m_checkbox_auto_launch->isChecked());
-	m_parent->SetGLInjectPid(m_lineedit_pid->text());
-	m_parent->SetGLInjectSource(m_lineedit_source->text());
-	m_parent->SetGLInjectProgramName(m_lineedit_program_name->text());
+	m_parent->SetGLInjectMatchUser(m_lineedit_match_user->text());
+	m_parent->SetGLInjectMatchProcess(m_lineedit_match_process->text());
+	m_parent->SetGLInjectMatchSource(m_lineedit_match_source->text());
+	m_parent->SetGLInjectMatchProgramName(m_lineedit_match_program_name->text());
 	m_parent->SetGLInjectLimitFPS(m_checkbox_limit_fps->isChecked());
 }
 
@@ -176,4 +198,8 @@ void DialogGLInject::OnLaunchNow() {
 	if(!GLInjectInput::LaunchApplication(m_lineedit_command->text(), m_lineedit_working_directory->text(), m_checkbox_relax_permissions->isChecked())) {
 		QMessageBox::critical(NULL, MainWindow::WINDOW_CAPTION, QObject::tr("The application could not be launched."), QMessageBox::Ok);
 	}
+}
+
+void DialogGLInject::OnUpdateStreams() {
+	m_stream_watcher->HandleChanges(&StreamAddCallback, &StreamRemoveCallback, this);
 }

@@ -21,6 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLInjectInput.h"
 
 #include "Logger.h"
+#include "SSRVideoStreamWatcher.h"
 #include "SSRVideoStreamReader.h"
 
 #include "../glinject/ShmStructs.h"
@@ -28,11 +29,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 // The highest expected latency between GLInject and the input thread.
 const int64_t GLInjectInput::MAX_COMMUNICATION_LATENCY = 100000;
 
-GLInjectInput::GLInjectInput(const QString& pid, const QString& source, const QString& program_name, bool record_cursor, bool limit_fps, unsigned int target_fps) {
+GLInjectInput::GLInjectInput(const QString& match_user, const QString& match_process, const QString& match_source, const QString& match_program_name, bool record_cursor, bool limit_fps, unsigned int target_fps) {
 
-	m_pid = pid;
-	m_source = source;
-	m_program_name = program_name;
+	m_match_user = match_user;
+	m_match_process = match_process;
+	m_match_source = match_source;
+	m_match_program_name = match_program_name;
 	m_flags = ((record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((limit_fps)? GLINJECT_FLAG_LIMIT_FPS : 0);
 	m_target_fps = target_fps;
 
@@ -94,8 +96,16 @@ bool GLInjectInput::LaunchApplication(const QString& command, const QString& wor
 
 void GLInjectInput::Init() {
 
+	// create the stream watcher
+	m_stream_watcher.reset(new SSRVideoStreamWatcher());
+
 	// create the stream reader
-	m_stream_reader = new SSRVideoStreamReader(m_pid.toStdString(), m_source.toStdString(), m_program_name.toStdString());
+	//TODO// matching
+	if(m_stream_watcher->GetStreams().empty()) {
+		Logger::LogError("[GLInjectInput::Init] " + QObject::tr("Error: No streams found!"));
+		throw GLInjectException();
+	}
+	m_stream_reader.reset(new SSRVideoStreamReader(m_stream_watcher->GetStreams().back()));
 
 	// initialize the stream
 	m_stream_reader->ChangeCaptureParameters(m_flags, m_target_fps);
@@ -109,11 +119,7 @@ void GLInjectInput::Init() {
 }
 
 void GLInjectInput::Free() {
-	if(m_stream_reader != NULL) {
-		m_stream_reader->ChangeCaptureParameters(0, 0);
-		delete m_stream_reader;
-		m_stream_reader = NULL;
-	}
+
 }
 
 void GLInjectInput::InputThread() {

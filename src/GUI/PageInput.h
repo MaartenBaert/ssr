@@ -107,7 +107,7 @@ private:
 
 	QString m_glinject_command, m_glinject_working_directory;
 	bool m_glinject_relax_permissions, m_glinject_auto_launch;
-	QString m_glinject_pid, m_glinject_source, m_glinject_program_name;
+	QString m_glinject_match_user, m_glinject_match_process, m_glinject_match_source, m_glinject_match_program_name;
 	bool m_glinject_limit_fps;
 
 	std::vector<WidgetScreenLabel*> m_screen_labels;
@@ -171,9 +171,10 @@ public:
 	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
 	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
 	inline bool GetGLInjectAutoLaunch() { return m_glinject_auto_launch; }
-	inline QString GetGLInjectPid() { return m_glinject_pid; }
-	inline QString GetGLInjectSource() { return m_glinject_source; }
-	inline QString GetGLInjectProgramName() { return m_glinject_program_name; }
+	inline QString GetGLInjectMatchUser() { return m_glinject_match_user; }
+	inline QString GetGLInjectMatchProcess() { return m_glinject_match_process; }
+	inline QString GetGLInjectMatchSource() { return m_glinject_match_source; }
+	inline QString GetGLInjectMatchProgramName() { return m_glinject_match_program_name; }
 	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
 
 	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
@@ -197,9 +198,10 @@ public:
 	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
 	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
 	inline void SetGLInjectAutoLaunch(bool auto_launch) { m_glinject_auto_launch = auto_launch; }
-	inline void SetGLInjectPid(const QString& pid) { m_glinject_pid = pid; }
-	inline void SetGLInjectSource(const QString& source) { m_glinject_source = source; }
-	inline void SetGLInjectProgramName(const QString& program_name) { m_glinject_program_name = program_name; }
+	inline void SetGLInjectMatchUser(const QString& match_user) { m_glinject_match_user = match_user; }
+	inline void SetGLInjectMatchProcess(const QString& match_process) { m_glinject_match_process = match_process; }
+	inline void SetGLInjectMatchSource(const QString& match_source) { m_glinject_match_source = match_source; }
+	inline void SetGLInjectMatchProgramName(const QString& program_name) { m_glinject_match_program_name = program_name; }
 	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
 
 protected:

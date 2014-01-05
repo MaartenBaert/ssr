@@ -96,15 +96,15 @@ int main(int argc, char* argv[]) {
 	QStringList args = QCoreApplication::arguments();
 	for(int i = 1; i < args.count(); ++i) {
 		QString arg = args[i];
-		if(arg.startsWith("--")) {
+		if(arg.startsWith("-")) {
 
 			// split into option and value
 			QString option, value;
 			int p = arg.indexOf('=');
 			if(p < 0) {
-				option = arg.mid(2);
+				option = arg;
 			} else {
-				option = arg.mid(2, p - 2);
+				option = arg.mid(0, p);
 				value = arg.mid(p + 1);
 				if(value.isNull())
 					value = "";
@@ -112,35 +112,35 @@ int main(int argc, char* argv[]) {
 
 #define NOVALUE \
 			if(!value.isNull()) { \
-				Logger::LogError("[main] " + QObject::tr("Error: Command-line option '%1' does not take a value!").arg("--" + option)); \
+				Logger::LogError("[main] " + QObject::tr("Error: Command-line option '%1' does not take a value!").arg(option)); \
 				PrintOptionHelp(); \
 				return 1; \
 			}
 
 			// handle options
-			if(option == "help") {
+			if(option == "--help") {
 				PrintOptionHelp();
 				return 0;
-			} else if(option == "logfile") {
+			} else if(option == "--logfile") {
 				NOVALUE
 				g_option_logfile = true;
-			} else if(option == "statsfile") {
+			} else if(option == "--statsfile") {
 				if(value.isNull()) {
 					g_option_statsfile = "/dev/shm/simplescreenrecorder-stats-" + QString::number(QCoreApplication::applicationPid());
 				} else {
 					g_option_statsfile = value;
 				}
-			} else if(option == "syncdiagram") {
+			} else if(option == "--syncdiagram") {
 				NOVALUE
 				g_option_syncdiagram = true;
-			} else if(option == "no-systray") {
+			} else if(option == "--no-systray") {
 				NOVALUE
 				g_option_systray = false;
-			} else if(option == "start-hidden") {
+			} else if(option == "--start-hidden") {
 				NOVALUE
 				g_option_start_hidden = true;
 			} else {
-				Logger::LogError("[main] " + QObject::tr("Error: Unknown command-line option '%1'!").arg("--" + option));
+				Logger::LogError("[main] " + QObject::tr("Error: Unknown command-line option '%1'!").arg(option));
 				PrintOptionHelp();
 				return 1;
 			}

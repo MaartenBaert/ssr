@@ -20,34 +20,18 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "SSRVideoStream.h"
-
-class SSRVideoStreamWatcher {
-
-public:
-	typedef void (*AddCallback)(const SSRVideoStream&, void*);
-	typedef void (*RemoveCallback)(size_t, void*);
-
-private:
-	std::string m_shm_dir;
-
-	int m_fd_notify;
-
-	std::vector<SSRVideoStream> m_streams;
-
-public:
-	SSRVideoStreamWatcher();
-	~SSRVideoStreamWatcher();
-
-private:
-	void Init();
-	void Free();
-
-public:
-	// Handles all changes since the last call to this function.
-	void HandleChanges(AddCallback add_callback, RemoveCallback remove_callback, void* userdata);
-
-	// Returns a list of streams that are currently active.
-	inline const std::vector<SSRVideoStream>& GetStreams() { return m_streams; }
-
+struct SSRVideoStream {
+	int64_t m_creation_time;
+	unsigned int m_user, m_process;
+	std::string m_source, m_program_name;
+	inline bool operator==(const SSRVideoStream& other) const {
+		return (m_creation_time == other.m_creation_time &&
+				m_user == other.m_user &&
+				m_process == other.m_process &&
+				m_source == other.m_source &&
+				m_program_name == other.m_program_name);
+	}
+	inline bool operator<(const SSRVideoStream& other) const {
+		return (m_creation_time < other.m_creation_time);
+	}
 };

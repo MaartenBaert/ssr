@@ -17498,7 +17498,7 @@ fi
 
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile 3rdparty/Makefile data/Makefile glinject/Makefile src/Makefile"
+ac_config_files="$ac_config_files Makefile 3rdparty/Makefile data/Makefile glinject/Makefile scripts/Makefile src/Makefile"
 
 
 
@@ -18655,6 +18655,7 @@ do
     "3rdparty/Makefile") CONFIG_FILES="$CONFIG_FILES 3rdparty/Makefile" ;;
     "data/Makefile") CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
     "glinject/Makefile") CONFIG_FILES="$CONFIG_FILES glinject/Makefile" ;;
+    "scripts/Makefile") CONFIG_FILES="$CONFIG_FILES scripts/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;

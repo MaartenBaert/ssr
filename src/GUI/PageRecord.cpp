@@ -339,10 +339,10 @@ PageRecord::PageRecord(MainWindow* main_window)
 	UpdateRecordPauseButton();
 	UpdatePreview();
 
-	m_info_timer = new QTimer(this);
-	m_glinject_event_timer = new QTimer(this);
-	connect(m_info_timer, SIGNAL(timeout()), this, SLOT(OnUpdateInformation()));
-	connect(m_glinject_event_timer, SIGNAL(timeout()), this, SLOT(OnCheckGLInjectEvents()));
+	m_timer_update_info = new QTimer(this);
+	m_timer_glinject_event = new QTimer(this);
+	connect(m_timer_update_info, SIGNAL(timeout()), this, SLOT(OnUpdateInformation()));
+	connect(m_timer_glinject_event, SIGNAL(timeout()), this, SLOT(OnCheckGLInjectEvents()));
 	connect(&g_hotkey_listener, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()));
 	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(OnNewLogLine(Logger::enum_type,QString)), Qt::QueuedConnection);
 
@@ -441,9 +441,10 @@ void PageRecord::StartPage() {
 #endif
 
 	// get the glinject settings
-	m_glinject_pid = page_input->GetGLInjectPid();
-	m_glinject_source = page_input->GetGLInjectSource();
-	m_glinject_program_name = page_input->GetGLInjectProgramName();
+	m_glinject_match_user = page_input->GetGLInjectMatchUser();
+	m_glinject_match_process = page_input->GetGLInjectMatchProcess();
+	m_glinject_match_source = page_input->GetGLInjectMatchSource();
+	m_glinject_match_program_name = page_input->GetGLInjectMatchProgramName();
 	m_glinject_limit_fps = page_input->GetGLInjectLimitFPS();
 
 	// get file settings
@@ -516,7 +517,8 @@ void PageRecord::StartPage() {
 
 		// for OpenGL recording, create the input now
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
-			m_gl_inject_input.reset(new GLInjectInput(m_glinject_pid, m_glinject_source, m_glinject_program_name, m_video_record_cursor, m_glinject_limit_fps, m_video_frame_rate));
+			m_gl_inject_input.reset(new GLInjectInput(m_glinject_match_user, m_glinject_match_process, m_glinject_match_source, m_glinject_match_program_name,
+													  m_video_record_cursor, m_glinject_limit_fps, m_video_frame_rate));
 
 #if SSR_USE_JACK
 		if(m_audio_enabled) {
@@ -545,10 +547,10 @@ void PageRecord::StartPage() {
 	UpdateInput();
 
 	OnUpdateInformation();
-	m_info_timer->start(1000);
+	m_timer_update_info->start(1000);
 
 	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
-		m_glinject_event_timer->start(100);
+		m_timer_glinject_event->start(100);
 
 }
 
@@ -592,10 +594,10 @@ void PageRecord::StopPage(bool save) {
 	OnUpdateHotkey();
 	OnUpdateSoundNotifications();
 
-	m_info_timer->stop();
+	m_timer_update_info->stop();
 	OnUpdateInformation();
 
-	m_glinject_event_timer->stop();
+	m_timer_glinject_event->stop();
 
 }
 

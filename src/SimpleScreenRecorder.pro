@@ -96,7 +96,8 @@ HEADERS  += \
 	GUI/VideoPreviewer.h \
 	Global.h \
 	Main.h \
-	Version.h
+	Version.h \
+    AV/Input/SSRVideoStream.h
 
 RESOURCES += \
 	resources.qrc

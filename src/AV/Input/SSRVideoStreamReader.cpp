@@ -27,9 +27,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/stat.h>
 #include <sys/types.h>
 
-SSRVideoStreamReader::SSRVideoStreamReader(const std::string& pid, const std::string& source, const std::string& program_name) {
+SSRVideoStreamReader::SSRVideoStreamReader(const SSRVideoStream &stream) {
 
-	m_filename_main = "/dev/shm/ssr-video-" + pid + "-" + source + "-" + program_name;
+	std::string streamname = NumToString(stream.m_creation_time) + "-" + NumToString(stream.m_user) + "-" + NumToString(stream.m_process) + "-" + stream.m_source + "-" + stream.m_program_name;
+
+	m_filename_main = "/dev/shm/ssr-video-" + streamname;
 	m_page_size = sysconf(_SC_PAGE_SIZE);
 
 	m_fd_main = -1;
@@ -38,7 +40,7 @@ SSRVideoStreamReader::SSRVideoStreamReader(const std::string& pid, const std::st
 
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
 		FrameData &fd = m_frame_data[i];
-		fd.m_filename_frame = "/dev/shm/ssr-videoframe" + std::to_string(i) + "-" + pid + "-" + source + "-" + program_name;
+		fd.m_filename_frame = "/dev/shm/ssr-videoframe" + NumToString(i) + "-" + streamname;
 		fd.m_fd_frame = -1;
 		fd.m_mmap_ptr_frame = MAP_FAILED;
 		fd.m_mmap_size_frame = 0;
@@ -75,8 +77,8 @@ void SSRVideoStreamReader::Init() {
 	// check main file size
 	m_mmap_size_main = (sizeof(GLInjectHeader) + GLINJECT_RING_BUFFER_SIZE * sizeof(GLInjectFrameInfo) + m_page_size - 1) / m_page_size * m_page_size;
 	{
-		struct stat s;
-		if(fstat(m_fd_main, &s) == -1 || (size_t) s.st_size != m_mmap_size_main) {
+		struct stat statinfo;
+		if(fstat(m_fd_main, &statinfo) == -1 || (size_t) statinfo.st_size != m_mmap_size_main) {
 			Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Size of video stream file is incorrect!"));
 			throw SSRStreamException();
 		}
@@ -224,12 +226,12 @@ void* SSRVideoStreamReader::GetFrame(int64_t* timestamp, unsigned int* width, un
 
 		// check frame file size
 		{
-			struct stat s;
-			if(fstat(fd.m_fd_frame, &s) == -1 || (size_t) s.st_size < required_size) {
+			struct stat statinfo;
+			if(fstat(fd.m_fd_frame, &statinfo) == -1 || (size_t) statinfo.st_size < required_size) {
 				Logger::LogError("[SSRVideoStreamReader::GetFrame] " + QObject::tr("Error: Size of video frame file is incorrect!"));
 				throw SSRStreamException();
 			}
-			required_size = s.st_size / m_page_size * m_page_size;
+			required_size = statinfo.st_size / m_page_size * m_page_size;
 		}
 
 		// map frame file

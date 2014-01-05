@@ -61,6 +61,7 @@ simplescreenrecorder_SOURCES = \
 	AV/Input/JACKInput.h \
 	AV/Input/PulseAudioInput.cpp \
 	AV/Input/PulseAudioInput.h \
+	AV/Input/SSRVideoStream.h \
 	AV/Input/SSRVideoStreamReader.cpp \
 	AV/Input/SSRVideoStreamReader.h \
 	AV/Input/SSRVideoStreamWatcher.cpp \

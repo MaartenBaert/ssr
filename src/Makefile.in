@@ -111,7 +111,8 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	AV/Input/ALSAInput.h AV/Input/GLInjectInput.cpp \
 	AV/Input/GLInjectInput.h AV/Input/JACKInput.cpp \
 	AV/Input/JACKInput.h AV/Input/PulseAudioInput.cpp \
-	AV/Input/PulseAudioInput.h AV/Input/SSRVideoStreamReader.cpp \
+	AV/Input/PulseAudioInput.h AV/Input/SSRVideoStream.h \
+	AV/Input/SSRVideoStreamReader.cpp \
 	AV/Input/SSRVideoStreamReader.h \
 	AV/Input/SSRVideoStreamWatcher.cpp \
 	AV/Input/SSRVideoStreamWatcher.h AV/Input/X11Input.cpp \
@@ -481,6 +482,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/JACKInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/PulseAudioInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/PulseAudioInput.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/Input/SSRVideoStream.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/SSRVideoStreamReader.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/SSRVideoStreamReader.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/SSRVideoStreamWatcher.cpp \

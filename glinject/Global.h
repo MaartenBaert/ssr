@@ -78,4 +78,19 @@ T positive_mod(T x, T y) {
 	return (z < 0)? z + y : z;
 }
 
+// Generic number-to-string conversion and vice versa
+// Unlike the standard functions, these are locale-independent, and the functions never throw exceptions.
+template<typename T>
+inline std::string NumToString(T number) {
+	std::ostringstream ss;
+	ss << number;
+	return ss.str();
+}
+template<typename T>
+inline bool StringToNum(const std::string& str, T* number) {
+	std::istringstream ss(str);
+	ss >> *number;
+	return !ss.fail();
+}
+
 #endif // GLOBAL_H

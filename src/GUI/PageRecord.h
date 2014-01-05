@@ -72,7 +72,7 @@ private:
 #if SSR_USE_PULSEAUDIO
 	QString m_pulseaudio_source;
 #endif
-	QString m_glinject_pid, m_glinject_source, m_glinject_program_name;
+	QString m_glinject_match_user, m_glinject_match_process, m_glinject_match_source, m_glinject_match_program_name;
 	bool m_glinject_limit_fps;
 
 	OutputSettings m_output_settings;
@@ -82,8 +82,6 @@ private:
 	QString m_file_protocol;
 	bool m_separate_files;
 	unsigned int m_file_segment_counter;
-
-	QTimer *m_info_timer, *m_glinject_event_timer;
 
 	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
@@ -122,6 +120,8 @@ private:
 	QAction *m_systray_action_start_pause;
 	QAction *m_systray_action_save;
 	QAction *m_systray_action_cancel;
+
+	QTimer *m_timer_update_info, *m_timer_glinject_event;
 
 public:
 	PageRecord(MainWindow* main_window);
