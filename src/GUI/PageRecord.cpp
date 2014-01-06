@@ -699,7 +699,8 @@ void PageRecord::StopOutput(bool final) {
 
 	Logger::LogInfo("[PageRecord::StopOutput] " + tr("Stopped output."));
 
-	if(m_simple_synth != NULL)
+	// if final, don't play the notification (it would get interrupted anyway)
+	if(m_simple_synth != NULL && !final)
 		m_simple_synth->PlaySequence(SEQUENCE_RECORD_STOP.data(), SEQUENCE_RECORD_STOP.size());
 
 	m_output_started = false;
