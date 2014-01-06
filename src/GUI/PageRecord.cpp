@@ -308,7 +308,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	QPushButton *button_save = new QPushButton(QIcon::fromTheme("document-save"), tr("Save recording"), this);
 
 	if(g_option_systray) {
-		m_systray_icon = new QSystemTrayIcon(m_main_window);
+		m_systray_icon = new QSystemTrayIcon(g_icon_ssr, m_main_window);
 		QMenu *menu = new QMenu(m_main_window);
 		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
 		m_systray_action_save = menu->addAction(tr("Save recording"), this, SLOT(OnSave()));
@@ -663,6 +663,7 @@ void PageRecord::StartOutput() {
 
 		m_output_started = true;
 		m_recorded_something = true;
+		UpdateSysTray();
 		UpdateRecordPauseButton();
 		UpdateInput();
 
@@ -702,6 +703,7 @@ void PageRecord::StopOutput(bool final) {
 		m_simple_synth->PlaySequence(SEQUENCE_RECORD_STOP.data(), SEQUENCE_RECORD_STOP.size());
 
 	m_output_started = false;
+	UpdateSysTray();
 	UpdateRecordPauseButton();
 	UpdateInput();
 
@@ -840,25 +842,30 @@ void PageRecord::UpdateInput() {
 }
 
 void PageRecord::UpdateSysTray() {
-	if(m_systray_icon != NULL)
-		GroupEnabled({m_systray_action_start_pause, m_systray_action_save, m_systray_action_cancel}, m_page_started);
+	if(m_systray_icon == NULL)
+		return;
+	GroupEnabled({m_systray_action_start_pause, m_systray_action_save, m_systray_action_cancel}, m_page_started);
+	if(m_page_started) {
+		if(m_output_started) {
+			m_systray_icon->setIcon(g_icon_ssr_recording);
+			m_systray_action_start_pause->setText(tr("Pause recording"));
+		} else {
+			m_systray_icon->setIcon(g_icon_ssr_paused);
+			m_systray_action_start_pause->setText(tr("Start recording"));
+		}
+	} else {
+		m_systray_icon->setIcon(g_icon_ssr);
+		m_systray_action_start_pause->setText(tr("Start recording"));
+	}
 }
 
 void PageRecord::UpdateRecordPauseButton() {
 	if(m_output_started) {
+		m_pushbutton_start_pause->setIcon(g_icon_pause);
 		m_pushbutton_start_pause->setText(tr("Pause recording"));
-		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-playback-pause"));
-		if(m_systray_icon != NULL) {
-			m_systray_icon->setIcon(g_icon_ssr_recording);
-			m_systray_action_start_pause->setText(tr("Pause recording"));
-		}
 	} else {
+		m_pushbutton_start_pause->setIcon(g_icon_record);
 		m_pushbutton_start_pause->setText(tr("Start recording"));
-		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-record"));
-		if(m_systray_icon != NULL) {
-			m_systray_icon->setIcon(g_icon_ssr);
-			m_systray_action_start_pause->setText(tr("Start recording"));
-		}
 	}
 }
 

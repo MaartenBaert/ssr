@@ -19,12 +19,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Icons.h"
 
-QIcon g_icon_ssr;
-QIcon g_icon_ssr_recording;
+QIcon g_icon_ssr, g_icon_ssr_paused, g_icon_ssr_recording;
+QIcon g_icon_pause, g_icon_record;
 
 void LoadIcons() {
 
-	g_icon_ssr = QIcon(":/img/icon-ssr.png");
-	g_icon_ssr_recording = QIcon(":/img/icon-ssr-recording.png");
+	g_icon_ssr = QIcon::fromTheme("simplescreenrecorder");
+	g_icon_ssr_paused = QIcon::fromTheme("simplescreenrecorder-paused");
+	g_icon_ssr_recording = QIcon::fromTheme("simplescreenrecorder-recording");
+
+	g_icon_pause = QIcon::fromTheme("media-playback-pause");
+	g_icon_record = QIcon::fromTheme("media-record");
 
 }

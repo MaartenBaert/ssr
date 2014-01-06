@@ -20,7 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-extern QIcon g_icon_ssr;
-extern QIcon g_icon_ssr_recording;
+extern QIcon g_icon_ssr, g_icon_ssr_paused, g_icon_ssr_recording;
+extern QIcon g_icon_pause, g_icon_record;
 
 void LoadIcons();
