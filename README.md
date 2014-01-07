@@ -31,11 +31,16 @@ This list may be incomplete - if you find something that is missing, please tell
 
 For Ubuntu 12.04 - 13.04:
 
-    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
+    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
+    libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
+    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
 
 For Ubuntu 13.10:
 
-    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib libx11-8:i368 libxext6:i386 libxfixes3:i386
+    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
+    libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
+    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib \
+    libx11-8:i368 libxext6:i386 libxfixes3:i386
 
 If the 32-bit version of some library isn't found, but 64-bit works fine, try this:
 
