@@ -700,10 +700,10 @@ void PageRecord::StopOutput(bool final) {
 		m_output_manager.reset();
 
 		// change the file name
+		PageOutput *page_output = m_main_window->GetPageOutput();
 		m_file_segment_counter = page_output->GetSegmentCounter();
 		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
- 		PageOutput *page_output = m_main_window->GetPageOutput();
-		page_output->SetSegmentCounter(m_file_segment_counter);
+ 		page_output->SetSegmentCounter(m_file_segment_counter);
 
 		// reset the output video size
 		m_output_settings.video_width = 0;
