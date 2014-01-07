@@ -82,6 +82,16 @@ For Debian:
     ln -s libXfixes.so.3 libXfixes.so
     ldconfig
 
+making a deb file:
+
+  * wget https://github.com/MaartenBaert/ssr/archive/0.1.2.tar.gz -O ssr-0.1.2.tar.gz
+  * tar -xzvf ssr-*.tar.gz
+  * sudo apt-get install dh-make autotools-dev
+  * cd ssr-*
+  * dh_make -f ../ssr-*.tar.gz
+  * dpkg-buildpackage -rfakeroot
+  * sudo sudo dpkg -i ../ssr_*.deb
+
 For OpenSUSE (incomplete list but usually enough):
 
     sudo zypper install gcc gcc-32bit libffmpeg-devel libqt4-devel libpulse-devel libjack-devel glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXext-devel libXext-devel-32bit libXfixes-devel libXfixes-devel-32bit libstdc++47-devel-32bit
