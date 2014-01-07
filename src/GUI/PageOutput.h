@@ -88,6 +88,8 @@ private:
 
 	enum_container m_old_container;
 	unsigned int m_old_container_av;
+  
+	unsigned int m_file_segment_counter;
 
 	std::vector<ContainerData> m_containers, m_containers_av;
 	std::vector<VideoCodecData> m_video_codecs, m_video_codecs_av;
@@ -147,6 +149,7 @@ private:
 public:
 	inline QString GetFile() { return m_lineedit_file->text(); }
 	inline bool GetSeparateFiles() { return m_checkbox_separate_files->isChecked(); }
+	inline bool GetSegmentCounter() { return m_file_segment_counter; }
 	inline enum_container GetContainer() { return (enum_container) clamp(m_combobox_container->currentIndex(), 0, CONTAINER_COUNT - 1); }
 	inline unsigned int GetContainerAV() { return clamp(m_combobox_container_av->currentIndex(), 0, (int) m_containers_av.size() - 1); }
 	inline enum_video_codec GetVideoCodec() { return (enum_video_codec) clamp(m_combobox_video_codec->currentIndex(), 0, VIDEO_CODEC_COUNT - 1); }
@@ -166,6 +169,7 @@ public:
 	inline void SetContainerAV(unsigned int container) { m_combobox_container_av->setCurrentIndex(clamp(container, 0u, (unsigned int) m_containers_av.size() - 1)); }
 	inline void SetFile(const QString& file) { m_lineedit_file->setText(file); }
 	inline void SetSeparateFiles(bool separate_files) { m_checkbox_separate_files->setChecked(separate_files); }
+	inline bool SetSegmentCounter(unsigned int counter) {  m_file_segment_counter = counter; }
 	inline void SetVideoCodec(enum_video_codec video_codec) { m_combobox_video_codec->setCurrentIndex(clamp((unsigned int) video_codec, 0u, (unsigned int) VIDEO_CODEC_COUNT - 1)); }
 	inline void SetVideoCodecAV(unsigned int video_codec_av) { m_combobox_video_codec_av->setCurrentIndex(clamp(video_codec_av, 0u, (unsigned int) m_video_codecs_av.size() - 1)); }
 	inline void SetVideoKBitRate(unsigned int kbit_rate) { m_lineedit_video_kbit_rate->setText(QString::number(kbit_rate)); }
@@ -184,6 +188,7 @@ public slots:
 	void OnUpdateContainerFields();
 	void OnUpdateVideoCodecFields();
 	void OnUpdateAudioCodecFields();
+	void OnUpdateSeparateFiles();
 
 private slots:
 	void OnBrowse();

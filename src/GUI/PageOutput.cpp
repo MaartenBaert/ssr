@@ -184,6 +184,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
 		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
 		connect(button_browse, SIGNAL(clicked()), this, SLOT(OnBrowse()));
+		connect(m_checkbox_separate_files, SIGNAL(toggled(bool)), this, SLOT(OnUpdateSeparateFiles()));
 
 		QGridLayout *layout = new QGridLayout(groupbox_file);
 		layout->addWidget(label_file, 0, 0);
@@ -368,6 +369,7 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	// load settings
 	SetFile(settings->value("output/file", "").toString());
 	SetSeparateFiles(settings->value("output/separate_files", false).toBool());
+  m_file_segment_counter = settings->value("output/segment_counter", 0).toUInt();
 	SetContainer(FindContainer(settings->value("output/container", QString()).toString(), default_container));
 	SetContainerAV(FindContainerAV(settings->value("output/container_av", QString()).toString()));
 
@@ -396,6 +398,7 @@ void PageOutput::SaveSettings(QSettings* settings) {
 
 	settings->setValue("output/file", GetFile());
 	settings->setValue("output/separate_files", GetSeparateFiles());
+  settings->setValue("output/segment_counter", m_file_segment_counter);
 	settings->setValue("output/container", m_containers[GetContainer()].avname);
 	settings->setValue("output/container_av", m_containers_av[GetContainerAV()].avname);
 
@@ -578,6 +581,11 @@ void PageOutput::OnUpdateAudioCodecFields() {
 		{{m_label_audio_kbit_rate, m_lineedit_audio_kbit_rate}, (codec != AUDIO_CODEC_UNCOMPRESSED)},
 		{{m_label_audio_codec_av, m_combobox_audio_codec_av, m_label_audio_options, m_lineedit_audio_options}, (codec == AUDIO_CODEC_OTHER)},
 	});
+}
+
+void PageOutput::OnUpdateSeparateFiles() {
+
+  m_file_segment_counter = 0;
 }
 
 void PageOutput::OnBrowse() {

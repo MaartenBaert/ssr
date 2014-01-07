@@ -454,12 +454,13 @@ void PageRecord::StartPage() {
 	m_file_base = page_output->GetFile();
 	m_file_protocol = page_output->GetFileProtocol();
 	m_separate_files = page_output->GetSeparateFiles();
-	m_file_segment_counter = 0;
+	m_file_segment_counter = page_output->GetSegmentCounter();
 
 	// get the output settings
-	if(m_separate_files)
+	if(m_separate_files) {
 		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
-	else
+    page_output->SetSegmentCounter(m_file_segment_counter);
+	} else
 		m_output_settings.file = m_file_base;
 	m_output_settings.container_avname = page_output->GetContainerAVName();
 
@@ -699,6 +700,7 @@ void PageRecord::StopOutput(bool final) {
 
 		// change the file name
 		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
+    page_output->SetSegmentCounter(m_file_segment_counter);
 
 		// reset the output video size
 		m_output_settings.video_width = 0;
