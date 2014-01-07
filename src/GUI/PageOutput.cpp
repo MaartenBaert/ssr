@@ -185,7 +185,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
 		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
 		connect(button_browse, SIGNAL(clicked()), this, SLOT(OnBrowse()));
-		connect(m_checkbox_separate_files, SIGNAL(toggled(bool)), this, SLOT(OnUpdateSeparateFiles()));
+		connect(m_checkbox_separate_files, SIGNAL(toggled(bool)), this, SLOT(OnUpdateSeparateFiles(bool)));
 
 		QGridLayout *layout = new QGridLayout(groupbox_file);
 		layout->addWidget(label_file, 0, 0);
