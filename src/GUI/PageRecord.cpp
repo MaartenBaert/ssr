@@ -54,11 +54,11 @@ static QString GetNewSegmentFile(const QString& file, unsigned int* counter, boo
 	QString path = fi.path(), basename = fi.completeBaseName(), suffix = fi.suffix();
 	QString newfile;
 	do {
-		++*counter;
 		if(suffix.isEmpty())
 			newfile = path + "/" + basename + QString("-%1").arg(*counter, 4, 10, QLatin1Char('0'));
 		else
 			newfile = path + "/" + basename + QString("-%1").arg(*counter, 4, 10, QLatin1Char('0')) + "." + suffix;
+		++*counter;
 	} while(check_existing && QFileInfo(newfile).exists());
 	return newfile;
 }
