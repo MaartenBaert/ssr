@@ -460,8 +460,9 @@ void PageRecord::StartPage() {
 	if(m_separate_files) {
 		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
     page_output->SetSegmentCounter(m_file_segment_counter);
-	} else
+	} else {
 		m_output_settings.file = m_file_base;
+  }
 	m_output_settings.container_avname = page_output->GetContainerAVName();
 
 	m_output_settings.video_codec_avname = page_output->GetVideoCodecAVName();
@@ -700,6 +701,7 @@ void PageRecord::StopOutput(bool final) {
 
 		// change the file name
 		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
+  	PageOutput *page_output = m_main_window->GetPageOutput();
     page_output->SetSegmentCounter(m_file_segment_counter);
 
 		// reset the output video size
