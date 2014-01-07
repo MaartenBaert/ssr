@@ -92,13 +92,12 @@ For Debian:
 
 making a deb file:
 
-  * wget https://github.com/MaartenBaert/ssr/archive/0.1.2.tar.gz -O ssr-0.1.2.tar.gz
-  * tar -xzvf ssr-*.tar.gz
-  * sudo apt-get install dh-make autotools-dev
-  * cd ssr-*
-  * dh_make -s -f ../ssr-*.tar.gz
-  * dpkg-buildpackage -rfakeroot
-  * sudo sudo dpkg -i ../ssr_*.deb
+    git clone https://github.com/MaartenBaert/ssr
+    sudo apt-get install dh-make autotools-dev
+    cd ssr
+    dh_make -s  -p ssr_0.1.2 --createorig
+    dpkg-buildpackage -rfakeroot
+    sudo sudo dpkg -i ../ssr_*.deb
 
 For OpenSUSE (incomplete list but usually enough):
 
