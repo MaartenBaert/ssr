@@ -31,11 +31,16 @@ This list may be incomplete - if you find something that is missing, please tell
 
 For Ubuntu 12.04 - 13.04:
 
-    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
+    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
+    libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
+    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
 
 For Ubuntu 13.10:
 
-    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib libx11-8:i368 libxext6:i386 libxfixes3:i386
+    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
+    libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
+    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib \
+    libx11-8:i368 libxext6:i386 libxfixes3:i386
 
 If the 32-bit version of some library isn't found, but 64-bit works fine, try this:
 
@@ -72,7 +77,10 @@ For Debian:
 
     sudo dpkg --add-architecture i386
     sudo apt-get update
-    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
+    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
+    libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
+    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib \
+	libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
 
     cd /usr/lib/i386-linux-gnu
     ln -s libGL.so.1 libGL.so
@@ -84,7 +92,9 @@ For Debian:
 
 For OpenSUSE (incomplete list but usually enough):
 
-    sudo zypper install gcc gcc-32bit libffmpeg-devel libqt4-devel libpulse-devel libjack-devel glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXext-devel libXext-devel-32bit libXfixes-devel libXfixes-devel-32bit libstdc++47-devel-32bit
+    sudo zypper install gcc gcc-32bit libffmpeg-devel libqt4-devel libpulse-devel libjack-devel \
+    glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXext-devel libXext-devel-32bit \
+    libXfixes-devel libXfixes-devel-32bit libstdc++47-devel-32bit
 
     cd /usr/lib/i386-linux-gnu
     sudo ln -s libGLU.so.1 libGLU.so
