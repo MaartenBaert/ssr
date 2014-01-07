@@ -188,7 +188,7 @@ public slots:
 	void OnUpdateContainerFields();
 	void OnUpdateVideoCodecFields();
 	void OnUpdateAudioCodecFields();
-	void OnUpdateSeparateFiles();
+	void OnUpdateSeparateFiles(bool toggle);
 
 private slots:
 	void OnBrowse();

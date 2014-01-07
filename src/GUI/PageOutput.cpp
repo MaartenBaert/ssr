@@ -583,7 +583,7 @@ void PageOutput::OnUpdateAudioCodecFields() {
 	});
 }
 
-void PageOutput::OnUpdateSeparateFiles() {
+void PageOutput::OnUpdateSeparateFiles(bool toggle) {
 
   m_file_segment_counter = 0;
 }
