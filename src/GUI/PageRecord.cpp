@@ -48,17 +48,19 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
 
-static QString GetNewSegmentFile(const QString& file, unsigned int* counter, bool check_existing) {
+static QString GetNewSegmentFile(const QString& file) {
 	QFileInfo fi(file);
-	QString path = fi.path(), basename = fi.completeBaseName(), suffix = fi.suffix();
+	QDateTime now = QDateTime::currentDateTime();
 	QString newfile;
+	unsigned int counter = 0;
 	do {
-		++*counter;
-		if(suffix.isEmpty())
-			newfile = path + "/" + basename + QString("-%1").arg(*counter, 4, 10, QLatin1Char('0'));
-		else
-			newfile = path + "/" + basename + QString("-%1").arg(*counter, 4, 10, QLatin1Char('0')) + "." + suffix;
-	} while(check_existing && QFileInfo(newfile).exists());
+		++counter;
+		newfile = fi.path() + "/" + fi.completeBaseName() + "-" + now.toString("yyyy-MM-dd-hh:mm:ss");
+		if(counter != 1)
+			newfile += "-(" + QString::number(counter) + ")";
+		if(!fi.suffix().isEmpty())
+			newfile += "." + fi.suffix();
+	} while(QFileInfo(newfile).exists());
 	return newfile;
 }
 
@@ -451,11 +453,10 @@ void PageRecord::StartPage() {
 	m_file_base = page_output->GetFile();
 	m_file_protocol = page_output->GetFileProtocol();
 	m_separate_files = page_output->GetSeparateFiles();
-	m_file_segment_counter = 0;
 
 	// get the output settings
 	if(m_separate_files)
-		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
+		m_output_settings.file = QString(); // will be set later
 	else
 		m_output_settings.file = m_file_base;
 	m_output_settings.container_avname = page_output->GetContainerAVName();
@@ -618,6 +619,10 @@ void PageRecord::StartOutput() {
 
 		if(m_output_manager == NULL) {
 
+			// set the file name
+			if(m_separate_files)
+				m_output_settings.file = GetNewSegmentFile(m_file_base);
+
 			// for OpenGL recording, detect the application size
 			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT && !m_video_scaling) {
 				if(m_gl_inject_input == NULL) {
@@ -689,7 +694,7 @@ void PageRecord::StopOutput(bool final) {
 		m_output_manager.reset();
 
 		// change the file name
-		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
+		m_output_settings.file = QString();
 
 		// reset the output video size
 		m_output_settings.video_width = 0;
@@ -996,7 +1001,11 @@ void PageRecord::OnUpdateInformation() {
 			total_bytes = m_output_manager->GetMuxer()->GetTotalBytes();
 		}
 
-		QString file_name = (m_file_protocol.isNull())? QFileInfo(m_output_settings.file).fileName() : "(" + m_file_protocol + ")";
+		QString file_name;
+		if(m_file_protocol.isNull())
+			file_name = (m_output_settings.file.isNull())? "?" : QFileInfo(m_output_settings.file).fileName();
+		else
+			file_name = "(" + m_file_protocol + ")";
 
 		// for OpenGL recording, update the application size
 		if(m_gl_inject_input != NULL) {

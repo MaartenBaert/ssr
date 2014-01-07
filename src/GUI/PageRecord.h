@@ -81,7 +81,6 @@ private:
 	QString m_file_base;
 	QString m_file_protocol;
 	bool m_separate_files;
-	unsigned int m_file_segment_counter;
 
 	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;

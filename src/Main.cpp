@@ -168,7 +168,7 @@ int main(int argc, char* argv[]) {
 				QFile(dir.path() + "/" + oldfile).remove();
 			}
 		}
-		QString file = dir.path() + "/log-" + now.toString(Qt::ISODate) + ".txt";
+		QString file = dir.path() + "/log-" + now.toString("yyyy-MM-dd-hh:mm:ss") + ".txt";
 		FILE *f = fopen(file.toLocal8Bit().constData(), "a");
 		dup2(fileno(f), 1); // redirect stdout
 		dup2(fileno(f), 2); // redirect stderr
