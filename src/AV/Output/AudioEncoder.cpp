@@ -25,9 +25,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Muxer.h"
 
 const std::vector<AVSampleFormat> AudioEncoder::SUPPORTED_SAMPLE_FORMATS = {
-	AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_FLT,
+	AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_S16,
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
-	AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_FLTP,
+	AV_SAMPLE_FMT_FLTP, AV_SAMPLE_FMT_S16P,
 #endif
 };
 
