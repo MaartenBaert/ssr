@@ -369,7 +369,7 @@ void PageOutput::LoadSettings(QSettings* settings) {
 	// load settings
 	SetFile(settings->value("output/file", "").toString());
 	SetSeparateFiles(settings->value("output/separate_files", false).toBool());
-  m_file_segment_counter = settings->value("output/segment_counter", 0).toUInt();
+	m_file_segment_counter = settings->value("output/segment_counter", 0).toUInt();
 	SetContainer(FindContainer(settings->value("output/container", QString()).toString(), default_container));
 	SetContainerAV(FindContainerAV(settings->value("output/container_av", QString()).toString()));
 
@@ -398,7 +398,7 @@ void PageOutput::SaveSettings(QSettings* settings) {
 
 	settings->setValue("output/file", GetFile());
 	settings->setValue("output/separate_files", GetSeparateFiles());
-  settings->setValue("output/segment_counter", m_file_segment_counter);
+	settings->setValue("output/segment_counter", m_file_segment_counter);
 	settings->setValue("output/container", m_containers[GetContainer()].avname);
 	settings->setValue("output/container_av", m_containers_av[GetContainerAV()].avname);
 
@@ -585,7 +585,7 @@ void PageOutput::OnUpdateAudioCodecFields() {
 
 void PageOutput::OnUpdateSeparateFiles(bool toggle) {
 
-  m_file_segment_counter = 0;
+	m_file_segment_counter = 0;
 }
 
 void PageOutput::OnBrowse() {
