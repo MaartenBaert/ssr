@@ -88,7 +88,7 @@ making a deb file:
   * tar -xzvf ssr-*.tar.gz
   * sudo apt-get install dh-make autotools-dev
   * cd ssr-*
-  * dh_make -f ../ssr-*.tar.gz
+  * dh_make -s -f ../ssr-*.tar.gz
   * dpkg-buildpackage -rfakeroot
   * sudo sudo dpkg -i ../ssr_*.deb
 
