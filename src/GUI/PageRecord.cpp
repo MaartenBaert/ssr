@@ -379,11 +379,13 @@ void PageRecord::LoadSettings(QSettings *settings) {
 	SetHotkeyKey(settings->value("record/hotkey_key", 'r' - 'a').toUInt());
 	SetSoundNotificationsEnabled(settings->value("record/sound_notifications_enable", true).toBool());
 	SetPreviewFrameRate(settings->value("record/preview_frame_rate", 10).toUInt());
+	m_file_segment_counter = settings->value("record/segment_counter", 0).toUInt();
 	OnUpdateHotkeyFields();
 	OnUpdateSoundNotifications();
 }
 
 void PageRecord::SaveSettings(QSettings *settings) {
+	settings->setValue("record/segment_counter", m_file_segment_counter);
 	settings->setValue("record/hotkey_enable", IsHotkeyEnabled());
 	settings->setValue("record/hotkey_ctrl", IsHotkeyCtrlEnabled());
 	settings->setValue("record/hotkey_shift", IsHotkeyShiftEnabled());
@@ -454,15 +456,12 @@ void PageRecord::StartPage() {
 	m_file_base = page_output->GetFile();
 	m_file_protocol = page_output->GetFileProtocol();
 	m_separate_files = page_output->GetSeparateFiles();
-	m_file_segment_counter = page_output->GetSegmentCounter();
 
 	// get the output settings
-	if(m_separate_files) {
+	if(m_separate_files)
 		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
-		page_output->SetSegmentCounter(m_file_segment_counter);
-	} else {
+	else
 		m_output_settings.file = m_file_base;
-	}
 	m_output_settings.container_avname = page_output->GetContainerAVName();
 
 	m_output_settings.video_codec_avname = page_output->GetVideoCodecAVName();
@@ -700,10 +699,7 @@ void PageRecord::StopOutput(bool final) {
 		m_output_manager.reset();
 
 		// change the file name
-		PageOutput *page_output = m_main_window->GetPageOutput();
-		m_file_segment_counter = page_output->GetSegmentCounter();
 		m_output_settings.file = GetNewSegmentFile(m_file_base, &m_file_segment_counter, m_file_protocol.isNull());
- 		page_output->SetSegmentCounter(m_file_segment_counter);
 
 		// reset the output video size
 		m_output_settings.video_width = 0;
