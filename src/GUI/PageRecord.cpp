@@ -54,11 +54,11 @@ static QString GetNewSegmentFile(const QString& file, unsigned int* counter, boo
 	QString path = fi.path(), basename = fi.completeBaseName(), suffix = fi.suffix();
 	QString newfile;
 	do {
-		++*counter;
 		if(suffix.isEmpty())
 			newfile = path + "/" + basename + QString("-%1").arg(*counter, 4, 10, QLatin1Char('0'));
 		else
 			newfile = path + "/" + basename + QString("-%1").arg(*counter, 4, 10, QLatin1Char('0')) + "." + suffix;
+		++*counter;
 	} while(check_existing && QFileInfo(newfile).exists());
 	return newfile;
 }
@@ -379,11 +379,13 @@ void PageRecord::LoadSettings(QSettings *settings) {
 	SetHotkeyKey(settings->value("record/hotkey_key", 'r' - 'a').toUInt());
 	SetSoundNotificationsEnabled(settings->value("record/sound_notifications_enable", true).toBool());
 	SetPreviewFrameRate(settings->value("record/preview_frame_rate", 10).toUInt());
+	m_file_segment_counter = settings->value("record/segment_counter", 0).toUInt();
 	OnUpdateHotkeyFields();
 	OnUpdateSoundNotifications();
 }
 
 void PageRecord::SaveSettings(QSettings *settings) {
+	settings->setValue("record/segment_counter", m_file_segment_counter);
 	settings->setValue("record/hotkey_enable", IsHotkeyEnabled());
 	settings->setValue("record/hotkey_ctrl", IsHotkeyCtrlEnabled());
 	settings->setValue("record/hotkey_shift", IsHotkeyShiftEnabled());
@@ -454,7 +456,6 @@ void PageRecord::StartPage() {
 	m_file_base = page_output->GetFile();
 	m_file_protocol = page_output->GetFileProtocol();
 	m_separate_files = page_output->GetSeparateFiles();
-	m_file_segment_counter = 0;
 
 	// get the output settings
 	if(m_separate_files)

@@ -159,6 +159,7 @@ public:
 	inline bool AreSoundNotificationsEnabled() { return m_checkbox_sound_notifications_enable->isChecked(); }
 	inline unsigned int GetPreviewFrameRate() { return m_spinbox_preview_frame_rate->value(); }
 
+	inline void SetSegmentCounter(unsigned int count) { m_file_segment_counter = count; }
 	inline void SetHotkeyEnabled(bool enable) { m_checkbox_hotkey_enable->setChecked(enable); }
 	inline void SetHotkeyCtrlEnabled(bool enable) { m_checkbox_hotkey_ctrl->setChecked(enable); }
 	inline void SetHotkeyShiftEnabled(bool enable) { m_checkbox_hotkey_shift->setChecked(enable); }

@@ -23,6 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "MainWindow.h"
 #include "PageInput.h"
+#include "PageRecord.h"
 
 #include "AVWrapper.h"
 #include "VideoEncoder.h"
@@ -184,6 +185,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
 		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
 		connect(button_browse, SIGNAL(clicked()), this, SLOT(OnBrowse()));
+		connect(m_checkbox_separate_files, SIGNAL(toggled(bool)), this, SLOT(OnUpdateSeparateFiles(bool)));
 
 		QGridLayout *layout = new QGridLayout(groupbox_file);
 		layout->addWidget(label_file, 0, 0);
@@ -578,6 +580,10 @@ void PageOutput::OnUpdateAudioCodecFields() {
 		{{m_label_audio_kbit_rate, m_lineedit_audio_kbit_rate}, (codec != AUDIO_CODEC_UNCOMPRESSED)},
 		{{m_label_audio_codec_av, m_combobox_audio_codec_av, m_label_audio_options, m_lineedit_audio_options}, (codec == AUDIO_CODEC_OTHER)},
 	});
+}
+
+void PageOutput::OnUpdateSeparateFiles(bool toggle) {
+	m_main_window->GetPageRecord()->SetSegmentCounter(0);
 }
 
 void PageOutput::OnBrowse() {

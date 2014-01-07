@@ -53,6 +53,7 @@ protected:
 public:
 	inline PageInput* GetPageInput() { return m_page_input; }
 	inline PageOutput* GetPageOutput() { return m_page_output; }
+	inline PageRecord* GetPageRecord() { return m_page_record; }
 
 public slots:
 	void GoPageWelcome();
