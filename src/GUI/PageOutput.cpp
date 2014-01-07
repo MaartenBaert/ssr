@@ -23,6 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "MainWindow.h"
 #include "PageInput.h"
+#include "PageRecord.h"
 
 #include "AVWrapper.h"
 #include "VideoEncoder.h"
