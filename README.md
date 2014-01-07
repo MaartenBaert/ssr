@@ -95,9 +95,10 @@ making a deb file:
     git clone https://github.com/MaartenBaert/ssr
     sudo apt-get install dh-make autotools-dev
     cd ssr
-    dh_make -s  -p ssr_0.1.2 --createorig
+    VERSION="$(grep -F -m1 'VERSION =' src/Makefile)"; VERSION="${VERSION##*=}"
+    dh_make -s -p ssr_$VERSION --createorig
     dpkg-buildpackage -rfakeroot
-    sudo sudo dpkg -i ../ssr_*.deb
+    sudo dpkg -i ../ssr_*.deb
 
 For OpenSUSE (incomplete list but usually enough):
 
