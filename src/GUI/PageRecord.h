@@ -79,7 +79,6 @@ private:
 	QString m_file_base;
 	QString m_file_protocol;
 	bool m_separate_files;
-	unsigned int m_file_segment_counter;
 
 	int64_t m_info_last_timestamp;
 	uint32_t m_info_last_frame_counter;
