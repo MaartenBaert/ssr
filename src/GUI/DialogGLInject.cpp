@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DialogGLInject.h"
 
+#include "Logger.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 
@@ -149,12 +150,14 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 
 	setMinimumSize(minimumSizeHint()); // workaround for Qt bug
 
-	m_stream_watcher.reset(new SSRVideoStreamWatcher());
-	{
+	try {
+		m_stream_watcher.reset(new SSRVideoStreamWatcher());
 		auto &streams = m_stream_watcher->GetStreams();
 		for(size_t i = 0; i < streams.size(); ++i) {
 			StreamAddCallback(streams[i], this);
 		}
+	} catch(...) {
+		Logger::LogError("[DialogGLInject::DialogGLInject] " + tr("Error: Could not create stream watcher!"));
 	}
 
 	m_timer_update_streams = new QTimer(this);
@@ -203,5 +206,11 @@ void DialogGLInject::OnLaunchNow() {
 }
 
 void DialogGLInject::OnUpdateStreams() {
-	m_stream_watcher->HandleChanges(&StreamAddCallback, &StreamRemoveCallback, this);
+	if(m_stream_watcher == NULL)
+		return;
+	try {
+		m_stream_watcher->HandleChanges(&StreamAddCallback, &StreamRemoveCallback, this);
+	} catch(...) {
+		Logger::LogError("[DialogGLInject::OnUpdateStreams] " + tr("Error: Could not update streams!"));
+	}
 }

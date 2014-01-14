@@ -114,7 +114,9 @@ void GLInjectInput::Init() {
 }
 
 void GLInjectInput::Free() {
-
+	SharedLock lock(&m_shared_data);
+	lock->m_stream_reader.reset();
+	lock->m_stream_watcher.reset();
 }
 
 bool GLInjectInput::SwitchStream(SharedData* lock, const SSRVideoStream& stream) {
