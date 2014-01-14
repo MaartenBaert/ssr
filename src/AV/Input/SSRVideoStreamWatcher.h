@@ -26,7 +26,7 @@ class SSRVideoStreamWatcher {
 
 public:
 	typedef void (*AddCallback)(const SSRVideoStream&, void*);
-	typedef void (*RemoveCallback)(size_t, void*);
+	typedef void (*RemoveCallback)(const SSRVideoStream&, size_t, void*);
 
 private:
 	std::string m_shm_dir;

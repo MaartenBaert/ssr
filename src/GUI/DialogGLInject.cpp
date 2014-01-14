@@ -93,7 +93,7 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 		QLabel *label_streams = new QLabel(tr("Active streams:"), groupbox_stream);
 		m_treewidget_streams = new QTreeWidget(groupbox_stream);
 		m_treewidget_streams->setHeaderLabels(QStringList({"User", "Process", "Source", "Program name"}));
-		QLabel *label_match = new QLabel(tr("Record the latest stream that matches:"), groupbox_stream);
+		QLabel *label_match = new QLabel(tr("Record last stream that matches:"), groupbox_stream);
 		QLabel *label_match_user = new QLabel(tr("User:"), groupbox_stream);
 		m_lineedit_match_user = new QLineEdit(m_parent->GetGLInjectMatchUser(), groupbox_stream);
 		QLabel *label_match_process = new QLabel(tr("Process:"), groupbox_stream);
@@ -150,9 +150,11 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	setMinimumSize(minimumSizeHint()); // workaround for Qt bug
 
 	m_stream_watcher.reset(new SSRVideoStreamWatcher());
-	auto &streams = m_stream_watcher->GetStreams();
-	for(size_t i = 0; i < streams.size(); ++i) {
-		StreamAddCallback(streams[i], this);
+	{
+		auto &streams = m_stream_watcher->GetStreams();
+		for(size_t i = 0; i < streams.size(); ++i) {
+			StreamAddCallback(streams[i], this);
+		}
 	}
 
 	m_timer_update_streams = new QTimer(this);
@@ -176,7 +178,7 @@ void DialogGLInject::StreamAddCallback(const SSRVideoStream& stream, void* userd
 	dialog->m_streams.push_back(item);
 }
 
-void DialogGLInject::StreamRemoveCallback(size_t pos, void* userdata) {
+void DialogGLInject::StreamRemoveCallback(const SSRVideoStream& stream, size_t pos, void* userdata) {
 	DialogGLInject *dialog = (DialogGLInject*) userdata;
 	delete dialog->m_streams[pos];
 	dialog->m_streams.erase(dialog->m_streams.begin() + pos);

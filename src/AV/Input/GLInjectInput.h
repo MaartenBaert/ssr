@@ -23,10 +23,19 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 
+class SSRVideoStream;
 class SSRVideoStreamWatcher;
 class SSRVideoStreamReader;
 
 class GLInjectInput : public VideoSource {
+
+private:
+	struct SharedData {
+		bool m_capturing;
+		std::unique_ptr<SSRVideoStreamWatcher> m_stream_watcher;
+		std::unique_ptr<SSRVideoStreamReader> m_stream_reader;
+	};
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
 	static const int64_t MAX_COMMUNICATION_LATENCY;
@@ -36,10 +45,8 @@ private:
 	unsigned int m_flags;
 	unsigned int m_target_fps;
 
-	std::unique_ptr<SSRVideoStreamWatcher> m_stream_watcher;
-	std::unique_ptr<SSRVideoStreamReader> m_stream_reader;
-
 	std::thread m_thread;
+	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
@@ -47,17 +54,16 @@ public:
 	~GLInjectInput();
 
 	// Reads the current size of the stream. If the stream hasn't been started yet, this will be 0x0.
+	// This function is thread-safe.
 	void GetCurrentSize(unsigned int* width, unsigned int* height);
 
 	// Returns the total number of captured frames.
 	// This function is thread-safe.
 	double GetFPS();
 
-	// Start capturing.
-	void Start();
-
-	// Stop capturing.
-	void Stop();
+	// Start/stop capturing.
+	// This function is thread-safe.
+	void SetCapturing(bool capturing);
 
 	// Returns whether an error has occurred in the input thread.
 	// This function is thread-safe.
@@ -68,6 +74,11 @@ public:
 private:
 	void Init();
 	void Free();
+
+	bool SwitchStream(SharedData* lock, const SSRVideoStream& stream);
+
+	static void StreamAddCallback(const SSRVideoStream& stream, void* userdata);
+	static void StreamRemoveCallback(const SSRVideoStream& stream, size_t pos, void* userdata);
 
 	void InputThread();
 

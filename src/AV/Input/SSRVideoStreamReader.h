@@ -35,6 +35,7 @@ private:
 	};
 
 private:
+	SSRVideoStream m_stream;
 	std::string m_filename_main;
 	size_t m_page_size;
 
@@ -76,5 +77,10 @@ public:
 
 	// Drops the current frame and goes to the next frame.
 	void NextFrame();
+
+public:
+
+	// Returns the stream that is being read.
+	inline const SSRVideoStream& GetStream() { return m_stream; }
 
 };

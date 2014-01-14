@@ -737,7 +737,7 @@ void PageRecord::StartInput() {
 				Logger::LogError("[PageRecord::StartInput] " + tr("Error: Could not start the GLInject input because it has not been created."));
 				throw GLInjectException();
 			}
-			m_gl_inject_input->Start();
+			m_gl_inject_input->SetCapturing(true);
 		} else {
 			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
 		}
@@ -761,14 +761,12 @@ void PageRecord::StartInput() {
 		Logger::LogError("[PageRecord::StartInput] " + tr("Error: Something went wrong during initialization."));
 		m_x11_input.reset();
 		if(m_gl_inject_input != NULL)
-			m_gl_inject_input->Stop();
+			m_gl_inject_input->SetCapturing(false);
 		m_alsa_input.reset();
 #if SSR_USE_PULSEAUDIO
 		m_pulseaudio_input.reset();
 #endif
-#if SSR_USE_JACK
-		m_jack_input.reset();
-#endif
+		// JACK shouldn't stop until the page stops
 		return;
 	}
 
@@ -784,7 +782,7 @@ void PageRecord::StopInput() {
 
 	m_x11_input.reset();
 	if(m_gl_inject_input != NULL)
-		m_gl_inject_input->Stop();
+		m_gl_inject_input->SetCapturing(false);
 	m_alsa_input.reset();
 #if SSR_USE_PULSEAUDIO
 	m_pulseaudio_input.reset();

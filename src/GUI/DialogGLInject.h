@@ -20,7 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "SSRVideoStreamWatcher.h"
+class SSRVideoStream;
+class SSRVideoStreamWatcher;
 
 class PageInput;
 
@@ -48,7 +49,7 @@ public:
 
 private:
 	static void StreamAddCallback(const SSRVideoStream& stream, void* userdata);
-	static void StreamRemoveCallback(size_t pos, void* userdata);
+	static void StreamRemoveCallback(const SSRVideoStream& stream, size_t pos, void* userdata);
 
 private slots:
 	void OnWriteBack();

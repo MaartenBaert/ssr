@@ -208,8 +208,9 @@ void SSRVideoStreamWatcher::HandleChanges(AddCallback add_callback, RemoveCallba
 			auto p = std::find(m_streams.begin(), m_streams.end(), stream);
 			if(p != m_streams.end()) {
 				Logger::LogInfo("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Removed stream %1.").arg(QString::fromStdString(name)));
+				size_t pos =  p - m_streams.begin();
 				m_streams.erase(p);
-				remove_callback(p - m_streams.begin(), userdata);
+				remove_callback(stream, pos, userdata);
 			} else {
 				Logger::LogWarning("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Warning: Tried to remove stream %1, but it does not exist!").arg(QString::fromStdString(name)));
 			}

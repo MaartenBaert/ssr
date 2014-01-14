@@ -24,8 +24,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SSRVideoStreamWatcher.h"
 #include "SSRVideoStreamReader.h"
 
-#include "../glinject/ShmStructs.h"
-
 // The highest expected latency between GLInject and the input thread.
 const int64_t GLInjectInput::MAX_COMMUNICATION_LATENCY = 100000;
 
@@ -37,8 +35,6 @@ GLInjectInput::GLInjectInput(const QString& match_user, const QString& match_pro
 	m_match_program_name = match_program_name;
 	m_flags = ((record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((limit_fps)? GLINJECT_FLAG_LIMIT_FPS : 0);
 	m_target_fps = target_fps;
-
-	m_stream_reader = NULL;
 
 	try {
 		Init();
@@ -64,19 +60,26 @@ GLInjectInput::~GLInjectInput() {
 }
 
 void GLInjectInput::GetCurrentSize(unsigned int* width, unsigned int* height) {
-	m_stream_reader->GetCurrentSize(width, height);
+	SharedLock lock(&m_shared_data);
+	if(lock->m_stream_reader == NULL) {
+		*width = *height = 0;
+	} else {
+		lock->m_stream_reader->GetCurrentSize(width, height);
+	}
 }
 
 double GLInjectInput::GetFPS() {
-	return m_stream_reader->GetFPS();
+	SharedLock lock(&m_shared_data);
+	if(lock->m_stream_reader == NULL)
+		return 0.0;
+	return lock->m_stream_reader->GetFPS();
 }
 
-void GLInjectInput::Start() {
-	m_stream_reader->ChangeCaptureParameters(m_flags | GLINJECT_FLAG_CAPTURE_ENABLED, m_target_fps);
-}
-
-void GLInjectInput::Stop() {
-	m_stream_reader->ChangeCaptureParameters(m_flags, m_target_fps);
+void GLInjectInput::SetCapturing(bool capturing) {
+	SharedLock lock(&m_shared_data);
+	lock->m_capturing = capturing;
+	if(lock->m_stream_reader != NULL)
+		lock->m_stream_reader->ChangeCaptureParameters(m_flags | ((lock->m_capturing)? GLINJECT_FLAG_CAPTURE_ENABLED : 0), m_target_fps);
 }
 
 bool GLInjectInput::LaunchApplication(const QString& command, const QString& working_directory, bool relax_permissions) {
@@ -96,20 +99,12 @@ bool GLInjectInput::LaunchApplication(const QString& command, const QString& wor
 
 void GLInjectInput::Init() {
 
-	// create the stream watcher
-	m_stream_watcher.reset(new SSRVideoStreamWatcher());
-
-	// create the stream reader
-	//TODO// matching
-	if(m_stream_watcher->GetStreams().empty()) {
-		Logger::LogError("[GLInjectInput::Init] " + QObject::tr("Error: No streams found!"));
-		throw GLInjectException();
+	// initialize shared data
+	{
+		SharedLock lock(&m_shared_data);
+		lock->m_capturing = false;
+		lock->m_stream_watcher.reset(new SSRVideoStreamWatcher());
 	}
-	m_stream_reader.reset(new SSRVideoStreamReader(m_stream_watcher->GetStreams().back()));
-
-	// initialize the stream
-	m_stream_reader->ChangeCaptureParameters(m_flags, m_target_fps);
-	m_stream_reader->Clear();
 
 	// start input thread
 	m_should_stop = false;
@@ -122,21 +117,94 @@ void GLInjectInput::Free() {
 
 }
 
+bool GLInjectInput::SwitchStream(SharedData* lock, const SSRVideoStream& stream) {
+
+	// does the stream match the rules?
+	if(!m_match_user.isEmpty() && !QRegExp(m_match_user, Qt::CaseInsensitive, QRegExp::Wildcard).exactMatch(QString::number(stream.m_user)))
+		return false;
+	if(!m_match_process.isEmpty() && !QRegExp(m_match_process, Qt::CaseInsensitive, QRegExp::Wildcard).exactMatch(QString::number(stream.m_process)))
+		return false;
+	if(!m_match_source.isEmpty() && !QRegExp(m_match_source, Qt::CaseInsensitive, QRegExp::Wildcard).exactMatch(QString::fromStdString(stream.m_source)))
+		return false;
+	if(!m_match_program_name.isEmpty() && !QRegExp(m_match_program_name, Qt::CaseInsensitive, QRegExp::Wildcard).exactMatch(QString::fromStdString(stream.m_program_name)))
+		return false;
+
+	try {
+
+		// create the stream reader
+		lock->m_stream_reader.reset(new SSRVideoStreamReader(stream));
+
+		// initialize the stream
+		lock->m_stream_reader->ChangeCaptureParameters(m_flags | ((lock->m_capturing)? GLINJECT_FLAG_CAPTURE_ENABLED : 0), m_target_fps);
+		lock->m_stream_reader->Clear();
+
+	} catch(...) {
+		Logger::LogError("[GLInjectInput::SwitchStream] " + QObject::tr("Error: Could not read stream, this usually means that the stream was already gone."));
+		return false;
+	}
+
+	return true;
+}
+
+void GLInjectInput::StreamAddCallback(const SSRVideoStream& stream, void* userdata) {
+	GLInjectInput *input = (GLInjectInput*) userdata;
+	SharedData *lock = input->m_shared_data.data(); // data is already locked, this is only a callback function
+	input->SwitchStream(lock, stream);
+}
+
+void GLInjectInput::StreamRemoveCallback(const SSRVideoStream& stream, size_t pos, void* userdata) {
+	GLInjectInput *input = (GLInjectInput*) userdata;
+	SharedData *lock = input->m_shared_data.data(); // data is already locked, this is only a callback function
+	if(lock->m_stream_reader != NULL) {
+		if(lock->m_stream_reader->GetStream() == stream) {
+			lock->m_stream_reader.reset();
+			auto &streams = lock->m_stream_watcher->GetStreams();
+			for(size_t i = pos; i > 0; ) {
+				--i;
+				if(input->SwitchStream(lock, streams[i]))
+					break;
+			}
+		}
+	}
+}
+
 void GLInjectInput::InputThread() {
 	try {
 
 		Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Input thread started."));
 
-		//int64_t next_frame_time = hrt_time_micro();
+		// deal with pre-existing streams
+		{
+			SharedLock lock(&m_shared_data);
+			auto &streams = lock->m_stream_watcher->GetStreams();
+			for(size_t i = streams.size(); i > 0; ) {
+				--i;
+				if(SwitchStream(lock.get(), streams[i]))
+					break;
+			}
+		}
+
 		while(!m_should_stop) {
+			SharedLock lock(&m_shared_data);
+
+			// update stream watcher
+			lock->m_stream_watcher->HandleChanges(&StreamAddCallback, &StreamRemoveCallback, this);
+
+			// do we have a stream reader?
+			if(lock->m_stream_reader == NULL) {
+				lock.lock().unlock(); // release lock before sleep
+				usleep(10000);
+				continue;
+			}
 
 			// is a frame ready?
 			int64_t timestamp;
 			unsigned int width, height;
 			int stride;
-			void *data = m_stream_reader->GetFrame(&timestamp, &width, &height, &stride);
+			void *data = lock->m_stream_reader->GetFrame(&timestamp, &width, &height, &stride);
 			if(data == NULL) {
 				PushVideoPing(hrt_time_micro() - MAX_COMMUNICATION_LATENCY);
+				lock.lock().unlock(); // release lock before sleep
 				usleep(10000);
 				continue;
 			}
@@ -151,7 +219,7 @@ void GLInjectInput::InputThread() {
 			PushVideoFrame(width, height, (uint8_t*) data, stride, PIX_FMT_BGRA, timestamp);
 
 			// go to the next frame
-			m_stream_reader->NextFrame();
+			lock->m_stream_reader->NextFrame();
 
 		}
 

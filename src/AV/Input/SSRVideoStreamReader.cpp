@@ -27,10 +27,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/stat.h>
 #include <sys/types.h>
 
-SSRVideoStreamReader::SSRVideoStreamReader(const SSRVideoStream &stream) {
+SSRVideoStreamReader::SSRVideoStreamReader(const SSRVideoStream& stream) {
 
 	std::string streamname = NumToString(stream.m_creation_time) + "-" + NumToString(stream.m_user) + "-" + NumToString(stream.m_process) + "-" + stream.m_source + "-" + stream.m_program_name;
 
+	m_stream = stream;
 	m_filename_main = "/dev/shm/ssr-video-" + streamname;
 	m_page_size = sysconf(_SC_PAGE_SIZE);
 
@@ -60,6 +61,8 @@ SSRVideoStreamReader::~SSRVideoStreamReader() {
 }
 
 void SSRVideoStreamReader::Init() {
+
+	Logger::LogInfo("[SSRVideoStreamReader::Init] " + QObject::tr("Created video stream reader."));
 
 	// open main file
 	m_fd_main = open(m_filename_main.c_str(), O_RDWR | O_CLOEXEC);
@@ -139,6 +142,8 @@ void SSRVideoStreamReader::Free() {
 		close(m_fd_main);
 		m_fd_main = -1;
 	}
+
+	Logger::LogInfo("[SSRVideoStreamReader::Init] " + QObject::tr("Destroyed video stream reader."));
 
 }
 
