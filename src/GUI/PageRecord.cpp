@@ -377,7 +377,7 @@ void PageRecord::LoadSettings(QSettings *settings) {
 	SetHotkeyAltEnabled(settings->value("record/hotkey_alt", false).toBool());
 	SetHotkeySuperEnabled(settings->value("record/hotkey_super", false).toBool());
 	SetHotkeyKey(settings->value("record/hotkey_key", 'r' - 'a').toUInt());
-	SetSoundNotificationsEnabled(settings->value("record/sound_notifications_enable", true).toBool());
+	SetSoundNotificationsEnabled(settings->value("record/sound_notifications_enable", false).toBool());
 	SetPreviewFrameRate(settings->value("record/preview_frame_rate", 10).toUInt());
 	OnUpdateHotkeyFields();
 	OnUpdateSoundNotifications();
