@@ -212,12 +212,14 @@ nodist_translations_DATA = \
 	simplescreenrecorder_de.qm \
 	simplescreenrecorder_nl.qm \
 	simplescreenrecorder_pl.qm \
+	simplescreenrecorder_pt_BR.qm \
 	simplescreenrecorder_zh_CN.qm
 
 EXTRA_DIST += \
 	translations/simplescreenrecorder_de.ts \
 	translations/simplescreenrecorder_nl.ts \
 	translations/simplescreenrecorder_pl.ts \
+	translations/simplescreenrecorder_pt_BR.ts \
 	translations/simplescreenrecorder_zh_CN.ts
 
 simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
@@ -225,6 +227,8 @@ simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
 simplescreenrecorder_nl.qm: $(srcdir)/translations/simplescreenrecorder_nl.ts
 	$(LRELEASE) "$<" -qm "$@"
 simplescreenrecorder_pl.qm: $(srcdir)/translations/simplescreenrecorder_pl.ts
+	$(LRELEASE) "$<" -qm "$@"
+simplescreenrecorder_pt_BR.qm: $(srcdir)/translations/simplescreenrecorder_pt_BR.ts
 	$(LRELEASE) "$<" -qm "$@"
 simplescreenrecorder_zh_CN.qm: $(srcdir)/translations/simplescreenrecorder_zh_CN.ts
 	$(LRELEASE) "$<" -qm "$@"
