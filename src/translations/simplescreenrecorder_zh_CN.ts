@@ -701,246 +701,252 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
 <context>
     <name>PageRecord</name>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="126"/>
+        <location filename="../GUI/PageRecord.cpp" line="146"/>
         <source>Recording</source>
         <translation>正在录制</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="130"/>
+        <location filename="../GUI/PageRecord.cpp" line="150"/>
         <source>Enable recording hotkey</source>
         <translation>启用录制热键</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="131"/>
+        <location filename="../GUI/PageRecord.cpp" line="151"/>
+        <source>Enable sound notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="152"/>
         <source>Hotkey:</source>
         <translation>热键：</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="132"/>
+        <location filename="../GUI/PageRecord.cpp" line="153"/>
         <source>Ctrl +</source>
         <translation>Ctrl +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="133"/>
+        <location filename="../GUI/PageRecord.cpp" line="154"/>
         <source>Shift +</source>
         <translation>Shift +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="134"/>
+        <location filename="../GUI/PageRecord.cpp" line="155"/>
         <source>Alt +</source>
         <translation>Alt +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="135"/>
+        <location filename="../GUI/PageRecord.cpp" line="156"/>
         <source>Super +</source>
         <translation>Super +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="137"/>
+        <location filename="../GUI/PageRecord.cpp" line="158"/>
         <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
 The program that you are recording will not receive the key press.</source>
         <translation>开始/暂停录制的按键（结合修饰按键）。
 被录制的程序将无法接收到设定的按键消息。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="171"/>
+        <location filename="../GUI/PageRecord.cpp" line="198"/>
         <source>Information</source>
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="173"/>
+        <location filename="../GUI/PageRecord.cpp" line="200"/>
         <source>Total time:</source>
         <translation>总时间：</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="175"/>
+        <location filename="../GUI/PageRecord.cpp" line="202"/>
         <source>FPS in:</source>
         <translation>输入FPS：</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="177"/>
+        <location filename="../GUI/PageRecord.cpp" line="204"/>
         <source>FPS out:</source>
         <translation>输出FPS：</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="179"/>
+        <location filename="../GUI/PageRecord.cpp" line="206"/>
         <source>Size in:</source>
         <translation>输入大小：</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="181"/>
+        <location filename="../GUI/PageRecord.cpp" line="208"/>
         <source>Size out:</source>
         <translation>输出大小：</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="183"/>
+        <location filename="../GUI/PageRecord.cpp" line="210"/>
         <source>File name:</source>
         <translation>文件名：</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="186"/>
+        <location filename="../GUI/PageRecord.cpp" line="213"/>
         <source>File size:</source>
         <translation>文件大小：</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="188"/>
+        <location filename="../GUI/PageRecord.cpp" line="215"/>
         <source>Bit rate:</source>
         <translation>比特率：</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="211"/>
+        <location filename="../GUI/PageRecord.cpp" line="238"/>
         <source>Preview</source>
         <translation>预览</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="215"/>
+        <location filename="../GUI/PageRecord.cpp" line="242"/>
         <source>Preview frame rate:</source>
         <translation>预览帧率：</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="219"/>
+        <location filename="../GUI/PageRecord.cpp" line="246"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
         <translation>注意：预览需要额外的CPU时间（尤其是高帧率的）。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="268"/>
+        <location filename="../GUI/PageRecord.cpp" line="295"/>
         <source>Log</source>
         <translation>日志</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="283"/>
-        <location filename="../GUI/PageRecord.cpp" line="291"/>
+        <location filename="../GUI/PageRecord.cpp" line="310"/>
+        <location filename="../GUI/PageRecord.cpp" line="318"/>
         <source>Cancel recording</source>
         <translation>取消录制</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="284"/>
-        <location filename="../GUI/PageRecord.cpp" line="290"/>
+        <location filename="../GUI/PageRecord.cpp" line="311"/>
+        <location filename="../GUI/PageRecord.cpp" line="317"/>
         <source>Save recording</source>
         <translation>保存录像</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="338"/>
+        <location filename="../GUI/PageRecord.cpp" line="365"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
         <translation>您尚未保存当前录像，退出将会丢失。
 您确定退出程序吗？</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="488"/>
+        <location filename="../GUI/PageRecord.cpp" line="517"/>
         <source>Starting page ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="496"/>
-        <source>Error: Something went wrong during GLInject initialization.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageRecord.cpp" line="501"/>
+        <location filename="../GUI/PageRecord.cpp" line="543"/>
         <source>Started page.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="529"/>
+        <location filename="../GUI/PageRecord.cpp" line="572"/>
         <source>Stopping page ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="550"/>
+        <location filename="../GUI/PageRecord.cpp" line="598"/>
         <source>Stopped page.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="571"/>
+        <location filename="../GUI/PageRecord.cpp" line="625"/>
         <source>Starting output ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="578"/>
+        <location filename="../GUI/PageRecord.cpp" line="636"/>
         <source>Error: Could not get the size of the OpenGL application because GLInject has not been started.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="583"/>
+        <location filename="../GUI/PageRecord.cpp" line="641"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="619"/>
+        <location filename="../GUI/PageRecord.cpp" line="677"/>
         <source>Started output.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="627"/>
-        <location filename="../GUI/PageRecord.cpp" line="713"/>
+        <location filename="../GUI/PageRecord.cpp" line="536"/>
+        <location filename="../GUI/PageRecord.cpp" line="685"/>
+        <location filename="../GUI/PageRecord.cpp" line="772"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="638"/>
+        <location filename="../GUI/PageRecord.cpp" line="696"/>
         <source>Stopping output ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="656"/>
+        <location filename="../GUI/PageRecord.cpp" line="714"/>
         <source>Stopped output.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="681"/>
+        <location filename="../GUI/PageRecord.cpp" line="743"/>
         <source>Starting input ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="686"/>
+        <location filename="../GUI/PageRecord.cpp" line="748"/>
         <source>Error: Could not create a GLInject input because GLInject has not been started.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="708"/>
+        <location filename="../GUI/PageRecord.cpp" line="767"/>
         <source>Started input.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="733"/>
+        <location filename="../GUI/PageRecord.cpp" line="793"/>
         <source>Stopping input ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="749"/>
+        <location filename="../GUI/PageRecord.cpp" line="807"/>
         <source>Stopped input.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="811"/>
-        <location filename="../GUI/PageRecord.cpp" line="815"/>
+        <location filename="../GUI/PageRecord.cpp" line="870"/>
+        <location filename="../GUI/PageRecord.cpp" line="874"/>
         <source>Pause recording</source>
         <translation>暂停录制</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="818"/>
-        <location filename="../GUI/PageRecord.cpp" line="822"/>
+        <location filename="../GUI/PageRecord.cpp" line="877"/>
+        <location filename="../GUI/PageRecord.cpp" line="881"/>
         <source>Start recording</source>
         <translation>开始录制</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="831"/>
+        <location filename="../GUI/PageRecord.cpp" line="890"/>
         <source>Stop preview</source>
         <translation>停止预览</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="834"/>
+        <location filename="../GUI/PageRecord.cpp" line="893"/>
         <source>Start preview</source>
         <translation>开始预览</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="893"/>
+        <location filename="../GUI/PageRecord.cpp" line="927"/>
+        <source>Error: Something went wrong while creating the synth.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="959"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>您确定要放弃本次录制吗？</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="906"/>
+        <location filename="../GUI/PageRecord.cpp" line="972"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
@@ -1026,61 +1032,73 @@ The start button is at the top ;).</source>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="89"/>
+        <location filename="../AV/SimpleSynth.cpp" line="89"/>
         <source>Error: Can&apos;t open PCM device!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="93"/>
+        <location filename="../AV/SimpleSynth.cpp" line="93"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="99"/>
+        <location filename="../AV/SimpleSynth.cpp" line="99"/>
         <source>Error: Can&apos;t set access type!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="105"/>
+        <location filename="../AV/SimpleSynth.cpp" line="105"/>
         <source>Error: Can&apos;t set sample format!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="112"/>
+        <location filename="../AV/SimpleSynth.cpp" line="112"/>
         <source>Error: Can&apos;t set sample rate!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="116"/>
+        <location filename="../AV/SimpleSynth.cpp" line="116"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="124"/>
+        <location filename="../AV/SimpleSynth.cpp" line="124"/>
         <source>Error: Can&apos;t set channel count!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="131"/>
-        <source>Error: Can&apos;t set period count!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="135"/>
-        <source>Warning: Period count %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="144"/>
+        <location filename="../AV/SimpleSynth.cpp" line="131"/>
         <source>Error: Can&apos;t set period size!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="148"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="135"/>
+        <location filename="../AV/SimpleSynth.cpp" line="135"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../AV/Input/ALSAInput.cpp" line="144"/>
+        <location filename="../AV/SimpleSynth.cpp" line="144"/>
+        <source>Error: Can&apos;t set buffer size!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/ALSAInput.cpp" line="148"/>
+        <location filename="../AV/SimpleSynth.cpp" line="148"/>
+        <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="156"/>
+        <location filename="../AV/SimpleSynth.cpp" line="156"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1099,6 +1117,7 @@ The start button is at the top ;).</source>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="215"/>
+        <location filename="../AV/SimpleSynth.cpp" line="207"/>
         <source>Error: Can&apos;t check whether samples are available!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1549,22 +1568,22 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="114"/>
+        <location filename="../Main.cpp" line="115"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="142"/>
+        <location filename="../Main.cpp" line="143"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="152"/>
+        <location filename="../Main.cpp" line="153"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="179"/>
+        <location filename="../Main.cpp" line="180"/>
         <source>SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?
 
 You can also change this option manually in the NVIDIA control panel.</source>
@@ -1573,23 +1592,23 @@ You can also change this option manually in the NVIDIA control panel.</source>
 您也可以在NVIDIA控制面板手动更改它。</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="184"/>
+        <location filename="../Main.cpp" line="185"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
         <translation>非常抱歉，无法禁用flipping功能，请您尝试在NVIDIA面板禁用。</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="190"/>
+        <location filename="../Main.cpp" line="191"/>
         <source>SSR started</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="199"/>
+        <location filename="../Main.cpp" line="200"/>
         <source>SSR stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="207"/>
+        <location filename="../Main.cpp" line="208"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1614,8 +1633,50 @@ You can also change this option manually in the NVIDIA control panel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Resampler.cpp" line="139"/>
+        <location filename="../AV/Resampler.cpp" line="140"/>
         <source>Error: Resampling failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="27"/>
+        <source>Warning: An underrun has occurred, some samples were too late.</source>
+        <comment>Don&apos;t translate &apos;underrun&apos;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="29"/>
+        <source>Error: Can&apos;t recover device after underrun!</source>
+        <comment>Don&apos;t translate &apos;underrun&apos;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="56"/>
+        <source>Stopping synth thread ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="189"/>
+        <source>Synth thread started.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="257"/>
+        <source>Error: Can&apos;t write samples!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="265"/>
+        <source>Synth thread stopped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="269"/>
+        <source>Exception &apos;%1&apos; in synth thread.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="272"/>
+        <source>Unknown exception in synth thread.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

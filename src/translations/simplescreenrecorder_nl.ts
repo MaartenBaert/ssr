@@ -716,246 +716,256 @@ En als je enkel je eigen stem opneemt (d.w.z. geen muziek), dan zal de kwaliteit
 <context>
     <name>PageRecord</name>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="126"/>
+        <location filename="../GUI/PageRecord.cpp" line="146"/>
         <source>Recording</source>
         <translation>Opname</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="130"/>
+        <location filename="../GUI/PageRecord.cpp" line="150"/>
         <source>Enable recording hotkey</source>
         <translation>Opname-sneltoets inschakelen</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="131"/>
+        <location filename="../GUI/PageRecord.cpp" line="151"/>
+        <source>Enable sound notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="152"/>
         <source>Hotkey:</source>
         <translation>Sneltoets:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="132"/>
+        <location filename="../GUI/PageRecord.cpp" line="153"/>
         <source>Ctrl +</source>
         <translation>Ctrl +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="133"/>
+        <location filename="../GUI/PageRecord.cpp" line="154"/>
         <source>Shift +</source>
         <translation>Shift +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="134"/>
+        <location filename="../GUI/PageRecord.cpp" line="155"/>
         <source>Alt +</source>
         <translation>Alt +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="135"/>
+        <location filename="../GUI/PageRecord.cpp" line="156"/>
         <source>Super +</source>
         <translation>Super +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="137"/>
+        <location filename="../GUI/PageRecord.cpp" line="158"/>
         <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
 The program that you are recording will not receive the key press.</source>
         <translation>De toets die je moet indrukken (in combinatie met de gegeven modifiers) om de opname te starten of te pauzeren.
 Het programma dat je aan het opnemen bent zal de toets niet ontvangen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="171"/>
+        <location filename="../GUI/PageRecord.cpp" line="198"/>
         <source>Information</source>
         <translation>Informatie</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="173"/>
+        <location filename="../GUI/PageRecord.cpp" line="200"/>
         <source>Total time:</source>
         <translation>Totale tijd:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="175"/>
+        <location filename="../GUI/PageRecord.cpp" line="202"/>
         <source>FPS in:</source>
         <translation>FPS in:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="177"/>
+        <location filename="../GUI/PageRecord.cpp" line="204"/>
         <source>FPS out:</source>
         <translation>FPS uit:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="179"/>
+        <location filename="../GUI/PageRecord.cpp" line="206"/>
         <source>Size in:</source>
         <translation>Grootte in:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="181"/>
+        <location filename="../GUI/PageRecord.cpp" line="208"/>
         <source>Size out:</source>
         <translation>Grootte uit:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="183"/>
+        <location filename="../GUI/PageRecord.cpp" line="210"/>
         <source>File name:</source>
         <translation>Bestandsnaam:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="186"/>
+        <location filename="../GUI/PageRecord.cpp" line="213"/>
         <source>File size:</source>
         <translation>Bestandsgrootte:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="188"/>
+        <location filename="../GUI/PageRecord.cpp" line="215"/>
         <source>Bit rate:</source>
         <translation>Bitrate:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="211"/>
+        <location filename="../GUI/PageRecord.cpp" line="238"/>
         <source>Preview</source>
         <translation>Voorbeeld</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="215"/>
+        <location filename="../GUI/PageRecord.cpp" line="242"/>
         <source>Preview frame rate:</source>
         <translation>Voorbeeld FPS:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="219"/>
+        <location filename="../GUI/PageRecord.cpp" line="246"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
         <translation>Opmerking: Voorbeeld vereist extra CPU-tijd (vooral bij hoge FPS).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="268"/>
+        <location filename="../GUI/PageRecord.cpp" line="295"/>
         <source>Log</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="283"/>
-        <location filename="../GUI/PageRecord.cpp" line="291"/>
+        <location filename="../GUI/PageRecord.cpp" line="310"/>
+        <location filename="../GUI/PageRecord.cpp" line="318"/>
         <source>Cancel recording</source>
         <translation>Opname annuleren</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="284"/>
-        <location filename="../GUI/PageRecord.cpp" line="290"/>
+        <location filename="../GUI/PageRecord.cpp" line="311"/>
+        <location filename="../GUI/PageRecord.cpp" line="317"/>
         <source>Save recording</source>
         <translation>Opname opslaan</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="338"/>
+        <location filename="../GUI/PageRecord.cpp" line="365"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
         <translation>Je hebt de huidige opname nog niet opgeslagen, als je het programma nu sluit zal deze verloren gaan.
 Weet je zeker dat je het programma wilt sluiten?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="571"/>
+        <location filename="../GUI/PageRecord.cpp" line="625"/>
         <source>Starting output ...</source>
         <translation>Output starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="619"/>
+        <location filename="../GUI/PageRecord.cpp" line="677"/>
         <source>Started output.</source>
         <translation>Output gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="638"/>
+        <location filename="../GUI/PageRecord.cpp" line="696"/>
         <source>Stopping output ...</source>
         <translation>Output stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="656"/>
+        <location filename="../GUI/PageRecord.cpp" line="714"/>
         <source>Stopped output.</source>
         <translation>Output gestopt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="681"/>
+        <location filename="../GUI/PageRecord.cpp" line="743"/>
         <source>Starting input ...</source>
         <translation>Input starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="708"/>
+        <location filename="../GUI/PageRecord.cpp" line="767"/>
         <source>Started input.</source>
         <translation>Input gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="733"/>
+        <location filename="../GUI/PageRecord.cpp" line="793"/>
         <source>Stopping input ...</source>
         <translation>Input stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="749"/>
+        <location filename="../GUI/PageRecord.cpp" line="807"/>
         <source>Stopped input.</source>
         <translation>Input gestopt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="488"/>
+        <location filename="../GUI/PageRecord.cpp" line="517"/>
         <source>Starting page ...</source>
         <translation>Pagina starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="496"/>
         <source>Error: Something went wrong during GLInject initialization.</source>
-        <translation>Fout: Er ging iets fout tijdens de GLInject initialisatie.</translation>
+        <translation type="obsolete">Fout: Er ging iets fout tijdens de GLInject initialisatie.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="501"/>
+        <location filename="../GUI/PageRecord.cpp" line="543"/>
         <source>Started page.</source>
         <translation>Pagina gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="529"/>
+        <location filename="../GUI/PageRecord.cpp" line="572"/>
         <source>Stopping page ...</source>
         <translation>Pagina stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="550"/>
+        <location filename="../GUI/PageRecord.cpp" line="598"/>
         <source>Stopped page.</source>
         <translation>Pagina gestopt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="578"/>
+        <location filename="../GUI/PageRecord.cpp" line="636"/>
         <source>Error: Could not get the size of the OpenGL application because GLInject has not been started.</source>
         <translation>Fout: Kan de grootte van de OpenGL-applicatie niet krijgen omdat GLInject niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="583"/>
+        <location filename="../GUI/PageRecord.cpp" line="641"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation>Fout: Kon de grootte van de OpenGL-applicatie niet krijgen. Ofwel is de applicatie niet correct gestart, ofwel heeft de applicatie nog geen OpenGL-venster gemaakt. Als je wil beginnen met opnemen voordat de applicatie is gestart, dan moet je schalen inschakelen en manueel de videogrootte instellen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="627"/>
-        <location filename="../GUI/PageRecord.cpp" line="713"/>
+        <location filename="../GUI/PageRecord.cpp" line="536"/>
+        <location filename="../GUI/PageRecord.cpp" line="685"/>
+        <location filename="../GUI/PageRecord.cpp" line="772"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation>Fout: Er ging iets fout tijdens de initialisatie.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="686"/>
+        <location filename="../GUI/PageRecord.cpp" line="748"/>
         <source>Error: Could not create a GLInject input because GLInject has not been started.</source>
         <translation>Fout: Kan geen GLInject input maken omdat GLInject niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="811"/>
-        <location filename="../GUI/PageRecord.cpp" line="815"/>
+        <location filename="../GUI/PageRecord.cpp" line="870"/>
+        <location filename="../GUI/PageRecord.cpp" line="874"/>
         <source>Pause recording</source>
         <translation>Opname pauzeren</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="818"/>
-        <location filename="../GUI/PageRecord.cpp" line="822"/>
+        <location filename="../GUI/PageRecord.cpp" line="877"/>
+        <location filename="../GUI/PageRecord.cpp" line="881"/>
         <source>Start recording</source>
         <translation>Opname starten</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="831"/>
+        <location filename="../GUI/PageRecord.cpp" line="890"/>
         <source>Stop preview</source>
         <translation>Voorbeeld stoppen</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="834"/>
+        <location filename="../GUI/PageRecord.cpp" line="893"/>
         <source>Start preview</source>
         <translation>Voorbeeld starten</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="893"/>
+        <location filename="../GUI/PageRecord.cpp" line="927"/>
+        <source>Error: Something went wrong while creating the synth.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="959"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>Weet je zeker dat je deze opname wilt annuleren?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="906"/>
+        <location filename="../GUI/PageRecord.cpp" line="972"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
@@ -1019,26 +1029,31 @@ De startknop staat bovenaan ;).</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="89"/>
+        <location filename="../AV/SimpleSynth.cpp" line="89"/>
         <source>Error: Can&apos;t open PCM device!</source>
         <translation>Fout: Kan PCM apparaat niet openen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="93"/>
+        <location filename="../AV/SimpleSynth.cpp" line="93"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
         <translation>Fout: Kan PCM hardwareparameters niet krijgen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="99"/>
+        <location filename="../AV/SimpleSynth.cpp" line="99"/>
         <source>Error: Can&apos;t set access type!</source>
         <translation>Fout: Kan toegangstype niet instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="105"/>
+        <location filename="../AV/SimpleSynth.cpp" line="105"/>
         <source>Error: Can&apos;t set sample format!</source>
         <translation>Fout: Kan sampleformaat niet instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="112"/>
+        <location filename="../AV/SimpleSynth.cpp" line="112"/>
         <source>Error: Can&apos;t set sample rate!</source>
         <translation>Fout: Kan samplefrequentie niet instellen!</translation>
     </message>
@@ -1069,36 +1084,51 @@ De startknop staat bovenaan ;).</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="116"/>
+        <location filename="../AV/SimpleSynth.cpp" line="116"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation>Waarschuwing: Samplefrequentie %1 wordt niet ondersteund, %2 wordt gebruikt in de plaats. Dit is geen probleem.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="124"/>
+        <location filename="../AV/SimpleSynth.cpp" line="124"/>
         <source>Error: Can&apos;t set channel count!</source>
         <translation>Fout: Kan het aantal kanalen niet instellen!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="131"/>
         <source>Error: Can&apos;t set period count!</source>
-        <translation>Fout: Kan het aantal periodes niet instellen!</translation>
+        <translation type="obsolete">Fout: Kan het aantal periodes niet instellen!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="135"/>
         <source>Warning: Period count %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation>Waarschuwing: Aantal periodes %1 wordt niet ondersteund, gebruik %2 in de plaats. Dit is geen probleem.</translation>
+        <translation type="obsolete">Waarschuwing: Aantal periodes %1 wordt niet ondersteund, gebruik %2 in de plaats. Dit is geen probleem.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="144"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="131"/>
+        <location filename="../AV/SimpleSynth.cpp" line="131"/>
         <source>Error: Can&apos;t set period size!</source>
         <translation>Fout: Kan periodegrootte niet instellen!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="148"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="135"/>
+        <location filename="../AV/SimpleSynth.cpp" line="135"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation>Waarschuwing: Periodegrootte %1 wordt niet ondersteund, gebruik %2 in de plaats. Dit is geen probleem.</translation>
     </message>
     <message>
+        <location filename="../AV/Input/ALSAInput.cpp" line="144"/>
+        <location filename="../AV/SimpleSynth.cpp" line="144"/>
+        <source>Error: Can&apos;t set buffer size!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/ALSAInput.cpp" line="148"/>
+        <location filename="../AV/SimpleSynth.cpp" line="148"/>
+        <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="156"/>
+        <location filename="../AV/SimpleSynth.cpp" line="156"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
         <translation>Fout: Kan PCM hardwareparameters niet toepassen!</translation>
     </message>
@@ -1117,6 +1147,7 @@ De startknop staat bovenaan ;).</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="215"/>
+        <location filename="../AV/SimpleSynth.cpp" line="207"/>
         <source>Error: Can&apos;t check whether samples are available!</source>
         <translation>Fout: Kan niet controleren of samples beschikbaar zijn!</translation>
     </message>
@@ -1570,22 +1601,22 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
         <translation>Fout: Encoderen van videobeeld mislukt!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="114"/>
+        <location filename="../Main.cpp" line="115"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation>Fout: Command-line optie &apos;%1&apos; neemt geen waarde aan!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="142"/>
+        <location filename="../Main.cpp" line="143"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation>Fout: Onbekende command-line optie &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="152"/>
+        <location filename="../Main.cpp" line="153"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation>Fout: Onbekend command-line argument &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="179"/>
+        <location filename="../Main.cpp" line="180"/>
         <source>SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?
 
 You can also change this option manually in the NVIDIA control panel.</source>
@@ -1595,23 +1626,23 @@ You can also change this option manually in the NVIDIA control panel.</source>
 Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="184"/>
+        <location filename="../Main.cpp" line="185"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
         <translation>Ik kon flipping niet uitschakelen om een of andere reden - sorry! Probeer om het uit te schakelen in het NVIDIA-controlepaneel.</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="190"/>
+        <location filename="../Main.cpp" line="191"/>
         <source>SSR started</source>
         <translation>SSR gestart</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="199"/>
+        <location filename="../Main.cpp" line="200"/>
         <source>SSR stopped</source>
         <translation>SSR gestopt</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="207"/>
+        <location filename="../Main.cpp" line="208"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Fout: Kan geen .ssr-map maken!</translation>
     </message>
@@ -1636,9 +1667,51 @@ Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translat
         <translation>Hersamplen niet nodig.</translation>
     </message>
     <message>
-        <location filename="../AV/Resampler.cpp" line="139"/>
+        <location filename="../AV/Resampler.cpp" line="140"/>
         <source>Error: Resampling failed!</source>
         <translation>Fout: Hersamplen mislukt!</translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="27"/>
+        <source>Warning: An underrun has occurred, some samples were too late.</source>
+        <comment>Don&apos;t translate &apos;underrun&apos;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="29"/>
+        <source>Error: Can&apos;t recover device after underrun!</source>
+        <comment>Don&apos;t translate &apos;underrun&apos;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="56"/>
+        <source>Stopping synth thread ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="189"/>
+        <source>Synth thread started.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="257"/>
+        <source>Error: Can&apos;t write samples!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="265"/>
+        <source>Synth thread stopped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="269"/>
+        <source>Exception &apos;%1&apos; in synth thread.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/SimpleSynth.cpp" line="272"/>
+        <source>Unknown exception in synth thread.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
