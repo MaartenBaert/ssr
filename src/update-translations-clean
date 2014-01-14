@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
+cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 cd translations
 lupdate-qt4 .. -no-obsolete -ts @list.txt
