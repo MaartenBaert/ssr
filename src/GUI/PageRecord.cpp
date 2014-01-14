@@ -631,7 +631,10 @@ void PageRecord::StartOutput() {
 				}
 				m_gl_inject_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 				if(m_video_in_width == 0 && m_video_in_height == 0) {
-					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application."));
+					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application. Either the "
+									 "application wasn't started correctly, or the application hasn't created an OpenGL window yet. If "
+									 "you want to start recording before starting the application, you have to enable scaling and enter "
+									 "the video size manually."));
 					throw GLInjectException();
 				}
 			}
