@@ -281,7 +281,7 @@ void MipMap_BGRA_SSSE3_Dynamic(unsigned int in_w, unsigned int in_h, const uint8
 				}
 				in += (1u << (mx + 1));
 				__m128i q = _mm_srli_epi16(_mm_add_epi16(_mm_hadd_epi32(_mm_hadd_epi32(sum1br, sum2br), _mm_hadd_epi32(sum1ga, sum2ga)), v_offset), mx + my);
-#ifdef __x86_64__
+#if defined(__x86_64__) && TEST_GCC_VERSION(4, 8)
 				_mm_stream_si64((long long*) out, _mm_cvtsi128_si64(_mm_or_si128(q, _mm_srli_si128(q, 7))));
 #else
 				_mm_storel_epi64((__m128i*) out, _mm_or_si128(q, _mm_srli_si128(q, 7)));
