@@ -86,10 +86,12 @@ simplescreenrecorder_SOURCES = \
 	AV/AVWrapper.h \
 	AV/FastScaler.cpp \
 	AV/FastScaler.h \
-	AV/FastScaler_Convert.cpp \
 	AV/FastScaler_Convert.h \
-	AV/FastScaler_Scale.cpp \
+	AV/FastScaler_Convert_Fallback.cpp \
 	AV/FastScaler_Scale.h \
+	AV/FastScaler_Scale_Fallback.cpp \
+	AV/FastScaler_Scale_Generic.h \
+	AV/FastScaler_Scale_Generic.cpp \
 	AV/Resampler.cpp \
 	AV/Resampler.h \
 	AV/SimpleSynth.cpp \
@@ -133,7 +135,21 @@ simplescreenrecorder_SOURCES = \
 	Version.h
 nodist_simplescreenrecorder_SOURCES =
 
-clean-local: clean-qrc-extra clean-moc-extra
+########## x86-specific targets ##########
+
+if ENABLE_X86_ASM
+simplescreenrecorder_LDADD = libsimplescreenrecorder-target-ssse3.la
+noinst_LTLIBRARIES = libsimplescreenrecorder-target-ssse3.la
+libsimplescreenrecorder_target_ssse3_la_CPPFLAGS = $(simplescreenrecorder_CPPFLAGS)
+libsimplescreenrecorder_target_ssse3_la_CFLAGS = $(simplescreenrecorder_CFLAGS) -mssse3
+libsimplescreenrecorder_target_ssse3_la_CXXFLAGS = $(simplescreenrecorder_CXXFLAGS) -mssse3
+libsimplescreenrecorder_target_ssse3_la_LDFLAGS = $(simplescreenrecorder_LDFLAGS)
+
+libsimplescreenrecorder_target_ssse3_la_SOURCES = \
+	AV/FastScaler_Convert_SSSE3.cpp \
+	AV/FastScaler_Scale_SSSE3.cpp
+
+endif
 
 ########## Qt resource system ##########
 
@@ -228,6 +244,8 @@ simplescreenrecorder_pl.qm: $(srcdir)/translations/simplescreenrecorder_pl.ts
 	$(LRELEASE) "$<" -qm "$@"
 simplescreenrecorder_zh_CN.qm: $(srcdir)/translations/simplescreenrecorder_zh_CN.ts
 	$(LRELEASE) "$<" -qm "$@"
+
+clean-local: clean-qrc-extra clean-moc-extra
 
 .PHONY: clean-qrc-extra clean-moc-extra
 

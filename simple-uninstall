@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Run this if you used 'simple-build-and-install' and you want to uninstall the program again.
 
 set -e
