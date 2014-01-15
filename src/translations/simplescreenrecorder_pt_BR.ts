@@ -87,13 +87,13 @@
     <message>
         <location filename="../GUI/PageInput.cpp" line="809"/>
         <source>Start the OpenGL application automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicie o aplicativo OpenGL automaticamente</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="810"/>
         <source>If checked, the above command will be executed automatically (combined with some environment variables). If not checked,
 you have to start the OpenGL application yourself (the full command, including the required environment variables, is shown in the log).</source>
-        <translation type="unfinished"></translation>
+        <translation>Se selecionado, o comando acima será executado automaticamente (combinado com algumas variáveis ​​de ambiente). Se não estiver selecionado, você tem que iniciar o aplicativo OpenGL (o comando completo, incluindo as variáveis ​​de ambiente necessárias, é mostrado no log).</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="813"/>
@@ -112,7 +112,7 @@ Isto se aplica até aos usuários que estão conectados remotamente (ssh). Você
     <message>
         <location filename="../GUI/PageInput.cpp" line="818"/>
         <source>Maximum image size (megapixels):</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamanho máximo da imagem (megapixels):</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="820"/>
@@ -120,18 +120,19 @@ Isto se aplica até aos usuários que estão conectados remotamente (ssh). Você
 The size of the shared memory can&apos;t be changed anymore once the program has been started, so if the program you
 are trying to record is too large, recording won&apos;t work. 2 megapixels should be enough in almost all cases. Be careful,
 high values will use a lot of memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta configuração altera a quantidade de memória compartilhada que será destinada para enviar quadros de volta para o programa principal.
+O tamanho da memória compartilhada não pode mais ser alterada assim que o programa foi iniciado, por isso, se o programa que você estiver tentando gravar é muito grande, a gravação não irá funcionar. 2 megapixels deve ser suficiente na maioria dos casos. Tenha cuidado, valores elevados usarão muita memória!</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="824"/>
         <source>Capture front buffer instead of back buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Captura de buffer frontal em vez de buffer de fundo</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="825"/>
         <source>If checked, the injected library will read the front buffer (the frame that&apos;s currently on the screen) rather than the back buffer
 (the new frame). This may be useful for some special applications that draw directly to the screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se selecionado, a biblioteca inserida vai ler o buffer frontal (o quadro que está atualmente na tela), em vez do buffer de fundo (o novo quadro). Isto pode ser útil para alguns aplicativos especiais, que desenham diretamente na tela.</translation>
     </message>
     <message>
         <source>Launch automatically</source>
@@ -916,17 +917,17 @@ Você tem certeza que quer sair?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="636"/>
         <source>Error: Could not get the size of the OpenGL application because GLInject has not been started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível obter o tamanho do aplicativo OpenGL porque o GLInject não foi iniciado.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="641"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível obter o tamanho do aplicativo OpenGL. Ou o aplicativo não foi iniciado corretamente, ou o aplicativo não criou uma janela OpenGL ainda. Se você quer começar a gravar antes de iniciar o aplicativo, você tem que ativar a escala e digitar o tamanho do vídeo manualmente.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="748"/>
         <source>Error: Could not create a GLInject input because GLInject has not been started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível criar uma entrada GLInject porque o GLInject não foi iniciado.</translation>
     </message>
     <message>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
@@ -1419,22 +1420,22 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="118"/>
         <source>Error: Can&apos;t get frame shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível obter memória compartilhada do quadro!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="123"/>
         <source>Error: Can&apos;t attach to frame shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível anexar à memória compartilhada do quadro!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="150"/>
         <source>Full command</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando completo</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="158"/>
         <source>Error: Can&apos;t run command!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível executar o comando!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="254"/>
@@ -1833,17 +1834,17 @@ Você também pode alterar essa opção manualmente no painel de controle da NVI
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="122"/>
         <source>Error: Image is too small!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: A imagem é muito pequena!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="126"/>
         <source>Error: Image is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: A imagem é muito grande!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="134"/>
         <source>Error: Image doesn&apos;t fit in memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: A imagem não cabe na memória!</translation>
     </message>
 </context>
 <context>
