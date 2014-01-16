@@ -100,7 +100,7 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 			}
 			CreateCodec(codec_name, &options);
 			AVDictionaryEntry *t = NULL;
-			while(t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)) {
+			while((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)) != NULL) {
 				Logger::LogWarning("[VideoEncoder::Init] " + QObject::tr("Warning: Codec option '%1' was not recognised!").arg(t->key));
 			}
 			av_dict_free(&options);
