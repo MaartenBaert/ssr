@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Run this if you used 'simple-build-and-install' and you want to uninstall the program again.
 
 set -e
@@ -10,14 +10,16 @@ if [ x"$( whoami )" = x"root" ]; then
 fi
 
 cd build
-	echo "Uninstalling ..."
-	sudo make uninstall
+echo "Uninstalling ..."
+sudo make uninstall
 cd ..
 
-cd build32
+if [ x$( uname -m ) = x"x86_64" ]; then
+	cd build32
 	echo "Uninstalling 32-bit GLInject library ..."
 	sudo make uninstall
-cd ..
+	cd ..
+fi
 
 echo "Running post-install script ..."
 sudo ./postinstall

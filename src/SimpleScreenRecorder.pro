@@ -30,8 +30,11 @@ SOURCES += \
 	AV/Output/X264Presets.cpp \
 	AV/AVWrapper.cpp \
 	AV/FastScaler.cpp \
-	AV/FastScaler_Convert.cpp \
-	AV/FastScaler_Scale.cpp \
+	AV/FastScaler_Convert_Fallback.cpp \
+	AV/FastScaler_Convert_SSSE3.cpp \
+	AV/FastScaler_Scale_Fallback.cpp \
+	AV/FastScaler_Scale_Generic.cpp \
+	AV/FastScaler_Scale_SSSE3.cpp \
 	AV/Resampler.cpp \
 	AV/SimpleSynth.cpp \
 	AV/SourceSink.cpp \
@@ -74,6 +77,7 @@ HEADERS  += \
 	AV/FastScaler.h \
 	AV/FastScaler_Convert.h \
 	AV/FastScaler_Scale.h \
+	AV/FastScaler_Scale_Generic.h \
 	AV/Resampler.h \
 	AV/SimpleSynth.h \
 	AV/SourceSink.h \
