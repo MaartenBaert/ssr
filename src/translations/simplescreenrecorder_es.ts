@@ -42,12 +42,12 @@
 <context>
     <name>DialogGLInject</name>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="785"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="33"/>
         <source>OpenGL Settings</source>
         <translation>Opciones de OpenGL</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="788"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="36"/>
         <source>&lt;p&gt;Warning: OpenGL recording works by injecting a library into the program that will be recorded. This library will override some system functions in order to capture the frames before they are displayed on the screen. If you are trying to record a game that tries to detect hacking attempts on the client side, it&apos;s (theoretically) possible that the game will consider this a hack. This might even get you banned, so it&apos;s a good idea to make sure that the program you want to record won&apos;t ban you, *before* you try to record it. You&apos;ve been warned :).&lt;/p&gt;
 
 &lt;p&gt;Another warning: OpenGL recording is experimental, it may not work or even crash the program you are recording. If you are worried about losing program data, make a backup first!&lt;/p&gt;
@@ -60,44 +60,37 @@ Otro aviso: la grabación OpenGL es experimental, podría no funcionar o incluso
 Si quieres grabar un juego de Steam, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;lee esto primero&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="801"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="50"/>
+        <source>Launch application</source>
+        <translation>Iniciar aplicación</translation>
+    </message>
+    <message>
+        <location filename="../GUI/DialogGLInject.cpp" line="52"/>
         <source>Command:</source>
         <translation>Comando:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="803"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="54"/>
         <source>This command will be executed to start the program that should be recorded.</source>
         <translation>Este comando se ejecutará para empezar el programa que se debe grabar.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="805"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="56"/>
         <source>Working directory:</source>
         <translation>Directorio de trabajo:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="807"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="58"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
         <translation>El comando será ejecutado en este directorio. Si lo dejas en blanco, el directorio de trabajo no será cambiado.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="809"/>
-        <source>Start the OpenGL application automatically</source>
-        <translation>Inicia la aplicación OpenGL automáticamente</translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageInput.cpp" line="810"/>
-        <source>If checked, the above command will be executed automatically (combined with some environment variables). If not checked,
-you have to start the OpenGL application yourself (the full command, including the required environment variables, is shown in the log).</source>
-        <translation>Si se marca, el comando anterior se ejecutará automáticamente (junto a algunas variables de entorno). Si no lo marcas,
-tendrás que empezar el programa OpenGL por ti mismo (el programa completo, incluyendo las variables de entorno requeridas, se muestran en el log).</translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageInput.cpp" line="813"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="60"/>
         <source>Relax shared memory permissions (insecure)</source>
         <translation>Relajar permisos de memoria compartida (inseguro)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="814"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="61"/>
         <source>If checked, other users on the same machine will be able to attach to the shared memory that&apos;s used for communication with the OpenGL program.
 This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.
 This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user.</source>
@@ -106,40 +99,62 @@ Esto significa que otros usuarios pueden (teóricamente) ver qué estás graband
 Esto incluso funciona con usuarios que estén conectados de forma remota (ssh). Sólo deberías activar esto si necesitas grabar un programa que se ejecuta como otro usuario.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="818"/>
-        <source>Maximum image size (megapixels):</source>
-        <translation>Tamaño máximo de imagen (megapíxeles):</translation>
+        <location filename="../GUI/DialogGLInject.cpp" line="65"/>
+        <source>Launch automatically</source>
+        <translation>Iniciar automáticamente</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="820"/>
-        <source>This setting changes the amount of shared memory that will be allocated to send frames back to the main program.
-The size of the shared memory can&apos;t be changed anymore once the program has been started, so if the program you
-are trying to record is too large, recording won&apos;t work. 2 megapixels should be enough in almost all cases. Be careful,
-high values will use a lot of memory!</source>
-        <translation>Esta opción controla la cantidad de memoria compartida que se dispondrá para enviar fotogramas de vuelta al programa principal
-El tamaño de la memoria compartida no puede cambiarse una vez ha empezado el programa, así que si el programa que intentas
-grabar ocupa mucho, no serás capaz de grabar. 2 megapíxeles deberían ser suficientes en la mayoría de los casos. ¡Ten cuidado
- valores muy altos usarán mucha memoria!</translation>
+        <location filename="../GUI/DialogGLInject.cpp" line="66"/>
+        <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
+        <translation>Si se marca, la aplicación se ejecutará automáticamente una vez que llegues a la ventana de grabación. Si no se marca, deberás iniciarla manualmente..</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="824"/>
-        <source>Capture front buffer instead of back buffer</source>
-        <translation>Capturar el buffer frontal en vez de el buffer de reserva</translation>
+        <location filename="../GUI/DialogGLInject.cpp" line="68"/>
+        <source>Launch now</source>
+        <translation>Iniciar ahora</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="825"/>
-        <source>If checked, the injected library will read the front buffer (the frame that&apos;s currently on the screen) rather than the back buffer
-(the new frame). This may be useful for some special applications that draw directly to the screen.</source>
-        <translation>Si se activa, la librería inyectada leerá del buffer frontal (el fotograma que ahora mismo esté en pantalla) en vez del buffer de reserva
-(el nuevo fotograma). Eesot puede ser útil para algunas aplicaciones que dibujan directamente sobre la pantalla.</translation>
+        <location filename="../GUI/DialogGLInject.cpp" line="91"/>
+        <source>Select stream</source>
+        <translation>Seleccionar origen</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="828"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="93"/>
+        <source>Active streams:</source>
+        <translation>Orígenes activos:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/DialogGLInject.cpp" line="96"/>
+        <source>Record the latest stream that matches:</source>
+        <translation>Grabar el último origen que concuerde:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/DialogGLInject.cpp" line="97"/>
+        <source>User:</source>
+        <translation>Usuario:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/DialogGLInject.cpp" line="99"/>
+        <source>Process:</source>
+        <translation>Proceso:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/DialogGLInject.cpp" line="101"/>
+        <source>Source:</source>
+        <translation>Fuente:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/DialogGLInject.cpp" line="103"/>
+        <source>Program name:</source>
+        <translation>Nombre de programa:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/DialogGLInject.cpp" line="105"/>
         <source>Limit application frame rate</source>
         <translation>Limitar la tasa de fotogramas de la aplicación</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="829"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="106"/>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
@@ -148,7 +163,7 @@ Esto evita que la aplicación gaste tiempo de CPU para fotogramas que no serán 
 (depende de la aplicación).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="834"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="130"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
@@ -169,52 +184,52 @@ Esto evita que la aplicación gaste tiempo de CPU para fotogramas que no serán 
 <context>
     <name>PageInput</name>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="77"/>
+        <location filename="../GUI/PageInput.cpp" line="94"/>
         <source>Video input</source>
         <translation>Entrada de vídeo</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="80"/>
+        <location filename="../GUI/PageInput.cpp" line="97"/>
         <source>Record the entire screen</source>
         <translation>Grabar la pantalla completa</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="81"/>
+        <location filename="../GUI/PageInput.cpp" line="98"/>
         <source>Record a fixed rectangle</source>
         <translation>Grabar un rectángulo</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="82"/>
+        <location filename="../GUI/PageInput.cpp" line="99"/>
         <source>Follow the cursor</source>
         <translation>Seguir el cursor</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="83"/>
+        <location filename="../GUI/PageInput.cpp" line="100"/>
         <source>Record OpenGL (experimental)</source>
         <translation>Grabar OpenGL (experimental)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="89"/>
+        <location filename="../GUI/PageInput.cpp" line="106"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
         <translation>Selecciona qué monitor debería grabarse en una configuración multimonitor.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="90"/>
+        <location filename="../GUI/PageInput.cpp" line="107"/>
         <source>Select rectangle...</source>
         <translation>Seleccionar rectángulo...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="91"/>
+        <location filename="../GUI/PageInput.cpp" line="108"/>
         <source>Use the mouse to select the recorded rectangle.</source>
         <translation>Usa el ratón para seleccionar el rectángulo de grabación.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="92"/>
+        <location filename="../GUI/PageInput.cpp" line="109"/>
         <source>Select window...</source>
         <translation>Seleccionar ventana...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="93"/>
+        <location filename="../GUI/PageInput.cpp" line="110"/>
         <source>Use the mouse to select a window to record.
 Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only
 the client area of the window will be recorded.</source>
@@ -223,127 +238,127 @@ Pista: Si haces clic sobre el borde de la ventana, la ventana completa será gra
 el área cliente de la ventana será grabado.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="96"/>
+        <location filename="../GUI/PageInput.cpp" line="113"/>
         <source>OpenGL settings...</source>
         <translation>Opciones de OpenGL...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="97"/>
+        <location filename="../GUI/PageInput.cpp" line="114"/>
         <source>Change the settings for OpenGL recording.</source>
         <translation>Cambia las opciones para grabar OpenGL.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="98"/>
+        <location filename="../GUI/PageInput.cpp" line="115"/>
         <source>Left:</source>
         <translation>Izquierda:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="102"/>
+        <location filename="../GUI/PageInput.cpp" line="119"/>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>La coordenada x de la esquina superior izquierda del rectángulo de grabación.
 Pista: También puedes cambiar este valor con la rueda del ratón o con las flechas Arriba/Abajo.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="104"/>
+        <location filename="../GUI/PageInput.cpp" line="121"/>
         <source>Top:</source>
         <translation>Arriba:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="108"/>
+        <location filename="../GUI/PageInput.cpp" line="125"/>
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>La coordenada y de la esquina superior izquierda del rectángulo de grabación.
 Pista: También puedes cambiar este valor con la rueda del ratón o con las flechas Arriba/Abajo.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="110"/>
+        <location filename="../GUI/PageInput.cpp" line="127"/>
         <source>Width:</source>
         <translation>Ancho:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="114"/>
+        <location filename="../GUI/PageInput.cpp" line="131"/>
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>El ancho del rectángulo de grabación.
 Pista: También puedes cambiar este valor con la rueda del ratón o con las flechas Arriba/Abajo.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="116"/>
+        <location filename="../GUI/PageInput.cpp" line="133"/>
         <source>Height:</source>
         <translation>Alto:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="120"/>
+        <location filename="../GUI/PageInput.cpp" line="137"/>
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>El alto del rectángulo de grabación.
 Pista: También puedes cambiar este valor con la rueda del ratón o con las flechas Arriba/Abajo.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="122"/>
+        <location filename="../GUI/PageInput.cpp" line="139"/>
         <source>Frame rate:</source>
         <translation>Tasa de fotogramas:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="126"/>
+        <location filename="../GUI/PageInput.cpp" line="143"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
         <translation>El número de fotogramas por segundo del vídeo. Una tasa mayor usa más tiempo de CPU.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="127"/>
+        <location filename="../GUI/PageInput.cpp" line="144"/>
         <source>Scale video</source>
         <translation>Escalar vídeo</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="128"/>
+        <location filename="../GUI/PageInput.cpp" line="145"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
         <translation>Activa o desactiva el escalado. El escalado usa más tiempo de CPU pero si el vídeo es más pequeño, podría codificarse más rápido.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="129"/>
+        <location filename="../GUI/PageInput.cpp" line="146"/>
         <source>Scaled width:</source>
         <translation>Ancho escalado:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="133"/>
+        <location filename="../GUI/PageInput.cpp" line="150"/>
         <source>Scaled height:</source>
         <translation>Alto escalado:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="137"/>
+        <location filename="../GUI/PageInput.cpp" line="154"/>
         <source>Record cursor</source>
         <translation>Grabar cursor</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="207"/>
+        <location filename="../GUI/PageInput.cpp" line="224"/>
         <source>Audio input</source>
         <translation>Entrada de audio</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="209"/>
+        <location filename="../GUI/PageInput.cpp" line="226"/>
         <source>Record audio</source>
         <translation>Grabar audio</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="210"/>
+        <location filename="../GUI/PageInput.cpp" line="227"/>
         <source>Backend:</source>
         <translation>Sistema:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="219"/>
+        <location filename="../GUI/PageInput.cpp" line="236"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
         <translation>El sistema de audio que será usado para grabar.
 El sistema ALSA también funcionará en sistmeas que usan PulseAudio, pero es mejor usar directamente el sistema PulseAudio.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="221"/>
+        <location filename="../GUI/PageInput.cpp" line="238"/>
         <source>Device:</source>
         <translation>Dispositivo:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="223"/>
+        <location filename="../GUI/PageInput.cpp" line="240"/>
         <source>The ALSA device that will be used for recording. Normally this should be &apos;default&apos;.
 You can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).</source>
         <comment>Don&apos;t translate &apos;default&apos; and &apos;plughw&apos;</comment>
@@ -351,12 +366,12 @@ You can change this to something like plughw:0,0 (which means sound card 0 input
 Puedes cambiar esto por algo como plughw:0,0 (que normalmente significa tarjeta 0 entrada 0 con complementos activados).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="226"/>
+        <location filename="../GUI/PageInput.cpp" line="243"/>
         <source>Source:</source>
         <translation>Fuente:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="229"/>
+        <location filename="../GUI/PageInput.cpp" line="246"/>
         <source>The PulseAudio source that will be used for recording.
 A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
         <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
@@ -364,45 +379,45 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
 Un &apos;monitor&apos; es una fuente que graba el audio reproducido por otras aplicaciones.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="231"/>
+        <location filename="../GUI/PageInput.cpp" line="248"/>
         <source>Refresh</source>
         <translation>Actualizar</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="232"/>
+        <location filename="../GUI/PageInput.cpp" line="249"/>
         <source>Refreshes the list of PulseAudio sources.</source>
         <translation>Actualiza la lista de fuentes de PulseAudio.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="257"/>
+        <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>Back</source>
         <translation>Atrás</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="258"/>
+        <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>Continue</source>
         <translation>Continuar</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="576"/>
+        <location filename="../GUI/PageInput.cpp" line="597"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Todas las pantallas: %1x%2</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="580"/>
+        <location filename="../GUI/PageInput.cpp" line="601"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Pantalla %1: %2x%3 en %4,%5</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="722"/>
+        <location filename="../GUI/PageInput.cpp" line="743"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
         <translation>Pantalla %1</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="754"/>
+        <location filename="../GUI/PageInput.cpp" line="775"/>
         <source>You did not enter a command to start the OpenGL application that you want to record.
 Click the &apos;OpenGL settings&apos; button and enter a command.</source>
         <translation>No has introducido un comando para iniciar la aplicación OpeNGL que intentas grabar.
@@ -419,7 +434,6 @@ Haz clic en el botón &apos;Opciones de OpenGL&apos; e introdude un comando.</tr
         <location filename="../GUI/PageOutput.cpp" line="103"/>
         <source>files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translatorcomment>It should appear before the file type (Archivos MP4, instead of MP4 archivos), but this is currently hardcoded.</translatorcomment>
         <translation>archivos</translation>
     </message>
     <message>
@@ -717,253 +731,252 @@ Y si sólo estás grabando tu voz (sin música), entonces la calidad no importar
 <context>
     <name>PageRecord</name>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="144"/>
+        <location filename="../GUI/PageRecord.cpp" line="143"/>
         <source>Recording</source>
         <translation>Grabando</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="148"/>
+        <location filename="../GUI/PageRecord.cpp" line="147"/>
         <source>Enable recording hotkey</source>
         <translation>Activar tecla rápida para grabar</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="149"/>
+        <location filename="../GUI/PageRecord.cpp" line="148"/>
         <source>Enable sound notifications</source>
         <translation>Activar notificaciones de audio</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="150"/>
+        <location filename="../GUI/PageRecord.cpp" line="149"/>
         <source>Hotkey:</source>
         <translation>Tecla rápida:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="151"/>
+        <location filename="../GUI/PageRecord.cpp" line="150"/>
         <source>Ctrl +</source>
         <translation>Ctrl +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="152"/>
+        <location filename="../GUI/PageRecord.cpp" line="151"/>
         <source>Shift +</source>
         <translation>Shift +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="153"/>
+        <location filename="../GUI/PageRecord.cpp" line="152"/>
         <source>Alt +</source>
         <translation>Alt +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="154"/>
+        <location filename="../GUI/PageRecord.cpp" line="153"/>
         <source>Super +</source>
         <translation>Super +</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="156"/>
+        <location filename="../GUI/PageRecord.cpp" line="155"/>
         <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
 The program that you are recording will not receive the key press.</source>
         <translation>La tecla que tendrás que pulsar (combinada con los modificadores) para iniciar o parar la grabación.
 El programa que estás grabando no recibirá la pulsación de teclas.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="196"/>
+        <location filename="../GUI/PageRecord.cpp" line="195"/>
         <source>Information</source>
         <translation>Información</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="198"/>
+        <location filename="../GUI/PageRecord.cpp" line="197"/>
         <source>Total time:</source>
         <translation>Tiempo total:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="200"/>
+        <location filename="../GUI/PageRecord.cpp" line="199"/>
         <source>FPS in:</source>
         <translation>FPS de entrada:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="202"/>
+        <location filename="../GUI/PageRecord.cpp" line="201"/>
         <source>FPS out:</source>
         <translation>FPS de salida:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="204"/>
+        <location filename="../GUI/PageRecord.cpp" line="203"/>
         <source>Size in:</source>
         <translation>Tamaño de entrada:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="206"/>
+        <location filename="../GUI/PageRecord.cpp" line="205"/>
         <source>Size out:</source>
         <translation>Tamaño de salida:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="208"/>
+        <location filename="../GUI/PageRecord.cpp" line="207"/>
         <source>File name:</source>
         <translation>Archivo:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="211"/>
+        <location filename="../GUI/PageRecord.cpp" line="210"/>
         <source>File size:</source>
         <translation>Tamaño:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="213"/>
+        <location filename="../GUI/PageRecord.cpp" line="212"/>
         <source>Bit rate:</source>
         <translation>Tasa de bits:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="236"/>
+        <location filename="../GUI/PageRecord.cpp" line="235"/>
         <source>Preview</source>
         <translation>Vista previa</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="240"/>
+        <location filename="../GUI/PageRecord.cpp" line="239"/>
         <source>Preview frame rate:</source>
         <translation>FPS de la vista previa:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="244"/>
+        <location filename="../GUI/PageRecord.cpp" line="243"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
         <translation>Nota: la vista previa requiere más tiempo de CPU (especialmente a altas tasas de fotogramas).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="293"/>
+        <location filename="../GUI/PageRecord.cpp" line="292"/>
         <source>Log</source>
         <translation>Registro</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="308"/>
-        <location filename="../GUI/PageRecord.cpp" line="316"/>
+        <location filename="../GUI/PageRecord.cpp" line="307"/>
+        <location filename="../GUI/PageRecord.cpp" line="315"/>
         <source>Cancel recording</source>
         <translation>Cancelar grabación</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="309"/>
-        <location filename="../GUI/PageRecord.cpp" line="315"/>
+        <location filename="../GUI/PageRecord.cpp" line="308"/>
+        <location filename="../GUI/PageRecord.cpp" line="314"/>
         <source>Save recording</source>
         <translation>Guardar grabación</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="363"/>
+        <location filename="../GUI/PageRecord.cpp" line="362"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
         <translation>No has guardado la grabación actual, si sales ahora se perderá.
 ¿De verdad quieres salir?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="516"/>
+        <location filename="../GUI/PageRecord.cpp" line="513"/>
         <source>Starting page ...</source>
         <translation>Iniciando página ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="535"/>
-        <location filename="../GUI/PageRecord.cpp" line="680"/>
-        <location filename="../GUI/PageRecord.cpp" line="767"/>
+        <location filename="../GUI/PageRecord.cpp" line="532"/>
+        <location filename="../GUI/PageRecord.cpp" line="670"/>
+        <location filename="../GUI/PageRecord.cpp" line="753"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation>Error: algo ha salido mal durante la inicialización.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="542"/>
+        <location filename="../GUI/PageRecord.cpp" line="539"/>
         <source>Started page.</source>
         <translation>Página iniciada.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="571"/>
+        <location filename="../GUI/PageRecord.cpp" line="565"/>
         <source>Stopping page ...</source>
         <translation>Deteniendo página ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="597"/>
+        <location filename="../GUI/PageRecord.cpp" line="590"/>
         <source>Stopped page.</source>
         <translation>Página detenida.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="624"/>
+        <location filename="../GUI/PageRecord.cpp" line="617"/>
         <source>Starting output ...</source>
         <translation>Iniciando salida ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="631"/>
-        <source>Error: Could not get the size of the OpenGL application because GLInject has not been started.</source>
-        <translation>Error: no se pudo obtener el tamaño de la aplicación OpenGL porque GLInject no se ha iniciado.</translation>
+        <location filename="../GUI/PageRecord.cpp" line="624"/>
+        <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
+        <translation>Error: No se pudo obtener el tamaño de la aplicación OpenGL porque GLInject no ha sido creado.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="636"/>
-        <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
-        <translation>Error: no se pudo obtener el tamaño de la aplicacioń OpenGL. O bien la aplicación no ha iniciado correctamente, o bien la aplicación aún no ha creado una ventana OpenGL. Si quieres iniciar la grabación antes de iniciar la aplicación, debes permitir el escalado e introducir el tamaño de vídeo manualmente.</translation>
+        <location filename="../GUI/PageRecord.cpp" line="629"/>
+        <source>Error: Could not get the size of the OpenGL application.</source>
+        <translation>Error: No se pudo obtener el tamaño de la aplicación OpenGL.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="672"/>
+        <location filename="../GUI/PageRecord.cpp" line="662"/>
         <source>Started output.</source>
         <translation>Iniciada salida.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="691"/>
+        <location filename="../GUI/PageRecord.cpp" line="681"/>
         <source>Stopping output ...</source>
         <translation>Deteniendo salida ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="709"/>
+        <location filename="../GUI/PageRecord.cpp" line="699"/>
         <source>Stopped output.</source>
         <translation>Detenida salida.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="738"/>
+        <location filename="../GUI/PageRecord.cpp" line="724"/>
         <source>Starting input ...</source>
         <translation>Iniciando entrada ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="743"/>
-        <source>Error: Could not create a GLInject input because GLInject has not been started.</source>
-        <translation>Error: no se pudo crear una entrada GLInject porque GLInject aún no ha iniciado.</translation>
+        <location filename="../GUI/PageRecord.cpp" line="729"/>
+        <source>Error: Could not start the GLInject input because it has not been created.</source>
+        <translation>Error: No se pudo iniciar la entrada de GLInject porque aún no se ha creado.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="762"/>
+        <location filename="../GUI/PageRecord.cpp" line="748"/>
         <source>Started input.</source>
         <translation>Entrada iniciada.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="788"/>
+        <location filename="../GUI/PageRecord.cpp" line="775"/>
         <source>Stopping input ...</source>
         <translation>Deteniendo entrada ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="802"/>
+        <location filename="../GUI/PageRecord.cpp" line="786"/>
         <source>Stopped input.</source>
         <translation>Detenida entrada.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="865"/>
-        <location filename="../GUI/PageRecord.cpp" line="869"/>
+        <location filename="../GUI/PageRecord.cpp" line="849"/>
+        <location filename="../GUI/PageRecord.cpp" line="853"/>
         <source>Pause recording</source>
         <translation>Pausar grabación</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="872"/>
-        <location filename="../GUI/PageRecord.cpp" line="876"/>
+        <location filename="../GUI/PageRecord.cpp" line="856"/>
+        <location filename="../GUI/PageRecord.cpp" line="860"/>
         <source>Start recording</source>
         <translation>Iniciar grabación</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="885"/>
+        <location filename="../GUI/PageRecord.cpp" line="869"/>
         <source>Stop preview</source>
         <translation>Detener vista previa</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="888"/>
+        <location filename="../GUI/PageRecord.cpp" line="872"/>
         <source>Start preview</source>
         <translation>Iniciar vista previa</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="922"/>
+        <location filename="../GUI/PageRecord.cpp" line="907"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translatorcomment>synth is not easily translatable to something sensible. It was replaced by &apos;audio notification&apos;.</translatorcomment>
         <translation>Error: algo ha salido mal mientras se creaba la notificación de audio.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="954"/>
+        <location filename="../GUI/PageRecord.cpp" line="939"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>¿Estás seguro de que quieres cancelar la grabación?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="967"/>
+        <location filename="../GUI/PageRecord.cpp" line="952"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
@@ -1040,7 +1053,7 @@ El botón de grabación está arriba ;).</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="66"/>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="55"/>
+        <location filename="../AV/Input/GLInjectInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="206"/>
         <source>Stopping input thread ...</source>
         <translation>Deteniendo hilo de grabación ...</translation>
@@ -1124,9 +1137,9 @@ El botón de grabación está arriba ;).</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="195"/>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="95"/>
+        <location filename="../AV/Input/GLInjectInput.cpp" line="128"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="298"/>
-        <location filename="../AV/Input/X11Input.cpp" line="333"/>
+        <location filename="../AV/Input/X11Input.cpp" line="341"/>
         <source>Input thread started.</source>
         <translation>Hilo de entrada iniciado.</translation>
     </message>
@@ -1143,74 +1156,32 @@ El botón de grabación está arriba ;).</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="254"/>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="155"/>
+        <location filename="../AV/Input/GLInjectInput.cpp" line="158"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="387"/>
-        <location filename="../AV/Input/X11Input.cpp" line="423"/>
+        <location filename="../AV/Input/X11Input.cpp" line="431"/>
         <source>Input thread stopped.</source>
         <translation>Hilo de entrada detenido.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="258"/>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="159"/>
+        <location filename="../AV/Input/GLInjectInput.cpp" line="162"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="391"/>
-        <location filename="../AV/Input/X11Input.cpp" line="427"/>
+        <location filename="../AV/Input/X11Input.cpp" line="435"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
         <translation>Excepción &apos;%1&apos; en el hilo de entrada.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="261"/>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="162"/>
+        <location filename="../AV/Input/GLInjectInput.cpp" line="165"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="394"/>
-        <location filename="../AV/Input/X11Input.cpp" line="430"/>
+        <location filename="../AV/Input/X11Input.cpp" line="438"/>
         <source>Unknown exception in input thread.</source>
         <translation>Excepción desconocida en el hilo de entrada.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="122"/>
-        <source>Error: Image is too small!</source>
-        <translation>Error: ¡La imagen es muy pequeña!</translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="126"/>
-        <source>Error: Image is too large!</source>
-        <translation>Error: ¡La imagen es muy grande!</translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="134"/>
-        <source>Error: Image doesn&apos;t fit in memory!</source>
-        <translation>Error: ¡La imagen no cabe en memoria!</translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="103"/>
-        <location filename="../AV/Input/X11Input.cpp" line="243"/>
-        <source>Error: Can&apos;t get shared memory!</source>
-        <translation>Error: ¡No se puede obtener la memoria compartida!</translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="108"/>
-        <location filename="../AV/Input/X11Input.cpp" line="248"/>
-        <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation>Error: ¡No se puede acceder a la memoria compartida!</translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="118"/>
-        <source>Error: Can&apos;t get frame shared memory!</source>
-        <translation>Error: ¡No se puede obtener la memoria compartida del fotograma!</translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="123"/>
-        <source>Error: Can&apos;t attach to frame shared memory!</source>
-        <translation>Error: ¡No se puede acceder al fotograma de memoria compartida!</translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="150"/>
-        <source>Full command</source>
-        <translation>Comando completo</translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="158"/>
-        <source>Error: Can&apos;t run command!</source>
-        <translation>Error: ¡No puede ejecutarse el comando!</translation>
+        <location filename="../AV/Input/GLInjectInput.cpp" line="105"/>
+        <source>Error: No streams found!</source>
+        <translation>Error: ¡No se encontraron streams!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="35"/>
@@ -1289,68 +1260,178 @@ Es posible que tu sistema no use PulseAudio. Intenta usar el sistema de ALSA en 
         <translation>Aviso: El flujo fue movido a otra fuente diferente.</translation>
     </message>
     <message>
+        <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="67"/>
+        <source>Error: Can&apos;t open video stream file!</source>
+        <translation>Error: ¡No se puede abrir el archivo del stream de vídeo!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="73"/>
+        <source>Error: Can&apos;t lock video stream file!</source>
+        <translation>Error: ¡No se puede bloquear el archivo del stream de víeo!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="82"/>
+        <source>Error: Size of video stream file is incorrect!</source>
+        <translation>Error: ¡El tamaño del stream de vídeo es incorrecto!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="90"/>
+        <source>Error: Can&apos;t memory-map video stream file!</source>
+        <translation>Error: ¡No se puede cargar en memoria el archivo del stream de vídeo!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="99"/>
+        <source>Error: Can&apos;t open video frame file!</source>
+        <translation>Error: ¡no se puede abrir el archivo con el fotograma de vídeo!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="231"/>
+        <source>Error: Size of video frame file is incorrect!</source>
+        <translation>Error: ¡El tamaño del archivo del fotograma de vídeo es incorrecto!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="240"/>
+        <source>Error: Can&apos;t memory-map video frame file!</source>
+        <translation>Error: ¡No se puede cargar el archivo del fotograma de vídeo en memoria!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="86"/>
+        <source>Error: Can&apos;t initialize inotify!</source>
+        <comment>don&apos;t translate &apos;inotify&apos;</comment>
+        <translation>Error: ¡No se puede inicializar inotify!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="92"/>
+        <source>Error: Can&apos;t watch shared memory directory!</source>
+        <translation>Error: ¡No se puede vigilar el directory de memoria compartida!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="103"/>
+        <source>Error: Can&apos;t open shared memory directory!</source>
+        <translation>Error: ¡No se puede abrir el directorio de memoria compartida!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="121"/>
+        <source>Added pre-existing stream %1.</source>
+        <translation>Añadiendo stream pre-existente %1.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="155"/>
+        <source>Error: Can&apos;t get read length from inotify!</source>
+        <comment>don&apos;t translate &apos;inotify&apos;</comment>
+        <translation>Error: ¡No se puede obtener la longitud desde inotify!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="164"/>
+        <source>Error: Can&apos;t read from inotify!</source>
+        <comment>don&apos;t translate &apos;inotify&apos;</comment>
+        <translation>Error: ¡No se puede leer desde inotify!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="174"/>
+        <source>Error: Received partial event from inotify!</source>
+        <comment>don&apos;t translate &apos;inotify&apos;</comment>
+        <translation>Error: ¡Recibido evento parcial desde inotify!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="186"/>
+        <source>Error: Received partial name from inotify!</source>
+        <comment>don&apos;t translate &apos;inotify&apos;</comment>
+        <translation>Error: ¡Recibido nombre parcial desde inotify!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="200"/>
+        <source>Added stream %1.</source>
+        <translation>Añadido stream %1.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="204"/>
+        <source>Warning: Tried to add stream %1, but it exists already!</source>
+        <translation>Aviso: ¡Intentando añadir stream %1, pero ya existe!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="210"/>
+        <source>Removed stream %1.</source>
+        <translation>Eliminando stream %1.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="214"/>
+        <source>Warning: Tried to remove stream %1, but it does not exist!</source>
+        <translation>Aviso: ¡Intentando eliminar el stream %1, pero no existe!</translation>
+    </message>
+    <message>
         <location filename="../AV/Input/X11Input.cpp" line="74"/>
         <source>Error: Unsupported X11 image pixel format!</source>
         <translation>Error: ¡Formato del píxel de la imagen X11 no soportado!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="185"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="57"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="58"/>
         <source>Error: Width or height is zero!</source>
         <translation>Error: ¡El ancho o el alto es cero!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="189"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="61"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="62"/>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
         <translation>Error: ¡Ancho o alto muy grande, el tamaño máximo de ancho y alto es %1!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="226"/>
+        <location filename="../AV/Input/X11Input.cpp" line="232"/>
         <source>Error: Can&apos;t open X display!</source>
         <comment>Don&apos;t translate &apos;display&apos;</comment>
         <translation>Error: ¡No se pudo abrir el display X!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="235"/>
+        <location filename="../AV/Input/X11Input.cpp" line="241"/>
         <source>Using X11 shared memory.</source>
         <translation>Usando la memoria compartida de X11.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="238"/>
+        <location filename="../AV/Input/X11Input.cpp" line="244"/>
         <source>Error: Can&apos;t create shared image!</source>
         <translation>Error: ¡No se puede crear una imagen compartida!</translation>
     </message>
     <message>
+        <location filename="../AV/Input/X11Input.cpp" line="249"/>
+        <source>Error: Can&apos;t get shared memory!</source>
+        <translation>Error: ¡No se puede obtener la memoria compartida!</translation>
+    </message>
+    <message>
         <location filename="../AV/Input/X11Input.cpp" line="254"/>
+        <source>Error: Can&apos;t attach to shared memory!</source>
+        <translation>Error: ¡No se puede acceder a la memoria compartida!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="260"/>
         <source>Not using X11 shared memory.</source>
         <translation>No se usa la memoria compartida X11.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="262"/>
+        <location filename="../AV/Input/X11Input.cpp" line="268"/>
         <source>Warning: XFixes is not supported by server, the cursor has been hidden.</source>
         <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
         <translation>Error: El servidor no soporta XFixes, el cursor está oculto.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="317"/>
+        <location filename="../AV/Input/X11Input.cpp" line="325"/>
         <source>Error: Invalid screen bounding box!</source>
         <translation>Error: ¡Bounding box de la pantalla inválido!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="373"/>
+        <location filename="../AV/Input/X11Input.cpp" line="381"/>
         <source>Error: Can&apos;t attach server to shared memory!</source>
         <translation>Error: ¡No se puede conectar a la memoria compartida!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="379"/>
+        <location filename="../AV/Input/X11Input.cpp" line="387"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation>Error: ¡No se puede obtener la imagen (usando memoria compartida)!
     Normalmente esto significa que el área de grabación no está dentro de la pantalla. ¿O has cambiado la resolución de la pantalla?</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="390"/>
+        <location filename="../AV/Input/X11Input.cpp" line="398"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation>Error: ¡No se puede obtener la imagen (sin usar memoria compartida)!
@@ -1362,63 +1443,68 @@ Es posible que tu sistema no use PulseAudio. Intenta usar el sistema de ALSA en 
         <translation>Error: La tasa de muestreo es cero.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="126"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="128"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
         <translation>Error: ¡El codificador requiere un formato de muestreo no soportado!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="149"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="170"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="151"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="172"/>
         <source>Error: Encoding of audio frame failed!</source>
         <translation>Error: ¡La codificación del audio falló!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="62"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="33"/>
+        <source>Error: Option &apos;%1&apos; could not be parsed!</source>
+        <translation>Error: ¡La opción %1 no se pudo analizar!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="73"/>
         <source>Stopping encoder thread ...</source>
         <translation>Deteniendo hilo del codificador ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="82"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="93"/>
         <source>Error: Can&apos;t find codec!</source>
         <translation>Error: ¡No se puede encontrar el códec!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="87"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="98"/>
         <source>Using codec %1 (%2).</source>
         <translation>Usando codec %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="107"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation>Aviso: este codec se considera experimental por libav/ffmpeg.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="106"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="117"/>
         <source>Error: Can&apos;t open codec!</source>
         <translation>Error: ¡No se puede abrir el códec!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="160"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="171"/>
         <source>Encoder thread started.</source>
         <translation>Hilo del codificador iniciado.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="189"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="200"/>
         <source>Flushing encoder ...</source>
         <translation>Vaciando codificador ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="196"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="207"/>
         <source>Encoder thread stopped.</source>
         <translation>Hilo del codificador detenido.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="200"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="211"/>
         <source>Exception &apos;%1&apos; in encoder thread.</source>
         <translation>Excepción &apos;%1&apos; en el hilo del codificador.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="203"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="214"/>
         <source>Unknown exception in encoder thread.</source>
         <translation>Excepción desconocida en el hilo del codificador.</translation>
     </message>
@@ -1570,18 +1656,18 @@ Es posible que tu sistema no use PulseAudio. Intenta usar el sistema de ALSA en 
         <translation>Excepción desconocida en el hilo del sincronizador.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="65"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="66"/>
         <source>Error: Width or height is not an even number!</source>
         <translation>Error: ¡El ancho o el alto no es un número par!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="69"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="70"/>
         <source>Error: Frame rate it zero!</source>
         <translation>Error: ¡La tasa de fotogramas es cero!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="202"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="225"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="209"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="232"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation>Error: ¡La codificación del vídeo falló!</translation>
     </message>
@@ -1656,6 +1742,11 @@ Es posible que tu sistema no use PulseAudio. Intenta usar el sistema de ALSA en 
         <location filename="../common/DetectCPUFeatures.cpp" line="39"/>
         <source>CPU features</source>
         <translation>Características de la CPU</translation>
+    </message>
+    <message>
+        <location filename="../GUI/DialogGLInject.cpp" line="198"/>
+        <source>The application could not be launched.</source>
+        <translation>La aplicación no pudo iniciarse.</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="115"/>
