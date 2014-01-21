@@ -1686,7 +1686,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="213"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="236"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="238"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation>Błąd: Kodowanie wideo zawiodło!</translation>
     </message>
