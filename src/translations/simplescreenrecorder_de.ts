@@ -431,16 +431,6 @@ The ALSA backend will also work on systems that use PulseAudio, but it is better
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="57"/>
-        <location filename="../GUI/PageOutput.cpp" line="60"/>
-        <location filename="../GUI/PageOutput.cpp" line="63"/>
-        <location filename="../GUI/PageOutput.cpp" line="66"/>
-        <location filename="../GUI/PageOutput.cpp" line="102"/>
-        <source>files</source>
-        <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../GUI/PageOutput.cpp" line="136"/>
         <source>Error: Could not find any suitable container in libavformat!</source>
         <translation type="unfinished"></translation>
@@ -589,6 +579,36 @@ If you have no idea where to start, try 5000 and change it if needed.</source>
         <location filename="../GUI/PageOutput.cpp" line="224"/>
         <source>This setting changes the video quality. A lower value means a higher quality.
 The allowed range is 0-51 (0 means lossless, the default is 23).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="57"/>
+        <source>Matroska files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="60"/>
+        <source>MP4 files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="63"/>
+        <source>WebM files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="66"/>
+        <source>OGG files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="102"/>
+        <source>%1 files</source>
+        <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>

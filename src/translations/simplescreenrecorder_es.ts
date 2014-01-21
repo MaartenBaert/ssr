@@ -441,14 +441,33 @@ Haz clic en el botón &apos;Opciones de OpenGL&apos; e introdude un comando.</tr
 <context>
     <name>PageOutput</name>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="57"/>
-        <location filename="../GUI/PageOutput.cpp" line="60"/>
-        <location filename="../GUI/PageOutput.cpp" line="63"/>
-        <location filename="../GUI/PageOutput.cpp" line="66"/>
-        <location filename="../GUI/PageOutput.cpp" line="102"/>
         <source>files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation>archivos</translation>
+        <translation type="obsolete">archivos</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="57"/>
+        <source>Matroska files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation>Archivos Matroska</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="60"/>
+        <source>MP4 files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation>Archivos MP4</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="63"/>
+        <source>WebM files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation>Archivos WebM</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="66"/>
+        <source>OGG files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation>Archivos OGG</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="69"/>
@@ -461,6 +480,12 @@ Haz clic en el botón &apos;Opciones de OpenGL&apos; e introdude un comando.</tr
         <location filename="../GUI/PageOutput.cpp" line="81"/>
         <source>Uncompressed</source>
         <translation>Sin comprimir</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="102"/>
+        <source>%1 files</source>
+        <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
+        <translation>Archivos %1</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="136"/>

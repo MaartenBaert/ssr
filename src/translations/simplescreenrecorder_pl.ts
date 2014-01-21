@@ -482,14 +482,9 @@ Podsystem ALSA bęzie również działał na systemach które korzystaja z Pulse
         <translation>Nie skompresowany</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="57"/>
-        <location filename="../GUI/PageOutput.cpp" line="60"/>
-        <location filename="../GUI/PageOutput.cpp" line="63"/>
-        <location filename="../GUI/PageOutput.cpp" line="66"/>
-        <location filename="../GUI/PageOutput.cpp" line="102"/>
         <source>files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation>pliki</translation>
+        <translation type="obsolete">pliki</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="136"/>
@@ -663,6 +658,36 @@ i jest wykorzystywana przez VP8). Wyższe wartości skutkują gorszą jakością
 The allowed range is 0-51 (0 means lossless, the default is 23).</source>
         <translation>Zmiana wartości wpływa na jakość wideo. Niższa wartość oznacza lepsza jakość.
 Dopuszczalny przedział wartości: 0-51 (0 oznacza bezstratne, domyślnie 23).</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="57"/>
+        <source>Matroska files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="60"/>
+        <source>MP4 files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="63"/>
+        <source>WebM files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="66"/>
+        <source>OGG files</source>
+        <comment>This appears in the file dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="102"/>
+        <source>%1 files</source>
+        <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="235"/>
