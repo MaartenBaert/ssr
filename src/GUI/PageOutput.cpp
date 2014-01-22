@@ -54,16 +54,16 @@ PageOutput::PageOutput(MainWindow* main_window)
 
 	// main codecs
 	m_containers = {
-		{"Matroska (MKV)", "matroska", {"mkv"}, "Matroska " + tr("files", "This appears in the file dialog, e.g. 'MP4 files'") + " (*.mkv)",
+		{"Matroska (MKV)", "matroska", {"mkv"}, tr("Matroska files", "This appears in the file dialog") + " (*.mkv)",
 			{VIDEO_CODEC_H264, VIDEO_CODEC_VP8, VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC, AUDIO_CODEC_UNCOMPRESSED}},
-		{"MP4", "mp4", {"mp4"}, "MP4 " + tr("files", "This appears in the file dialog, e.g. 'MP4 files'") + " (*.mp4)",
+		{"MP4", "mp4", {"mp4"}, tr("MP4 files", "This appears in the file dialog") + " (*.mp4)",
 			{VIDEO_CODEC_H264},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC}},
-		{"WebM", "webm", {"webm"}, "WebM " + tr("files", "This appears in the file dialog, e.g. 'MP4 files'") + " (*.webm)",
+		{"WebM", "webm", {"webm"}, tr("WebM files", "This appears in the file dialog") + " (*.webm)",
 			{VIDEO_CODEC_VP8},
 			{AUDIO_CODEC_VORBIS}},
-		{"OGG", "ogg", {"ogg"}, "OGG " + tr("files", "This appears in the file dialog, e.g. 'MP4 files'") + " (*.ogg)",
+		{"OGG", "ogg", {"ogg"}, tr("OGG files", "This appears in the file dialog") + " (*.ogg)",
 			{VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS}},
 		{tr("Other..."), "other", {}, "", {}, {}},
@@ -99,7 +99,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		if(c.suffixes.isEmpty()) {
 			c.filter = "";
 		} else {
-			c.filter = c.avname + " " + tr("files", "This appears in the file dialog, e.g. 'MP4 files'") + " (*." + c.suffixes[0];
+			c.filter = tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg(c.avname) + " (*." + c.suffixes[0];
 			for(int i = 1; i < c.suffixes.size(); ++i) {
 				c.suffixes[i] = c.suffixes[i].trimmed(); // needed because libav/ffmpeg isn't very consistent when they say 'comma-separated'
 				c.filter += " *." + c.suffixes[i];
