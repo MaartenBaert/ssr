@@ -54,16 +54,16 @@ PageOutput::PageOutput(MainWindow* main_window)
 
 	// main codecs
 	m_containers = {
-		{"Matroska (MKV)", "matroska", {"mkv"}, tr("Matroska files", "This appears in the file dialog") + " (*.mkv)",
+		{"Matroska (MKV)", "matroska", {"mkv"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("Matroska") + " (*.mkv)",
 			{VIDEO_CODEC_H264, VIDEO_CODEC_VP8, VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC, AUDIO_CODEC_UNCOMPRESSED}},
-		{"MP4", "mp4", {"mp4"}, tr("MP4 files", "This appears in the file dialog") + " (*.mp4)",
+		{"MP4", "mp4", {"mp4"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("MP4") + " (*.mp4)",
 			{VIDEO_CODEC_H264},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC}},
-		{"WebM", "webm", {"webm"}, tr("WebM files", "This appears in the file dialog") + " (*.webm)",
+		{"WebM", "webm", {"webm"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("WebM") + " (*.webm)",
 			{VIDEO_CODEC_VP8},
 			{AUDIO_CODEC_VORBIS}},
-		{"OGG", "ogg", {"ogg"}, tr("OGG files", "This appears in the file dialog") + " (*.ogg)",
+		{"OGG", "ogg", {"ogg"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("OGG") + " (*.ogg)",
 			{VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS}},
 		{tr("Other..."), "other", {}, "", {}, {}},
