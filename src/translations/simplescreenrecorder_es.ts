@@ -446,28 +446,24 @@ Haz clic en el botón &apos;Opciones de OpenGL&apos; e introdude un comando.</tr
         <translation type="obsolete">archivos</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="57"/>
         <source>Matroska files</source>
         <comment>This appears in the file dialog</comment>
-        <translation>Archivos Matroska</translation>
+        <translation type="obsolete">Archivos Matroska</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="60"/>
         <source>MP4 files</source>
         <comment>This appears in the file dialog</comment>
-        <translation>Archivos MP4</translation>
+        <translation type="obsolete">Archivos MP4</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="63"/>
         <source>WebM files</source>
         <comment>This appears in the file dialog</comment>
-        <translation>Archivos WebM</translation>
+        <translation type="obsolete">Archivos WebM</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="66"/>
         <source>OGG files</source>
         <comment>This appears in the file dialog</comment>
-        <translation>Archivos OGG</translation>
+        <translation type="obsolete">Archivos OGG</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="69"/>
@@ -482,6 +478,10 @@ Haz clic en el botón &apos;Opciones de OpenGL&apos; e introdude un comando.</tr
         <translation>Sin comprimir</translation>
     </message>
     <message>
+        <location filename="../GUI/PageOutput.cpp" line="57"/>
+        <location filename="../GUI/PageOutput.cpp" line="60"/>
+        <location filename="../GUI/PageOutput.cpp" line="63"/>
+        <location filename="../GUI/PageOutput.cpp" line="66"/>
         <location filename="../GUI/PageOutput.cpp" line="102"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>

@@ -62,7 +62,7 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
         <source>Launch application</source>
-        <translation type="unfinished"></translation>
+        <translation>Start applicatie</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="53"/>
@@ -87,62 +87,62 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="66"/>
         <source>Launch automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Start automatisch</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="67"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indien aangevinkt zal de applicatie automatisch gestart worden zodra je naar de opnamepagina gaat. Indien niet aangevinkt moet de applicatie manueel gestart worden.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="69"/>
         <source>Launch now</source>
-        <translation type="unfinished"></translation>
+        <translation>Start nu</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="92"/>
         <source>Select stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer stream</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="94"/>
         <source>Active streams:</source>
-        <translation type="unfinished"></translation>
+        <translation>Actieve streams:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="97"/>
         <source>Record newest stream that matches:</source>
-        <translation type="unfinished"></translation>
+        <translation>Neem nieuwste stream op die overeenkomt met:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="98"/>
         <source>User:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruiker:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="100"/>
         <source>Process:</source>
-        <translation type="unfinished"></translation>
+        <translation>Proces:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="102"/>
         <source>Source:</source>
-        <translation type="unfinished">Bron:</translation>
+        <translation>Bron:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="104"/>
         <source>Program name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Programmanaam:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="160"/>
         <source>Error: Could not create stream watcher!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen stream watcher maken!</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="214"/>
         <source>Error: Could not update streams!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan streams niet updaten!</translation>
     </message>
     <message>
         <source>Start the OpenGL application automatically</source>
@@ -662,29 +662,9 @@ Het toegestane bereik is 0-51 (0 betekent verliesvrij, de standaardwaarde is 23)
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="57"/>
-        <source>Matroska files</source>
-        <comment>This appears in the file dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../GUI/PageOutput.cpp" line="60"/>
-        <source>MP4 files</source>
-        <comment>This appears in the file dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../GUI/PageOutput.cpp" line="63"/>
-        <source>WebM files</source>
-        <comment>This appears in the file dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../GUI/PageOutput.cpp" line="66"/>
-        <source>OGG files</source>
-        <comment>This appears in the file dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../GUI/PageOutput.cpp" line="102"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>

@@ -478,30 +478,6 @@ Fare clic sul pulsante &apos;Impostazioni OpenGL &quot;e immettere un comando.</
         <translation type="obsolete">files</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="57"/>
-        <source>Matroska files</source>
-        <comment>This appears in the file dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="60"/>
-        <source>MP4 files</source>
-        <comment>This appears in the file dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="63"/>
-        <source>WebM files</source>
-        <comment>This appears in the file dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="66"/>
-        <source>OGG files</source>
-        <comment>This appears in the file dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../GUI/PageOutput.cpp" line="69"/>
         <location filename="../GUI/PageOutput.cpp" line="75"/>
         <location filename="../GUI/PageOutput.cpp" line="82"/>
@@ -514,6 +490,10 @@ Fare clic sul pulsante &apos;Impostazioni OpenGL &quot;e immettere un comando.</
         <translation>Non compresso</translation>
     </message>
     <message>
+        <location filename="../GUI/PageOutput.cpp" line="57"/>
+        <location filename="../GUI/PageOutput.cpp" line="60"/>
+        <location filename="../GUI/PageOutput.cpp" line="63"/>
+        <location filename="../GUI/PageOutput.cpp" line="66"/>
         <location filename="../GUI/PageOutput.cpp" line="102"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
