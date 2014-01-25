@@ -39,6 +39,7 @@ SOURCES += \
 	AV/SourceSink.cpp \
 	common/ByteQueue.cpp \
 	common/DetectCPUFeatures.cpp \
+	common/Dialogs.cpp \
 	common/Logger.cpp \
 	GUI/AudioPreviewer.cpp \
 	GUI/ElidedLabel.cpp \
@@ -80,6 +81,7 @@ HEADERS  += \
 	AV/SourceSink.h \
 	common/ByteQueue.h \
 	common/DetectCPUFeatures.h \
+	common/Dialogs.h \
 	common/Logger.h \
 	common/MutexDataPair.h \
 	common/TempBuffer.h \
