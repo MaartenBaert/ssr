@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Icons.h"
 #include "Logger.h"
+#include "Dialogs.h"
 #include "MainWindow.h"
 
 #include "Version.h"
@@ -176,14 +177,14 @@ int main(int argc, char* argv[]) {
 
 	// warning for glitch with proprietary NVIDIA drivers
 	if(DetectNVIDIAFlipping()) {
-		if(QMessageBox::warning(NULL, MainWindow::WINDOW_CAPTION,
-								QObject::tr("SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. "
-											"This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?\n\n"
-											"You can also change this option manually in the NVIDIA control panel.", "Don't translate 'flipping' unless NVIDIA does the same"),
-								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+		if(MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION,
+					  QObject::tr("SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. "
+								  "This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?\n\n"
+								  "You can also change this option manually in the NVIDIA control panel.", "Don't translate 'flipping' unless NVIDIA does the same"),
+					  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
 			if(!DisableNVIDIAFlipping()) {
-				QMessageBox::warning(NULL, MainWindow::WINDOW_CAPTION, QObject::tr("I couldn't disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.",
-																				   "Don't translate 'flipping' unless NVIDIA does the same"), QMessageBox::Ok);
+				MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION, QObject::tr("I couldn't disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.",
+																							   "Don't translate 'flipping' unless NVIDIA does the same"), QMessageBox::Ok);
 			}
 		}
 	}

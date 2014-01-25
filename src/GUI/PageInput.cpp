@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "PageInput.h"
 
+#include "Dialogs.h"
 #include "MainWindow.h"
 
 #include <QX11Info>
@@ -750,9 +751,9 @@ void PageInput::OnGLInjectDialog() {
 
 void PageInput::OnContinue() {
 	if(GetVideoArea() == VIDEO_AREA_GLINJECT && GetGLInjectCommand().isEmpty()) {
-		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION,
-							  tr("You did not enter a command to start the OpenGL application that you want to record.\n"
-								 "Click the 'OpenGL settings' button and enter a command."), QMessageBox::Ok);
+		MessageBox(QMessageBox::Critical, this, MainWindow::WINDOW_CAPTION,
+				   tr("You did not enter a command to start the OpenGL application that you want to record.\n"
+					  "Click the 'OpenGL settings' button and enter a command."), QMessageBox::Ok);
 		return;
 	}
 	m_main_window->GoPageOutput();

@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Main.h"
 #include "Icons.h"
+#include "Dialogs.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 #include "PageOutput.h"
@@ -361,9 +362,9 @@ PageRecord::~PageRecord() {
 bool PageRecord::ShouldBlockClose() {
 
 	if(m_output_manager != NULL) {
-		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION,
-								tr("You have not saved the current recording yet, if you quit now it will be lost.\n"
-								   "Are you sure that you want to quit?"), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
+					  tr("You have not saved the current recording yet, if you quit now it will be lost.\n"
+						 "Are you sure that you want to quit?"), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
 			return true;
 		}
 	}
@@ -956,8 +957,8 @@ void PageRecord::OnCancel() {
 	if(!m_page_started)
 		return;
 	if(m_output_manager != NULL) {
-		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to cancel this recording?"),
-								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to cancel this recording?"),
+					  QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
 			return;
 		}
 	}
@@ -969,8 +970,8 @@ void PageRecord::OnSave() {
 	if(!m_page_started)
 		return;
 	if(!m_recorded_something) {
-		QMessageBox::information(this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;)."),
-								 QMessageBox::Ok);
+		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;)."),
+				   QMessageBox::Ok);
 		return;
 	}
 	StopPage(true);

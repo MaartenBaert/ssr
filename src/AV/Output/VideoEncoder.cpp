@@ -206,9 +206,6 @@ bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 	// do we have a packet?
 	if(got_packet) {
 
-		if(GetCodecContext()->coded_frame->key_frame)
-			packet->GetPacket()->flags |= AV_PKT_FLAG_KEY;
-
 		// send the packet to the muxer
 		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));
 		return true;

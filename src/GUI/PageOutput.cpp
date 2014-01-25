@@ -21,6 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "PageOutput.h"
 
 #include "Logger.h"
+#include "Dialogs.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 
@@ -636,12 +637,13 @@ void PageOutput::OnBrowse() {
 void PageOutput::OnContinue() {
 	QString file = GetFile();
 	if(file.isEmpty()) {
-		QMessageBox::critical(this, MainWindow::WINDOW_CAPTION, tr("You did not select an output file!"), QMessageBox::Ok);
+		MessageBox(QMessageBox::Critical, this, MainWindow::WINDOW_CAPTION, tr("You did not select an output file!"), QMessageBox::Ok);
 		return;
 	}
 	if(GetFileProtocol().isNull() && !GetSeparateFiles() && QFileInfo(file).exists()) {
-		if(QMessageBox::warning(this, MainWindow::WINDOW_CAPTION, tr("The file '%1' already exists. Are you sure that you want to overwrite it?").arg(QFileInfo(file).fileName()),
-								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
+					  tr("The file '%1' already exists. Are you sure that you want to overwrite it?").arg(QFileInfo(file).fileName()),
+					  QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
 			return;
 		}
 	}
