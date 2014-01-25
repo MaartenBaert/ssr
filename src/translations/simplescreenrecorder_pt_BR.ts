@@ -746,7 +746,7 @@ E se você só está gravando a sua própria voz (ou seja, sem música), a quali
     <message>
         <location filename="../GUI/PageOutput.cpp" line="645"/>
         <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
-        <translation>O arquivo &apos;% 1&apos; já existe. Você tem certeza que quer substituí-lo?</translation>
+        <translation>O arquivo &apos;%1&apos; já existe. Você tem certeza que quer substituí-lo?</translation>
     </message>
 </context>
 <context>
@@ -1173,7 +1173,7 @@ O botão de iniciar está no topo;).</translation>
         <location filename="../AV/Input/ALSAInput.cpp" line="148"/>
         <location filename="../AV/SimpleSynth.cpp" line="148"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation>Atenção: O tamanho do buffer%1 não é suportado, usando %2 no lugar. Isto não é um problema.</translation>
+        <translation>Atenção: O tamanho do buffer %1 não é suportado, usando %2 no lugar. Isto não é um problema.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="156"/>
@@ -1265,7 +1265,7 @@ O botão de iniciar está no topo;).</translation>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="64"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA backend instead.</source>
-        <translation>Erro: Não foi possível conectar! Motivo:%1
+        <translation>Erro: Não foi possível conectar! Motivo: %1
 É possível que o seu sistema não use o PulseAudio. Tente usar o backend ALSA em vez disso.</translation>
     </message>
     <message>
