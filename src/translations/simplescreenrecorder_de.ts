@@ -666,250 +666,250 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
 <context>
     <name>PageRecord</name>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="146"/>
+        <location filename="../GUI/PageRecord.cpp" line="147"/>
         <source>Recording</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="150"/>
+        <location filename="../GUI/PageRecord.cpp" line="151"/>
         <source>Enable recording hotkey</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="151"/>
+        <location filename="../GUI/PageRecord.cpp" line="152"/>
         <source>Enable sound notifications</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="152"/>
+        <location filename="../GUI/PageRecord.cpp" line="153"/>
         <source>Hotkey:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="153"/>
+        <location filename="../GUI/PageRecord.cpp" line="154"/>
         <source>Ctrl +</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="154"/>
+        <location filename="../GUI/PageRecord.cpp" line="155"/>
         <source>Shift +</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="155"/>
+        <location filename="../GUI/PageRecord.cpp" line="156"/>
         <source>Alt +</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="156"/>
+        <location filename="../GUI/PageRecord.cpp" line="157"/>
         <source>Super +</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="198"/>
+        <location filename="../GUI/PageRecord.cpp" line="199"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="200"/>
+        <location filename="../GUI/PageRecord.cpp" line="201"/>
         <source>Total time:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="202"/>
+        <location filename="../GUI/PageRecord.cpp" line="203"/>
         <source>FPS in:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="204"/>
+        <location filename="../GUI/PageRecord.cpp" line="205"/>
         <source>FPS out:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="206"/>
+        <location filename="../GUI/PageRecord.cpp" line="207"/>
         <source>Size in:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="208"/>
+        <location filename="../GUI/PageRecord.cpp" line="209"/>
         <source>Size out:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="210"/>
+        <location filename="../GUI/PageRecord.cpp" line="211"/>
         <source>File name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="213"/>
+        <location filename="../GUI/PageRecord.cpp" line="214"/>
         <source>File size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="215"/>
+        <location filename="../GUI/PageRecord.cpp" line="216"/>
         <source>Bit rate:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="238"/>
+        <location filename="../GUI/PageRecord.cpp" line="239"/>
         <source>Preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="242"/>
+        <location filename="../GUI/PageRecord.cpp" line="243"/>
         <source>Preview frame rate:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="246"/>
+        <location filename="../GUI/PageRecord.cpp" line="247"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="295"/>
+        <location filename="../GUI/PageRecord.cpp" line="296"/>
         <source>Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="310"/>
-        <location filename="../GUI/PageRecord.cpp" line="318"/>
+        <location filename="../GUI/PageRecord.cpp" line="311"/>
+        <location filename="../GUI/PageRecord.cpp" line="319"/>
         <source>Cancel recording</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="311"/>
-        <location filename="../GUI/PageRecord.cpp" line="317"/>
+        <location filename="../GUI/PageRecord.cpp" line="312"/>
+        <location filename="../GUI/PageRecord.cpp" line="318"/>
         <source>Save recording</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="365"/>
+        <location filename="../GUI/PageRecord.cpp" line="366"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="625"/>
+        <location filename="../GUI/PageRecord.cpp" line="626"/>
         <source>Starting output ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="677"/>
+        <location filename="../GUI/PageRecord.cpp" line="678"/>
         <source>Started output.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="696"/>
+        <location filename="../GUI/PageRecord.cpp" line="697"/>
         <source>Stopping output ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="714"/>
+        <location filename="../GUI/PageRecord.cpp" line="715"/>
         <source>Stopped output.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="743"/>
+        <location filename="../GUI/PageRecord.cpp" line="744"/>
         <source>Starting input ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="767"/>
+        <location filename="../GUI/PageRecord.cpp" line="768"/>
         <source>Started input.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="793"/>
+        <location filename="../GUI/PageRecord.cpp" line="794"/>
         <source>Stopping input ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="807"/>
+        <location filename="../GUI/PageRecord.cpp" line="808"/>
         <source>Stopped input.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="517"/>
+        <location filename="../GUI/PageRecord.cpp" line="518"/>
         <source>Starting page ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="158"/>
+        <location filename="../GUI/PageRecord.cpp" line="159"/>
         <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
 The program that you are recording will not receive the key press.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="543"/>
+        <location filename="../GUI/PageRecord.cpp" line="544"/>
         <source>Started page.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="572"/>
+        <location filename="../GUI/PageRecord.cpp" line="573"/>
         <source>Stopping page ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="598"/>
+        <location filename="../GUI/PageRecord.cpp" line="599"/>
         <source>Stopped page.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="636"/>
+        <location filename="../GUI/PageRecord.cpp" line="637"/>
         <source>Error: Could not get the size of the OpenGL application because GLInject has not been started.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="641"/>
+        <location filename="../GUI/PageRecord.cpp" line="642"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="536"/>
-        <location filename="../GUI/PageRecord.cpp" line="685"/>
-        <location filename="../GUI/PageRecord.cpp" line="772"/>
+        <location filename="../GUI/PageRecord.cpp" line="537"/>
+        <location filename="../GUI/PageRecord.cpp" line="686"/>
+        <location filename="../GUI/PageRecord.cpp" line="773"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="748"/>
+        <location filename="../GUI/PageRecord.cpp" line="749"/>
         <source>Error: Could not create a GLInject input because GLInject has not been started.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="870"/>
-        <location filename="../GUI/PageRecord.cpp" line="874"/>
+        <location filename="../GUI/PageRecord.cpp" line="871"/>
+        <location filename="../GUI/PageRecord.cpp" line="875"/>
         <source>Pause recording</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="877"/>
-        <location filename="../GUI/PageRecord.cpp" line="881"/>
+        <location filename="../GUI/PageRecord.cpp" line="878"/>
+        <location filename="../GUI/PageRecord.cpp" line="882"/>
         <source>Start recording</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="890"/>
+        <location filename="../GUI/PageRecord.cpp" line="891"/>
         <source>Stop preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="893"/>
+        <location filename="../GUI/PageRecord.cpp" line="894"/>
         <source>Start preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="927"/>
+        <location filename="../GUI/PageRecord.cpp" line="928"/>
         <source>Error: Something went wrong while creating the synth.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="959"/>
+        <location filename="../GUI/PageRecord.cpp" line="960"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="972"/>
+        <location filename="../GUI/PageRecord.cpp" line="973"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
@@ -1545,22 +1545,22 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="115"/>
+        <location filename="../Main.cpp" line="116"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="143"/>
+        <location filename="../Main.cpp" line="144"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="153"/>
+        <location filename="../Main.cpp" line="154"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="180"/>
+        <location filename="../Main.cpp" line="181"/>
         <source>SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?
 
 You can also change this option manually in the NVIDIA control panel.</source>
@@ -1568,23 +1568,23 @@ You can also change this option manually in the NVIDIA control panel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="185"/>
+        <location filename="../Main.cpp" line="186"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="191"/>
+        <location filename="../Main.cpp" line="192"/>
         <source>SSR started</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="200"/>
+        <location filename="../Main.cpp" line="201"/>
         <source>SSR stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="208"/>
+        <location filename="../Main.cpp" line="209"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation type="unfinished"></translation>
     </message>
