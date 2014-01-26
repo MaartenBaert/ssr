@@ -1051,17 +1051,17 @@ O botão de iniciar está no topo;).</translation>
     <message>
         <location filename="../common/Dialogs.cpp" line="31"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sim</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="33"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Não</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cancelar</translation>
     </message>
 </context>
 <context>
