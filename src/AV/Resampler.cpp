@@ -76,7 +76,7 @@ void Resampler::Resample(unsigned int in_channels, unsigned int in_sample_rate, 
 				out_pos += out_done;
 				if(out_pos < m_out_data.size() / (out_channels * sizeof(float)))
 					break;
-				m_out_data.realloc(m_out_data.size() * 2);
+				m_out_data.alloc(m_out_data.size() * 2, true);
 			}
 
 			soxr_delete(m_soxr);
@@ -122,7 +122,7 @@ void Resampler::Resample(unsigned int in_channels, unsigned int in_sample_rate, 
 			*out_sample_count = in_sample_count;
 			*out_data = in_data_float;
 		} else {
-			m_out_data.realloc((out_pos + in_sample_count) * out_channels * sizeof(float));
+			m_out_data.alloc((out_pos + in_sample_count) * out_channels * sizeof(float), true);
 			memcpy(m_out_data.data() + out_pos * out_channels * sizeof(float), in_data_float, in_sample_count * out_channels * sizeof(float));
 			*out_sample_count = out_pos + in_sample_count;
 			*out_data = m_out_data.data();
@@ -144,7 +144,7 @@ void Resampler::Resample(unsigned int in_channels, unsigned int in_sample_rate, 
 		out_pos += out_done;
 		if(in_pos == in_sample_count)
 			break;
-		m_out_data.realloc(m_out_data.size() * 2);
+		m_out_data.alloc(m_out_data.size() * 2, true);
 	}
 
 	*out_sample_count = out_pos;
