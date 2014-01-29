@@ -14,7 +14,10 @@ GNU GPL v3 - read 'COPYING' for more info.
 Build dependencies
 ------------------
 
-This list may be incomplete - if you find something that is missing, please tell me.
+If you have a 64-bit system, you have to install some 32-bit libraries as well. These are required to compile the 32-bit SSR-GLInject library (which is needed to record 32-bit OpenGL applications).
+
+You will need the following packages to compile SimpleScreenRecorder:
+
 - GCC and make
 - cmake (for libsoxr)
 - pkg-config
@@ -23,11 +26,11 @@ This list may be incomplete - if you find something that is missing, please tell
 - ALSA library
 - PulseAudio library (optional, disable with --disable-pulseaudio)
 - JACK library (optional, disable with --disable-jack)
-- libGL (32/64)
-- libGLU (32/64)
-- libX11 (32/64)
-- libXext (32/64)
-- libXfixes (32/64)
+- libGL (32 and 64 bit)
+- libGLU (32 and 64 bit)
+- libX11 (32 and 64 bit)
+- libXext (32 and 64 bit)
+- libXfixes (32 and 64 bit)
 
 For Ubuntu 12.04 - 13.04:
 
@@ -80,8 +83,8 @@ For Debian:
     sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib \
-	libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
-
+    libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
+    
     cd /usr/lib/i386-linux-gnu
     ln -s libGL.so.1 libGL.so
     ln -s libGLU.so.1 libGLU.so
@@ -95,7 +98,7 @@ For OpenSUSE (incomplete list but usually enough):
     sudo zypper install gcc gcc-32bit libffmpeg-devel libqt4-devel libpulse-devel libjack-devel \
     glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXext-devel libXext-devel-32bit \
     libXfixes-devel libXfixes-devel-32bit libstdc++47-devel-32bit
-
+    
     cd /usr/lib/i386-linux-gnu
     sudo ln -s libGLU.so.1 libGLU.so
     sudo ln -s libX11.so.6 libX11.so
