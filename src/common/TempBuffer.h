@@ -25,6 +25,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 // The amount of allocated memory will only grow, not shrink (i.e. like std::vector).
 // The 'size' function will always report the actual size, which can be larger than the size requested.
 
+#define TEMPBUFFER_ALIGN 16
+
 template<typename T>
 class TempBuffer {
 
@@ -38,27 +40,18 @@ public:
 		m_size = 0;
 	}
 	inline ~TempBuffer() {
-		av_free(m_data);
+		free(m_data);
 	}
-	inline void alloc(size_t size) {
+	inline void alloc(size_t size, bool copy = false) {
 		if(size > m_size) {
 			if(m_size != 0)
 				size += size / 4;
-			void *temp = av_malloc(sizeof(T) * size);
-			if(temp == NULL)
+			void *temp;
+			if(posix_memalign(&temp, TEMPBUFFER_ALIGN, sizeof(T) * size) != 0)
 				throw std::bad_alloc();
-			av_free(m_data);
-			m_data = (T*) temp;
-			m_size = size;
-		}
-	}
-	inline void realloc(size_t size) {
-		if(size > m_size) {
-			if(m_size != 0)
-				size += size / 4;
-			void *temp = av_realloc(m_data, sizeof(T) * size);
-			if(temp == NULL)
-				throw std::bad_alloc();
+			if(copy)
+				memcpy(temp, m_data, m_size);
+			free(m_data);
 			m_data = (T*) temp;
 			m_size = size;
 		}
