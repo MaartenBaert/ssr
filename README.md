@@ -83,8 +83,8 @@ For Debian:
     sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib \
-	libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
-
+    libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
+    
     cd /usr/lib/i386-linux-gnu
     ln -s libGL.so.1 libGL.so
     ln -s libGLU.so.1 libGLU.so
@@ -98,7 +98,7 @@ For OpenSUSE (incomplete list but usually enough):
     sudo zypper install gcc gcc-32bit libffmpeg-devel libqt4-devel libpulse-devel libjack-devel \
     glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXext-devel libXext-devel-32bit \
     libXfixes-devel libXfixes-devel-32bit libstdc++47-devel-32bit
-
+    
     cd /usr/lib/i386-linux-gnu
     sudo ln -s libGLU.so.1 libGLU.so
     sudo ln -s libX11.so.6 libX11.so
@@ -109,6 +109,10 @@ For OpenSUSE (incomplete list but usually enough):
 Some packages (e.g. ffmpeg) are not in the official repository, but can be installed from the [Packman repository](http://packman.links2linux.org/). You can add the Packman repository with this command:
 
     zypper addrepo -f http://ftp.gwdg.de/pub/linux/packman/suse/12.3/ packman
+
+For Fedora (incomplete list):
+
+    list yum install ffmpeg ffmpeg-devel mesa-libGLU-devel qt-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel cmake mesa-libGL-devel.i686 mesa-libGLU-devel.i686 glibc-devel.i686 libXext-devel.i686 libX11-devel.i686 libXfixes-devel.i686
 
 Compiling and installing
 ------------------------
