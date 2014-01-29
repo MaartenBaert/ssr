@@ -110,9 +110,9 @@ Some packages (e.g. ffmpeg) are not in the official repository, but can be insta
 
     zypper addrepo -f http://ftp.gwdg.de/pub/linux/packman/suse/12.3/ packman
 
-For Fedora (incomplete list):
+For Fedora:
 
-    list yum install ffmpeg ffmpeg-devel mesa-libGLU-devel qt-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel cmake mesa-libGL-devel.i686 mesa-libGLU-devel.i686 glibc-devel.i686 libXext-devel.i686 libX11-devel.i686 libXfixes-devel.i686
+    sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel gcc make cmake gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel.i686 libXfixes-devel.i686 mesa-libGLU-devel.i686
 
 Compiling and installing
 ------------------------
