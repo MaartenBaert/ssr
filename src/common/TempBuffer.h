@@ -50,7 +50,7 @@ public:
 			if(posix_memalign(&temp, TEMPBUFFER_ALIGN, sizeof(T) * size) != 0)
 				throw std::bad_alloc();
 			if(copy)
-				memcpy(temp, m_data, m_size);
+				memcpy(temp, m_data, sizeof(T) * m_size);
 			free(m_data);
 			m_data = (T*) temp;
 			m_size = size;
