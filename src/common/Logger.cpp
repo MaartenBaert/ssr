@@ -25,18 +25,18 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 Logger *Logger::s_instance = NULL;
 
 Logger::Logger() {
-	Q_ASSERT(s_instance == NULL);
+	assert(s_instance == NULL);
 	qRegisterMetaType<enum_type>();
 	s_instance = this;
 }
 
 Logger::~Logger() {
-	Q_ASSERT(s_instance == this);
+	assert(s_instance == this);
 	s_instance = NULL;
 }
 
 void Logger::Log(enum_type type, const QString& str) {
-	Q_ASSERT(s_instance != NULL);
+	assert(s_instance != NULL);
 	std::lock_guard<std::mutex> lock(s_instance->m_mutex);
 	Q_UNUSED(lock);
 	switch(type) {

@@ -88,11 +88,11 @@ Muxer::~Muxer() {
 }
 
 void Muxer::Start() {
-	Q_ASSERT(!m_started);
+	assert(!m_started);
 
 	// make sure all encoders have registered
 	for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
-		Q_ASSERT(m_encoders[i] != NULL);
+		assert(m_encoders[i] != NULL);
 	}
 
 	// write header
@@ -107,10 +107,10 @@ void Muxer::Start() {
 }
 
 void Muxer::Finish() {
-	Q_ASSERT(m_started);
+	assert(m_started);
 	Logger::LogInfo("[Muxer::Finish] " + QObject::tr("Finishing encoders ..."));
 	for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
-		Q_ASSERT(m_encoders[i] != NULL);
+		assert(m_encoders[i] != NULL);
 		m_encoders[i]->Finish(); // no deadlock: nothing in Muxer is locked in this thread (and BaseEncoder::Finish is lock-free, but that could change)
 	}
 }
@@ -130,8 +130,8 @@ uint64_t Muxer::GetTotalBytes() {
 }
 
 AVStream* Muxer::CreateStream(AVCodec* codec) {
-	Q_ASSERT(!m_started);
-	Q_ASSERT(m_format_context->nb_streams < MUXER_MAX_STREAMS);
+	assert(!m_started);
+	assert(m_format_context->nb_streams < MUXER_MAX_STREAMS);
 
 	// create a new stream
 #if SSR_USE_AVFORMAT_NEW_STREAM
@@ -161,28 +161,28 @@ AVStream* Muxer::CreateStream(AVCodec* codec) {
 }
 
 void Muxer::RegisterEncoder(unsigned int stream_index, BaseEncoder* encoder) {
-	Q_ASSERT(!m_started);
-	Q_ASSERT(stream_index < m_format_context->nb_streams);
-	Q_ASSERT(m_encoders[stream_index] == NULL);
+	assert(!m_started);
+	assert(stream_index < m_format_context->nb_streams);
+	assert(m_encoders[stream_index] == NULL);
 	m_encoders[stream_index] = encoder;
 }
 
 void Muxer::EndStream(unsigned int stream_index) {
-	Q_ASSERT(stream_index < m_format_context->nb_streams);
+	assert(stream_index < m_format_context->nb_streams);
 	StreamLock lock(&m_stream_data[stream_index]);
 	lock->m_is_done = true;
 }
 
 void Muxer::AddPacket(unsigned int stream_index, std::unique_ptr<AVPacketWrapper> packet) {
-	Q_ASSERT(m_started);
-	Q_ASSERT(stream_index < m_format_context->nb_streams);
+	assert(m_started);
+	assert(stream_index < m_format_context->nb_streams);
 	StreamLock lock(&m_stream_data[stream_index]);
 	lock->m_packet_queue.push_back(std::move(packet));
 }
 
 unsigned int Muxer::GetQueuedPacketCount(unsigned int stream_index) {
-	Q_ASSERT(m_started);
-	Q_ASSERT(stream_index < m_format_context->nb_streams);
+	assert(m_started);
+	assert(stream_index < m_format_context->nb_streams);
 	StreamLock lock(&m_stream_data[stream_index]);
 	return lock->m_packet_queue.size();
 }

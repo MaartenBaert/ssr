@@ -92,6 +92,10 @@ host_triplet = @host@
 @ENABLE_JACK_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_9 = -DSSR_USE_JACK=1
 @ENABLE_JACK_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_10 = -ljack
 @ENABLE_JACK_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_11 = -DSSR_USE_JACK=0
+
+########## x86-specific targets ##########
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_12 = libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_13 = libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/build-aux/depcomp
@@ -107,18 +111,30 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-libsimplescreenrecorder_target_ssse3_la_LIBADD =
-am__libsimplescreenrecorder_target_ssse3_la_SOURCES_DIST =  \
-	AV/FastScaler_Convert_SSSE3.cpp AV/FastScaler_Scale_SSSE3.cpp
+libsimplescreenrecorder_target_sse2_la_LIBADD =
+am__libsimplescreenrecorder_target_sse2_la_SOURCES_DIST =  \
+	AV/FastResampler_FirFilter_SSE2.cpp
 am__dirstamp = $(am__leading_dot)dirstamp
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am_libsimplescreenrecorder_target_ssse3_la_OBJECTS = AV/libsimplescreenrecorder_target_ssse3_la-FastScaler_Convert_SSSE3.lo \
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@	AV/libsimplescreenrecorder_target_ssse3_la-FastScaler_Scale_SSSE3.lo
-libsimplescreenrecorder_target_ssse3_la_OBJECTS =  \
-	$(am_libsimplescreenrecorder_target_ssse3_la_OBJECTS)
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am_libsimplescreenrecorder_target_sse2_la_OBJECTS = AV/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.lo
+libsimplescreenrecorder_target_sse2_la_OBJECTS =  \
+	$(am_libsimplescreenrecorder_target_sse2_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libsimplescreenrecorder_target_sse2_la_LINK = $(LIBTOOL) $(AM_V_lt) \
+	--tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
+	$(CXXLD) $(libsimplescreenrecorder_target_sse2_la_CXXFLAGS) \
+	$(CXXFLAGS) $(libsimplescreenrecorder_target_sse2_la_LDFLAGS) \
+	$(LDFLAGS) -o $@
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am_libsimplescreenrecorder_target_sse2_la_rpath =
+libsimplescreenrecorder_target_ssse3_la_LIBADD =
+am__libsimplescreenrecorder_target_ssse3_la_SOURCES_DIST =  \
+	AV/FastScaler_Convert_SSSE3.cpp AV/FastScaler_Scale_SSSE3.cpp
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am_libsimplescreenrecorder_target_ssse3_la_OBJECTS = AV/libsimplescreenrecorder_target_ssse3_la-FastScaler_Convert_SSSE3.lo \
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@	AV/libsimplescreenrecorder_target_ssse3_la-FastScaler_Scale_SSSE3.lo
+libsimplescreenrecorder_target_ssse3_la_OBJECTS =  \
+	$(am_libsimplescreenrecorder_target_ssse3_la_OBJECTS)
 libsimplescreenrecorder_target_ssse3_la_LINK = $(LIBTOOL) $(AM_V_lt) \
 	--tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
 	$(CXXLD) $(libsimplescreenrecorder_target_ssse3_la_CXXFLAGS) \
@@ -142,24 +158,27 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	AV/Output/Synchronizer.h AV/Output/VideoEncoder.cpp \
 	AV/Output/VideoEncoder.h AV/Output/X264Presets.cpp \
 	AV/Output/X264Presets.h AV/AVWrapper.cpp AV/AVWrapper.h \
-	AV/FastScaler.cpp AV/FastScaler.h AV/FastScaler_Convert.h \
+	AV/FastResampler.cpp AV/FastResampler.h \
+	AV/FastResampler_FirFilter.h \
+	AV/FastResampler_FirFilter_Fallback.cpp AV/FastScaler.cpp \
+	AV/FastScaler.h AV/FastScaler_Convert.h \
 	AV/FastScaler_Convert_Fallback.cpp AV/FastScaler_Scale.h \
-	AV/FastScaler_Scale_Fallback.cpp AV/FastScaler_Scale_Generic.h \
-	AV/FastScaler_Scale_Generic.cpp AV/Resampler.cpp \
-	AV/Resampler.h AV/SimpleSynth.cpp AV/SimpleSynth.h \
-	AV/SourceSink.cpp AV/SourceSink.h common/ByteQueue.cpp \
-	common/ByteQueue.h common/DetectCPUFeatures.cpp \
+	AV/FastScaler_Scale_Fallback.cpp \
+	AV/FastScaler_Scale_Generic.cpp AV/FastScaler_Scale_Generic.h \
+	AV/SampleCast.h AV/SimpleSynth.cpp AV/SimpleSynth.h \
+	AV/SourceSink.cpp AV/SourceSink.h common/DetectCPUFeatures.cpp \
 	common/DetectCPUFeatures.h common/Dialogs.cpp common/Dialogs.h \
 	common/Logger.cpp common/Logger.h common/MutexDataPair.h \
-	common/TempBuffer.h GUI/AudioPreviewer.cpp \
-	GUI/AudioPreviewer.h GUI/ElidedLabel.cpp GUI/ElidedLabel.h \
-	GUI/HotkeyListener.cpp GUI/HotkeyListener.h GUI/Icons.cpp \
-	GUI/Icons.h GUI/MainWindow.cpp GUI/MainWindow.h \
-	GUI/PageDone.cpp GUI/PageDone.h GUI/PageInput.cpp \
-	GUI/PageInput.h GUI/PageOutput.cpp GUI/PageOutput.h \
-	GUI/PageRecord.cpp GUI/PageRecord.h GUI/PageWelcome.cpp \
-	GUI/PageWelcome.h GUI/VideoPreviewer.cpp GUI/VideoPreviewer.h \
-	Global.h Main.cpp Main.h Version.cpp Version.h
+	common/QueueBuffer.h common/TempBuffer.h \
+	GUI/AudioPreviewer.cpp GUI/AudioPreviewer.h \
+	GUI/ElidedLabel.cpp GUI/ElidedLabel.h GUI/HotkeyListener.cpp \
+	GUI/HotkeyListener.h GUI/Icons.cpp GUI/Icons.h \
+	GUI/MainWindow.cpp GUI/MainWindow.h GUI/PageDone.cpp \
+	GUI/PageDone.h GUI/PageInput.cpp GUI/PageInput.h \
+	GUI/PageOutput.cpp GUI/PageOutput.h GUI/PageRecord.cpp \
+	GUI/PageRecord.h GUI/PageWelcome.cpp GUI/PageWelcome.h \
+	GUI/VideoPreviewer.cpp GUI/VideoPreviewer.h Global.h Main.cpp \
+	Main.h Version.cpp Version.h
 @ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectLauncher.$(OBJEXT) \
@@ -175,14 +194,14 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-VideoEncoder.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Output/simplescreenrecorder-X264Presets.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-AVWrapper.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-FastResampler.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-FastScaler.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-FastScaler_Convert_Fallback.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-FastScaler_Scale_Fallback.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-FastScaler_Scale_Generic.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-Resampler.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-SimpleSynth.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-SourceSink.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-ByteQueue.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-DetectCPUFeatures.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-Dialogs.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-Logger.$(OBJEXT) \
@@ -215,7 +234,8 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_VideoPreviewer.$(OBJEXT)
 simplescreenrecorder_OBJECTS = $(am_simplescreenrecorder_OBJECTS) \
 	$(nodist_simplescreenrecorder_OBJECTS)
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@simplescreenrecorder_DEPENDENCIES = libsimplescreenrecorder-target-ssse3.la
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_DEPENDENCIES =  \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_13)
 simplescreenrecorder_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) \
@@ -272,10 +292,12 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libsimplescreenrecorder_target_ssse3_la_SOURCES) \
+SOURCES = $(libsimplescreenrecorder_target_sse2_la_SOURCES) \
+	$(libsimplescreenrecorder_target_ssse3_la_SOURCES) \
 	$(simplescreenrecorder_SOURCES) \
 	$(nodist_simplescreenrecorder_SOURCES)
 DIST_SOURCES =  \
+	$(am__libsimplescreenrecorder_target_sse2_la_SOURCES_DIST) \
 	$(am__libsimplescreenrecorder_target_ssse3_la_SOURCES_DIST) \
 	$(am__simplescreenrecorder_SOURCES_DIST)
 am__can_run_installinfo = \
@@ -463,6 +485,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+@ENABLE_SSRPROGRAM_TRUE@noinst_LTLIBRARIES = $(am__append_12)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS = $(QT4_CFLAGS) \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(top_builddir)/3rdparty \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
@@ -520,22 +543,23 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	AV/Output/X264Presets.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/AVWrapper.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/AVWrapper.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/FastResampler.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	AV/FastResampler.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/FastResampler_FirFilter.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/FastResampler_FirFilter_Fallback.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler_Convert.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler_Convert_Fallback.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler_Scale.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler_Scale_Fallback.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler_Scale_Generic.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler_Scale_Generic.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Resampler.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	AV/Resampler.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/FastScaler_Scale_Generic.h \
+@ENABLE_SSRPROGRAM_TRUE@	AV/SampleCast.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/SimpleSynth.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/SimpleSynth.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/SourceSink.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/SourceSink.h \
-@ENABLE_SSRPROGRAM_TRUE@	common/ByteQueue.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	common/ByteQueue.h \
 @ENABLE_SSRPROGRAM_TRUE@	common/DetectCPUFeatures.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	common/DetectCPUFeatures.h \
 @ENABLE_SSRPROGRAM_TRUE@	common/Dialogs.cpp \
@@ -543,6 +567,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	common/Logger.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	common/Logger.h \
 @ENABLE_SSRPROGRAM_TRUE@	common/MutexDataPair.h \
+@ENABLE_SSRPROGRAM_TRUE@	common/QueueBuffer.h \
 @ENABLE_SSRPROGRAM_TRUE@	common/TempBuffer.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/AudioPreviewer.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/AudioPreviewer.h \
@@ -584,10 +609,14 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageInput.cpp moc_PageOutput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageRecord.cpp moc_PageWelcome.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_VideoPreviewer.cpp
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDADD = $(am__append_13)
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_CPPFLAGS = $(simplescreenrecorder_CPPFLAGS)
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_CFLAGS = $(simplescreenrecorder_CFLAGS) -msse2
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_CXXFLAGS = $(simplescreenrecorder_CXXFLAGS) -msse2
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_LDFLAGS = $(simplescreenrecorder_LDFLAGS)
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_SOURCES = \
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@	AV/FastResampler_FirFilter_SSE2.cpp
 
-########## x86-specific targets ##########
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@simplescreenrecorder_LDADD = libsimplescreenrecorder-target-ssse3.la
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@noinst_LTLIBRARIES = libsimplescreenrecorder-target-ssse3.la
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_ssse3_la_CPPFLAGS = $(simplescreenrecorder_CPPFLAGS)
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_ssse3_la_CFLAGS = $(simplescreenrecorder_CFLAGS) -mssse3
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_ssse3_la_CXXFLAGS = $(simplescreenrecorder_CXXFLAGS) -mssse3
@@ -663,6 +692,11 @@ AV/$(am__dirstamp):
 AV/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) AV/$(DEPDIR)
 	@: > AV/$(DEPDIR)/$(am__dirstamp)
+AV/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.lo:  \
+	AV/$(am__dirstamp) AV/$(DEPDIR)/$(am__dirstamp)
+
+libsimplescreenrecorder-target-sse2.la: $(libsimplescreenrecorder_target_sse2_la_OBJECTS) $(libsimplescreenrecorder_target_sse2_la_DEPENDENCIES) $(EXTRA_libsimplescreenrecorder_target_sse2_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(libsimplescreenrecorder_target_sse2_la_LINK) $(am_libsimplescreenrecorder_target_sse2_la_rpath) $(libsimplescreenrecorder_target_sse2_la_OBJECTS) $(libsimplescreenrecorder_target_sse2_la_LIBADD) $(LIBS)
 AV/libsimplescreenrecorder_target_ssse3_la-FastScaler_Convert_SSSE3.lo:  \
 	AV/$(am__dirstamp) AV/$(DEPDIR)/$(am__dirstamp)
 AV/libsimplescreenrecorder_target_ssse3_la-FastScaler_Scale_SSSE3.lo:  \
@@ -761,6 +795,10 @@ AV/Output/simplescreenrecorder-X264Presets.$(OBJEXT):  \
 	AV/Output/$(am__dirstamp) AV/Output/$(DEPDIR)/$(am__dirstamp)
 AV/simplescreenrecorder-AVWrapper.$(OBJEXT): AV/$(am__dirstamp) \
 	AV/$(DEPDIR)/$(am__dirstamp)
+AV/simplescreenrecorder-FastResampler.$(OBJEXT): AV/$(am__dirstamp) \
+	AV/$(DEPDIR)/$(am__dirstamp)
+AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.$(OBJEXT):  \
+	AV/$(am__dirstamp) AV/$(DEPDIR)/$(am__dirstamp)
 AV/simplescreenrecorder-FastScaler.$(OBJEXT): AV/$(am__dirstamp) \
 	AV/$(DEPDIR)/$(am__dirstamp)
 AV/simplescreenrecorder-FastScaler_Convert_Fallback.$(OBJEXT):  \
@@ -769,8 +807,6 @@ AV/simplescreenrecorder-FastScaler_Scale_Fallback.$(OBJEXT):  \
 	AV/$(am__dirstamp) AV/$(DEPDIR)/$(am__dirstamp)
 AV/simplescreenrecorder-FastScaler_Scale_Generic.$(OBJEXT):  \
 	AV/$(am__dirstamp) AV/$(DEPDIR)/$(am__dirstamp)
-AV/simplescreenrecorder-Resampler.$(OBJEXT): AV/$(am__dirstamp) \
-	AV/$(DEPDIR)/$(am__dirstamp)
 AV/simplescreenrecorder-SimpleSynth.$(OBJEXT): AV/$(am__dirstamp) \
 	AV/$(DEPDIR)/$(am__dirstamp)
 AV/simplescreenrecorder-SourceSink.$(OBJEXT): AV/$(am__dirstamp) \
@@ -781,8 +817,6 @@ common/$(am__dirstamp):
 common/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) common/$(DEPDIR)
 	@: > common/$(DEPDIR)/$(am__dirstamp)
-common/simplescreenrecorder-ByteQueue.$(OBJEXT):  \
-	common/$(am__dirstamp) common/$(DEPDIR)/$(am__dirstamp)
 common/simplescreenrecorder-DetectCPUFeatures.$(OBJEXT):  \
 	common/$(am__dirstamp) common/$(DEPDIR)/$(am__dirstamp)
 common/simplescreenrecorder-Dialogs.$(OBJEXT): common/$(am__dirstamp) \
@@ -850,14 +884,16 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_VideoPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_X11Input.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-qrc_resources.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/libsimplescreenrecorder_target_ssse3_la-FastScaler_Convert_SSSE3.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/libsimplescreenrecorder_target_ssse3_la-FastScaler_Scale_SSSE3.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-AVWrapper.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-FastResampler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-FastResampler_FirFilter_Fallback.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-FastScaler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-FastScaler_Convert_Fallback.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-FastScaler_Scale_Fallback.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-FastScaler_Scale_Generic.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-Resampler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-SimpleSynth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/$(DEPDIR)/simplescreenrecorder-SourceSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Input/$(DEPDIR)/simplescreenrecorder-ALSAInput.Po@am__quote@
@@ -885,7 +921,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-PageRecord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-PageWelcome.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-VideoPreviewer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-ByteQueue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-Dialogs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-Logger.Po@am__quote@
@@ -913,6 +948,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
+
+AV/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.lo: AV/FastResampler_FirFilter_SSE2.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsimplescreenrecorder_target_sse2_la_CPPFLAGS) $(CPPFLAGS) $(libsimplescreenrecorder_target_sse2_la_CXXFLAGS) $(CXXFLAGS) -MT AV/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.lo -MD -MP -MF AV/$(DEPDIR)/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.Tpo -c -o AV/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.lo `test -f 'AV/FastResampler_FirFilter_SSE2.cpp' || echo '$(srcdir)/'`AV/FastResampler_FirFilter_SSE2.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.Tpo AV/$(DEPDIR)/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/FastResampler_FirFilter_SSE2.cpp' object='AV/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsimplescreenrecorder_target_sse2_la_CPPFLAGS) $(CPPFLAGS) $(libsimplescreenrecorder_target_sse2_la_CXXFLAGS) $(CXXFLAGS) -c -o AV/libsimplescreenrecorder_target_sse2_la-FastResampler_FirFilter_SSE2.lo `test -f 'AV/FastResampler_FirFilter_SSE2.cpp' || echo '$(srcdir)/'`AV/FastResampler_FirFilter_SSE2.cpp
 
 AV/libsimplescreenrecorder_target_ssse3_la-FastScaler_Convert_SSSE3.lo: AV/FastScaler_Convert_SSSE3.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsimplescreenrecorder_target_ssse3_la_CPPFLAGS) $(CPPFLAGS) $(libsimplescreenrecorder_target_ssse3_la_CXXFLAGS) $(CXXFLAGS) -MT AV/libsimplescreenrecorder_target_ssse3_la-FastScaler_Convert_SSSE3.lo -MD -MP -MF AV/$(DEPDIR)/libsimplescreenrecorder_target_ssse3_la-FastScaler_Convert_SSSE3.Tpo -c -o AV/libsimplescreenrecorder_target_ssse3_la-FastScaler_Convert_SSSE3.lo `test -f 'AV/FastScaler_Convert_SSSE3.cpp' || echo '$(srcdir)/'`AV/FastScaler_Convert_SSSE3.cpp
@@ -1138,6 +1180,34 @@ AV/simplescreenrecorder-AVWrapper.obj: AV/AVWrapper.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-AVWrapper.obj `if test -f 'AV/AVWrapper.cpp'; then $(CYGPATH_W) 'AV/AVWrapper.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/AVWrapper.cpp'; fi`
 
+AV/simplescreenrecorder-FastResampler.o: AV/FastResampler.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-FastResampler.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-FastResampler.Tpo -c -o AV/simplescreenrecorder-FastResampler.o `test -f 'AV/FastResampler.cpp' || echo '$(srcdir)/'`AV/FastResampler.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-FastResampler.Tpo AV/$(DEPDIR)/simplescreenrecorder-FastResampler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/FastResampler.cpp' object='AV/simplescreenrecorder-FastResampler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-FastResampler.o `test -f 'AV/FastResampler.cpp' || echo '$(srcdir)/'`AV/FastResampler.cpp
+
+AV/simplescreenrecorder-FastResampler.obj: AV/FastResampler.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-FastResampler.obj -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-FastResampler.Tpo -c -o AV/simplescreenrecorder-FastResampler.obj `if test -f 'AV/FastResampler.cpp'; then $(CYGPATH_W) 'AV/FastResampler.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/FastResampler.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-FastResampler.Tpo AV/$(DEPDIR)/simplescreenrecorder-FastResampler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/FastResampler.cpp' object='AV/simplescreenrecorder-FastResampler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-FastResampler.obj `if test -f 'AV/FastResampler.cpp'; then $(CYGPATH_W) 'AV/FastResampler.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/FastResampler.cpp'; fi`
+
+AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.o: AV/FastResampler_FirFilter_Fallback.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-FastResampler_FirFilter_Fallback.Tpo -c -o AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.o `test -f 'AV/FastResampler_FirFilter_Fallback.cpp' || echo '$(srcdir)/'`AV/FastResampler_FirFilter_Fallback.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-FastResampler_FirFilter_Fallback.Tpo AV/$(DEPDIR)/simplescreenrecorder-FastResampler_FirFilter_Fallback.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/FastResampler_FirFilter_Fallback.cpp' object='AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.o `test -f 'AV/FastResampler_FirFilter_Fallback.cpp' || echo '$(srcdir)/'`AV/FastResampler_FirFilter_Fallback.cpp
+
+AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.obj: AV/FastResampler_FirFilter_Fallback.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.obj -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-FastResampler_FirFilter_Fallback.Tpo -c -o AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.obj `if test -f 'AV/FastResampler_FirFilter_Fallback.cpp'; then $(CYGPATH_W) 'AV/FastResampler_FirFilter_Fallback.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/FastResampler_FirFilter_Fallback.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-FastResampler_FirFilter_Fallback.Tpo AV/$(DEPDIR)/simplescreenrecorder-FastResampler_FirFilter_Fallback.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/FastResampler_FirFilter_Fallback.cpp' object='AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-FastResampler_FirFilter_Fallback.obj `if test -f 'AV/FastResampler_FirFilter_Fallback.cpp'; then $(CYGPATH_W) 'AV/FastResampler_FirFilter_Fallback.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/FastResampler_FirFilter_Fallback.cpp'; fi`
+
 AV/simplescreenrecorder-FastScaler.o: AV/FastScaler.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-FastScaler.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-FastScaler.Tpo -c -o AV/simplescreenrecorder-FastScaler.o `test -f 'AV/FastScaler.cpp' || echo '$(srcdir)/'`AV/FastScaler.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-FastScaler.Tpo AV/$(DEPDIR)/simplescreenrecorder-FastScaler.Po
@@ -1194,20 +1264,6 @@ AV/simplescreenrecorder-FastScaler_Scale_Generic.obj: AV/FastScaler_Scale_Generi
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-FastScaler_Scale_Generic.obj `if test -f 'AV/FastScaler_Scale_Generic.cpp'; then $(CYGPATH_W) 'AV/FastScaler_Scale_Generic.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/FastScaler_Scale_Generic.cpp'; fi`
 
-AV/simplescreenrecorder-Resampler.o: AV/Resampler.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-Resampler.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-Resampler.Tpo -c -o AV/simplescreenrecorder-Resampler.o `test -f 'AV/Resampler.cpp' || echo '$(srcdir)/'`AV/Resampler.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-Resampler.Tpo AV/$(DEPDIR)/simplescreenrecorder-Resampler.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Resampler.cpp' object='AV/simplescreenrecorder-Resampler.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-Resampler.o `test -f 'AV/Resampler.cpp' || echo '$(srcdir)/'`AV/Resampler.cpp
-
-AV/simplescreenrecorder-Resampler.obj: AV/Resampler.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-Resampler.obj -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-Resampler.Tpo -c -o AV/simplescreenrecorder-Resampler.obj `if test -f 'AV/Resampler.cpp'; then $(CYGPATH_W) 'AV/Resampler.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Resampler.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-Resampler.Tpo AV/$(DEPDIR)/simplescreenrecorder-Resampler.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/Resampler.cpp' object='AV/simplescreenrecorder-Resampler.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-Resampler.obj `if test -f 'AV/Resampler.cpp'; then $(CYGPATH_W) 'AV/Resampler.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/Resampler.cpp'; fi`
-
 AV/simplescreenrecorder-SimpleSynth.o: AV/SimpleSynth.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT AV/simplescreenrecorder-SimpleSynth.o -MD -MP -MF AV/$(DEPDIR)/simplescreenrecorder-SimpleSynth.Tpo -c -o AV/simplescreenrecorder-SimpleSynth.o `test -f 'AV/SimpleSynth.cpp' || echo '$(srcdir)/'`AV/SimpleSynth.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) AV/$(DEPDIR)/simplescreenrecorder-SimpleSynth.Tpo AV/$(DEPDIR)/simplescreenrecorder-SimpleSynth.Po
@@ -1235,20 +1291,6 @@ AV/simplescreenrecorder-SourceSink.obj: AV/SourceSink.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AV/SourceSink.cpp' object='AV/simplescreenrecorder-SourceSink.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-SourceSink.obj `if test -f 'AV/SourceSink.cpp'; then $(CYGPATH_W) 'AV/SourceSink.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/SourceSink.cpp'; fi`
-
-common/simplescreenrecorder-ByteQueue.o: common/ByteQueue.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT common/simplescreenrecorder-ByteQueue.o -MD -MP -MF common/$(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo -c -o common/simplescreenrecorder-ByteQueue.o `test -f 'common/ByteQueue.cpp' || echo '$(srcdir)/'`common/ByteQueue.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) common/$(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo common/$(DEPDIR)/simplescreenrecorder-ByteQueue.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='common/ByteQueue.cpp' object='common/simplescreenrecorder-ByteQueue.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o common/simplescreenrecorder-ByteQueue.o `test -f 'common/ByteQueue.cpp' || echo '$(srcdir)/'`common/ByteQueue.cpp
-
-common/simplescreenrecorder-ByteQueue.obj: common/ByteQueue.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT common/simplescreenrecorder-ByteQueue.obj -MD -MP -MF common/$(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo -c -o common/simplescreenrecorder-ByteQueue.obj `if test -f 'common/ByteQueue.cpp'; then $(CYGPATH_W) 'common/ByteQueue.cpp'; else $(CYGPATH_W) '$(srcdir)/common/ByteQueue.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) common/$(DEPDIR)/simplescreenrecorder-ByteQueue.Tpo common/$(DEPDIR)/simplescreenrecorder-ByteQueue.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='common/ByteQueue.cpp' object='common/simplescreenrecorder-ByteQueue.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o common/simplescreenrecorder-ByteQueue.obj `if test -f 'common/ByteQueue.cpp'; then $(CYGPATH_W) 'common/ByteQueue.cpp'; else $(CYGPATH_W) '$(srcdir)/common/ByteQueue.cpp'; fi`
 
 common/simplescreenrecorder-DetectCPUFeatures.o: common/DetectCPUFeatures.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT common/simplescreenrecorder-DetectCPUFeatures.o -MD -MP -MF common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Tpo -c -o common/simplescreenrecorder-DetectCPUFeatures.o `test -f 'common/DetectCPUFeatures.cpp' || echo '$(srcdir)/'`common/DetectCPUFeatures.cpp

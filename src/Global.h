@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QtGui>
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
@@ -167,10 +168,10 @@ public:
 		return "LibavException";
 	}
 };
-class SoxrException : public std::exception {
+class ResamplerException : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
-		return "SoxrException";
+		return "ResamplerException";
 	}
 };
 class X11Exception : public std::exception {
@@ -215,7 +216,7 @@ inline int64_t hrt_time_micro() {
 
 template<typename T>
 inline T clamp(T v, T lo, T hi) {
-	Q_ASSERT(lo <= hi);
+	assert(lo <= hi);
 	if(v < lo)
 		return lo;
 	if(v > hi)

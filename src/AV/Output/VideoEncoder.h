@@ -53,6 +53,7 @@ public:
 
 	// Returns an additional delay (in us) between frames, based on the queue size, to avoid memory problems.
 	// As long as the queues are relatively small, this function will just return 0.
+	// This function is thread-safe.
 	int64_t GetFrameDelay();
 
 	inline unsigned int GetWidth() { return m_width; }

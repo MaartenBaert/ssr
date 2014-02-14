@@ -74,7 +74,7 @@ void AudioPreviewer::ReadAudioSamples(unsigned int channels, unsigned int sample
 	if(sample_count == 0)
 		return;
 
-	Q_ASSERT(channels == 2); // only stereo is currently supported
+	assert(channels == 2); // only stereo is currently supported
 
 	// save the samples
 	switch(format) {
@@ -105,7 +105,7 @@ void AudioPreviewer::ReadAudioSamples(unsigned int channels, unsigned int sample
 			break;
 		}
 		default: {
-			Q_ASSERT(false); // unsupported sample format
+			assert(false); // unsupported sample format
 			break;
 		}
 	}

@@ -22,7 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #if SSR_USE_JACK
 
-#include "Resampler.h"
+#include "SampleCast.h"
 
 #include "Logger.h"
 
@@ -136,7 +136,7 @@ void JACKInput::WriteCommand(bool is_hole, jack_nframes_t nframes) {
 		cmd.m_sample_rate = m_sample_rate;
 		cmd.m_data.resize(nframes * m_channels * sizeof(float));
 		for(unsigned int p = 0; p < m_channels; ++p) {
-			SampleCopy<float, float>(nframes, (float*) jack_port_get_buffer(m_jack_ports[p], nframes), 1, (float*) cmd.m_data.data() + p, m_channels);
+			SampleCopy(nframes, (float*) jack_port_get_buffer(m_jack_ports[p], nframes), 1, (float*) cmd.m_data.data() + p, m_channels);
 		}
 	}
 	std::atomic_thread_fence(std::memory_order_acq_rel);

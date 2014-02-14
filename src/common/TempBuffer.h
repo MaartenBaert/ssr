@@ -42,7 +42,7 @@ public:
 	inline ~TempBuffer() {
 		free(m_data);
 	}
-	inline void alloc(size_t size, bool copy = false) {
+	inline void Alloc(size_t size, bool copy = false) {
 		if(size > m_size) {
 			if(m_size != 0)
 				size += size / 4;
@@ -57,8 +57,9 @@ public:
 		}
 	}
 
-	inline T* data() { return m_data; }
-	inline size_t size() { return m_size; }
+public:
+	inline T* GetData() { return m_data; }
+	inline size_t GetSize() { return m_size; }
 	inline T& operator[](size_t i) { return m_data[i]; }
 
 	// noncopyable

@@ -23,7 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 
 QSize CalculateScaledSize(QSize in, QSize out) {
-	Q_ASSERT(in.width() > 0 && in.height() > 0);
+	assert(in.width() > 0 && in.height() > 0);
 	if(in.width() <= out.width() && in.height() <= out.height())
 		return in;
 	if(in.width() * out.height() > out.width() * in.height())
@@ -110,8 +110,8 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	// allocate the image
 	int image_stride = grow_align16(image_size.width() * 4);
 	std::shared_ptr<TempBuffer<uint8_t> > image_buffer = std::make_shared<TempBuffer<uint8_t> >();
-	image_buffer->alloc(image_stride * image_size.height());
-	uint8_t *image_data = image_buffer->data();
+	image_buffer->Alloc(image_stride * image_size.height());
+	uint8_t *image_data = image_buffer->GetData();
 
 	// scale the image
 	m_fast_scaler.Scale(width, height, format, &data, &stride,
@@ -175,7 +175,7 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 	if(image_buffer != NULL) {
 
 		// create image (data is not copied)
-		QImage img(image_buffer->data(), image_size.width(), image_size.height(), image_stride, QImage::Format_RGB32);
+		QImage img(image_buffer->GetData(), image_size.width(), image_size.height(), image_stride, QImage::Format_RGB32);
 
 		// draw the image
 		// Scaling is only used if the widget was resized after the image was captured, which is unlikely

@@ -28,16 +28,17 @@ SOURCES += \
 	AV/Output/VideoEncoder.cpp \
 	AV/Output/X264Presets.cpp \
 	AV/AVWrapper.cpp \
+	AV/FastResampler.cpp \
+	AV/FastResampler_FirFilter_Fallback.cpp \
+	AV/FastResampler_FirFilter_SSE2.cpp \
 	AV/FastScaler.cpp \
 	AV/FastScaler_Convert_Fallback.cpp \
 	AV/FastScaler_Convert_SSSE3.cpp \
 	AV/FastScaler_Scale_Fallback.cpp \
 	AV/FastScaler_Scale_Generic.cpp \
 	AV/FastScaler_Scale_SSSE3.cpp \
-	AV/Resampler.cpp \
 	AV/SimpleSynth.cpp \
 	AV/SourceSink.cpp \
-	common/ByteQueue.cpp \
 	common/DetectCPUFeatures.cpp \
 	common/Dialogs.cpp \
 	common/Logger.cpp \
@@ -72,18 +73,20 @@ HEADERS  += \
 	AV/Output/VideoEncoder.h \
 	AV/Output/X264Presets.h \
 	AV/AVWrapper.h \
+	AV/FastResampler.h \
+	AV/FastResampler_FirFilter.h \
 	AV/FastScaler.h \
 	AV/FastScaler_Convert.h \
 	AV/FastScaler_Scale.h \
 	AV/FastScaler_Scale_Generic.h \
-	AV/Resampler.h \
+	AV/SampleCast.h \
 	AV/SimpleSynth.h \
 	AV/SourceSink.h \
-	common/ByteQueue.h \
 	common/DetectCPUFeatures.h \
 	common/Dialogs.h \
 	common/Logger.h \
 	common/MutexDataPair.h \
+	common/QueueBuffer.h \
 	common/TempBuffer.h \
 	GUI/AudioPreviewer.h \
 	GUI/ElidedLabel.h \

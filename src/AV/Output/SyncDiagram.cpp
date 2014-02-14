@@ -29,7 +29,7 @@ inline double floormod(double x, double y) {
 }
 
 SyncDiagram::SyncDiagram(size_t channels) {
-	Q_ASSERT(channels > 0);
+	assert(channels > 0);
 
 	{
 		SharedLock lock(&m_shared_data);
@@ -64,13 +64,13 @@ SyncDiagram::~SyncDiagram() {
 
 void SyncDiagram::SetChannelName(size_t channel, const QString& name) {
 	SharedLock lock(&m_shared_data);
-	Q_ASSERT(channel < lock->m_time_channels.size());
+	assert(channel < lock->m_time_channels.size());
 	lock->m_time_channels[channel].m_name = name;
 }
 
 void SyncDiagram::SetCurrentTime(size_t channel, double current_time) {
 	SharedLock lock(&m_shared_data);
-	Q_ASSERT(channel < lock->m_time_channels.size());
+	assert(channel < lock->m_time_channels.size());
 	lock->m_time_channels[channel].m_current_time = current_time;
 	double time_min = current_time - (double) (width() - MARGIN_RIGHT) / PIXELS_PER_SECOND;
 	auto &blocks = lock->m_time_channels[channel].m_time_blocks;
@@ -81,7 +81,7 @@ void SyncDiagram::SetCurrentTime(size_t channel, double current_time) {
 
 void SyncDiagram::AddBlock(size_t channel, double time_begin, double time_end, const QColor& color) {
 	SharedLock lock(&m_shared_data);
-	Q_ASSERT(channel < lock->m_time_channels.size());
+	assert(channel < lock->m_time_channels.size());
 	lock->m_time_channels[channel].m_time_blocks.push_back(TimeBlock{time_begin, time_end, color});
 }
 

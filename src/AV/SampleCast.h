@@ -24,9 +24,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <soxr.h>
 
-template<typename IN, typename OUT> inline OUT SampleCast(IN x) { return x; }
+template<typename IN, typename OUT> OUT SampleCast(IN x);
+template<> inline int16_t SampleCast<int16_t, int16_t>(int16_t x) { return x; }
 template<> inline int16_t SampleCast<float  , int16_t>(float   x) { return lrint(fmin(fmax(x * 32768.0f, -32768.0f), 32767.0f)); }
 template<> inline float   SampleCast<int16_t, float  >(int16_t x) { return (float) x * (1.0f / 32768.0f); }
+template<> inline float   SampleCast<float  , float  >(float   x) { return x; }
 
 template<typename IN, typename OUT>
 inline void SampleCopy(unsigned int sample_count, const IN* in_data, int in_step, OUT* out_data, int out_step) {
@@ -36,23 +38,3 @@ inline void SampleCopy(unsigned int sample_count, const IN* in_data, int in_step
 		out_data += out_step;
 	}
 }
-
-class Resampler {
-
-private:
-	bool m_started;
-	unsigned int m_in_sample_rate;
-	unsigned int m_out_channels, m_out_sample_rate;
-
-	soxr_t m_soxr;
-
-	TempBuffer<uint8_t> m_in_data, m_out_data;
-
-public:
-	Resampler();
-	~Resampler();
-	void Resample(unsigned int in_channels, unsigned int in_sample_rate, AVSampleFormat in_format, unsigned int in_sample_count, const uint8_t* in_data,
-				  unsigned int out_channels, unsigned int out_sample_rate, AVSampleFormat out_format, unsigned int* out_sample_count, const uint8_t** out_data);
-	double GetDelayedSamples();
-
-};

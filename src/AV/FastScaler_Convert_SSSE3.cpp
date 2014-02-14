@@ -53,10 +53,10 @@ This converter is about 4 times faster than the fallback converter.
 	_mm_stream_si128((__m128i*) (ptr), _mm_or_si128(_mm_shuffle_epi8(y1, v_shuffle1), _mm_shuffle_epi8(y2, v_shuffle2)));
 
 void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
-	Q_ASSERT(w % 2 == 0 && h % 2 == 0);
-	Q_ASSERT((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0);
-	Q_ASSERT((uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0);
-	Q_ASSERT((uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0);
+	assert(w % 2 == 0 && h % 2 == 0);
+	assert((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0);
+	assert((uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0);
+	assert((uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0);
 
 	__m128i v_byte1     = _mm_set1_epi32(0x000000ff);
 	__m128i v_byte3     = _mm_set1_epi32(0x00ff0000);

@@ -49,7 +49,7 @@ public:
 	inline static void LogWarning(const QString& str) { Log(TYPE_WARNING, str); }
 	inline static void LogError(const QString& str) { Log(TYPE_ERROR, str); }
 
-	inline static Logger* GetInstance() { Q_ASSERT(s_instance != NULL); return s_instance; }
+	inline static Logger* GetInstance() { assert(s_instance != NULL); return s_instance; }
 
 signals:
 	void NewLine(Logger::enum_type type, QString str);

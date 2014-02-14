@@ -120,9 +120,9 @@ void MipMap_BGRA_Fallback_Dynamic(unsigned int in_w, unsigned int in_h, const ui
 
 void MipMap_BGRA_Fallback(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 						  uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) {
-	Q_ASSERT(mx + my <= 8);
+	assert(mx + my <= 8);
 	switch((mx << 8) | my) {
-		case 0x0000: Q_ASSERT(false); break;
+		case 0x0000: assert(false); break;
 		case 0x0001: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 1); break;
 		case 0x0002: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 2); break;
 		case 0x0100: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 0); break;
@@ -149,15 +149,15 @@ Uses 'wannabe-SIMD' like the mipmapper. It's slightly less efficient here becaus
 void Bilinear_BGRA_Fallback(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 							unsigned int out_w, unsigned int out_h, uint8_t* out_data, int out_stride,
 							unsigned int mx, unsigned int my) {
-	Q_ASSERT(in_w > 1 && in_h > 1); //TODO// support size 1?
-	Q_ASSERT(out_w > 1 && out_h > 1); //TODO// support size 1?
-	Q_ASSERT(in_w < (1 << 28) && in_h < (1 << 28));
-	Q_ASSERT(out_w < (1 << 28) && out_w < (1 << 28));
+	assert(in_w > 1 && in_h > 1); //TODO// support size 1?
+	assert(out_w > 1 && out_h > 1); //TODO// support size 1?
+	assert(in_w < (1 << 28) && in_h < (1 << 28));
+	assert(out_w < (1 << 28) && out_w < (1 << 28));
 
 	// precompute horizontal offsets and fractions
 	TempBuffer<unsigned int> x_offset_table, x_fraction_table;
-	x_offset_table.alloc(out_w);
-	x_fraction_table.alloc(out_w);
+	x_offset_table.Alloc(out_w);
+	x_fraction_table.Alloc(out_w);
 	for(unsigned int out_i = 0; out_i < out_w; ++out_i) {
 		Bilinear_MapIndex(out_i, in_w, out_w, mx, x_offset_table[out_i], x_fraction_table[out_i]);
 	}
@@ -170,7 +170,7 @@ void Bilinear_BGRA_Fallback(unsigned int in_w, unsigned int in_h, const uint8_t*
 		unsigned int y_offset, y_fraction;
 		Bilinear_MapIndex(out_j, in_h, out_h, my, y_offset, y_fraction);
 		unsigned int y_fraction_inv = 256 - y_fraction;
-		unsigned int *x_offset_ptr = x_offset_table.data(), *x_fraction_ptr = x_fraction_table.data();
+		unsigned int *x_offset_ptr = x_offset_table.GetData(), *x_fraction_ptr = x_fraction_table.GetData();
 		const uint32_t *in1 = (const uint32_t*) (in_data + in_stride * (int) y_offset);
 		const uint32_t *in2 = (const uint32_t*) (in_data + in_stride * ((int) y_offset + 1));
 		uint32_t *out = (uint32_t*) (out_data + out_stride * (int) out_j);

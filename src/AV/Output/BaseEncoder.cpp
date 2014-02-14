@@ -48,7 +48,7 @@ BaseEncoder::BaseEncoder(Muxer* muxer) {
 }
 
 BaseEncoder::~BaseEncoder() {
-	Q_ASSERT(m_destructed);
+	assert(m_destructed);
 }
 
 // Why not a real destructor? The problem is that a real destructor gets called *after* the derived class has already been destructed.
@@ -128,8 +128,8 @@ unsigned int BaseEncoder::GetQueuedFrameCount() {
 }
 
 void BaseEncoder::AddFrame(std::unique_ptr<AVFrameWrapper> frame) {
-	Q_ASSERT(m_muxer->IsStarted());
-	Q_ASSERT(frame->GetFrame()->pts != (int64_t) AV_NOPTS_VALUE);
+	assert(m_muxer->IsStarted());
+	assert(frame->GetFrame()->pts != (int64_t) AV_NOPTS_VALUE);
 	SharedLock lock(&m_shared_data);
 	++lock->m_total_frames;
 	if(lock->m_stats_previous_pts == (int64_t) AV_NOPTS_VALUE) {

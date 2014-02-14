@@ -49,7 +49,7 @@ It's important that this function is force-inlined because this allows the compi
 inline __attribute__((always_inline))
 void MipMap_BGRA_SSSE3_Dynamic(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 							   uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) {
-	Q_ASSERT((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0);
+	assert((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0);
 	__m128i v_mask = _mm_set1_epi16(0xff);
 	__m128i v_offset = _mm_set1_epi16(1u << (mx + my - 1));
 	const uint64_t mask = vec4x16(0xff);
@@ -204,9 +204,9 @@ void MipMap_BGRA_SSSE3_Dynamic(unsigned int in_w, unsigned int in_h, const uint8
 
 void MipMap_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 				  uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) {
-	Q_ASSERT(mx + my <= 8);
+	assert(mx + my <= 8);
 	switch((mx << 8) | my) {
-		case 0x0000: Q_ASSERT(false); break;
+		case 0x0000: assert(false); break;
 		case 0x0001: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 1); break;
 		case 0x0002: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 2); break;
 		case 0x0100: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 0); break;
@@ -234,17 +234,17 @@ and the shuffles are also more efficient than just shifting.
 void Bilinear_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 						 unsigned int out_w, unsigned int out_h, uint8_t* out_data, int out_stride,
 						 unsigned int mx, unsigned int my) {
-	Q_ASSERT(in_w > 1 && in_h > 1); //TODO// support size 1?
-	Q_ASSERT(out_w > 1 && out_h > 1); //TODO// support size 1?
-	Q_ASSERT(in_w < (1 << 28) && in_h < (1 << 28));
-	Q_ASSERT(out_w < (1 << 28) && out_w < (1 << 28));
-	Q_ASSERT((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0);
+	assert(in_w > 1 && in_h > 1); //TODO// support size 1?
+	assert(out_w > 1 && out_h > 1); //TODO// support size 1?
+	assert(in_w < (1 << 28) && in_h < (1 << 28));
+	assert(out_w < (1 << 28) && out_w < (1 << 28));
+	assert((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0);
 
 	// precompute horizontal offsets and fractions
 	TempBuffer<unsigned int> x_offset_table;
 	TempBuffer<uint64_t> x_fraction_table;
-	x_offset_table.alloc(out_w);
-	x_fraction_table.alloc(out_w);
+	x_offset_table.Alloc(out_w);
+	x_fraction_table.Alloc(out_w);
 	for(unsigned int out_i = 0; out_i < out_w; ++out_i) {
 		unsigned int x_fraction;
 		Bilinear_MapIndex(out_i, in_w, out_w, mx, x_offset_table[out_i], x_fraction);
@@ -266,8 +266,8 @@ void Bilinear_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in
 		Bilinear_MapIndex(out_j, in_h, out_h, my, y_offset, y_fraction);
 		__m128i vy_fraction = _mm_set1_epi16(y_fraction);
 		__m128i vy_fraction_inv = _mm_sub_epi16(v_256, vy_fraction);
-		unsigned int *x_offset_ptr = x_offset_table.data();
-		uint64_t *x_fraction_ptr = x_fraction_table.data();
+		unsigned int *x_offset_ptr = x_offset_table.GetData();
+		uint64_t *x_fraction_ptr = x_fraction_table.GetData();
 		const uint32_t *in1 = (const uint32_t*) (in_data + in_stride * (int) y_offset);
 		const uint32_t *in2 = (const uint32_t*) (in_data + in_stride * ((int) y_offset + 1));
 		uint32_t *out = (uint32_t*) (out_data + out_stride * (int) out_j);
