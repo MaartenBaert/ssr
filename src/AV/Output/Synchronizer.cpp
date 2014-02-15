@@ -38,10 +38,10 @@ const double Synchronizer::DRIFT_CORRECTION_P = 0.1;
 const double Synchronizer::DRIFT_CORRECTION_I = 0.1 * 0.1 / 4.0;
 
 // The maximum audio/video desynchronization allowed, in seconds. If the error is greater than this value, the synchronizer will insert zeros
-// rather than relying on normal time correction. This is something that should be avoided since it will result in the loss of some video/audio,
-// so it should only be triggered when something is completely wrong. If the error is smaller, the synchronizer will do nothing and the
-// time correction system will take care of it (eventually).
-const double Synchronizer::DRIFT_ERROR_THRESHOLD = 0.5;
+// rather than relying on normal drift correction. This is something that should be avoided since it will result in noticeable interruptions,
+// so it should only be triggered when something is really wrong. If the error is smaller, the synchronizer will do nothing and the
+// drift correction system will take care of it (eventually).
+const double Synchronizer::DRIFT_ERROR_THRESHOLD = 0.2;
 
 // The maximum block size for drift correction, in seconds. This is needed to avoid numerical problems in the feedback system.
 const double Synchronizer::DRIFT_MAX_BLOCK = 0.5;
@@ -331,9 +331,8 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 		return;
 
 	// add new block to sync diagram
-	if(m_sync_diagram != NULL) {
+	if(m_sync_diagram != NULL)
 		m_sync_diagram->AddBlock(1, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6 + (double) sample_count / (double) sample_rate, QColor(0, 255, 0));
-	}
 
 	AudioLock audiolock(&m_audio_data);
 
@@ -354,61 +353,73 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	}
 	audiolock->m_last_timestamp = timestamp;
 
+	// calculate drift
+	double current_drift = ((double) audiolock->m_samples_written + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
+			- (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
+
+	// if there are too many audio samples, drop the frame (unlikely)
+	if(current_drift > DRIFT_ERROR_THRESHOLD) {
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Too many audio samples, dropping samples to keep the audio in sync with the video."));
+		return;
+	}
+
+	// if there are not enough audio samples, insert zeros
+	unsigned int sample_count_out = 0;
+	if(current_drift < -DRIFT_ERROR_THRESHOLD || audiolock->m_insert_zeros) {
+
+		if(!audiolock->m_insert_zeros)
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Not enough audio samples, inserting zeros to keep the audio in sync with the video."));
+		audiolock->m_insert_zeros = false;
+
+		// insert zeros
+		unsigned int n = std::max(0, (int) round(-current_drift * (double) sample_rate));
+		audiolock->m_temp_input_buffer.Alloc(n * m_audio_channels);
+		std::fill_n(audiolock->m_temp_input_buffer.GetData(), n * m_audio_channels, 0.0f);
+		sample_count_out = audiolock->m_fast_resampler->Resample((double) sample_rate / (double) m_audio_sample_rate, 1.0,
+																 audiolock->m_temp_input_buffer.GetData(), n, &audiolock->m_temp_output_buffer, sample_count_out);
+
+		// recalculate drift
+		current_drift = ((double) audiolock->m_samples_written + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
+				- (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
+
+	}
+
 	// do drift correction
 	// The point of drift correction is to keep video and audio in sync even when the clocks are not running at exactly the same speed.
 	// This can happen because the sample rate of the sound card is not always 100% accurate. Even a 0.1% error will result in audio that is
 	// seconds too early or too late at the end of a one hour video. This problem doesn't occur on all computers though (I'm not sure why).
 	// Another cause of desynchronization is problems/glitches with PulseAudio (e.g. jumps in time when switching between sources).
-	double sample_length = ((double) audiolock->m_samples_written + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate;
-	double time_length = (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
-	double current_error = sample_length - time_length;
-
-	unsigned int sample_count_out;
-	if(current_error > DRIFT_ERROR_THRESHOLD) {
-
-		// drop this frame (unlikely)
-		return;
-
-	} else if(current_error < -DRIFT_ERROR_THRESHOLD) {
-
-		// insert zeros
-		sample_count_out = (unsigned int) round(-current_error * (double) m_audio_sample_rate);
-		audiolock->m_temp_output_buffer.Alloc(sample_count_out * m_audio_channels);
-		std::fill_n(audiolock->m_temp_output_buffer.GetData(), sample_count_out * m_audio_channels, 0.0f);
-
-	} else {
-
-		double dt = std::min((double) (timestamp - previous_timestamp) * 1.0e-6, DRIFT_MAX_BLOCK);
-		audiolock->m_average_drift = clamp(audiolock->m_average_drift + DRIFT_CORRECTION_I * current_error * dt, -0.5, 0.5);
-		if(audiolock->m_average_drift < -0.05 && audiolock->m_warn_desync) {
-			audiolock->m_warn_desync = false;
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 5% too slow!"));
-		}
-		if(audiolock->m_average_drift > 0.05 && audiolock->m_warn_desync) {
-			audiolock->m_warn_desync = false;
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 5% too fast!"));
-		}
-
-		double length = (double) sample_count / (double) sample_rate;
-		double drift = clamp(DRIFT_CORRECTION_P * current_error + audiolock->m_average_drift, -0.5, 0.5) * std::min(1.0, DRIFT_MAX_BLOCK / length);
-
-		// convert the samples
-		const float *data_float;
-		if(format == AV_SAMPLE_FMT_FLT) {
-			data_float = (const float*) data;
-		} else if(format == AV_SAMPLE_FMT_S16) {
-			audiolock->m_temp_input_buffer.Alloc(sample_count * m_audio_channels);
-			data_float = audiolock->m_temp_input_buffer.GetData();
-			SampleCopy(sample_count * m_audio_channels, (const int16_t*) data, 1, audiolock->m_temp_input_buffer.GetData(), 1);
-		} else {
-			Logger::LogError("[Synchronizer::ReadAudioSamples] " + QObject::tr("Error: Audio sample format is not supported!"));
-			throw ResamplerException();
-		}
-
-		// resample
-		sample_count_out = audiolock->m_fast_resampler->Resample((double) sample_rate / (double) m_audio_sample_rate, 1.0 / (1.0 - drift), data_float, sample_count, &audiolock->m_temp_output_buffer);
-
+	double dt = fmin((double) (timestamp - previous_timestamp) * 1.0e-6, DRIFT_MAX_BLOCK);
+	audiolock->m_average_drift = clamp(audiolock->m_average_drift + DRIFT_CORRECTION_I * current_drift * dt, -0.5, 0.5);
+	if(audiolock->m_average_drift < -0.05 && audiolock->m_warn_desync) {
+		audiolock->m_warn_desync = false;
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 5% too slow!"));
 	}
+	if(audiolock->m_average_drift > 0.05 && audiolock->m_warn_desync) {
+		audiolock->m_warn_desync = false;
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 5% too fast!"));
+	}
+	double length = (double) sample_count / (double) sample_rate;
+	double drift_correction = clamp(DRIFT_CORRECTION_P * current_drift + audiolock->m_average_drift, -0.5, 0.5) * fmin(1.0, DRIFT_MAX_BLOCK / length);
+
+	qDebug() << "current_drift" << current_drift << "average_drift" << audiolock->m_average_drift << "drift_correction" << drift_correction;
+
+	// convert the samples
+	const float *data_float;
+	if(format == AV_SAMPLE_FMT_FLT) {
+		data_float = (const float*) data;
+	} else if(format == AV_SAMPLE_FMT_S16) {
+		audiolock->m_temp_input_buffer.Alloc(sample_count * m_audio_channels);
+		data_float = audiolock->m_temp_input_buffer.GetData();
+		SampleCopy(sample_count * m_audio_channels, (const int16_t*) data, 1, audiolock->m_temp_input_buffer.GetData(), 1);
+	} else {
+		Logger::LogError("[Synchronizer::ReadAudioSamples] " + QObject::tr("Error: Audio sample format is not supported!"));
+		throw ResamplerException();
+	}
+
+	// resample
+	sample_count_out = audiolock->m_fast_resampler->Resample((double) sample_rate / (double) m_audio_sample_rate, 1.0 / (1.0 - drift_correction),
+															 data_float, sample_count, &audiolock->m_temp_output_buffer, sample_count_out);
 	audiolock->m_samples_written += sample_count_out;
 
 	SharedLock lock(&m_shared_data);
@@ -448,20 +459,13 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 void Synchronizer::ReadAudioHole() {
 	assert(m_audio_encoder != NULL);
 
-	{
-		AudioLock audiolock(&m_audio_data);
-		InitAudioSegment(audiolock.get());
+	Logger::LogWarning("[Synchronizer::ReadAudioHole] " + QObject::tr("Warning: Received hole in audio stream, inserting zeros to keep the audio in sync with the video."));
+
+	AudioLock audiolock(&m_audio_data);
+	if(audiolock->m_first_timestamp != AV_NOPTS_VALUE) {
+		audiolock->m_average_drift = 0.0;
+		audiolock->m_insert_zeros = true;
 	}
-
-	SharedLock lock(&m_shared_data);
-
-	// if the audio has not been started, ignore it
-	if(!lock->m_segment_audio_started)
-		return;
-
-	Logger::LogWarning("[Synchronizer::ReadAudioHole] " + QObject::tr("Warning: Received hole in audio stream, starting new segment to keep the audio in sync with the video "
-																	  "(some video and/or audio may be lost)."));
-	NewSegment(lock.get());
 
 }
 
@@ -470,6 +474,7 @@ void Synchronizer::InitAudioSegment(AudioData* audiolock) {
 	audiolock->m_first_timestamp = AV_NOPTS_VALUE;
 	audiolock->m_samples_written = 0;
 	audiolock->m_average_drift = 0.0;
+	audiolock->m_insert_zeros = false;
 }
 
 void Synchronizer::NewSegment(SharedData* lock) {

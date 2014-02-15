@@ -223,6 +223,14 @@ inline T clamp(T v, T lo, T hi) {
 		return hi;
 	return v;
 }
+template<> inline float clamp<float>(float v, float lo, float hi) {
+	assert(lo <= hi);
+	return fmin(fmax(v, lo), hi);
+}
+template<> inline double clamp<double>(double v, double lo, double hi) {
+	assert(lo <= hi);
+	return fmin(fmax(v, lo), hi);
+}
 
 template<typename T>
 inline T positive_mod(T x, T y) {

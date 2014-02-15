@@ -52,9 +52,10 @@ private:
 		TempBuffer<float> m_temp_output_buffer;
 
 		int64_t m_last_timestamp; // the timestamp of the last received audio frame (for gap detection)
-		int64_t m_first_timestamp; // the timestamp of the first audio frame in the current segment (for drift correction) //TODO// gaps
-		int64_t m_samples_written; // total number of samples written to the queue in the current segment (for drift correction) //TODO// gaps
-		double m_average_drift; // drift averaged over time (for drift correction) //TODO// gaps
+		int64_t m_first_timestamp; // the timestamp of the first audio frame in the current segment (for drift correction)
+		int64_t m_samples_written; // total number of samples written to the queue in the current segment (for drift correction)
+		double m_average_drift; // drift averaged over time (for drift correction)
+		bool m_insert_zeros;
 
 		bool m_warn_desync;
 

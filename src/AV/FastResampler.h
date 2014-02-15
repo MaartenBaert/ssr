@@ -54,7 +54,7 @@ public:
 	FastResampler(unsigned int channels, float gain);
 
 	// Processes input audio and writes the resampled audio to a queue. 'samples_in' can be NULL to flush the resampler.
-	unsigned int Resample(double resample_ratio, double drift_ratio, const float* samples_in, unsigned int sample_count_in, TempBuffer<float>* samples_out);
+	unsigned int Resample(double resample_ratio, double drift_ratio, const float* samples_in, unsigned int sample_count_in, TempBuffer<float>* samples_out, unsigned int sample_offset_out);
 
 	// Returns the total resampler latency in input samples.
 	double GetInputLatency();

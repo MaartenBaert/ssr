@@ -119,9 +119,7 @@ FastResampler::FastResampler(unsigned int channels, float gain) {
 
 }
 
-unsigned int FastResampler::Resample(double resample_ratio, double drift_ratio, const float* samples_in, unsigned int sample_count_in, TempBuffer<float>* samples_out) {
-	unsigned int sample_count_out = 0;
-	bool samples_out_copy = false;
+unsigned int FastResampler::Resample(double resample_ratio, double drift_ratio, const float* samples_in, unsigned int sample_count_in, TempBuffer<float>* samples_out, unsigned int sample_offset_out) {
 
 	// check the resampling ratio
 	if(resample_ratio < 1.0e-3 || resample_ratio > 1.0e3) {
@@ -143,19 +141,18 @@ unsigned int FastResampler::Resample(double resample_ratio, double drift_ratio, 
 
 		// reserve memory (with some margin since floating-point isn't 100% accurate)
 		unsigned int available = m_samples_memory.GetSize() / m_channels;
-		samples_out->Alloc(((unsigned int) lrint((double) available / (m_resample_ratio * m_drift_ratio) * 1.001) + 4) * m_channels);
-		samples_out_copy = true;
+		samples_out->Alloc((sample_offset_out + (unsigned int) lrint((double) available / (m_resample_ratio * m_drift_ratio) * 1.001) + 4) * m_channels, (sample_offset_out != 0));
 
 		// resample
-		std::pair<unsigned int, unsigned int> done = ResampleBatch(m_samples_memory.GetData(), available, samples_out->GetData());
-		sample_count_out += done.second;
+		std::pair<unsigned int, unsigned int> done = ResampleBatch(m_samples_memory.GetData(), available, samples_out->GetData() + sample_offset_out * m_channels);
+		sample_offset_out += done.second;
 
 	}
 
 	// is there new input data?
 	if(samples_in == NULL) {
 		ResetResamplerState();
-		return sample_count_out;
+		return sample_offset_out;
 	}
 
 	// update filter if the resample ratio changes
@@ -175,12 +172,12 @@ unsigned int FastResampler::Resample(double resample_ratio, double drift_ratio, 
 		// reserve memory (with some margin since floating-point isn't 100% accurate)
 		unsigned int available = m_samples_memory.GetSize() / m_channels;
 		unsigned int batch = std::min(available, m_filter_length * 256); // needs to be limited to avoid some numerical problems
-		samples_out->Alloc((sample_count_out + (unsigned int) lrint((double) batch / (m_resample_ratio * m_drift_ratio) * 1.001) + 4) * m_channels, samples_out_copy);
+		samples_out->Alloc((sample_offset_out + (unsigned int) lrint((double) batch / (m_resample_ratio * m_drift_ratio) * 1.001) + 4) * m_channels, (sample_offset_out != 0));
 
 		// resample
-		std::pair<unsigned int, unsigned int> done = ResampleBatch(m_samples_memory.GetData(), batch, samples_out->GetData() + sample_count_out * m_channels);
+		std::pair<unsigned int, unsigned int> done = ResampleBatch(m_samples_memory.GetData(), batch, samples_out->GetData() + sample_offset_out * m_channels);
 		m_samples_memory.Pop(done.first * m_channels);
-		sample_count_out += done.second;
+		sample_offset_out += done.second;
 
 		// is this the last batch?
 		if(batch == available)
@@ -188,7 +185,7 @@ unsigned int FastResampler::Resample(double resample_ratio, double drift_ratio, 
 
 	}
 
-	return sample_count_out;
+	return sample_offset_out;
 }
 
 double FastResampler::GetInputLatency() {
