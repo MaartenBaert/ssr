@@ -22,6 +22,22 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "DetectCPUFeatures.h"
 
+/*
+This resampler is based on the resampling algorithm described here:
+https://ccrma.stanford.edu/~jos/resample/resample.html
+The Speex resampler (a.k.a. Public Parrot Hack) uses almost the same algorithm.
+
+This implementation tries to find a balance between performance and quality. The quality is comparable to
+quality level 3 of the Speex resampler, however this implementation is roughly 3 times faster
+(mostly because of the SSE2-optimized floating point code).
+
+This resampler can handle non-fractional resampling ratios and is suitable for drift correction, but it is not a
+full variable-rate resampler though: the filter coefficients are calculated for one specific resampling ratio,
+independent of the drift ratio. The resampling ratio can be changed, but this will result in a small glitch.
+The drift ratio can be changed at any time without introducing glitches, but since the filter coefficients won't be updated,
+large drift ratios will result in aliasing (at least for downsampling). It is not meant for corrections larger than a few percent.
+*/
+
 // Kaiser window function (beta = 7)
 // Stats for sinc filter with length 44:
 // - best cutoff = 0.9060 * nyquist_freq
@@ -40,10 +56,12 @@ float kaiser7_table[67] = {
 	0.00840746f, 0.00593141f, 0.00000000f,
 };
 
+// filter properties
 #define FILTER_BASE_LENGTH  44.0f    // typical number of zero crossings for sinc filter
 #define FILTER_BASE_SETS    256.0f   // typical number of filter samples per zero crossing
 #define FILTER_CUTOFF       0.9060f  // bandwidth of sinc filter (relative to lowest Nyquist frequency)
 
+// This function calculates window function values based on cubic interpolation (Catmull-Rom spline).
 inline float WindowFunction(float* table, unsigned int table_length, float x) {
 	x = fabs(x * (float) table_length);
 	unsigned int index = (int) x; // float-to-int cast is faster than float-to-uint
@@ -57,18 +75,20 @@ inline float WindowFunction(float* table, unsigned int table_length, float x) {
 	}
 }
 
+// sinc function = sin(x*pi)/(x*pi)
 inline float Sinc(float x) {
-	if(fabs(x) < 0.0001)
+	if(fabs(x) < 0.0001f)
 		return 1.0f;
 	x *= (float) M_PI;
 	return sinf(x) / x;
 }
 
-FastResampler::FastResampler(unsigned int channels) {
+FastResampler::FastResampler(unsigned int channels, float gain) {
 	assert(channels != 0);
 
 	// settings
 	m_channels = channels;
+	m_gain = gain;
 	m_resample_ratio = 0.0;
 	m_drift_ratio = 0.0;
 
@@ -201,7 +221,7 @@ void FastResampler::UpdateFilterCoefficients() {
 		float shift = 1.0f - (float) j / (float) m_filter_rows - (float) (m_filter_length / 2);
 		for(unsigned int i = 0; i < m_filter_length; ++i) {
 			float x = (float) i + shift;
-			*(coef++) = WindowFunction(kaiser7_table, KAISER7_TABLE_LENGTH, x * window) * Sinc(x * filter_cutoff) * filter_cutoff;
+			*(coef++) = WindowFunction(kaiser7_table, KAISER7_TABLE_LENGTH, x * window) * Sinc(x * filter_cutoff) * filter_cutoff * m_gain;
 		}
 	}
 

@@ -186,7 +186,7 @@ void Synchronizer::Init() {
 	// initialize audio data
 	{
 		AudioLock audiolock(&m_audio_data);
-		audiolock->m_fast_resampler.reset(new FastResampler(m_audio_channels));
+		audiolock->m_fast_resampler.reset(new FastResampler(m_audio_channels, 0.9f));
 		InitAudioSegment(audiolock.get());
 		audiolock->m_warn_desync = true;
 	}

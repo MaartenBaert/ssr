@@ -36,6 +36,7 @@ private:
 
 	// settings
 	unsigned int m_channels;
+	float m_gain;
 	double m_resample_ratio, m_drift_ratio;
 
 	// filter coefficient sets
@@ -50,7 +51,7 @@ private:
 	FirFilter2Ptr m_firfilter2_ptr;
 
 public:
-	FastResampler(unsigned int channels);
+	FastResampler(unsigned int channels, float gain);
 
 	// Processes input audio and writes the resampled audio to a queue. 'samples_in' can be NULL to flush the resampler.
 	unsigned int Resample(double resample_ratio, double drift_ratio, const float* samples_in, unsigned int sample_count_in, TempBuffer<float>* samples_out);
