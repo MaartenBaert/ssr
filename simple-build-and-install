@@ -90,7 +90,7 @@ else
 fi
 
 echo "Compiling ..."
-make -j "$( grep -c "^processor" /proc/cpuinfo )"
+make -j "$( nproc )"
 cd ..
 
 if [ x"$( uname -m )" = x"x86_64" ]; then
@@ -100,7 +100,7 @@ if [ x"$( uname -m )" = x"x86_64" ]; then
 	CC="gcc -m32" CXX="g++ -m32" PKG_CONFIG_PATH="$LIB32DIR/pkgconfig" \
 		../configure --prefix=/usr --libdir=$LIB32DIR --disable-ssrprogram $CONFIGURE_OPTIONS "$@"
 	echo "Compiling 32-bit GLInject library ..."
-	make -j "$( grep -c "^processor" /proc/cpuinfo )"
+	make -j "$( nproc )"
 	cd ..
 fi
 
