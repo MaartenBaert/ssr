@@ -402,7 +402,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	double length = (double) sample_count / (double) sample_rate;
 	double drift_correction = clamp(DRIFT_CORRECTION_P * current_drift + audiolock->m_average_drift, -0.5, 0.5) * fmin(1.0, DRIFT_MAX_BLOCK / length);
 
-	qDebug() << "current_drift" << current_drift << "average_drift" << audiolock->m_average_drift << "drift_correction" << drift_correction;
+	//qDebug() << "current_drift" << current_drift << "average_drift" << audiolock->m_average_drift << "drift_correction" << drift_correction;
 
 	// convert the samples
 	const float *data_float;
