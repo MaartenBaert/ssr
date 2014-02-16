@@ -33,13 +33,13 @@ You will need the following packages to compile SimpleScreenRecorder:
 
 For Ubuntu 12.04 - 13.04:
 
-    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
+    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
 
 For Ubuntu 13.10:
 
-    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
+    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib \
     libx11-8:i386 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
@@ -79,7 +79,7 @@ For Debian:
 
     sudo dpkg --add-architecture i386
     sudo apt-get update
-    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
+    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib \
     libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
@@ -111,7 +111,7 @@ Some packages (e.g. ffmpeg) are not in the official repository, but can be insta
 
 For Fedora:
 
-    sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel gcc make cmake gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel.i686 libXfixes-devel.i686 mesa-libGLU-devel.i686
+    sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel gcc make gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel.i686 libXfixes-devel.i686 mesa-libGLU-devel.i686
 
 Compiling and installing
 ------------------------
