@@ -198,7 +198,7 @@ bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 
 #if SSR_USE_AVFRAME_FORMAT
 	if(frame != NULL) {
-		Q_ASSERT(frame->format == GetCodecContext()->pix_fmt);
+		assert(frame->format == GetCodecContext()->pix_fmt);
 	}
 #endif
 

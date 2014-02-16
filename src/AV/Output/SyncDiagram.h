@@ -55,6 +55,7 @@ public:
 	SyncDiagram(size_t channels);
 	~SyncDiagram();
 
+	// These functions are thread-safe.
 	void SetChannelName(size_t channel, const QString& name);
 	void SetCurrentTime(size_t channel, double current_time);
 	void AddBlock(size_t channel, double time_begin, double time_end, const QColor& color);

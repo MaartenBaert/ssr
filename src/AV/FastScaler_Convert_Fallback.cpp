@@ -27,7 +27,7 @@ Nothing special, just plain C code. It processes blocks of 2x2 pixels of the inp
 */
 
 void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
-	Q_ASSERT(w % 2 == 0 && h % 2 == 0);
+	assert(w % 2 == 0 && h % 2 == 0);
 
 	const int offset_y = 128 + (16 << 8), offset_uv = (128 + (128 << 8)) << 2;
 

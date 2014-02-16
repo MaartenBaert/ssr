@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QtGui>
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
@@ -155,10 +156,10 @@ public:
 		return "LibavException";
 	}
 };
-class SoxrException : public std::exception {
+class ResamplerException : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
-		return "SoxrException";
+		return "ResamplerException";
 	}
 };
 class X11Exception : public std::exception {
@@ -220,12 +221,20 @@ inline T positive_mod(T x, T y) {
 
 template<typename T>
 inline T clamp(T v, T lo, T hi) {
-	Q_ASSERT(lo <= hi);
+	assert(lo <= hi);
 	if(v < lo)
 		return lo;
 	if(v > hi)
 		return hi;
 	return v;
+}
+template<> inline float clamp<float>(float v, float lo, float hi) {
+	assert(lo <= hi);
+	return fmin(fmax(v, lo), hi);
+}
+template<> inline double clamp<double>(double v, double lo, double hi) {
+	assert(lo <= hi);
+	return fmin(fmax(v, lo), hi);
 }
 
 template<typename I, typename F>

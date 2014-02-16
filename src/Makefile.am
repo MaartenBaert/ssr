@@ -1,10 +1,10 @@
 if ENABLE_SSRPROGRAM
 
 bin_PROGRAMS = simplescreenrecorder
+noinst_LTLIBRARIES =
 
 simplescreenrecorder_CPPFLAGS = \
 	$(QT4_CFLAGS) \
-	-I$(top_builddir)/3rdparty \
 	-I$(srcdir)/AV/Input \
 	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
@@ -19,8 +19,7 @@ simplescreenrecorder_CXXFLAGS = \
 simplescreenrecorder_LDFLAGS = \
 	-pthread \
 	$(QT4_LIBS) \
-	-L$(top_builddir)/3rdparty \
-	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound -lsoxr
+	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
 if ! ENABLE_ASSERT
 simplescreenrecorder_CPPFLAGS += -DNDEBUG -DQT_NO_DEBUG
@@ -87,22 +86,23 @@ simplescreenrecorder_SOURCES = \
 	AV/Output/X264Presets.h \
 	AV/AVWrapper.cpp \
 	AV/AVWrapper.h \
+	AV/FastResampler.cpp \
+	AV/FastResampler.h \
+	AV/FastResampler_FirFilter.h \
+	AV/FastResampler_FirFilter_Fallback.cpp \
 	AV/FastScaler.cpp \
 	AV/FastScaler.h \
 	AV/FastScaler_Convert.h \
 	AV/FastScaler_Convert_Fallback.cpp \
 	AV/FastScaler_Scale.h \
 	AV/FastScaler_Scale_Fallback.cpp \
-	AV/FastScaler_Scale_Generic.h \
 	AV/FastScaler_Scale_Generic.cpp \
-	AV/Resampler.cpp \
-	AV/Resampler.h \
+	AV/FastScaler_Scale_Generic.h \
+	AV/SampleCast.h \
 	AV/SimpleSynth.cpp \
 	AV/SimpleSynth.h \
 	AV/SourceSink.cpp \
 	AV/SourceSink.h \
-	common/ByteQueue.cpp \
-	common/ByteQueue.h \
 	common/DetectCPUFeatures.cpp \
 	common/DetectCPUFeatures.h \
 	common/Dialogs.cpp \
@@ -110,6 +110,7 @@ simplescreenrecorder_SOURCES = \
 	common/Logger.cpp \
 	common/Logger.h \
 	common/MutexDataPair.h \
+	common/QueueBuffer.h \
 	common/TempBuffer.h \
 	GUI/AudioPreviewer.cpp \
 	GUI/AudioPreviewer.h \
@@ -141,19 +142,28 @@ simplescreenrecorder_SOURCES = \
 	Version.cpp \
 	Version.h
 nodist_simplescreenrecorder_SOURCES =
+simplescreenrecorder_LDADD =
 
 EXTRA_DIST =
 
 ########## x86-specific targets ##########
 
 if ENABLE_X86_ASM
-simplescreenrecorder_LDADD = libsimplescreenrecorder-target-ssse3.la
-noinst_LTLIBRARIES = libsimplescreenrecorder-target-ssse3.la
+
+noinst_LTLIBRARIES += libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
+simplescreenrecorder_LDADD += libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
+
+libsimplescreenrecorder_target_sse2_la_CPPFLAGS = $(simplescreenrecorder_CPPFLAGS)
+libsimplescreenrecorder_target_sse2_la_CFLAGS = $(simplescreenrecorder_CFLAGS) -msse2
+libsimplescreenrecorder_target_sse2_la_CXXFLAGS = $(simplescreenrecorder_CXXFLAGS) -msse2
+libsimplescreenrecorder_target_sse2_la_LDFLAGS = $(simplescreenrecorder_LDFLAGS)
+libsimplescreenrecorder_target_sse2_la_SOURCES = \
+	AV/FastResampler_FirFilter_SSE2.cpp
+
 libsimplescreenrecorder_target_ssse3_la_CPPFLAGS = $(simplescreenrecorder_CPPFLAGS)
 libsimplescreenrecorder_target_ssse3_la_CFLAGS = $(simplescreenrecorder_CFLAGS) -mssse3
 libsimplescreenrecorder_target_ssse3_la_CXXFLAGS = $(simplescreenrecorder_CXXFLAGS) -mssse3
 libsimplescreenrecorder_target_ssse3_la_LDFLAGS = $(simplescreenrecorder_LDFLAGS)
-
 libsimplescreenrecorder_target_ssse3_la_SOURCES = \
 	AV/FastScaler_Convert_SSSE3.cpp \
 	AV/FastScaler_Scale_SSSE3.cpp

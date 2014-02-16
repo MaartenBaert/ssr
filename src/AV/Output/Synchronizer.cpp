@@ -24,24 +24,27 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "VideoEncoder.h"
 #include "AudioEncoder.h"
-
+#include "SampleCast.h"
 #include "SyncDiagram.h"
 
-// These values change how fast the synchronizer does time correction.
-// If this value is too low, the error will not be corrected fast enough. But if the value is too high, the video
-// may get weird frame rate fluctuations caused by the limited accuracy of the recording timestamps.
+// These values change how fast the synchronizer does drift correction.
+// If this value is too low, the error will not be corrected fast enough. But if the value is too high, the audio
+// may get weird speed fluctuations caused by the limited accuracy of the recording timestamps.
 // The difference between sample length and time length has a lot of noise and can't be used directly,
 // so it is averaged out using exponential smoothing. However, since the difference tends to increase gradually over time,
 // exponential smoothing would constantly lag behind, so instead of simple proportional feedback, I use a PI controller.
 // For critical damping, choose I = P*P/4.
-const double Synchronizer::DESYNC_CORRECTION_P = 0.5;
-const double Synchronizer::DESYNC_CORRECTION_I = 0.5 * 0.5 / 4.0;
+const double Synchronizer::DRIFT_CORRECTION_P = 0.1;
+const double Synchronizer::DRIFT_CORRECTION_I = 0.1 * 0.1 / 4.0;
 
-// The maximum audio/video desynchronization allowed, in seconds. If the error is greater than this value, the synchronizer will cut the segment
-// rather than relying on normal time correction. This is something that should be avoided since it will result in the loss of some video/audio,
-// so it should only be triggered when something is completely wrong. If the error is smaller, the synchronizer will do nothing and the
-// time correction system will take care of it (eventually).
-const double Synchronizer::DESYNC_ERROR_THRESHOLD = 0.5;
+// The maximum audio/video desynchronization allowed, in seconds. If the error is greater than this value, the synchronizer will insert zeros
+// rather than relying on normal drift correction. This is something that should be avoided since it will result in noticeable interruptions,
+// so it should only be triggered when something is really wrong. If the error is smaller, the synchronizer will do nothing and the
+// drift correction system will take care of it (eventually).
+const double Synchronizer::DRIFT_ERROR_THRESHOLD = 0.2;
+
+// The maximum block size for drift correction, in seconds. This is needed to avoid numerical problems in the feedback system.
+const double Synchronizer::DRIFT_MAX_BLOCK = 0.5;
 
 // The maximum number of video frames and audio samples that will be buffered. This should be enough to cope with the fact that video and
 // audio don't arrive at the same time, but not too high because that would cause memory problems if one of the inputs fails.
@@ -93,7 +96,7 @@ static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int planes, uns
 }
 
 Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder, bool allow_frame_skipping) {
-	Q_ASSERT(video_encoder != NULL || audio_encoder != NULL);
+	assert(video_encoder != NULL || audio_encoder != NULL);
 
 	m_video_encoder = video_encoder;
 	m_audio_encoder = audio_encoder;
@@ -146,7 +149,6 @@ void Synchronizer::Init() {
 	if(m_audio_encoder != NULL) {
 		m_audio_sample_rate = m_audio_encoder->GetSampleRate();
 		m_audio_channels = 2; //TODO// never larger than AV_NUM_DATA_POINTERS
-		m_audio_sample_size = m_audio_channels * sizeof(float);
 		m_audio_required_frame_samples = m_audio_encoder->GetRequiredFrameSamples();
 		m_audio_required_sample_format = m_audio_encoder->GetRequiredSampleFormat();
 		switch(m_audio_required_sample_format) {
@@ -160,8 +162,33 @@ void Synchronizer::Init() {
 			case AV_SAMPLE_FMT_FLTP:
 #endif
 				m_audio_required_sample_size = m_audio_channels * 4; break;
-			default: Q_ASSERT(false); break;
+			default: assert(false); break;
 		}
+	}
+
+	// create sync diagram
+	if(g_option_syncdiagram) {
+		m_sync_diagram.reset(new SyncDiagram(4));
+		m_sync_diagram->SetChannelName(0, SyncDiagram::tr("Video in"));
+		m_sync_diagram->SetChannelName(1, SyncDiagram::tr("Audio in"));
+		m_sync_diagram->SetChannelName(2, SyncDiagram::tr("Video out"));
+		m_sync_diagram->SetChannelName(3, SyncDiagram::tr("Audio out"));
+		m_sync_diagram->show();
+	}
+
+	// initialize video data
+	{
+		VideoLock videolock(&m_video_data);
+		videolock->m_last_timestamp = std::numeric_limits<int64_t>::min();
+		videolock->m_next_timestamp = SINK_TIMESTAMP_ASAP;
+	}
+
+	// initialize audio data
+	{
+		AudioLock audiolock(&m_audio_data);
+		audiolock->m_fast_resampler.reset(new FastResampler(m_audio_channels, 0.9f));
+		InitAudioSegment(audiolock.get());
+		audiolock->m_warn_desync = true;
 	}
 
 	// initialize shared data
@@ -169,7 +196,7 @@ void Synchronizer::Init() {
 		SharedLock lock(&m_shared_data);
 
 		if(m_audio_encoder != NULL) {
-			lock->m_partial_audio_frame.resize(m_audio_required_frame_samples * m_audio_sample_size);
+			lock->m_partial_audio_frame.Alloc(m_audio_required_frame_samples * m_audio_channels);
 			lock->m_partial_audio_frame_samples = 0;
 		}
 		lock->m_video_pts = 0;
@@ -179,17 +206,6 @@ void Synchronizer::Init() {
 		InitSegment(lock.get());
 
 		lock->m_warn_drop_video = true;
-		lock->m_warn_desync = true;
-
-		// create sync diagram
-		if(g_option_syncdiagram) {
-			lock->m_sync_diagram.reset(new SyncDiagram(4));
-			lock->m_sync_diagram->SetChannelName(0, SyncDiagram::tr("Video in"));
-			lock->m_sync_diagram->SetChannelName(1, SyncDiagram::tr("Audio in"));
-			lock->m_sync_diagram->SetChannelName(2, SyncDiagram::tr("Video out"));
-			lock->m_sync_diagram->SetChannelName(3, SyncDiagram::tr("Audio out"));
-			lock->m_sync_diagram->show();
-		}
 
 	}
 
@@ -205,8 +221,15 @@ void Synchronizer::Free() {
 }
 
 void Synchronizer::NewSegment() {
+
+	{
+		AudioLock audiolock(&m_audio_data);
+		InitAudioSegment(audiolock.get());
+	}
+
 	SharedLock lock(&m_shared_data);
 	NewSegment(lock.get());
+
 }
 
 int64_t Synchronizer::GetTotalTime() {
@@ -215,49 +238,41 @@ int64_t Synchronizer::GetTotalTime() {
 }
 
 int64_t Synchronizer::GetNextVideoTimestamp() {
-	Q_ASSERT(m_video_encoder != NULL);
-	SharedLock lock(&m_shared_data);
-	return (lock->m_segment_video_started)? lock->m_segment_video_stop_time - (int64_t) round(lock->m_av_desync * 1.0e6) : SINK_TIMESTAMP_ASAP;
+	assert(m_video_encoder != NULL);
+	VideoLock videolock(&m_video_data);
+	return videolock->m_next_timestamp;
 }
 
 void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
-	Q_ASSERT(m_video_encoder != NULL);
+	assert(m_video_encoder != NULL);
 
-	int64_t corrected_timestamp;
-	{
-		SharedLock lock(&m_shared_data);
+	// add new block to sync diagram
+	if(m_sync_diagram != NULL)
+		m_sync_diagram->AddBlock(0, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6 + 1.0 / (double) m_video_frame_rate, QColor(255, 0, 0));
 
-		if(lock->m_sync_diagram != NULL) {
-			lock->m_sync_diagram->AddBlock(0, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6 + 1.0 / (double) m_video_frame_rate, QColor(255, 0, 0));
-		}
+	VideoLock videolock(&m_video_data);
 
-		// check the timestamp
-		if(lock->m_segment_video_started && timestamp < lock->m_segment_video_last_timestamp) {
-			if(timestamp < lock->m_segment_video_last_timestamp - 10000)
-				Logger::LogWarning("[Synchronizer::ReadVideoFrame] " + QObject::tr("Warning: Received video frame with non-monotonic timestamp."));
-			timestamp = lock->m_segment_video_last_timestamp;
-		}
-
-		// do time correction
-		corrected_timestamp = timestamp + (int64_t) round(lock->m_av_desync * 1.0e6);
-
-		// drop the frame if it is too early (before converting it)
-		if(lock->m_segment_video_started && corrected_timestamp < lock->m_segment_video_stop_time - (int64_t) (1000000 / m_video_frame_rate)) {
-			return;
-		}
-
+	// check the timestamp
+	if(timestamp < videolock->m_last_timestamp) {
+		if(timestamp < videolock->m_last_timestamp - 10000)
+			Logger::LogWarning("[Synchronizer::ReadVideoFrame] " + QObject::tr("Warning: Received video frame with non-monotonic timestamp."));
+		timestamp = videolock->m_last_timestamp;
 	}
+
+	// drop the frame if it is too early (before converting it)
+	if(videolock->m_next_timestamp != SINK_TIMESTAMP_ASAP && timestamp < videolock->m_next_timestamp - (int64_t) (1000000 / m_video_frame_rate))
+		return;
+
+	// update the timestamps
+	videolock->m_last_timestamp = timestamp;
+	videolock->m_next_timestamp = std::max(videolock->m_next_timestamp + (int64_t) (1000000 / m_video_frame_rate), timestamp);
 
 	// create the converted frame
 	std::unique_ptr<AVFrameWrapper> converted_frame = CreateVideoFrameYUV(m_video_width, m_video_height);
 
 	// scale and convert the frame to YUV420P
-	// the scaler has a separate lock so the other threads won't be blocked (scaling is slow)
-	{
-		FastScalerLock lock(&m_fast_scaler);
-		lock->Scale(width, height, format, &data, &stride,
-					m_video_width, m_video_height, PIX_FMT_YUV420P, converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
-	}
+	videolock->m_fast_scaler.Scale(width, height, format, &data, &stride,
+			m_video_width, m_video_height, PIX_FMT_YUV420P, converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
 
 	SharedLock lock(&m_shared_data);
 
@@ -268,12 +283,11 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 				lock->m_warn_drop_video = false;
 				Logger::LogWarning("[Synchronizer::ReadVideoFrame] " + QObject::tr("Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow."));
 			}
-			lock->m_segment_video_last_timestamp = timestamp; // otherwise the input frame rate will explode
 			return;
 		} else {
 			// if the audio hasn't started yet, it makes more sense to drop the oldest frames
 			lock->m_video_buffer.pop_front();
-			Q_ASSERT(lock->m_video_buffer.size() > 0);
+			assert(lock->m_video_buffer.size() > 0);
 			lock->m_segment_video_start_time = lock->m_video_buffer.front()->GetFrame()->pts;
 		}
 	}
@@ -281,126 +295,148 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	// start video
 	if(!lock->m_segment_video_started) {
 		lock->m_segment_video_started = true;
-		lock->m_segment_video_start_time = corrected_timestamp;
-		lock->m_segment_video_stop_time = corrected_timestamp;
+		lock->m_segment_video_start_time = timestamp;
+		lock->m_segment_video_stop_time = timestamp;
 	}
 
 	// store the frame
-	lock->m_segment_video_last_timestamp = timestamp;
-	converted_frame->GetFrame()->pts = corrected_timestamp;
+	converted_frame->GetFrame()->pts = timestamp;
 	lock->m_video_buffer.push_back(std::move(converted_frame));
 
 	// increase the segment stop time
-	//lock->m_segment_video_stop_time = corrected_timestamp + (int64_t) 1000000 / (int64_t) m_video_frame_rate;
-	int64_t delay = m_video_encoder->GetFrameDelay();
-	lock->m_segment_video_stop_time = std::max(lock->m_segment_video_stop_time + (int64_t) 1000000 / (int64_t) m_video_frame_rate + delay, corrected_timestamp);
-	lock->m_segment_video_accumulated_delay += delay;
+	lock->m_segment_video_stop_time = timestamp + (int64_t) (1000000 / m_video_frame_rate);
 
 }
 
 void Synchronizer::ReadVideoPing(int64_t timestamp) {
-	Q_ASSERT(m_video_encoder != NULL);
-	SharedLock lock(&m_shared_data);
+	assert(m_video_encoder != NULL);
 
-	/*if(lock->m_sync_diagram != NULL) {
-		lock->m_sync_diagram->AddBlock(0, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6, QColor(255, 0, 0));
-	}*/
+	SharedLock lock(&m_shared_data);
 
 	// if the video has not been started, ignore it
 	if(!lock->m_segment_video_started)
 		return;
 
-	// do time correction
-	int64_t corrected_timestamp = timestamp + (int64_t) round(lock->m_av_desync * 1.0e6);
-
 	// increase the segment stop time
-	lock->m_segment_video_stop_time = std::max(lock->m_segment_video_stop_time, corrected_timestamp);
+	lock->m_segment_video_stop_time = std::max(lock->m_segment_video_stop_time, timestamp + (int64_t) (1000000 / m_video_frame_rate));
 
 }
 
 void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_rate, AVSampleFormat format, unsigned int sample_count, const uint8_t* data, int64_t timestamp) {
-	Q_ASSERT(m_audio_encoder != NULL);
+	assert(m_audio_encoder != NULL);
+	assert(channels == m_audio_channels); // remixing isn't supported yet
 
+	// sanity check
 	if(sample_count == 0)
 		return;
 
-	//Q_ASSERT(sample_rate == m_audio_sample_rate); // resampling isn't supported
-	Q_ASSERT(channels == m_audio_channels); // remixing isn't supported
-	//Q_ASSERT(format == AV_SAMPLE_FMT_FLT); // only float is currently supported
+	// add new block to sync diagram
+	if(m_sync_diagram != NULL)
+		m_sync_diagram->AddBlock(1, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6 + (double) sample_count / (double) sample_rate, QColor(0, 255, 0));
 
-	{
-		SharedLock lock(&m_shared_data);
+	AudioLock audiolock(&m_audio_data);
 
-		if(lock->m_sync_diagram != NULL) {
-			lock->m_sync_diagram->AddBlock(1, (double) timestamp * 1.0e-6, (double) timestamp * 1.0e-6 + (double) sample_count / (double) sample_rate, QColor(0, 255, 0));
-		}
+	// check the timestamp
+	if(timestamp < audiolock->m_last_timestamp) {
+		if(timestamp < audiolock->m_last_timestamp - 10000)
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Received audio samples with non-monotonic timestamp."));
+		timestamp = audiolock->m_last_timestamp;
+	}
 
-		// check the timestamp
-		if(lock->m_segment_audio_started && timestamp < lock->m_segment_audio_last_timestamp) {
-			if(timestamp < lock->m_segment_audio_last_timestamp - 10000)
-				Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Received audio samples with non-monotonic timestamp."));
-			timestamp = lock->m_segment_audio_last_timestamp;
-		}
+	// update the timestamps
+	int64_t previous_timestamp;
+	if(audiolock->m_first_timestamp == AV_NOPTS_VALUE) {
+		audiolock->m_first_timestamp = timestamp;
+		previous_timestamp = timestamp;
+	} else {
+		previous_timestamp = audiolock->m_last_timestamp;
+	}
+	audiolock->m_last_timestamp = timestamp;
+
+	// calculate drift
+	double current_drift = ((double) audiolock->m_samples_written + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
+			- (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
+
+	// if there are too many audio samples, drop the frame (unlikely)
+	if(current_drift > DRIFT_ERROR_THRESHOLD) {
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Too many audio samples, dropping samples to keep the audio in sync with the video."));
+		return;
+	}
+
+	// if there are not enough audio samples, insert zeros
+	unsigned int sample_count_out = 0;
+	if(current_drift < -DRIFT_ERROR_THRESHOLD || audiolock->m_insert_zeros) {
+
+		if(!audiolock->m_insert_zeros)
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Not enough audio samples, inserting zeros to keep the audio in sync with the video."));
+		audiolock->m_insert_zeros = false;
+
+		// insert zeros
+		unsigned int n = std::max(0, (int) round(-current_drift * (double) sample_rate));
+		audiolock->m_temp_input_buffer.Alloc(n * m_audio_channels);
+		std::fill_n(audiolock->m_temp_input_buffer.GetData(), n * m_audio_channels, 0.0f);
+		sample_count_out = audiolock->m_fast_resampler->Resample((double) sample_rate / (double) m_audio_sample_rate, 1.0,
+																 audiolock->m_temp_input_buffer.GetData(), n, &audiolock->m_temp_output_buffer, sample_count_out);
+
+		// recalculate drift
+		current_drift = ((double) audiolock->m_samples_written + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
+				- (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
 
 	}
 
-	// resample and convert the samples
-	// the resampler has a separate lock so the other threads won't be blocked (resampling is slow)
-	double delayed_samples; // number of delayed samples *before* this block of samples
-	unsigned int sample_count_resampled;
-	const uint8_t *data_resampled;
-	{
-		ResamplerLock lock(&m_resampler);
-		//timestamp_resampled  = timestamp - (int64_t) round(lock->GetDelayedSamples() / (double) m_audio_sample_rate * 1.0e6);
-		delayed_samples = lock->GetDelayedSamples();
-		lock->Resample(channels, sample_rate, format, sample_count, data,
-					   m_audio_channels, m_audio_sample_rate, AV_SAMPLE_FMT_FLT, &sample_count_resampled, &data_resampled);
+	// do drift correction
+	// The point of drift correction is to keep video and audio in sync even when the clocks are not running at exactly the same speed.
+	// This can happen because the sample rate of the sound card is not always 100% accurate. Even a 0.1% error will result in audio that is
+	// seconds too early or too late at the end of a one hour video. This problem doesn't occur on all computers though (I'm not sure why).
+	// Another cause of desynchronization is problems/glitches with PulseAudio (e.g. jumps in time when switching between sources).
+	double dt = fmin((double) (timestamp - previous_timestamp) * 1.0e-6, DRIFT_MAX_BLOCK);
+	audiolock->m_average_drift = clamp(audiolock->m_average_drift + DRIFT_CORRECTION_I * current_drift * dt, -0.5, 0.5);
+	if(audiolock->m_average_drift < -0.05 && audiolock->m_warn_desync) {
+		audiolock->m_warn_desync = false;
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 5% too slow!"));
 	}
+	if(audiolock->m_average_drift > 0.05 && audiolock->m_warn_desync) {
+		audiolock->m_warn_desync = false;
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 5% too fast!"));
+	}
+	double length = (double) sample_count / (double) sample_rate;
+	double drift_correction = clamp(DRIFT_CORRECTION_P * current_drift + audiolock->m_average_drift, -0.5, 0.5) * fmin(1.0, DRIFT_MAX_BLOCK / length);
+
+	//qDebug() << "current_drift" << current_drift << "average_drift" << audiolock->m_average_drift << "drift_correction" << drift_correction;
+
+	// convert the samples
+	const float *data_float;
+	if(format == AV_SAMPLE_FMT_FLT) {
+		data_float = (const float*) data;
+	} else if(format == AV_SAMPLE_FMT_S16) {
+		audiolock->m_temp_input_buffer.Alloc(sample_count * m_audio_channels);
+		data_float = audiolock->m_temp_input_buffer.GetData();
+		SampleCopy(sample_count * m_audio_channels, (const int16_t*) data, 1, audiolock->m_temp_input_buffer.GetData(), 1);
+	} else {
+		Logger::LogError("[Synchronizer::ReadAudioSamples] " + QObject::tr("Error: Audio sample format is not supported!"));
+		throw ResamplerException();
+	}
+
+	// resample
+	sample_count_out = audiolock->m_fast_resampler->Resample((double) sample_rate / (double) m_audio_sample_rate, 1.0 / (1.0 - drift_correction),
+															 data_float, sample_count, &audiolock->m_temp_output_buffer, sample_count_out);
+	audiolock->m_samples_written += sample_count_out;
 
 	SharedLock lock(&m_shared_data);
 
 	// avoid memory problems by limiting the audio buffer size
-	if(lock->m_audio_buffer.GetSize() / m_audio_sample_size >= MAX_AUDIO_SAMPLES_BUFFERED) {
+	if(lock->m_audio_buffer.GetSize() / m_audio_channels >= MAX_AUDIO_SAMPLES_BUFFERED) {
 		if(lock->m_segment_video_started) {
 			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video "
-							   "(some video and/or audio may be lost). The video input seems to be too slow."));
+																				 "(some video and/or audio may be lost). The video input seems to be too slow."));
 			NewSegment(lock.get());
 		} else {
 			// If the video hasn't started yet, it makes more sense to drop the oldest samples.
 			// Shifting the start time like this isn't completely accurate, but this shouldn't happen often anyway.
 			// The number of samples dropped is calculated so that the buffer will be 90% full after this.
-			size_t n = lock->m_audio_buffer.GetSize() / m_audio_sample_size - (MAX_AUDIO_SAMPLES_BUFFERED - MAX_AUDIO_SAMPLES_BUFFERED / 10);
-			lock->m_audio_buffer.Drop(n * m_audio_sample_size);
+			size_t n = lock->m_audio_buffer.GetSize() / m_audio_channels - MAX_AUDIO_SAMPLES_BUFFERED * 9 / 10;
+			lock->m_audio_buffer.Pop(n * m_audio_channels);
 			lock->m_segment_audio_start_time += (int64_t) round((double) n / (double) m_audio_sample_rate * 1.0e6);
-		}
-	}
-
-	// do speed correction (i.e. do the calculations so the video can synchronize to it)
-	// The point of speed correction is to keep video and audio in sync even when the clocks are not running at exactly the same speed.
-	// This can happen because the sample rate of the sound card is not always 100% accurate. Even a 0.1% error will result in audio that is
-	// seconds too early or too late at the end of a one hour video. This problem doesn't occur on all computers though (I'm not sure why).
-	// Another cause of desynchronization is problems/glitches with PulseAudio (e.g. jumps in time when switching between sources).
-	if(lock->m_segment_audio_started) {
-		double sample_length = ((double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) + delayed_samples) / (double) m_audio_sample_rate;
-		double time_length = (double) (timestamp - lock->m_segment_audio_start_time) * 1.0e-6;
-		double current_error = (sample_length - time_length) - lock->m_av_desync;
-		if(fabs(current_error) > DESYNC_ERROR_THRESHOLD) {
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Desynchronization is too high, starting new segment to keep the audio "
-							   "in sync with the video (some video and/or audio may be lost)."));
-			//qDebug() << sample_length << time_length << (sample_length - time_length) << lock->m_av_desync << lock->m_av_desync_i;
-			NewSegment(lock.get());
-		} else {
-			double dt = std::min((double) (timestamp - lock->m_segment_audio_last_timestamp) * 1.0e-6, 0.5);
-			lock->m_av_desync_i = clamp(lock->m_av_desync_i + DESYNC_CORRECTION_I * current_error * dt, -1.0, 1.0);
-			lock->m_av_desync += (DESYNC_CORRECTION_P * current_error + lock->m_av_desync_i) * dt;
-			if(lock->m_av_desync_i < -0.05 && lock->m_warn_desync) {
-				lock->m_warn_desync = false;
-				Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 5% too slow!"));
-			}
-			if(lock->m_av_desync_i > 0.05 && lock->m_warn_desync) {
-				lock->m_warn_desync = false;
-				Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 5% too fast!"));
-			}
 		}
 	}
 
@@ -412,26 +448,33 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	}
 
 	// store the samples
-	lock->m_segment_audio_last_timestamp = timestamp;
-	lock->m_audio_buffer.Write((const char*) data_resampled, sample_count_resampled * m_audio_sample_size);
+	lock->m_audio_buffer.Push(audiolock->m_temp_output_buffer.GetData(), sample_count_out * m_audio_channels);
 
 	// increase segment stop time
-	double sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_sample_size) / (double) m_audio_sample_rate;
-	lock->m_segment_audio_stop_time = lock->m_segment_audio_start_time + (int64_t) round(sample_length * 1.0e6);
+	double new_sample_length = (double) (lock->m_segment_audio_samples_read + lock->m_audio_buffer.GetSize() / m_audio_channels) / (double) m_audio_sample_rate;
+	lock->m_segment_audio_stop_time = lock->m_segment_audio_start_time + (int64_t) round(new_sample_length * 1.0e6);
 
 }
 
 void Synchronizer::ReadAudioHole() {
-	Q_ASSERT(m_audio_encoder != NULL);
-	SharedLock lock(&m_shared_data);
+	assert(m_audio_encoder != NULL);
 
-	// if the audio has not been started, ignore it
-	if(!lock->m_segment_audio_started)
-		return;
+	Logger::LogWarning("[Synchronizer::ReadAudioHole] " + QObject::tr("Warning: Received hole in audio stream, inserting zeros to keep the audio in sync with the video."));
 
-	Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Received hole in audio stream, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost)."));
-	NewSegment(lock.get());
+	AudioLock audiolock(&m_audio_data);
+	if(audiolock->m_first_timestamp != AV_NOPTS_VALUE) {
+		audiolock->m_average_drift = 0.0;
+		audiolock->m_insert_zeros = true;
+	}
 
+}
+
+void Synchronizer::InitAudioSegment(AudioData* audiolock) {
+	audiolock->m_last_timestamp = std::numeric_limits<int64_t>::min();
+	audiolock->m_first_timestamp = AV_NOPTS_VALUE;
+	audiolock->m_samples_written = 0;
+	audiolock->m_average_drift = 0.0;
+	audiolock->m_insert_zeros = false;
 }
 
 void Synchronizer::NewSegment(SharedData* lock) {
@@ -455,11 +498,7 @@ void Synchronizer::InitSegment(SharedData* lock) {
 	lock->m_segment_audio_stop_time = AV_NOPTS_VALUE;
 	lock->m_segment_audio_can_drop = true;
 	lock->m_segment_audio_samples_read = 0;
-	lock->m_segment_video_last_timestamp = AV_NOPTS_VALUE;
-	lock->m_segment_audio_last_timestamp = AV_NOPTS_VALUE;
 	lock->m_segment_video_accumulated_delay = 0;
-	lock->m_av_desync = 0.0;
-	lock->m_av_desync_i = 0.0;
 }
 
 int64_t Synchronizer::GetTotalTime(Synchronizer::SharedData* lock) {
@@ -493,14 +532,12 @@ void Synchronizer::FlushBuffers(SharedData* lock) {
 	GetSegmentStartStop(lock, &segment_start_time, &segment_stop_time);
 
 	// flush video
-	if(m_video_encoder != NULL) {
+	if(m_video_encoder != NULL)
 		FlushVideoBuffer(lock, segment_start_time, segment_stop_time);
-	}
 
 	// flush audio
-	if(m_audio_encoder != NULL) {
+	if(m_audio_encoder != NULL)
 		FlushAudioBuffer(lock, segment_start_time, segment_stop_time);
-	}
 
 }
 
@@ -520,19 +557,18 @@ void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData* lock, int64_t segm
 	// It is perfectly possible that *both* happen, each possibly multiple times, in just one function call.
 
 	int64_t segment_stop_video_pts = (lock->m_time_offset + (segment_stop_time - segment_start_time)) * (int64_t) m_video_frame_rate / (int64_t) 1000000;
-	int64_t delay_time_per_frame = 1000000 / m_video_frame_rate + 1; // add one to avoid endless accumulation
+	int64_t delay_time_per_frame = 1000000 / m_video_frame_rate;
 	for( ; ; ) {
 
 		// get/predict the timestamp of the next frame
 		int64_t next_timestamp = (lock->m_video_buffer.empty())? lock->m_segment_video_stop_time - (int64_t) (1000000 / m_video_frame_rate) : lock->m_video_buffer.front()->GetFrame()->pts;
 		int64_t next_pts = (lock->m_time_offset + (next_timestamp - segment_start_time)) * (int64_t) m_video_frame_rate / (int64_t) 1000000;
 
-		// insert delays if needed, up to either the next frame or the segment end
-		// It doesn't really matter where the delays end up, they will never cause real frames to be dropped, only duplicates.
-		while(lock->m_segment_video_accumulated_delay >= delay_time_per_frame && lock->m_video_pts < std::min(next_pts, segment_stop_video_pts)) {
+		// insert delays if needed, up to the segment end
+		while(lock->m_segment_video_accumulated_delay >= delay_time_per_frame && lock->m_video_pts < segment_stop_video_pts) {
 			lock->m_segment_video_accumulated_delay -= delay_time_per_frame;
 			lock->m_video_pts += 1;
-			//Logger::LogInfo("[Synchronizer::FlushBuffers] Delay [" + QString::number(lock->m_video_pts - 1) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
+			//Logger::LogInfo("[Synchronizer::FlushVideoBuffer] Delay [" + QString::number(lock->m_video_pts - 1) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 		}
 
 		// insert duplicate frames if needed, up to either the next frame or the segment end
@@ -543,15 +579,18 @@ void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData* lock, int64_t segm
 				std::unique_ptr<AVFrameWrapper> duplicate_frame = CreateVideoFrameYUV(m_video_width, m_video_height, &lock->m_last_video_frame_data);
 				duplicate_frame->GetFrame()->pts = lock->m_video_pts + m_video_max_frames_skipped;
 
-				if(lock->m_sync_diagram != NULL) {
+				// add new block to sync diagram
+				if(m_sync_diagram != NULL) {
 					double t = (double) duplicate_frame->GetFrame()->pts / (double) m_video_frame_rate;
-					lock->m_sync_diagram->AddBlock(2, t, t + 1.0 / (double) m_video_frame_rate, QColor(255, 196, 0));
+					m_sync_diagram->AddBlock(2, t, t + 1.0 / (double) m_video_frame_rate, QColor(255, 196, 0));
 				}
 
-				lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - (duplicate_frame->GetFrame()->pts - lock->m_video_pts) * delay_time_per_frame);
+				// send the frame to the encoder
+				lock->m_segment_video_accumulated_delay = std::max((int64_t) 0, lock->m_segment_video_accumulated_delay - m_video_max_frames_skipped * delay_time_per_frame);
 				lock->m_video_pts = duplicate_frame->GetFrame()->pts + 1;
-				//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(duplicate_frame->GetFrame()->pts) + "] (duplicate) acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
+				//Logger::LogInfo("[Synchronizer::FlushVideoBuffer] Encoded video frame [" + QString::number(duplicate_frame->GetFrame()->pts) + "] (duplicate) acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 				m_video_encoder->AddFrame(std::move(duplicate_frame));
+				lock->m_segment_video_accumulated_delay += m_video_encoder->GetFrameDelay();
 			}
 		}
 
@@ -567,7 +606,7 @@ void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData* lock, int64_t segm
 
 		// if the frame is way too early, drop it
 		if(frame->GetFrame()->pts < lock->m_video_pts - 1) {
-			//Logger::LogInfo("[Synchronizer::FlushBuffers] Dropped video frame [" + QString::number(frame->GetFrame()->pts) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
+			//Logger::LogInfo("[Synchronizer::FlushVideoBuffer] Dropped video frame [" + QString::number(frame->GetFrame()->pts) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 			continue;
 		}
 
@@ -579,9 +618,10 @@ void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData* lock, int64_t segm
 		if(lock->m_video_pts == 0)
 			frame->GetFrame()->pts = 0;
 
-		if(lock->m_sync_diagram != NULL) {
+		// add new block to sync diagram
+		if(m_sync_diagram != NULL) {
 			double t = (double) frame->GetFrame()->pts / (double) m_video_frame_rate;
-			lock->m_sync_diagram->AddBlock(2, t, t + 1.0 / (double) m_video_frame_rate, QColor(255, 0, 0));
+			m_sync_diagram->AddBlock(2, t, t + 1.0 / (double) m_video_frame_rate, QColor(255, 0, 0));
 		}
 
 		// send the frame to the encoder
@@ -589,6 +629,7 @@ void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData* lock, int64_t segm
 		lock->m_video_pts = frame->GetFrame()->pts + 1;
 		//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded video frame [" + QString::number(frame->GetFrame()->pts) + "].");
 		m_video_encoder->AddFrame(std::move(frame));
+		lock->m_segment_video_accumulated_delay += m_video_encoder->GetFrameDelay();
 
 	}
 
@@ -618,17 +659,19 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 
 			// drop samples that are too early
 			if(pos < lock->m_audio_samples) {
-				int64_t n = std::min(lock->m_audio_samples - pos, (int64_t) lock->m_audio_buffer.GetSize() / m_audio_sample_size);
-				lock->m_audio_buffer.Drop(n * m_audio_sample_size);
+				int64_t n = std::min(lock->m_audio_samples - pos, (int64_t) lock->m_audio_buffer.GetSize() / m_audio_channels);
+				lock->m_audio_buffer.Pop(n * m_audio_channels);
 				lock->m_segment_audio_samples_read += n;
 			}
 
 		}
 
-		int64_t samples_left = std::min(samples_max, (int64_t) lock->m_audio_buffer.GetSize() / m_audio_sample_size);
-		if(lock->m_sync_diagram != NULL && samples_left > 0) {
+		int64_t samples_left = std::min(samples_max, (int64_t) lock->m_audio_buffer.GetSize() / m_audio_channels);
+
+		// add new block to sync diagram
+		if(m_sync_diagram != NULL && samples_left > 0) {
 			double t = (double) lock->m_audio_samples / (double) m_audio_sample_rate;
-			lock->m_sync_diagram->AddBlock(3, t, t + (double) samples_left / (double) m_audio_sample_rate, QColor(0, 255, 0));
+			m_sync_diagram->AddBlock(3, t, t + (double) samples_left / (double) m_audio_sample_rate, QColor(0, 255, 0));
 		}
 
 		// send the samples to the encoder
@@ -637,8 +680,9 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 			lock->m_segment_audio_can_drop = false;
 
 			// copy samples until either the partial frame is full or there are no samples left
+			//TODO// do direct copy/conversion to new audio frame?
 			int64_t n = std::min((int64_t) (m_audio_required_frame_samples - lock->m_partial_audio_frame_samples), samples_left);
-			lock->m_audio_buffer.Read(lock->m_partial_audio_frame.data() + lock->m_partial_audio_frame_samples * m_audio_sample_size, n * m_audio_sample_size);
+			lock->m_audio_buffer.Pop(lock->m_partial_audio_frame.GetData() + lock->m_partial_audio_frame_samples * m_audio_channels, n * m_audio_channels);
 			lock->m_segment_audio_samples_read += n;
 			lock->m_partial_audio_frame_samples += n;
 			lock->m_audio_samples += n;
@@ -660,13 +704,13 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 				// copy/convert the samples
 				switch(m_audio_required_sample_format) {
 					case AV_SAMPLE_FMT_S16: {
-						float *data_in = (float*) lock->m_partial_audio_frame.data();
+						float *data_in = (float*) lock->m_partial_audio_frame.GetData();
 						int16_t *data_out = (int16_t*) audio_frame->GetFrame()->data[0];
 						SampleCopy(m_audio_required_frame_samples * m_audio_channels, data_in, 1, data_out, 1);
 						break;
 					}
 					case AV_SAMPLE_FMT_FLT: {
-						float *data_in = (float*) lock->m_partial_audio_frame.data();
+						float *data_in = (float*) lock->m_partial_audio_frame.GetData();
 						float *data_out = (float*) audio_frame->GetFrame()->data[0];
 						memcpy(data_out, data_in, m_audio_required_frame_samples * m_audio_required_sample_size);
 						break;
@@ -674,7 +718,7 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
 					case AV_SAMPLE_FMT_S16P: {
 						for(unsigned int p = 0; p < planes; ++p) {
-							float *data_in = (float*) lock->m_partial_audio_frame.data() + p;
+							float *data_in = (float*) lock->m_partial_audio_frame.GetData() + p;
 							int16_t *data_out = (int16_t*) audio_frame->GetFrame()->data[p];
 							SampleCopy(m_audio_required_frame_samples, data_in, planes, data_out, 1);
 						}
@@ -682,7 +726,7 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 					}
 					case AV_SAMPLE_FMT_FLTP: {
 						for(unsigned int p = 0; p < planes; ++p) {
-							float *data_in = (float*) lock->m_partial_audio_frame.data() + p;
+							float *data_in = (float*) lock->m_partial_audio_frame.GetData() + p;
 							float *data_out = (float*) audio_frame->GetFrame()->data[p];
 							SampleCopy(m_audio_required_frame_samples, data_in, planes, data_out, 1);
 						}
@@ -690,13 +734,13 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 					}
 #endif
 					default: {
-						Q_ASSERT(false);
+						assert(false);
 						break;
 					}
 				}
 				lock->m_partial_audio_frame_samples = 0;
 
-				//Logger::LogInfo("[Synchronizer::FlushBuffers] Encoded audio frame [" + QString::number(lock->m_partial_audio_frame->pts) + "].");
+				//Logger::LogInfo("[Synchronizer::FlushAudioBuffer] Encoded audio frame [" + QString::number(lock->m_partial_audio_frame->pts) + "].");
 				m_audio_encoder->AddFrame(std::move(audio_frame));
 			}
 
@@ -716,14 +760,14 @@ void Synchronizer::SynchronizerThread() {
 			{
 				SharedLock lock(&m_shared_data);
 				FlushBuffers(lock.get());
-				if(lock->m_sync_diagram != NULL) {
+				if(m_sync_diagram != NULL) {
 					double time_in = (double) hrt_time_micro() * 1.0e-6;
 					double time_out = (double) GetTotalTime(lock.get()) * 1.0e-6;
-					lock->m_sync_diagram->SetCurrentTime(0, time_in);
-					lock->m_sync_diagram->SetCurrentTime(1, time_in);
-					lock->m_sync_diagram->SetCurrentTime(2, time_out);
-					lock->m_sync_diagram->SetCurrentTime(3, time_out);
-					lock->m_sync_diagram->Update();
+					m_sync_diagram->SetCurrentTime(0, time_in);
+					m_sync_diagram->SetCurrentTime(1, time_in);
+					m_sync_diagram->SetCurrentTime(2, time_out);
+					m_sync_diagram->SetCurrentTime(3, time_out);
+					m_sync_diagram->Update();
 				}
 			}
 

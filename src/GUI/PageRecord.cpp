@@ -400,8 +400,8 @@ void PageRecord::StartPage() {
 	if(m_page_started)
 		return;
 
-	Q_ASSERT(!m_input_started);
-	Q_ASSERT(!m_output_started);
+	assert(!m_input_started);
+	assert(!m_output_started);
 
 	// save the settings in case libav/ffmpeg decides to kill the process
 	m_main_window->SaveSettings();
@@ -603,7 +603,7 @@ void PageRecord::StopPage(bool save) {
 }
 
 void PageRecord::StartOutput() {
-	Q_ASSERT(m_page_started);
+	assert(m_page_started);
 
 	if(m_output_started)
 		return;
@@ -682,7 +682,7 @@ void PageRecord::StartOutput() {
 }
 
 void PageRecord::StopOutput(bool final) {
-	Q_ASSERT(m_page_started);
+	assert(m_page_started);
 
 	if(!m_output_started)
 		return;
@@ -719,15 +719,15 @@ void PageRecord::StopOutput(bool final) {
 }
 
 void PageRecord::StartInput() {
-	Q_ASSERT(m_page_started);
+	assert(m_page_started);
 
 	if(m_input_started)
 		return;
 
-	Q_ASSERT(m_x11_input == NULL);
-	Q_ASSERT(m_alsa_input == NULL);
+	assert(m_x11_input == NULL);
+	assert(m_alsa_input == NULL);
 #if SSR_USE_PULSEAUDIO
-	Q_ASSERT(m_pulseaudio_input == NULL);
+	assert(m_pulseaudio_input == NULL);
 #endif
 
 	try {
@@ -776,7 +776,7 @@ void PageRecord::StartInput() {
 }
 
 void PageRecord::StopInput() {
-	Q_ASSERT(m_page_started);
+	assert(m_page_started);
 
 	if(!m_input_started)
 		return;
@@ -799,7 +799,7 @@ void PageRecord::StopInput() {
 }
 
 void PageRecord::UpdateInput() {
-	Q_ASSERT(m_page_started);
+	assert(m_page_started);
 
 	if(m_output_started || m_previewing) {
 		StartInput();

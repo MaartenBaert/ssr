@@ -328,13 +328,12 @@ psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
-subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = 3rdparty data glinject scripts src
+SUBDIRS = data glinject scripts src
 EXTRA_DIST = \
 	COPYING \
 	notes.txt \

@@ -36,7 +36,7 @@ BaseSink::BaseSink() {
 BaseSink::~BaseSink() {
 	// Classes that inherit a sink should disconnect themselves in the destructor before doing anything else,
 	// otherwise inputs may try to send data to partially destructed sinks.
-	Q_ASSERT(m_source == NULL);
+	assert(m_source == NULL);
 }
 void BaseSink::ConnectBaseSource(BaseSource* source, int priority) {
 	if(m_source == source && m_priority == priority)

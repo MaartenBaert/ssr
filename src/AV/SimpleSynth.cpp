@@ -21,7 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SimpleSynth.h"
 
 #include "Logger.h"
-#include "Resampler.h"
+#include "SampleCast.h"
 
 static void ALSARecoverAfterUnderrun(snd_pcm_t* pcm) {
 	Logger::LogWarning("[ALSARecoverAfterUnderrun] " + QObject::tr("Warning: An underrun has occurred, some samples were too late.", "Don't translate 'underrun'"));

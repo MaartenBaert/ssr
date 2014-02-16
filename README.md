@@ -19,7 +19,6 @@ If you have a 64-bit system, you have to install some 32-bit libraries as well. 
 You will need the following packages to compile SimpleScreenRecorder:
 
 - GCC and make
-- cmake (for libsoxr)
 - pkg-config
 - Qt 4
 - ffmpeg or libav (libavformat, libavcodec, libavutil, libswscale)
@@ -43,7 +42,7 @@ For Ubuntu 13.10:
     sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib \
-    libx11-8:i386 libxext6:i386 libxfixes3:i386
+    libx11-8:i386 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
 
 If the 32-bit version of some library isn't found, but 64-bit works fine, try this:
 

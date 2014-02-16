@@ -64,9 +64,9 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 		} else {
 			TempBuffer<uint8_t> scaled;
 			int scaled_stride = grow_align16(out_width * 4);
-			scaled.alloc(scaled_stride * out_height);
-			Scale_BGRA(in_width, in_height, in_data[0], in_stride[0], out_width, out_height, scaled.data(), scaled_stride);
-			Convert_BGRA_YUV420(out_width, out_height, scaled.data(), scaled_stride, out_data, out_stride);
+			scaled.Alloc(scaled_stride * out_height);
+			Scale_BGRA(in_width, in_height, in_data[0], in_stride[0], out_width, out_height, scaled.GetData(), scaled_stride);
+			Convert_BGRA_YUV420(out_width, out_height, scaled.GetData(), scaled_stride, out_data, out_stride);
 		}
 		return;
 	}
@@ -90,7 +90,7 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 }
 
 void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
-	Q_ASSERT(width % 2 == 0 && height % 2 == 0);
+	assert(width % 2 == 0 && height % 2 == 0);
 
 #if SSR_USE_X86_ASM
 	if(m_use_ssse3) {

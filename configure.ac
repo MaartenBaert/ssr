@@ -96,8 +96,5 @@ AM_COND_IF([ENABLE_GLINJECTLIB], [
 ])
 
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile 3rdparty/Makefile data/Makefile glinject/Makefile scripts/Makefile src/Makefile])
-AM_COND_IF([ENABLE_SSRPROGRAM], [
-	AC_CONFIG_SUBDIRS([3rdparty/soxr])
-])
+AC_CONFIG_FILES([Makefile data/Makefile glinject/Makefile scripts/Makefile src/Makefile])
 AC_OUTPUT
