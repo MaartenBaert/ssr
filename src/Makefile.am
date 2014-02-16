@@ -5,7 +5,6 @@ noinst_LTLIBRARIES =
 
 simplescreenrecorder_CPPFLAGS = \
 	$(QT4_CFLAGS) \
-	-I$(top_builddir)/3rdparty \
 	-I$(srcdir)/AV/Input \
 	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
@@ -20,8 +19,7 @@ simplescreenrecorder_CXXFLAGS = \
 simplescreenrecorder_LDFLAGS = \
 	-pthread \
 	$(QT4_LIBS) \
-	-L$(top_builddir)/3rdparty \
-	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound -lsoxr
+	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
 if ! ENABLE_ASSERT
 simplescreenrecorder_CPPFLAGS += -DNDEBUG -DQT_NO_DEBUG

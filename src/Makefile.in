@@ -479,7 +479,6 @@ psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
-subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
@@ -487,7 +486,6 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@noinst_LTLIBRARIES = $(am__append_12)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS = $(QT4_CFLAGS) \
-@ENABLE_SSRPROGRAM_TRUE@	-I$(top_builddir)/3rdparty \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Output -I$(srcdir)/AV \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/common -I$(srcdir)/GUI \
@@ -506,10 +504,9 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	-flax-vector-conversions
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread \
-@ENABLE_SSRPROGRAM_TRUE@	$(QT4_LIBS) -L$(top_builddir)/3rdparty \
-@ENABLE_SSRPROGRAM_TRUE@	-lrt -lavformat -lavcodec -lavutil \
-@ENABLE_SSRPROGRAM_TRUE@	-lswscale -lX11 -lXext -lXfixes \
-@ENABLE_SSRPROGRAM_TRUE@	-lasound -lsoxr $(am__append_7) \
+@ENABLE_SSRPROGRAM_TRUE@	$(QT4_LIBS) -lrt -lavformat -lavcodec \
+@ENABLE_SSRPROGRAM_TRUE@	-lavutil -lswscale -lX11 -lXext \
+@ENABLE_SSRPROGRAM_TRUE@	-lXfixes -lasound $(am__append_7) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_10)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_SOURCES = \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.cpp \

@@ -22,8 +22,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "TempBuffer.h"
 
-#include <soxr.h>
-
 template<typename IN, typename OUT> OUT SampleCast(IN x);
 template<> inline int16_t SampleCast<int16_t, int16_t>(int16_t x) { return x; }
 template<> inline int16_t SampleCast<float  , int16_t>(float   x) { return lrint(fmin(fmax(x * 32768.0f, -32768.0f), 32767.0f)); }

@@ -9,8 +9,8 @@ DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_PULSEAUDIO=1 SSR_
 QMAKE_CXXFLAGS += -std=c++0x -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
-INCLUDEPATH += AV AV/Input AV/Output common GUI ../build/3rdparty
-DEPENDPATH += AV AV/Input AV/Output common GUI ../build/3rdparty
+INCLUDEPATH += AV AV/Input AV/Output common GUI
+DEPENDPATH += AV AV/Input AV/Output common GUI
 
 SOURCES += \
 	AV/Input/ALSAInput.cpp \

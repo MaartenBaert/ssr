@@ -28,8 +28,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "TempBuffer.h"
 #include "AVWrapper.h"
 
-#include <soxr.h>
-
 class VideoEncoder;
 class AudioEncoder;
 class SyncDiagram;

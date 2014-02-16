@@ -19,7 +19,6 @@ If you have a 64-bit system, you have to install some 32-bit libraries as well. 
 You will need the following packages to compile SimpleScreenRecorder:
 
 - GCC and make
-- cmake (for libsoxr)
 - pkg-config
 - Qt 4
 - ffmpeg or libav (libavformat, libavcodec, libavutil, libswscale)
