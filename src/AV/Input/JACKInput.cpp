@@ -26,12 +26,17 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.h"
 
-const unsigned int JACKInput::RING_BUFFER_SIZE = 50;
+// Size of the ring buffer (samples).
+const unsigned int JACKInput::RING_BUFFER_SIZE = 1024 * 32;
 
-JACKInput::JACKInput() {
+JACKInput::JACKInput(bool connect_system_capture, bool connect_system_playback) {
 
-	m_sample_rate = 0; // the sample rate is set by JACK
+	m_connect_system_capture = connect_system_capture;
+	m_connect_system_playback = connect_system_playback;
 	m_channels = 2; // always 2 channels because the synchronizer and encoder don't support anything else at this point
+
+	m_jackthread_sample_rate = 0; // the sample rate is set by JACK
+	m_jackthread_hole = false;
 
 	m_jack_client = NULL;
 
@@ -60,10 +65,7 @@ JACKInput::~JACKInput() {
 
 void JACKInput::Init() {
 
-	m_command_ring.resize(RING_BUFFER_SIZE);
-	m_command_ring_read_pos = 0;
-	m_command_ring_write_pos = 0;
-	std::atomic_thread_fence(std::memory_order_release);
+	m_message_queue.Reset(RING_BUFFER_SIZE * m_channels * sizeof(float));
 
 	m_jack_client = jack_client_open("SimpleScreenRecorder", JackNoStartServer, NULL);
 	if(m_jack_client == NULL) {
@@ -122,47 +124,51 @@ void JACKInput::Free() {
 	}
 }
 
-void JACKInput::WriteCommand(bool is_hole, jack_nframes_t nframes) {
-	std::atomic_thread_fence(std::memory_order_acquire);
-	unsigned int commands_ready = positive_mod((int) m_command_ring_write_pos - (int) m_command_ring_read_pos, (int) RING_BUFFER_SIZE * 2);
-	if(commands_ready >= RING_BUFFER_SIZE)
-		return;
-	Command &cmd = m_command_ring[m_command_ring_write_pos % RING_BUFFER_SIZE];
-	if(is_hole || commands_ready == RING_BUFFER_SIZE - 1) {
-		cmd.m_is_hole = true;
-	} else {
-		cmd.m_is_hole = false;
-		cmd.m_timestamp = hrt_time_micro() - (int64_t) nframes * (int64_t) 1000000 / (int64_t) m_sample_rate;
-		cmd.m_sample_rate = m_sample_rate;
-		cmd.m_data.resize(nframes * m_channels * sizeof(float));
-		for(unsigned int p = 0; p < m_channels; ++p) {
-			SampleCopy(nframes, (float*) jack_port_get_buffer(m_jack_ports[p], nframes), 1, (float*) cmd.m_data.data() + p, m_channels);
-		}
-	}
-	std::atomic_thread_fence(std::memory_order_acq_rel);
-	m_command_ring_write_pos = (m_command_ring_write_pos + 1) % (RING_BUFFER_SIZE * 2);
-	std::atomic_thread_fence(std::memory_order_release);
-}
-
 int JACKInput::ProcessCallback(jack_nframes_t nframes, void* arg) {
 	JACKInput *input = (JACKInput*) arg;
+
+	// deal with holes
+	if(input->m_jackthread_hole) {
+		char *message = input->m_message_queue.PrepareWriteMessage(sizeof(enum_eventtype));
+		if(message == NULL)
+			return 0;
+		*((enum_eventtype*) message) = EVENTTYPE_HOLE;
+		input->m_message_queue.WriteMessage();
+		input->m_jackthread_hole = false;
+	}
+
 	// This function is called from a real-time thread, so it's not a good idea to do actual work here.
-	// The data is moved to a queue, and if the frame size hasn't changed, this is done without locking or allocating new memory.
-	// Otherwise it does allocate memory, but that should rarely happen.
-	input->WriteCommand(false, nframes);
+	// The data is moved to a queue, and a second thread will do the work as usual.
+	//TODO// if nframes is small, then combine multiple blocks into one?
+	char *message = input->m_message_queue.PrepareWriteMessage(sizeof(enum_eventtype) + sizeof(Event_Data) + nframes * input->m_channels * sizeof(float));
+	if(message == NULL) {
+		input->m_jackthread_hole = true;
+		return 0;
+	}
+	*((enum_eventtype*) message) = EVENTTYPE_DATA;
+	message += sizeof(enum_eventtype);
+	((Event_Data*) message)->m_timestamp = hrt_time_micro() - (int64_t) nframes * (int64_t) 1000000 / (int64_t) input->m_jackthread_sample_rate;
+	((Event_Data*) message)->m_sample_rate = input->m_jackthread_sample_rate;
+	((Event_Data*) message)->m_sample_count = nframes;
+	message += sizeof(Event_Data);
+	for(unsigned int p = 0; p < input->m_channels; ++p) {
+		SampleCopy(nframes, (float*) jack_port_get_buffer(input->m_jack_ports[p], nframes), 1, (float*) message + p, input->m_channels);
+	}
+	input->m_message_queue.WriteMessage();
+
 	return 0;
 }
 
 int JACKInput::SampleRateCallback(jack_nframes_t nframes, void* arg) {
 	JACKInput *input = (JACKInput*) arg;
-	input->m_sample_rate = nframes;
-	//input->WriteCommand(true);
+	input->m_jackthread_sample_rate = nframes;
+	input->m_jackthread_hole = true;
 	return 0;
 }
 
 int JACKInput::XRunCallback(void* arg) {
 	JACKInput *input = (JACKInput*) arg;
-	input->WriteCommand(true);
+	input->m_jackthread_hole = true;
 	return 0;
 }
 
@@ -173,21 +179,27 @@ void JACKInput::InputThread() {
 
 		while(!m_should_stop) {
 
-			std::atomic_thread_fence(std::memory_order_acquire);
-			unsigned int commands_ready = positive_mod((int) m_command_ring_write_pos - (int) m_command_ring_read_pos, (int) RING_BUFFER_SIZE * 2);
-			if(commands_ready == 0) {
+			unsigned int message_size;
+			char *message = m_message_queue.PrepareReadMessage(&message_size);
+			if(message == NULL) {
 				usleep(10000);
 				continue;
 			}
-			Command &cmd = m_command_ring[m_command_ring_read_pos % RING_BUFFER_SIZE];
-			if(cmd.m_is_hole) {
+
+			assert(message_size >= sizeof(enum_eventtype));
+			enum_eventtype type = *((enum_eventtype*) message);
+			message += sizeof(enum_eventtype);
+			if(type == EVENTTYPE_HOLE) {
 				PushAudioHole();
-			} else {
-				PushAudioSamples(m_channels, cmd.m_sample_rate, AV_SAMPLE_FMT_FLT, cmd.m_data.size() / (m_channels * sizeof(float)), cmd.m_data.data(), cmd.m_timestamp);
 			}
-			std::atomic_thread_fence(std::memory_order_acq_rel);
-			m_command_ring_read_pos = (m_command_ring_read_pos + 1) % (RING_BUFFER_SIZE * 2);
-			std::atomic_thread_fence(std::memory_order_release);
+			if(type == EVENTTYPE_DATA) {
+				assert(message_size >= sizeof(enum_eventtype) + sizeof(Event_Data));
+				assert(message_size >= sizeof(enum_eventtype) + sizeof(Event_Data) + ((Event_Data*) message)->m_sample_count * m_channels * sizeof(float));
+				PushAudioSamples(m_channels, ((Event_Data*) message)->m_sample_rate, AV_SAMPLE_FMT_FLT, ((Event_Data*) message)->m_sample_count,
+								 (uint8_t*) (message + sizeof(Event_Data)), ((Event_Data*) message)->m_timestamp);
+			}
+
+			m_message_queue.ReadMessage();
 
 		}
 

@@ -23,7 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #if SSR_USE_JACK
 
 #include "SourceSink.h"
-#include "MutexDataPair.h"
+#include "LockFreeMessageQueue.h"
 
 #include <jack/jack.h>
 
@@ -33,34 +33,32 @@ public:
 	static const unsigned int RING_BUFFER_SIZE;
 
 private:
-	struct Command {
-		bool m_is_hole;
-		int64_t m_timestamp;
-		unsigned int m_sample_rate;
-		std::vector<uint8_t> m_data;
-		Command() = default;
-		Command(Command&&) = default;
-		Command& operator=(Command&&) = default;
+	enum enum_eventtype : int {
+		EVENTTYPE_HOLE,
+		EVENTTYPE_DATA,
 	};
-	struct SharedData {
-		std::deque<Command> m_commands;
+	struct Event_Data {
+		int64_t m_timestamp;
+		unsigned int m_sample_rate, m_sample_count;
 	};
 
 private:
-	unsigned int m_sample_rate, m_channels;
+	bool m_connect_system_capture, m_connect_system_playback;
+	unsigned int m_channels;
+
+	unsigned int m_jackthread_sample_rate;
+	bool m_jackthread_hole;
+
+	LockFreeMessageQueue m_message_queue;
 
 	jack_client_t *m_jack_client;
 	std::vector<jack_port_t*> m_jack_ports;
 
 	std::thread m_thread;
-	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
-	std::vector<Command> m_command_ring;
-	unsigned int m_command_ring_read_pos, m_command_ring_write_pos;
-
 public:
-	JACKInput();
+	JACKInput(bool connect_system_capture, bool connect_system_playback);
 	~JACKInput();
 
 	// Returns whether an error has occurred in the input thread.
@@ -70,8 +68,6 @@ public:
 private:
 	void Init();
 	void Free();
-
-	void WriteCommand(bool is_hole, jack_nframes_t nframes = 0);
 
 	static int ProcessCallback(jack_nframes_t nframes, void* arg);
 	static int SampleRateCallback(jack_nframes_t nframes, void* arg);

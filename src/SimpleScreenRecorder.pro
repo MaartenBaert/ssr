@@ -84,6 +84,7 @@ HEADERS  += \
 	AV/SourceSink.h \
 	common/DetectCPUFeatures.h \
 	common/Dialogs.h \
+	common/LockFreeMessageQueue.h \
 	common/Logger.h \
 	common/MutexDataPair.h \
 	common/QueueBuffer.h \

@@ -529,7 +529,7 @@ void PageRecord::StartPage() {
 #if SSR_USE_JACK
 			// for JACK, start the input now
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_JACK)
-				m_jack_input.reset(new JACKInput());
+				m_jack_input.reset(new JACKInput(false, false)); //TODO// arguments
 #endif
 		}
 
