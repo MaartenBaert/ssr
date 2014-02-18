@@ -32,11 +32,11 @@ private:
 	unsigned int m_bit_rate;
 	unsigned int m_width, m_height, m_frame_rate;
 
-	unsigned int m_opt_threads;
-	unsigned int m_opt_minrate, m_opt_maxrate, m_opt_bufsize;
+	int m_opt_threads;
+	int m_opt_minrate, m_opt_maxrate, m_opt_bufsize, m_opt_keyint;
 
 #if !SSR_USE_AVCODEC_PRIVATE_CRF
-	unsigned int m_opt_crf;
+	int m_opt_crf;
 #endif
 #if !SSR_USE_AVCODEC_PRIVATE_PRESET
 	QString m_opt_preset;

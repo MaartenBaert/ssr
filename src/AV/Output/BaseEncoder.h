@@ -22,6 +22,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "MutexDataPair.h"
 
+int ParseCodecOptionInt(const QString& key, const QString& value, int min, int max, int multiply = 1, int fail = -1);
+
 class Muxer;
 class AVFrameWrapper;
 

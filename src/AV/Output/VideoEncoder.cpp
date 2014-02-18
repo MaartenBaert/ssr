@@ -41,13 +41,14 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		m_height = height;
 		m_frame_rate = frame_rate;
 
-		m_opt_threads = std::max(1u, std::thread::hardware_concurrency());
-		m_opt_minrate = (unsigned int) -1;
-		m_opt_maxrate = (unsigned int) -1;
-		m_opt_bufsize = (unsigned int) -1;
+		m_opt_threads = std::max(1, (int) std::thread::hardware_concurrency());
+		m_opt_minrate = -1;
+		m_opt_maxrate = -1;
+		m_opt_bufsize = -1;
+		m_opt_keyint = -1;
 
 #if !SSR_USE_AVCODEC_PRIVATE_CRF
-		m_opt_crf = (unsigned int) -1;
+		m_opt_crf = -1;
 #endif
 #if !SSR_USE_AVCODEC_PRIVATE_PRESET
 		m_opt_preset = "";
@@ -74,26 +75,34 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		AVDictionary *options = NULL;
 		try {
 			for(unsigned int i = 0; i < codec_options.size(); ++i) {
-				if(codec_options[i].first == "threads")
-					m_opt_threads = codec_options[i].second.toUInt();
-				else if(codec_options[i].first == "minrate")
-					m_opt_minrate = codec_options[i].second.toUInt() * 1024; // kbps
-				else if(codec_options[i].first == "maxrate")
-					m_opt_maxrate = codec_options[i].second.toUInt() * 1024; // kbps
-				else if(codec_options[i].first == "bufsize")
-					m_opt_bufsize = codec_options[i].second.toUInt() * 1024; // kbit
+				const QString &key = codec_options[i].first, &value = codec_options[i].second;
+				if(key == "threads") {
+					m_opt_threads = ParseCodecOptionInt(key, value, 1, INT_MAX);
+				} else if(key == "minrate") {
+					m_opt_minrate = ParseCodecOptionInt(key, value, 1, INT_MAX, 1024); // kbps
+				} else if(key == "maxrate") {
+					m_opt_maxrate = ParseCodecOptionInt(key, value, 1, INT_MAX, 1024); // kbps
+				} else if(key == "bufsize") {
+					m_opt_bufsize = ParseCodecOptionInt(key, value, 1, INT_MAX, 1024); // kbps
+				} else if(key == "keyint") {
+					m_opt_keyint = ParseCodecOptionInt(key, value, 1, INT_MAX);
 #if !SSR_USE_AVCODEC_PRIVATE_PRESET
-				else if(codec_options[i].first == "crf")
-					m_opt_crf = codec_options[i].second.toUInt();
+				} else if(key == "crf") {
+					m_opt_crf = ParseCodecOptionInt(key, value, 0, 51);
 #endif
 #if !SSR_USE_AVCODEC_PRIVATE_PRESET
-				else if(codec_options[i].first == "preset")
-					m_opt_preset = codec_options[i].second;
+				} else if(key == "preset") {
+					m_opt_preset = value;
 #endif
-				else
-					av_dict_set(&options, codec_options[i].first.toAscii().constData(), codec_options[i].second.toAscii().constData(), 0);
+				} else {
+					av_dict_set(&options, key.toAscii().constData(), value.toAscii().constData(), 0);
+				}
 			}
 			CreateCodec(codec_name, &options);
+			AVDictionaryEntry *t = NULL;
+			while((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)) != NULL) {
+				Logger::LogWarning("[VideoEncoder::Init] " + QObject::tr("Warning: Codec option '%1' was not recognised!").arg(t->key));
+			}
 			av_dict_free(&options);
 		} catch(...) {
 			av_dict_free(&options);
@@ -152,6 +161,7 @@ bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
 }
 
 void VideoEncoder::FillCodecContext(AVCodec* codec) {
+	Q_UNUSED(codec);
 
 	GetCodecContext()->width = m_width;
 	GetCodecContext()->height = m_height;
@@ -164,16 +174,17 @@ void VideoEncoder::FillCodecContext(AVCodec* codec) {
 	GetCodecContext()->flags |= CODEC_FLAG_LOOP_FILTER;
 	GetCodecContext()->thread_count = m_opt_threads;
 
-
-	if(m_opt_minrate != (unsigned int) -1)
+	if(m_opt_minrate != -1)
 		GetCodecContext()->rc_min_rate = m_opt_minrate;
-	if(m_opt_maxrate != (unsigned int) -1)
+	if(m_opt_maxrate != -1)
 		GetCodecContext()->rc_max_rate = m_opt_maxrate;
-	if(m_opt_bufsize != (unsigned int) -1)
+	if(m_opt_bufsize != -1)
 		GetCodecContext()->rc_buffer_size = m_opt_bufsize;
+	if(m_opt_keyint != -1)
+		GetCodecContext()->gop_size = m_opt_keyint;
 
 #if !SSR_USE_AVCODEC_PRIVATE_CRF
-	if(m_opt_crf != (unsigned int) -1)
+	if(m_opt_crf != -1)
 		GetCodecContext()->crf = m_opt_crf;
 #endif
 #if !SSR_USE_AVCODEC_PRIVATE_PRESET
