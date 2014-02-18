@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
 #include "PageRecord.h"
 
 #include "Main.h"
@@ -312,7 +311,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	QPushButton *button_save = new QPushButton(QIcon::fromTheme("document-save"), tr("Save recording"), this);
 
 	if(g_option_systray) {
-		m_systray_icon = new QSystemTrayIcon(m_main_window);
+		m_systray_icon = new QSystemTrayIcon(g_icon_ssr, m_main_window);
 		QMenu *menu = new QMenu(m_main_window);
 		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
 		m_systray_action_save = menu->addAction(tr("Save recording"), this, SLOT(OnSave()));
@@ -343,10 +342,10 @@ PageRecord::PageRecord(MainWindow* main_window)
 	UpdateRecordPauseButton();
 	UpdatePreview();
 
-	m_info_timer = new QTimer(this);
-	m_glinject_event_timer = new QTimer(this);
-	connect(m_info_timer, SIGNAL(timeout()), this, SLOT(OnUpdateInformation()));
-	connect(m_glinject_event_timer, SIGNAL(timeout()), this, SLOT(OnCheckGLInjectEvents()));
+	m_timer_update_info = new QTimer(this);
+	m_timer_glinject_event = new QTimer(this);
+	connect(m_timer_update_info, SIGNAL(timeout()), this, SLOT(OnUpdateInformation()));
+	connect(m_timer_glinject_event, SIGNAL(timeout()), this, SLOT(OnCheckGLInjectEvents()));
 	connect(&g_hotkey_listener, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()));
 	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(OnNewLogLine(Logger::enum_type,QString)), Qt::QueuedConnection);
 
@@ -529,13 +528,13 @@ void PageRecord::StartPage() {
 			m_gl_inject_launcher.reset(new GLInjectLauncher(glinject_command, glinject_working_directory, glinject_run_command, glinject_relax_permissions, glinject_megapixels * 4 * 1024 * 1024,
 															m_video_frame_rate, m_video_record_cursor, glinject_capture_front, glinject_limit_fps));
 
-		if(m_audio_enabled) {
 #if SSR_USE_JACK
+		if(m_audio_enabled) {
 			// for JACK, start the input now
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_JACK)
 				m_jack_input.reset(new JACKInput(jack_connect_system_capture, jack_connect_system_playback));
-#endif
 		}
+#endif
 
 	} catch(...) {
 		Logger::LogError("[PageRecord::StartPage] " + tr("Error: Something went wrong during initialization."));
@@ -559,10 +558,10 @@ void PageRecord::StartPage() {
 	m_info_last_frame_counter = 0;
 	m_info_input_frame_rate = 0.0;
 	OnUpdateInformation();
-	m_info_timer->start(1000);
+	m_timer_update_info->start(1000);
 
 	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
-		m_glinject_event_timer->start(100);
+		m_timer_glinject_event->start(100);
 
 }
 
@@ -607,10 +606,10 @@ void PageRecord::StopPage(bool save) {
 	OnUpdateHotkey();
 	OnUpdateSoundNotifications();
 
-	m_info_timer->stop();
+	m_timer_update_info->stop();
 	OnUpdateInformation();
 
-	m_glinject_event_timer->stop();
+	m_timer_glinject_event->stop();
 
 }
 
@@ -683,6 +682,7 @@ void PageRecord::StartOutput() {
 
 		m_output_started = true;
 		m_recorded_something = true;
+		UpdateSysTray();
 		UpdateRecordPauseButton();
 		UpdateInput();
 
@@ -718,10 +718,12 @@ void PageRecord::StopOutput(bool final) {
 
 	Logger::LogInfo("[PageRecord::StopOutput] " + tr("Stopped output."));
 
-	if(m_simple_synth != NULL)
+	// if final, don't play the notification (it would get interrupted anyway)
+	if(m_simple_synth != NULL && !final)
 		m_simple_synth->PlaySequence(SEQUENCE_RECORD_STOP.data(), SEQUENCE_RECORD_STOP.size());
 
 	m_output_started = false;
+	UpdateSysTray();
 	UpdateRecordPauseButton();
 	UpdateInput();
 
@@ -739,9 +741,6 @@ void PageRecord::StartInput() {
 #if SSR_USE_PULSEAUDIO
 	assert(m_pulseaudio_input == NULL);
 #endif
-/*#if SSR_USE_JACK
-	assert(m_jack_input == NULL);
-#endif*/
 
 	try {
 
@@ -781,9 +780,7 @@ void PageRecord::StartInput() {
 #if SSR_USE_PULSEAUDIO
 		m_pulseaudio_input.reset();
 #endif
-#if SSR_USE_JACK
-		m_jack_input.reset();
-#endif
+		// JACK shouldn't stop until the page stops
 		return;
 	}
 
@@ -866,25 +863,30 @@ void PageRecord::UpdateInput() {
 }
 
 void PageRecord::UpdateSysTray() {
-	if(m_systray_icon != NULL)
-		GroupEnabled({m_systray_action_start_pause, m_systray_action_save, m_systray_action_cancel}, m_page_started);
+	if(m_systray_icon == NULL)
+		return;
+	GroupEnabled({m_systray_action_start_pause, m_systray_action_save, m_systray_action_cancel}, m_page_started);
+	if(m_page_started) {
+		if(m_output_started) {
+			m_systray_icon->setIcon(g_icon_ssr_recording);
+			m_systray_action_start_pause->setText(tr("Pause recording"));
+		} else {
+			m_systray_icon->setIcon(g_icon_ssr_paused);
+			m_systray_action_start_pause->setText(tr("Start recording"));
+		}
+	} else {
+		m_systray_icon->setIcon(g_icon_ssr);
+		m_systray_action_start_pause->setText(tr("Start recording"));
+	}
 }
 
 void PageRecord::UpdateRecordPauseButton() {
 	if(m_output_started) {
+		m_pushbutton_start_pause->setIcon(g_icon_pause);
 		m_pushbutton_start_pause->setText(tr("Pause recording"));
-		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-playback-pause"));
-		if(m_systray_icon != NULL) {
-			m_systray_icon->setIcon(g_icon_ssr_recording);
-			m_systray_action_start_pause->setText(tr("Pause recording"));
-		}
 	} else {
+		m_pushbutton_start_pause->setIcon(g_icon_record);
 		m_pushbutton_start_pause->setText(tr("Start recording"));
-		m_pushbutton_start_pause->setIcon(QIcon::fromTheme("media-record"));
-		if(m_systray_icon != NULL) {
-			m_systray_icon->setIcon(g_icon_ssr);
-			m_systray_action_start_pause->setText(tr("Start recording"));
-		}
 	}
 }
 

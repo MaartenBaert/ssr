@@ -1,8 +1,0 @@
-<RCC>
-	<qresource prefix="/">
-		<file alias="img/header.png">%DATADIR%/img/header.png</file>
-		<file alias="img/icon-ssr.png">%DATADIR%/img/icon-ssr.png</file>
-		<file alias="img/icon-ssr-recording.png">%DATADIR%/img/icon-ssr-recording.png</file>
-		<file alias="about.htm">%DATADIR%/about.htm</file>
-	</qresource>
-</RCC>

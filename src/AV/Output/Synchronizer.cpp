@@ -636,7 +636,7 @@ void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData* lock, int64_t segm
 
 }
 
-void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData *lock, int64_t segment_start_time, int64_t segment_stop_time) {
+void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segment_start_time, int64_t segment_stop_time) {
 
 	double sample_length = (double) (segment_stop_time - lock->m_segment_audio_start_time) * 1.0e-6;
 	int64_t samples_max = (int64_t) ceil(sample_length * (double) m_audio_sample_rate) - lock->m_segment_audio_samples_read;

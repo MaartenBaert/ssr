@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
 #include "PageWelcome.h"
 
 #include "Main.h"
@@ -31,7 +30,7 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 	m_main_window = main_window;
 
 	QLabel *label_logo = new QLabel(this);
-	label_logo->setPixmap(QPixmap(":/img/header.png"));
+	label_logo->setPixmap(QPixmap(":/header.png"));
 	QLabel *label_welcome = new QLabel(this);
 	label_welcome->setText(tr("<p>Welcome to SimpleScreenRecorder!</p>\n\n"
 							  "<p>Despite the name, this program actually has a lot of options. Don't worry though, there are really just two things that you "

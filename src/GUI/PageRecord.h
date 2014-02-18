@@ -83,7 +83,6 @@ private:
 	int64_t m_info_last_timestamp;
 	uint32_t m_info_last_frame_counter;
 	double m_info_input_frame_rate;
-	QTimer *m_info_timer, *m_glinject_event_timer;
 
 	std::unique_ptr<GLInjectLauncher> m_gl_inject_launcher;
 	std::unique_ptr<X11Input> m_x11_input;
@@ -123,6 +122,8 @@ private:
 	QAction *m_systray_action_start_pause;
 	QAction *m_systray_action_save;
 	QAction *m_systray_action_cancel;
+
+	QTimer *m_timer_update_info, *m_timer_glinject_event;
 
 public:
 	PageRecord(MainWindow* main_window);
