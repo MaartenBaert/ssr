@@ -368,7 +368,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	if(current_drift < -DRIFT_ERROR_THRESHOLD || audiolock->m_insert_zeros) {
 
 		if(!audiolock->m_insert_zeros)
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Not enough audio samples, inserting zeros to keep the audio in sync with the video."));
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video."));
 		audiolock->m_insert_zeros = false;
 
 		// insert zeros
@@ -463,7 +463,7 @@ void Synchronizer::ReadAudioHole() {
 	if(audiolock->m_first_timestamp != AV_NOPTS_VALUE) {
 		audiolock->m_average_drift = 0.0;
 		if(!audiolock->m_insert_zeros) {
-			Logger::LogWarning("[Synchronizer::ReadAudioHole] " + QObject::tr("Warning: Received hole in audio stream, inserting zeros to keep the audio in sync with the video."));
+			Logger::LogWarning("[Synchronizer::ReadAudioHole] " + QObject::tr("Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video."));
 			audiolock->m_insert_zeros = true;
 		}
 	}

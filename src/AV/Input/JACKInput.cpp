@@ -53,7 +53,7 @@ JACKInput::~JACKInput() {
 
 	// tell the thread to stop
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[JACKInput::~JACKInput] " + QObject::tr("Telling input thread to stop ..."));
+		Logger::LogInfo("[JACKInput::~JACKInput] " + QObject::tr("Stopping input thread ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}

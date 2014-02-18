@@ -349,12 +349,12 @@ Een &apos;monitor&apos; is een bron die de audio opneemt die wordt afgespeeld do
     <message>
         <location filename="../GUI/PageInput.cpp" line="237"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indien aangevinkt zullen de poorten automatisch verbonden worden met de systeemopnamepoorten.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="239"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indien aangevinkt zullen de poorten automatisch verbonden worden met alles dat verbinding maakt met de systeemafspeelpoorten.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="599"/>
@@ -411,12 +411,12 @@ De ALSA-backend zal ook werken op systemen die PulseAudio gebruiken, maar het is
     <message>
         <location filename="../GUI/PageInput.cpp" line="236"/>
         <source>Record system microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>Neem systeemmicrofoon op</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="238"/>
         <source>Record system speakers</source>
-        <translation type="unfinished"></translation>
+        <translation>Neem systeemluidsprekers op</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="272"/>
@@ -748,7 +748,7 @@ En als je enkel je eigen stem opneemt (d.w.z. geen muziek), dan zal de kwaliteit
     <message>
         <location filename="../GUI/PageRecord.cpp" line="152"/>
         <source>Enable sound notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel geluidsnotificaties in</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="153"/>
@@ -977,7 +977,7 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="932"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Er ging iets fout bij het maken van de synth.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="964"/>
@@ -1116,6 +1116,7 @@ De startknop staat bovenaan ;).</translation>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="66"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="55"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="206"/>
         <source>Stopping input thread ...</source>
         <translation>Stop input thread ...</translation>
@@ -1156,13 +1157,13 @@ De startknop staat bovenaan ;).</translation>
         <location filename="../AV/Input/ALSAInput.cpp" line="144"/>
         <location filename="../AV/SimpleSynth.cpp" line="144"/>
         <source>Error: Can&apos;t set buffer size!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan de buffergrootte niet instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="148"/>
         <location filename="../AV/SimpleSynth.cpp" line="148"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Buffergrootte %1 wordt niet ondersteund, gebruik %2 in de plaats. Dit is geen probleem.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="156"/>
@@ -1584,27 +1585,27 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="362"/>
         <source>Warning: Too many audio samples, dropping samples to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Te veel audiosamples, laat samples vallen om audio synchroon met de video te houden.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="371"/>
         <source>Warning: Not enough audio samples, inserting zeros to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Niet genoeg audiosamples, voeg stilte in om audio synchroon met de video te houden.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="396"/>
         <source>Warning: Audio input is more than 2% too slow!</source>
-        <translation type="unfinished">Waarschuwing: Audio-input is meer dan 5% te traag! {2%?}</translation>
+        <translation>Waarschuwing: Audio-input is meer dan 2% te traag!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="400"/>
         <source>Warning: Audio input is more than 2% too fast!</source>
-        <translation type="unfinished">Waarschuwing: Audio-input is meer dan 5% te snel! {2%?}</translation>
+        <translation>Waarschuwing: Audio-input is meer dan 2% te snel!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="416"/>
         <source>Error: Audio sample format is not supported!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Audiosampleformaat wordt niet ondersteund!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="430"/>
@@ -1614,7 +1615,7 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="466"/>
         <source>Warning: Received hole in audio stream, inserting zeros to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Ontving gat in audiostream, voeg stilte in om audio synchroon met de video te houden.</translation>
     </message>
     <message>
         <source>Warning: Desynchronization is too high, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).</source>
@@ -1738,110 +1739,109 @@ Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translat
         <location filename="../AV/SimpleSynth.cpp" line="27"/>
         <source>Warning: An underrun has occurred, some samples were too late.</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Er was een underrun, een aantal samples waren te laat.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="29"/>
         <source>Error: Can&apos;t recover device after underrun!</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan apparaat niet herstellen na underrun!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="56"/>
         <source>Stopping synth thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop synth thread ...</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="189"/>
         <source>Synth thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Synth thread gestart.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="257"/>
         <source>Error: Can&apos;t write samples!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan samples niet schrijven!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="265"/>
         <source>Synth thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Synth thread gestopt.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="269"/>
         <source>Exception &apos;%1&apos; in synth thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exceptie &apos;%1&apos; in synth thread.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="272"/>
         <source>Unknown exception in synth thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekende exceptie in synth thread.</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="126"/>
         <source>Error: Resample ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Hersampleratio is buiten bereik!</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="130"/>
         <source>Error: Drift ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Driftratio is buiten bereik!</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="160"/>
-        <source>Resample ratio is %1 (was %2)</source>
-        <translation type="unfinished"></translation>
+        <source>Resample ratio is %1 (was %2).</source>
+        <translation>Hersampleratio is %1 (was %2).</translation>
     </message>
     <message>
-        <location filename="../AV/Input/JACKInput.cpp" line="56"/>
-        <source>Telling input thread to stop ...</source>
-        <translation type="unfinished"></translation>
+        <source>Resample ratio is %1 (was %2)</source>
+        <translation type="obsolete">Hersampleratio is %1 (was %2).</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="72"/>
         <source>Error: Could not connect to JACK!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan niet verbinden met JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="81"/>
         <source>Error: Could not create JACK port!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen JACK poort maken!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="87"/>
         <source>Error: Could not set JACK process callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen JACK verwerkingscallback instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="91"/>
         <source>Error: Could not set JACK sample rate callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen JACK samplefrequentiecallback instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="95"/>
         <source>Error: Could not set JACK xrun callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen JACK xrun callback instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="99"/>
         <source>Error: Could not set JACK port connect callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan geen JACK poortverbindingscallback instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="104"/>
         <source>Error: Could not activate JACK client!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan JACK client niet activeren!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="112"/>
         <location filename="../AV/Input/JACKInput.cpp" line="123"/>
         <location filename="../AV/Input/JACKInput.cpp" line="251"/>
         <source>Connecting port %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbinding van poort %1 naar %2 gemaakt.</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="255"/>
         <source>Disconnecting port %1 from %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbinding van poort %1 naar %2 verbroken.</translation>
     </message>
 </context>
 <context>

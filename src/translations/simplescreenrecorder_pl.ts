@@ -1132,6 +1132,7 @@ Przycisk start jest na górze ;).</translation>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="66"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="55"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="206"/>
         <source>Stopping input thread ...</source>
         <translation>Zatrzymywanie wejsciowego wątku...</translation>
@@ -1784,12 +1785,7 @@ Możesz zmienić tę opcję samodzielnie w panelu kontrolnym NVIDIA.</translatio
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="160"/>
-        <source>Resample ratio is %1 (was %2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/JACKInput.cpp" line="56"/>
-        <source>Telling input thread to stop ...</source>
+        <source>Resample ratio is %1 (was %2).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

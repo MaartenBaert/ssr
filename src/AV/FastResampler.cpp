@@ -157,7 +157,7 @@ unsigned int FastResampler::Resample(double resample_ratio, double drift_ratio, 
 
 	// update filter if the resample ratio changes
 	if(m_resample_ratio != resample_ratio) {
-		Logger::LogInfo("[FastResampler::Resample] " + QObject::tr("Resample ratio is %1 (was %2)").arg(resample_ratio, 0, 'f', 4).arg(m_resample_ratio, 0, 'f', 4));
+		Logger::LogInfo("[FastResampler::Resample] " + QObject::tr("Resample ratio is %1 (was %2).").arg(resample_ratio, 0, 'f', 4).arg(m_resample_ratio, 0, 'f', 4));
 		m_resample_ratio = resample_ratio;
 		UpdateFilterCoefficients();
 		ResetResamplerState();
