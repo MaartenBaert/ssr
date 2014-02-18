@@ -41,13 +41,21 @@ private:
 		int64_t m_timestamp;
 		unsigned int m_sample_rate, m_sample_count;
 	};
+	struct ConnectCommand {
+		bool m_connect;
+		std::string m_source, m_destination;
+	};
+	struct SharedData {
+		std::vector<ConnectCommand> m_connect_commands;
+	};
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
 	bool m_connect_system_capture, m_connect_system_playback;
 	unsigned int m_channels;
 
-	unsigned int m_jackthread_sample_rate;
-	bool m_jackthread_hole;
+	std::atomic<unsigned int> m_jackthread_sample_rate;
+	std::atomic<bool> m_jackthread_hole;
 
 	LockFreeMessageQueue m_message_queue;
 
@@ -55,6 +63,7 @@ private:
 	std::vector<jack_port_t*> m_jack_ports;
 
 	std::thread m_thread;
+	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
@@ -72,6 +81,7 @@ private:
 	static int ProcessCallback(jack_nframes_t nframes, void* arg);
 	static int SampleRateCallback(jack_nframes_t nframes, void* arg);
 	static int XRunCallback(void* arg);
+	static void PortConnectCallback(jack_port_id_t a, jack_port_id_t b, int connect, void* arg);
 
 	void InputThread();
 

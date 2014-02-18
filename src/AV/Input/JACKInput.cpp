@@ -53,7 +53,7 @@ JACKInput::~JACKInput() {
 
 	// tell the thread to stop
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[JACKInput::~JACKInput] Telling input thread to stop ...");
+		Logger::LogInfo("[JACKInput::~JACKInput] " + QObject::tr("Telling input thread to stop ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}
@@ -69,36 +69,66 @@ void JACKInput::Init() {
 
 	m_jack_client = jack_client_open("SimpleScreenRecorder", JackNoStartServer, NULL);
 	if(m_jack_client == NULL) {
-		Logger::LogError("[JACKInput::Init] Error: Could not connect to JACK!");
+		Logger::LogError("[JACKInput::Init] " + QObject::tr("Error: Could not connect to JACK!"));
 		throw JACKException();
 	}
 
 	m_jack_ports.resize(m_channels, NULL);
 	for(unsigned int i = 0; i < m_channels; ++i) {
-		QString name = "in_" + QString::number(i + 1);
-		m_jack_ports[i] = jack_port_register(m_jack_client, name.toAscii().constData(), JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
+		std::string port_name = "in_" + NumToString(i + 1);
+		m_jack_ports[i] = jack_port_register(m_jack_client, port_name.c_str(), JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
 		if(m_jack_ports[i] == NULL) {
-			Logger::LogError("[JACKInput::Init] Error: Could not create JACK port!");
+			Logger::LogError("[JACKInput::Init] " + QObject::tr("Error: Could not create JACK port!"));
 			throw JACKException();
 		}
 	}
 
 	if(jack_set_process_callback(m_jack_client, ProcessCallback, this) != 0) {
-		Logger::LogError("[JACKInput::Init] Error: Could not set JACK process callback!");
+		Logger::LogError("[JACKInput::Init] " + QObject::tr("Error: Could not set JACK process callback!"));
 		throw JACKException();
 	}
 	if(jack_set_sample_rate_callback(m_jack_client, SampleRateCallback, this) != 0) {
-		Logger::LogError("[JACKInput::Init] Error: Could not set JACK sample rate callback!");
+		Logger::LogError("[JACKInput::Init] " + QObject::tr("Error: Could not set JACK sample rate callback!"));
 		throw JACKException();
 	}
 	if(jack_set_xrun_callback(m_jack_client, XRunCallback, this) != 0) {
-		Logger::LogError("[JACKInput::Init] Error: Could not set JACK xrun callback!");
+		Logger::LogError("[JACKInput::Init] " + QObject::tr("Error: Could not set JACK xrun callback!"));
+		throw JACKException();
+	}
+	if(jack_set_port_connect_callback(m_jack_client, PortConnectCallback, this) != 0) {
+		Logger::LogError("[JACKInput::Init] " + QObject::tr("Error: Could not set JACK port connect callback!"));
 		throw JACKException();
 	}
 
 	if(jack_activate(m_jack_client) != 0) {
-		Logger::LogError("[JACKInput::Init] Error: Could not activate JACK client!");
+		Logger::LogError("[JACKInput::Init] " + QObject::tr("Error: Could not activate JACK client!"));
 		throw JACKException();
+	}
+
+	for(unsigned int i = 0; i < m_channels; ++i) {
+		std::string port_name_full = std::string(jack_get_client_name(m_jack_client)) + ":in_" + NumToString(i + 1);
+		if(m_connect_system_capture) {
+			std::string capture_name = "system:capture_" + NumToString(i + 1);
+			Logger::LogInfo("[JACKInput::Init] " + QObject::tr("Connecting port %1 to %2.")
+							.arg(QString::fromStdString(capture_name)).arg(QString::fromStdString(port_name_full)));
+			jack_connect(m_jack_client, capture_name.c_str(), port_name_full.c_str());
+		}
+		if(m_connect_system_playback) {
+			std::string playback_name = "system:playback_" + NumToString(i + 1);
+			jack_port_t *port = jack_port_by_name(m_jack_client, playback_name.c_str());
+			if(port != NULL) {
+				const char **connected_ports = jack_port_get_all_connections(m_jack_client, port);
+				if(connected_ports != NULL) {
+					for(const char **p = connected_ports; *p != NULL; ++p) {
+						Logger::LogInfo("[JACKInput::Init] " + QObject::tr("Connecting port %1 to %2.")
+										.arg(*p).arg(QString::fromStdString(port_name_full)));
+						jack_connect(m_jack_client, *p, port_name_full.c_str());
+					}
+					jack_free(connected_ports);
+				}
+			}
+		}
+
 	}
 
 	// start input thread
@@ -160,6 +190,7 @@ int JACKInput::ProcessCallback(jack_nframes_t nframes, void* arg) {
 }
 
 int JACKInput::SampleRateCallback(jack_nframes_t nframes, void* arg) {
+	// This callback is called from the notification thread (not the realtime processing thread), so sadly the timing can never be fully accurate.
 	JACKInput *input = (JACKInput*) arg;
 	input->m_jackthread_sample_rate = nframes;
 	input->m_jackthread_hole = true;
@@ -167,25 +198,73 @@ int JACKInput::SampleRateCallback(jack_nframes_t nframes, void* arg) {
 }
 
 int JACKInput::XRunCallback(void* arg) {
+	// This callback is called from the notification thread (not the realtime processing thread), so sadly the timing can never be fully accurate.
 	JACKInput *input = (JACKInput*) arg;
 	input->m_jackthread_hole = true;
 	return 0;
 }
 
+void JACKInput::PortConnectCallback(jack_port_id_t a, jack_port_id_t b, int connect, void* arg) {
+	// This callback is called from the notification thread (not the realtime processing thread), so sadly the timing can never be fully accurate.
+	// To make things worse, we're not allowed to connect/disconnect ports from this thread, so we have to send a command to the input thread instead.
+	JACKInput *input = (JACKInput*) arg;
+	SharedLock lock(&input->m_shared_data);
+	if(input->m_connect_system_playback) {
+		jack_port_t *port_a = jack_port_by_id(input->m_jack_client, a);
+		if(port_a == NULL)
+			return;
+		jack_port_t *port_b = jack_port_by_id(input->m_jack_client, b);
+		if(port_b == NULL)
+			return;
+		const char *port_a_name = jack_port_name(port_a);
+		const char *port_b_name = jack_port_name(port_b);
+		for(unsigned int i = 0; i < input->m_channels; ++i) {
+			std::string playback_name = "system:playback_" + NumToString(i + 1);
+			if(port_b_name == playback_name) {
+				std::string port_name_full = std::string(jack_get_client_name(input->m_jack_client)) + ":in_" + NumToString(i + 1);
+				ConnectCommand cmd;
+				cmd.m_connect = connect;
+				cmd.m_source = port_a_name;
+				cmd.m_destination = port_name_full;
+				lock->m_connect_commands.push_back(cmd);
+			}
+		}
+	}
+}
+
 void JACKInput::InputThread() {
 	try {
 
-		Logger::LogInfo("[JACKInput::InputThread] Input thread started.");
+		Logger::LogInfo("[JACKInput::InputThread] " + QObject::tr("Input thread started."));
 
 		while(!m_should_stop) {
 
 			unsigned int message_size;
 			char *message = m_message_queue.PrepareReadMessage(&message_size);
 			if(message == NULL) {
+
+				// process connect commands
+				{
+					SharedLock lock(&m_shared_data);
+					for(ConnectCommand &cmd : lock->m_connect_commands) {
+						if(cmd.m_connect) {
+							Logger::LogInfo("[JACKInput::InputThread] " + QObject::tr("Connecting port %1 to %2.")
+											.arg(QString::fromStdString(cmd.m_source)).arg(QString::fromStdString(cmd.m_destination)));
+							jack_connect(m_jack_client, cmd.m_source.c_str(), cmd.m_destination.c_str());
+						} else {
+							Logger::LogInfo("[JACKInput::InputThread] " + QObject::tr("Disconnecting port %1 from %2.")
+											.arg(QString::fromStdString(cmd.m_source)).arg(QString::fromStdString(cmd.m_destination)));
+							jack_disconnect(m_jack_client, cmd.m_source.c_str(), cmd.m_destination.c_str());
+						}
+					}
+					lock->m_connect_commands.clear();
+				}
+
 				usleep(10000);
 				continue;
 			}
 
+			// read the message
 			assert(message_size >= sizeof(enum_eventtype));
 			enum_eventtype type = *((enum_eventtype*) message);
 			message += sizeof(enum_eventtype);
@@ -199,18 +278,19 @@ void JACKInput::InputThread() {
 								 (uint8_t*) (message + sizeof(Event_Data)), ((Event_Data*) message)->m_timestamp);
 			}
 
+			// go to next message
 			m_message_queue.ReadMessage();
 
 		}
 
-		Logger::LogInfo("[JACKInput::InputThread] Input thread stopped.");
+		Logger::LogInfo("[JACKInput::InputThread] " + QObject::tr("Input thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError(QString("[JACKInput::InputThread] Exception '") + e.what() + "' in input thread.");
+		Logger::LogError("[JACKInput::InputThread] " + QObject::tr("Exception '%1' in input thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[JACKInput::InputThread] Unknown exception in input thread.");
+		Logger::LogError("[JACKInput::InputThread] " + QObject::tr("Unknown exception in input thread."));
 	}
 }
 

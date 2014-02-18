@@ -27,19 +27,20 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstdlib>
 #include <ctime>
 #include <stdint.h>
+
 #include <unistd.h>
 #include <sys/shm.h>
 
-#include <limits>
 #include <array>
-#include <vector>
-#include <deque>
-#include <set>
-#include <memory>
-
 #include <atomic>
-#include <thread>
+#include <deque>
+#include <limits>
+#include <memory>
 #include <mutex>
+#include <set>
+#include <sstream>
+#include <thread>
+#include <vector>
 
 #include <QX11Info>
 #include <X11/Xlib.h>
@@ -254,6 +255,21 @@ inline int64_t round_int64(T x) {
 	if(sizeof(long long) >= sizeof(int64_t))
 		return llrint(x);
 	return (int64_t) rint(x);
+}
+
+// Generic number-to-string conversion and vice versa
+// Unlike the standard functions, these are locale-independent, and the functions never throw exceptions.
+template<typename T>
+inline std::string NumToString(T number) {
+	std::ostringstream ss;
+	ss << number;
+	return ss.str();
+}
+template<typename T>
+inline bool StringToNum(const std::string& str, T* number) {
+	std::istringstream ss(str);
+	ss >> *number;
+	return !ss.fail();
 }
 
 inline void GroupEnabled(std::initializer_list<QAction*> actions, bool enabled) {

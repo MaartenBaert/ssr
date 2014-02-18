@@ -443,6 +443,10 @@ void PageRecord::StartPage() {
 #if SSR_USE_PULSEAUDIO
 	m_pulseaudio_source = page_input->GetPulseAudioSourceName();
 #endif
+#if SSR_USE_JACK
+	bool jack_connect_system_capture = page_input->GetJackConnectSystemCapture();
+	bool jack_connect_system_playback = page_input->GetJackConnectSystemPlayback();
+#endif
 
 	// get the glinject settings
 	QString glinject_command = page_input->GetGLInjectCommand();
@@ -529,7 +533,7 @@ void PageRecord::StartPage() {
 #if SSR_USE_JACK
 			// for JACK, start the input now
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_JACK)
-				m_jack_input.reset(new JACKInput(false, false)); //TODO// arguments
+				m_jack_input.reset(new JACKInput(jack_connect_system_capture, jack_connect_system_playback));
 #endif
 		}
 

@@ -28,8 +28,8 @@ class AudioPreviewer : public QWidget, public AudioSink {
 
 private:
 	struct SharedData {
-		double m_current_low[2], m_current_high[2];
-		double m_next_low[2], m_next_high[2];
+		float m_current_low[2], m_current_high[2];
+		float m_next_low[2], m_next_high[2];
 		int64_t m_next_frame_time;
 		bool m_is_visible;
 		unsigned int m_frame_rate;
