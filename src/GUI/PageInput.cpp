@@ -248,6 +248,12 @@ PageInput::PageInput(MainWindow* main_window)
 		m_pushbutton_pulseaudio_refresh = new QPushButton(tr("Refresh"), group_audio);
 		m_pushbutton_pulseaudio_refresh->setToolTip(tr("Refreshes the list of PulseAudio sources."));
 #endif
+#if SSR_USE_JACK
+		m_checkbox_jack_connect_system_capture = new QCheckBox(tr("Record system microphone"));
+		m_checkbox_jack_connect_system_capture->setToolTip(tr("If checked, the ports will be automatically connected to the system capture ports."));
+		m_checkbox_jack_connect_system_playback = new QCheckBox(tr("Record system speakers"));
+		m_checkbox_jack_connect_system_playback->setToolTip(tr("If checked, the ports will be automatically connected to anything that connects to the system playback ports."));
+#endif
 
 		connect(m_checkbox_audio_enable, SIGNAL(clicked()), this, SLOT(OnUpdateAudioFields()));
 		connect(m_combobox_audio_backend, SIGNAL(activated(int)), this, SLOT(OnUpdateAudioFields()));
@@ -270,6 +276,14 @@ PageInput::PageInput(MainWindow* main_window)
 			layout2->addWidget(m_pushbutton_pulseaudio_refresh, 2, 2);
 #endif
 		}
+#if SSR_USE_JACK
+		{
+			QHBoxLayout *layout2 = new QHBoxLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(m_checkbox_jack_connect_system_capture);
+			layout2->addWidget(m_checkbox_jack_connect_system_playback);
+		}
+#endif
 	}
 	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), tr("Back"), this);
 	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), tr("Continue"), this);
@@ -328,6 +342,10 @@ void PageInput::LoadSettings(QSettings* settings) {
 #if SSR_USE_PULSEAUDIO
 	SetPulseAudioSource(FindPulseAudioSource(settings->value("input/audio_pulseaudio_source", QString()).toString()));
 #endif
+#if SSR_USE_JACK
+	SetJackConnectSystemCapture(settings->value("input/audio_jack_connect_system_capture", true).toBool());
+	SetJackConnectSystemPlayback(settings->value("input/audio_jack_connect_system_playback", false).toBool());
+#endif
 	SetGLInjectCommand(settings->value("input/glinject_command", "").toString());
 	SetGLInjectWorkingDirectory(settings->value("input/glinject_working_directory", "").toString());
 	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
@@ -362,6 +380,10 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/audio_alsa_device", GetALSADevice());
 #if SSR_USE_PULSEAUDIO
 	settings->setValue("input/audio_pulseaudio_source", GetPulseAudioSourceName());
+#endif
+#if SSR_USE_JACK
+	settings->setValue("input/audio_jack_connect_system_capture", GetJackConnectSystemCapture());
+	settings->setValue("input/audio_jack_connect_system_playback", GetJackConnectSystemPlayback());
 #endif
 	settings->setValue("input/glinject_command", GetGLInjectCommand());
 	settings->setValue("input/glinject_working_directory", GetGLInjectWorkingDirectory());
@@ -713,11 +735,17 @@ void PageInput::OnUpdateAudioFields() {
 #if SSR_USE_PULSEAUDIO
 		m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh,
 #endif
+#if SSR_USE_JACK
+		m_checkbox_jack_connect_system_capture, m_checkbox_jack_connect_system_playback,
+#endif
 	}, enabled);
 	MultiGroupVisible({
 		{{m_label_alsa_device, m_lineedit_alsa_device}, (backend == AUDIO_BACKEND_ALSA)},
 #if SSR_USE_PULSEAUDIO
-		{{m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh}, (backend == AUDIO_BACKEND_PULSEAUDIO)}
+		{{m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh}, (backend == AUDIO_BACKEND_PULSEAUDIO)},
+#endif
+#if SSR_USE_JACK
+		{{m_checkbox_jack_connect_system_capture, m_checkbox_jack_connect_system_playback}, (backend == AUDIO_BACKEND_JACK)},
 #endif
 	});
 }

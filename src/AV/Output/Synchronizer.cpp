@@ -368,7 +368,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	if(current_drift < -DRIFT_ERROR_THRESHOLD || audiolock->m_insert_zeros) {
 
 		if(!audiolock->m_insert_zeros)
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Not enough audio samples, inserting zeros to keep the audio in sync with the video."));
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video."));
 		audiolock->m_insert_zeros = false;
 
 		// insert zeros
@@ -391,13 +391,13 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	// Another cause of desynchronization is problems/glitches with PulseAudio (e.g. jumps in time when switching between sources).
 	double dt = fmin((double) (timestamp - previous_timestamp) * 1.0e-6, DRIFT_MAX_BLOCK);
 	audiolock->m_average_drift = clamp(audiolock->m_average_drift + DRIFT_CORRECTION_I * current_drift * dt, -0.5, 0.5);
-	if(audiolock->m_average_drift < -0.05 && audiolock->m_warn_desync) {
+	if(audiolock->m_average_drift < -0.02 && audiolock->m_warn_desync) {
 		audiolock->m_warn_desync = false;
-		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 5% too slow!"));
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 2% too slow!"));
 	}
-	if(audiolock->m_average_drift > 0.05 && audiolock->m_warn_desync) {
+	if(audiolock->m_average_drift > 0.02 && audiolock->m_warn_desync) {
 		audiolock->m_warn_desync = false;
-		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 5% too fast!"));
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 2% too fast!"));
 	}
 	double length = (double) sample_count / (double) sample_rate;
 	double drift_correction = clamp(DRIFT_CORRECTION_P * current_drift + audiolock->m_average_drift, -0.5, 0.5) * fmin(1.0, DRIFT_MAX_BLOCK / length);
@@ -459,12 +459,13 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 void Synchronizer::ReadAudioHole() {
 	assert(m_audio_encoder != NULL);
 
-	Logger::LogWarning("[Synchronizer::ReadAudioHole] " + QObject::tr("Warning: Received hole in audio stream, inserting zeros to keep the audio in sync with the video."));
-
 	AudioLock audiolock(&m_audio_data);
 	if(audiolock->m_first_timestamp != AV_NOPTS_VALUE) {
 		audiolock->m_average_drift = 0.0;
-		audiolock->m_insert_zeros = true;
+		if(!audiolock->m_insert_zeros) {
+			Logger::LogWarning("[Synchronizer::ReadAudioHole] " + QObject::tr("Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video."));
+			audiolock->m_insert_zeros = true;
+		}
 	}
 
 }

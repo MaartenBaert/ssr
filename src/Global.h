@@ -269,6 +269,21 @@ inline double ToDouble(const AVFrac& f) {
 	return (double) f.val + (double) f.num / (double) f.den;
 }
 
+// Generic number-to-string conversion and vice versa
+// Unlike the standard functions, these are locale-independent, and the functions never throw exceptions.
+template<typename T>
+inline std::string NumToString(T number) {
+	std::ostringstream ss;
+	ss << number;
+	return ss.str();
+}
+template<typename T>
+inline bool StringToNum(const std::string& str, T* number) {
+	std::istringstream ss(str);
+	ss >> *number;
+	return !ss.fail();
+}
+
 inline void GroupEnabled(std::initializer_list<QAction*> actions, bool enabled) {
 	for(QAction *a : actions) {
 		a->setEnabled(enabled);

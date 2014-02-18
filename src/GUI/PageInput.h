@@ -133,6 +133,9 @@ private:
 	QComboBox *m_combobox_pulseaudio_source;
 	QPushButton *m_pushbutton_pulseaudio_refresh;
 #endif
+#if SSR_USE_JACK
+	QCheckBox *m_checkbox_jack_connect_system_capture, *m_checkbox_jack_connect_system_playback;
+#endif
 
 public:
 	PageInput(MainWindow* main_window);
@@ -167,6 +170,10 @@ public:
 #if SSR_USE_PULSEAUDIO
 	inline unsigned int GetPulseAudioSource() { return clamp(m_combobox_pulseaudio_source->currentIndex(), 0, (int) m_pulseaudio_sources.size() - 1); }
 #endif
+#if SSR_USE_JACK
+	inline bool GetJackConnectSystemCapture() { return m_checkbox_jack_connect_system_capture->isChecked(); }
+	inline bool GetJackConnectSystemPlayback() { return m_checkbox_jack_connect_system_playback->isChecked(); }
+#endif
 	inline QString GetGLInjectCommand() { return m_glinject_command; }
 	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
 	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
@@ -193,6 +200,10 @@ public:
 	inline void SetALSADevice(const QString& device) { m_lineedit_alsa_device->setText(device); }
 #if SSR_USE_PULSEAUDIO
 	inline void SetPulseAudioSource(unsigned int source) { m_combobox_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
+#endif
+#if SSR_USE_JACK
+	inline void SetJackConnectSystemCapture(bool connect) { m_checkbox_jack_connect_system_capture->setChecked(connect); }
+	inline void SetJackConnectSystemPlayback(bool connect) { m_checkbox_jack_connect_system_playback->setChecked(connect); }
 #endif
 	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
 	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }

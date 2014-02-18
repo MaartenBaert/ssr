@@ -406,25 +406,35 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
 Een &apos;monitor&apos; is een bron die de audio opneemt die wordt afgespeeld door andere applicaties.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="597"/>
+        <location filename="../GUI/PageInput.cpp" line="253"/>
+        <source>If checked, the ports will be automatically connected to the system capture ports.</source>
+        <translation>Indien aangevinkt zullen de poorten automatisch verbonden worden met de systeemopnamepoorten.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageInput.cpp" line="255"/>
+        <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
+        <translation>Indien aangevinkt zullen de poorten automatisch verbonden worden met alles dat verbinding maakt met de systeemafspeelpoorten.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageInput.cpp" line="619"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Alle schermen: %1x%2</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="601"/>
+        <location filename="../GUI/PageInput.cpp" line="623"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Scherm %1: %2x%3 op %4,%5</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="743"/>
+        <location filename="../GUI/PageInput.cpp" line="771"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
         <translation>Scherm %1</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="775"/>
+        <location filename="../GUI/PageInput.cpp" line="803"/>
         <source>You did not enter a command to start the OpenGL application that you want to record.
 Click the &apos;OpenGL settings&apos; button and enter a command.</source>
         <translation>Je hebt geen commando ingegeven om de OpenGL-applicatie die je wil opnemen te starten.
@@ -458,12 +468,22 @@ De ALSA-backend zal ook werken op systemen die PulseAudio gebruiken, maar het is
         <translation>Vernieuwt de lijst met PulseAudio-bronnen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="274"/>
+        <location filename="../GUI/PageInput.cpp" line="252"/>
+        <source>Record system microphone</source>
+        <translation>Neem systeemmicrofoon op</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageInput.cpp" line="254"/>
+        <source>Record system speakers</source>
+        <translation>Neem systeemluidsprekers op</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageInput.cpp" line="288"/>
         <source>Back</source>
         <translation>Terug</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="275"/>
+        <location filename="../GUI/PageInput.cpp" line="289"/>
         <source>Continue</source>
         <translation>Verder</translation>
     </message>
@@ -792,7 +812,7 @@ En als je enkel je eigen stem opneemt (d.w.z. geen muziek), dan zal de kwaliteit
     <message>
         <location filename="../GUI/PageRecord.cpp" line="150"/>
         <source>Enable sound notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel geluidsnotificaties in</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="151"/>
@@ -911,57 +931,57 @@ Are you sure that you want to quit?</source>
 Weet je zeker dat je het programma wilt sluiten?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="618"/>
+        <location filename="../GUI/PageRecord.cpp" line="622"/>
         <source>Starting output ...</source>
         <translation>Output starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="629"/>
+        <location filename="../GUI/PageRecord.cpp" line="633"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="670"/>
+        <location filename="../GUI/PageRecord.cpp" line="674"/>
         <source>Started output.</source>
         <translation>Output gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="690"/>
+        <location filename="../GUI/PageRecord.cpp" line="694"/>
         <source>Stopping output ...</source>
         <translation>Output stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="708"/>
+        <location filename="../GUI/PageRecord.cpp" line="712"/>
         <source>Stopped output.</source>
         <translation>Output gestopt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="735"/>
+        <location filename="../GUI/PageRecord.cpp" line="739"/>
         <source>Starting input ...</source>
         <translation>Input starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="740"/>
+        <location filename="../GUI/PageRecord.cpp" line="744"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="759"/>
+        <location filename="../GUI/PageRecord.cpp" line="763"/>
         <source>Started input.</source>
         <translation>Input gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="784"/>
+        <location filename="../GUI/PageRecord.cpp" line="788"/>
         <source>Stopping input ...</source>
         <translation>Input stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="795"/>
+        <location filename="../GUI/PageRecord.cpp" line="799"/>
         <source>Stopped input.</source>
         <translation>Input gestopt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="514"/>
+        <location filename="../GUI/PageRecord.cpp" line="518"/>
         <source>Starting page ...</source>
         <translation>Pagina starten ...</translation>
     </message>
@@ -970,17 +990,17 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Er ging iets fout tijdens de GLInject initialisatie.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="540"/>
+        <location filename="../GUI/PageRecord.cpp" line="544"/>
         <source>Started page.</source>
         <translation>Pagina gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="566"/>
+        <location filename="../GUI/PageRecord.cpp" line="570"/>
         <source>Stopping page ...</source>
         <translation>Pagina stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="591"/>
+        <location filename="../GUI/PageRecord.cpp" line="595"/>
         <source>Stopped page.</source>
         <translation>Pagina gestopt.</translation>
     </message>
@@ -989,14 +1009,14 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Kan de grootte van de OpenGL-applicatie niet krijgen omdat GLInject niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="634"/>
+        <location filename="../GUI/PageRecord.cpp" line="638"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation>Fout: Kon de grootte van de OpenGL-applicatie niet krijgen. Ofwel is de applicatie niet correct gestart, ofwel heeft de applicatie nog geen OpenGL-venster gemaakt. Als je wil beginnen met opnemen voordat de applicatie is gestart, dan moet je schalen inschakelen en manueel de videogrootte instellen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="533"/>
-        <location filename="../GUI/PageRecord.cpp" line="679"/>
-        <location filename="../GUI/PageRecord.cpp" line="764"/>
+        <location filename="../GUI/PageRecord.cpp" line="537"/>
+        <location filename="../GUI/PageRecord.cpp" line="683"/>
+        <location filename="../GUI/PageRecord.cpp" line="768"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation>Fout: Er ging iets fout tijdens de initialisatie.</translation>
     </message>
@@ -1005,40 +1025,40 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Kan geen GLInject input maken omdat GLInject niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="858"/>
-        <location filename="../GUI/PageRecord.cpp" line="872"/>
+        <location filename="../GUI/PageRecord.cpp" line="862"/>
+        <location filename="../GUI/PageRecord.cpp" line="876"/>
         <source>Pause recording</source>
         <translation>Opname pauzeren</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="861"/>
         <location filename="../GUI/PageRecord.cpp" line="865"/>
-        <location filename="../GUI/PageRecord.cpp" line="875"/>
+        <location filename="../GUI/PageRecord.cpp" line="869"/>
+        <location filename="../GUI/PageRecord.cpp" line="879"/>
         <source>Start recording</source>
         <translation>Opname starten</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="883"/>
+        <location filename="../GUI/PageRecord.cpp" line="887"/>
         <source>Stop preview</source>
         <translation>Voorbeeld stoppen</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="886"/>
+        <location filename="../GUI/PageRecord.cpp" line="890"/>
         <source>Start preview</source>
         <translation>Voorbeeld starten</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="921"/>
+        <location filename="../GUI/PageRecord.cpp" line="925"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Er ging iets fout bij het maken van de synth.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="953"/>
+        <location filename="../GUI/PageRecord.cpp" line="957"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>Weet je zeker dat je deze opname wilt annuleren?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="966"/>
+        <location filename="../GUI/PageRecord.cpp" line="970"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
@@ -1169,6 +1189,7 @@ De startknop staat bovenaan ;).</translation>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="66"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="52"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="206"/>
         <source>Stopping input thread ...</source>
         <translation>Stop input thread ...</translation>
@@ -1209,13 +1230,13 @@ De startknop staat bovenaan ;).</translation>
         <location filename="../AV/Input/ALSAInput.cpp" line="144"/>
         <location filename="../AV/SimpleSynth.cpp" line="144"/>
         <source>Error: Can&apos;t set buffer size!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan de buffergrootte niet instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="148"/>
         <location filename="../AV/SimpleSynth.cpp" line="148"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Buffergrootte %1 wordt niet ondersteund, gebruik %2 in de plaats. Dit is geen probleem.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="156"/>
@@ -1231,6 +1252,7 @@ De startknop staat bovenaan ;).</translation>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="195"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="176"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="238"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="298"/>
         <location filename="../AV/Input/X11Input.cpp" line="341"/>
         <source>Input thread started.</source>
@@ -1250,6 +1272,7 @@ De startknop staat bovenaan ;).</translation>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="254"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="228"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="286"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="387"/>
         <location filename="../AV/Input/X11Input.cpp" line="431"/>
         <source>Input thread stopped.</source>
@@ -1258,6 +1281,7 @@ De startknop staat bovenaan ;).</translation>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="258"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="232"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="290"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="391"/>
         <location filename="../AV/Input/X11Input.cpp" line="435"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
@@ -1266,6 +1290,7 @@ De startknop staat bovenaan ;).</translation>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="261"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="235"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="293"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="394"/>
         <location filename="../AV/Input/X11Input.cpp" line="438"/>
         <source>Unknown exception in input thread.</source>
@@ -1613,67 +1638,101 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
         <translation>Onbekende exceptie in muxer thread.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="119"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="122"/>
         <source>Stopping synchronizer thread ...</source>
         <translation>Synchronisator thread stoppen ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="237"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="258"/>
         <source>Warning: Received video frame with non-monotonic timestamp.</source>
         <translation>Waarschuwing: Videobeeld met niet-monotone tijdswaarde ontvangen.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="269"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="284"/>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
         <translation>Waarschuwing: Video buffer overflow, sommige beelden zullen verloren gaan. De audio-input lijkt te traag te zijn.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="341"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="342"/>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
         <translation>Waarschuwing: Audiosamples met niet-monotone tijdswaarde ontvangen.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="365"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="362"/>
+        <source>Warning: Too many audio samples, dropping samples to keep the audio in sync with the video.</source>
+        <translation>Waarschuwing: Te veel audiosamples, laat samples vallen om audio synchroon met de video te houden.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Synchronizer.cpp" line="371"/>
+        <source>Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Synchronizer.cpp" line="466"/>
+        <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: Not enough audio samples, inserting zeros to keep the audio in sync with the video.</source>
+        <translation type="obsolete">Waarschuwing: Niet genoeg audiosamples, voeg stilte in om audio synchroon met de video te houden.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Synchronizer.cpp" line="396"/>
+        <source>Warning: Audio input is more than 2% too slow!</source>
+        <translation>Waarschuwing: Audio-input is meer dan 2% te traag!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Synchronizer.cpp" line="400"/>
+        <source>Warning: Audio input is more than 2% too fast!</source>
+        <translation>Waarschuwing: Audio-input is meer dan 2% te snel!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Synchronizer.cpp" line="416"/>
+        <source>Error: Audio sample format is not supported!</source>
+        <translation>Fout: Audiosampleformaat wordt niet ondersteund!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Synchronizer.cpp" line="430"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
         <translation>Waarschuwing: Audio buffer overflow, begin een nieuw segment om de audio synchroon met de video te houden (sommige video en/of audio kan verloren gaan). De video-input lijkt te traag te zijn.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="388"/>
+        <source>Warning: Received hole in audio stream, inserting zeros to keep the audio in sync with the video.</source>
+        <translation type="obsolete">Waarschuwing: Ontving gat in audiostream, voeg stilte in om audio synchroon met de video te houden.</translation>
+    </message>
+    <message>
         <source>Warning: Desynchronization is too high, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).</source>
-        <translation>Waarschuwing: Desynchronisatie is te groot, begin een nieuw segment om de audio synchroon met de video te houden (sommige video en/of audio kan verloren gaan).</translation>
+        <translation type="obsolete">Waarschuwing: Desynchronisatie is te groot, begin een nieuw segment om de audio synchroon met de video te houden (sommige video en/of audio kan verloren gaan).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="398"/>
         <source>Warning: Audio input is more than 5% too slow!</source>
-        <translation>Waarschuwing: Audio-input is meer dan 5% te traag!</translation>
+        <translation type="obsolete">Waarschuwing: Audio-input is meer dan 5% te traag!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="402"/>
         <source>Warning: Audio input is more than 5% too fast!</source>
-        <translation>Waarschuwing: Audio-input is meer dan 5% te snel!</translation>
+        <translation type="obsolete">Waarschuwing: Audio-input is meer dan 5% te snel!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="432"/>
         <source>Warning: Received hole in audio stream, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).</source>
-        <translation>Waarschuwing: Gat in de audiostream ontvangen, begin een nieuw segment om de audio synchroon met de video te houden (sommige video en/of audio kan verloren gaan).</translation>
+        <translation type="obsolete">Waarschuwing: Gat in de audiostream ontvangen, begin een nieuw segment om de audio synchroon met de video te houden (sommige video en/of audio kan verloren gaan).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="712"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="757"/>
         <source>Synchronizer thread started.</source>
         <translation>Synchronisator thread gestart.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="734"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="779"/>
         <source>Synchronizer thread stopped.</source>
         <translation>Synchronisator thread gestopt.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="738"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="783"/>
         <source>Exception &apos;%1&apos; in synchronizer thread.</source>
         <translation>Exceptie &apos;%1&apos; in synchronisator thread.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="741"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="786"/>
         <source>Unknown exception in synchronizer thread.</source>
         <translation>Onbekende exceptie in synchronisator thread.</translation>
     </message>
@@ -1740,29 +1799,24 @@ Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translat
         <translation>Fout: Kan geen .ssr-map maken!</translation>
     </message>
     <message>
-        <location filename="../AV/Resampler.cpp" line="73"/>
         <source>Error: Flushing resampler failed! Reason: %s</source>
-        <translation>Fout: Afwerken van hersampler mislukt! Reden: %s</translation>
+        <translation type="obsolete">Fout: Afwerken van hersampler mislukt! Reden: %s</translation>
     </message>
     <message>
-        <location filename="../AV/Resampler.cpp" line="90"/>
         <source>Resampling from %1 to %2.</source>
-        <translation>Hersamplen van %1 naar %2.</translation>
+        <translation type="obsolete">Hersamplen van %1 naar %2.</translation>
     </message>
     <message>
-        <location filename="../AV/Resampler.cpp" line="96"/>
         <source>Error: Can&apos;t create resampler! Reason: %s</source>
-        <translation>Fout: Kan geen hersampler maken! Reden: %s</translation>
+        <translation type="obsolete">Fout: Kan geen hersampler maken! Reden: %s</translation>
     </message>
     <message>
-        <location filename="../AV/Resampler.cpp" line="100"/>
         <source>Resampling not needed.</source>
-        <translation>Hersamplen niet nodig.</translation>
+        <translation type="obsolete">Hersamplen niet nodig.</translation>
     </message>
     <message>
-        <location filename="../AV/Resampler.cpp" line="140"/>
         <source>Error: Resampling failed!</source>
-        <translation>Fout: Hersamplen mislukt!</translation>
+        <translation type="obsolete">Fout: Hersamplen mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="144"/>
@@ -1883,43 +1937,109 @@ Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translat
         <location filename="../AV/SimpleSynth.cpp" line="27"/>
         <source>Warning: An underrun has occurred, some samples were too late.</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Er was een underrun, een aantal samples waren te laat.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="29"/>
         <source>Error: Can&apos;t recover device after underrun!</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan apparaat niet herstellen na underrun!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="56"/>
         <source>Stopping synth thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop synth thread ...</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="189"/>
         <source>Synth thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Synth thread gestart.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="257"/>
         <source>Error: Can&apos;t write samples!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan samples niet schrijven!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="265"/>
         <source>Synth thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Synth thread gestopt.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="269"/>
         <source>Exception &apos;%1&apos; in synth thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exceptie &apos;%1&apos; in synth thread.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="272"/>
         <source>Unknown exception in synth thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekende exceptie in synth thread.</translation>
+    </message>
+    <message>
+        <location filename="../AV/FastResampler.cpp" line="126"/>
+        <source>Error: Resample ratio is out of range!</source>
+        <translation>Fout: Hersampleratio is buiten bereik!</translation>
+    </message>
+    <message>
+        <location filename="../AV/FastResampler.cpp" line="130"/>
+        <source>Error: Drift ratio is out of range!</source>
+        <translation>Fout: Driftratio is buiten bereik!</translation>
+    </message>
+    <message>
+        <location filename="../AV/FastResampler.cpp" line="160"/>
+        <source>Resample ratio is %1 (was %2).</source>
+        <translation>Hersampleratio is %1 (was %2).</translation>
+    </message>
+    <message>
+        <source>Resample ratio is %1 (was %2)</source>
+        <translation type="obsolete">Hersampleratio is %1 (was %2).</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/JACKInput.cpp" line="72"/>
+        <source>Error: Could not connect to JACK!</source>
+        <translation>Fout: Kan niet verbinden met JACK!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/JACKInput.cpp" line="81"/>
+        <source>Error: Could not create JACK port!</source>
+        <translation>Fout: Kan geen JACK poort maken!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/JACKInput.cpp" line="87"/>
+        <source>Error: Could not set JACK process callback!</source>
+        <translation>Fout: Kan geen JACK verwerkingscallback instellen!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/JACKInput.cpp" line="91"/>
+        <source>Error: Could not set JACK sample rate callback!</source>
+        <translation>Fout: Kan geen JACK samplefrequentiecallback instellen!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/JACKInput.cpp" line="95"/>
+        <source>Error: Could not set JACK xrun callback!</source>
+        <translation>Fout: Kan geen JACK xrun callback instellen!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/JACKInput.cpp" line="99"/>
+        <source>Error: Could not set JACK port connect callback!</source>
+        <translation>Fout: Kan geen JACK poortverbindingscallback instellen!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/JACKInput.cpp" line="104"/>
+        <source>Error: Could not activate JACK client!</source>
+        <translation>Fout: Kan JACK client niet activeren!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/JACKInput.cpp" line="112"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="123"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="251"/>
+        <source>Connecting port %1 to %2.</source>
+        <translation>Verbinding van poort %1 naar %2 gemaakt.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/JACKInput.cpp" line="255"/>
+        <source>Disconnecting port %1 from %2.</source>
+        <translation>Verbinding van poort %1 naar %2 verbroken.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="204"/>
@@ -1930,22 +2050,22 @@ Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translat
 <context>
     <name>SyncDiagram</name>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="187"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="172"/>
         <source>Video in</source>
         <translation>Video in</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="188"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="173"/>
         <source>Audio in</source>
         <translation>Audio in</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="189"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="174"/>
         <source>Video out</source>
         <translation>Video uit</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="190"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="175"/>
         <source>Audio out</source>
         <translation>Audio uit</translation>
     </message>

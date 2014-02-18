@@ -23,7 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #if SSR_USE_JACK
 
 #include "SourceSink.h"
-#include "MutexDataPair.h"
+#include "LockFreeMessageQueue.h"
 
 #include <jack/jack.h>
 
@@ -33,21 +33,31 @@ public:
 	static const unsigned int RING_BUFFER_SIZE;
 
 private:
-	struct Command {
-		bool m_is_hole;
+	enum enum_eventtype : int {
+		EVENTTYPE_HOLE,
+		EVENTTYPE_DATA,
+	};
+	struct Event_Data {
 		int64_t m_timestamp;
-		unsigned int m_sample_rate;
-		std::vector<uint8_t> m_data;
-		Command() = default;
-		Command(Command&&) = default;
-		Command& operator=(Command&&) = default;
+		unsigned int m_sample_rate, m_sample_count;
+	};
+	struct ConnectCommand {
+		bool m_connect;
+		std::string m_source, m_destination;
 	};
 	struct SharedData {
-		std::deque<Command> m_commands;
+		std::vector<ConnectCommand> m_connect_commands;
 	};
+	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
-	unsigned int m_sample_rate, m_channels;
+	bool m_connect_system_capture, m_connect_system_playback;
+	unsigned int m_channels;
+
+	std::atomic<unsigned int> m_jackthread_sample_rate;
+	std::atomic<bool> m_jackthread_hole;
+
+	LockFreeMessageQueue m_message_queue;
 
 	jack_client_t *m_jack_client;
 	std::vector<jack_port_t*> m_jack_ports;
@@ -56,11 +66,8 @@ private:
 	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
-	std::vector<Command> m_command_ring;
-	unsigned int m_command_ring_read_pos, m_command_ring_write_pos;
-
 public:
-	JACKInput();
+	JACKInput(bool connect_system_capture, bool connect_system_playback);
 	~JACKInput();
 
 	// Returns whether an error has occurred in the input thread.
@@ -71,11 +78,10 @@ private:
 	void Init();
 	void Free();
 
-	void WriteCommand(bool is_hole, jack_nframes_t nframes = 0);
-
 	static int ProcessCallback(jack_nframes_t nframes, void* arg);
 	static int SampleRateCallback(jack_nframes_t nframes, void* arg);
 	static int XRunCallback(void* arg);
+	static void PortConnectCallback(jack_port_id_t a, jack_port_id_t b, int connect, void* arg);
 
 	void InputThread();
 

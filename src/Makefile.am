@@ -107,6 +107,7 @@ simplescreenrecorder_SOURCES = \
 	common/DetectCPUFeatures.h \
 	common/Dialogs.cpp \
 	common/Dialogs.h \
+	common/LockFreeMessageQueue.h \
 	common/Logger.cpp \
 	common/Logger.h \
 	common/MutexDataPair.h \

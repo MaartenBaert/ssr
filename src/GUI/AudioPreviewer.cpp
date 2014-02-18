@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "AudioPreviewer.h"
 
+#include "SampleCast.h"
 #include "Logger.h"
 
 AudioPreviewer::AudioPreviewer(QWidget* parent)
@@ -78,10 +79,10 @@ void AudioPreviewer::ReadAudioSamples(unsigned int channels, unsigned int sample
 	// save the samples
 	switch(format) {
 		case AV_SAMPLE_FMT_S16: {
-			int16_t *data_in = (int16_t*) data;
+			const int16_t *data_in = (const int16_t*) data;
 			for(size_t i = 0; i < sample_count; ++i) {
 				for(unsigned int channel = 0; channel < 2; ++channel) {
-					double val = (double) *(data_in++) / 32768.0;
+					float val = SampleCast<int16_t, float>(*(data_in++));
 					if(val < lock->m_next_low[channel])
 						lock->m_next_low[channel] = val;
 					if(val > lock->m_next_high[channel])
@@ -91,10 +92,10 @@ void AudioPreviewer::ReadAudioSamples(unsigned int channels, unsigned int sample
 			break;
 		}
 		case AV_SAMPLE_FMT_FLT: {
-			float *data_in = (float*) data;
+			const float *data_in = (const float*) data;
 			for(size_t i = 0; i < sample_count; ++i) {
 				for(unsigned int channel = 0; channel < 2; ++channel) {
-					double val = *(data_in++);
+					float val = *(data_in++);
 					if(val < lock->m_next_low[channel])
 						lock->m_next_low[channel] = val;
 					if(val > lock->m_next_high[channel])
@@ -119,8 +120,8 @@ void AudioPreviewer::ReadAudioSamples(unsigned int channels, unsigned int sample
 	for(unsigned int channel = 0; channel < 2; ++channel) {
 		lock->m_current_low[channel] = lock->m_next_low[channel];
 		lock->m_current_high[channel] = lock->m_next_high[channel];
-		lock->m_next_low[channel] = std::numeric_limits<double>::max();
-		lock->m_next_high[channel] = -std::numeric_limits<double>::max();
+		lock->m_next_low[channel] = std::numeric_limits<float>::max();
+		lock->m_next_high[channel] = -std::numeric_limits<float>::max();
 	}
 
 	emit NeedsUpdate();
@@ -144,13 +145,9 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 	SharedLock lock(&m_shared_data);
 	QPainter painter(this);
 
-	int w = width() - 1, h = height() - 1;
+	painter.fillRect(rect(), QColor(150, 150, 150));
 
-	painter.setPen(Qt::NoPen);
-	painter.setBrush(QColor(150, 150, 150));
-	for(unsigned int channel = 0; channel < 2; ++channel) {
-		painter.drawRect(0, 0, w, h);
-	}
+	int w = width() - 1, h = height() - 1;
 
 	QLinearGradient grad(0.0, 0.0, (double) width(), 0.0);
 	grad.setColorAt(0.0, QColor(0, 200, 0));
@@ -160,7 +157,7 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 	painter.setBrush(grad);
 	for(unsigned int channel = 0; channel < 2; ++channel) {
 		// the scale goes down to 60dB which corresponds to 1.0e-3 (for sound pressure, 20dB = 10x)
-		double val = log10(std::max(1.0e-3, (lock->m_current_high[channel] - lock->m_current_low[channel]) / 2.0)) / 3.0 + 1.0;
+		double val = log10(fmax(1.0e-3, (lock->m_current_high[channel] - lock->m_current_low[channel]) / 2.0)) / 3.0 + 1.0;
 		painter.drawRect(0, h * channel / 2, (int) round((double) w * val), h * (channel + 1) / 2 - h * channel / 2);
 	}
 
