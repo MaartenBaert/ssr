@@ -42,7 +42,7 @@ AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::v
 		m_opt_threads = 1;
 
 		if(m_sample_rate == 0) {
-			Logger::LogError("[AudioEncoder::Init] " + QObject::tr("Error: Sample rate it zero."));
+			Logger::LogError("[AudioEncoder::Init] " + Logger::tr("Error: Sample rate it zero."));
 			throw LibavException();
 		}
 
@@ -60,7 +60,7 @@ AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::v
 			CreateCodec(codec_name, &options);
 			AVDictionaryEntry *t = NULL;
 			while((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)) != NULL) {
-				Logger::LogWarning("[VideoEncoder::Init] " + QObject::tr("Warning: Codec option '%1' was not recognised!").arg(t->key));
+				Logger::LogWarning("[VideoEncoder::Init] " + Logger::tr("Warning: Codec option '%1' was not recognised!").arg(t->key));
 			}
 			av_dict_free(&options);
 		} catch(...) {
@@ -129,7 +129,7 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 		}
 	}
 	if(GetCodecContext()->sample_fmt == AV_SAMPLE_FMT_NONE) {
-		Logger::LogError("[AudioEncoder::FillCodecContext] " + QObject::tr("Error: Encoder requires an unsupported sample format!"));
+		Logger::LogError("[AudioEncoder::FillCodecContext] " + Logger::tr("Error: Encoder requires an unsupported sample format!"));
 		throw LibavException();
 	}
 	GetCodecContext()->thread_count = m_opt_threads;
@@ -152,7 +152,7 @@ bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 	// encode the frame
 	int got_packet;
 	if(avcodec_encode_audio2(GetCodecContext(), packet->GetPacket(), frame, &got_packet) < 0) {
-		Logger::LogError("[AudioEncoder::EncodeFrame] " + QObject::tr("Error: Encoding of audio frame failed!"));
+		Logger::LogError("[AudioEncoder::EncodeFrame] " + Logger::tr("Error: Encoding of audio frame failed!"));
 		throw LibavException();
 	}
 
@@ -173,7 +173,7 @@ bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 	short *data = (frame == NULL)? NULL : (short*) frame->data[0];
 	int bytes_encoded = avcodec_encode_audio(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), data);
 	if(bytes_encoded < 0) {
-		Logger::LogError("[AudioEncoder::EncodeFrame] " + QObject::tr("Error: Encoding of audio frame failed!"));
+		Logger::LogError("[AudioEncoder::EncodeFrame] " + Logger::tr("Error: Encoding of audio frame failed!"));
 		throw LibavException();
 	}
 

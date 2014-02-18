@@ -71,7 +71,7 @@ static PixelFormat X11ImageGetPixelFormat(XImage* image) {
 			break;
 		}
 	}
-	Logger::LogError("[X11ImageGetPixelFormat] " + QObject::tr("Error: Unsupported X11 image pixel format!") + "\n"
+	Logger::LogError("[X11ImageGetPixelFormat] " + Logger::tr("Error: Unsupported X11 image pixel format!") + "\n"
 					 "    bits_per_pixel = " + QString::number(image->bits_per_pixel) + ", red_mask = 0x" + QString::number(image->red_mask, 16)
 					 + ", green_mask = 0x" + QString::number(image->green_mask, 16) + ", blue_mask = 0x" + QString::number(image->blue_mask, 16));
 	throw X11Exception();
@@ -182,11 +182,11 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 	m_x11_image = NULL;
 
 	if(m_width == 0 || m_height == 0) {
-		Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Width or height is zero!"));
+		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Width or height is zero!"));
 		throw X11Exception();
 	}
 	if(m_width > 10000 || m_height > 10000) {
-		Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
+		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
 		throw X11Exception();
 	}
 
@@ -203,7 +203,7 @@ X11Input::~X11Input() {
 
 	// tell the thread to stop
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[X11Input::~X11Input] " + QObject::tr("Stopping input thread ..."));
+		Logger::LogInfo("[X11Input::~X11Input] " + Logger::tr("Stopping input thread ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}
@@ -223,7 +223,7 @@ void X11Input::Init() {
 	// we need a separate display because the existing one would interfere with what Qt is doing in some cases
 	m_x11_display = XOpenDisplay(NULL); //QX11Info::display();
 	if(m_x11_display == NULL) {
-		Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Can't open X display!", "Don't translate 'display'"));
+		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't open X display!", "Don't translate 'display'"));
 		throw X11Exception();
 	}
 	m_x11_screen = DefaultScreen(m_x11_display); //QX11Info::appScreen();
@@ -232,26 +232,26 @@ void X11Input::Init() {
 	m_x11_depth = DefaultDepth(m_x11_display, m_x11_screen); //QX11Info::appDepth(m_x11_screen);
 	m_x11_use_shm = XShmQueryExtension(m_x11_display);
 	if(m_x11_use_shm) {
-		Logger::LogInfo("[X11Input::Init] " + QObject::tr("Using X11 shared memory."));
+		Logger::LogInfo("[X11Input::Init] " + Logger::tr("Using X11 shared memory."));
 		m_x11_image = XShmCreateImage(m_x11_display, m_x11_visual, m_x11_depth, ZPixmap, NULL, &m_x11_shm_info, m_width, m_height);
 		if(m_x11_image == NULL) {
-			Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Can't create shared image!"));
+			Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't create shared image!"));
 			throw X11Exception();
 		}
 		m_x11_shm_info.shmid = shmget(IPC_PRIVATE, m_x11_image->bytes_per_line * m_x11_image->height, IPC_CREAT | 0700);
 		if(m_x11_shm_info.shmid == -1) {
-			Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Can't get shared memory!"));
+			Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't get shared memory!"));
 			throw X11Exception();
 		}
 		m_x11_shm_info.shmaddr = m_x11_image->data = (char*) shmat(m_x11_shm_info.shmid, NULL, SHM_RND);
 		if(m_x11_shm_info.shmaddr == (char*) -1) {
-			Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Can't attach to shared memory!"));
+			Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't attach to shared memory!"));
 			throw X11Exception();
 		}
 		m_x11_shm_info.readOnly = false;
 		// the server will attach later
 	} else {
-		Logger::LogInfo("[X11Input::Init] " + QObject::tr("Not using X11 shared memory."));
+		Logger::LogInfo("[X11Input::Init] " + Logger::tr("Not using X11 shared memory."));
 		m_x11_image = NULL;
 	}
 
@@ -259,7 +259,7 @@ void X11Input::Init() {
 	if(m_record_cursor) {
 		int event, error;
 		if(!XFixesQueryExtension(m_x11_display, &event, &error)) {
-			Logger::LogWarning("[X11Input::Init] " + QObject::tr("Warning: XFixes is not supported by server, the cursor has been hidden.", "Don't translate 'XFixes'"));
+			Logger::LogWarning("[X11Input::Init] " + Logger::tr("Warning: XFixes is not supported by server, the cursor has been hidden.", "Don't translate 'XFixes'"));
 			m_record_cursor = false;
 		}
 	}
@@ -314,7 +314,7 @@ void X11Input::UpdateScreenConfiguration() {
 	lock->m_screen_bbox = region.boundingRect();
 
 	if(lock->m_screen_bbox.x() < 0 || lock->m_screen_bbox.y() < 0 || lock->m_screen_bbox.width() <= 0 || lock->m_screen_bbox.height() <= 0) {
-		Logger::LogError("[X11Input::UpdateScreenConfiguration] " + QObject::tr("Error: Invalid screen bounding box!") + "\n"
+		Logger::LogError("[X11Input::UpdateScreenConfiguration] " + Logger::tr("Error: Invalid screen bounding box!") + "\n"
 						   "    x = " + QString::number(lock->m_screen_bbox.x()) + ", y = " + QString::number(lock->m_screen_bbox.y())
 						   + ", width = " + QString::number(lock->m_screen_bbox.width()) + ", height = " + QString::number(lock->m_screen_bbox.height()));
 		throw X11Exception();
@@ -330,7 +330,7 @@ void X11Input::UpdateScreenConfiguration() {
 void X11Input::InputThread() {
 	try {
 
-		Logger::LogInfo("[X11Input::InputThread] " + QObject::tr("Input thread started."));
+		Logger::LogInfo("[X11Input::InputThread] " + Logger::tr("Input thread started."));
 
 		unsigned int grab_x = m_x, grab_y = m_y;
 
@@ -370,13 +370,13 @@ void X11Input::InputThread() {
 			if(m_x11_use_shm) {
 				if(!m_x11_shm_server_attached) {
 					if(!XShmAttach(m_x11_display, &m_x11_shm_info)) {
-						Logger::LogError("[X11Input::Init] " + QObject::tr("Error: Can't attach server to shared memory!"));
+						Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't attach server to shared memory!"));
 						throw X11Exception();
 					}
 					m_x11_shm_server_attached = true;
 				}
 				if(!XShmGetImage(m_x11_display, m_x11_root, m_x11_image, grab_x, grab_y, AllPlanes)) {
-					Logger::LogError("[X11Input::InputThread] " + QObject::tr("Error: Can't get image (using shared memory)!\n"
+					Logger::LogError("[X11Input::InputThread] " + Logger::tr("Error: Can't get image (using shared memory)!\n"
 									 "    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?"));
 					throw X11Exception();
 				}
@@ -387,7 +387,7 @@ void X11Input::InputThread() {
 				}
 				m_x11_image = XGetImage(m_x11_display, m_x11_root, grab_x, grab_y, m_width, m_height, AllPlanes, ZPixmap);
 				if(m_x11_image == NULL) {
-					Logger::LogError("[X11Input::InputThread] " + QObject::tr("Error: Can't get image (not using shared memory)!\n"
+					Logger::LogError("[X11Input::InputThread] " + Logger::tr("Error: Can't get image (not using shared memory)!\n"
 									 "    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?"));
 					throw X11Exception();
 				}
@@ -420,13 +420,13 @@ void X11Input::InputThread() {
 
 		}
 
-		Logger::LogInfo("[X11Input::InputThread] " + QObject::tr("Input thread stopped."));
+		Logger::LogInfo("[X11Input::InputThread] " + Logger::tr("Input thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError("[X11Input::InputThread] " + QObject::tr("Exception '%1' in input thread.").arg(e.what()));
+		Logger::LogError("[X11Input::InputThread] " + Logger::tr("Exception '%1' in input thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[X11Input::InputThread] " + QObject::tr("Unknown exception in input thread."));
+		Logger::LogError("[X11Input::InputThread] " + Logger::tr("Unknown exception in input thread."));
 	}
 }

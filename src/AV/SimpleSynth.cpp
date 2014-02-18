@@ -24,9 +24,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SampleCast.h"
 
 static void ALSARecoverAfterUnderrun(snd_pcm_t* pcm) {
-	Logger::LogWarning("[ALSARecoverAfterUnderrun] " + QObject::tr("Warning: An underrun has occurred, some samples were too late.", "Don't translate 'underrun'"));
+	Logger::LogWarning("[ALSARecoverAfterUnderrun] " + Logger::tr("Warning: An underrun has occurred, some samples were too late.", "Don't translate 'underrun'"));
 	if(snd_pcm_prepare(pcm) < 0) {
-		Logger::LogError("[ALSARecoverAfterUnderrun] " + QObject::tr("Error: Can't recover device after underrun!", "Don't translate 'underrun'"));
+		Logger::LogError("[ALSARecoverAfterUnderrun] " + Logger::tr("Error: Can't recover device after underrun!", "Don't translate 'underrun'"));
 		throw ALSAException();
 	}
 }
@@ -53,7 +53,7 @@ SimpleSynth::~SimpleSynth() {
 
 	// tell the thread to stop
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[SimpleSynth::~SimpleSynth] " + QObject::tr("Stopping synth thread ..."));
+		Logger::LogInfo("[SimpleSynth::~SimpleSynth] " + Logger::tr("Stopping synth thread ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}
@@ -86,34 +86,34 @@ void SimpleSynth::Init() {
 
 		// open PCM device
 		if(snd_pcm_open(&m_alsa_pcm, m_device_name.toAscii().constData(), SND_PCM_STREAM_PLAYBACK, 0) < 0) {
-			Logger::LogError("[SimpleSynth::Init] " + QObject::tr("Error: Can't open PCM device!"));
+			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't open PCM device!"));
 			throw ALSAException();
 		}
 		if(snd_pcm_hw_params_any(m_alsa_pcm, alsa_hw_params) < 0) {
-			Logger::LogError("[SimpleSynth::Init] " + QObject::tr("Error: Can't get PCM hardware parameters!"));
+			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't get PCM hardware parameters!"));
 			throw ALSAException();
 		}
 
 		// set access type
 		if(snd_pcm_hw_params_set_access(m_alsa_pcm, alsa_hw_params, SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
-			Logger::LogError("[SimpleSynth::Init] " + QObject::tr("Error: Can't set access type!"));
+			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't set access type!"));
 			throw ALSAException();
 		}
 
 		// set sample format
 		if(snd_pcm_hw_params_set_format(m_alsa_pcm, alsa_hw_params, SND_PCM_FORMAT_S16_LE) < 0) {
-			Logger::LogError("[SimpleSynth::Init] " + QObject::tr("Error: Can't set sample format!"));
+			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't set sample format!"));
 			throw ALSAException();
 		}
 
 		// set sample rate
 		unsigned int rate = m_sample_rate;
 		if(snd_pcm_hw_params_set_rate_near(m_alsa_pcm, alsa_hw_params, &rate, NULL) < 0) {
-			Logger::LogError("[SimpleSynth::Init] " + QObject::tr("Error: Can't set sample rate!"));
+			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't set sample rate!"));
 			throw ALSAException();
 		}
 		if(rate != m_sample_rate) {
-			Logger::LogWarning("[SimpleSynth::Init] " + QObject::tr("Warning: Sample rate %1 is not supported, using %2 instead. "
+			Logger::LogWarning("[SimpleSynth::Init] " + Logger::tr("Warning: Sample rate %1 is not supported, using %2 instead. "
 																	"This is not a problem.")
 							   .arg(m_sample_rate).arg(rate));
 			m_sample_rate = rate;
@@ -121,18 +121,18 @@ void SimpleSynth::Init() {
 
 		// set channel count
 		if(snd_pcm_hw_params_set_channels(m_alsa_pcm, alsa_hw_params, 1) < 0) {
-			Logger::LogError("[SimpleSynth::Init] " + QObject::tr("Error: Can't set channel count!"));
+			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't set channel count!"));
 			throw ALSAException();
 		}
 
 		// set period size
 		snd_pcm_uframes_t period_size = m_alsa_period_size;
 		if(snd_pcm_hw_params_set_period_size_near(m_alsa_pcm, alsa_hw_params, &period_size, NULL) < 0) {
-			Logger::LogError("[SimpleSynth::Init] " + QObject::tr("Error: Can't set period size!"));
+			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't set period size!"));
 			throw ALSAException();
 		}
 		if(period_size != m_alsa_period_size) {
-			Logger::LogWarning("[SimpleSynth::Init] " + QObject::tr("Warning: Period size %1 is not supported, using %2 instead. "
+			Logger::LogWarning("[SimpleSynth::Init] " + Logger::tr("Warning: Period size %1 is not supported, using %2 instead. "
 																	"This is not a problem.")
 							   .arg(m_alsa_period_size).arg(period_size));
 			m_alsa_period_size = period_size;
@@ -141,11 +141,11 @@ void SimpleSynth::Init() {
 		// set buffer size
 		snd_pcm_uframes_t buffer_size = m_alsa_buffer_size;
 		if(snd_pcm_hw_params_set_buffer_size_near(m_alsa_pcm, alsa_hw_params, &buffer_size) < 0) {
-			Logger::LogError("[SimpleSynth::Init] " + QObject::tr("Error: Can't set buffer size!"));
+			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't set buffer size!"));
 			throw ALSAException();
 		}
 		if(buffer_size != m_alsa_buffer_size) {
-			Logger::LogWarning("[SimpleSynth::Init] " + QObject::tr("Warning: Buffer size %1 is not supported, using %2 instead. "
+			Logger::LogWarning("[SimpleSynth::Init] " + Logger::tr("Warning: Buffer size %1 is not supported, using %2 instead. "
 																  "This is not a problem.")
 							   .arg(m_alsa_buffer_size).arg(buffer_size));
 			m_alsa_buffer_size = buffer_size;
@@ -153,7 +153,7 @@ void SimpleSynth::Init() {
 
 		// apply parameters
 		if(snd_pcm_hw_params(m_alsa_pcm, alsa_hw_params) < 0) {
-			Logger::LogError("[SimpleSynth::Init] " + QObject::tr("Error: Can't apply PCM hardware parameters!"));
+			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't apply PCM hardware parameters!"));
 			throw ALSAException();
 		}
 
@@ -186,7 +186,7 @@ void SimpleSynth::Free() {
 void SimpleSynth::SynthThread() {
 	try {
 
-		Logger::LogInfo("[SimpleSynth::SynthThread] " + QObject::tr("Synth thread started."));
+		Logger::LogInfo("[SimpleSynth::SynthThread] " + Logger::tr("Synth thread started."));
 
 		std::vector<float> buffer_float(m_alsa_period_size);
 		std::vector<int16_t> buffer_int16(m_alsa_period_size);
@@ -204,7 +204,7 @@ void SimpleSynth::SynthThread() {
 				if(res == -EPIPE) {
 					ALSARecoverAfterUnderrun(m_alsa_pcm);
 				} else {
-					Logger::LogError("[SimpleSynth::SynthThread] " + QObject::tr("Error: Can't check whether samples are available!"));
+					Logger::LogError("[SimpleSynth::SynthThread] " + Logger::tr("Error: Can't check whether samples are available!"));
 					throw ALSAException();
 				}
 				continue;
@@ -254,7 +254,7 @@ void SimpleSynth::SynthThread() {
 				if(samples_written == -EPIPE) {
 					ALSARecoverAfterUnderrun(m_alsa_pcm);
 				} else {
-					Logger::LogError("[SimpleSynth::SynthThread] " + QObject::tr("Error: Can't write samples!"));
+					Logger::LogError("[SimpleSynth::SynthThread] " + Logger::tr("Error: Can't write samples!"));
 					throw ALSAException();
 				}
 				continue;
@@ -262,13 +262,13 @@ void SimpleSynth::SynthThread() {
 
 		}
 
-		Logger::LogInfo("[SimpleSynth::SynthThread] " + QObject::tr("Synth thread stopped."));
+		Logger::LogInfo("[SimpleSynth::SynthThread] " + Logger::tr("Synth thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError("[SimpleSynth::SynthThread] " + QObject::tr("Exception '%1' in synth thread.").arg(e.what()));
+		Logger::LogError("[SimpleSynth::SynthThread] " + Logger::tr("Exception '%1' in synth thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[SimpleSynth::SynthThread] " + QObject::tr("Unknown exception in synth thread."));
+		Logger::LogError("[SimpleSynth::SynthThread] " + Logger::tr("Unknown exception in synth thread."));
 	}
 }

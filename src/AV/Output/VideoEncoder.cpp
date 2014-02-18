@@ -55,19 +55,19 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 #endif
 
 		if(m_width == 0 || m_height == 0) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is zero!"));
+			Logger::LogError("[VideoEncoder::Init] " + Logger::tr("Error: Width or height is zero!"));
 			throw LibavException();
 		}
 		if(m_width > 10000 || m_height > 10000) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
+			Logger::LogError("[VideoEncoder::Init] " + Logger::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
 			throw LibavException();
 		}
 		if(m_width % 2 != 0 || m_height % 2 != 0) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Width or height is not an even number!"));
+			Logger::LogError("[VideoEncoder::Init] " + Logger::tr("Error: Width or height is not an even number!"));
 			throw LibavException();
 		}
 		if(m_frame_rate == 0) {
-			Logger::LogError("[VideoEncoder::Init] " + QObject::tr("Error: Frame rate it zero!"));
+			Logger::LogError("[VideoEncoder::Init] " + Logger::tr("Error: Frame rate it zero!"));
 			throw LibavException();
 		}
 
@@ -101,7 +101,7 @@ VideoEncoder::VideoEncoder(Muxer* muxer, const QString& codec_name, const std::v
 			CreateCodec(codec_name, &options);
 			AVDictionaryEntry *t = NULL;
 			while((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)) != NULL) {
-				Logger::LogWarning("[VideoEncoder::Init] " + QObject::tr("Warning: Codec option '%1' was not recognised!").arg(t->key));
+				Logger::LogWarning("[VideoEncoder::Init] " + Logger::tr("Warning: Codec option '%1' was not recognised!").arg(t->key));
 			}
 			av_dict_free(&options);
 		} catch(...) {
@@ -210,7 +210,7 @@ bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 	// encode the frame
 	int got_packet;
 	if(avcodec_encode_video2(GetCodecContext(), packet->GetPacket(), frame, &got_packet) < 0) {
-		Logger::LogError("[VideoEncoder::EncodeFrame] " + QObject::tr("Error: Encoding of video frame failed!"));
+		Logger::LogError("[VideoEncoder::EncodeFrame] " + Logger::tr("Error: Encoding of video frame failed!"));
 		throw LibavException();
 	}
 
@@ -230,7 +230,7 @@ bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 	// encode the frame
 	int bytes_encoded = avcodec_encode_video(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), frame);
 	if(bytes_encoded < 0) {
-		Logger::LogError("[VideoEncoder::EncodeFrame] " + QObject::tr("Error: Encoding of video frame failed!"));
+		Logger::LogError("[VideoEncoder::EncodeFrame] " + Logger::tr("Error: Encoding of video frame failed!"));
 		throw LibavException();
 	}
 

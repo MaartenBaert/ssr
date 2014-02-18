@@ -113,7 +113,7 @@ int main(int argc, char* argv[]) {
 
 #define NOVALUE \
 			if(!value.isNull()) { \
-				Logger::LogError("[main] " + QObject::tr("Error: Command-line option '%1' does not take a value!").arg(option)); \
+				Logger::LogError("[main] " + Logger::tr("Error: Command-line option '%1' does not take a value!").arg(option)); \
 				PrintOptionHelp(); \
 				return 1; \
 			}
@@ -141,7 +141,7 @@ int main(int argc, char* argv[]) {
 				NOVALUE
 				g_option_start_hidden = true;
 			} else {
-				Logger::LogError("[main] " + QObject::tr("Error: Unknown command-line option '%1'!").arg(option));
+				Logger::LogError("[main] " + Logger::tr("Error: Unknown command-line option '%1'!").arg(option));
 				PrintOptionHelp();
 				return 1;
 			}
@@ -151,7 +151,7 @@ int main(int argc, char* argv[]) {
 		} else {
 
 			// handle other arguments
-			Logger::LogError("[main] " + QObject::tr("Error: Unknown command-line argument '%1'!").arg(arg));
+			Logger::LogError("[main] " + Logger::tr("Error: Unknown command-line argument '%1'!").arg(arg));
 			PrintOptionHelp();
 			return 1;
 
@@ -178,18 +178,18 @@ int main(int argc, char* argv[]) {
 	// warning for glitch with proprietary NVIDIA drivers
 	if(DetectNVIDIAFlipping()) {
 		if(MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION,
-					  QObject::tr("SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. "
-								  "This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?\n\n"
-								  "You can also change this option manually in the NVIDIA control panel.", "Don't translate 'flipping' unless NVIDIA does the same"),
+					  MainWindow::tr("SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. "
+									 "This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?\n\n"
+									 "You can also change this option manually in the NVIDIA control panel.", "Don't translate 'flipping' unless NVIDIA does the same"),
 					  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
 			if(!DisableNVIDIAFlipping()) {
-				MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION, QObject::tr("I couldn't disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.",
-																							   "Don't translate 'flipping' unless NVIDIA does the same"), QMessageBox::Ok);
+				MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION, MainWindow::tr("I couldn't disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.",
+																								  "Don't translate 'flipping' unless NVIDIA does the same"), QMessageBox::Ok);
 			}
 		}
 	}
 
-	Logger::LogInfo("==================== " + QObject::tr("SSR started") + " ====================");
+	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");
 	Logger::LogInfo(GetVersionInfo());
 	int ret;
 	{
@@ -198,7 +198,7 @@ int main(int argc, char* argv[]) {
 			mainwindow.show();
 		ret = application.exec();
 	}
-	Logger::LogInfo("==================== " + QObject::tr("SSR stopped") + " ====================");
+	Logger::LogInfo("==================== " + Logger::tr("SSR stopped") + " ====================");
 
 	return ret;
 }
@@ -206,7 +206,7 @@ int main(int argc, char* argv[]) {
 QString GetApplicationUserDir() {
 	QString dir = QDir::homePath() + "/.ssr";
 	if(!QDir::root().mkpath(dir)) {
-		Logger::LogError("[GetApplicationUserDir] " + QObject::tr("Error: Can't create .ssr directory!"));
+		Logger::LogError("[GetApplicationUserDir] " + Logger::tr("Error: Can't create .ssr directory!"));
 		throw 0;
 	}
 	return dir;

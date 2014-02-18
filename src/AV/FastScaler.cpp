@@ -73,7 +73,7 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 
 	if(m_warn_swscale) {
 		m_warn_swscale = false;
-		Logger::LogWarning("[FastScaler::Scale] " + QObject::tr("Warning: Pixel format is not supported (%1 -> %2), using swscale instead. "
+		Logger::LogWarning("[FastScaler::Scale] " + Logger::tr("Warning: Pixel format is not supported (%1 -> %2), using swscale instead. "
 																"This is not a problem, but performance will be worse.").arg(in_format).arg(out_format));
 	}
 
@@ -82,7 +82,7 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 										 out_width, out_height, out_format,
 										 SWS_BILINEAR, NULL, NULL, NULL);
 	if(m_sws_context == NULL) {
-		Logger::LogError("[FastScaler::Scale] " + QObject::tr("Error: Can't get swscale context!", "Don't translate 'swscale'"));
+		Logger::LogError("[FastScaler::Scale] " + Logger::tr("Error: Can't get swscale context!", "Don't translate 'swscale'"));
 		throw LibavException();
 	}
 	sws_scale(m_sws_context, in_data, in_stride, 0, in_height, out_data, out_stride);
@@ -101,7 +101,7 @@ void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, co
 		} else {
 			if(m_warn_alignment) {
 				m_warn_alignment = false;
-				Logger::LogWarning("[FastScaler::Convert_BGRA_YUV420] " + QObject::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
+				Logger::LogWarning("[FastScaler::Convert_BGRA_YUV420] " + Logger::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
 																					  "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
 			}
 			Convert_BGRA_YUV420_Fallback(width, height, in_data, in_stride, out_data, out_stride);
@@ -124,7 +124,7 @@ void FastScaler::Scale_BGRA(unsigned int in_width, unsigned int in_height, const
 		} else {
 			if(m_warn_alignment) {
 				m_warn_alignment = false;
-				Logger::LogWarning("[FastScaler::Scale_BGRA] " + QObject::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
+				Logger::LogWarning("[FastScaler::Scale_BGRA] " + Logger::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
 																			 "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
 			}
 			Scale_BGRA_Fallback(in_width, in_height, in_data, in_stride, out_width, out_height, out_data, out_stride);

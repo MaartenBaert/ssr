@@ -52,7 +52,7 @@ GLInjectInput::~GLInjectInput() {
 
 	// tell the thread to stop
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[GLInjectInput::~GLInjectInput] " + QObject::tr("Stopping input thread ..."));
+		Logger::LogInfo("[GLInjectInput::~GLInjectInput] " + Logger::tr("Stopping input thread ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}
@@ -92,7 +92,7 @@ void GLInjectInput::Free() {
 void GLInjectInput::InputThread() {
 	try {
 
-		Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Input thread started."));
+		Logger::LogInfo("[GLInjectInput::InputThread] " + Logger::tr("Input thread started."));
 
 		//int64_t next_frame_time = hrt_time_micro();
 		while(!m_should_stop) {
@@ -119,11 +119,11 @@ void GLInjectInput::InputThread() {
 			unsigned int frame_width = frameinfo->width;
 			unsigned int frame_height = frameinfo->height;
 			if(frame_width < 2 || frame_height < 2) {
-				Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Error: Image is too small!"));
+				Logger::LogInfo("[GLInjectInput::InputThread] " + Logger::tr("Error: Image is too small!"));
 				throw GLInjectException();
 			}
 			if(frame_width > 10000 || frame_height > 10000) {
-				Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Error: Image is too large!"));
+				Logger::LogInfo("[GLInjectInput::InputThread] " + Logger::tr("Error: Image is too large!"));
 				throw GLInjectException();
 			}
 
@@ -131,7 +131,7 @@ void GLInjectInput::InputThread() {
 			uint8_t *image_data = (uint8_t*) m_shm_frame_ptrs[current_frame];
 			int image_stride = grow_align16(frame_width * 4);
 			if(image_stride * frame_height > m_max_bytes) {
-				Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Error: Image doesn't fit in memory!"));
+				Logger::LogInfo("[GLInjectInput::InputThread] " + Logger::tr("Error: Image doesn't fit in memory!"));
 				throw GLInjectException();
 			}
 
@@ -152,13 +152,13 @@ void GLInjectInput::InputThread() {
 
 		}
 
-		Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Input thread stopped."));
+		Logger::LogInfo("[GLInjectInput::InputThread] " + Logger::tr("Input thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError("[GLInjectInput::InputThread] " + QObject::tr("Exception '%1' in input thread.").arg(e.what()));
+		Logger::LogError("[GLInjectInput::InputThread] " + Logger::tr("Exception '%1' in input thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[GLInjectInput::InputThread] " + QObject::tr("Unknown exception in input thread."));
+		Logger::LogError("[GLInjectInput::InputThread] " + Logger::tr("Unknown exception in input thread."));
 	}
 }

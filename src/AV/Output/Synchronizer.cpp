@@ -119,7 +119,7 @@ Synchronizer::~Synchronizer() {
 
 	// tell the thread to stop
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[Synchronizer::~Synchronizer] " + QObject::tr("Stopping synchronizer thread ..."));
+		Logger::LogInfo("[Synchronizer::~Synchronizer] " + Logger::tr("Stopping synchronizer thread ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}
@@ -255,7 +255,7 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	// check the timestamp
 	if(timestamp < videolock->m_last_timestamp) {
 		if(timestamp < videolock->m_last_timestamp - 10000)
-			Logger::LogWarning("[Synchronizer::ReadVideoFrame] " + QObject::tr("Warning: Received video frame with non-monotonic timestamp."));
+			Logger::LogWarning("[Synchronizer::ReadVideoFrame] " + Logger::tr("Warning: Received video frame with non-monotonic timestamp."));
 		timestamp = videolock->m_last_timestamp;
 	}
 
@@ -281,7 +281,7 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 		if(lock->m_segment_audio_started) {
 			if(lock->m_warn_drop_video) {
 				lock->m_warn_drop_video = false;
-				Logger::LogWarning("[Synchronizer::ReadVideoFrame] " + QObject::tr("Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow."));
+				Logger::LogWarning("[Synchronizer::ReadVideoFrame] " + Logger::tr("Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow."));
 			}
 			return;
 		} else {
@@ -339,7 +339,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	// check the timestamp
 	if(timestamp < audiolock->m_last_timestamp) {
 		if(timestamp < audiolock->m_last_timestamp - 10000)
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Received audio samples with non-monotonic timestamp."));
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Received audio samples with non-monotonic timestamp."));
 		timestamp = audiolock->m_last_timestamp;
 	}
 
@@ -359,7 +359,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 
 	// if there are too many audio samples, drop the frame (unlikely)
 	if(current_drift > DRIFT_ERROR_THRESHOLD) {
-		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Too many audio samples, dropping samples to keep the audio in sync with the video."));
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Too many audio samples, dropping samples to keep the audio in sync with the video."));
 		return;
 	}
 
@@ -368,7 +368,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	if(current_drift < -DRIFT_ERROR_THRESHOLD || audiolock->m_insert_zeros) {
 
 		if(!audiolock->m_insert_zeros)
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video."));
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video."));
 		audiolock->m_insert_zeros = false;
 
 		// insert zeros
@@ -393,11 +393,11 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	audiolock->m_average_drift = clamp(audiolock->m_average_drift + DRIFT_CORRECTION_I * current_drift * dt, -0.5, 0.5);
 	if(audiolock->m_average_drift < -0.02 && audiolock->m_warn_desync) {
 		audiolock->m_warn_desync = false;
-		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 2% too slow!"));
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Audio input is more than 2% too slow!"));
 	}
 	if(audiolock->m_average_drift > 0.02 && audiolock->m_warn_desync) {
 		audiolock->m_warn_desync = false;
-		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio input is more than 2% too fast!"));
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Audio input is more than 2% too fast!"));
 	}
 	double length = (double) sample_count / (double) sample_rate;
 	double drift_correction = clamp(DRIFT_CORRECTION_P * current_drift + audiolock->m_average_drift, -0.5, 0.5) * fmin(1.0, DRIFT_MAX_BLOCK / length);
@@ -413,7 +413,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 		data_float = audiolock->m_temp_input_buffer.GetData();
 		SampleCopy(sample_count * m_audio_channels, (const int16_t*) data, 1, audiolock->m_temp_input_buffer.GetData(), 1);
 	} else {
-		Logger::LogError("[Synchronizer::ReadAudioSamples] " + QObject::tr("Error: Audio sample format is not supported!"));
+		Logger::LogError("[Synchronizer::ReadAudioSamples] " + Logger::tr("Error: Audio sample format is not supported!"));
 		throw ResamplerException();
 	}
 
@@ -427,7 +427,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	// avoid memory problems by limiting the audio buffer size
 	if(lock->m_audio_buffer.GetSize() / m_audio_channels >= MAX_AUDIO_SAMPLES_BUFFERED) {
 		if(lock->m_segment_video_started) {
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + QObject::tr("Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video "
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video "
 																				 "(some video and/or audio may be lost). The video input seems to be too slow."));
 			NewSegment(lock.get());
 		} else {
@@ -463,7 +463,7 @@ void Synchronizer::ReadAudioHole() {
 	if(audiolock->m_first_timestamp != AV_NOPTS_VALUE) {
 		audiolock->m_average_drift = 0.0;
 		if(!audiolock->m_insert_zeros) {
-			Logger::LogWarning("[Synchronizer::ReadAudioHole] " + QObject::tr("Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video."));
+			Logger::LogWarning("[Synchronizer::ReadAudioHole] " + Logger::tr("Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video."));
 			audiolock->m_insert_zeros = true;
 		}
 	}
@@ -754,7 +754,7 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 void Synchronizer::SynchronizerThread() {
 	try {
 
-		Logger::LogInfo("[Synchronizer::SynchronizerThread] " + QObject::tr("Synchronizer thread started."));
+		Logger::LogInfo("[Synchronizer::SynchronizerThread] " + Logger::tr("Synchronizer thread started."));
 
 		while(!m_should_stop) {
 
@@ -776,13 +776,13 @@ void Synchronizer::SynchronizerThread() {
 
 		}
 
-		Logger::LogInfo("[Synchronizer::SynchronizerThread] " + QObject::tr("Synchronizer thread stopped."));
+		Logger::LogInfo("[Synchronizer::SynchronizerThread] " + Logger::tr("Synchronizer thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError("[Synchronizer::SynchronizerThread] " + QObject::tr("Exception '%1' in synchronizer thread.").arg(e.what()));
+		Logger::LogError("[Synchronizer::SynchronizerThread] " + Logger::tr("Exception '%1' in synchronizer thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[Synchronizer::SynchronizerThread] " + QObject::tr("Unknown exception in synchronizer thread."));
+		Logger::LogError("[Synchronizer::SynchronizerThread] " + Logger::tr("Unknown exception in synchronizer thread."));
 	}
 }
