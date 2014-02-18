@@ -234,7 +234,9 @@ PageInput::PageInput(MainWindow* main_window)
 #endif
 #if SSR_USE_JACK
 		m_checkbox_jack_connect_system_capture = new QCheckBox(tr("Connect system capture"));
+		m_checkbox_jack_connect_system_capture->setToolTip(tr("If checked, the ports will be automatically connected to the system capture ports."));
 		m_checkbox_jack_connect_system_playback = new QCheckBox(tr("Connect system playback"));
+		m_checkbox_jack_connect_system_playback->setToolTip(tr("If checked, the ports will be automatically connected to anything that connects to the system playback ports."));
 #endif
 
 		connect(m_checkbox_audio_enable, SIGNAL(clicked()), this, SLOT(OnUpdateAudioFields()));
