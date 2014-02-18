@@ -326,8 +326,18 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../GUI/PageInput.cpp" line="236"/>
+        <source>Record system microphone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../GUI/PageInput.cpp" line="237"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageInput.cpp" line="238"/>
+        <source>Record system speakers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -386,16 +396,6 @@ The ALSA backend will also work on systems that use PulseAudio, but it is better
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="236"/>
-        <source>Record system microphone</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageInput.cpp" line="238"/>
-        <source>Record system speakers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../GUI/PageInput.cpp" line="272"/>
         <source>Back</source>
         <translation type="unfinished"></translation>
@@ -409,6 +409,16 @@ The ALSA backend will also work on systems that use PulseAudio, but it is better
 <context>
     <name>PageOutput</name>
     <message>
+        <location filename="../GUI/PageOutput.cpp" line="59"/>
+        <location filename="../GUI/PageOutput.cpp" line="62"/>
+        <location filename="../GUI/PageOutput.cpp" line="65"/>
+        <location filename="../GUI/PageOutput.cpp" line="68"/>
+        <location filename="../GUI/PageOutput.cpp" line="104"/>
+        <source>files</source>
+        <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../GUI/PageOutput.cpp" line="71"/>
         <location filename="../GUI/PageOutput.cpp" line="77"/>
         <location filename="../GUI/PageOutput.cpp" line="84"/>
@@ -418,16 +428,6 @@ The ALSA backend will also work on systems that use PulseAudio, but it is better
     <message>
         <location filename="../GUI/PageOutput.cpp" line="83"/>
         <source>Uncompressed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="59"/>
-        <location filename="../GUI/PageOutput.cpp" line="62"/>
-        <location filename="../GUI/PageOutput.cpp" line="65"/>
-        <location filename="../GUI/PageOutput.cpp" line="68"/>
-        <location filename="../GUI/PageOutput.cpp" line="104"/>
-        <source>files</source>
-        <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -875,11 +875,6 @@ The program that you are recording will not receive the key press.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="641"/>
-        <source>Error: Could not get the size of the OpenGL application because GLInject has not been started.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../GUI/PageRecord.cpp" line="646"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation type="unfinished"></translation>
@@ -889,6 +884,11 @@ The program that you are recording will not receive the key press.</source>
         <location filename="../GUI/PageRecord.cpp" line="690"/>
         <location filename="../GUI/PageRecord.cpp" line="777"/>
         <source>Error: Something went wrong during initialization.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="641"/>
+        <source>Error: Could not get the size of the OpenGL application because GLInject has not been started.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1153,41 +1153,6 @@ The start button is at the top ;).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="122"/>
-        <source>Error: Image is too small!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="126"/>
-        <source>Error: Image is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectInput.cpp" line="134"/>
-        <source>Error: Image doesn&apos;t fit in memory!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="118"/>
-        <source>Error: Can&apos;t get frame shared memory!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="123"/>
-        <source>Error: Can&apos;t attach to frame shared memory!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="150"/>
-        <source>Full command</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/GLInjectLauncher.cpp" line="158"/>
-        <source>Error: Can&apos;t run command!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="35"/>
         <source>Error: pa_mainloop_prepare failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_prepare&apos;</comment>
@@ -1293,6 +1258,26 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="108"/>
         <location filename="../AV/Input/X11Input.cpp" line="248"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/GLInjectLauncher.cpp" line="118"/>
+        <source>Error: Can&apos;t get frame shared memory!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/GLInjectLauncher.cpp" line="123"/>
+        <source>Error: Can&apos;t attach to frame shared memory!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/GLInjectLauncher.cpp" line="150"/>
+        <source>Full command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/GLInjectLauncher.cpp" line="158"/>
+        <source>Error: Can&apos;t run command!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1515,7 +1500,12 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="371"/>
-        <source>Warning: Not enough audio samples, inserting zeros to keep the audio in sync with the video.</source>
+        <source>Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Synchronizer.cpp" line="466"/>
+        <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1536,11 +1526,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="430"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="466"/>
-        <source>Warning: Received hole in audio stream, inserting zeros to keep the audio in sync with the video.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1725,6 +1710,21 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="255"/>
         <source>Disconnecting port %1 from %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/GLInjectInput.cpp" line="122"/>
+        <source>Error: Image is too small!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/GLInjectInput.cpp" line="126"/>
+        <source>Error: Image is too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/GLInjectInput.cpp" line="134"/>
+        <source>Error: Image doesn&apos;t fit in memory!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

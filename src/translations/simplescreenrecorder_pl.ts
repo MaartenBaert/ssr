@@ -80,15 +80,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Source:</source>
+        <translation type="obsolete">Źródło:</translation>
+    </message>
+    <message>
         <location filename="../GUI/PageInput.cpp" line="838"/>
         <source>Start the OpenGL application automatically</source>
-        <translation>Uruchom aplikację OpenGL automatycznie</translation>
+        <translation type="unfinished">Uruchom aplikację OpenGL automatycznie</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="839"/>
         <source>If checked, the above command will be executed automatically (combined with some environment variables). If not checked,
 you have to start the OpenGL application yourself (the full command, including the required environment variables, is shown in the log).</source>
-        <translation>Po zaznaczeniu powyrzsze polecenie(wraz z kilkoma zmiennymi środowiskowymi) zostanie automatycznie uruchomione.
+        <translation type="unfinished">Po zaznaczeniu powyrzsze polecenie(wraz z kilkoma zmiennymi środowiskowymi) zostanie automatycznie uruchomione.
 Jeśli nie zaznaczone, aplikacja OpenGL będzie musiała byc uruchomiona oddzielnie(kompletne polecenie wraz z zmiennymi środowiskowymi można znaleźć w logu).</translation>
     </message>
     <message>
@@ -108,7 +112,7 @@ Dotyczy to również użytkowników zalogowanych zdalnie (ssh). Zaleca się jedy
     <message>
         <location filename="../GUI/PageInput.cpp" line="847"/>
         <source>Maximum image size (megapixels):</source>
-        <translation>Maksymalny rozmiar obrazu (w megapikselach):</translation>
+        <translation type="unfinished">Maksymalny rozmiar obrazu (w megapikselach):</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="849"/>
@@ -116,7 +120,7 @@ Dotyczy to również użytkowników zalogowanych zdalnie (ssh). Zaleca się jedy
 The size of the shared memory can&apos;t be changed anymore once the program has been started, so if the program you
 are trying to record is too large, recording won&apos;t work. 2 megapixels should be enough in almost all cases. Be careful,
 high values will use a lot of memory!</source>
-        <translation>Ta opcja zmienia rozmiar pamięci współdzielonej jak będzie zarezerwowana do przesyłania klatek do głównego programu.
+        <translation type="unfinished">Ta opcja zmienia rozmiar pamięci współdzielonej jak będzie zarezerwowana do przesyłania klatek do głównego programu.
 Po uruchomieniu aplikacji nie będzie możliwości zmiany tego parametru. Jeśli nagrywany program jest zbyt duży nagrywanie
 nie będzie działało. 2 megapiksele powinny wystarczyć w większości przypadków.
 Durze wartości będą zajmowały większa ilości pamięci!</translation>
@@ -124,13 +128,13 @@ Durze wartości będą zajmowały większa ilości pamięci!</translation>
     <message>
         <location filename="../GUI/PageInput.cpp" line="853"/>
         <source>Capture front buffer instead of back buffer</source>
-        <translation>Przechwytuj z przedniego bufora</translation>
+        <translation type="unfinished">Przechwytuj z przedniego bufora</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="854"/>
         <source>If checked, the injected library will read the front buffer (the frame that&apos;s currently on the screen) rather than the back buffer
 (the new frame). This may be useful for some special applications that draw directly to the screen.</source>
-        <translation>Po zaznaczeniu wstrzyknięta biblioteka będzie czytała z przedniego bufora (aktualnie wyświetlana klatka) zamiast tylnego bufora
+        <translation type="unfinished">Po zaznaczeniu wstrzyknięta biblioteka będzie czytała z przedniego bufora (aktualnie wyświetlana klatka) zamiast tylnego bufora
 (następna klatka). Przydatne dla aplikacji rysujących bezpośrednio na ekranie.</translation>
     </message>
     <message>
@@ -450,7 +454,7 @@ Podsystem ALSA bęzie również działał na systemach które korzystaja z Pulse
         <location filename="../GUI/PageOutput.cpp" line="104"/>
         <source>files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation>pliki</translation>
+        <translation type="unfinished">pliki</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="138"/>
@@ -932,7 +936,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="641"/>
         <source>Error: Could not get the size of the OpenGL application because GLInject has not been started.</source>
-        <translation>Błąd: Nie udało się przechwycić rozmiaru aplikacji OpenGL ponieważ GLInject nie został uruchomiony.</translation>
+        <translation type="unfinished">Błąd: Nie udało się przechwycić rozmiaru aplikacji OpenGL ponieważ GLInject nie został uruchomiony.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="646"/>
@@ -949,7 +953,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="753"/>
         <source>Error: Could not create a GLInject input because GLInject has not been started.</source>
-        <translation>Błąd: Nie udało się stworzyć wejścia GLInject ponieważ GLInject nie został uruchomiony.</translation>
+        <translation type="unfinished">Błąd: Nie udało się stworzyć wejścia GLInject ponieważ GLInject nie został uruchomiony.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="875"/>
@@ -1242,37 +1246,37 @@ Przycisk start jest na górze ;).</translation>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="122"/>
         <source>Error: Image is too small!</source>
-        <translation>Błąd: Obraz jest zbyt mały!</translation>
+        <translation type="unfinished">Błąd: Obraz jest zbyt mały!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="126"/>
         <source>Error: Image is too large!</source>
-        <translation>Błąd: Obraz jest zbyt durzy!</translation>
+        <translation type="unfinished">Błąd: Obraz jest zbyt durzy!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="134"/>
         <source>Error: Image doesn&apos;t fit in memory!</source>
-        <translation>Błąd: Obraz nie mieści się w pamięci!</translation>
+        <translation type="unfinished">Błąd: Obraz nie mieści się w pamięci!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="118"/>
         <source>Error: Can&apos;t get frame shared memory!</source>
-        <translation>Błąd: Nie ma dostępu do pamieci wspułdzielonej klatki!</translation>
+        <translation type="unfinished">Błąd: Nie ma dostępu do pamieci wspułdzielonej klatki!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="123"/>
         <source>Error: Can&apos;t attach to frame shared memory!</source>
-        <translation>Błąd: Nie można połączyć się z pamiecią wspułdzieloną klatki!</translation>
+        <translation type="unfinished">Błąd: Nie można połączyć się z pamiecią wspułdzieloną klatki!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="150"/>
         <source>Full command</source>
-        <translation>Całe polecenie</translation>
+        <translation type="unfinished">Całe polecenie</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectLauncher.cpp" line="158"/>
         <source>Error: Can&apos;t run command!</source>
-        <translation>Błąd: nie można wykonać polecenia!</translation>
+        <translation type="unfinished">Błąd: nie można wykonać polecenia!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="35"/>
@@ -1605,7 +1609,12 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="371"/>
-        <source>Warning: Not enough audio samples, inserting zeros to keep the audio in sync with the video.</source>
+        <source>Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Synchronizer.cpp" line="466"/>
+        <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1627,11 +1636,6 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <location filename="../AV/Output/Synchronizer.cpp" line="430"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
         <translation>Uwaga: Przepełniono bufor audio, rozpoczęto kolejny segment by utrzymać audio w synchronizacji z wideo (część wideo i/lub audio może zostać utracone). Wejscie wideo wygląda na zbyt wolne.</translation>
-    </message>
-    <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="466"/>
-        <source>Warning: Received hole in audio stream, inserting zeros to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Warning: Desynchronization is too high, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).</source>

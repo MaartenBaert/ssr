@@ -60,6 +60,10 @@
 &lt;p&gt;Als je Steam-spellen wil opnemen, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;lees dan eerst dit&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Launch application</source>
+        <translation type="obsolete">Start applicatie</translation>
+    </message>
+    <message>
         <location filename="../GUI/PageInput.cpp" line="830"/>
         <source>Command:</source>
         <translation>Commando:</translation>
@@ -78,6 +82,54 @@
         <location filename="../GUI/PageInput.cpp" line="836"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
         <translation>Het commando zal worden uitgevoerd in deze map. Als je dit leeglaat, dan wordt de werkmap niet veranderd.</translation>
+    </message>
+    <message>
+        <source>Launch automatically</source>
+        <translation type="obsolete">Start automatisch</translation>
+    </message>
+    <message>
+        <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
+        <translation type="obsolete">Indien aangevinkt zal de applicatie automatisch gestart worden zodra je naar de opnamepagina gaat. Indien niet aangevinkt moet de applicatie manueel gestart worden.</translation>
+    </message>
+    <message>
+        <source>Launch now</source>
+        <translation type="obsolete">Start nu</translation>
+    </message>
+    <message>
+        <source>Select stream</source>
+        <translation type="obsolete">Selecteer stream</translation>
+    </message>
+    <message>
+        <source>Active streams:</source>
+        <translation type="obsolete">Actieve streams:</translation>
+    </message>
+    <message>
+        <source>Record newest stream that matches:</source>
+        <translation type="obsolete">Neem nieuwste stream op die overeenkomt met:</translation>
+    </message>
+    <message>
+        <source>User:</source>
+        <translation type="obsolete">Gebruiker:</translation>
+    </message>
+    <message>
+        <source>Process:</source>
+        <translation type="obsolete">Proces:</translation>
+    </message>
+    <message>
+        <source>Source:</source>
+        <translation type="obsolete">Bron:</translation>
+    </message>
+    <message>
+        <source>Program name:</source>
+        <translation type="obsolete">Programmanaam:</translation>
+    </message>
+    <message>
+        <source>Error: Could not create stream watcher!</source>
+        <translation type="obsolete">Fout: Kan geen stream watcher maken!</translation>
+    </message>
+    <message>
+        <source>Error: Could not update streams!</source>
+        <translation type="obsolete">Fout: Kan streams niet updaten!</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="838"/>
@@ -1589,8 +1641,17 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="371"/>
-        <source>Warning: Not enough audio samples, inserting zeros to keep the audio in sync with the video.</source>
+        <source>Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</source>
         <translation>Waarschuwing: Niet genoeg audiosamples, voeg stilte in om audio synchroon met de video te houden.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Synchronizer.cpp" line="466"/>
+        <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
+        <translation>Waarschuwing: Ontving gat in audiostream, voeg stilte in om audio synchroon met de video te houden.</translation>
+    </message>
+    <message>
+        <source>Warning: Not enough audio samples, inserting zeros to keep the audio in sync with the video.</source>
+        <translation type="obsolete">Waarschuwing: Niet genoeg audiosamples, voeg stilte in om audio synchroon met de video te houden.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="396"/>
@@ -1613,9 +1674,8 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
         <translation>Waarschuwing: Audio buffer overflow, begin een nieuw segment om de audio synchroon met de video te houden (sommige video en/of audio kan verloren gaan). De video-input lijkt te traag te zijn.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="466"/>
         <source>Warning: Received hole in audio stream, inserting zeros to keep the audio in sync with the video.</source>
-        <translation>Waarschuwing: Ontving gat in audiostream, voeg stilte in om audio synchroon met de video te houden.</translation>
+        <translation type="obsolete">Waarschuwing: Ontving gat in audiostream, voeg stilte in om audio synchroon met de video te houden.</translation>
     </message>
     <message>
         <source>Warning: Desynchronization is too high, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).</source>
