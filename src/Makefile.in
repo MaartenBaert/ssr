@@ -596,6 +596,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	Version.h
 
 
+########## Qt resource system ##########
+
 ########## Qt meta object compiler ##########
 @ENABLE_SSRPROGRAM_TRUE@nodist_simplescreenrecorder_SOURCES =  \
 @ENABLE_SSRPROGRAM_TRUE@	qrc_resources.cpp moc_X11Input.cpp \
@@ -608,6 +610,13 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageRecord.cpp moc_PageWelcome.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_VideoPreviewer.cpp
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDADD = $(am__append_13)
+@ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = translations/simplescreenrecorder_de.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_es.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_it.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_nl.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_pl.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_pt_BR.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_zh_CN.ts
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_CPPFLAGS = $(simplescreenrecorder_CPPFLAGS)
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_CFLAGS = $(simplescreenrecorder_CFLAGS) -msse2
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_CXXFLAGS = $(simplescreenrecorder_CXXFLAGS) -msse2
@@ -623,16 +632,6 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@	AV/FastScaler_Convert_SSSE3.cpp \
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@	AV/FastScaler_Scale_SSSE3.cpp
 
-
-########## Qt resource system ##########
-@ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = resources.qrc \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_de.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_es.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_it.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_nl.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_pl.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_pt_BR.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_zh_CN.ts
 
 ########## Qt translation system ##########
 @ENABLE_SSRPROGRAM_TRUE@translationsdir = $(pkgdatadir)/translations
@@ -1964,17 +1963,10 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 	uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 
 
-@ENABLE_SSRPROGRAM_TRUE@qrc_resources.cpp: $(srcdir)/resources.qrc \
-@ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/img/header.png \
-@ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/img/icon-ssr.png \
-@ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/img/icon-ssr-recording.png \
-@ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/about.htm
-@ENABLE_SSRPROGRAM_TRUE@	$(SED) "s|%DATADIR%|$(top_srcdir)/data|" "$(srcdir)/resources.qrc" > "resources_generated.qrc"
-@ENABLE_SSRPROGRAM_TRUE@	$(RCC) -name resources "resources_generated.qrc" -o "qrc_resources.cpp"
-
-@ENABLE_SSRPROGRAM_TRUE@clean-qrc-extra:
-@ENABLE_SSRPROGRAM_TRUE@	rm -f "resources_generated.qrc"
-@ENABLE_SSRPROGRAM_TRUE@	rm -f "qrc_resources.cpp"
+@ENABLE_SSRPROGRAM_TRUE@qrc_resources.cpp: $(top_srcdir)/data/resources/resources.qrc \
+@ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/resources/about.htm \
+@ENABLE_SSRPROGRAM_TRUE@		$(top_srcdir)/data/resources/header.png
+@ENABLE_SSRPROGRAM_TRUE@	$(RCC) -name "resources" -o "qrc_resources.cpp" "$(top_srcdir)/data/resources/resources.qrc"
 
 @ENABLE_SSRPROGRAM_TRUE@moc_X11Input.cpp: $(srcdir)/AV/Input/X11Input.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"

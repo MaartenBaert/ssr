@@ -1,0 +1,6 @@
+<RCC>
+	<qresource prefix="/">
+		<file>header.png</file>
+		<file>about.htm</file>
+	</qresource>
+</RCC>

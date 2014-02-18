@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=SimpleScreenRecorder
+Comment=A feature-rich screen recorder that supports X11 and OpenGL
 Icon=simplescreenrecorder
 Exec=simplescreenrecorder --logfile
 Terminal=false

@@ -140,6 +140,8 @@ simplescreenrecorder_SOURCES = \
 nodist_simplescreenrecorder_SOURCES =
 simplescreenrecorder_LDADD =
 
+EXTRA_DIST =
+
 ########## x86-specific targets ##########
 
 if ENABLE_X86_ASM
@@ -166,23 +168,13 @@ endif
 
 ########## Qt resource system ##########
 
-EXTRA_DIST = \
-	resources.qrc
-
 nodist_simplescreenrecorder_SOURCES += \
 	qrc_resources.cpp
 
-qrc_resources.cpp: $(srcdir)/resources.qrc \
-		$(top_srcdir)/data/img/header.png \
-		$(top_srcdir)/data/img/icon-ssr.png \
-		$(top_srcdir)/data/img/icon-ssr-recording.png \
-		$(top_srcdir)/data/about.htm
-	$(SED) "s|%DATADIR%|$(top_srcdir)/data|" "$(srcdir)/resources.qrc" > "resources_generated.qrc"
-	$(RCC) -name resources "resources_generated.qrc" -o "qrc_resources.cpp"
-
-clean-qrc-extra:
-	rm -f "resources_generated.qrc"
-	rm -f "qrc_resources.cpp"
+qrc_resources.cpp: $(top_srcdir)/data/resources/resources.qrc \
+		$(top_srcdir)/data/resources/about.htm \
+		$(top_srcdir)/data/resources/header.png
+	$(RCC) -name "resources" -o "qrc_resources.cpp" "$(top_srcdir)/data/resources/resources.qrc"
 
 ########## Qt meta object compiler ##########
 
