@@ -636,13 +636,13 @@ void PageOutput::OnBrowse() {
 void PageOutput::OnContinue() {
 	QString file = GetFile();
 	if(file.isEmpty()) {
-		MessageBox(QMessageBox::Critical, this, MainWindow::WINDOW_CAPTION, tr("You did not select an output file!"), QMessageBox::Ok);
+		MessageBox(QMessageBox::Critical, this, MainWindow::WINDOW_CAPTION, tr("You did not select an output file!"), BUTTON_OK, BUTTON_OK);
 		return;
 	}
 	if(GetFileProtocol().isNull() && !GetSeparateFiles() && QFileInfo(file).exists()) {
 		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 					  tr("The file '%1' already exists. Are you sure that you want to overwrite it?").arg(QFileInfo(file).fileName()),
-					  QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+					  BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
 			return;
 		}
 	}

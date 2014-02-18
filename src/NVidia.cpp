@@ -17,4 +17,29 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-extern const char SSR_VERSION[];
+#include "NVidia.h"
+
+bool NVidiaDetectFlipping() {
+	QString program = "nvidia-settings";
+	QStringList args;
+	args << "-tq" << "AllowFlipping";
+	QProcess p;
+	p.start(program, args);
+	p.waitForFinished();
+	if(p.exitCode() != 0)
+		return false;
+	QString result = p.readAll();
+	return (result.trimmed() == "1");
+}
+
+bool NVidiaDisableFlipping() {
+	QString program = "nvidia-settings";
+	QStringList args;
+	args << "-a" << "AllowFlipping=0";
+	QProcess p;
+	p.start(program, args);
+	p.waitForFinished();
+	if(p.exitCode() != 0)
+		return false;
+	return !NVidiaDetectFlipping();
+}

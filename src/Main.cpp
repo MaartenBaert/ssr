@@ -22,7 +22,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Icons.h"
 #include "Logger.h"
-#include "Dialogs.h"
 #include "MainWindow.h"
 
 #include "Version.h"
@@ -175,20 +174,6 @@ int main(int argc, char* argv[]) {
 		dup2(fileno(f), 2); // redirect stderr
 	}
 
-	// warning for glitch with proprietary NVIDIA drivers
-	if(DetectNVIDIAFlipping()) {
-		if(MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION,
-					  MainWindow::tr("SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. "
-									 "This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?\n\n"
-									 "You can also change this option manually in the NVIDIA control panel.", "Don't translate 'flipping' unless NVIDIA does the same"),
-					  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
-			if(!DisableNVIDIAFlipping()) {
-				MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION, MainWindow::tr("I couldn't disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.",
-																								  "Don't translate 'flipping' unless NVIDIA does the same"), QMessageBox::Ok);
-			}
-		}
-	}
-
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");
 	Logger::LogInfo(GetVersionInfo());
 	int ret;
@@ -226,29 +211,4 @@ QString GetVersionInfo() {
 			"libavcodec: header " + av_version(LIBAVCODEC_VERSION_INT) + ", lib " + av_version(avcodec_version()) + "\n"
 			"libavutil: header " + av_version(LIBAVUTIL_VERSION_INT) + ", lib " + av_version(avutil_version()) + "\n"
 			"libswscale: header " + av_version(LIBSWSCALE_VERSION_INT) + ", lib " + av_version(swscale_version());
-}
-
-bool DetectNVIDIAFlipping() {
-	QString program = "nvidia-settings";
-	QStringList args;
-	args << "-tq" << "AllowFlipping";
-	QProcess p;
-	p.start(program, args);
-	p.waitForFinished();
-	if(p.exitCode() != 0)
-		return false;
-	QString result = p.readAll();
-	return (result.trimmed() == "1");
-}
-
-bool DisableNVIDIAFlipping() {
-	QString program = "nvidia-settings";
-	QStringList args;
-	args << "-a" << "AllowFlipping=0";
-	QProcess p;
-	p.start(program, args);
-	p.waitForFinished();
-	if(p.exitCode() != 0)
-		return false;
-	return !DetectNVIDIAFlipping();
 }

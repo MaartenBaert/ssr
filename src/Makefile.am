@@ -135,6 +135,8 @@ simplescreenrecorder_SOURCES = \
 	Global.h \
 	Main.cpp \
 	Main.h \
+	NVidia.cpp \
+	NVidia.h \
 	Version.cpp \
 	Version.h
 nodist_simplescreenrecorder_SOURCES =

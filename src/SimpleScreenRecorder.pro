@@ -54,7 +54,8 @@ SOURCES += \
 	GUI/PageWelcome.cpp \
 	GUI/VideoPreviewer.cpp \
 	Main.cpp \
-	Version.cpp
+	Version.cpp \
+    NVidia.cpp
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
@@ -102,7 +103,8 @@ HEADERS  += \
 	GUI/VideoPreviewer.h \
 	Global.h \
 	Main.h \
-	Version.h
+	Version.h \
+    NVidia.h
 
 RESOURCES += \
 	resources.qrc

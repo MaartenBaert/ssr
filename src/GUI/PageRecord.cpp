@@ -363,7 +363,7 @@ bool PageRecord::ShouldBlockClose() {
 	if(m_output_manager != NULL) {
 		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 					  tr("You have not saved the current recording yet, if you quit now it will be lost.\n"
-						 "Are you sure that you want to quit?"), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+						 "Are you sure that you want to quit?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
 			return true;
 		}
 	}
@@ -964,7 +964,7 @@ void PageRecord::OnCancel() {
 		return;
 	if(m_output_manager != NULL) {
 		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to cancel this recording?"),
-					  QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+					  BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
 			return;
 		}
 	}
@@ -977,7 +977,7 @@ void PageRecord::OnSave() {
 		return;
 	if(!m_recorded_something) {
 		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;)."),
-				   QMessageBox::Ok);
+				   BUTTON_OK, BUTTON_OK);
 		return;
 	}
 	StopPage(true);

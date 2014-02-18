@@ -17,4 +17,8 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-extern const char SSR_VERSION[];
+#pragma once
+#include "Global.h"
+
+bool NVidiaDetectFlipping();
+bool NVidiaDisableFlipping();

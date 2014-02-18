@@ -29,5 +29,5 @@ extern bool g_option_start_hidden;
 QString GetApplicationUserDir();
 QString GetVersionInfo();
 
-bool DetectNVIDIAFlipping();
-bool DisableNVIDIAFlipping();
+bool NVidiaDetectFlipping();
+bool NVidiaDisableFlipping();
