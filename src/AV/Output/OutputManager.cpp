@@ -62,6 +62,8 @@ void OutputManager::Free(bool save) {
 
 	// stop the synchronizer
 	if(m_synchronizer != NULL) {
+		if(save)
+			m_synchronizer->NewSegment();
 		delete m_synchronizer;
 		m_synchronizer = NULL;
 	}
