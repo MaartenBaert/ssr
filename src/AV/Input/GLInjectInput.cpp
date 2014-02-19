@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2014 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
