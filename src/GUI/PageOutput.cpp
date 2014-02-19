@@ -154,8 +154,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		QPushButton *button_browse = new QPushButton(tr("Browse..."), groupbox_file);
 		m_checkbox_separate_files = new QCheckBox(tr("Separate file per segment"), groupbox_file);
 		m_checkbox_separate_files->setToolTip(tr("If checked, a separate video file will be created every time you pause and resume the recording.\n"
-												 "If the original file name is 'test.mkv', the segments will be saved as 'test-0001.mkv', 'test-0002.mkv', ...\n"
-												 "File names that exist already will be skipped."));
+												 "If the original file name is 'test.mkv', the segments will be saved as 'test-YYYY-MM-DD_HH.MM.SS.mkv'."));
 		QLabel *label_container = new QLabel(tr("Container:"), groupbox_file);
 		m_combobox_container = new QComboBox(groupbox_file);
 		for(unsigned int i = 0; i < CONTAINER_COUNT; ++i) {

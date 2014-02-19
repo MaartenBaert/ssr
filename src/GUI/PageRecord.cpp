@@ -56,7 +56,7 @@ static QString GetNewSegmentFile(const QString& file) {
 	unsigned int counter = 0;
 	do {
 		++counter;
-		newfile = fi.path() + "/" + fi.completeBaseName() + "-" + now.toString("yyyy-MM-dd-hh:mm:ss");
+		newfile = fi.path() + "/" + fi.completeBaseName() + "-" + now.toString("yyyy-MM-dd_hh.mm.ss");
 		if(counter != 1)
 			newfile += "-(" + QString::number(counter) + ")";
 		if(!fi.suffix().isEmpty())
