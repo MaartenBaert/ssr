@@ -13,35 +13,35 @@ iconscalabledir = $(datadir)/icons/hicolor/scalable/apps
 dist_desktop_DATA = \
 	simplescreenrecorder.desktop
 
-nodist_icon16_DATA = \
+dist_icon16_DATA = \
 	icons/16/simplescreenrecorder.png \
 	icons/16/simplescreenrecorder-paused.png \
 	icons/16/simplescreenrecorder-recording.png
-nodist_icon22_DATA = \
+dist_icon22_DATA = \
 	icons/22/simplescreenrecorder.png \
 	icons/22/simplescreenrecorder-paused.png \
 	icons/22/simplescreenrecorder-recording.png
-nodist_icon24_DATA = \
+dist_icon24_DATA = \
 	icons/24/simplescreenrecorder.png \
 	icons/24/simplescreenrecorder-paused.png \
 	icons/24/simplescreenrecorder-recording.png
-nodist_icon32_DATA = \
+dist_icon32_DATA = \
 	icons/32/simplescreenrecorder.png \
 	icons/32/simplescreenrecorder-paused.png \
 	icons/32/simplescreenrecorder-recording.png
-nodist_icon48_DATA = \
+dist_icon48_DATA = \
 	icons/48/simplescreenrecorder.png \
 	icons/48/simplescreenrecorder-paused.png \
 	icons/48/simplescreenrecorder-recording.png
-nodist_icon64_DATA = \
+dist_icon64_DATA = \
 	icons/64/simplescreenrecorder.png \
 	icons/64/simplescreenrecorder-paused.png \
 	icons/64/simplescreenrecorder-recording.png
-nodist_icon96_DATA = \
+dist_icon96_DATA = \
 	icons/96/simplescreenrecorder.png \
 	icons/96/simplescreenrecorder-paused.png \
 	icons/96/simplescreenrecorder-recording.png
-nodist_iconscalable_DATA = \
+dist_iconscalable_DATA = \
 	icons/scalable/simplescreenrecorder.svg \
 	icons/scalable/simplescreenrecorder-paused.svg \
 	icons/scalable/simplescreenrecorder-recording.svg
