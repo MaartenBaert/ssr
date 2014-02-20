@@ -264,7 +264,7 @@ void Muxer::MuxerThread() {
 			double oldest_pts = std::numeric_limits<double>::max();
 			for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 				StreamLock lock(&m_stream_data[i]);
-				if(!lock->m_is_done) {
+				if(!lock->m_is_done || !lock->m_packet_queue.empty()) {
 					double pts = ToDouble(m_format_context->streams[i]->pts) * ToDouble(m_format_context->streams[i]->time_base);
 					if(pts < oldest_pts) {
 						oldest_stream = i;
