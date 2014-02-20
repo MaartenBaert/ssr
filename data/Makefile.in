@@ -80,7 +80,11 @@ build_triplet = @build@
 host_triplet = @host@
 subdir = data
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(am__dist_desktop_DATA_DIST)
+	$(am__dist_desktop_DATA_DIST) $(am__dist_icon16_DATA_DIST) \
+	$(am__dist_icon22_DATA_DIST) $(am__dist_icon24_DATA_DIST) \
+	$(am__dist_icon32_DATA_DIST) $(am__dist_icon48_DATA_DIST) \
+	$(am__dist_icon64_DATA_DIST) $(am__dist_icon96_DATA_DIST) \
+	$(am__dist_iconscalable_DATA_DIST)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -144,11 +148,35 @@ am__installdirs = "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icon16dir)" \
 	"$(DESTDIR)$(icon32dir)" "$(DESTDIR)$(icon48dir)" \
 	"$(DESTDIR)$(icon64dir)" "$(DESTDIR)$(icon96dir)" \
 	"$(DESTDIR)$(iconscalabledir)"
-DATA = $(dist_desktop_DATA) $(nodist_icon16_DATA) \
-	$(nodist_icon22_DATA) $(nodist_icon24_DATA) \
-	$(nodist_icon32_DATA) $(nodist_icon48_DATA) \
-	$(nodist_icon64_DATA) $(nodist_icon96_DATA) \
-	$(nodist_iconscalable_DATA)
+am__dist_icon16_DATA_DIST = icons/16/simplescreenrecorder.png \
+	icons/16/simplescreenrecorder-paused.png \
+	icons/16/simplescreenrecorder-recording.png
+am__dist_icon22_DATA_DIST = icons/22/simplescreenrecorder.png \
+	icons/22/simplescreenrecorder-paused.png \
+	icons/22/simplescreenrecorder-recording.png
+am__dist_icon24_DATA_DIST = icons/24/simplescreenrecorder.png \
+	icons/24/simplescreenrecorder-paused.png \
+	icons/24/simplescreenrecorder-recording.png
+am__dist_icon32_DATA_DIST = icons/32/simplescreenrecorder.png \
+	icons/32/simplescreenrecorder-paused.png \
+	icons/32/simplescreenrecorder-recording.png
+am__dist_icon48_DATA_DIST = icons/48/simplescreenrecorder.png \
+	icons/48/simplescreenrecorder-paused.png \
+	icons/48/simplescreenrecorder-recording.png
+am__dist_icon64_DATA_DIST = icons/64/simplescreenrecorder.png \
+	icons/64/simplescreenrecorder-paused.png \
+	icons/64/simplescreenrecorder-recording.png
+am__dist_icon96_DATA_DIST = icons/96/simplescreenrecorder.png \
+	icons/96/simplescreenrecorder-paused.png \
+	icons/96/simplescreenrecorder-recording.png
+am__dist_iconscalable_DATA_DIST =  \
+	icons/scalable/simplescreenrecorder.svg \
+	icons/scalable/simplescreenrecorder-paused.svg \
+	icons/scalable/simplescreenrecorder-recording.svg
+DATA = $(dist_desktop_DATA) $(dist_icon16_DATA) $(dist_icon22_DATA) \
+	$(dist_icon24_DATA) $(dist_icon32_DATA) $(dist_icon48_DATA) \
+	$(dist_icon64_DATA) $(dist_icon96_DATA) \
+	$(dist_iconscalable_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -294,42 +322,42 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@dist_desktop_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder.desktop
 
-@ENABLE_SSRPROGRAM_TRUE@nodist_icon16_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@dist_icon16_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/16/simplescreenrecorder.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/16/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/16/simplescreenrecorder-recording.png
 
-@ENABLE_SSRPROGRAM_TRUE@nodist_icon22_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@dist_icon22_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/22/simplescreenrecorder.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/22/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/22/simplescreenrecorder-recording.png
 
-@ENABLE_SSRPROGRAM_TRUE@nodist_icon24_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@dist_icon24_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/24/simplescreenrecorder.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/24/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/24/simplescreenrecorder-recording.png
 
-@ENABLE_SSRPROGRAM_TRUE@nodist_icon32_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@dist_icon32_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/32/simplescreenrecorder.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/32/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/32/simplescreenrecorder-recording.png
 
-@ENABLE_SSRPROGRAM_TRUE@nodist_icon48_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@dist_icon48_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/48/simplescreenrecorder.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/48/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/48/simplescreenrecorder-recording.png
 
-@ENABLE_SSRPROGRAM_TRUE@nodist_icon64_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@dist_icon64_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/64/simplescreenrecorder.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/64/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/64/simplescreenrecorder-recording.png
 
-@ENABLE_SSRPROGRAM_TRUE@nodist_icon96_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@dist_icon96_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/96/simplescreenrecorder.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/96/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/96/simplescreenrecorder-recording.png
 
-@ENABLE_SSRPROGRAM_TRUE@nodist_iconscalable_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@dist_iconscalable_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder.svg \
 @ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder-paused.svg \
 @ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder-recording.svg
@@ -401,9 +429,9 @@ uninstall-dist_desktopDATA:
 	@list='$(dist_desktop_DATA)'; test -n "$(desktopdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(desktopdir)'; $(am__uninstall_files_from_dir)
-install-nodist_icon16DATA: $(nodist_icon16_DATA)
+install-dist_icon16DATA: $(dist_icon16_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(nodist_icon16_DATA)'; test -n "$(icon16dir)" || list=; \
+	@list='$(dist_icon16_DATA)'; test -n "$(icon16dir)" || list=; \
 	if test -n "$$list"; then \
 	  echo " $(MKDIR_P) '$(DESTDIR)$(icon16dir)'"; \
 	  $(MKDIR_P) "$(DESTDIR)$(icon16dir)" || exit 1; \
@@ -417,14 +445,14 @@ install-nodist_icon16DATA: $(nodist_icon16_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(icon16dir)" || exit $$?; \
 	done
 
-uninstall-nodist_icon16DATA:
+uninstall-dist_icon16DATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nodist_icon16_DATA)'; test -n "$(icon16dir)" || list=; \
+	@list='$(dist_icon16_DATA)'; test -n "$(icon16dir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(icon16dir)'; $(am__uninstall_files_from_dir)
-install-nodist_icon22DATA: $(nodist_icon22_DATA)
+install-dist_icon22DATA: $(dist_icon22_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(nodist_icon22_DATA)'; test -n "$(icon22dir)" || list=; \
+	@list='$(dist_icon22_DATA)'; test -n "$(icon22dir)" || list=; \
 	if test -n "$$list"; then \
 	  echo " $(MKDIR_P) '$(DESTDIR)$(icon22dir)'"; \
 	  $(MKDIR_P) "$(DESTDIR)$(icon22dir)" || exit 1; \
@@ -438,14 +466,14 @@ install-nodist_icon22DATA: $(nodist_icon22_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(icon22dir)" || exit $$?; \
 	done
 
-uninstall-nodist_icon22DATA:
+uninstall-dist_icon22DATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nodist_icon22_DATA)'; test -n "$(icon22dir)" || list=; \
+	@list='$(dist_icon22_DATA)'; test -n "$(icon22dir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(icon22dir)'; $(am__uninstall_files_from_dir)
-install-nodist_icon24DATA: $(nodist_icon24_DATA)
+install-dist_icon24DATA: $(dist_icon24_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(nodist_icon24_DATA)'; test -n "$(icon24dir)" || list=; \
+	@list='$(dist_icon24_DATA)'; test -n "$(icon24dir)" || list=; \
 	if test -n "$$list"; then \
 	  echo " $(MKDIR_P) '$(DESTDIR)$(icon24dir)'"; \
 	  $(MKDIR_P) "$(DESTDIR)$(icon24dir)" || exit 1; \
@@ -459,14 +487,14 @@ install-nodist_icon24DATA: $(nodist_icon24_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(icon24dir)" || exit $$?; \
 	done
 
-uninstall-nodist_icon24DATA:
+uninstall-dist_icon24DATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nodist_icon24_DATA)'; test -n "$(icon24dir)" || list=; \
+	@list='$(dist_icon24_DATA)'; test -n "$(icon24dir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(icon24dir)'; $(am__uninstall_files_from_dir)
-install-nodist_icon32DATA: $(nodist_icon32_DATA)
+install-dist_icon32DATA: $(dist_icon32_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(nodist_icon32_DATA)'; test -n "$(icon32dir)" || list=; \
+	@list='$(dist_icon32_DATA)'; test -n "$(icon32dir)" || list=; \
 	if test -n "$$list"; then \
 	  echo " $(MKDIR_P) '$(DESTDIR)$(icon32dir)'"; \
 	  $(MKDIR_P) "$(DESTDIR)$(icon32dir)" || exit 1; \
@@ -480,14 +508,14 @@ install-nodist_icon32DATA: $(nodist_icon32_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(icon32dir)" || exit $$?; \
 	done
 
-uninstall-nodist_icon32DATA:
+uninstall-dist_icon32DATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nodist_icon32_DATA)'; test -n "$(icon32dir)" || list=; \
+	@list='$(dist_icon32_DATA)'; test -n "$(icon32dir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(icon32dir)'; $(am__uninstall_files_from_dir)
-install-nodist_icon48DATA: $(nodist_icon48_DATA)
+install-dist_icon48DATA: $(dist_icon48_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(nodist_icon48_DATA)'; test -n "$(icon48dir)" || list=; \
+	@list='$(dist_icon48_DATA)'; test -n "$(icon48dir)" || list=; \
 	if test -n "$$list"; then \
 	  echo " $(MKDIR_P) '$(DESTDIR)$(icon48dir)'"; \
 	  $(MKDIR_P) "$(DESTDIR)$(icon48dir)" || exit 1; \
@@ -501,14 +529,14 @@ install-nodist_icon48DATA: $(nodist_icon48_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(icon48dir)" || exit $$?; \
 	done
 
-uninstall-nodist_icon48DATA:
+uninstall-dist_icon48DATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nodist_icon48_DATA)'; test -n "$(icon48dir)" || list=; \
+	@list='$(dist_icon48_DATA)'; test -n "$(icon48dir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(icon48dir)'; $(am__uninstall_files_from_dir)
-install-nodist_icon64DATA: $(nodist_icon64_DATA)
+install-dist_icon64DATA: $(dist_icon64_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(nodist_icon64_DATA)'; test -n "$(icon64dir)" || list=; \
+	@list='$(dist_icon64_DATA)'; test -n "$(icon64dir)" || list=; \
 	if test -n "$$list"; then \
 	  echo " $(MKDIR_P) '$(DESTDIR)$(icon64dir)'"; \
 	  $(MKDIR_P) "$(DESTDIR)$(icon64dir)" || exit 1; \
@@ -522,14 +550,14 @@ install-nodist_icon64DATA: $(nodist_icon64_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(icon64dir)" || exit $$?; \
 	done
 
-uninstall-nodist_icon64DATA:
+uninstall-dist_icon64DATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nodist_icon64_DATA)'; test -n "$(icon64dir)" || list=; \
+	@list='$(dist_icon64_DATA)'; test -n "$(icon64dir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(icon64dir)'; $(am__uninstall_files_from_dir)
-install-nodist_icon96DATA: $(nodist_icon96_DATA)
+install-dist_icon96DATA: $(dist_icon96_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(nodist_icon96_DATA)'; test -n "$(icon96dir)" || list=; \
+	@list='$(dist_icon96_DATA)'; test -n "$(icon96dir)" || list=; \
 	if test -n "$$list"; then \
 	  echo " $(MKDIR_P) '$(DESTDIR)$(icon96dir)'"; \
 	  $(MKDIR_P) "$(DESTDIR)$(icon96dir)" || exit 1; \
@@ -543,14 +571,14 @@ install-nodist_icon96DATA: $(nodist_icon96_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(icon96dir)" || exit $$?; \
 	done
 
-uninstall-nodist_icon96DATA:
+uninstall-dist_icon96DATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nodist_icon96_DATA)'; test -n "$(icon96dir)" || list=; \
+	@list='$(dist_icon96_DATA)'; test -n "$(icon96dir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(icon96dir)'; $(am__uninstall_files_from_dir)
-install-nodist_iconscalableDATA: $(nodist_iconscalable_DATA)
+install-dist_iconscalableDATA: $(dist_iconscalable_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(nodist_iconscalable_DATA)'; test -n "$(iconscalabledir)" || list=; \
+	@list='$(dist_iconscalable_DATA)'; test -n "$(iconscalabledir)" || list=; \
 	if test -n "$$list"; then \
 	  echo " $(MKDIR_P) '$(DESTDIR)$(iconscalabledir)'"; \
 	  $(MKDIR_P) "$(DESTDIR)$(iconscalabledir)" || exit 1; \
@@ -564,9 +592,9 @@ install-nodist_iconscalableDATA: $(nodist_iconscalable_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(iconscalabledir)" || exit $$?; \
 	done
 
-uninstall-nodist_iconscalableDATA:
+uninstall-dist_iconscalableDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nodist_iconscalable_DATA)'; test -n "$(iconscalabledir)" || list=; \
+	@list='$(dist_iconscalable_DATA)'; test -n "$(iconscalabledir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(iconscalabledir)'; $(am__uninstall_files_from_dir)
 tags TAGS:
@@ -663,11 +691,11 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_desktopDATA install-nodist_icon16DATA \
-	install-nodist_icon22DATA install-nodist_icon24DATA \
-	install-nodist_icon32DATA install-nodist_icon48DATA \
-	install-nodist_icon64DATA install-nodist_icon96DATA \
-	install-nodist_iconscalableDATA
+install-data-am: install-dist_desktopDATA install-dist_icon16DATA \
+	install-dist_icon22DATA install-dist_icon24DATA \
+	install-dist_icon32DATA install-dist_icon48DATA \
+	install-dist_icon64DATA install-dist_icon96DATA \
+	install-dist_iconscalableDATA
 
 install-dvi: install-dvi-am
 
@@ -711,11 +739,11 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_desktopDATA uninstall-nodist_icon16DATA \
-	uninstall-nodist_icon22DATA uninstall-nodist_icon24DATA \
-	uninstall-nodist_icon32DATA uninstall-nodist_icon48DATA \
-	uninstall-nodist_icon64DATA uninstall-nodist_icon96DATA \
-	uninstall-nodist_iconscalableDATA
+uninstall-am: uninstall-dist_desktopDATA uninstall-dist_icon16DATA \
+	uninstall-dist_icon22DATA uninstall-dist_icon24DATA \
+	uninstall-dist_icon32DATA uninstall-dist_icon48DATA \
+	uninstall-dist_icon64DATA uninstall-dist_icon96DATA \
+	uninstall-dist_iconscalableDATA
 
 .MAKE: install-am install-strip
 
@@ -723,22 +751,22 @@ uninstall-am: uninstall-dist_desktopDATA uninstall-nodist_icon16DATA \
 	cscopelist-am ctags-am distclean distclean-generic \
 	distclean-libtool distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am \
-	install-dist_desktopDATA install-dvi install-dvi-am \
+	install-dist_desktopDATA install-dist_icon16DATA \
+	install-dist_icon22DATA install-dist_icon24DATA \
+	install-dist_icon32DATA install-dist_icon48DATA \
+	install-dist_icon64DATA install-dist_icon96DATA \
+	install-dist_iconscalableDATA install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man \
-	install-nodist_icon16DATA install-nodist_icon22DATA \
-	install-nodist_icon24DATA install-nodist_icon32DATA \
-	install-nodist_icon48DATA install-nodist_icon64DATA \
-	install-nodist_icon96DATA install-nodist_iconscalableDATA \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags-am uninstall uninstall-am uninstall-dist_desktopDATA \
-	uninstall-nodist_icon16DATA uninstall-nodist_icon22DATA \
-	uninstall-nodist_icon24DATA uninstall-nodist_icon32DATA \
-	uninstall-nodist_icon48DATA uninstall-nodist_icon64DATA \
-	uninstall-nodist_icon96DATA uninstall-nodist_iconscalableDATA
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
+	uninstall-am uninstall-dist_desktopDATA \
+	uninstall-dist_icon16DATA uninstall-dist_icon22DATA \
+	uninstall-dist_icon24DATA uninstall-dist_icon32DATA \
+	uninstall-dist_icon48DATA uninstall-dist_icon64DATA \
+	uninstall-dist_icon96DATA uninstall-dist_iconscalableDATA
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

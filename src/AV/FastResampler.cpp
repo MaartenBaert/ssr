@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2014 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -123,11 +123,11 @@ unsigned int FastResampler::Resample(double resample_ratio, double drift_ratio, 
 
 	// check the resampling ratio
 	if(resample_ratio < 1.0e-3 || resample_ratio > 1.0e3) {
-		Logger::LogError("[FastResampler::Resample] " + QObject::tr("Error: Resample ratio is out of range!"));
+		Logger::LogError("[FastResampler::Resample] " + Logger::tr("Error: Resample ratio is out of range!"));
 		throw ResamplerException();
 	}
 	if(drift_ratio < 1.0e-1 || drift_ratio > 1.0e1) {
-		Logger::LogError("[FastResampler::Resample] " + QObject::tr("Error: Drift ratio is out of range!"));
+		Logger::LogError("[FastResampler::Resample] " + Logger::tr("Error: Drift ratio is out of range!"));
 		throw ResamplerException();
 	}
 
@@ -157,7 +157,7 @@ unsigned int FastResampler::Resample(double resample_ratio, double drift_ratio, 
 
 	// update filter if the resample ratio changes
 	if(m_resample_ratio != resample_ratio) {
-		Logger::LogInfo("[FastResampler::Resample] " + QObject::tr("Resample ratio is %1 (was %2).").arg(resample_ratio, 0, 'f', 4).arg(m_resample_ratio, 0, 'f', 4));
+		Logger::LogInfo("[FastResampler::Resample] " + Logger::tr("Resample ratio is %1 (was %2).").arg(resample_ratio, 0, 'f', 4).arg(m_resample_ratio, 0, 'f', 4));
 		m_resample_ratio = resample_ratio;
 		UpdateFilterCoefficients();
 		ResetResamplerState();

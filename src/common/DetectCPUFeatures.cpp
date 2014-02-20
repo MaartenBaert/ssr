@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2014 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -36,7 +36,7 @@ void DetectCPUFeatures(CPUFeatures* features) {
 	// The meaning of ecx/edx bits are listed in table 3-20 and 3-21 ('Feature Information Returned in the ECX/EDX Register')
 	// from the Intel reference manual (page 589), or in AMD's CPUID reference (they are compatible).
 	memset(features, 0, sizeof(CPUFeatures));
-	QString str = "[DetectCPUFeatures] " + QObject::tr("CPU features") + ":";
+	QString str = "[DetectCPUFeatures] " + Logger::tr("CPU features") + ":";
 
 	unsigned int eax, ebx, ecx, edx;
 	__asm__ __volatile__ ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) : "a" (0));

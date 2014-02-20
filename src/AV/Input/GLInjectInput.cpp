@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2014 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -49,7 +49,7 @@ GLInjectInput::~GLInjectInput() {
 
 	// tell the thread to stop
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[GLInjectInput::~GLInjectInput] " + QObject::tr("Stopping input thread ..."));
+		Logger::LogInfo("[GLInjectInput::~GLInjectInput] " + Logger::tr("Stopping input thread ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}
@@ -173,7 +173,7 @@ void GLInjectInput::StreamRemoveCallback(const SSRVideoStream& stream, size_t po
 void GLInjectInput::InputThread() {
 	try {
 
-		Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Input thread started."));
+		Logger::LogInfo("[GLInjectInput::InputThread] " + Logger::tr("Input thread started."));
 
 		// deal with pre-existing streams
 		{
@@ -225,13 +225,13 @@ void GLInjectInput::InputThread() {
 
 		}
 
-		Logger::LogInfo("[GLInjectInput::InputThread] " + QObject::tr("Input thread stopped."));
+		Logger::LogInfo("[GLInjectInput::InputThread] " + Logger::tr("Input thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError("[GLInjectInput::InputThread] " + QObject::tr("Exception '%1' in input thread.").arg(e.what()));
+		Logger::LogError("[GLInjectInput::InputThread] " + Logger::tr("Exception '%1' in input thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[GLInjectInput::InputThread] " + QObject::tr("Unknown exception in input thread."));
+		Logger::LogError("[GLInjectInput::InputThread] " + Logger::tr("Unknown exception in input thread."));
 	}
 }

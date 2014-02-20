@@ -20,16 +20,5 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-// Buttons that can be used with the MessageBox function.
-enum enum_button : int {
-	BUTTON_NONE       = 0x0000,
-	BUTTON_OK         = 0x0001,
-	BUTTON_CANCEL     = 0x0002,
-	BUTTON_YES        = 0x0004,
-	BUTTON_YES_ALWAYS = 0x0008,
-	BUTTON_NO         = 0x0010,
-	BUTTON_NO_NEVER   = 0x0020,
-};
-
-// Shows a standard Qt dialog with translated buttons.
-enum_button MessageBox(QMessageBox::Icon icon, QWidget* parent, const QString& title, const QString& text, int buttons = BUTTON_OK, enum_button default_button = BUTTON_NONE);
+bool NVidiaDetectFlipping();
+bool NVidiaDisableFlipping();

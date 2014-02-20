@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2014 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -29,5 +29,5 @@ extern bool g_option_start_hidden;
 QString GetApplicationUserDir();
 QString GetVersionInfo();
 
-bool DetectNVIDIAFlipping();
-bool DisableNVIDIAFlipping();
+bool NVidiaDetectFlipping();
+bool NVidiaDisableFlipping();

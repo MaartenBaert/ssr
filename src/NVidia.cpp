@@ -17,19 +17,29 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-#include "Global.h"
+#include "NVidia.h"
 
-// Buttons that can be used with the MessageBox function.
-enum enum_button : int {
-	BUTTON_NONE       = 0x0000,
-	BUTTON_OK         = 0x0001,
-	BUTTON_CANCEL     = 0x0002,
-	BUTTON_YES        = 0x0004,
-	BUTTON_YES_ALWAYS = 0x0008,
-	BUTTON_NO         = 0x0010,
-	BUTTON_NO_NEVER   = 0x0020,
-};
+bool NVidiaDetectFlipping() {
+	QString program = "nvidia-settings";
+	QStringList args;
+	args << "-tq" << "AllowFlipping";
+	QProcess p;
+	p.start(program, args);
+	p.waitForFinished();
+	if(p.exitCode() != 0)
+		return false;
+	QString result = p.readAll();
+	return (result.trimmed() == "1");
+}
 
-// Shows a standard Qt dialog with translated buttons.
-enum_button MessageBox(QMessageBox::Icon icon, QWidget* parent, const QString& title, const QString& text, int buttons = BUTTON_OK, enum_button default_button = BUTTON_NONE);
+bool NVidiaDisableFlipping() {
+	QString program = "nvidia-settings";
+	QStringList args;
+	args << "-a" << "AllowFlipping=0";
+	QProcess p;
+	p.start(program, args);
+	p.waitForFinished();
+	if(p.exitCode() != 0)
+		return false;
+	return !NVidiaDetectFlipping();
+}

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2014 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -62,6 +62,8 @@ void OutputManager::Free(bool save) {
 
 	// stop the synchronizer
 	if(m_synchronizer != NULL) {
+		if(save)
+			m_synchronizer->NewSegment();
 		delete m_synchronizer;
 		m_synchronizer = NULL;
 	}

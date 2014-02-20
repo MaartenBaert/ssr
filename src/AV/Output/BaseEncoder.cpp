@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2014 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -30,7 +30,7 @@ int ParseCodecOptionInt(const QString& key, const QString& value, int min, int m
 	if(parse_int) {
 		return clamp(value_int, min, max) * multiply;
 	} else {
-		Logger::LogWarning("[ParseCodecOptionInt] " + QObject::tr("Error: Option '%1' could not be parsed!").arg(key));
+		Logger::LogWarning("[ParseCodecOptionInt] " + Logger::tr("Error: Option '%1' could not be parsed!").arg(key));
 		return fail;
 	}
 }
@@ -70,7 +70,7 @@ void BaseEncoder::Destruct() {
 	// tell the thread to stop
 	// normally the muxer should have stopped the thread already, unless the muxer wasn't actually started
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[BaseEncoder::Stop] " + QObject::tr("Stopping encoder thread ..."));
+		Logger::LogInfo("[BaseEncoder::Stop] " + Logger::tr("Stopping encoder thread ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}
@@ -90,12 +90,12 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 	// get the codec we want
 	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
 	if(codec == NULL) {
-		Logger::LogError("[BaseEncoder::CreateCodec] " + QObject::tr("Error: Can't find codec!"));
+		Logger::LogError("[BaseEncoder::CreateCodec] " + Logger::tr("Error: Can't find codec!"));
 		throw LibavException();
 	}
 	m_delayed_packets = ((codec->capabilities & CODEC_CAP_DELAY) != 0);
 
-	Logger::LogInfo("[BaseEncoder::CreateCodec] " + QObject::tr("Using codec %1 (%2).").arg(codec->name).arg(codec->long_name));
+	Logger::LogInfo("[BaseEncoder::CreateCodec] " + Logger::tr("Using codec %1 (%2).").arg(codec->name).arg(codec->long_name));
 
 	// create stream and get codec context
 	AVStream *stream = m_muxer->CreateStream(codec);
@@ -104,7 +104,7 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 
 	// if the codec is experimental, allow it
 	if(codec->capabilities & CODEC_CAP_EXPERIMENTAL) {
-		Logger::LogWarning("[BaseEncoder::CreateCodec] " + QObject::tr("Warning: This codec is considered experimental by libav/ffmpeg."));
+		Logger::LogWarning("[BaseEncoder::CreateCodec] " + Logger::tr("Warning: This codec is considered experimental by libav/ffmpeg."));
 		m_codec_context->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
 	}
 
@@ -114,7 +114,7 @@ void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options)
 
 	// open codec
 	if(avcodec_open2(m_codec_context, codec, options) < 0) {
-		Logger::LogError("[BaseEncoder::CreateCodec] " + QObject::tr("Error: Can't open codec!"));
+		Logger::LogError("[BaseEncoder::CreateCodec] " + Logger::tr("Error: Can't open codec!"));
 		throw LibavException();
 	}
 
@@ -168,7 +168,7 @@ void BaseEncoder::EncoderThread() {
 
 	try {
 
-		Logger::LogInfo("[BaseEncoder::EncoderThread] " + QObject::tr("Encoder thread started."));
+		Logger::LogInfo("[BaseEncoder::EncoderThread] " + Logger::tr("Encoder thread started."));
 
 		// normal encoding
 		while(!m_should_stop) {
@@ -197,21 +197,21 @@ void BaseEncoder::EncoderThread() {
 
 		// flush the encoder
 		if(!m_should_stop && m_delayed_packets) {
-			Logger::LogInfo("[BaseEncoder::EncoderThread] " + QObject::tr("Flushing encoder ..."));
+			Logger::LogInfo("[BaseEncoder::EncoderThread] " + Logger::tr("Flushing encoder ..."));
 			while(!m_should_stop && EncodeFrame(NULL));
 		}
 
 		// tell the others that we're done
 		m_is_done = true;
 
-		Logger::LogInfo("[BaseEncoder::EncoderThread] " + QObject::tr("Encoder thread stopped."));
+		Logger::LogInfo("[BaseEncoder::EncoderThread] " + Logger::tr("Encoder thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError("[BaseEncoder::EncoderThread] " + QObject::tr("Exception '%1' in encoder thread.").arg(e.what()));
+		Logger::LogError("[BaseEncoder::EncoderThread] " + Logger::tr("Exception '%1' in encoder thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[BaseEncoder::EncoderThread] " + QObject::tr("Unknown exception in encoder thread."));
+		Logger::LogError("[BaseEncoder::EncoderThread] " + Logger::tr("Unknown exception in encoder thread."));
 	}
 
 	// always end the stream, even if there was an error, otherwise the muxer will wait forever

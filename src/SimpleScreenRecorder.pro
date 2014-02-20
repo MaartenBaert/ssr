@@ -56,13 +56,15 @@ SOURCES += \
 	GUI/PageWelcome.cpp \
 	GUI/VideoPreviewer.cpp \
 	Main.cpp \
-	Version.cpp
+	Version.cpp \
+    NVidia.cpp
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
 	AV/Input/GLInjectInput.h \
 	AV/Input/JACKInput.h \
 	AV/Input/PulseAudioInput.h \
+    AV/Input/SSRVideoStream.h \
 	AV/Input/SSRVideoStreamReader.h \
 	AV/Input/SSRVideoStreamWatcher.h \
 	AV/Input/X11Input.h \
@@ -107,7 +109,7 @@ HEADERS  += \
 	Global.h \
 	Main.h \
 	Version.h \
-    AV/Input/SSRVideoStream.h
+    NVidia.h
 
 RESOURCES += \
 	resources.qrc

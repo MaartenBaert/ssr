@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2014 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -801,7 +801,7 @@ void PageInput::OnContinue() {
 	if(GetVideoArea() == VIDEO_AREA_GLINJECT && GetGLInjectCommand().isEmpty()) {
 		MessageBox(QMessageBox::Critical, this, MainWindow::WINDOW_CAPTION,
 				   tr("You did not enter a command to start the OpenGL application that you want to record.\n"
-					  "Click the 'OpenGL settings' button and enter a command."), QMessageBox::Ok);
+					  "Click the 'OpenGL settings' button and enter a command."), BUTTON_OK, BUTTON_OK);
 		return;
 	}
 	m_main_window->GoPageOutput();
