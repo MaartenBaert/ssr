@@ -83,7 +83,7 @@ void SSRVideoStreamWriter::Init() {
 		throw SSRStreamException();
 	}
 
-	// lock
+	// lock the file while we initialize it
 	if(flock(m_fd_main, LOCK_EX) == -1) {
 		GLINJECT_PRINT("Error: Can't lock video stream file!");
 		throw SSRStreamException();
@@ -196,7 +196,6 @@ void SSRVideoStreamWriter::UpdateSize(unsigned int width, unsigned int height, i
 		GLInjectHeader *header = GetGLInjectHeader();
 		header->current_width = m_width;
 		header->current_height = m_height;
-		std::atomic_thread_fence(std::memory_order_release);
 	}
 	m_stride = stride;
 }
@@ -206,10 +205,8 @@ void* SSRVideoStreamWriter::NewFrame(unsigned int* flags) {
 	// increment the frame counter
 	GLInjectHeader *header = GetGLInjectHeader();
 	++header->frame_counter;
-	std::atomic_thread_fence(std::memory_order_release);
 
 	// get capture parameters
-	std::atomic_thread_fence(std::memory_order_acquire);
 	*flags = header->capture_flags;
 	if(!(*flags & GLINJECT_FLAG_CAPTURE_ENABLED))
 		return NULL;
@@ -287,6 +284,5 @@ void SSRVideoStreamWriter::NextFrame() {
 	// go to the next frame
 	GLInjectHeader *header = GetGLInjectHeader();
 	header->ring_buffer_write_pos = (header->ring_buffer_write_pos + 1) % (GLINJECT_RING_BUFFER_SIZE * 2);
-	std::atomic_thread_fence(std::memory_order_release);
 
 }

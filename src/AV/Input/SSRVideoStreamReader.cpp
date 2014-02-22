@@ -71,20 +71,40 @@ void SSRVideoStreamReader::Init() {
 		throw SSRStreamException();
 	}
 
-	// lock
-	if(flock(m_fd_main, LOCK_EX | LOCK_NB) == -1) {
-		Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Can't lock video stream file!"));
-		throw SSRStreamException();
-	}
+	// try to load the file
+	// this could fail if the file hasn't been initialized yet (very unlikely), so we may have to try multiple times
+	//TODO// check initialization later?
+	unsigned int load_attempts = 0;
+	for( ; ; ) {
 
-	// check main file size
-	m_mmap_size_main = (sizeof(GLInjectHeader) + GLINJECT_RING_BUFFER_SIZE * sizeof(GLInjectFrameInfo) + m_page_size - 1) / m_page_size * m_page_size;
-	{
-		struct stat statinfo;
-		if(fstat(m_fd_main, &statinfo) == -1 || (size_t) statinfo.st_size != m_mmap_size_main) {
-			Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Size of video stream file is incorrect!"));
+		// lock the file as long as it's open (this guarantees that it's fully initialized and won't be opened a second time)
+		if(flock(m_fd_main, LOCK_EX | LOCK_NB) == -1) {
+			++load_attempts;
+			if(load_attempts < 20) {
+				usleep(10000);
+				continue;
+			}
+			Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Can't lock video stream file!"));
 			throw SSRStreamException();
 		}
+
+		// check main file size
+		m_mmap_size_main = (sizeof(GLInjectHeader) + GLINJECT_RING_BUFFER_SIZE * sizeof(GLInjectFrameInfo) + m_page_size - 1) / m_page_size * m_page_size;
+		{
+			struct stat statinfo;
+			if(fstat(m_fd_main, &statinfo) == -1 || (size_t) statinfo.st_size != m_mmap_size_main) {
+				flock(m_fd_main, LOCK_UN);
+				++load_attempts;
+				if(load_attempts < 20) {
+					usleep(10000);
+					continue;
+				}
+				Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Size of video stream file is incorrect!"));
+				throw SSRStreamException();
+			}
+		}
+
+		break;
 	}
 
 	// map main file
@@ -157,14 +177,12 @@ GLInjectFrameInfo* SSRVideoStreamReader::GetGLInjectFrameInfo(unsigned int frame
 
 void SSRVideoStreamReader::GetCurrentSize(unsigned int* width, unsigned int* height) {
 	GLInjectHeader *header = GetGLInjectHeader();
-	std::atomic_thread_fence(std::memory_order_acquire);
 	*width = header->current_width;
 	*height = header->current_height;
 }
 
 double SSRVideoStreamReader::GetFPS() {
 	GLInjectHeader *header = GetGLInjectHeader();
-	std::atomic_thread_fence(std::memory_order_acquire);
 	int64_t timestamp = hrt_time_micro();
 	uint32_t frame_counter = header->frame_counter;
 	unsigned int time = timestamp - m_info_last_timestamp;
@@ -178,21 +196,17 @@ void SSRVideoStreamReader::ChangeCaptureParameters(unsigned int flags, unsigned 
 	GLInjectHeader *header = GetGLInjectHeader();
 	header->capture_flags = flags;
 	header->capture_target_fps = target_fps;
-	std::atomic_thread_fence(std::memory_order_release);
 }
 
 void SSRVideoStreamReader::Clear() {
 	GLInjectHeader *header = GetGLInjectHeader();
-	std::atomic_thread_fence(std::memory_order_acquire);
 	header->ring_buffer_read_pos = header->ring_buffer_write_pos;
-	std::atomic_thread_fence(std::memory_order_release);
 }
 
 void* SSRVideoStreamReader::GetFrame(int64_t* timestamp, unsigned int* width, unsigned int* height, int* stride) {
 
 	// make sure that at least one frame is available
 	GLInjectHeader *header = GetGLInjectHeader();
-	std::atomic_thread_fence(std::memory_order_acquire);
 	unsigned int read_pos = header->ring_buffer_read_pos;
 	unsigned int write_pos = header->ring_buffer_write_pos;
 	if(read_pos == write_pos)
@@ -255,12 +269,12 @@ void* SSRVideoStreamReader::GetFrame(int64_t* timestamp, unsigned int* width, un
 void SSRVideoStreamReader::NextFrame() {
 
 	// tell the compiler that it should read the entire frame before continuing
-	// this is essentially a 'load-store' fence, which should be provided by both acquire and release fences
-	std::atomic_thread_fence(std::memory_order_release);
+	// This is essentially a 'load-store' fence, which should be provided by both acquire and release fences,
+	// but I'm not completely sure so let's use both just to be safe.
+	std::atomic_thread_fence(std::memory_order_acq_rel);
 
 	// go to the next frame
 	GLInjectHeader *header = GetGLInjectHeader();
 	header->ring_buffer_read_pos = (header->ring_buffer_read_pos + 1) % (GLINJECT_RING_BUFFER_SIZE * 2);
-	std::atomic_thread_fence(std::memory_order_release);
 
 }
