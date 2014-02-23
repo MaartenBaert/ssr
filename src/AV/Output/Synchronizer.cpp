@@ -379,7 +379,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 																 audiolock->m_temp_input_buffer.GetData(), n, &audiolock->m_temp_output_buffer, sample_count_out);
 
 		// recalculate drift
-		current_drift = ((double) audiolock->m_samples_written + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
+		current_drift = ((double) (audiolock->m_samples_written + sample_count_out) + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
 				- (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
 
 	}
