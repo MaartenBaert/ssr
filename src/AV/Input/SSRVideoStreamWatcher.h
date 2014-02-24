@@ -29,14 +29,15 @@ public:
 	typedef void (*RemoveCallback)(const SSRVideoStream&, size_t, void*);
 
 private:
-	std::string m_shm_dir;
+	std::string m_channel_directory;
+	bool m_relax_permissions;
 
 	int m_fd_notify;
 
 	std::vector<SSRVideoStream> m_streams;
 
 public:
-	SSRVideoStreamWatcher();
+	SSRVideoStreamWatcher(const std::string& channel, bool relax_permissions);
 	~SSRVideoStreamWatcher();
 
 private:

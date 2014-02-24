@@ -28,8 +28,9 @@ class AudioPreviewer : public QWidget, public AudioSink {
 
 private:
 	struct SharedData {
-		float m_current_low[2], m_current_high[2];
-		float m_next_low[2], m_next_high[2];
+		float m_current_peak[2], m_current_rms[2];
+		float m_next_peak[2], m_next_rms[2];
+		unsigned int m_next_samples;
 		int64_t m_next_frame_time;
 		bool m_is_visible;
 		unsigned int m_frame_rate;
@@ -55,8 +56,8 @@ public:
 	// This function is thread-safe.
 	virtual void ReadAudioSamples(unsigned int channels, unsigned int sample_rate, AVSampleFormat format, unsigned int sample_count, const uint8_t* data, int64_t timestamp) override;
 
-	virtual QSize minimumSizeHint() const override { return QSize(100, 17); }
-	virtual QSize sizeHint() const override { return QSize(100, 17); }
+	virtual QSize minimumSizeHint() const override { return QSize(100, 21); }
+	virtual QSize sizeHint() const override { return QSize(100, 21); }
 
 protected:
 	virtual void showEvent(QShowEvent* event) override;

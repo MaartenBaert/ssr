@@ -447,11 +447,12 @@ void PageRecord::StartPage() {
 #endif
 
 	// get the glinject settings
-	m_glinject_match_user = page_input->GetGLInjectMatchUser();
-	m_glinject_match_process = page_input->GetGLInjectMatchProcess();
-	m_glinject_match_source = page_input->GetGLInjectMatchSource();
-	m_glinject_match_program_name = page_input->GetGLInjectMatchProgramName();
-	m_glinject_limit_fps = page_input->GetGLInjectLimitFPS();
+	QString glinject_channel = page_input->GetGLInjectChannel();
+	bool glinject_relax_permissions = page_input->GetGLInjectRelaxPermissions();
+	QString glinject_command = page_input->GetGLInjectCommand();
+	QString glinject_working_directory = page_input->GetGLInjectWorkingDirectory();
+	bool glinject_auto_launch = page_input->GetGLInjectAutoLaunch();
+	bool glinject_limit_fps = page_input->GetGLInjectLimitFPS();
 
 	// get file settings
 	m_file_base = page_output->GetFile();
@@ -521,9 +522,11 @@ void PageRecord::StartPage() {
 	try {
 
 		// for OpenGL recording, create the input now
-		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
-			m_gl_inject_input.reset(new GLInjectInput(m_glinject_match_user, m_glinject_match_process, m_glinject_match_source, m_glinject_match_program_name,
-													  m_video_record_cursor, m_glinject_limit_fps, m_video_frame_rate));
+		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
+			if(glinject_auto_launch)
+				GLInjectInput::LaunchApplication(glinject_channel, glinject_relax_permissions, glinject_command, glinject_working_directory);
+			m_gl_inject_input.reset(new GLInjectInput(glinject_channel, glinject_relax_permissions, m_video_record_cursor, glinject_limit_fps, m_video_frame_rate));
+		}
 
 #if SSR_USE_JACK
 		if(m_audio_enabled) {

@@ -36,7 +36,7 @@ private:
 
 private:
 	SSRVideoStream m_stream;
-	std::string m_filename_main;
+	std::string m_channel_directory, m_filename_main;
 	size_t m_page_size;
 
 	int64_t m_info_last_timestamp;
@@ -49,7 +49,7 @@ private:
 	FrameData m_frame_data[GLINJECT_RING_BUFFER_SIZE];
 
 public:
-	SSRVideoStreamReader(const SSRVideoStream& stream);
+	SSRVideoStreamReader(const std::string& channel, const SSRVideoStream& stream);
 	~SSRVideoStreamReader();
 
 private:

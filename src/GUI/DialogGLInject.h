@@ -34,27 +34,20 @@ private:
 	std::unique_ptr<SSRVideoStreamWatcher> m_stream_watcher;
 	std::vector<QTreeWidgetItem*> m_streams;
 
+	QLineEdit *m_lineedit_channel;
+	QCheckBox *m_checkbox_relax_permissions;
+
 	QLineEdit *m_lineedit_command, *m_lineedit_working_directory;
-	QCheckBox *m_checkbox_relax_permissions, *m_checkbox_auto_launch;
+	QCheckBox *m_checkbox_auto_launch;
 
-	QTreeWidget *m_treewidget_streams;
-	QLineEdit *m_lineedit_match_user, *m_lineedit_match_process, *m_lineedit_match_source, *m_lineedit_match_program_name;
 	QCheckBox *m_checkbox_limit_fps;
-
-	QTimer *m_timer_update_streams;
 
 public:
 	DialogGLInject(PageInput* parent);
 	~DialogGLInject();
 
-private:
-	static void StreamAddCallback(const SSRVideoStream& stream, void* userdata);
-	static void StreamRemoveCallback(const SSRVideoStream& stream, size_t pos, void* userdata);
-
 private slots:
 	void OnWriteBack();
 	void OnLaunchNow();
-
-	void OnUpdateStreams();
 
 };

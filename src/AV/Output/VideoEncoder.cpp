@@ -136,12 +136,12 @@ int64_t VideoEncoder::GetFrameDelay() {
 	int64_t interval = 0;
 	size_t frames = GetQueuedFrameCount();
 	if(frames > THROTTLE_THRESHOLD_FRAMES) {
-		int64_t n = (frames - THROTTLE_THRESHOLD_FRAMES) * 1000 / THROTTLE_THRESHOLD_FRAMES;
+		int64_t n = (frames - THROTTLE_THRESHOLD_FRAMES) * 200 / THROTTLE_THRESHOLD_FRAMES;
 		interval += n * n;
 	}
 	size_t packets = GetMuxer()->GetQueuedPacketCount(GetStreamIndex());
 	if(packets > THROTTLE_THRESHOLD_PACKETS) {
-		int64_t n = (packets - THROTTLE_THRESHOLD_PACKETS) * 1000 / THROTTLE_THRESHOLD_PACKETS;
+		int64_t n = (packets - THROTTLE_THRESHOLD_PACKETS) * 200 / THROTTLE_THRESHOLD_PACKETS;
 		interval += n * n;
 	}
 	if(interval > 1000000)

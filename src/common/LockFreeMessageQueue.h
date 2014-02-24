@@ -73,6 +73,7 @@ public:
 	}
 
 	inline char* PrepareWriteMessage(unsigned int size) {
+		std::atomic_thread_fence(std::memory_order_acquire);
 		unsigned int r = m_read_pos, w = m_write_pos;
 		//fprintf(stderr, "PrepareWriteMessage (1) r=%10u w=%10u\n", r, w);
 		if(!IncreaseWritePos(r, w, sizeof(unsigned int), m_buffer_size))
@@ -88,9 +89,11 @@ public:
 	inline void WriteMessage() {
 		std::atomic_thread_fence(std::memory_order_release);
 		m_write_pos = m_write_pos_next;
+		std::atomic_thread_fence(std::memory_order_release);
 	}
 
 	inline char* PrepareReadMessage(unsigned int* size) {
+		std::atomic_thread_fence(std::memory_order_acquire);
 		unsigned int r = m_read_pos, w = m_write_pos;
 		//fprintf(stderr, "PrepareReadMessage (1) r=%10u w=%10u\n", r, w);
 		if(!IncreaseReadPos(r, w, sizeof(unsigned int), m_buffer_size))
@@ -107,6 +110,7 @@ public:
 	inline void ReadMessage() {
 		std::atomic_thread_fence(std::memory_order_acq_rel);
 		m_read_pos = m_read_pos_next;
+		std::atomic_thread_fence(std::memory_order_release);
 	}
 
 };

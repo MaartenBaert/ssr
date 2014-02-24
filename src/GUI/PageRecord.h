@@ -72,8 +72,6 @@ private:
 #if SSR_USE_PULSEAUDIO
 	QString m_pulseaudio_source;
 #endif
-	QString m_glinject_match_user, m_glinject_match_process, m_glinject_match_source, m_glinject_match_program_name;
-	bool m_glinject_limit_fps;
 
 	OutputSettings m_output_settings;
 	std::unique_ptr<OutputManager> m_output_manager;

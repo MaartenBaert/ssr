@@ -136,9 +136,9 @@ void GLXFrameGrabber::Init() {
 
 	// enable debugging?
 	{
-		char *ssr_glx_debug = getenv("SSR_GLX_DEBUG");
+		const char *ssr_glx_debug = getenv("SSR_GLX_DEBUG");
 		if(ssr_glx_debug != NULL && atoi(ssr_glx_debug) > 0) {
-			GLINJECT_PRINT("[GLXFrameGrabber " << m_id << "] GLX debugging enabled");
+			GLINJECT_PRINT("[GLXFrameGrabber " << m_id << "] GLX debugging enabled.");
 			m_debug = true;
 		} else {
 			m_debug = false;
@@ -158,9 +158,13 @@ void GLXFrameGrabber::Init() {
 
 	// create stream writer
 	{
-		std::ostringstream ss;
-		ss << "glx" << std::setw(4) << std::setfill('0') << m_id;
-		m_stream_writer = new SSRVideoStreamWriter(ss.str());
+		std::string channel;
+		const char *ssr_channel = getenv("SSR_CHANNEL");
+		if(ssr_channel != NULL)
+			channel = ssr_channel;
+		std::ostringstream source;
+		source << "glx" << std::setw(4) << std::setfill('0') << m_id;
+		m_stream_writer = new SSRVideoStreamWriter(channel, source.str());
 	}
 
 }

@@ -30,7 +30,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 static bool SSRVideoStreamParse(const std::string& name, SSRVideoStream* stream) {
 
 	// check the prefix
-	std::string prefix = "ssr-video-";
+	std::string prefix = "video-";
 	if(name.compare(0, prefix.length(), prefix) != 0)
 		return false;
 
@@ -59,9 +59,10 @@ static bool SSRVideoStreamParse(const std::string& name, SSRVideoStream* stream)
 	return true;
 }
 
-SSRVideoStreamWatcher::SSRVideoStreamWatcher() {
+SSRVideoStreamWatcher::SSRVideoStreamWatcher(const std::string& channel, bool relax_permissions) {
 
-	m_shm_dir = "/dev/shm";
+	m_channel_directory = "/dev/shm/ssr-" + channel;
+	m_relax_permissions = relax_permissions;
 
 	m_fd_notify = -1;
 
@@ -80,6 +81,40 @@ SSRVideoStreamWatcher::~SSRVideoStreamWatcher() {
 
 void SSRVideoStreamWatcher::Init() {
 
+	// create channel directory
+	if(mkdir(m_channel_directory.c_str(), (m_relax_permissions)? 0777 : 0700) == -1) {
+
+		// does the directory exist?
+		if(errno != EEXIST) {
+			Logger::LogError("[SSRVideoStreamWatcher::Init] " + QObject::tr("Error: Can't create channel directory!"));
+			throw SSRStreamException();
+		}
+
+		// directory already exists, check ownership and permissions
+		struct stat statinfo;
+		if(lstat(m_channel_directory.c_str(), &statinfo) == -1) {
+			Logger::LogError("[SSRVideoStreamWatcher::Init] " + QObject::tr("Error: Can't stat channel directory!"));
+			throw SSRStreamException();
+		}
+		if(!S_ISDIR(statinfo.st_mode) || S_ISLNK(statinfo.st_mode)) {
+			Logger::LogError("[SSRVideoStreamWatcher::Init] " + QObject::tr("Error: Channel directory is not a regular directory!"));
+			throw SSRStreamException();
+		}
+		if(statinfo.st_uid == geteuid()) {
+			if(chmod(m_channel_directory.c_str(), (m_relax_permissions)? 0777 : 0700) == -1) {
+				Logger::LogError("[SSRVideoStreamWatcher::Init] " + QObject::tr("Error: Can't set channel directory mode!"));
+				throw SSRStreamException();
+			}
+		} else {
+			if(!m_relax_permissions) {
+				Logger::LogError("[SSRVideoStreamWatcher::Init] " + QObject::tr("Error: Channel directory is owned by a different user! "
+																				"Choose a different channel name, or enable relaxed file permissions to use it anyway."));
+				throw SSRStreamException();
+			}
+		}
+
+	}
+
 	// initialize inotify
 	m_fd_notify = inotify_init1(IN_CLOEXEC | IN_NONBLOCK);
 	if(m_fd_notify == -1) {
@@ -88,7 +123,7 @@ void SSRVideoStreamWatcher::Init() {
 	}
 
 	// watch shared memory directory
-	if(inotify_add_watch(m_fd_notify, m_shm_dir.c_str(), IN_CREATE | IN_DELETE) == -1) {
+	if(inotify_add_watch(m_fd_notify, m_channel_directory.c_str(), IN_CREATE | IN_DELETE) == -1) {
 		Logger::LogError("[SSRVideoStreamWatcher::Init] " + QObject::tr("Error: Can't watch shared memory directory!"));
 		throw SSRStreamException();
 	}
@@ -98,7 +133,7 @@ void SSRVideoStreamWatcher::Init() {
 	try {
 
 		// open directory
-		dir = opendir(m_shm_dir.c_str());
+		dir = opendir(m_channel_directory.c_str());
 		if(dir == NULL) {
 			Logger::LogError("[SSRVideoStreamWatcher::Init] " + QObject::tr("Error: Can't open shared memory directory!"));
 			throw SSRStreamException();

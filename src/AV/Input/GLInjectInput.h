@@ -41,7 +41,8 @@ private:
 	static const int64_t MAX_COMMUNICATION_LATENCY;
 
 private:
-	QString m_match_user, m_match_process, m_match_source, m_match_program_name;
+	QString m_channel;
+	bool m_relax_permissions;
 	unsigned int m_flags;
 	unsigned int m_target_fps;
 
@@ -50,7 +51,7 @@ private:
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
-	GLInjectInput(const QString& match_user, const QString& match_process, const QString& match_source, const QString& match_program_name, bool record_cursor, bool limit_fps, unsigned int target_fps);
+	GLInjectInput(const QString& channel, bool relax_permissions, bool record_cursor, bool limit_fps, unsigned int target_fps);
 	~GLInjectInput();
 
 	// Reads the current size of the stream. If the stream hasn't been started yet, this will be 0x0.
@@ -69,7 +70,7 @@ public:
 	// This function is thread-safe.
 	inline bool HasErrorOccurred() { return m_error_occurred; }
 
-	static bool LaunchApplication(const QString &command, const QString &working_directory, bool relax_permissions);
+	static bool LaunchApplication(const QString& channel, bool relax_permissions, const QString& command, const QString& working_directory);
 
 private:
 	void Init();

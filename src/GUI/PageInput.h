@@ -105,8 +105,10 @@ private:
 	std::vector<PulseAudioInput::Source> m_pulseaudio_sources;
 #endif
 
+	QString m_glinject_channel;
+	bool m_glinject_relax_permissions;
 	QString m_glinject_command, m_glinject_working_directory;
-	bool m_glinject_relax_permissions, m_glinject_auto_launch;
+	bool m_glinject_auto_launch;
 	QString m_glinject_match_user, m_glinject_match_process, m_glinject_match_source, m_glinject_match_program_name;
 	bool m_glinject_limit_fps;
 
@@ -174,14 +176,11 @@ public:
 	inline bool GetJackConnectSystemCapture() { return m_checkbox_jack_connect_system_capture->isChecked(); }
 	inline bool GetJackConnectSystemPlayback() { return m_checkbox_jack_connect_system_playback->isChecked(); }
 #endif
+	inline QString GetGLInjectChannel() { return m_glinject_channel; }
+	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
 	inline QString GetGLInjectCommand() { return m_glinject_command; }
 	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
-	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
 	inline bool GetGLInjectAutoLaunch() { return m_glinject_auto_launch; }
-	inline QString GetGLInjectMatchUser() { return m_glinject_match_user; }
-	inline QString GetGLInjectMatchProcess() { return m_glinject_match_process; }
-	inline QString GetGLInjectMatchSource() { return m_glinject_match_source; }
-	inline QString GetGLInjectMatchProgramName() { return m_glinject_match_program_name; }
 	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
 
 	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
@@ -205,14 +204,11 @@ public:
 	inline void SetJackConnectSystemCapture(bool connect) { m_checkbox_jack_connect_system_capture->setChecked(connect); }
 	inline void SetJackConnectSystemPlayback(bool connect) { m_checkbox_jack_connect_system_playback->setChecked(connect); }
 #endif
+	inline void SetGLInjectChannel(const QString& channel) { m_glinject_channel = channel; }
+	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
 	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
 	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
-	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
 	inline void SetGLInjectAutoLaunch(bool auto_launch) { m_glinject_auto_launch = auto_launch; }
-	inline void SetGLInjectMatchUser(const QString& match_user) { m_glinject_match_user = match_user; }
-	inline void SetGLInjectMatchProcess(const QString& match_process) { m_glinject_match_process = match_process; }
-	inline void SetGLInjectMatchSource(const QString& match_source) { m_glinject_match_source = match_source; }
-	inline void SetGLInjectMatchProgramName(const QString& program_name) { m_glinject_match_program_name = program_name; }
 	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
 
 protected:

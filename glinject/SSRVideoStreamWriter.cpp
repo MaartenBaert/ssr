@@ -27,11 +27,12 @@ static std::string GetProgramName() {
 	return path.substr(p + 1);
 }
 
-SSRVideoStreamWriter::SSRVideoStreamWriter(const std::string& source) {
+SSRVideoStreamWriter::SSRVideoStreamWriter(const std::string& channel, const std::string& source) {
 
 	std::string streamname = NumToString(hrt_time_micro()) + "-" + NumToString(geteuid()) + "-" + NumToString(getpid()) + "-" + source + "-" + GetProgramName();
 
-	m_filename_main = "/dev/shm/ssr-video-" + streamname;
+	m_channel_directory = "/dev/shm/ssr-" + ((channel.empty())? "channel-" + GetUserName() : channel);
+	m_filename_main = m_channel_directory + "/video-" + streamname;
 	m_page_size = sysconf(_SC_PAGE_SIZE);
 	m_width = 0;
 	m_height = 0;
@@ -44,7 +45,7 @@ SSRVideoStreamWriter::SSRVideoStreamWriter(const std::string& source) {
 
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
 		FrameData &fd = m_frame_data[i];
-		fd.m_filename_frame = "/dev/shm/ssr-videoframe" + NumToString(i) + "-" + streamname;
+		fd.m_filename_frame = m_channel_directory + "/videoframe" + NumToString(i) + "-" + streamname;
 		fd.m_fd_frame = -1;
 		fd.m_mmap_ptr_frame = MAP_FAILED;
 		fd.m_mmap_size_frame = 0;
@@ -67,25 +68,53 @@ void SSRVideoStreamWriter::Init() {
 
 	GLINJECT_PRINT("[" << m_filename_main << "] Created video stream.");
 
-	int file_mode = 0600;
+	bool relax_permissions = false;
 	{
 		char *ssr_stream_relax_permissions = getenv("SSR_STREAM_RELAX_PERMISSIONS");
 		if(ssr_stream_relax_permissions != NULL && atoi(ssr_stream_relax_permissions) > 0) {
 			GLINJECT_PRINT("Warning: Using relaxed file permissions, any user on this machine will be able to read or manipulate the stream!");
-			file_mode = 0666;
+			relax_permissions = true;
 		}
 	}
 
-	// open main file
-	m_fd_main = open(m_filename_main.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, file_mode);
-	if(m_fd_main == -1) {
-		GLINJECT_PRINT("Error: Can't open video stream file!");
-		throw SSRStreamException();
+	// create channel directory
+	if(mkdir(m_channel_directory.c_str(), (relax_permissions)? 0777 : 0700) == -1) {
+
+		// does the directory exist?
+		if(errno != EEXIST) {
+			GLINJECT_PRINT("Error: Can't create channel directory!");
+			throw SSRStreamException();
+		}
+
+		// directory already exists, check ownership and permissions
+		struct stat statinfo;
+		if(lstat(m_channel_directory.c_str(), &statinfo) == -1) {
+			GLINJECT_PRINT("Error: Can't stat channel directory!");
+			throw SSRStreamException();
+		}
+		if(!S_ISDIR(statinfo.st_mode) || S_ISLNK(statinfo.st_mode)) {
+			GLINJECT_PRINT("Error: Channel directory is not a regular directory!");
+			throw SSRStreamException();
+		}
+		if(statinfo.st_uid == geteuid()) {
+			if(chmod(m_channel_directory.c_str(), (relax_permissions)? 0777 : 0700) == -1) {
+				GLINJECT_PRINT("Error: Can't set channel directory mode!");
+				throw SSRStreamException();
+			}
+		} else {
+			if(!relax_permissions) {
+				GLINJECT_PRINT("Error: Channel directory is owned by a different user! "
+							   "Choose a different channel name, or enable relaxed file permissions to use it anyway.");
+				throw SSRStreamException();
+			}
+		}
+
 	}
 
-	// lock the file while we initialize it
-	if(flock(m_fd_main, LOCK_EX) == -1) {
-		GLINJECT_PRINT("Error: Can't lock video stream file!");
+	// open main file
+	m_fd_main = open(m_filename_main.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, (relax_permissions)? 0666 : 0600);
+	if(m_fd_main == -1) {
+		GLINJECT_PRINT("Error: Can't open video stream file!");
 		throw SSRStreamException();
 	}
 
@@ -106,7 +135,7 @@ void SSRVideoStreamWriter::Init() {
 	// open frame files
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
 		FrameData &fd = m_frame_data[i];
-		fd.m_fd_frame = open(fd.m_filename_frame.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, file_mode);
+		fd.m_fd_frame = open(fd.m_filename_frame.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, (relax_permissions)? 0666 : 0600);
 		if(fd.m_fd_frame == -1) {
 			GLINJECT_PRINT("Error: Can't open video frame file!");
 			throw SSRStreamException();
@@ -115,6 +144,7 @@ void SSRVideoStreamWriter::Init() {
 
 	// initialize header
 	GLInjectHeader *header = GetGLInjectHeader();
+	header->identifier = 0; // will be set later
 	header->ring_buffer_read_pos = 0;
 	header->ring_buffer_write_pos = 0;
 	header->current_width = m_width;
@@ -136,10 +166,9 @@ void SSRVideoStreamWriter::Init() {
 		frameinfo->stride = 0;
 	}
 
+	// set the identifier to indicate that initialization is complete
 	std::atomic_thread_fence(std::memory_order_release);
-
-	// unlock
-	flock(m_fd_main, LOCK_UN);
+	header->identifier = GLINJECT_IDENTIFIER;
 
 }
 
@@ -196,6 +225,7 @@ void SSRVideoStreamWriter::UpdateSize(unsigned int width, unsigned int height, i
 		GLInjectHeader *header = GetGLInjectHeader();
 		header->current_width = m_width;
 		header->current_height = m_height;
+		std::atomic_thread_fence(std::memory_order_release);
 	}
 	m_stride = stride;
 }
@@ -205,8 +235,10 @@ void* SSRVideoStreamWriter::NewFrame(unsigned int* flags) {
 	// increment the frame counter
 	GLInjectHeader *header = GetGLInjectHeader();
 	++header->frame_counter;
+	std::atomic_thread_fence(std::memory_order_release);
 
 	// get capture parameters
+	std::atomic_thread_fence(std::memory_order_acquire);
 	*flags = header->capture_flags;
 	if(!(*flags & GLINJECT_FLAG_CAPTURE_ENABLED))
 		return NULL;
@@ -284,5 +316,6 @@ void SSRVideoStreamWriter::NextFrame() {
 	// go to the next frame
 	GLInjectHeader *header = GetGLInjectHeader();
 	header->ring_buffer_write_pos = (header->ring_buffer_write_pos + 1) % (GLINJECT_RING_BUFFER_SIZE * 2);
+	std::atomic_thread_fence(std::memory_order_release);
 
 }

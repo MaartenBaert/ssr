@@ -22,7 +22,7 @@ private:
 	};
 
 private:
-	std::string m_filename_main;
+	std::string m_channel_directory, m_filename_main;
 	size_t m_page_size;
 	unsigned int m_width, m_height;
 	int m_stride;
@@ -36,7 +36,7 @@ private:
 	FrameData m_frame_data[GLINJECT_RING_BUFFER_SIZE];
 
 public:
-	SSRVideoStreamWriter(const std::string& source);
+	SSRVideoStreamWriter(const std::string& channel, const std::string& source);
 	~SSRVideoStreamWriter();
 
 private:

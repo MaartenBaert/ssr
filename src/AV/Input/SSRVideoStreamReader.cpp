@@ -27,12 +27,13 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/stat.h>
 #include <sys/types.h>
 
-SSRVideoStreamReader::SSRVideoStreamReader(const SSRVideoStream& stream) {
+SSRVideoStreamReader::SSRVideoStreamReader(const std::string &channel, const SSRVideoStream& stream) {
 
 	std::string streamname = NumToString(stream.m_creation_time) + "-" + NumToString(stream.m_user) + "-" + NumToString(stream.m_process) + "-" + stream.m_source + "-" + stream.m_program_name;
 
 	m_stream = stream;
-	m_filename_main = "/dev/shm/ssr-video-" + streamname;
+	m_channel_directory = "/dev/shm/ssr-" + channel;
+	m_filename_main = m_channel_directory + "/video-" + streamname;
 	m_page_size = sysconf(_SC_PAGE_SIZE);
 
 	m_fd_main = -1;
@@ -41,7 +42,7 @@ SSRVideoStreamReader::SSRVideoStreamReader(const SSRVideoStream& stream) {
 
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
 		FrameData &fd = m_frame_data[i];
-		fd.m_filename_frame = "/dev/shm/ssr-videoframe" + NumToString(i) + "-" + streamname;
+		fd.m_filename_frame = m_channel_directory + "/videoframe" + NumToString(i) + "-" + streamname;
 		fd.m_fd_frame = -1;
 		fd.m_mmap_ptr_frame = MAP_FAILED;
 		fd.m_mmap_size_frame = 0;
@@ -71,40 +72,11 @@ void SSRVideoStreamReader::Init() {
 		throw SSRStreamException();
 	}
 
-	// try to load the file
-	// this could fail if the file hasn't been initialized yet (very unlikely), so we may have to try multiple times
-	//TODO// check initialization later?
-	unsigned int load_attempts = 0;
-	for( ; ; ) {
-
-		// lock the file as long as it's open (this guarantees that it's fully initialized and won't be opened a second time)
-		if(flock(m_fd_main, LOCK_EX | LOCK_NB) == -1) {
-			++load_attempts;
-			if(load_attempts < 20) {
-				usleep(10000);
-				continue;
-			}
-			Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Can't lock video stream file!"));
-			throw SSRStreamException();
-		}
-
-		// check main file size
-		m_mmap_size_main = (sizeof(GLInjectHeader) + GLINJECT_RING_BUFFER_SIZE * sizeof(GLInjectFrameInfo) + m_page_size - 1) / m_page_size * m_page_size;
-		{
-			struct stat statinfo;
-			if(fstat(m_fd_main, &statinfo) == -1 || (size_t) statinfo.st_size != m_mmap_size_main) {
-				flock(m_fd_main, LOCK_UN);
-				++load_attempts;
-				if(load_attempts < 20) {
-					usleep(10000);
-					continue;
-				}
-				Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Size of video stream file is incorrect!"));
-				throw SSRStreamException();
-			}
-		}
-
-		break;
+	// resize main file
+	m_mmap_size_main = (sizeof(GLInjectHeader) + GLINJECT_RING_BUFFER_SIZE * sizeof(GLInjectFrameInfo) + m_page_size - 1) / m_page_size * m_page_size;
+	if(ftruncate(m_fd_main, m_mmap_size_main) == -1) {
+		Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Can't resize video stream file!"));
+		throw SSRStreamException();
 	}
 
 	// map main file
@@ -112,6 +84,25 @@ void SSRVideoStreamReader::Init() {
 	if(m_mmap_ptr_main == MAP_FAILED) {
 		Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Can't memory-map video stream file!"));
 		throw SSRStreamException();
+	}
+
+	// wait until the header has been initialized
+	GLInjectHeader *header = GetGLInjectHeader();
+	unsigned int load_attempts = 0;
+	for( ; ; ) {
+
+		std::atomic_thread_fence(std::memory_order_acquire);
+		if(header->identifier == GLINJECT_IDENTIFIER)
+			break;
+
+		++load_attempts;
+		if(load_attempts < 50) {
+			usleep(10000);
+		} else {
+			Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Video stream header has not been initialized!"));
+			throw SSRStreamException();
+		}
+
 	}
 
 	// open frame files
@@ -125,7 +116,6 @@ void SSRVideoStreamReader::Init() {
 	}
 
 	// initialize frame counter
-	GLInjectHeader *header = GetGLInjectHeader();
 	std::atomic_thread_fence(std::memory_order_acquire);
 	m_info_last_timestamp = hrt_time_micro();
 	m_last_frame_counter = header->frame_counter;
@@ -177,6 +167,7 @@ GLInjectFrameInfo* SSRVideoStreamReader::GetGLInjectFrameInfo(unsigned int frame
 
 void SSRVideoStreamReader::GetCurrentSize(unsigned int* width, unsigned int* height) {
 	GLInjectHeader *header = GetGLInjectHeader();
+	std::atomic_thread_fence(std::memory_order_acquire);
 	*width = header->current_width;
 	*height = header->current_height;
 }
@@ -184,6 +175,7 @@ void SSRVideoStreamReader::GetCurrentSize(unsigned int* width, unsigned int* hei
 double SSRVideoStreamReader::GetFPS() {
 	GLInjectHeader *header = GetGLInjectHeader();
 	int64_t timestamp = hrt_time_micro();
+	std::atomic_thread_fence(std::memory_order_acquire);
 	uint32_t frame_counter = header->frame_counter;
 	unsigned int time = timestamp - m_info_last_timestamp;
 	unsigned int frames = frame_counter - m_last_frame_counter;
@@ -196,17 +188,21 @@ void SSRVideoStreamReader::ChangeCaptureParameters(unsigned int flags, unsigned 
 	GLInjectHeader *header = GetGLInjectHeader();
 	header->capture_flags = flags;
 	header->capture_target_fps = target_fps;
+	std::atomic_thread_fence(std::memory_order_release);
 }
 
 void SSRVideoStreamReader::Clear() {
 	GLInjectHeader *header = GetGLInjectHeader();
+	std::atomic_thread_fence(std::memory_order_acquire);
 	header->ring_buffer_read_pos = header->ring_buffer_write_pos;
+	std::atomic_thread_fence(std::memory_order_release);
 }
 
 void* SSRVideoStreamReader::GetFrame(int64_t* timestamp, unsigned int* width, unsigned int* height, int* stride) {
 
 	// make sure that at least one frame is available
 	GLInjectHeader *header = GetGLInjectHeader();
+	std::atomic_thread_fence(std::memory_order_acquire);
 	unsigned int read_pos = header->ring_buffer_read_pos;
 	unsigned int write_pos = header->ring_buffer_write_pos;
 	if(read_pos == write_pos)
@@ -276,5 +272,6 @@ void SSRVideoStreamReader::NextFrame() {
 	// go to the next frame
 	GLInjectHeader *header = GetGLInjectHeader();
 	header->ring_buffer_read_pos = (header->ring_buffer_read_pos + 1) % (GLINJECT_RING_BUFFER_SIZE * 2);
+	std::atomic_thread_fence(std::memory_order_release);
 
 }

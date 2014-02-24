@@ -24,15 +24,25 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SSRVideoStreamWatcher.h"
 #include "SSRVideoStreamReader.h"
 
+// Escapes characters so the string can be used in a shell command. It may not be 100% secure (character encoding can complicate things).
+// But it doesn't really matter, an attacker that can change GLInject options could just as easily change the actual GLInject command.
+// I copied the list of special characters from the PHP documentation:
+// http://be2.php.net/manual/en/function.escapeshellcmd.php
+static QString ShellEscape(QString str) {
+	char specials[] = "\\#&;`|*?~<>^()[]{}$\x0a\xff\""; // backslash must be first
+	for(unsigned int i = 0; i < sizeof(specials); ++i) {
+		str.replace(QChar(specials[i]), QString("\\") + QChar(specials[i]));
+	}
+	return str;
+}
+
 // The highest expected latency between GLInject and the input thread.
 const int64_t GLInjectInput::MAX_COMMUNICATION_LATENCY = 100000;
 
-GLInjectInput::GLInjectInput(const QString& match_user, const QString& match_process, const QString& match_source, const QString& match_program_name, bool record_cursor, bool limit_fps, unsigned int target_fps) {
+GLInjectInput::GLInjectInput(const QString& channel, bool relax_permissions, bool record_cursor, bool limit_fps, unsigned int target_fps) {
 
-	m_match_user = match_user;
-	m_match_process = match_process;
-	m_match_source = match_source;
-	m_match_program_name = match_program_name;
+	m_channel = channel;
+	m_relax_permissions = relax_permissions;
 	m_flags = ((record_cursor)? GLINJECT_FLAG_RECORD_CURSOR : 0) | ((limit_fps)? GLINJECT_FLAG_LIMIT_FPS : 0);
 	m_target_fps = target_fps;
 
@@ -82,12 +92,14 @@ void GLInjectInput::SetCapturing(bool capturing) {
 		lock->m_stream_reader->ChangeCaptureParameters(m_flags | ((lock->m_capturing)? GLINJECT_FLAG_CAPTURE_ENABLED : 0), m_target_fps);
 }
 
-bool GLInjectInput::LaunchApplication(const QString& command, const QString& working_directory, bool relax_permissions) {
+bool GLInjectInput::LaunchApplication(const QString& channel, bool relax_permissions, const QString& command, const QString& working_directory) {
 
 	// prepare command
-	QString full_command = "LD_PRELOAD=libssr-glinject.so " + command;
+	QString full_command = "LD_PRELOAD=\"libssr-glinject.so\" ";
+	full_command += "SSR_CHANNEL=\"" + ShellEscape(channel) + "\" ";
 	if(relax_permissions)
-		full_command = "SSR_STREAM_RELAX_PERMISSIONS=1 " + full_command;
+		full_command += "SSR_STREAM_RELAX_PERMISSIONS=1 ";
+	full_command += command;
 
 	// execute it
 	QStringList args;
@@ -103,7 +115,7 @@ void GLInjectInput::Init() {
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_capturing = false;
-		lock->m_stream_watcher.reset(new SSRVideoStreamWatcher());
+		lock->m_stream_watcher.reset(new SSRVideoStreamWatcher(m_channel.toStdString(), m_relax_permissions));
 	}
 
 	// start input thread
@@ -120,31 +132,22 @@ void GLInjectInput::Free() {
 }
 
 bool GLInjectInput::SwitchStream(SharedData* lock, const SSRVideoStream& stream) {
-
-	// does the stream match the rules?
-	if(!m_match_user.isEmpty() && !QRegExp(m_match_user, Qt::CaseInsensitive, QRegExp::Wildcard).exactMatch(QString::number(stream.m_user)))
-		return false;
-	if(!m_match_process.isEmpty() && !QRegExp(m_match_process, Qt::CaseInsensitive, QRegExp::Wildcard).exactMatch(QString::number(stream.m_process)))
-		return false;
-	if(!m_match_source.isEmpty() && !QRegExp(m_match_source, Qt::CaseInsensitive, QRegExp::Wildcard).exactMatch(QString::fromStdString(stream.m_source)))
-		return false;
-	if(!m_match_program_name.isEmpty() && !QRegExp(m_match_program_name, Qt::CaseInsensitive, QRegExp::Wildcard).exactMatch(QString::fromStdString(stream.m_program_name)))
-		return false;
-
 	try {
 
 		// create the stream reader
-		lock->m_stream_reader.reset(new SSRVideoStreamReader(stream));
+		std::unique_ptr<SSRVideoStreamReader> stream_reader(new SSRVideoStreamReader(m_channel.toStdString(), stream));
 
 		// initialize the stream
-		lock->m_stream_reader->ChangeCaptureParameters(m_flags | ((lock->m_capturing)? GLINJECT_FLAG_CAPTURE_ENABLED : 0), m_target_fps);
-		lock->m_stream_reader->Clear();
+		stream_reader->ChangeCaptureParameters(m_flags | ((lock->m_capturing)? GLINJECT_FLAG_CAPTURE_ENABLED : 0), m_target_fps);
+		stream_reader->Clear();
+
+		// if everything is okay, use the new stream reader
+		lock->m_stream_reader = std::move(stream_reader);
 
 	} catch(...) {
 		Logger::LogError("[GLInjectInput::SwitchStream] " + QObject::tr("Error: Could not read stream, this usually means that the stream was already gone."));
 		return false;
 	}
-
 	return true;
 }
 

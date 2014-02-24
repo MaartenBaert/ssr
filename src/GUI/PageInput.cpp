@@ -346,14 +346,11 @@ void PageInput::LoadSettings(QSettings* settings) {
 	SetJackConnectSystemCapture(settings->value("input/audio_jack_connect_system_capture", true).toBool());
 	SetJackConnectSystemPlayback(settings->value("input/audio_jack_connect_system_playback", false).toBool());
 #endif
+	SetGLInjectChannel(settings->value("input/glinject_channel", "channel-" + QString::fromStdString(GetUserName())).toString());
+	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
 	SetGLInjectCommand(settings->value("input/glinject_command", "").toString());
 	SetGLInjectWorkingDirectory(settings->value("input/glinject_working_directory", "").toString());
-	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
 	SetGLInjectAutoLaunch(settings->value("input/glinject_auto_launch", false).toBool());
-	SetGLInjectMatchUser(settings->value("input/glinject_match_user", "").toString());
-	SetGLInjectMatchProcess(settings->value("input/glinject_match_process", "").toString());
-	SetGLInjectMatchSource(settings->value("input/glinject_match_source", "").toString());
-	SetGLInjectMatchProgramName(settings->value("input/glinject_match_program_name", "").toString());
 	SetGLInjectLimitFPS(settings->value("input/glinject_limit_fps", false).toBool());
 
 	// update things
@@ -385,14 +382,11 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/audio_jack_connect_system_capture", GetJackConnectSystemCapture());
 	settings->setValue("input/audio_jack_connect_system_playback", GetJackConnectSystemPlayback());
 #endif
+	settings->setValue("input/glinject_channel", GetGLInjectChannel());
+	settings->setValue("input/glinject_relax_permissions", GetGLInjectRelaxPermissions());
 	settings->setValue("input/glinject_command", GetGLInjectCommand());
 	settings->setValue("input/glinject_working_directory", GetGLInjectWorkingDirectory());
-	settings->setValue("input/glinject_relax_permissions", GetGLInjectRelaxPermissions());
 	settings->setValue("input/glinject_auto_launch", GetGLInjectAutoLaunch());
-	settings->setValue("input/glinject_match_user", GetGLInjectMatchUser());
-	settings->setValue("input/glinject_match_process", GetGLInjectMatchProcess());
-	settings->setValue("input/glinject_match_source", GetGLInjectMatchSource());
-	settings->setValue("input/glinject_match_program_name", GetGLInjectMatchProgramName());
 	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
 }
 
@@ -798,11 +792,5 @@ void PageInput::OnGLInjectDialog() {
 }
 
 void PageInput::OnContinue() {
-	if(GetVideoArea() == VIDEO_AREA_GLINJECT && GetGLInjectCommand().isEmpty()) {
-		MessageBox(QMessageBox::Critical, this, MainWindow::WINDOW_CAPTION,
-				   tr("You did not enter a command to start the OpenGL application that you want to record.\n"
-					  "Click the 'OpenGL settings' button and enter a command."), BUTTON_OK, BUTTON_OK);
-		return;
-	}
 	m_main_window->GoPageOutput();
 }

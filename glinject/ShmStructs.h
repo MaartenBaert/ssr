@@ -28,11 +28,16 @@ There are two types of files:
 
 #define GLINJECT_RING_BUFFER_SIZE 4
 
+#define GLINJECT_IDENTIFIER 0x8af7a476
+
 #define GLINJECT_FLAG_CAPTURE_ENABLED  0x0001
 #define GLINJECT_FLAG_RECORD_CURSOR    0x0002
 #define GLINJECT_FLAG_LIMIT_FPS        0x0004
 
 struct GLInjectHeader {
+
+	// identifier
+	uint32_t identifier;
 
 	// ring buffer
 	uint32_t ring_buffer_read_pos, ring_buffer_write_pos;

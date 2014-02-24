@@ -28,8 +28,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <ctime>
 #include <stdint.h>
 
-#include <unistd.h>
+#include <pwd.h>
 #include <sys/shm.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <array>
 #include <atomic>
@@ -211,6 +213,15 @@ inline int64_t hrt_time_micro() {
 	timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	return (uint64_t) ts.tv_sec * (uint64_t) 1000000 + (uint64_t) (ts.tv_nsec / 1000);
+}
+
+// Returns the name of the user.
+inline std::string GetUserName() {
+	std::vector<char> buf(std::max((long) 16384, sysconf(_SC_GETPW_R_SIZE_MAX)));
+	passwd pwd, *result = NULL;
+	if(getpwuid_r(geteuid(), &pwd, buf.data(), buf.size(), &result) == 0 && result != NULL)
+		return std::string(result->pw_name);
+	return "unknownuser";
 }
 
 template<typename T>
