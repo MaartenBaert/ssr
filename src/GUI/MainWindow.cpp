@@ -129,7 +129,7 @@ QString MainWindow::GetNVidiaDisableFlippingName(enum_nvidia_disable_flipping fl
 		case NVIDIA_DISABLE_FLIPPING_ASK: return "ask";
 		case NVIDIA_DISABLE_FLIPPING_YES: return "yes";
 		case NVIDIA_DISABLE_FLIPPING_NO:  return "no";
-		default: assert(false);
+		default: assert(false); return QString();
 	}
 }
 
