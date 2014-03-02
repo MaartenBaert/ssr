@@ -38,7 +38,7 @@ void PrintOptionHelp() {
 				"\n"
 				"Options:\n"
 				"  --help              Show this help message.\n"
-				"  --logfile           Write log to ~/.ssr/log-ISOTIME.txt instead of stdout.\n"
+				"  --logfile           Write log to ~/.ssr/log-DATE_TIME.txt instead of stdout.\n"
 				"  --statsfile[=FILE]  Write recording statistics to FILE. If FILE is omitted,\n"
 				"                      /dev/shm/simplescreenrecorder-stats-PID is used. It will\n"
 				"                      be updated continuously and deleted when the recording\n"

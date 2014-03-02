@@ -143,6 +143,9 @@ void Synchronizer::Init() {
 		m_video_height = m_video_encoder->GetHeight();
 		m_video_frame_rate = m_video_encoder->GetFrameRate();
 		m_video_max_frames_skipped = (m_allow_frame_skipping)? (MAX_FRAME_DELAY * m_video_frame_rate + 500000) / 1000000 : 0;
+		VideoLock videolock(&m_video_data);
+		videolock->m_last_timestamp = std::numeric_limits<int64_t>::min();
+		videolock->m_next_timestamp = SINK_TIMESTAMP_ASAP;
 	}
 
 	// initialize audio
@@ -164,6 +167,10 @@ void Synchronizer::Init() {
 				m_audio_required_sample_size = m_audio_channels * 4; break;
 			default: assert(false); break;
 		}
+		AudioLock audiolock(&m_audio_data);
+		audiolock->m_fast_resampler.reset(new FastResampler(m_audio_channels, 0.9f));
+		InitAudioSegment(audiolock.get());
+		audiolock->m_warn_desync = true;
 	}
 
 	// create sync diagram
@@ -174,21 +181,6 @@ void Synchronizer::Init() {
 		m_sync_diagram->SetChannelName(2, SyncDiagram::tr("Video out"));
 		m_sync_diagram->SetChannelName(3, SyncDiagram::tr("Audio out"));
 		m_sync_diagram->show();
-	}
-
-	// initialize video data
-	{
-		VideoLock videolock(&m_video_data);
-		videolock->m_last_timestamp = std::numeric_limits<int64_t>::min();
-		videolock->m_next_timestamp = SINK_TIMESTAMP_ASAP;
-	}
-
-	// initialize audio data
-	{
-		AudioLock audiolock(&m_audio_data);
-		audiolock->m_fast_resampler.reset(new FastResampler(m_audio_channels, 0.9f));
-		InitAudioSegment(audiolock.get());
-		audiolock->m_warn_desync = true;
 	}
 
 	// initialize shared data
@@ -222,7 +214,7 @@ void Synchronizer::Free() {
 
 void Synchronizer::NewSegment() {
 
-	{
+	if(m_audio_encoder != NULL) {
 		AudioLock audiolock(&m_audio_data);
 		InitAudioSegment(audiolock.get());
 	}
