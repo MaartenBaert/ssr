@@ -48,3 +48,25 @@ GLXFrameGrabber* GLInject::FindGLXFrameGrabber(Display* display, GLXDrawable dra
 	}
 	return NULL;
 }
+
+void GLInject::DeleteGLXFrameGrabberByWindow(Display* display, Window window) {
+	for(unsigned int i = m_glx_frame_grabbers.size(); i > 0; ) {
+		--i;
+		if(m_glx_frame_grabbers[i]->GetX11Display() == display && m_glx_frame_grabbers[i]->GetX11Window() == window) {
+			delete m_glx_frame_grabbers[i];
+			m_glx_frame_grabbers[i] = m_glx_frame_grabbers.back();
+			m_glx_frame_grabbers.pop_back();
+		}
+	}
+}
+
+void GLInject::DeleteGLXFrameGrabberByDrawable(Display* display, GLXDrawable drawable) {
+	for(unsigned int i = m_glx_frame_grabbers.size(); i > 0; ) {
+		--i;
+		if(m_glx_frame_grabbers[i]->GetX11Display() == display && m_glx_frame_grabbers[i]->GetGLXDrawable() == drawable) {
+			delete m_glx_frame_grabbers[i];
+			m_glx_frame_grabbers[i] = m_glx_frame_grabbers.back();
+			m_glx_frame_grabbers.pop_back();
+		}
+	}
+}

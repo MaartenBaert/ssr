@@ -21,6 +21,8 @@ void InitGLInject();
 void FreeGLInject();
 
 GLXWindow glinject_my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list);
+void glinject_my_glXDestroyWindow(Display* dpy, GLXWindow win);
+int glinject_my_XDestroyWindow(Display* dpy, Window win);
 void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable);
 GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name);
 int glinject_my_XNextEvent(Display* display, XEvent* event_return);
@@ -28,6 +30,8 @@ int glinject_my_XNextEvent(Display* display, XEvent* event_return);
 void *(*g_glinject_real_dlsym)(void*, const char*) = NULL;
 void *(*g_glinject_real_dlvsym)(void*, const char*, const char*) = NULL;
 GLXWindow (*g_glinject_real_glXCreateWindow)(Display*, GLXFBConfig, Window, const int*) = NULL;
+void (*g_glinject_real_glXDestroyWindow)(Display*, GLXWindow) = NULL;
+int (*g_glinject_real_XDestroyWindow)(Display*, Window) = NULL;
 void (*g_glinject_real_glXSwapBuffers)(Display*, GLXDrawable) = NULL;
 GLXextFuncPtr (*g_glinject_real_glXGetProcAddressARB)(const GLubyte*) = NULL;
 int (*g_glinject_real_XNextEvent)(Display*, XEvent*) = NULL;
@@ -45,12 +49,12 @@ void InitGLInject() {
 		GLINJECT_PRINT("Error: Can't open libdl.so!");
 		exit(1);
 	}
-	if(eh_find_sym(&libdl, "dlsym", (void **) &g_glinject_real_dlsym)) {
+	if(eh_find_sym(&libdl, "dlsym", (void**) &g_glinject_real_dlsym)) {
 		GLINJECT_PRINT("Error: Can't get dlsym address!");
 		eh_destroy_obj(&libdl);
 		exit(1);
 	}
-	if(eh_find_sym(&libdl, "dlvsym", (void **) &g_glinject_real_dlvsym)) {
+	if(eh_find_sym(&libdl, "dlvsym", (void**) &g_glinject_real_dlvsym)) {
 		GLINJECT_PRINT("Error: Can't get dlvsym address!");
 		eh_destroy_obj(&libdl);
 		exit(1);
@@ -61,6 +65,16 @@ void InitGLInject() {
 	g_glinject_real_glXCreateWindow = (GLXWindow (*)(Display*, GLXFBConfig, Window, const int*)) g_glinject_real_dlsym(RTLD_NEXT, "glXCreateWindow");
 	if(g_glinject_real_glXCreateWindow == NULL) {
 		GLINJECT_PRINT("Error: Can't get glXCreateWindow address!");
+		exit(1);
+	}
+	g_glinject_real_glXDestroyWindow = (void (*)(Display*, GLXWindow)) g_glinject_real_dlsym(RTLD_NEXT, "glXDestroyWindow");
+	if(g_glinject_real_glXDestroyWindow == NULL) {
+		GLINJECT_PRINT("Error: Can't get glXDestroyWindow address!");
+		exit(1);
+	}
+	g_glinject_real_XDestroyWindow = (int (*)(Display*, Window)) g_glinject_real_dlsym(RTLD_NEXT, "XDestroyWindow");
+	if(g_glinject_real_XDestroyWindow == NULL) {
+		GLINJECT_PRINT("Error: Can't get XDestroyWindow address!");
 		exit(1);
 	}
 	g_glinject_real_glXSwapBuffers = (void (*)(Display*, GLXDrawable)) g_glinject_real_dlsym(RTLD_NEXT, "glXSwapBuffers");
@@ -80,7 +94,7 @@ void InitGLInject() {
 	}
 
 	g_glinject = new GLInject();
-	
+
 	atexit(FreeGLInject);
 
 }
@@ -98,9 +112,11 @@ struct Hook {
 };
 static Hook hook_table[] = {
 	{"glXCreateWindow"     , (void*) &glinject_my_glXCreateWindow},
+	{"glXDestroyWindow"    , (void*) &glinject_my_glXDestroyWindow},
+	{"XDestroyWindow"      , (void*) &glinject_my_XDestroyWindow},
 	{"glXSwapBuffers"      , (void*) &glinject_my_glXSwapBuffers},
 	{"glXGetProcAddressARB", (void*) &glinject_my_glXGetProcAddressARB},
-	{"XNextEvent"          , (void*) &glinject_my_XNextEvent}
+	{"XNextEvent"          , (void*) &glinject_my_XNextEvent},
 };
 
 GLXWindow glinject_my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
@@ -108,6 +124,17 @@ GLXWindow glinject_my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window w
 	if(res == 0)
 		return 0;
 	g_glinject->NewGLXFrameGrabber(dpy, win, res);
+	return res;
+}
+
+void glinject_my_glXDestroyWindow(Display* dpy, GLXWindow win) {
+	g_glinject_real_glXDestroyWindow(dpy, win);
+	g_glinject->DeleteGLXFrameGrabberByDrawable(dpy, win);
+}
+
+int glinject_my_XDestroyWindow(Display* dpy, Window win) {
+	int res = g_glinject_real_XDestroyWindow(dpy, win);
+	g_glinject->DeleteGLXFrameGrabberByWindow(dpy, win);
 	return res;
 }
 
@@ -145,6 +172,16 @@ int glinject_my_XNextEvent(Display* display, XEvent* event_return) {
 extern "C" GLXWindow glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
 	InitGLInject();
 	return glinject_my_glXCreateWindow(dpy, config, win, attrib_list);
+}
+
+extern "C" void glXDestroyWindow(Display* dpy, GLXWindow win) {
+	InitGLInject();
+	glinject_my_glXDestroyWindow(dpy, win);
+}
+
+extern "C" int XDestroyWindow(Display* dpy, Window win) {
+	InitGLInject();
+	return glinject_my_XDestroyWindow(dpy, win);
 }
 
 extern "C" void glXSwapBuffers(Display* dpy, GLXDrawable drawable) {

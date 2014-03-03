@@ -27,5 +27,7 @@ public:
 
 	GLXFrameGrabber* NewGLXFrameGrabber(Display* display, Window window, GLXDrawable drawable);
 	GLXFrameGrabber* FindGLXFrameGrabber(Display* display, GLXDrawable drawable);
+	void DeleteGLXFrameGrabberByWindow(Display* display, Window window);
+	void DeleteGLXFrameGrabberByDrawable(Display* display, GLXDrawable drawable);
 
 };
