@@ -557,6 +557,10 @@ void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData* lock, int64_t segm
 		int64_t next_timestamp = (lock->m_video_buffer.empty())? lock->m_segment_video_stop_time - (int64_t) (1000000 / m_video_frame_rate) : lock->m_video_buffer.front()->GetFrame()->pts;
 		int64_t next_pts = (lock->m_time_offset + (next_timestamp - segment_start_time)) * (int64_t) m_video_frame_rate / (int64_t) 1000000;
 
+		// if the frame is too late, decrease the pts by one to avoid gaps
+		if(next_pts > lock->m_video_pts)
+			--next_pts;
+
 		// insert delays if needed, up to the segment end
 		while(lock->m_segment_video_accumulated_delay >= delay_time_per_frame && lock->m_video_pts < segment_stop_video_pts) {
 			lock->m_segment_video_accumulated_delay -= delay_time_per_frame;
@@ -584,6 +588,7 @@ void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData* lock, int64_t segm
 				//Logger::LogInfo("[Synchronizer::FlushVideoBuffer] Encoded video frame [" + QString::number(duplicate_frame->GetFrame()->pts) + "] (duplicate) acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 				m_video_encoder->AddFrame(std::move(duplicate_frame));
 				lock->m_segment_video_accumulated_delay += m_video_encoder->GetFrameDelay();
+
 			}
 		}
 
@@ -597,15 +602,11 @@ void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData* lock, int64_t segm
 		frame->GetFrame()->pts = next_pts;
 		lock->m_last_video_frame_data = frame->GetFrameData();
 
-		// if the frame is way too early, drop it
-		if(frame->GetFrame()->pts < lock->m_video_pts - 1) {
+		// if the frame is too early, drop it
+		if(frame->GetFrame()->pts < lock->m_video_pts) {
 			//Logger::LogInfo("[Synchronizer::FlushVideoBuffer] Dropped video frame [" + QString::number(frame->GetFrame()->pts) + "] acc " + QString::number(lock->m_segment_video_accumulated_delay) + ".");
 			continue;
 		}
-
-		// if the frame is just a little too early, move it
-		if(frame->GetFrame()->pts < lock->m_video_pts)
-			frame->GetFrame()->pts = lock->m_video_pts;
 
 		// if this is the first video frame, always set the pts to zero
 		if(lock->m_video_pts == 0)
