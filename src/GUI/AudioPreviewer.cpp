@@ -154,7 +154,7 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 		}
 	}
 
-	painter.fillRect(rect(), QColor(150, 150, 150));
+	painter.fillRect(rect(), QColor(200, 200, 200));
 
 	int w = width() - 1, h = height() - 1;
 
