@@ -349,30 +349,55 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	double current_drift = ((double) audiolock->m_samples_written + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
 			- (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
 
-	// if there are too many audio samples, drop the frame (unlikely)
-	if(current_drift > DRIFT_ERROR_THRESHOLD) {
-		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Too many audio samples, dropping samples to keep the audio in sync with the video."));
-		return;
+	// if there are too many audio samples, drop some of them (unlikely unless you use PulseAudio)
+	if(current_drift > DRIFT_ERROR_THRESHOLD || audiolock->m_drop_samples) {
+
+		if(!audiolock->m_drop_samples)
+			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Too many audio samples, dropping samples to keep the audio in sync with the video."));
+		audiolock->m_drop_samples = false;
+
+		// drop samples
+		unsigned int n = (int) round(current_drift * (double) sample_rate);
+		if(n >= sample_count) {
+			audiolock->m_drop_samples = true;
+			return; // drop all samples
+		}
+		if(n > 0) {
+			if(format == AV_SAMPLE_FMT_FLT) {
+				data += n * m_audio_channels * sizeof(float);
+			} else if(format == AV_SAMPLE_FMT_S16) {
+				data += n * m_audio_channels * sizeof(int16_t);
+			} else {
+				assert(false);
+			}
+			sample_count -= n;
+		}
+
 	}
 
 	// if there are not enough audio samples, insert zeros
 	unsigned int sample_count_out = 0;
-	if(current_drift < -DRIFT_ERROR_THRESHOLD || audiolock->m_insert_zeros) {
+	if(current_drift < -DRIFT_ERROR_THRESHOLD || audiolock->m_insert_samples) {
 
-		if(!audiolock->m_insert_zeros)
+		if(!audiolock->m_insert_samples)
 			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video."));
-		audiolock->m_insert_zeros = false;
+		audiolock->m_insert_samples = false;
 
-		// insert zeros
-		unsigned int n = std::max(0, (int) round(-current_drift * (double) sample_rate));
-		audiolock->m_temp_input_buffer.Alloc(n * m_audio_channels);
-		std::fill_n(audiolock->m_temp_input_buffer.GetData(), n * m_audio_channels, 0.0f);
-		sample_count_out = audiolock->m_fast_resampler->Resample((double) sample_rate / (double) m_audio_sample_rate, 1.0,
-																 audiolock->m_temp_input_buffer.GetData(), n, &audiolock->m_temp_output_buffer, sample_count_out);
+		// how many samples should be inserted?
+		int n = (int) round(-current_drift * (double) sample_rate);
+		if(n > 0) {
 
-		// recalculate drift
-		current_drift = ((double) (audiolock->m_samples_written + sample_count_out) + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
-				- (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
+			// insert zeros
+			audiolock->m_temp_input_buffer.Alloc(n * m_audio_channels);
+			std::fill_n(audiolock->m_temp_input_buffer.GetData(), n * m_audio_channels, 0.0f);
+			sample_count_out = audiolock->m_fast_resampler->Resample((double) sample_rate / (double) m_audio_sample_rate, 1.0,
+																	 audiolock->m_temp_input_buffer.GetData(), n, &audiolock->m_temp_output_buffer, sample_count_out);
+
+			// recalculate drift
+			current_drift = ((double) (audiolock->m_samples_written + sample_count_out) + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
+					- (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
+
+		}
 
 	}
 
@@ -405,8 +430,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 		data_float = audiolock->m_temp_input_buffer.GetData();
 		SampleCopy(sample_count * m_audio_channels, (const int16_t*) data, 1, audiolock->m_temp_input_buffer.GetData(), 1);
 	} else {
-		Logger::LogError("[Synchronizer::ReadAudioSamples] " + Logger::tr("Error: Audio sample format is not supported!"));
-		throw ResamplerException();
+		assert(false);
 	}
 
 	// resample
@@ -454,10 +478,10 @@ void Synchronizer::ReadAudioHole() {
 	AudioLock audiolock(&m_audio_data);
 	if(audiolock->m_first_timestamp != AV_NOPTS_VALUE) {
 		audiolock->m_average_drift = 0.0;
-		if(!audiolock->m_insert_zeros) {
+		if(!audiolock->m_drop_samples && !audiolock->m_insert_samples)
 			Logger::LogWarning("[Synchronizer::ReadAudioHole] " + Logger::tr("Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video."));
-			audiolock->m_insert_zeros = true;
-		}
+		audiolock->m_drop_samples = true; // because PulseAudio is weird
+		audiolock->m_insert_samples = true;
 	}
 
 }
@@ -467,7 +491,8 @@ void Synchronizer::InitAudioSegment(AudioData* audiolock) {
 	audiolock->m_first_timestamp = AV_NOPTS_VALUE;
 	audiolock->m_samples_written = 0;
 	audiolock->m_average_drift = 0.0;
-	audiolock->m_insert_zeros = false;
+	audiolock->m_drop_samples = false;
+	audiolock->m_insert_samples = false;
 }
 
 void Synchronizer::NewSegment(SharedData* lock) {

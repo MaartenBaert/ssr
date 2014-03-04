@@ -378,8 +378,7 @@ void PulseAudioInput::InputThread() {
 			if(m_stream_moved) {
 				m_stream_moved = false;
 				Logger::LogWarning("[PulseAudioInput::InputThread] " + Logger::tr("Warning: Stream was moved to a different source."));
-				//TODO// not sure whether segment cuts are a good idea here, needs more testing
-				//PushAudioHole();
+				PushAudioHole();
 			}
 
 		}

@@ -53,7 +53,7 @@ private:
 		int64_t m_first_timestamp; // the timestamp of the first audio frame in the current segment (for drift correction)
 		int64_t m_samples_written; // total number of samples written to the queue in the current segment (for drift correction)
 		double m_average_drift; // drift averaged over time (for drift correction)
-		bool m_insert_zeros;
+		bool m_drop_samples, m_insert_samples;
 
 		bool m_warn_desync;
 
