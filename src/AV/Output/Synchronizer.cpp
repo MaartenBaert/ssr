@@ -357,12 +357,12 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 		audiolock->m_drop_samples = false;
 
 		// drop samples
-		unsigned int n = (int) round(current_drift * (double) sample_rate);
-		if(n >= sample_count) {
-			audiolock->m_drop_samples = true;
-			return; // drop all samples
-		}
+		int n = (int) round(current_drift * (double) sample_rate);
 		if(n > 0) {
+			if(n >= (int) sample_count) {
+				audiolock->m_drop_samples = true;
+				return; // drop all samples
+			}
 			if(format == AV_SAMPLE_FMT_FLT) {
 				data += n * m_audio_channels * sizeof(float);
 			} else if(format == AV_SAMPLE_FMT_S16) {
