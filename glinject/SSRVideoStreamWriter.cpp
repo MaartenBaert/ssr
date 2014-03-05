@@ -29,10 +29,10 @@ static std::string GetProgramName() {
 
 SSRVideoStreamWriter::SSRVideoStreamWriter(const std::string& channel, const std::string& source) {
 
-	std::string streamname = NumToString(hrt_time_micro()) + "-" + NumToString(geteuid()) + "-" + NumToString(getpid()) + "-" + source + "-" + GetProgramName();
+	std::string stream_name = NumToString(hrt_time_micro()) + "-" + NumToString(getpid()) + "-" + source + "-" + GetProgramName();
 
 	m_channel_directory = "/dev/shm/ssr-" + ((channel.empty())? "channel-" + GetUserName() : channel);
-	m_filename_main = m_channel_directory + "/video-" + streamname;
+	m_filename_main = m_channel_directory + "/video-" + stream_name;
 	m_page_size = sysconf(_SC_PAGE_SIZE);
 	m_width = 0;
 	m_height = 0;
@@ -45,7 +45,7 @@ SSRVideoStreamWriter::SSRVideoStreamWriter(const std::string& channel, const std
 
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
 		FrameData &fd = m_frame_data[i];
-		fd.m_filename_frame = m_channel_directory + "/videoframe" + NumToString(i) + "-" + streamname;
+		fd.m_filename_frame = m_channel_directory + "/videoframe" + NumToString(i) + "-" + stream_name;
 		fd.m_fd_frame = -1;
 		fd.m_mmap_ptr_frame = MAP_FAILED;
 		fd.m_mmap_size_frame = 0;
@@ -169,6 +169,7 @@ void SSRVideoStreamWriter::Init() {
 	// set the identifier to indicate that initialization is complete
 	std::atomic_thread_fence(std::memory_order_release);
 	header->identifier = GLINJECT_IDENTIFIER;
+	std::atomic_thread_fence(std::memory_order_release);
 
 }
 

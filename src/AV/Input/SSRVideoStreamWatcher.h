@@ -22,6 +22,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "SSRVideoStream.h"
 
+#include "../glinject/ShmStructs.h"
+
 class SSRVideoStreamWatcher {
 
 public:

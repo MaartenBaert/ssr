@@ -27,13 +27,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/stat.h>
 #include <sys/types.h>
 
-SSRVideoStreamReader::SSRVideoStreamReader(const std::string &channel, const SSRVideoStream& stream) {
-
-	std::string streamname = NumToString(stream.m_creation_time) + "-" + NumToString(stream.m_user) + "-" + NumToString(stream.m_process) + "-" + stream.m_source + "-" + stream.m_program_name;
+SSRVideoStreamReader::SSRVideoStreamReader(const std::string& channel, const SSRVideoStream& stream) {
 
 	m_stream = stream;
 	m_channel_directory = "/dev/shm/ssr-" + channel;
-	m_filename_main = m_channel_directory + "/video-" + streamname;
+	m_filename_main = m_channel_directory + "/video-" + stream.m_stream_name;
 	m_page_size = sysconf(_SC_PAGE_SIZE);
 
 	m_fd_main = -1;
@@ -42,7 +40,7 @@ SSRVideoStreamReader::SSRVideoStreamReader(const std::string &channel, const SSR
 
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
 		FrameData &fd = m_frame_data[i];
-		fd.m_filename_frame = m_channel_directory + "/videoframe" + NumToString(i) + "-" + streamname;
+		fd.m_filename_frame = m_channel_directory + "/videoframe" + NumToString(i) + "-" + stream.m_stream_name;
 		fd.m_fd_frame = -1;
 		fd.m_mmap_ptr_frame = MAP_FAILED;
 		fd.m_mmap_size_frame = 0;

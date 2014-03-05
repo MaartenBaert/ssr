@@ -189,11 +189,16 @@ void GLInjectInput::InputThread() {
 			}
 		}
 
+		int64_t next_watcher_update = hrt_time_micro();
+
 		while(!m_should_stop) {
 			SharedLock lock(&m_shared_data);
 
 			// update stream watcher
-			lock->m_stream_watcher->HandleChanges(&StreamAddCallback, &StreamRemoveCallback, this);
+			if(hrt_time_micro() >= next_watcher_update) {
+				lock->m_stream_watcher->HandleChanges(&StreamAddCallback, &StreamRemoveCallback, this);
+				next_watcher_update = hrt_time_micro() + 200000;
+			}
 
 			// do we have a stream reader?
 			if(lock->m_stream_reader == NULL) {

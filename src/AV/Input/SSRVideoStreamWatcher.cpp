@@ -22,39 +22,36 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 
 #include <dirent.h>
+#include <signal.h>
 #include <sys/inotify.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
-static bool SSRVideoStreamParse(const std::string& name, SSRVideoStream* stream) {
+static bool SSRVideoStreamParse(const std::string& filename, SSRVideoStream* stream) {
 
 	// check the prefix
 	std::string prefix = "video-";
-	if(name.compare(0, prefix.length(), prefix) != 0)
+	if(filename.compare(0, prefix.length(), prefix) != 0)
 		return false;
 
 	// split into parts
 	size_t pos = prefix.length();
-	std::array<std::string, 5> parts;
-	for(size_t i = 0; i < parts.size() - 1; ++i) {
-		size_t dash = name.find_first_of('-', pos);
+	std::array<std::string, 2> parts;
+	for(size_t i = 0; i < parts.size(); ++i) {
+		size_t dash = filename.find_first_of('-', pos);
 		if(dash == std::string::npos)
 			return false;
-		parts[i] = name.substr(pos, dash - pos);
+		parts[i] = filename.substr(pos, dash - pos);
 		pos = dash + 1;
 	}
-	parts.back() = name.substr(pos);
 
 	// save the parts
+	stream->m_stream_name = filename.substr(prefix.length());
 	if(!StringToNum(parts[0], &stream->m_creation_time))
 		return false;
-	if(!StringToNum(parts[1], &stream->m_user))
+	if(!StringToNum(parts[1], &stream->m_process_id))
 		return false;
-	if(!StringToNum(parts[2], &stream->m_process))
-		return false;
-	stream->m_source = parts[3];
-	stream->m_program_name = parts[4];
 
 	return true;
 }
@@ -123,7 +120,7 @@ void SSRVideoStreamWatcher::Init() {
 	}
 
 	// watch shared memory directory
-	if(inotify_add_watch(m_fd_notify, m_channel_directory.c_str(), IN_CREATE | IN_DELETE) == -1) {
+	if(inotify_add_watch(m_fd_notify, m_channel_directory.c_str(), IN_CREATE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) == -1) {
 		Logger::LogError("[SSRVideoStreamWatcher::Init] " + QObject::tr("Error: Can't watch shared memory directory!"));
 		throw SSRStreamException();
 	}
@@ -190,66 +187,87 @@ void SSRVideoStreamWatcher::HandleChanges(AddCallback add_callback, RemoveCallba
 		Logger::LogError("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Error: Can't get read length from inotify!", "don't translate 'inotify'"));
 		throw SSRStreamException();
 	}
-	if(len == 0)
-		return;
+	if(len > 0) {
 
-	// read all the changes
-	std::vector<char> buffer(len);
-	if(read(m_fd_notify, buffer.data(), buffer.size()) != (ssize_t) buffer.size()) {
-		Logger::LogError("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Error: Can't read from inotify!", "don't translate 'inotify'"));
-		throw SSRStreamException();
+		// read all the changes
+		std::vector<char> buffer(len);
+		if(read(m_fd_notify, buffer.data(), buffer.size()) != (ssize_t) buffer.size()) {
+			Logger::LogError("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Error: Can't read from inotify!", "don't translate 'inotify'"));
+			throw SSRStreamException();
+		}
+
+		// parse the changes
+		size_t pos = 0;
+		while(pos < buffer.size()) {
+
+			// read the event structure
+			if(buffer.size() - pos < sizeof(inotify_event)) {
+				Logger::LogError("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Error: Received partial event from inotify!", "don't translate 'inotify'"));
+				throw SSRStreamException();
+			}
+			inotify_event *event = (inotify_event*) (buffer.data() + pos);
+			pos += sizeof(inotify_event);
+
+			// ignore events with no name
+			if(event->len == 0)
+				continue;
+
+			// read the name
+			if(buffer.size() - pos < event->len) {
+				Logger::LogError("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Error: Received partial name from inotify!", "don't translate 'inotify'"));
+				throw SSRStreamException();
+			}
+			std::string name(buffer.data() + pos); // the name may be padded with null bytes that should be ignored
+			pos += event->len;
+
+			// parse the name
+			SSRVideoStream stream;
+			if(!SSRVideoStreamParse(name, &stream))
+				continue;
+
+			// handle events
+			if(event->mask & (IN_CREATE | IN_MOVED_TO)) {
+				if(std::find(m_streams.begin(), m_streams.end(), stream) == m_streams.end()) {
+					Logger::LogInfo("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Added stream %1.").arg(QString::fromStdString(stream.m_stream_name)));
+					m_streams.push_back(stream);
+					add_callback(stream, userdata);
+				}
+			}
+			if(event->mask & (IN_DELETE | IN_MOVED_FROM)) {
+				auto p = std::find(m_streams.begin(), m_streams.end(), stream);
+				if(p != m_streams.end()) {
+					Logger::LogInfo("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Removed stream %1.").arg(QString::fromStdString(stream.m_stream_name)));
+					size_t index =  p - m_streams.begin();
+					m_streams.erase(p);
+					remove_callback(stream, index, userdata);
+				}
+			}
+
+		}
+
 	}
 
-	// parse the changes
-	size_t pos = 0;
-	while(pos < buffer.size()) {
+	// delete abandoned streams
+	for(unsigned int j = m_streams.size(); j > 0; ) {
+		--j;
 
-		// read the event structure
-		if(buffer.size() - pos < sizeof(inotify_event)) {
-			Logger::LogError("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Error: Received partial event from inotify!", "don't translate 'inotify'"));
-			throw SSRStreamException();
-		}
-		inotify_event *event = (inotify_event*) (buffer.data() + pos);
-		pos += sizeof(inotify_event);
-
-		// ignore events with no name
-		if(event->len == 0)
+		// does the process still exist?
+		if(kill(m_streams[j].m_process_id, 0) == 0)
 			continue;
 
-		// read the name
-		if(buffer.size() - pos < event->len) {
-			Logger::LogError("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Error: Received partial name from inotify!", "don't translate 'inotify'"));
-			throw SSRStreamException();
+		// if the process is dead, delete the files
+		for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
+			std::string filename = m_channel_directory + "/videoframe" + NumToString(i) + "-" + m_streams[j].m_stream_name;
+			unlink(filename.c_str());
 		}
-		std::string name(buffer.data() + pos); // the name may be padded with null bytes that should be ignored
-		pos += event->len;
+		std::string filename = m_channel_directory + "/video-" + m_streams[j].m_stream_name;
+		unlink(filename.c_str());
+		Logger::LogInfo("[SSRVideoStreamWatcher::Init] " + QObject::tr("Deleted abandoned stream %1.").arg(QString::fromStdString(m_streams[j].m_stream_name)));
 
-		// parse the name
-		SSRVideoStream stream;
-		if(!SSRVideoStreamParse(name, &stream))
-			continue;
-
-		// handle events
-		if(event->mask & IN_CREATE) {
-			if(std::find(m_streams.begin(), m_streams.end(), stream) == m_streams.end()) {
-				Logger::LogInfo("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Added stream %1.").arg(QString::fromStdString(name)));
-				m_streams.push_back(stream);
-				add_callback(stream, userdata);
-			} else {
-				Logger::LogWarning("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Warning: Tried to add stream %1, but it exists already!").arg(QString::fromStdString(name)));
-			}
-		}
-		if(event->mask & IN_DELETE) {
-			auto p = std::find(m_streams.begin(), m_streams.end(), stream);
-			if(p != m_streams.end()) {
-				Logger::LogInfo("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Removed stream %1.").arg(QString::fromStdString(name)));
-				size_t pos =  p - m_streams.begin();
-				m_streams.erase(p);
-				remove_callback(stream, pos, userdata);
-			} else {
-				Logger::LogWarning("[SSRVideoStreamWatcher::GetChanges] " + QObject::tr("Warning: Tried to remove stream %1, but it does not exist!").arg(QString::fromStdString(name)));
-			}
-		}
+		// remove the stream
+		SSRVideoStream stream = m_streams[j];
+		m_streams.erase(m_streams.begin() + j);
+		remove_callback(stream, j, userdata);
 
 	}
 
