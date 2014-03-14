@@ -47,6 +47,31 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 
 	connect(button_about, SIGNAL(clicked()), this, SLOT(AboutDialog()));
 	connect(button_continue, SIGNAL(clicked()), m_main_window, SLOT(GoPageInput()));
+	
+	QGroupBox *group_settings = new QGroupBox(tr("Settings profiles"), this);
+	{
+		m_combobox_profile = new QComboBox(group_settings);
+		ReadProfiles(m_combobox_profile);
+		m_pushbutton_load_profile = new QPushButton(tr("Load profile"), group_settings);
+		m_pushbutton_delete_profile = new QPushButton(tr("Delete profile"), group_settings);
+		m_lineedit_new_profile = new QLineEdit(group_settings);
+		m_pushbutton_new_profile = new QPushButton(tr("New profile"), group_settings);
+		
+		connect(m_pushbutton_load_profile,   SIGNAL(clicked()), this, SLOT(  LoadProfile()));
+		connect(m_pushbutton_delete_profile, SIGNAL(clicked()), this, SLOT(DeleteProfile()));
+		connect(m_pushbutton_new_profile,    SIGNAL(clicked()), this, SLOT(   NewProfile()));
+		
+		QGridLayout *layout = new QGridLayout(group_settings);
+		layout->addWidget(m_combobox_profile, 0, 0);
+		layout->addWidget(m_pushbutton_load_profile, 0, 1);
+		layout->addWidget(m_pushbutton_delete_profile, 0, 2);
+		layout->addWidget(m_lineedit_new_profile, 1, 0);
+		layout->addWidget(m_pushbutton_new_profile, 1, 1, 1, 2);
+	}
+	// sigh... layouts can't have tooltips... (I want all the profile widgets to show the same tooltip)
+	group_settings->setToolTip(tr("The settings are saved to the current profile with every page change.\n"
+								  "The default profile is called \"default\".\n"
+								  "Users of version 0.2.2 or older will find their settings in the \"settings\" profile."));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	{
@@ -64,8 +89,51 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 		layout2->addStretch();
 	}
 	layout->addStretch();
+	layout->addWidget(group_settings);
+	layout->addStretch();
 	layout->addWidget(button_continue);
 
+}
+
+void PageWelcome::LoadProfile() {
+	m_main_window->LoadSettings(m_combobox_profile->currentText());
+}
+
+void PageWelcome::DeleteProfile() {
+	QFile::remove(GetApplicationUserDir() + "/" + m_combobox_profile->currentText() + ".conf");
+	ReadProfiles(m_combobox_profile);
+	m_main_window->LoadSettings(GetAnyProfile());
+}
+
+void PageWelcome::NewProfile() { 
+	// QSettings constructor will create the file if it doesn't exist, so we do nothing here
+	m_main_window->LoadSettings(m_lineedit_new_profile->text());
+	
+	// update list
+	ReadProfiles(m_combobox_profile);
+	
+	// set the combobox to display this new profile
+	m_combobox_profile->setCurrentIndex(
+						m_combobox_profile->findText(m_main_window->GetProfile())
+										);
+}
+
+void PageWelcome::ReadProfiles(QComboBox* combobox) {
+	combobox->clear();
+	// this code is basically copied from ../Main.cpp
+	QDir dir(GetApplicationUserDir());
+	dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
+	dir.setNameFilters(QStringList("*.conf"));
+	for(QFileInfo conffile : dir.entryInfoList())
+		combobox->addItem(conffile.completeBaseName());
+}
+
+QString PageWelcome::GetAnyProfile() {
+	// returns the first profile in alphabetical order, or "default" if none exist
+	if (m_combobox_profile->count() < 1)
+		m_combobox_profile->addItem("default");
+	m_combobox_profile->setCurrentIndex(0);
+	return m_combobox_profile->itemText(0);
 }
 
 void PageWelcome::AboutDialog() {

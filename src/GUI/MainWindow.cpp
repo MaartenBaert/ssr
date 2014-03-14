@@ -54,7 +54,7 @@ MainWindow::MainWindow()
 	m_stacked_layout->addWidget(m_page_done);
 	m_stacked_layout->setCurrentWidget(m_page_welcome);
 
-	LoadSettings();
+	LoadSettings(m_page_welcome->GetAnyProfile());
 
 	// warning for glitch with proprietary NVIDIA drivers
 	if(GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_ASK || GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_YES) {
@@ -92,9 +92,13 @@ MainWindow::~MainWindow() {
 
 }
 
-void MainWindow::LoadSettings() {
-
-	QSettings settings(GetApplicationUserDir() + "/settings.conf", QSettings::IniFormat);
+void MainWindow::LoadSettings(QString profile /*= "settings"*/) {
+	if (profile == "")
+		profile = "settings";
+	
+	m_settings_profile = profile;
+	
+	QSettings settings(GetApplicationUserDir() + "/" + profile + ".conf", QSettings::IniFormat);
 
 	SetNVidiaDisableFlipping(FindNVidiaDisableFlipping(settings.value("global/nvidia_disable_flipping", QString()).toString(), NVIDIA_DISABLE_FLIPPING_ASK));
 
@@ -106,7 +110,7 @@ void MainWindow::LoadSettings() {
 
 void MainWindow::SaveSettings() {
 
-	QSettings settings(GetApplicationUserDir() + "/settings.conf", QSettings::IniFormat);
+	QSettings settings(GetApplicationUserDir() + "/" + m_settings_profile + ".conf", QSettings::IniFormat);
 	settings.clear();
 
 	settings.setValue("global/nvidia_disable_flipping", GetNVidiaDisableFlippingName(GetNVidiaDisableFlipping()));
@@ -143,19 +147,25 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 	QApplication::quit();
 }
 
+// save settings at every page, just because
+
 void MainWindow::GoPageWelcome() {
 	m_stacked_layout->setCurrentWidget(m_page_welcome);
+	SaveSettings();
 }
 void MainWindow::GoPageInput() {
 	m_stacked_layout->setCurrentWidget(m_page_input);
+	SaveSettings();
 }
 void MainWindow::GoPageOutput() {
 	m_stacked_layout->setCurrentWidget(m_page_output);
 	m_page_output->PageStart();
+	SaveSettings();
 }
 void MainWindow::GoPageRecord() {
 	m_stacked_layout->setCurrentWidget(m_page_record);
 	m_page_record->StartPage();
+	SaveSettings();
 }
 void MainWindow::GoPageDone() {
 	m_stacked_layout->setCurrentWidget(m_page_done);
