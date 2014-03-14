@@ -1048,7 +1048,7 @@ void PageRecord::OnUpdateInformation() {
 			QByteArray new_file = (g_option_statsfile + "-new").toLocal8Bit();
 			// Qt doesn't get the permissions right (you can only change the permissions after creating the file, that's too late),
 			// and it doesn't allow renaming a file over another file, so don't bother with QFile and just use POSIX and C functions.
-			int fd = open(new_file.constData(), O_WRONLY | O_CREAT, 0600);
+			int fd = open(new_file.constData(), O_WRONLY | O_CREAT | O_CLOEXEC, 0600);
 			if(fd != -1) {
 				ssize_t b = write(fd, data.constData(), data.size()); Q_UNUSED(b);
 				::close(fd);

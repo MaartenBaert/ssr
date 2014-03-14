@@ -111,7 +111,7 @@ Some packages (e.g. ffmpeg) are not in the official repository, but can be insta
 
 For Fedora:
 
-    sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel gcc make gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel.i686 libXfixes-devel.i686 mesa-libGLU-devel.i686
+    sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel gcc make gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel.i686 libXfixes-devel.i686 mesa-libGL-devel.i686 mesa-libGLU-devel.i686
 
 Compiling and installing
 ------------------------
