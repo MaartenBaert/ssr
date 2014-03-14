@@ -92,9 +92,7 @@ MainWindow::~MainWindow() {
 
 }
 
-void MainWindow::LoadSettings(QString profile /*= "settings"*/) {
-	if (profile == "")
-		profile = "settings";
+void MainWindow::LoadSettings(QString profile) {
 	
 	m_settings_profile = profile;
 	
