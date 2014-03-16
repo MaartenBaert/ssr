@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageInput.h"
 
+#include "Main.h"
 #include "Dialogs.h"
 #include "MainWindow.h"
 
@@ -73,6 +74,29 @@ PageInput::PageInput(MainWindow* main_window)
 
 	m_glinject_command = "";
 	m_glinject_max_megapixels = 0;
+
+	QGroupBox *group_profile = new QGroupBox(tr("Profile"), this);
+	{
+		m_combobox_profiles = new QComboBox(group_profile);
+		m_combobox_profiles->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		m_pushbutton_profile_save = new QPushButton(tr("Save"), group_profile);
+		m_pushbutton_profile_save->setToolTip(tr("Save the current settings to this profile."));
+		m_pushbutton_profile_new = new QPushButton(tr("New"), group_profile);
+		m_pushbutton_profile_new->setToolTip(tr("Create a new profile with the current settings."));
+		m_pushbutton_profile_delete = new QPushButton(tr("Delete"), group_profile);
+		m_pushbutton_profile_delete->setToolTip(tr("Delete this profile."));
+
+		connect(m_combobox_profiles, SIGNAL(activated(int)), this, SLOT(OnProfileChange()));
+		connect(m_pushbutton_profile_save, SIGNAL(clicked()), this, SLOT(OnProfileSave()));
+		connect(m_pushbutton_profile_new, SIGNAL(clicked()), this, SLOT(OnProfileNew()));
+		connect(m_pushbutton_profile_delete, SIGNAL(clicked()), this, SLOT(OnProfileDelete()));
+
+		QHBoxLayout *layout = new QHBoxLayout(group_profile);
+		layout->addWidget(m_combobox_profiles);
+		layout->addWidget(m_pushbutton_profile_save);
+		layout->addWidget(m_pushbutton_profile_new);
+		layout->addWidget(m_pushbutton_profile_delete);
+	}
 
 	QGroupBox *group_video = new QGroupBox(tr("Video input"), this);
 	{
@@ -275,6 +299,7 @@ PageInput::PageInput(MainWindow* main_window)
 	connect(button_continue, SIGNAL(clicked()), this, SLOT(OnContinue()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(group_profile);
 	layout->addWidget(group_video);
 	layout->addWidget(group_audio);
 	layout->addStretch();
@@ -287,11 +312,14 @@ PageInput::PageInput(MainWindow* main_window)
 
 	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(OnUpdateScreenConfiguration()));
 	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(OnUpdateScreenConfiguration()));
+
+	LoadProfiles();
 	LoadScreenConfigurations();
 #if SSR_USE_PULSEAUDIO
 	LoadPulseAudioSources();
 #endif
 
+	UpdateProfileFields();
 	OnUpdateVideoAreaFields();
 	OnUpdateVideoScaleFields();
 	OnUpdateAudioFields();
@@ -299,6 +327,16 @@ PageInput::PageInput(MainWindow* main_window)
 }
 
 void PageInput::LoadSettings(QSettings* settings) {
+	SetProfile(FindProfile(settings->value("input/profile", QString()).toString()));
+	LoadProfileSettings(settings);
+}
+
+void PageInput::SaveSettings(QSettings* settings) {
+	settings->setValue("input/profile", GetProfileName());
+	SaveProfileSettings(settings);
+}
+
+void PageInput::LoadProfileSettings(QSettings* settings) {
 
 	// choose default audio backend
 #if SSR_USE_PULSEAUDIO
@@ -344,7 +382,7 @@ void PageInput::LoadSettings(QSettings* settings) {
 
 }
 
-void PageInput::SaveSettings(QSettings* settings) {
+void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/video_area", GetVideoArea());
 	settings->setValue("input/video_area_screen", GetVideoAreaScreen());
 	settings->setValue("input/video_x", GetVideoX());
@@ -375,20 +413,35 @@ void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
 }
 
-#if SSR_USE_PULSEAUDIO
+QString PageInput::GetProfileName() {
+	unsigned int profile = GetProfile();
+	if(profile == 0)
+		return QString();
+	return m_profiles[profile - 1].m_name;
+}
 
+#if SSR_USE_PULSEAUDIO
 QString PageInput::GetPulseAudioSourceName() {
 	return m_pulseaudio_sources[GetPulseAudioSource()].name;
 }
+#endif
 
-unsigned int PageInput::FindPulseAudioSource(const QString &name) {
+unsigned int PageInput::FindProfile(const QString& name) {
+	for(unsigned int i = 0; i < m_profiles.size(); ++i) {
+		if(m_profiles[i].m_name == name)
+			return i + 1;
+	}
+	return 0;
+}
+
+#if SSR_USE_PULSEAUDIO
+unsigned int PageInput::FindPulseAudioSource(const QString& name) {
 	for(unsigned int i = 0; i < m_pulseaudio_sources.size(); ++i) {
 		if(m_pulseaudio_sources[i].name == name)
 			return i;
 	}
 	return 0;
 }
-
 #endif
 
 // Tries to find the real window that corresponds to a top-level window (the actual window without window manager decorations).
@@ -589,6 +642,36 @@ void PageInput::SetVideoAreaFromRubberBand() {
 	SetVideoH(r.height());
 }
 
+void PageInput::LoadProfiles() {
+	m_profiles.clear();
+	LoadProfilesFromDir(GetApplicationSystemDir("input-profiles"), false);
+	LoadProfilesFromDir(GetApplicationUserDir("input-profiles"), true);
+	m_combobox_profiles->clear();
+	m_combobox_profiles->addItem(tr("(none)"));
+	for(unsigned int i = 0; i < m_profiles.size(); ++i) {
+		m_combobox_profiles->addItem(m_profiles[i].m_name);
+	}
+}
+
+void PageInput::LoadProfilesFromDir(const QString& path, bool can_delete) {
+	QDir dir(path);
+	dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
+	dir.setNameFilters(QStringList("*.conf"));
+	for(QFileInfo file : dir.entryInfoList()) {
+		Profile profile;
+		profile.m_name = file.completeBaseName();
+		profile.m_can_delete = can_delete;
+		m_profiles.push_back(profile);
+	}
+}
+
+void PageInput::UpdateProfileFields() {
+	unsigned int profile = GetProfile();
+	m_pushbutton_profile_save->setEnabled(profile != 0);
+	m_pushbutton_profile_new->setEnabled(true);
+	m_pushbutton_profile_delete->setEnabled(profile != 0 && m_profiles[profile - 1].m_can_delete);
+}
+
 void PageInput::LoadScreenConfigurations() {
 	QRect rect = QApplication::desktop()->screenGeometry(0);
 	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
@@ -727,6 +810,68 @@ void PageInput::OnUpdateAudioFields() {
 		{{m_checkbox_jack_connect_system_capture, m_checkbox_jack_connect_system_playback}, (backend == AUDIO_BACKEND_JACK)},
 #endif
 	});
+}
+
+void PageInput::OnProfileChange() {
+	UpdateProfileFields();
+	QString name = GetProfileName();
+	if(name.isEmpty())
+		return;
+	QString filename = GetApplicationUserDir("input-profiles") + "/" + name + ".conf";
+	if(QFileInfo(filename).exists()) {
+		QSettings settings(filename, QSettings::IniFormat);
+		LoadProfileSettings(&settings);
+	}
+}
+
+void PageInput::OnProfileSave() {
+	QString name = GetProfileName();
+	if(name.isEmpty())
+		return;
+	QString filename = GetApplicationUserDir("input-profiles") + "/" + name + ".conf";
+	if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to replace this profile?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
+		{
+			QSettings settings(filename, QSettings::IniFormat);
+			SaveProfileSettings(&settings);
+		}
+		LoadProfiles();
+		SetProfile(FindProfile(name));
+		UpdateProfileFields();
+	}
+}
+
+void PageInput::OnProfileNew() {
+	QString name = InputBox(this, MainWindow::WINDOW_CAPTION, "Enter a name for the new profile:", "");
+	if(name.isEmpty())
+		return;
+	name = name.replace('\0', '-').replace('/', '-');
+	QString filename = GetApplicationUserDir("input-profiles") + "/" + name + ".conf";
+	if(!QFileInfo(filename).exists() || MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
+			tr("A profile with the same name already exists. Are you sure that you want to replace it?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
+		{
+			QSettings settings(filename, QSettings::IniFormat);
+			SaveProfileSettings(&settings);
+		}
+		LoadProfiles();
+		SetProfile(FindProfile(name));
+		UpdateProfileFields();
+	}
+}
+
+void PageInput::OnProfileDelete() {
+	QString name = GetProfileName();
+	if(name.isEmpty())
+		return;
+	QString filename = GetApplicationUserDir("input-profiles") + "/" + name + ".conf";
+	if(QFileInfo(filename).exists()) {
+		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to delete this profile?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
+			QFile(filename).remove();
+			LoadProfiles();
+			UpdateProfileFields();
+		}
+	} else {
+		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("This is a predefined preset, you can't delete it."), BUTTON_OK, BUTTON_OK);
+	}
 }
 
 void PageInput::OnUpdateScreenConfiguration() {

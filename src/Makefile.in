@@ -496,7 +496,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_5) $(am__append_6) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_8) $(am__append_9) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_11) \
-@ENABLE_SSRPROGRAM_TRUE@	-DSSR_TRANSLATIONS_PATH=\"$(translationsdir)\"
+@ENABLE_SSRPROGRAM_TRUE@	-DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = \
 @ENABLE_SSRPROGRAM_TRUE@	-pthread
 

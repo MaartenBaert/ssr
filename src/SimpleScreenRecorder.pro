@@ -5,7 +5,7 @@ QT += core gui
 TARGET = SimpleScreenRecorder
 TEMPLATE = app
 
-DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_PULSEAUDIO=1 SSR_USE_JACK=1 SSR_TRANSLATIONS_PATH=\"/usr/share/simplescreenrecorder/translations\"
+DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_PULSEAUDIO=1 SSR_USE_JACK=1 SSR_SYSTEM_DIR=\"/usr/share/simplescreenrecorder\"
 QMAKE_CXXFLAGS += -std=c++0x -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
@@ -55,7 +55,7 @@ SOURCES += \
 	GUI/VideoPreviewer.cpp \
 	Main.cpp \
 	Version.cpp \
-    NVidia.cpp
+	NVidia.cpp
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
@@ -104,7 +104,7 @@ HEADERS  += \
 	Global.h \
 	Main.h \
 	Version.h \
-    NVidia.h
+	NVidia.h
 
 RESOURCES += \
 	resources.qrc

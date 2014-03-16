@@ -229,7 +229,7 @@ clean-moc-extra:
 
 translationsdir = $(pkgdatadir)/translations
 
-simplescreenrecorder_CPPFLAGS += -DSSR_TRANSLATIONS_PATH=\"$(translationsdir)\"
+simplescreenrecorder_CPPFLAGS += -DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
 
 nodist_translations_DATA = \
 	simplescreenrecorder_de.qm \
