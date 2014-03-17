@@ -91,6 +91,8 @@ PageInput::PageInput(MainWindow* main_window)
 	m_grabbing = false;
 	m_selecting_window = false;
 
+	m_profile_box = new ProfileBox(this, "input-profiles", &LoadProfileSettingsCallback, &SaveProfileSettingsCallback, this);
+
 	QGroupBox *groupbox_video = new QGroupBox(tr("Video input"), this);
 	{
 		m_buttongroup_video_area = new QButtonGroup(groupbox_video);
