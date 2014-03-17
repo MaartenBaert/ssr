@@ -348,13 +348,13 @@ void X11Input::InputThread() {
 			int64_t next_timestamp = CalculateNextVideoTimestamp();
 			int64_t timestamp = hrt_time_micro();
 			if(next_timestamp == SINK_TIMESTAMP_NONE) {
-				usleep(10000);
+				usleep(20000);
 				continue;
 			} else if(next_timestamp != SINK_TIMESTAMP_ASAP) {
 				int64_t wait = next_timestamp - timestamp;
-				if(wait > 11000) {
+				if(wait > 21000) {
 					// the thread can't sleep for too long because it still has to check the m_should_stop flag periodically
-					usleep(10000);
+					usleep(20000);
 					continue;
 				} else if(wait > 0) {
 					usleep(wait);

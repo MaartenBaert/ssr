@@ -202,8 +202,9 @@ void GLInjectInput::InputThread() {
 
 			// do we have a stream reader?
 			if(lock->m_stream_reader == NULL) {
+				PushVideoPing(hrt_time_micro() - MAX_COMMUNICATION_LATENCY);
 				lock.lock().unlock(); // release lock before sleep
-				usleep(10000);
+				usleep(20000);
 				continue;
 			}
 
@@ -215,7 +216,7 @@ void GLInjectInput::InputThread() {
 			if(data == NULL) {
 				PushVideoPing(hrt_time_micro() - MAX_COMMUNICATION_LATENCY);
 				lock.lock().unlock(); // release lock before sleep
-				usleep(10000);
+				usleep(20000);
 				continue;
 			}
 

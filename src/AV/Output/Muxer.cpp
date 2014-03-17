@@ -290,7 +290,7 @@ void Muxer::MuxerThread() {
 
 			// if there is no packet, wait and try again later
 			if(packet == NULL) {
-				usleep(10000);
+				usleep(20000);
 				continue;
 			}
 

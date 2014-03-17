@@ -790,7 +790,7 @@ void Synchronizer::SynchronizerThread() {
 				}
 			}
 
-			usleep(10000);
+			usleep(20000);
 
 		}
 

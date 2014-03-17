@@ -260,7 +260,7 @@ void JACKInput::InputThread() {
 					lock->m_connect_commands.clear();
 				}
 
-				usleep(10000);
+				usleep(20000);
 				continue;
 			}
 

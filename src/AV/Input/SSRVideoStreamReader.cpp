@@ -85,6 +85,7 @@ void SSRVideoStreamReader::Init() {
 	}
 
 	// wait until the header has been initialized
+	//TODO// create frame files first, and check initialization this later (without blocking)
 	GLInjectHeader *header = GetGLInjectHeader();
 	unsigned int load_attempts = 0;
 	for( ; ; ) {
@@ -94,8 +95,8 @@ void SSRVideoStreamReader::Init() {
 			break;
 
 		++load_attempts;
-		if(load_attempts < 50) {
-			usleep(10000);
+		if(load_attempts < 20) {
+			usleep(20000);
 		} else {
 			Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Video stream header has not been initialized!"));
 			throw SSRStreamException();

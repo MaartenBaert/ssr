@@ -72,7 +72,7 @@ void OutputManager::Free(bool save) {
 	if(save && m_muxer != NULL && m_muxer->IsStarted()) {
 		m_muxer->Finish();
 		while(!m_muxer->IsDone() && !m_muxer->HasErrorOccurred()) {
-			usleep(10000);
+			usleep(20000);
 		}
 	}
 

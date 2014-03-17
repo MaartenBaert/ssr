@@ -186,7 +186,7 @@ void BaseEncoder::EncoderThread() {
 				if(m_should_finish) {
 					break;
 				}
-				usleep(10000);
+				usleep(20000);
 				continue;
 			}
 
