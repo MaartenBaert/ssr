@@ -159,8 +159,20 @@ int main(int argc, char* argv[]) {
 
 	// redirect stdout and stderr to a log file
 	if(g_option_logfile) {
+
+		// delete logs from versions < 0.2.3 (should be removed at some point in the future)
+		{
+			QDir dir(GetApplicationUserDir());
+			dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
+			dir.setNameFilters(QStringList("log-*.txt"));
+			for(QFileInfo fileinfo : dir.entryInfoList()) {
+				QFile(fileinfo.filePath()).remove();
+			}
+		}
+
+		// delete old logs
 		QDateTime now = QDateTime::currentDateTime();
-		QDir dir(GetApplicationUserDir());
+		QDir dir(GetApplicationUserDir("logs"));
 		dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
 		dir.setNameFilters(QStringList("log-*.txt"));
 		for(QFileInfo fileinfo : dir.entryInfoList()) {
@@ -168,10 +180,13 @@ int main(int argc, char* argv[]) {
 				QFile(fileinfo.filePath()).remove();
 			}
 		}
-		QString file = dir.path() + "/log-" + now.toString("yyyy-MM-dd-hh:mm:ss") + ".txt";
+
+		// open new log
+		QString file = dir.path() + "/log-" + now.toString("yyyy-MM-dd_hh.mm.ss") + ".txt";
 		FILE *f = fopen(file.toLocal8Bit().constData(), "a");
 		dup2(fileno(f), 1); // redirect stdout
 		dup2(fileno(f), 2); // redirect stderr
+
 	}
 
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");
