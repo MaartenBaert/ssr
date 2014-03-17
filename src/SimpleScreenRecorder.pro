@@ -52,6 +52,7 @@ SOURCES += \
 	GUI/PageOutput.cpp \
 	GUI/PageRecord.cpp \
 	GUI/PageWelcome.cpp \
+	GUI/ProfileBox.cpp \
 	GUI/VideoPreviewer.cpp \
 	Main.cpp \
 	Version.cpp \
@@ -100,6 +101,7 @@ HEADERS  += \
 	GUI/PageOutput.h \
 	GUI/PageRecord.h \
 	GUI/PageWelcome.h \
+	GUI/ProfileBox.h \
 	GUI/VideoPreviewer.h \
 	Global.h \
 	Main.h \

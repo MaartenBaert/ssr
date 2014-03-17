@@ -19,7 +19,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageInput.h"
 
-#include "Main.h"
 #include "Dialogs.h"
 #include "MainWindow.h"
 
@@ -75,90 +74,69 @@ PageInput::PageInput(MainWindow* main_window)
 	m_glinject_command = "";
 	m_glinject_max_megapixels = 0;
 
-	QGroupBox *group_profile = new QGroupBox(tr("Profile"), this);
+	m_profile_box = new ProfileBox(this, "input-profiles", &LoadProfileSettingsCallback, &SaveProfileSettingsCallback, this);
+
+	QGroupBox *groupbox_video = new QGroupBox(tr("Video input"), this);
 	{
-		m_combobox_profiles = new QComboBox(group_profile);
-		m_combobox_profiles->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_pushbutton_profile_save = new QPushButton(tr("Save"), group_profile);
-		m_pushbutton_profile_save->setToolTip(tr("Save the current settings to this profile."));
-		m_pushbutton_profile_new = new QPushButton(tr("New"), group_profile);
-		m_pushbutton_profile_new->setToolTip(tr("Create a new profile with the current settings."));
-		m_pushbutton_profile_delete = new QPushButton(tr("Delete"), group_profile);
-		m_pushbutton_profile_delete->setToolTip(tr("Delete this profile."));
-
-		connect(m_combobox_profiles, SIGNAL(activated(int)), this, SLOT(OnProfileChange()));
-		connect(m_pushbutton_profile_save, SIGNAL(clicked()), this, SLOT(OnProfileSave()));
-		connect(m_pushbutton_profile_new, SIGNAL(clicked()), this, SLOT(OnProfileNew()));
-		connect(m_pushbutton_profile_delete, SIGNAL(clicked()), this, SLOT(OnProfileDelete()));
-
-		QHBoxLayout *layout = new QHBoxLayout(group_profile);
-		layout->addWidget(m_combobox_profiles);
-		layout->addWidget(m_pushbutton_profile_save);
-		layout->addWidget(m_pushbutton_profile_new);
-		layout->addWidget(m_pushbutton_profile_delete);
-	}
-
-	QGroupBox *group_video = new QGroupBox(tr("Video input"), this);
-	{
-		m_buttongroup_video_area = new QButtonGroup(group_video);
-		QRadioButton *radio_area_screen = new QRadioButton(tr("Record the entire screen"), group_video);
-		QRadioButton *radio_area_fixed = new QRadioButton(tr("Record a fixed rectangle"), group_video);
-		QRadioButton *radio_area_cursor = new QRadioButton(tr("Follow the cursor"), group_video);
-		QRadioButton *radio_area_glinject = new QRadioButton(tr("Record OpenGL (experimental)"), group_video);
+		m_buttongroup_video_area = new QButtonGroup(groupbox_video);
+		QRadioButton *radio_area_screen = new QRadioButton(tr("Record the entire screen"), groupbox_video);
+		QRadioButton *radio_area_fixed = new QRadioButton(tr("Record a fixed rectangle"), groupbox_video);
+		QRadioButton *radio_area_cursor = new QRadioButton(tr("Follow the cursor"), groupbox_video);
+		QRadioButton *radio_area_glinject = new QRadioButton(tr("Record OpenGL (experimental)"), groupbox_video);
 		m_buttongroup_video_area->addButton(radio_area_screen, VIDEO_AREA_SCREEN);
 		m_buttongroup_video_area->addButton(radio_area_fixed, VIDEO_AREA_FIXED);
 		m_buttongroup_video_area->addButton(radio_area_cursor, VIDEO_AREA_CURSOR);
 		m_buttongroup_video_area->addButton(radio_area_glinject, VIDEO_AREA_GLINJECT);
-		m_combobox_screens = new QComboBoxWithSignal(group_video);
+		m_combobox_screens = new QComboBoxWithSignal(groupbox_video);
 		m_combobox_screens->setToolTip(tr("Select what monitor should be recorded in a multi-monitor configuration."));
-		m_pushbutton_video_select_rectangle = new QPushButton(tr("Select rectangle..."), group_video);
+		m_pushbutton_video_select_rectangle = new QPushButton(tr("Select rectangle..."), groupbox_video);
 		m_pushbutton_video_select_rectangle->setToolTip(tr("Use the mouse to select the recorded rectangle."));
-		m_pushbutton_video_select_window = new QPushButton(tr("Select window..."), group_video);
+		m_pushbutton_video_select_window = new QPushButton(tr("Select window..."), groupbox_video);
 		m_pushbutton_video_select_window->setToolTip(tr("Use the mouse to select a window to record.\n"
 														"Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only\n"
 														"the client area of the window will be recorded."));
-		m_pushbutton_video_opengl_settings = new QPushButton(tr("OpenGL settings..."), group_video);
+		m_pushbutton_video_opengl_settings = new QPushButton(tr("OpenGL settings..."), groupbox_video);
 		m_pushbutton_video_opengl_settings->setToolTip(tr("Change the settings for OpenGL recording."));
-		m_label_video_x = new QLabel(tr("Left:"), group_video);
-		m_spinbox_video_x = new QSpinBoxWithSignal(group_video);
+		m_label_video_x = new QLabel(tr("Left:"), groupbox_video);
+		m_spinbox_video_x = new QSpinBoxWithSignal(groupbox_video);
 		m_spinbox_video_x->setRange(0, 10000);
 		m_spinbox_video_x->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_spinbox_video_x->setToolTip(tr("The x coordinate of the upper-left corner of the recorded rectangle.\n"
 										 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
-		m_label_video_y = new QLabel(tr("Top:"), group_video);
-		m_spinbox_video_y = new QSpinBoxWithSignal(group_video);
+		m_label_video_y = new QLabel(tr("Top:"), groupbox_video);
+		m_spinbox_video_y = new QSpinBoxWithSignal(groupbox_video);
 		m_spinbox_video_y->setRange(0, 10000);
 		m_spinbox_video_y->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_spinbox_video_y->setToolTip(tr("The y coordinate of the upper-left corner of the recorded rectangle.\n"
 										 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
-		m_label_video_w = new QLabel(tr("Width:"), group_video);
-		m_spinbox_video_w = new QSpinBoxWithSignal(group_video);
+		m_label_video_w = new QLabel(tr("Width:"), groupbox_video);
+		m_spinbox_video_w = new QSpinBoxWithSignal(groupbox_video);
 		m_spinbox_video_w->setRange(0, 10000);
 		m_spinbox_video_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_spinbox_video_w->setToolTip(tr("The width of the recorded rectangle.\n"
 										 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
-		m_label_video_h = new QLabel(tr("Height:"), group_video);
-		m_spinbox_video_h = new QSpinBoxWithSignal(group_video);
+		m_label_video_h = new QLabel(tr("Height:"), groupbox_video);
+		m_spinbox_video_h = new QSpinBoxWithSignal(groupbox_video);
 		m_spinbox_video_h->setRange(0, 10000);
 		m_spinbox_video_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_spinbox_video_h->setToolTip(tr("The height of the recorded rectangle.\n"
 										 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
-		QLabel *label_frame_rate = new QLabel(tr("Frame rate:"), group_video);
-		m_spinbox_video_frame_rate = new QSpinBox(group_video);
+		QLabel *label_frame_rate = new QLabel(tr("Frame rate:"), groupbox_video);
+		m_spinbox_video_frame_rate = new QSpinBox(groupbox_video);
 		m_spinbox_video_frame_rate->setRange(1, 1000);
 		m_spinbox_video_frame_rate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_spinbox_video_frame_rate->setToolTip(tr("The number of frames per second in the final video. Higher frame rates use more CPU time."));
-		m_checkbox_scale = new QCheckBox(tr("Scale video"), group_video);
+		m_checkbox_scale = new QCheckBox(tr("Scale video"), groupbox_video);
 		m_checkbox_scale->setToolTip(tr("Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster."));
-		m_label_video_scaled_w = new QLabel(tr("Scaled width:"), group_video);
-		m_spinbox_video_scaled_w = new QSpinBox(group_video);
+		m_label_video_scaled_w = new QLabel(tr("Scaled width:"), groupbox_video);
+		m_spinbox_video_scaled_w = new QSpinBox(groupbox_video);
 		m_spinbox_video_scaled_w->setRange(0, 10000);
 		m_spinbox_video_scaled_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_label_video_scaled_h = new QLabel(tr("Scaled height:"), group_video);
-		m_spinbox_video_scaled_h = new QSpinBox(group_video);
+		m_label_video_scaled_h = new QLabel(tr("Scaled height:"), groupbox_video);
+		m_spinbox_video_scaled_h = new QSpinBox(groupbox_video);
 		m_spinbox_video_scaled_h->setRange(0, 10000);
 		m_spinbox_video_scaled_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_checkbox_record_cursor = new QCheckBox(tr("Record cursor"), group_video);
+		m_checkbox_record_cursor = new QCheckBox(tr("Record cursor"), groupbox_video);
 
 		connect(m_buttongroup_video_area, SIGNAL(buttonClicked(int)), this, SLOT(OnUpdateVideoAreaFields()));
 		connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoAreaFields()));
@@ -181,7 +159,7 @@ PageInput::PageInput(MainWindow* main_window)
 		connect(m_pushbutton_video_opengl_settings, SIGNAL(clicked()), this, SLOT(OnGLInjectDialog()));
 		connect(m_checkbox_scale, SIGNAL(clicked()), this, SLOT(OnUpdateVideoScaleFields()));
 
-		QVBoxLayout *layout = new QVBoxLayout(group_video);
+		QVBoxLayout *layout = new QVBoxLayout(groupbox_video);
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
 			layout->addLayout(layout2);
@@ -228,11 +206,11 @@ PageInput::PageInput(MainWindow* main_window)
 		}
 		layout->addWidget(m_checkbox_record_cursor);
 	}
-	QGroupBox *group_audio = new QGroupBox(tr("Audio input"), this);
+	QGroupBox *groupbox_audio = new QGroupBox(tr("Audio input"), this);
 	{
-		m_checkbox_audio_enable = new QCheckBox(tr("Record audio"), group_audio);
-		m_label_audio_backend = new QLabel(tr("Backend:"), group_audio);
-		m_combobox_audio_backend = new QComboBox(group_audio);
+		m_checkbox_audio_enable = new QCheckBox(tr("Record audio"), groupbox_audio);
+		m_label_audio_backend = new QLabel(tr("Backend:"), groupbox_audio);
+		m_combobox_audio_backend = new QComboBox(groupbox_audio);
 		m_combobox_audio_backend->addItem("ALSA");
 #if SSR_USE_PULSEAUDIO
 		m_combobox_audio_backend->addItem("PulseAudio");
@@ -242,17 +220,17 @@ PageInput::PageInput(MainWindow* main_window)
 #endif
 		m_combobox_audio_backend->setToolTip(tr("The audio backend that will be used for recording.\n"
 												"The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly."));
-		m_label_alsa_device = new QLabel(tr("Device:"), group_audio);
-		m_lineedit_alsa_device = new QLineEdit(group_audio);
+		m_label_alsa_device = new QLabel(tr("Device:"), groupbox_audio);
+		m_lineedit_alsa_device = new QLineEdit(groupbox_audio);
 		m_lineedit_alsa_device->setToolTip(tr("The ALSA device that will be used for recording. Normally this should be 'default'.\n"
 											  "You can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).", "Don't translate 'default' and 'plughw'"));
 #if SSR_USE_PULSEAUDIO
-		m_label_pulseaudio_source = new QLabel(tr("Source:"), group_audio);
-		m_combobox_pulseaudio_source = new QComboBox(group_audio);
+		m_label_pulseaudio_source = new QLabel(tr("Source:"), groupbox_audio);
+		m_combobox_pulseaudio_source = new QComboBox(groupbox_audio);
 		m_combobox_pulseaudio_source->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_combobox_pulseaudio_source->setToolTip(tr("The PulseAudio source that will be used for recording.\n"
 													"A 'monitor' is a source that records the audio played by other applications.", "Don't translate 'monitor' unless PulseAudio does this as well"));
-		m_pushbutton_pulseaudio_refresh = new QPushButton(tr("Refresh"), group_audio);
+		m_pushbutton_pulseaudio_refresh = new QPushButton(tr("Refresh"), groupbox_audio);
 		m_pushbutton_pulseaudio_refresh->setToolTip(tr("Refreshes the list of PulseAudio sources."));
 #endif
 #if SSR_USE_JACK
@@ -268,7 +246,7 @@ PageInput::PageInput(MainWindow* main_window)
 		connect(m_pushbutton_pulseaudio_refresh, SIGNAL(clicked()), this, SLOT(OnUpdatePulseAudioSources()));
 #endif
 
-		QVBoxLayout *layout = new QVBoxLayout(group_audio);
+		QVBoxLayout *layout = new QVBoxLayout(groupbox_audio);
 		layout->addWidget(m_checkbox_audio_enable);
 		{
 			QGridLayout *layout2 = new QGridLayout();
@@ -299,9 +277,9 @@ PageInput::PageInput(MainWindow* main_window)
 	connect(button_continue, SIGNAL(clicked()), this, SLOT(OnContinue()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->addWidget(group_profile);
-	layout->addWidget(group_video);
-	layout->addWidget(group_audio);
+	layout->addWidget(m_profile_box);
+	layout->addWidget(groupbox_video);
+	layout->addWidget(groupbox_audio);
 	layout->addStretch();
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
@@ -313,13 +291,11 @@ PageInput::PageInput(MainWindow* main_window)
 	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(OnUpdateScreenConfiguration()));
 	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(OnUpdateScreenConfiguration()));
 
-	LoadProfiles();
 	LoadScreenConfigurations();
 #if SSR_USE_PULSEAUDIO
 	LoadPulseAudioSources();
 #endif
 
-	UpdateProfileFields();
 	OnUpdateVideoAreaFields();
 	OnUpdateVideoScaleFields();
 	OnUpdateAudioFields();
@@ -327,13 +303,23 @@ PageInput::PageInput(MainWindow* main_window)
 }
 
 void PageInput::LoadSettings(QSettings* settings) {
-	SetProfile(FindProfile(settings->value("input/profile", QString()).toString()));
+	SetProfile(m_profile_box->FindProfile(settings->value("input/profile", QString()).toString()));
 	LoadProfileSettings(settings);
 }
 
 void PageInput::SaveSettings(QSettings* settings) {
-	settings->setValue("input/profile", GetProfileName());
+	settings->setValue("input/profile", m_profile_box->GetProfileName());
 	SaveProfileSettings(settings);
+}
+
+void PageInput::LoadProfileSettingsCallback(QSettings* settings, void* userdata) {
+	PageInput *page = (PageInput*) userdata;
+	page->LoadProfileSettings(settings);
+}
+
+void PageInput::SaveProfileSettingsCallback(QSettings* settings, void* userdata) {
+	PageInput *page = (PageInput*) userdata;
+	page->SaveProfileSettings(settings);
 }
 
 void PageInput::LoadProfileSettings(QSettings* settings) {
@@ -376,6 +362,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	SetGLInjectLimitFPS(settings->value("input/glinject_limit_fps", false).toBool());
 
 	// update things
+	OnUpdateRecordingFrame();
 	OnUpdateVideoAreaFields();
 	OnUpdateVideoScaleFields();
 	OnUpdateAudioFields();
@@ -413,26 +400,11 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
 }
 
-QString PageInput::GetProfileName() {
-	unsigned int profile = GetProfile();
-	if(profile == 0)
-		return QString();
-	return m_profiles[profile - 1].m_name;
-}
-
 #if SSR_USE_PULSEAUDIO
 QString PageInput::GetPulseAudioSourceName() {
 	return m_pulseaudio_sources[GetPulseAudioSource()].name;
 }
 #endif
-
-unsigned int PageInput::FindProfile(const QString& name) {
-	for(unsigned int i = 0; i < m_profiles.size(); ++i) {
-		if(m_profiles[i].m_name == name)
-			return i + 1;
-	}
-	return 0;
-}
 
 #if SSR_USE_PULSEAUDIO
 unsigned int PageInput::FindPulseAudioSource(const QString& name) {
@@ -642,36 +614,6 @@ void PageInput::SetVideoAreaFromRubberBand() {
 	SetVideoH(r.height());
 }
 
-void PageInput::LoadProfiles() {
-	m_profiles.clear();
-	LoadProfilesFromDir(GetApplicationSystemDir("input-profiles"), false);
-	LoadProfilesFromDir(GetApplicationUserDir("input-profiles"), true);
-	m_combobox_profiles->clear();
-	m_combobox_profiles->addItem(tr("(none)"));
-	for(unsigned int i = 0; i < m_profiles.size(); ++i) {
-		m_combobox_profiles->addItem(m_profiles[i].m_name);
-	}
-}
-
-void PageInput::LoadProfilesFromDir(const QString& path, bool can_delete) {
-	QDir dir(path);
-	dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
-	dir.setNameFilters(QStringList("*.conf"));
-	for(QFileInfo file : dir.entryInfoList()) {
-		Profile profile;
-		profile.m_name = file.completeBaseName();
-		profile.m_can_delete = can_delete;
-		m_profiles.push_back(profile);
-	}
-}
-
-void PageInput::UpdateProfileFields() {
-	unsigned int profile = GetProfile();
-	m_pushbutton_profile_save->setEnabled(profile != 0);
-	m_pushbutton_profile_new->setEnabled(true);
-	m_pushbutton_profile_delete->setEnabled(profile != 0 && m_profiles[profile - 1].m_can_delete);
-}
-
 void PageInput::LoadScreenConfigurations() {
 	QRect rect = QApplication::desktop()->screenGeometry(0);
 	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
@@ -810,68 +752,6 @@ void PageInput::OnUpdateAudioFields() {
 		{{m_checkbox_jack_connect_system_capture, m_checkbox_jack_connect_system_playback}, (backend == AUDIO_BACKEND_JACK)},
 #endif
 	});
-}
-
-void PageInput::OnProfileChange() {
-	UpdateProfileFields();
-	QString name = GetProfileName();
-	if(name.isEmpty())
-		return;
-	QString filename = GetApplicationUserDir("input-profiles") + "/" + name + ".conf";
-	if(QFileInfo(filename).exists()) {
-		QSettings settings(filename, QSettings::IniFormat);
-		LoadProfileSettings(&settings);
-	}
-}
-
-void PageInput::OnProfileSave() {
-	QString name = GetProfileName();
-	if(name.isEmpty())
-		return;
-	QString filename = GetApplicationUserDir("input-profiles") + "/" + name + ".conf";
-	if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to replace this profile?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
-		{
-			QSettings settings(filename, QSettings::IniFormat);
-			SaveProfileSettings(&settings);
-		}
-		LoadProfiles();
-		SetProfile(FindProfile(name));
-		UpdateProfileFields();
-	}
-}
-
-void PageInput::OnProfileNew() {
-	QString name = InputBox(this, MainWindow::WINDOW_CAPTION, "Enter a name for the new profile:", "");
-	if(name.isEmpty())
-		return;
-	name = name.replace('\0', '-').replace('/', '-');
-	QString filename = GetApplicationUserDir("input-profiles") + "/" + name + ".conf";
-	if(!QFileInfo(filename).exists() || MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
-			tr("A profile with the same name already exists. Are you sure that you want to replace it?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
-		{
-			QSettings settings(filename, QSettings::IniFormat);
-			SaveProfileSettings(&settings);
-		}
-		LoadProfiles();
-		SetProfile(FindProfile(name));
-		UpdateProfileFields();
-	}
-}
-
-void PageInput::OnProfileDelete() {
-	QString name = GetProfileName();
-	if(name.isEmpty())
-		return;
-	QString filename = GetApplicationUserDir("input-profiles") + "/" + name + ".conf";
-	if(QFileInfo(filename).exists()) {
-		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to delete this profile?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
-			QFile(filename).remove();
-			LoadProfiles();
-			UpdateProfileFields();
-		}
-	} else {
-		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("This is a predefined preset, you can't delete it."), BUTTON_OK, BUTTON_OK);
-	}
 }
 
 void PageInput::OnUpdateScreenConfiguration() {

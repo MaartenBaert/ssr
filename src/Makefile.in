@@ -177,9 +177,9 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	GUI/PageDone.cpp GUI/PageDone.h GUI/PageInput.cpp \
 	GUI/PageInput.h GUI/PageOutput.cpp GUI/PageOutput.h \
 	GUI/PageRecord.cpp GUI/PageRecord.h GUI/PageWelcome.cpp \
-	GUI/PageWelcome.h GUI/VideoPreviewer.cpp GUI/VideoPreviewer.h \
-	Global.h Main.cpp Main.h NVidia.cpp NVidia.h Version.cpp \
-	Version.h
+	GUI/PageWelcome.h GUI/ProfileBox.cpp GUI/ProfileBox.h \
+	GUI/VideoPreviewer.cpp GUI/VideoPreviewer.h Global.h Main.cpp \
+	Main.h NVidia.cpp NVidia.h Version.cpp Version.h
 @ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectLauncher.$(OBJEXT) \
@@ -216,6 +216,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageOutput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageRecord.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageWelcome.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-ProfileBox.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-VideoPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Main.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-NVidia.$(OBJEXT) \
@@ -233,6 +234,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageOutput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageRecord.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageWelcome.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_ProfileBox.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_VideoPreviewer.$(OBJEXT)
 simplescreenrecorder_OBJECTS = $(am_simplescreenrecorder_OBJECTS) \
 	$(nodist_simplescreenrecorder_OBJECTS)
@@ -589,6 +591,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageRecord.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageWelcome.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageWelcome.h \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/ProfileBox.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/ProfileBox.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/VideoPreviewer.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/VideoPreviewer.h \
 @ENABLE_SSRPROGRAM_TRUE@	Global.h \
@@ -612,6 +616,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	moc_MainWindow.cpp moc_PageDone.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageInput.cpp moc_PageOutput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageRecord.cpp moc_PageWelcome.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	moc_ProfileBox.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_VideoPreviewer.cpp
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDADD = $(am__append_13)
 @ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = translations/simplescreenrecorder_de.ts \
@@ -856,6 +861,8 @@ GUI/simplescreenrecorder-PageRecord.$(OBJEXT): GUI/$(am__dirstamp) \
 	GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-PageWelcome.$(OBJEXT): GUI/$(am__dirstamp) \
 	GUI/$(DEPDIR)/$(am__dirstamp)
+GUI/simplescreenrecorder-ProfileBox.$(OBJEXT): GUI/$(am__dirstamp) \
+	GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-VideoPreviewer.$(OBJEXT):  \
 	GUI/$(am__dirstamp) GUI/$(DEPDIR)/$(am__dirstamp)
 
@@ -888,6 +895,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageOutput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageRecord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageWelcome.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_ProfileBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_SyncDiagram.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_VideoPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_X11Input.Po@am__quote@
@@ -928,6 +936,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-PageOutput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-PageRecord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-PageWelcome.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-ProfileBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-VideoPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-Dialogs.Po@am__quote@
@@ -1482,6 +1491,20 @@ GUI/simplescreenrecorder-PageWelcome.obj: GUI/PageWelcome.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-PageWelcome.obj `if test -f 'GUI/PageWelcome.cpp'; then $(CYGPATH_W) 'GUI/PageWelcome.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/PageWelcome.cpp'; fi`
 
+GUI/simplescreenrecorder-ProfileBox.o: GUI/ProfileBox.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-ProfileBox.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-ProfileBox.Tpo -c -o GUI/simplescreenrecorder-ProfileBox.o `test -f 'GUI/ProfileBox.cpp' || echo '$(srcdir)/'`GUI/ProfileBox.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-ProfileBox.Tpo GUI/$(DEPDIR)/simplescreenrecorder-ProfileBox.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/ProfileBox.cpp' object='GUI/simplescreenrecorder-ProfileBox.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-ProfileBox.o `test -f 'GUI/ProfileBox.cpp' || echo '$(srcdir)/'`GUI/ProfileBox.cpp
+
+GUI/simplescreenrecorder-ProfileBox.obj: GUI/ProfileBox.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-ProfileBox.obj -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-ProfileBox.Tpo -c -o GUI/simplescreenrecorder-ProfileBox.obj `if test -f 'GUI/ProfileBox.cpp'; then $(CYGPATH_W) 'GUI/ProfileBox.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/ProfileBox.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-ProfileBox.Tpo GUI/$(DEPDIR)/simplescreenrecorder-ProfileBox.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/ProfileBox.cpp' object='GUI/simplescreenrecorder-ProfileBox.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-ProfileBox.obj `if test -f 'GUI/ProfileBox.cpp'; then $(CYGPATH_W) 'GUI/ProfileBox.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/ProfileBox.cpp'; fi`
+
 GUI/simplescreenrecorder-VideoPreviewer.o: GUI/VideoPreviewer.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-VideoPreviewer.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-VideoPreviewer.Tpo -c -o GUI/simplescreenrecorder-VideoPreviewer.o `test -f 'GUI/VideoPreviewer.cpp' || echo '$(srcdir)/'`GUI/VideoPreviewer.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-VideoPreviewer.Tpo GUI/$(DEPDIR)/simplescreenrecorder-VideoPreviewer.Po
@@ -1719,6 +1742,20 @@ simplescreenrecorder-moc_PageWelcome.obj: moc_PageWelcome.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_PageWelcome.cpp' object='simplescreenrecorder-moc_PageWelcome.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_PageWelcome.obj `if test -f 'moc_PageWelcome.cpp'; then $(CYGPATH_W) 'moc_PageWelcome.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_PageWelcome.cpp'; fi`
+
+simplescreenrecorder-moc_ProfileBox.o: moc_ProfileBox.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_ProfileBox.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_ProfileBox.Tpo -c -o simplescreenrecorder-moc_ProfileBox.o `test -f 'moc_ProfileBox.cpp' || echo '$(srcdir)/'`moc_ProfileBox.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_ProfileBox.Tpo $(DEPDIR)/simplescreenrecorder-moc_ProfileBox.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_ProfileBox.cpp' object='simplescreenrecorder-moc_ProfileBox.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_ProfileBox.o `test -f 'moc_ProfileBox.cpp' || echo '$(srcdir)/'`moc_ProfileBox.cpp
+
+simplescreenrecorder-moc_ProfileBox.obj: moc_ProfileBox.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_ProfileBox.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_ProfileBox.Tpo -c -o simplescreenrecorder-moc_ProfileBox.obj `if test -f 'moc_ProfileBox.cpp'; then $(CYGPATH_W) 'moc_ProfileBox.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_ProfileBox.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_ProfileBox.Tpo $(DEPDIR)/simplescreenrecorder-moc_ProfileBox.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_ProfileBox.cpp' object='simplescreenrecorder-moc_ProfileBox.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_ProfileBox.obj `if test -f 'moc_ProfileBox.cpp'; then $(CYGPATH_W) 'moc_ProfileBox.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_ProfileBox.cpp'; fi`
 
 simplescreenrecorder-moc_VideoPreviewer.o: moc_VideoPreviewer.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_VideoPreviewer.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_VideoPreviewer.Tpo -c -o simplescreenrecorder-moc_VideoPreviewer.o `test -f 'moc_VideoPreviewer.cpp' || echo '$(srcdir)/'`moc_VideoPreviewer.cpp
@@ -2010,6 +2047,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 @ENABLE_SSRPROGRAM_TRUE@moc_PageRecord.cpp: $(srcdir)/GUI/PageRecord.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_PageWelcome.cpp: $(srcdir)/GUI/PageWelcome.h
+@ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
+@ENABLE_SSRPROGRAM_TRUE@moc_ProfileBox.cpp: $(srcdir)/GUI/ProfileBox.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_VideoPreviewer.cpp: $(srcdir)/GUI/VideoPreviewer.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"

@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "ProfileBox.h"
+
 #if SSR_USE_PULSEAUDIO
 #include "PulseAudioInput.h"
 #endif
@@ -78,15 +80,9 @@ public:
 #endif
 		AUDIO_BACKEND_COUNT // must be last
 	};
-	struct Profile {
-		QString m_name;
-		bool m_can_delete;
-	};
 
 private:
 	MainWindow *m_main_window;
-
-	std::vector<Profile> m_profiles;
 
 	bool m_grabbing, m_selecting_window;
 	std::unique_ptr<QRubberBand> m_rubber_band, m_recording_frame;
@@ -104,8 +100,7 @@ private:
 
 	std::vector<WidgetScreenLabel*> m_screen_labels;
 
-	QComboBox *m_combobox_profiles;
-	QPushButton *m_pushbutton_profile_save, *m_pushbutton_profile_new, *m_pushbutton_profile_delete;
+	ProfileBox *m_profile_box;
 
 	QButtonGroup *m_buttongroup_video_area;
 	QComboBoxWithSignal *m_combobox_screens;
@@ -139,23 +134,55 @@ public:
 	void SaveSettings(QSettings* settings);
 
 private:
+	static void LoadProfileSettingsCallback(QSettings* settings, void* userdata);
+	static void SaveProfileSettingsCallback(QSettings* settings, void* userdata);
 	void LoadProfileSettings(QSettings* settings);
 	void SaveProfileSettings(QSettings* settings);
 
 public:
-	QString GetProfileName();
 #if SSR_USE_PULSEAUDIO
 	QString GetPulseAudioSourceName();
 #endif
 
 private:
-	unsigned int FindProfile(const QString& name);
 #if SSR_USE_PULSEAUDIO
 	unsigned int FindPulseAudioSource(const QString& name);
 #endif
 
+protected:
+	virtual void mousePressEvent(QMouseEvent* event) override;
+	virtual void mouseReleaseEvent(QMouseEvent* event) override;
+	virtual void mouseMoveEvent(QMouseEvent* event) override;
+	virtual void keyPressEvent(QKeyEvent* event) override;
+
+private:
+	void StartGrabbing();
+	void StopGrabbing();
+	void SetVideoAreaFromRubberBand();
+
+	void LoadScreenConfigurations();
+#if SSR_USE_PULSEAUDIO
+	void LoadPulseAudioSources();
+#endif
+
+public slots:
+	void OnUpdateRecordingFrame();
+	void OnUpdateVideoAreaFields();
+	void OnUpdateVideoScaleFields();
+	void OnUpdateAudioFields();
+
+private slots:
+	void OnUpdateScreenConfiguration();
+	void OnUpdatePulseAudioSources(); // conditional compilation of slots is hard, so we keep the slot
+	void OnIdentifyScreens();
+	void OnStopIdentifyScreens();
+	void OnStartSelectRectangle();
+	void OnStartSelectWindow();
+	void OnGLInjectDialog();
+	void OnContinue();
+
 public:
-	inline unsigned int GetProfile() { return clamp(m_combobox_profiles->currentIndex(), 0, (int) m_profiles.size()); }
+	inline unsigned int GetProfile() { return m_profile_box->GetProfile(); }
 	inline enum_video_area GetVideoArea() { return (enum_video_area) clamp(m_buttongroup_video_area->checkedId(), 0, VIDEO_AREA_COUNT - 1); }
 	inline unsigned int GetVideoAreaScreen() { return m_combobox_screens->currentIndex(); }
 	inline unsigned int GetVideoX() { return m_spinbox_video_x->value(); }
@@ -185,7 +212,7 @@ public:
 	inline bool GetGLInjectCaptureFront() { return m_glinject_capture_front; }
 	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
 
-	inline void SetProfile(unsigned int profile) { m_combobox_profiles->setCurrentIndex(clamp(profile, 0u, (unsigned int) m_profiles.size())); }
+	inline void SetProfile(unsigned int profile) { m_profile_box->SetProfile(profile); }
 	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
 	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_screens->count() - 1)); }
 	inline void SetVideoX(unsigned int x) { m_spinbox_video_x->setValue(x); }
@@ -214,46 +241,6 @@ public:
 	inline void SetGLInjectMaxMegaPixels(unsigned int max_megapixels) { m_glinject_max_megapixels = clamp(max_megapixels, 1u, 100u); }
 	inline void SetGLInjectCaptureFront(bool capture_front) { m_glinject_capture_front = capture_front; }
 	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
-
-protected:
-	virtual void mousePressEvent(QMouseEvent* event) override;
-	virtual void mouseReleaseEvent(QMouseEvent* event) override;
-	virtual void mouseMoveEvent(QMouseEvent* event) override;
-	virtual void keyPressEvent(QKeyEvent* event) override;
-
-private:
-	void StartGrabbing();
-	void StopGrabbing();
-	void SetVideoAreaFromRubberBand();
-
-	void LoadProfiles();
-	void LoadProfilesFromDir(const QString& path, bool can_delete);
-	void UpdateProfileFields();
-
-	void LoadScreenConfigurations();
-#if SSR_USE_PULSEAUDIO
-	void LoadPulseAudioSources();
-#endif
-
-public slots:
-	void OnUpdateRecordingFrame();
-	void OnUpdateVideoAreaFields();
-	void OnUpdateVideoScaleFields();
-	void OnUpdateAudioFields();
-
-private slots:
-	void OnProfileChange();
-	void OnProfileSave();
-	void OnProfileNew();
-	void OnProfileDelete();
-	void OnUpdateScreenConfiguration();
-	void OnUpdatePulseAudioSources(); // conditional compilation of slots is hard, so we keep the slot
-	void OnIdentifyScreens();
-	void OnStopIdentifyScreens();
-	void OnStartSelectRectangle();
-	void OnStartSelectWindow();
-	void OnGLInjectDialog();
-	void OnContinue();
 
 };
 
