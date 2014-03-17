@@ -200,24 +200,6 @@ void ALSAInput::InputThread() {
 
 		while(!m_should_stop) {
 
-			// wait until samples are available
-			// This is not actually required since snd_pcm_readi is blocking, but unlike snd_pcm_readi,
-			// this function has a timeout value. This means the thread won't hang if the device turns out to be dead.
-			int res = snd_pcm_wait(m_alsa_pcm, 1000);
-			if(res == 0) {
-				continue;
-			}
-			if(res < 0) {
-				if(res == -EPIPE) {
-					ALSARecoverAfterOverrun(m_alsa_pcm);
-					PushAudioHole();
-				} else {
-					Logger::LogError("[ALSAInput::InputThread] " + Logger::tr("Error: Can't check whether samples are available!"));
-					throw ALSAException();
-				}
-				continue;
-			}
-
 			// read the samples
 			snd_pcm_sframes_t samples_read = snd_pcm_readi(m_alsa_pcm, buffer.data(), m_alsa_period_size);
 			if(samples_read < 0) {
