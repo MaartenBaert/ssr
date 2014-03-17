@@ -23,8 +23,40 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "SampleCast.h"
 
+#include <sched.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+
+static void MakeThreadHighPriority() {
+	rlimit limit;
+
+	// try to get real-time priority
+	getrlimit(RLIMIT_RTPRIO, &limit);
+	int rt_limit = (limit.rlim_cur == RLIM_INFINITY)? std::numeric_limits<int>::max() : limit.rlim_cur;
+	if(rt_limit > 0) {
+		int priority = std::min(10, rt_limit);
+		if(sched_setscheduler(0, SCHED_FIFO, (sched_param*) &priority) == 0) {
+			Logger::LogInfo("[MakeThreadHighPriority] " + Logger::tr("Using real-time priority."));
+			return;
+		}
+	}
+
+	// if that fails, use a low nice value instead
+	getrlimit(RLIMIT_NICE, &limit);
+	int nice_limit = (limit.rlim_cur == RLIM_INFINITY)? std::numeric_limits<int>::min() : 20 - limit.rlim_cur; // see man page
+	if(nice_limit < 0) {
+		if(setpriority(PRIO_PROCESS, 0, std::max(-10, nice_limit)) == 0) {
+			Logger::LogInfo("[MakeThreadHighPriority] " + Logger::tr("Using nice priority."));
+			return;
+		}
+	}
+
+	Logger::LogWarning("[MakeThreadHighPriority] " + Logger::tr("Warning: Can't increase the thread priority."));
+}
+
 static void ALSARecoverAfterUnderrun(snd_pcm_t* pcm) {
-	Logger::LogWarning("[ALSARecoverAfterUnderrun] " + Logger::tr("Warning: An underrun has occurred, some samples were too late.", "Don't translate 'underrun'"));
+	// this is not really a problem so don't show the warning
+	//Logger::LogWarning("[ALSARecoverAfterUnderrun] " + Logger::tr("Warning: An underrun has occurred, some samples were too late.", "Don't translate 'underrun'"));
 	if(snd_pcm_prepare(pcm) < 0) {
 		Logger::LogError("[ALSARecoverAfterUnderrun] " + Logger::tr("Error: Can't recover device after underrun!", "Don't translate 'underrun'"));
 		throw ALSAException();
@@ -37,8 +69,8 @@ SimpleSynth::SimpleSynth(const QString& device_name, unsigned int sample_rate) {
 	m_sample_rate = sample_rate;
 
 	m_alsa_pcm = NULL;
-	m_alsa_period_size = 512; // number of samples per period
-	m_alsa_buffer_size = m_alsa_period_size * 4; // number of samples in the buffer
+	m_alsa_period_size = 1024; // number of samples per period
+	m_alsa_buffer_size = m_alsa_period_size * 2; // number of samples in the buffer
 
 	try {
 		Init();
@@ -188,27 +220,12 @@ void SimpleSynth::SynthThread() {
 
 		Logger::LogInfo("[SimpleSynth::SynthThread] " + Logger::tr("Synth thread started."));
 
+		MakeThreadHighPriority();
+
 		std::vector<float> buffer_float(m_alsa_period_size);
 		std::vector<int16_t> buffer_int16(m_alsa_period_size);
 
 		while(!m_should_stop) {
-
-			// wait until samples are available
-			// This is not actually required since snd_pcm_writei is blocking, but unlike snd_pcm_writei,
-			// this function has a timeout value. This means the thread won't hang if the device turns out to be dead.
-			int res = snd_pcm_wait(m_alsa_pcm, 1000);
-			if(res == 0) {
-				continue;
-			}
-			if(res < 0) {
-				if(res == -EPIPE) {
-					ALSARecoverAfterUnderrun(m_alsa_pcm);
-				} else {
-					Logger::LogError("[SimpleSynth::SynthThread] " + Logger::tr("Error: Can't check whether samples are available!"));
-					throw ALSAException();
-				}
-				continue;
-			}
 
 			// generate the samples
 			{
