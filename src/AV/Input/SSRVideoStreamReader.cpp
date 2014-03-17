@@ -84,26 +84,6 @@ void SSRVideoStreamReader::Init() {
 		throw SSRStreamException();
 	}
 
-	// wait until the header has been initialized
-	//TODO// create frame files first, and check initialization this later (without blocking)
-	GLInjectHeader *header = GetGLInjectHeader();
-	unsigned int load_attempts = 0;
-	for( ; ; ) {
-
-		std::atomic_thread_fence(std::memory_order_acquire);
-		if(header->identifier == GLINJECT_IDENTIFIER)
-			break;
-
-		++load_attempts;
-		if(load_attempts < 20) {
-			usleep(20000);
-		} else {
-			Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Video stream header has not been initialized!"));
-			throw SSRStreamException();
-		}
-
-	}
-
 	// open frame files
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
 		FrameData &fd = m_frame_data[i];
@@ -114,10 +94,21 @@ void SSRVideoStreamReader::Init() {
 		}
 	}
 
+	// initialize header
+	GLInjectHeader *header = GetGLInjectHeader();
+	header->capture_flags = 0;
+	header->capture_target_fps = 0;
+	header->x11hotkey_enabled = false;
+	header->x11hotkey_keycode = 0;
+	header->x11hotkey_modifiers = 0;
+	header->x11hotkey_counter = 0;
+	std::atomic_thread_fence(std::memory_order_release);
+
 	// initialize frame counter
 	std::atomic_thread_fence(std::memory_order_acquire);
-	m_info_last_timestamp = hrt_time_micro();
-	m_last_frame_counter = header->frame_counter;
+	m_fps_last_timestamp = hrt_time_micro();
+	m_fps_last_counter = header->frame_counter;
+	m_fps_current = 0.0;
 
 }
 
@@ -156,16 +147,14 @@ void SSRVideoStreamReader::Free() {
 
 }
 
-GLInjectHeader* SSRVideoStreamReader::GetGLInjectHeader() {
-	return (GLInjectHeader*) m_mmap_ptr_main;
-}
-
-GLInjectFrameInfo* SSRVideoStreamReader::GetGLInjectFrameInfo(unsigned int frame) {
-	return (GLInjectFrameInfo*) ((char*) m_mmap_ptr_main + sizeof(GLInjectHeader) + frame * sizeof(GLInjectFrameInfo));
-}
-
 void SSRVideoStreamReader::GetCurrentSize(unsigned int* width, unsigned int* height) {
 	GLInjectHeader *header = GetGLInjectHeader();
+	std::atomic_thread_fence(std::memory_order_acquire);
+	if(header->identifier != GLINJECT_IDENTIFIER) {
+		*width = 0;
+		*height = 0;
+		return;
+	}
 	std::atomic_thread_fence(std::memory_order_acquire);
 	*width = header->current_width;
 	*height = header->current_height;
@@ -176,11 +165,14 @@ double SSRVideoStreamReader::GetFPS() {
 	int64_t timestamp = hrt_time_micro();
 	std::atomic_thread_fence(std::memory_order_acquire);
 	uint32_t frame_counter = header->frame_counter;
-	unsigned int time = timestamp - m_info_last_timestamp;
-	unsigned int frames = frame_counter - m_last_frame_counter;
-	m_info_last_timestamp = timestamp;
-	m_last_frame_counter = frame_counter;
-	return (double) frames / ((double) time * 1.0e-6);
+	unsigned int time = timestamp - m_fps_last_timestamp;
+	if(time > 500000) {
+		unsigned int frames = frame_counter - m_fps_last_counter;
+		m_fps_last_timestamp = timestamp;
+		m_fps_last_counter = frame_counter;
+		m_fps_current = (double) frames / ((double) time * 1.0e-6);
+	}
+	return m_fps_current;
 }
 
 void SSRVideoStreamReader::ChangeCaptureParameters(unsigned int flags, unsigned int target_fps) {
@@ -199,8 +191,13 @@ void SSRVideoStreamReader::Clear() {
 
 void* SSRVideoStreamReader::GetFrame(int64_t* timestamp, unsigned int* width, unsigned int* height, int* stride) {
 
-	// make sure that at least one frame is available
+	// make sure that the stream has been initialized
 	GLInjectHeader *header = GetGLInjectHeader();
+	std::atomic_thread_fence(std::memory_order_acquire);
+	if(header->identifier != GLINJECT_IDENTIFIER)
+		return NULL;
+
+	// make sure that at least one frame is available
 	std::atomic_thread_fence(std::memory_order_acquire);
 	unsigned int read_pos = header->ring_buffer_read_pos;
 	unsigned int write_pos = header->ring_buffer_write_pos;

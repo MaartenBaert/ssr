@@ -111,6 +111,16 @@ void SSRVideoStreamWriter::Init() {
 
 	}
 
+	// open frame files
+	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
+		FrameData &fd = m_frame_data[i];
+		fd.m_fd_frame = open(fd.m_filename_frame.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, (relax_permissions)? 0666 : 0600);
+		if(fd.m_fd_frame == -1) {
+			GLINJECT_PRINT("Error: Can't open video frame file!");
+			throw SSRStreamException();
+		}
+	}
+
 	// open main file
 	m_fd_main = open(m_filename_main.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, (relax_permissions)? 0666 : 0600);
 	if(m_fd_main == -1) {
@@ -132,16 +142,6 @@ void SSRVideoStreamWriter::Init() {
 		throw SSRStreamException();
 	}
 
-	// open frame files
-	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {
-		FrameData &fd = m_frame_data[i];
-		fd.m_fd_frame = open(fd.m_filename_frame.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, (relax_permissions)? 0666 : 0600);
-		if(fd.m_fd_frame == -1) {
-			GLINJECT_PRINT("Error: Can't open video frame file!");
-			throw SSRStreamException();
-		}
-	}
-
 	// initialize header
 	GLInjectHeader *header = GetGLInjectHeader();
 	header->identifier = 0; // will be set later
@@ -150,12 +150,6 @@ void SSRVideoStreamWriter::Init() {
 	header->current_width = m_width;
 	header->current_height = m_height;
 	header->frame_counter = 0;
-	header->capture_flags = 0;
-	header->capture_target_fps = 0;
-	header->x11hotkey_enabled = false;
-	header->x11hotkey_keycode = 0;
-	header->x11hotkey_modifiers = 0;
-	header->x11hotkey_counter = 0;
 
 	// initialize frame info
 	for(unsigned int i = 0; i < GLINJECT_RING_BUFFER_SIZE; ++i) {

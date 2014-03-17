@@ -39,8 +39,9 @@ private:
 	std::string m_channel_directory, m_filename_main;
 	size_t m_page_size;
 
-	int64_t m_info_last_timestamp;
-	uint32_t m_last_frame_counter;
+	int64_t m_fps_last_timestamp;
+	uint32_t m_fps_last_counter;
+	double m_fps_current;
 
 	int m_fd_main, m_file_lock;
 	void *m_mmap_ptr_main;
@@ -55,9 +56,6 @@ public:
 private:
 	void Init();
 	void Free();
-
-	GLInjectHeader* GetGLInjectHeader();
-	GLInjectFrameInfo* GetGLInjectFrameInfo(unsigned int frame);
 
 public:
 	// Reads the current size of the stream. If the stream hasn't been started yet, this will be 0x0.
@@ -82,5 +80,9 @@ public:
 
 	// Returns the stream that is being read.
 	inline const SSRVideoStream& GetStream() { return m_stream; }
+
+private:
+	inline GLInjectHeader* GetGLInjectHeader() { return (GLInjectHeader*) m_mmap_ptr_main; }
+	inline GLInjectFrameInfo* GetGLInjectFrameInfo(unsigned int frame) { return (GLInjectFrameInfo*) ((char*) m_mmap_ptr_main + sizeof(GLInjectHeader) + frame * sizeof(GLInjectFrameInfo)); }
 
 };
