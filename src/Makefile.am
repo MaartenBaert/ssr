@@ -135,6 +135,8 @@ simplescreenrecorder_SOURCES = \
 	GUI/PageRecord.h \
 	GUI/PageWelcome.cpp \
 	GUI/PageWelcome.h \
+	GUI/ProfileBox.cpp \
+	GUI/ProfileBox.h \
 	GUI/VideoPreviewer.cpp \
 	GUI/VideoPreviewer.h \
 	Global.h \
@@ -199,6 +201,7 @@ nodist_simplescreenrecorder_SOURCES += \
 	moc_PageOutput.cpp \
 	moc_PageRecord.cpp \
 	moc_PageWelcome.cpp \
+	moc_ProfileBox.cpp \
 	moc_VideoPreviewer.cpp
 
 moc_X11Input.cpp: $(srcdir)/AV/Input/X11Input.h
@@ -227,6 +230,8 @@ moc_PageRecord.cpp: $(srcdir)/GUI/PageRecord.h
 	$(MOC) "$<" -o "$@"
 moc_PageWelcome.cpp: $(srcdir)/GUI/PageWelcome.h
 	$(MOC) "$<" -o "$@"
+moc_ProfileBox.cpp: $(srcdir)/GUI/ProfileBox.h
+	$(MOC) "$<" -o "$@"
 moc_VideoPreviewer.cpp: $(srcdir)/GUI/VideoPreviewer.h
 	$(MOC) "$<" -o "$@"
 
@@ -237,7 +242,7 @@ clean-moc-extra:
 
 translationsdir = $(pkgdatadir)/translations
 
-simplescreenrecorder_CPPFLAGS += -DSSR_TRANSLATIONS_PATH=\"$(translationsdir)\"
+simplescreenrecorder_CPPFLAGS += -DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
 
 nodist_translations_DATA = \
 	simplescreenrecorder_de.qm \

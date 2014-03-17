@@ -64,3 +64,20 @@ enum_button MessageBox(QMessageBox::Icon icon, QWidget* parent, const QString& t
 	return BUTTON_NONE;
 
 }
+
+QString InputBox(QWidget* parent, const QString& title, const QString& text, const QString& value) {
+
+	QInputDialog dialog(parent);
+	dialog.setInputMode(QInputDialog::TextInput);
+	dialog.setOkButtonText(QMessageBox::tr("&OK"));
+	dialog.setCancelButtonText(QMessageBox::tr("&Cancel"));
+
+	dialog.setWindowTitle(title);
+	dialog.setLabelText(text);
+	dialog.setTextValue(value);
+
+	if(!dialog.exec())
+		return QString();
+	return dialog.textValue();
+
+}

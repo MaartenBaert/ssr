@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageOutput.h"
 
+#include "Main.h"
 #include "Logger.h"
 #include "Dialogs.h"
 #include "MainWindow.h"
@@ -145,6 +146,8 @@ PageOutput::PageOutput(MainWindow* main_window)
 		Logger::LogError("[PageOutput::PageOutput] " + tr("Error: Could not find any suitable audio codec in libavcodec!"));
 		throw LibavException();
 	}
+
+	m_profile_box = new ProfileBox(this, "output-profiles", &LoadProfileSettingsCallback, &SaveProfileSettingsCallback, this);
 
 	QGroupBox *groupbox_file = new QGroupBox(tr("File"), this);
 	{
@@ -322,6 +325,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 	connect(button_continue, SIGNAL(clicked()), this, SLOT(OnContinue()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(m_profile_box);
 	layout->addWidget(groupbox_file);
 	layout->addWidget(groupbox_video);
 	layout->addWidget(m_groupbox_audio);
@@ -340,6 +344,26 @@ PageOutput::PageOutput(MainWindow* main_window)
 }
 
 void PageOutput::LoadSettings(QSettings* settings) {
+	SetProfile(m_profile_box->FindProfile(settings->value("output/profile", QString()).toString()));
+	LoadProfileSettings(settings);
+}
+
+void PageOutput::SaveSettings(QSettings* settings) {
+	settings->setValue("output/profile", m_profile_box->GetProfileName());
+	SaveProfileSettings(settings);
+}
+
+void PageOutput::LoadProfileSettingsCallback(QSettings* settings, void* userdata) {
+	PageOutput *page = (PageOutput*) userdata;
+	page->LoadProfileSettings(settings);
+}
+
+void PageOutput::SaveProfileSettingsCallback(QSettings* settings, void* userdata) {
+	PageOutput *page = (PageOutput*) userdata;
+	page->SaveProfileSettings(settings);
+}
+
+void PageOutput::LoadProfileSettings(QSettings* settings) {
 
 	// choose default container and codecs
 	enum_container default_container = (enum_container) 0;
@@ -391,7 +415,7 @@ void PageOutput::LoadSettings(QSettings* settings) {
 
 }
 
-void PageOutput::SaveSettings(QSettings* settings) {
+void PageOutput::SaveProfileSettings(QSettings* settings) {
 
 	settings->setValue("output/file", GetFile());
 	settings->setValue("output/separate_files", GetSeparateFiles());

@@ -26,7 +26,8 @@ extern bool g_option_syncdiagram;
 extern bool g_option_systray;
 extern bool g_option_start_hidden;
 
-QString GetApplicationUserDir();
+QString GetApplicationSystemDir(const QString& subdir = QString());
+QString GetApplicationUserDir(const QString& subdir = QString());
 QString GetVersionInfo();
 
 bool NVidiaDetectFlipping();

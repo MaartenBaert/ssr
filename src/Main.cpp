@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 	// set the language
 	QTranslator translator;
 	if(!translator.load(QLocale::system(), "simplescreenrecorder", "_", QCoreApplication::applicationDirPath()))
-		translator.load(QLocale::system(), "simplescreenrecorder", "_", SSR_TRANSLATIONS_PATH);
+		translator.load(QLocale::system(), "simplescreenrecorder", "_", GetApplicationSystemDir("translations"));
 	QApplication::installTranslator(&translator);
 
 	// Qt doesn't count hidden windows, so if the main window is hidden and a dialog box is closed, Qt thinks the application should quit.
@@ -159,19 +159,34 @@ int main(int argc, char* argv[]) {
 
 	// redirect stdout and stderr to a log file
 	if(g_option_logfile) {
-		QDateTime now = QDateTime::currentDateTime();
-		QDir dir(GetApplicationUserDir());
-		dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
-		dir.setNameFilters(QStringList("log-*.txt"));
-		for(QString oldfile : dir.entryList()) {
-			if(QFileInfo(dir.path() + "/" + oldfile).lastModified().daysTo(now) > 30) {
-				QFile(dir.path() + "/" + oldfile).remove();
+
+		// delete logs from versions < 0.2.3 (should be removed at some point in the future)
+		{
+			QDir dir(GetApplicationUserDir());
+			dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
+			dir.setNameFilters(QStringList("log-*.txt"));
+			for(QFileInfo fileinfo : dir.entryInfoList()) {
+				QFile(fileinfo.filePath()).remove();
 			}
 		}
+
+		// delete old logs
+		QDateTime now = QDateTime::currentDateTime();
+		QDir dir(GetApplicationUserDir("logs"));
+		dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
+		dir.setNameFilters(QStringList("log-*.txt"));
+		for(QFileInfo fileinfo : dir.entryInfoList()) {
+			if(fileinfo.lastModified().daysTo(now) > 30) {
+				QFile(fileinfo.filePath()).remove();
+			}
+		}
+
+		// open new log
 		QString file = dir.path() + "/log-" + now.toString("yyyy-MM-dd_hh.mm.ss") + ".txt";
 		FILE *f = fopen(file.toLocal8Bit().constData(), "a");
 		dup2(fileno(f), 1); // redirect stdout
 		dup2(fileno(f), 2); // redirect stderr
+
 	}
 
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");
@@ -188,8 +203,17 @@ int main(int argc, char* argv[]) {
 	return ret;
 }
 
-QString GetApplicationUserDir() {
+QString GetApplicationSystemDir(const QString& subdir) {
+	QString dir = SSR_SYSTEM_DIR;
+	if(!subdir.isEmpty())
+		dir += "/" + subdir;
+	return dir;
+}
+
+QString GetApplicationUserDir(const QString& subdir) {
 	QString dir = QDir::homePath() + "/.ssr";
+	if(!subdir.isEmpty())
+		dir += "/" + subdir;
 	if(!QDir::root().mkpath(dir)) {
 		Logger::LogError("[GetApplicationUserDir] " + Logger::tr("Error: Can't create .ssr directory!"));
 		throw 0;

@@ -33,3 +33,6 @@ enum enum_button : int {
 
 // Shows a standard Qt dialog with translated buttons.
 enum_button MessageBox(QMessageBox::Icon icon, QWidget* parent, const QString& title, const QString& text, int buttons = BUTTON_OK, enum_button default_button = BUTTON_NONE);
+
+// Shows a simple dialog that asks the user to enter a string.
+QString InputBox(QWidget* parent, const QString& title, const QString& text, const QString& value);

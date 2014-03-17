@@ -77,9 +77,9 @@ extern "C" {
 #error SSR_USE_JACK should be defined!
 #endif
 
-// Path to translation files.
-#ifndef SSR_TRANSLATIONS_PATH
-#error SSR_TRANSLATIONS_PATH should be defined!
+// Path to system-wide application directory (usually /usr/share/simplescreenrecorder).
+#ifndef SSR_SYSTEM_DIR
+#error SSR_SYSTEM_DIR should be defined!
 #endif
 
 // generic macro to test version numbers

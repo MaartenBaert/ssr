@@ -84,7 +84,8 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(am__dist_icon22_DATA_DIST) $(am__dist_icon24_DATA_DIST) \
 	$(am__dist_icon32_DATA_DIST) $(am__dist_icon48_DATA_DIST) \
 	$(am__dist_icon64_DATA_DIST) $(am__dist_icon96_DATA_DIST) \
-	$(am__dist_iconscalable_DATA_DIST)
+	$(am__dist_iconscalable_DATA_DIST) \
+	$(am__dist_outputprofiles_DATA_DIST)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -147,7 +148,8 @@ am__installdirs = "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icon16dir)" \
 	"$(DESTDIR)$(icon22dir)" "$(DESTDIR)$(icon24dir)" \
 	"$(DESTDIR)$(icon32dir)" "$(DESTDIR)$(icon48dir)" \
 	"$(DESTDIR)$(icon64dir)" "$(DESTDIR)$(icon96dir)" \
-	"$(DESTDIR)$(iconscalabledir)"
+	"$(DESTDIR)$(iconscalabledir)" \
+	"$(DESTDIR)$(outputprofilesdir)"
 am__dist_icon16_DATA_DIST = icons/16/simplescreenrecorder.png \
 	icons/16/simplescreenrecorder-paused.png \
 	icons/16/simplescreenrecorder-recording.png
@@ -173,10 +175,15 @@ am__dist_iconscalable_DATA_DIST =  \
 	icons/scalable/simplescreenrecorder.svg \
 	icons/scalable/simplescreenrecorder-paused.svg \
 	icons/scalable/simplescreenrecorder-recording.svg
+am__dist_outputprofiles_DATA_DIST =  \
+	output-profiles/Live%20Stream%20%281000kbps%29.conf \
+	output-profiles/Live%20Stream%20%283000kbps%29.conf \
+	output-profiles/Live%20Stream%20%282000kbps%29.conf \
+	output-profiles/YouTube.conf
 DATA = $(dist_desktop_DATA) $(dist_icon16_DATA) $(dist_icon22_DATA) \
 	$(dist_icon24_DATA) $(dist_icon32_DATA) $(dist_icon48_DATA) \
 	$(dist_icon64_DATA) $(dist_icon96_DATA) \
-	$(dist_iconscalable_DATA)
+	$(dist_iconscalable_DATA) $(dist_outputprofiles_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -361,6 +368,15 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder.svg \
 @ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder-paused.svg \
 @ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder-recording.svg
+
+
+########## Output profiles ##########
+@ENABLE_SSRPROGRAM_TRUE@outputprofilesdir = $(pkgdatadir)/output-profiles
+@ENABLE_SSRPROGRAM_TRUE@dist_outputprofiles_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@	output-profiles/Live%20Stream%20%281000kbps%29.conf \
+@ENABLE_SSRPROGRAM_TRUE@	output-profiles/Live%20Stream%20%283000kbps%29.conf \
+@ENABLE_SSRPROGRAM_TRUE@	output-profiles/Live%20Stream%20%282000kbps%29.conf \
+@ENABLE_SSRPROGRAM_TRUE@	output-profiles/YouTube.conf
 
 
 ########## Qt resource system ##########
@@ -597,6 +613,27 @@ uninstall-dist_iconscalableDATA:
 	@list='$(dist_iconscalable_DATA)'; test -n "$(iconscalabledir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(iconscalabledir)'; $(am__uninstall_files_from_dir)
+install-dist_outputprofilesDATA: $(dist_outputprofiles_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dist_outputprofiles_DATA)'; test -n "$(outputprofilesdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(outputprofilesdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(outputprofilesdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(outputprofilesdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(outputprofilesdir)" || exit $$?; \
+	done
+
+uninstall-dist_outputprofilesDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_outputprofiles_DATA)'; test -n "$(outputprofilesdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(outputprofilesdir)'; $(am__uninstall_files_from_dir)
 tags TAGS:
 
 ctags CTAGS:
@@ -638,7 +675,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icon16dir)" "$(DESTDIR)$(icon22dir)" "$(DESTDIR)$(icon24dir)" "$(DESTDIR)$(icon32dir)" "$(DESTDIR)$(icon48dir)" "$(DESTDIR)$(icon64dir)" "$(DESTDIR)$(icon96dir)" "$(DESTDIR)$(iconscalabledir)"; do \
+	for dir in "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icon16dir)" "$(DESTDIR)$(icon22dir)" "$(DESTDIR)$(icon24dir)" "$(DESTDIR)$(icon32dir)" "$(DESTDIR)$(icon48dir)" "$(DESTDIR)$(icon64dir)" "$(DESTDIR)$(icon96dir)" "$(DESTDIR)$(iconscalabledir)" "$(DESTDIR)$(outputprofilesdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -695,7 +732,7 @@ install-data-am: install-dist_desktopDATA install-dist_icon16DATA \
 	install-dist_icon22DATA install-dist_icon24DATA \
 	install-dist_icon32DATA install-dist_icon48DATA \
 	install-dist_icon64DATA install-dist_icon96DATA \
-	install-dist_iconscalableDATA
+	install-dist_iconscalableDATA install-dist_outputprofilesDATA
 
 install-dvi: install-dvi-am
 
@@ -743,7 +780,8 @@ uninstall-am: uninstall-dist_desktopDATA uninstall-dist_icon16DATA \
 	uninstall-dist_icon22DATA uninstall-dist_icon24DATA \
 	uninstall-dist_icon32DATA uninstall-dist_icon48DATA \
 	uninstall-dist_icon64DATA uninstall-dist_icon96DATA \
-	uninstall-dist_iconscalableDATA
+	uninstall-dist_iconscalableDATA \
+	uninstall-dist_outputprofilesDATA
 
 .MAKE: install-am install-strip
 
@@ -755,18 +793,20 @@ uninstall-am: uninstall-dist_desktopDATA uninstall-dist_icon16DATA \
 	install-dist_icon22DATA install-dist_icon24DATA \
 	install-dist_icon32DATA install-dist_icon48DATA \
 	install-dist_icon64DATA install-dist_icon96DATA \
-	install-dist_iconscalableDATA install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
-	uninstall-am uninstall-dist_desktopDATA \
-	uninstall-dist_icon16DATA uninstall-dist_icon22DATA \
-	uninstall-dist_icon24DATA uninstall-dist_icon32DATA \
-	uninstall-dist_icon48DATA uninstall-dist_icon64DATA \
-	uninstall-dist_icon96DATA uninstall-dist_iconscalableDATA
+	install-dist_iconscalableDATA install-dist_outputprofilesDATA \
+	install-dvi install-dvi-am install-exec install-exec-am \
+	install-html install-html-am install-info install-info-am \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am tags-am uninstall uninstall-am \
+	uninstall-dist_desktopDATA uninstall-dist_icon16DATA \
+	uninstall-dist_icon22DATA uninstall-dist_icon24DATA \
+	uninstall-dist_icon32DATA uninstall-dist_icon48DATA \
+	uninstall-dist_icon64DATA uninstall-dist_icon96DATA \
+	uninstall-dist_iconscalableDATA \
+	uninstall-dist_outputprofilesDATA
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

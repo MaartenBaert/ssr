@@ -142,18 +142,18 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 	m_last_error_sound = std::numeric_limits<int64_t>::min();
 
-	QGroupBox *group_recording = new QGroupBox(tr("Recording"), this);
+	QGroupBox *groupbox_recording = new QGroupBox(tr("Recording"), this);
 	{
-		m_pushbutton_start_pause = new QPushButton(group_recording);
+		m_pushbutton_start_pause = new QPushButton(groupbox_recording);
 
-		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), group_recording);
-		m_checkbox_sound_notifications_enable = new QCheckBox(tr("Enable sound notifications"), group_recording);
-		QLabel *label_hotkey = new QLabel(tr("Hotkey:"), group_recording);
-		m_checkbox_hotkey_ctrl = new QCheckBox(tr("Ctrl +"), group_recording);
-		m_checkbox_hotkey_shift = new QCheckBox(tr("Shift +"), group_recording);
-		m_checkbox_hotkey_alt = new QCheckBox(tr("Alt +"), group_recording);
-		m_checkbox_hotkey_super = new QCheckBox(tr("Super +"), group_recording);
-		m_combobox_hotkey_key = new QComboBox(group_recording);
+		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), groupbox_recording);
+		m_checkbox_sound_notifications_enable = new QCheckBox(tr("Enable sound notifications"), groupbox_recording);
+		QLabel *label_hotkey = new QLabel(tr("Hotkey:"), groupbox_recording);
+		m_checkbox_hotkey_ctrl = new QCheckBox(tr("Ctrl +"), groupbox_recording);
+		m_checkbox_hotkey_shift = new QCheckBox(tr("Shift +"), groupbox_recording);
+		m_checkbox_hotkey_alt = new QCheckBox(tr("Alt +"), groupbox_recording);
+		m_checkbox_hotkey_super = new QCheckBox(tr("Super +"), groupbox_recording);
+		m_combobox_hotkey_key = new QComboBox(groupbox_recording);
 		m_combobox_hotkey_key->setToolTip(tr("The key that you have to press (combined with the given modifiers) to start or pause recording.\n"
 											 "The program that you are recording will not receive the key press."));
 		// Note: The choice of keys is currently rather limited, because capturing key presses session-wide is a bit harder than it looks.
@@ -171,7 +171,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		connect(m_checkbox_hotkey_super, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
 		connect(m_combobox_hotkey_key, SIGNAL(activated(int)), this, SLOT(OnUpdateHotkey()));
 
-		QVBoxLayout *layout = new QVBoxLayout(group_recording);
+		QVBoxLayout *layout = new QVBoxLayout(groupbox_recording);
 		layout->addWidget(m_pushbutton_start_pause);
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
@@ -194,27 +194,27 @@ PageRecord::PageRecord(MainWindow* main_window)
 	{
 		QSplitter *splitter_horizontal = new QSplitter(Qt::Horizontal, splitter_vertical);
 		{
-			QGroupBox *group_information = new QGroupBox(tr("Information"), splitter_horizontal);
+			QGroupBox *groupbox_information = new QGroupBox(tr("Information"), splitter_horizontal);
 			{
-				QLabel *label_total_time = new QLabel(tr("Total time:"), group_information);
-				m_label_info_total_time = new QLabel(group_information);
-				QLabel *label_frame_rate_in = new QLabel(tr("FPS in:"), group_information);
-				m_label_info_frame_rate_in = new QLabel(group_information);
-				QLabel *label_frame_rate_out = new QLabel(tr("FPS out:"), group_information);
-				m_label_info_frame_rate_out = new QLabel(group_information);
-				QLabel *label_size_in = new QLabel(tr("Size in:"), group_information);
-				m_label_info_size_in = new QLabel(group_information);
-				QLabel *label_size_out = new QLabel(tr("Size out:"), group_information);
-				m_label_info_size_out = new QLabel(group_information);
-				QLabel *label_file_name = new QLabel(tr("File name:"), group_information);
-				m_label_info_file_name = new ElidedLabel(QString(), Qt::ElideMiddle, group_information);
+				QLabel *label_total_time = new QLabel(tr("Total time:"), groupbox_information);
+				m_label_info_total_time = new QLabel(groupbox_information);
+				QLabel *label_frame_rate_in = new QLabel(tr("FPS in:"), groupbox_information);
+				m_label_info_frame_rate_in = new QLabel(groupbox_information);
+				QLabel *label_frame_rate_out = new QLabel(tr("FPS out:"), groupbox_information);
+				m_label_info_frame_rate_out = new QLabel(groupbox_information);
+				QLabel *label_size_in = new QLabel(tr("Size in:"), groupbox_information);
+				m_label_info_size_in = new QLabel(groupbox_information);
+				QLabel *label_size_out = new QLabel(tr("Size out:"), groupbox_information);
+				m_label_info_size_out = new QLabel(groupbox_information);
+				QLabel *label_file_name = new QLabel(tr("File name:"), groupbox_information);
+				m_label_info_file_name = new ElidedLabel(QString(), Qt::ElideMiddle, groupbox_information);
 				m_label_info_file_name->setMinimumWidth(100);
-				QLabel *label_file_size = new QLabel(tr("File size:"), group_information);
-				m_label_info_file_size = new QLabel(group_information);
-				QLabel *label_bit_rate = new QLabel(tr("Bit rate:"), group_information);
-				m_label_info_bit_rate = new QLabel(group_information);
+				QLabel *label_file_size = new QLabel(tr("File size:"), groupbox_information);
+				m_label_info_file_size = new QLabel(groupbox_information);
+				QLabel *label_bit_rate = new QLabel(tr("Bit rate:"), groupbox_information);
+				m_label_info_bit_rate = new QLabel(groupbox_information);
 
-				QGridLayout *layout = new QGridLayout(group_information);
+				QGridLayout *layout = new QGridLayout(groupbox_information);
 				layout->addWidget(label_total_time, 0, 0);
 				layout->addWidget(m_label_info_total_time, 0, 1);
 				layout->addWidget(label_frame_rate_in, 1, 0);
@@ -234,9 +234,9 @@ PageRecord::PageRecord(MainWindow* main_window)
 				layout->setColumnStretch(1, 1);
 				layout->setRowStretch(8, 1);
 			}
-			QGroupBox *group_preview = new QGroupBox(tr("Preview"), splitter_horizontal);
+			QGroupBox *groupbox_preview = new QGroupBox(tr("Preview"), splitter_horizontal);
 			{
-				m_preview_page1 = new QWidget(group_preview);
+				m_preview_page1 = new QWidget(groupbox_preview);
 				{
 					QLabel *label_preview_frame_rate = new QLabel(tr("Preview frame rate:"), m_preview_page1);
 					m_spinbox_preview_frame_rate = new QSpinBox(m_preview_page1);
@@ -253,7 +253,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 					layout->addWidget(m_spinbox_preview_frame_rate, 0, 1);
 					layout->addWidget(label_preview_note, 1, 0, 1, 2);
 				}
-				m_preview_page2 = new QWidget(group_preview);
+				m_preview_page2 = new QWidget(groupbox_preview);
 				{
 					m_video_previewer = new VideoPreviewer(m_preview_page2);
 					m_label_mic_icon = new QLabel(m_preview_page2);
@@ -272,11 +272,11 @@ PageRecord::PageRecord(MainWindow* main_window)
 						layout2->addStretch();
 					}
 				}
-				m_pushbutton_preview_start_stop = new QPushButton(group_preview);
+				m_pushbutton_preview_start_stop = new QPushButton(groupbox_preview);
 
 				connect(m_pushbutton_preview_start_stop, SIGNAL(clicked()), this, SLOT(OnPreviewStartStop()));
 
-				QVBoxLayout *layout = new QVBoxLayout(group_preview);
+				QVBoxLayout *layout = new QVBoxLayout(groupbox_preview);
 				{
 					m_stacked_layout_preview = new QStackedLayout();
 					layout->addLayout(m_stacked_layout_preview);
@@ -286,22 +286,22 @@ PageRecord::PageRecord(MainWindow* main_window)
 				layout->addWidget(m_pushbutton_preview_start_stop);
 			}
 
-			splitter_horizontal->addWidget(group_information);
-			splitter_horizontal->addWidget(group_preview);
+			splitter_horizontal->addWidget(groupbox_information);
+			splitter_horizontal->addWidget(groupbox_preview);
 			splitter_horizontal->setStretchFactor(0, 1);
 			splitter_horizontal->setStretchFactor(1, 3);
 		}
-		QGroupBox *group_log = new QGroupBox(tr("Log"), splitter_vertical);
+		QGroupBox *groupbox_log = new QGroupBox(tr("Log"), splitter_vertical);
 		{
-			m_textedit_log = new QTextEditSmall(group_log);
+			m_textedit_log = new QTextEditSmall(groupbox_log);
 			m_textedit_log->setReadOnly(true);
 
-			QVBoxLayout *layout = new QVBoxLayout(group_log);
+			QVBoxLayout *layout = new QVBoxLayout(groupbox_log);
 			layout->addWidget(m_textedit_log);
 		}
 
 		splitter_vertical->addWidget(splitter_horizontal);
-		splitter_vertical->addWidget(group_log);
+		splitter_vertical->addWidget(groupbox_log);
 		splitter_vertical->setStretchFactor(0, 3);
 		splitter_vertical->setStretchFactor(1, 1);
 	}
@@ -328,7 +328,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		connect(m_systray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->addWidget(group_recording);
+	layout->addWidget(groupbox_recording);
 	layout->addWidget(splitter_vertical);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();

@@ -46,6 +46,15 @@ dist_iconscalable_DATA = \
 	icons/scalable/simplescreenrecorder-paused.svg \
 	icons/scalable/simplescreenrecorder-recording.svg
 
+########## Output profiles ##########
+
+outputprofilesdir = $(pkgdatadir)/output-profiles
+dist_outputprofiles_DATA = \
+	output-profiles/Live%20Stream%20%281000kbps%29.conf \
+	output-profiles/Live%20Stream%20%283000kbps%29.conf \
+	output-profiles/Live%20Stream%20%282000kbps%29.conf \
+	output-profiles/YouTube.conf
+
 ########## Qt resource system ##########
 
 EXTRA_DIST = \

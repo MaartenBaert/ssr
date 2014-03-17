@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "ProfileBox.h"
+
 #if SSR_USE_PULSEAUDIO
 #include "PulseAudioInput.h"
 #endif
@@ -114,6 +116,8 @@ private:
 
 	std::vector<WidgetScreenLabel*> m_screen_labels;
 
+	ProfileBox *m_profile_box;
+
 	QButtonGroup *m_buttongroup_video_area;
 	QComboBoxWithSignal *m_combobox_screens;
 	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window, *m_pushbutton_video_opengl_settings;
@@ -145,6 +149,13 @@ public:
 	void LoadSettings(QSettings* settings);
 	void SaveSettings(QSettings* settings);
 
+private:
+	static void LoadProfileSettingsCallback(QSettings* settings, void* userdata);
+	static void SaveProfileSettingsCallback(QSettings* settings, void* userdata);
+	void LoadProfileSettings(QSettings* settings);
+	void SaveProfileSettings(QSettings* settings);
+
+public:
 #if SSR_USE_PULSEAUDIO
 	QString GetPulseAudioSourceName();
 #endif
@@ -153,63 +164,6 @@ private:
 #if SSR_USE_PULSEAUDIO
 	unsigned int FindPulseAudioSource(const QString& name);
 #endif
-
-public:
-	inline enum_video_area GetVideoArea() { return (enum_video_area) clamp(m_buttongroup_video_area->checkedId(), 0, VIDEO_AREA_COUNT - 1); }
-	inline unsigned int GetVideoAreaScreen() { return m_combobox_screens->currentIndex(); }
-	inline unsigned int GetVideoX() { return m_spinbox_video_x->value(); }
-	inline unsigned int GetVideoY() { return m_spinbox_video_y->value(); }
-	inline unsigned int GetVideoW() { return m_spinbox_video_w->value(); }
-	inline unsigned int GetVideoH() { return m_spinbox_video_h->value(); }
-	inline unsigned int GetVideoFrameRate() { return m_spinbox_video_frame_rate->value(); }
-	inline bool GetVideoScalingEnabled() { return m_checkbox_scale->isChecked(); }
-	inline unsigned int GetVideoScaledW() { return m_spinbox_video_scaled_w->value(); }
-	inline unsigned int GetVideoScaledH() { return m_spinbox_video_scaled_h->value(); }
-	inline bool GetVideoRecordCursor() { return m_checkbox_record_cursor->isChecked(); }
-	inline bool GetAudioEnabled() { return m_checkbox_audio_enable->isChecked(); }
-	inline enum_audio_backend GetAudioBackend() { return (enum_audio_backend) clamp(m_combobox_audio_backend->currentIndex(), 0, AUDIO_BACKEND_COUNT - 1); }
-	inline QString GetALSADevice() { return m_lineedit_alsa_device->text(); }
-#if SSR_USE_PULSEAUDIO
-	inline unsigned int GetPulseAudioSource() { return clamp(m_combobox_pulseaudio_source->currentIndex(), 0, (int) m_pulseaudio_sources.size() - 1); }
-#endif
-#if SSR_USE_JACK
-	inline bool GetJackConnectSystemCapture() { return m_checkbox_jack_connect_system_capture->isChecked(); }
-	inline bool GetJackConnectSystemPlayback() { return m_checkbox_jack_connect_system_playback->isChecked(); }
-#endif
-	inline QString GetGLInjectChannel() { return m_glinject_channel; }
-	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
-	inline QString GetGLInjectCommand() { return m_glinject_command; }
-	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
-	inline bool GetGLInjectAutoLaunch() { return m_glinject_auto_launch; }
-	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
-
-	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
-	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_screens->count() - 1)); }
-	inline void SetVideoX(unsigned int x) { m_spinbox_video_x->setValue(x); }
-	inline void SetVideoY(unsigned int y) { m_spinbox_video_y->setValue(y); }
-	inline void SetVideoW(unsigned int w) { m_spinbox_video_w->setValue(w); }
-	inline void SetVideoH(unsigned int h) { m_spinbox_video_h->setValue(h); }
-	inline void SetVideoFrameRate(unsigned int frame_rate) { m_spinbox_video_frame_rate->setValue(frame_rate); }
-	inline void SetVideoScalingEnabled(bool enable) { m_checkbox_scale->setChecked(enable); }
-	inline void SetVideoScaledW(unsigned int scaled_w) { m_spinbox_video_scaled_w->setValue(scaled_w); }
-	inline void SetVideoScaledH(unsigned int scaled_h) { m_spinbox_video_scaled_h->setValue(scaled_h); }
-	inline void SetVideoRecordCursor(bool show) { m_checkbox_record_cursor->setChecked(show); }
-	inline void SetAudioEnabled(bool enable) { m_checkbox_audio_enable->setChecked(enable); }
-	inline void SetAudioBackend(enum_audio_backend backend) { m_combobox_audio_backend->setCurrentIndex(clamp((int) backend, 0, AUDIO_BACKEND_COUNT - 1)); }
-	inline void SetALSADevice(const QString& device) { m_lineedit_alsa_device->setText(device); }
-#if SSR_USE_PULSEAUDIO
-	inline void SetPulseAudioSource(unsigned int source) { m_combobox_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
-#endif
-#if SSR_USE_JACK
-	inline void SetJackConnectSystemCapture(bool connect) { m_checkbox_jack_connect_system_capture->setChecked(connect); }
-	inline void SetJackConnectSystemPlayback(bool connect) { m_checkbox_jack_connect_system_playback->setChecked(connect); }
-#endif
-	inline void SetGLInjectChannel(const QString& channel) { m_glinject_channel = channel; }
-	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
-	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
-	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
-	inline void SetGLInjectAutoLaunch(bool auto_launch) { m_glinject_auto_launch = auto_launch; }
-	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
 
 protected:
 	virtual void mousePressEvent(QMouseEvent* event) override;
@@ -242,5 +196,64 @@ private slots:
 	void OnStartSelectWindow();
 	void OnGLInjectDialog();
 	void OnContinue();
+
+public:
+	inline unsigned int GetProfile() { return m_profile_box->GetProfile(); }
+	inline enum_video_area GetVideoArea() { return (enum_video_area) clamp(m_buttongroup_video_area->checkedId(), 0, VIDEO_AREA_COUNT - 1); }
+	inline unsigned int GetVideoAreaScreen() { return m_combobox_screens->currentIndex(); }
+	inline unsigned int GetVideoX() { return m_spinbox_video_x->value(); }
+	inline unsigned int GetVideoY() { return m_spinbox_video_y->value(); }
+	inline unsigned int GetVideoW() { return m_spinbox_video_w->value(); }
+	inline unsigned int GetVideoH() { return m_spinbox_video_h->value(); }
+	inline unsigned int GetVideoFrameRate() { return m_spinbox_video_frame_rate->value(); }
+	inline bool GetVideoScalingEnabled() { return m_checkbox_scale->isChecked(); }
+	inline unsigned int GetVideoScaledW() { return m_spinbox_video_scaled_w->value(); }
+	inline unsigned int GetVideoScaledH() { return m_spinbox_video_scaled_h->value(); }
+	inline bool GetVideoRecordCursor() { return m_checkbox_record_cursor->isChecked(); }
+	inline bool GetAudioEnabled() { return m_checkbox_audio_enable->isChecked(); }
+	inline enum_audio_backend GetAudioBackend() { return (enum_audio_backend) clamp(m_combobox_audio_backend->currentIndex(), 0, AUDIO_BACKEND_COUNT - 1); }
+	inline QString GetALSADevice() { return m_lineedit_alsa_device->text(); }
+#if SSR_USE_PULSEAUDIO
+	inline unsigned int GetPulseAudioSource() { return clamp(m_combobox_pulseaudio_source->currentIndex(), 0, (int) m_pulseaudio_sources.size() - 1); }
+#endif
+#if SSR_USE_JACK
+	inline bool GetJackConnectSystemCapture() { return m_checkbox_jack_connect_system_capture->isChecked(); }
+	inline bool GetJackConnectSystemPlayback() { return m_checkbox_jack_connect_system_playback->isChecked(); }
+#endif
+	inline QString GetGLInjectChannel() { return m_glinject_channel; }
+	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
+	inline QString GetGLInjectCommand() { return m_glinject_command; }
+	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
+	inline bool GetGLInjectAutoLaunch() { return m_glinject_auto_launch; }
+	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
+
+	inline void SetProfile(unsigned int profile) { m_profile_box->SetProfile(profile); }
+	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
+	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_screens->count() - 1)); }
+	inline void SetVideoX(unsigned int x) { m_spinbox_video_x->setValue(x); }
+	inline void SetVideoY(unsigned int y) { m_spinbox_video_y->setValue(y); }
+	inline void SetVideoW(unsigned int w) { m_spinbox_video_w->setValue(w); }
+	inline void SetVideoH(unsigned int h) { m_spinbox_video_h->setValue(h); }
+	inline void SetVideoFrameRate(unsigned int frame_rate) { m_spinbox_video_frame_rate->setValue(frame_rate); }
+	inline void SetVideoScalingEnabled(bool enable) { m_checkbox_scale->setChecked(enable); }
+	inline void SetVideoScaledW(unsigned int scaled_w) { m_spinbox_video_scaled_w->setValue(scaled_w); }
+	inline void SetVideoScaledH(unsigned int scaled_h) { m_spinbox_video_scaled_h->setValue(scaled_h); }
+	inline void SetVideoRecordCursor(bool show) { m_checkbox_record_cursor->setChecked(show); }
+	inline void SetAudioEnabled(bool enable) { m_checkbox_audio_enable->setChecked(enable); }
+	inline void SetAudioBackend(enum_audio_backend backend) { m_combobox_audio_backend->setCurrentIndex(clamp((int) backend, 0, AUDIO_BACKEND_COUNT - 1)); }
+	inline void SetALSADevice(const QString& device) { m_lineedit_alsa_device->setText(device); }
+#if SSR_USE_PULSEAUDIO
+	inline void SetPulseAudioSource(unsigned int source) { m_combobox_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
+#endif
+#if SSR_USE_JACK
+	inline void SetJackConnectSystemCapture(bool connect) { m_checkbox_jack_connect_system_capture->setChecked(connect); }
+	inline void SetJackConnectSystemPlayback(bool connect) { m_checkbox_jack_connect_system_playback->setChecked(connect); }
+#endif
+	inline void SetGLInjectChannel(const QString& channel) { m_glinject_channel = channel; }
+	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
+	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
+	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
+	inline void SetGLInjectAutoLaunch(bool auto_launch) { m_glinject_auto_launch = auto_launch; }
+	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
 
 };
