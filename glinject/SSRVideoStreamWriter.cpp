@@ -238,13 +238,6 @@ void* SSRVideoStreamWriter::NewFrame(unsigned int* flags) {
 	if(!(*flags & GLINJECT_FLAG_CAPTURE_ENABLED))
 		return NULL;
 
-	// make sure that at least one frame is available
-	unsigned int read_pos = header->ring_buffer_read_pos;
-	unsigned int write_pos = header->ring_buffer_write_pos;
-	unsigned int frames_used = positive_mod((int) write_pos - (int) read_pos, GLINJECT_RING_BUFFER_SIZE * 2);
-	if(frames_used >= GLINJECT_RING_BUFFER_SIZE)
-		return NULL;
-
 	// check the timestamp and maybe limit the fps
 	unsigned int target_fps = header->capture_target_fps;
 	int64_t timestamp = hrt_time_micro();
@@ -261,6 +254,13 @@ void* SSRVideoStreamWriter::NewFrame(unsigned int* flags) {
 		}
 		m_next_frame_time = std::max(m_next_frame_time + interval, timestamp);
 	}
+
+	// make sure that at least one frame is available
+	unsigned int read_pos = header->ring_buffer_read_pos;
+	unsigned int write_pos = header->ring_buffer_write_pos;
+	unsigned int frames_used = positive_mod((int) write_pos - (int) read_pos, GLINJECT_RING_BUFFER_SIZE * 2);
+	if(frames_used >= GLINJECT_RING_BUFFER_SIZE)
+		return NULL;
 
 	// write frame info
 	GLInjectFrameInfo *frameinfo = GetGLInjectFrameInfo(write_pos % GLINJECT_RING_BUFFER_SIZE);
