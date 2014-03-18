@@ -192,32 +192,38 @@ void GLInjectInput::InputThread() {
 		int64_t next_watcher_update = hrt_time_micro();
 
 		while(!m_should_stop) {
-			SharedLock lock(&m_shared_data);
 
-			// update stream watcher
-			if(hrt_time_micro() >= next_watcher_update) {
-				lock->m_stream_watcher->HandleChanges(&StreamAddCallback, &StreamRemoveCallback, this);
-				next_watcher_update = hrt_time_micro() + 200000;
-			}
-
-			// do we have a stream reader?
-			if(lock->m_stream_reader == NULL) {
-				PushVideoPing(hrt_time_micro() - MAX_COMMUNICATION_LATENCY);
-				lock.lock().unlock(); // release lock before sleep
-				usleep(20000);
-				continue;
-			}
-
-			// is a frame ready?
+			// try to get a frame
 			int64_t timestamp;
 			unsigned int width, height;
 			int stride;
-			void *data = lock->m_stream_reader->GetFrame(&timestamp, &width, &height, &stride);
-			if(data == NULL) {
-				PushVideoPing(hrt_time_micro() - MAX_COMMUNICATION_LATENCY);
-				lock.lock().unlock(); // release lock before sleep
-				usleep(20000);
-				continue;
+			void *data;
+			{
+				SharedLock lock(&m_shared_data);
+
+				// update stream watcher
+				if(hrt_time_micro() >= next_watcher_update) {
+					lock->m_stream_watcher->HandleChanges(&StreamAddCallback, &StreamRemoveCallback, this);
+					next_watcher_update = hrt_time_micro() + 200000;
+				}
+
+				// do we have a stream reader?
+				if(lock->m_stream_reader == NULL) {
+					PushVideoPing(hrt_time_micro() - MAX_COMMUNICATION_LATENCY);
+					lock.lock().unlock(); // release lock before sleep
+					usleep(20000);
+					continue;
+				}
+
+				// is a frame ready?
+				data = lock->m_stream_reader->GetFrame(&timestamp, &width, &height, &stride);
+				if(data == NULL) {
+					PushVideoPing(hrt_time_micro() - MAX_COMMUNICATION_LATENCY);
+					lock.lock().unlock(); // release lock before sleep
+					usleep(20000);
+					continue;
+				}
+
 			}
 
 			// if the stride is negative, change the pointer
@@ -227,10 +233,14 @@ void GLInjectInput::InputThread() {
 			}
 
 			// push the frame
+			// we can do this even when we don't have the lock because only this thread will change the stream reader
 			PushVideoFrame(width, height, (uint8_t*) data, stride, PIX_FMT_BGRA, timestamp);
 
 			// go to the next frame
-			lock->m_stream_reader->NextFrame();
+			{
+				SharedLock lock(&m_shared_data);
+				lock->m_stream_reader->NextFrame();
+			}
 
 		}
 
