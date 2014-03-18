@@ -37,8 +37,10 @@ GLXextFuncPtr (*g_glinject_real_glXGetProcAddressARB)(const GLubyte*) = NULL;
 int (*g_glinject_real_XNextEvent)(Display*, XEvent*) = NULL;
 
 static GLInject *g_glinject = NULL;
+static std::mutex g_glinject_mutex;
 
 void InitGLInject() {
+	std::lock_guard<std::mutex> lock(g_glinject_mutex);
 
 	if(g_glinject != NULL)
 		return;
@@ -100,6 +102,7 @@ void InitGLInject() {
 }
 
 void FreeGLInject() {
+	std::lock_guard<std::mutex> lock(g_glinject_mutex);
 	if(g_glinject != NULL) {
 		delete g_glinject;
 		g_glinject = NULL;
@@ -123,34 +126,41 @@ GLXWindow glinject_my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window w
 	GLXWindow res = g_glinject_real_glXCreateWindow(dpy, config, win, attrib_list);
 	if(res == 0)
 		return 0;
+	std::lock_guard<std::mutex> lock(g_glinject_mutex);
 	g_glinject->NewGLXFrameGrabber(dpy, win, res);
 	return res;
 }
 
 void glinject_my_glXDestroyWindow(Display* dpy, GLXWindow win) {
 	g_glinject_real_glXDestroyWindow(dpy, win);
+	std::lock_guard<std::mutex> lock(g_glinject_mutex);
 	g_glinject->DeleteGLXFrameGrabberByDrawable(dpy, win);
 }
 
 int glinject_my_XDestroyWindow(Display* dpy, Window win) {
 	int res = g_glinject_real_XDestroyWindow(dpy, win);
+	std::lock_guard<std::mutex> lock(g_glinject_mutex);
 	g_glinject->DeleteGLXFrameGrabberByWindow(dpy, win);
 	return res;
 }
 
 void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
-	GLXFrameGrabber *fg = g_glinject->FindGLXFrameGrabber(dpy, drawable);
-	if(fg == NULL) {
-		GLINJECT_PRINT("Warning: glXSwapBuffers called without existing frame grabber, creating one assuming window == drawable.");
-		fg = g_glinject->NewGLXFrameGrabber(dpy, drawable, drawable);
+	{
+		std::lock_guard<std::mutex> lock(g_glinject_mutex);
+		GLXFrameGrabber *fg = g_glinject->FindGLXFrameGrabber(dpy, drawable);
+		if(fg == NULL) {
+			GLINJECT_PRINT("Warning: glXSwapBuffers called without existing frame grabber, creating one assuming window == drawable.");
+			fg = g_glinject->NewGLXFrameGrabber(dpy, drawable, drawable);
+		}
+		fg->GrabFrame();
 	}
-	fg->GrabFrame();
 	g_glinject_real_glXSwapBuffers(dpy, drawable);
 }
 
 GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name) {
 	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
 		if(strcmp(hook_table[i].name, (const char*) proc_name) == 0) {
+			std::lock_guard<std::mutex> lock(g_glinject_mutex);
 			GLINJECT_PRINT("Hooked: glXGetProcAddressARB(" << proc_name << ").");
 			return (GLXextFuncPtr) hook_table[i].address;
 		}
@@ -160,7 +170,8 @@ GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name) {
 
 int glinject_my_XNextEvent(Display* display, XEvent* event_return) {
 	int res = g_glinject_real_XNextEvent(display, event_return);
-	/*if(g_hotkey_info.enabled && event_return->type == KeyPress && event_return->xkey.keycode == g_hotkey_info.keycode
+	/*std::lock_guard<std::mutex> lock(g_glinject_mutex);
+	if(g_hotkey_info.enabled && event_return->type == KeyPress && event_return->xkey.keycode == g_hotkey_info.keycode
 			&& (event_return->xkey.state & ~LockMask & ~Mod2Mask) == g_hotkey_info.modifiers) {
 		g_hotkey_pressed = true;
 	}*/
@@ -203,6 +214,7 @@ extern "C" void* dlsym(void* handle, const char* symbol) {
 	InitGLInject();
 	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
 		if(strcmp(hook_table[i].name, symbol) == 0) {
+			std::lock_guard<std::mutex> lock(g_glinject_mutex);
 			GLINJECT_PRINT("Hooked: dlsym(" << symbol << ").");
 			return hook_table[i].address;
 		}
@@ -214,6 +226,7 @@ extern "C" void* dlvsym(void* handle, const char* symbol, const char* version) {
 	InitGLInject();
 	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
 		if(strcmp(hook_table[i].name, symbol) == 0) {
+			std::lock_guard<std::mutex> lock(g_glinject_mutex);
 			GLINJECT_PRINT("Hooked: dlvsym(" << symbol << "," << version << ").");
 			return hook_table[i].address;
 		}
