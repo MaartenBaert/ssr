@@ -38,8 +38,9 @@ private:
 	bool m_record_cursor, m_follow_cursor;
 
 	std::atomic<uint32_t> m_frame_counter;
-	int64_t m_info_last_timestamp;
-	uint32_t m_last_frame_counter;
+	int64_t m_fps_last_timestamp;
+	uint32_t m_fps_last_counter;
+	double m_fps_current;
 
 	Display *m_x11_display;
 	int m_x11_screen;
