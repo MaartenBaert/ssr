@@ -51,6 +51,7 @@ BaseEncoder::BaseEncoder(Muxer* muxer) {
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_total_frames = 0;
+		lock->m_total_packets = 0;
 		lock->m_stats_actual_frame_rate = 0.0;
 		lock->m_stats_previous_pts = AV_NOPTS_VALUE;
 		lock->m_stats_previous_frames = 0;
@@ -133,6 +134,11 @@ uint64_t BaseEncoder::GetTotalFrames() {
 	return lock->m_total_frames;
 }
 
+unsigned int BaseEncoder::GetFrameLatency() {
+	SharedLock lock(&m_shared_data);
+	return lock->m_total_frames - lock->m_total_packets;
+}
+
 unsigned int BaseEncoder::GetQueuedFrameCount() {
 	SharedLock lock(&m_shared_data);
 	return lock->m_frame_queue.size();
@@ -191,14 +197,24 @@ void BaseEncoder::EncoderThread() {
 			}
 
 			// encode the frame
-			EncodeFrame(frame->GetFrame());
+			if(EncodeFrame(frame->GetFrame())) {
+				SharedLock lock(&m_shared_data);
+				++lock->m_total_packets;
+			}
 
 		}
 
 		// flush the encoder
 		if(!m_should_stop && m_delayed_packets) {
 			Logger::LogInfo("[BaseEncoder::EncoderThread] " + Logger::tr("Flushing encoder ..."));
-			while(!m_should_stop && EncodeFrame(NULL));
+			while(!m_should_stop) {
+				if(EncodeFrame(NULL)) {
+					SharedLock lock(&m_shared_data);
+					++lock->m_total_packets;
+				} else {
+					break;
+				}
+			}
 		}
 
 		// tell the others that we're done

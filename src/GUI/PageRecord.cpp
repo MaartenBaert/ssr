@@ -548,6 +548,7 @@ void PageRecord::StartPage() {
 
 	m_page_started = true;
 	m_recorded_something = false;
+	m_wait_saving = false;
 	UpdateSysTray();
 	OnUpdateHotkey();
 	OnUpdateSoundNotifications();
@@ -578,8 +579,23 @@ void PageRecord::StopPage(bool save) {
 	if(m_output_manager != NULL) {
 
 		// stop the output
-		if(save)
+		if(save) {
+			m_wait_saving = true;
 			m_output_manager->Finish();
+			assert(m_output_manager->GetVideoEncoder() != NULL);
+			unsigned int frames_left = m_output_manager->GetVideoEncoder()->GetFrameLatency();
+			QProgressDialog dialog(tr("Encoding remaining data ..."), QString(), 0, frames_left, this);
+			dialog.setWindowTitle(MainWindow::WINDOW_CAPTION);
+			dialog.setWindowModality(Qt::WindowModal);
+			dialog.setCancelButton(NULL);
+			dialog.setMinimumDuration(500);
+			while(!m_output_manager->IsFinished()) {
+				qDebug() << "frames left" << frames_left << "current" << m_output_manager->GetVideoEncoder()->GetFrameLatency();
+				dialog.setValue(frames_left - clamp(m_output_manager->GetVideoEncoder()->GetFrameLatency(), 0u, frames_left));
+				usleep(20000);
+			}
+			m_wait_saving = false;
+		}
 		m_output_manager.reset();
 
 		// delete the file if it isn't needed
@@ -942,6 +958,8 @@ void PageRecord::OnUpdateSoundNotifications() {
 void PageRecord::OnRecordStartPause() {
 	if(!m_page_started)
 		return;
+	if(m_wait_saving)
+		return;
 	if(m_output_started) {
 		StopOutput(false);
 	} else {
@@ -952,6 +970,8 @@ void PageRecord::OnRecordStartPause() {
 void PageRecord::OnPreviewStartStop() {
 	if(!m_page_started)
 		return;
+	if(m_wait_saving)
+		return;
 	m_video_previewer->Reset();
 	m_audio_previewer->Reset();
 	m_previewing = !m_previewing;
@@ -961,6 +981,8 @@ void PageRecord::OnPreviewStartStop() {
 
 void PageRecord::OnCancel() {
 	if(!m_page_started)
+		return;
+	if(m_wait_saving)
 		return;
 	if(m_output_manager != NULL) {
 		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to cancel this recording?"),
@@ -974,6 +996,8 @@ void PageRecord::OnCancel() {
 
 void PageRecord::OnSave() {
 	if(!m_page_started)
+		return;
+	if(m_wait_saving)
 		return;
 	if(!m_recorded_something) {
 		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;)."),
@@ -1018,7 +1042,7 @@ void PageRecord::OnUpdateInformation() {
 		uint64_t bit_rate = 0, total_bytes = 0;
 
 		if(m_output_manager != NULL) {
-			total_time = m_output_manager->GetSynchronizer()->GetTotalTime();
+			total_time = (m_output_manager->GetSynchronizer() == NULL)? 0 : m_output_manager->GetSynchronizer()->GetTotalTime();
 			frame_rate = m_output_manager->GetVideoEncoder()->GetActualFrameRate();
 			bit_rate = (uint64_t) (m_output_manager->GetMuxer()->GetActualBitRate() + 0.5);
 			total_bytes = m_output_manager->GetMuxer()->GetTotalBytes();
