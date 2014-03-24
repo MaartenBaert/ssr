@@ -41,10 +41,11 @@ public:
 	~OutputManager();
 
 	void Finish();
+	bool IsFinished();
 
 private:
 	void Init();
-	void Free(bool save);
+	void Free();
 
 public:
 	inline Muxer* GetMuxer() { return m_muxer; }

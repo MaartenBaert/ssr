@@ -32,18 +32,32 @@ OutputManager::OutputManager(const OutputSettings& output_settings) {
 	try {
 		Init();
 	} catch(...) {
-		Free(false);
+		Free();
 		throw;
 	}
 
 }
 
 OutputManager::~OutputManager() {
-	Free(false);
+	Free();
 }
 
 void OutputManager::Finish() {
-	Free(true);
+
+	// stop the synchronizer
+	if(m_synchronizer != NULL) {
+		m_synchronizer->NewSegment(); // needed to make sure that all data is sent to the encoders
+		delete m_synchronizer;
+		m_synchronizer = NULL;
+	}
+
+	// we have to wait for the encoders and mixer to finish or else the file will be corrupted.
+	m_muxer->Finish();
+
+}
+
+bool OutputManager::IsFinished() {
+	return (m_muxer->IsDone() || m_muxer->HasErrorOccurred());
 }
 
 void OutputManager::Init() {
@@ -58,22 +72,12 @@ void OutputManager::Init() {
 	m_synchronizer = new Synchronizer(m_video_encoder, m_audio_encoder, m_output_settings.video_allow_frame_skipping);
 }
 
-void OutputManager::Free(bool save) {
+void OutputManager::Free() {
 
 	// stop the synchronizer
 	if(m_synchronizer != NULL) {
-		if(save)
-			m_synchronizer->NewSegment();
 		delete m_synchronizer;
 		m_synchronizer = NULL;
-	}
-
-	// If we want to save the file, we have to wait for the encoders and mixer to finish or else the file will be corrupted.
-	if(save && m_muxer != NULL && m_muxer->IsStarted()) {
-		m_muxer->Finish();
-		while(!m_muxer->IsDone() && !m_muxer->HasErrorOccurred()) {
-			usleep(20000);
-		}
 	}
 
 	// stop the encoders and muxers

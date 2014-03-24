@@ -32,7 +32,7 @@ class BaseEncoder {
 private:
 	struct SharedData {
 		std::deque<std::unique_ptr<AVFrameWrapper> > m_frame_queue;
-		uint64_t m_total_frames;
+		uint64_t m_total_frames, m_total_packets;
 		double m_stats_actual_frame_rate;
 		int64_t m_stats_previous_pts;
 		uint64_t m_stats_previous_frames;
@@ -67,7 +67,7 @@ protected:
 	virtual void FillCodecContext(AVCodec* codec) = 0;
 
 	// Called by the encoder thread to encode a single frame. Frame can be NULL if the encoder uses delayed packets.
-	// Returns whether a packet was received.
+	// Returns whether a packet was created.
 	virtual bool EncodeFrame(AVFrame* frame) = 0;
 
 	inline Muxer* GetMuxer() { return m_muxer; }
@@ -83,6 +83,10 @@ public:
 	// Returns the total number of added frames.
 	// This function is thread-safe.
 	uint64_t GetTotalFrames();
+
+	// Returns the current input-to-output latency of the encoder (in frames).
+	// This function is thread-safe.
+	unsigned int GetFrameLatency();
 
 	// Returns the total number of frames in the queue.
 	// This function is thread-safe.
