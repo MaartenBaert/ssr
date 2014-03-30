@@ -20,11 +20,28 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "PageInput.h"
 
 #include "Dialogs.h"
+#include "EnumStrings.h"
 #include "MainWindow.h"
 #include "DialogGLInject.h"
 
 #include <QX11Info>
 #include <X11/Xlib.h>
+
+ENUMSTRINGS(PageInput::enum_video_area) = {
+	{PageInput::VIDEO_AREA_SCREEN, "screen"},
+	{PageInput::VIDEO_AREA_FIXED, "fixed"},
+	{PageInput::VIDEO_AREA_CURSOR, "cursor"},
+	{PageInput::VIDEO_AREA_GLINJECT, "glinject"},
+};
+ENUMSTRINGS(PageInput::enum_audio_backend) = {
+	{PageInput::AUDIO_BACKEND_ALSA, "alsa"},
+#if SSR_USE_PULSEAUDIO
+	{PageInput::AUDIO_BACKEND_PULSEAUDIO, "pulseaudio"},
+#endif
+#if SSR_USE_JACK
+	{PageInput::AUDIO_BACKEND_JACK, "jack"},
+#endif
+};
 
 // This does some sanity checking on the rubber band rectangle before creating it.
 // Rubber bands with width or height zero or extremely large appear to cause problems.
@@ -349,7 +366,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 #endif
 
 	// load settings
-	SetVideoArea((enum_video_area) settings->value("input/video_area", VIDEO_AREA_SCREEN).toUInt());
+	SetVideoArea(StringToEnum(settings->value("input/video_area", QString()).toString(), VIDEO_AREA_SCREEN));
 	SetVideoAreaScreen(settings->value("input/video_area_screen", 0).toUInt());
 	SetVideoX(settings->value("input/video_x", 0).toUInt());
 	SetVideoY(settings->value("input/video_y", 0).toUInt());
@@ -361,7 +378,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	SetVideoScaledH(settings->value("input/video_scaled_h", 480).toUInt());
 	SetVideoRecordCursor(settings->value("input/video_record_cursor", true).toBool());
 	SetAudioEnabled(settings->value("input/audio_enabled", true).toBool());
-	SetAudioBackend((enum_audio_backend) settings->value("input/audio_backend", default_audio_backend).toUInt());
+	SetAudioBackend(StringToEnum(settings->value("input/audio_backend", QString()).toString(), default_audio_backend));
 	SetALSADevice(settings->value("input/audio_alsa_device", "default").toString());
 #if SSR_USE_PULSEAUDIO
 	SetPulseAudioSource(FindPulseAudioSource(settings->value("input/audio_pulseaudio_source", QString()).toString()));
@@ -386,7 +403,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 }
 
 void PageInput::SaveProfileSettings(QSettings* settings) {
-	settings->setValue("input/video_area", GetVideoArea());
+	settings->setValue("input/video_area", EnumToString(GetVideoArea()));
 	settings->setValue("input/video_area_screen", GetVideoAreaScreen());
 	settings->setValue("input/video_x", GetVideoX());
 	settings->setValue("input/video_y", GetVideoY());
@@ -398,7 +415,7 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/video_scaled_h", GetVideoScaledH());
 	settings->setValue("input/video_record_cursor", GetVideoRecordCursor());
 	settings->setValue("input/audio_enabled", GetAudioEnabled());
-	settings->setValue("input/audio_backend", GetAudioBackend());
+	settings->setValue("input/audio_backend", EnumToString(GetAudioBackend()));
 	settings->setValue("input/audio_alsa_device", GetALSADevice());
 #if SSR_USE_PULSEAUDIO
 	settings->setValue("input/audio_pulseaudio_source", GetPulseAudioSourceName());

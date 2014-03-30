@@ -176,6 +176,7 @@ am__dist_iconscalable_DATA_DIST =  \
 	icons/scalable/simplescreenrecorder-paused.svg \
 	icons/scalable/simplescreenrecorder-recording.svg
 am__dist_outputprofiles_DATA_DIST =  \
+	output-profiles/High%20Quality%20Intermediate.conf \
 	output-profiles/Live%20Stream%20%281000kbps%29.conf \
 	output-profiles/Live%20Stream%20%283000kbps%29.conf \
 	output-profiles/Live%20Stream%20%282000kbps%29.conf \
@@ -373,6 +374,7 @@ top_srcdir = @top_srcdir@
 ########## Output profiles ##########
 @ENABLE_SSRPROGRAM_TRUE@outputprofilesdir = $(pkgdatadir)/output-profiles
 @ENABLE_SSRPROGRAM_TRUE@dist_outputprofiles_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@	output-profiles/High%20Quality%20Intermediate.conf \
 @ENABLE_SSRPROGRAM_TRUE@	output-profiles/Live%20Stream%20%281000kbps%29.conf \
 @ENABLE_SSRPROGRAM_TRUE@	output-profiles/Live%20Stream%20%283000kbps%29.conf \
 @ENABLE_SSRPROGRAM_TRUE@	output-profiles/Live%20Stream%20%282000kbps%29.conf \
