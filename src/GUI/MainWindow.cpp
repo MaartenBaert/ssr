@@ -22,12 +22,19 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Main.h"
 #include "Icons.h"
 #include "Dialogs.h"
+#include "EnumStrings.h"
 #include "NVidia.h"
 #include "PageWelcome.h"
 #include "PageInput.h"
 #include "PageOutput.h"
 #include "PageRecord.h"
 #include "PageDone.h"
+
+ENUMSTRINGS(MainWindow::enum_nvidia_disable_flipping) = {
+	{MainWindow::NVIDIA_DISABLE_FLIPPING_ASK, "ask"},
+	{MainWindow::NVIDIA_DISABLE_FLIPPING_YES, "yes"},
+	{MainWindow::NVIDIA_DISABLE_FLIPPING_NO, "no"},
+};
 
 const QString MainWindow::WINDOW_CAPTION = "SimpleScreenRecorder";
 
@@ -96,7 +103,7 @@ void MainWindow::LoadSettings() {
 
 	QSettings settings(GetApplicationUserDir() + "/settings.conf", QSettings::IniFormat);
 
-	SetNVidiaDisableFlipping(FindNVidiaDisableFlipping(settings.value("global/nvidia_disable_flipping", QString()).toString(), NVIDIA_DISABLE_FLIPPING_ASK));
+	SetNVidiaDisableFlipping(StringToEnum(settings.value("global/nvidia_disable_flipping", QString()).toString(), NVIDIA_DISABLE_FLIPPING_ASK));
 
 	m_page_input->LoadSettings(&settings);
 	m_page_output->LoadSettings(&settings);
@@ -109,28 +116,12 @@ void MainWindow::SaveSettings() {
 	QSettings settings(GetApplicationUserDir() + "/settings.conf", QSettings::IniFormat);
 	settings.clear();
 
-	settings.setValue("global/nvidia_disable_flipping", GetNVidiaDisableFlippingName(GetNVidiaDisableFlipping()));
+	settings.setValue("global/nvidia_disable_flipping", EnumToString(GetNVidiaDisableFlipping()));
 
 	m_page_input->SaveSettings(&settings);
 	m_page_output->SaveSettings(&settings);
 	m_page_record->SaveSettings(&settings);
 
-}
-
-MainWindow::enum_nvidia_disable_flipping MainWindow::FindNVidiaDisableFlipping(const QString& name, enum_nvidia_disable_flipping fallback) {
-	if(name == "ask") return NVIDIA_DISABLE_FLIPPING_ASK;
-	if(name == "yes") return NVIDIA_DISABLE_FLIPPING_YES;
-	if(name == "no")  return NVIDIA_DISABLE_FLIPPING_NO;
-	return fallback;
-}
-
-QString MainWindow::GetNVidiaDisableFlippingName(enum_nvidia_disable_flipping flipping) {
-	switch(flipping) {
-		case NVIDIA_DISABLE_FLIPPING_ASK: return "ask";
-		case NVIDIA_DISABLE_FLIPPING_YES: return "yes";
-		case NVIDIA_DISABLE_FLIPPING_NO:  return "no";
-		default: assert(false); return QString();
-	}
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {

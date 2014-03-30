@@ -29,7 +29,7 @@ class PageDone;
 class MainWindow : public QMainWindow {
 	Q_OBJECT
 
-private:
+public:
 	enum enum_nvidia_disable_flipping {
 		NVIDIA_DISABLE_FLIPPING_ASK,
 		NVIDIA_DISABLE_FLIPPING_YES,
@@ -56,10 +56,6 @@ public:
 
 	void LoadSettings();
 	void SaveSettings();
-
-private:
-	enum_nvidia_disable_flipping FindNVidiaDisableFlipping(const QString& name, enum_nvidia_disable_flipping fallback);
-	QString GetNVidiaDisableFlippingName(enum_nvidia_disable_flipping flipping);
 
 protected:
 	virtual void closeEvent(QCloseEvent* event) override;

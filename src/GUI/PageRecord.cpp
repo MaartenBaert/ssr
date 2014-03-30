@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Main.h"
 #include "Icons.h"
 #include "Dialogs.h"
+#include "EnumStrings.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 #include "PageOutput.h"
@@ -489,12 +490,12 @@ void PageRecord::StartPage() {
 			// with the 'crf' option. 'preset' changes the encoding speed (and hence the efficiency of the compression) but doesn't really influence the quality,
 			// which is great because it means you don't have to experiment with different bit rates and different speeds to get good results.
 			m_output_settings.video_options.push_back(std::make_pair(QString("crf"), QString::number(page_output->GetH264CRF())));
-			m_output_settings.video_options.push_back(std::make_pair(QString("preset"), page_output->GetH264PresetName()));
+			m_output_settings.video_options.push_back(std::make_pair(QString("preset"), EnumToString(page_output->GetH264Preset())));
 			break;
 		}
 		case PageOutput::VIDEO_CODEC_VP8: {
 			// The names of there parameters are very unintuitive. The two options we care about (because they change the speed) are 'deadline' and 'cpu-used'.
-			// 'deadline'='best' is unusably slow. 'deadline'='good' is the normal setting, it tells the encoder to use the speed set with 'cpu-used'. Higher
+			// 'deadline=best' is unusably slow. 'deadline=good' is the normal setting, it tells the encoder to use the speed set with 'cpu-used'. Higher
 			// numbers will use *less* CPU, confusingly, so a higher number is faster. I haven't done much testing with 'realtime' so I'm not sure if it's a good idea here.
 			// It sounds useful, but I think it will use so much CPU that it will slow down the program that is being recorded.
 			m_output_settings.video_options.push_back(std::make_pair(QString("deadline"), QString("good")));

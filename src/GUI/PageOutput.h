@@ -83,8 +83,6 @@ private:
 		inline bool operator<(const AudioCodecData& other) const { return (avname < other.avname); }
 	};
 
-	static const QString H264_PRESET_STRINGS[H264_PRESET_COUNT];
-
 private:
 	MainWindow *m_main_window;
 
@@ -150,14 +148,10 @@ public:
 	QString GetContainerAVName();
 	QString GetVideoCodecAVName();
 	QString GetAudioCodecAVName();
-	QString GetH264PresetName();
 
 private:
-	enum_container FindContainer(const QString& name, enum_container fallback);
 	unsigned int FindContainerAV(const QString& name);
-	enum_video_codec FindVideoCodec(const QString& name, enum_video_codec fallback);
 	unsigned int FindVideoCodecAV(const QString& name);
-	enum_audio_codec FindAudioCodec(const QString& name, enum_audio_codec fallback);
 	unsigned int FindAudioCodecAV(const QString& name);
 
 private:

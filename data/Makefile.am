@@ -50,6 +50,7 @@ dist_iconscalable_DATA = \
 
 outputprofilesdir = $(pkgdatadir)/output-profiles
 dist_outputprofiles_DATA = \
+	output-profiles/High%20Quality%20Intermediate.conf \
 	output-profiles/Live%20Stream%20%281000kbps%29.conf \
 	output-profiles/Live%20Stream%20%283000kbps%29.conf \
 	output-profiles/Live%20Stream%20%282000kbps%29.conf \

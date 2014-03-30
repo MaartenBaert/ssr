@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Main.h"
 #include "Logger.h"
 #include "Dialogs.h"
+#include "EnumStrings.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 
@@ -29,22 +30,42 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoEncoder.h"
 #include "AudioEncoder.h"
 
+ENUMSTRINGS(PageOutput::enum_container) = {
+	{PageOutput::CONTAINER_MKV, "mkv"},
+	{PageOutput::CONTAINER_MP4, "mp4"},
+	{PageOutput::CONTAINER_WEBM, "webm"},
+	{PageOutput::CONTAINER_OGG, "ogg"},
+	{PageOutput::CONTAINER_OTHER, "other"},
+};
+ENUMSTRINGS(PageOutput::enum_video_codec) = {
+	{PageOutput::VIDEO_CODEC_H264, "h264"},
+	{PageOutput::VIDEO_CODEC_VP8, "vp8"},
+	{PageOutput::VIDEO_CODEC_THEORA, "theora"},
+	{PageOutput::VIDEO_CODEC_OTHER, "other"},
+};
+ENUMSTRINGS(PageOutput::enum_audio_codec) = {
+	{PageOutput::AUDIO_CODEC_VORBIS, "vorbis"},
+	{PageOutput::AUDIO_CODEC_MP3, "mp3"},
+	{PageOutput::AUDIO_CODEC_AAC, "aac"},
+	{PageOutput::AUDIO_CODEC_UNCOMPRESSED, "uncompressed"},
+	{PageOutput::AUDIO_CODEC_OTHER, "other"},
+};
+ENUMSTRINGS(PageOutput::enum_h264_preset) = {
+	{PageOutput::H264_PRESET_ULTRAFAST, "ultrafast"},
+	{PageOutput::H264_PRESET_SUPERFAST, "superfast"},
+	{PageOutput::H264_PRESET_VERYFAST, "veryfast"},
+	{PageOutput::H264_PRESET_FASTER, "faster"},
+	{PageOutput::H264_PRESET_FAST, "fast"},
+	{PageOutput::H264_PRESET_MEDIUM, "medium"},
+	{PageOutput::H264_PRESET_SLOW, "slow"},
+	{PageOutput::H264_PRESET_SLOWER, "slower"},
+	{PageOutput::H264_PRESET_VERYSLOW, "veryslow"},
+	{PageOutput::H264_PRESET_PLACEBO, "placebo"},
+};
+
 static bool MatchSuffix(const QString& suffix, const QStringList& suffixes) {
 	return ((suffix.isEmpty() && suffixes.isEmpty()) || suffixes.contains(suffix, Qt::CaseInsensitive));
 }
-
-const QString PageOutput::H264_PRESET_STRINGS[H264_PRESET_COUNT] = {
-	"ultrafast",
-	"superfast",
-	"veryfast",
-	"faster",
-	"fast",
-	"medium",
-	"slow",
-	"slower",
-	"veryslow",
-	"placebo",
-};
 
 PageOutput::PageOutput(MainWindow* main_window)
 	: QWidget(main_window->centralWidget()) {
@@ -233,7 +254,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		m_label_h264_preset = new QLabel(tr("Preset:", "libx264 setting: don't translate this unless you can come up with something sensible"), groupbox_video);
 		m_combobox_h264_preset = new QComboBox(groupbox_video);
 		for(unsigned int i = 0; i < H264_PRESET_COUNT; ++i) {
-			m_combobox_h264_preset->addItem(H264_PRESET_STRINGS[i]);
+			m_combobox_h264_preset->addItem(EnumToString((enum_h264_preset) i));
 		}
 		m_combobox_h264_preset->setToolTip(tr("The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),\n"
 											  "but results in larger files. The quality shouldn't be affected too much."));
@@ -391,10 +412,10 @@ void PageOutput::LoadProfileSettings(QSettings* settings) {
 	// load settings
 	SetFile(settings->value("output/file", "").toString());
 	SetSeparateFiles(settings->value("output/separate_files", false).toBool());
-	SetContainer(FindContainer(settings->value("output/container", QString()).toString(), default_container));
+	SetContainer(StringToEnum(settings->value("output/container", QString()).toString(), default_container));
 	SetContainerAV(FindContainerAV(settings->value("output/container_av", QString()).toString()));
 
-	SetVideoCodec(FindVideoCodec(settings->value("output/video_codec", QString()).toString(), default_video_codec));
+	SetVideoCodec(StringToEnum(settings->value("output/video_codec", QString()).toString(), default_video_codec));
 	SetVideoCodecAV(FindVideoCodecAV(settings->value("output/video_codec_av", QString()).toString()));
 	SetVideoKBitRate(settings->value("output/video_kbit_rate", 5000).toUInt());
 	SetH264CRF(settings->value("output/video_h264_crf", 23).toUInt());
@@ -403,7 +424,7 @@ void PageOutput::LoadProfileSettings(QSettings* settings) {
 	SetVideoOptions(settings->value("output/video_options", "").toString());
 	SetVideoAllowFrameSkipping(settings->value("output/video_allow_frame_skipping", true).toBool());
 
-	SetAudioCodec(FindAudioCodec(settings->value("output/audio_codec", QString()).toString(), default_audio_codec));
+	SetAudioCodec(StringToEnum(settings->value("output/audio_codec", QString()).toString(), default_audio_codec));
 	SetAudioCodecAV(FindAudioCodecAV(settings->value("output/audio_codec_av", QString()).toString()));
 	SetAudioKBitRate(settings->value("output/audio_kbit_rate", 128).toUInt());
 	SetAudioOptions(settings->value("output/audio_options", "").toString());
@@ -477,18 +498,6 @@ QString PageOutput::GetAudioCodecAVName() {
 		return m_audio_codecs_av[GetAudioCodecAV()].avname;
 }
 
-QString PageOutput::GetH264PresetName() {
-	return H264_PRESET_STRINGS[GetH264Preset()];
-}
-
-PageOutput::enum_container PageOutput::FindContainer(const QString& name, enum_container fallback) {
-	for(unsigned int i = 0; i < CONTAINER_COUNT; ++i) {
-		if(m_containers[i].avname == name)
-			return (enum_container) i;
-	}
-	return fallback;
-}
-
 unsigned int PageOutput::FindContainerAV(const QString& name) {
 	for(unsigned int i = 0; i < m_containers_av.size(); ++i) {
 		if(m_containers_av[i].avname == name)
@@ -497,28 +506,12 @@ unsigned int PageOutput::FindContainerAV(const QString& name) {
 	return 0;
 }
 
-PageOutput::enum_video_codec PageOutput::FindVideoCodec(const QString& name, enum_video_codec fallback) {
-	for(unsigned int i = 0; i < VIDEO_CODEC_COUNT; ++i) {
-		if(m_video_codecs[i].avname == name)
-			return (enum_video_codec) i;
-	}
-	return fallback;
-}
-
 unsigned int PageOutput::FindVideoCodecAV(const QString& name) {
 	for(unsigned int i = 0; i < m_video_codecs_av.size(); ++i) {
 		if(m_video_codecs_av[i].avname == name)
 			return i;
 	}
 	return 0;
-}
-
-PageOutput::enum_audio_codec PageOutput::FindAudioCodec(const QString& name, enum_audio_codec fallback) {
-	for(unsigned int i = 0; i < AUDIO_CODEC_COUNT; ++i) {
-		if(m_audio_codecs[i].avname == name)
-			return (enum_audio_codec) i;
-	}
-	return fallback;
 }
 
 unsigned int PageOutput::FindAudioCodecAV(const QString& name) {

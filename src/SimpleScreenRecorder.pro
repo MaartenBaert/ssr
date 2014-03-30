@@ -106,7 +106,8 @@ HEADERS  += \
 	Global.h \
 	Main.h \
 	Version.h \
-	NVidia.h
+	NVidia.h \
+    common/EnumStrings.h
 
 RESOURCES += \
 	resources.qrc
