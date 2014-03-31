@@ -9,7 +9,8 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #pragma once
 
 /*
-A captured video stream is transmitted to SimpleScreenRecorder using shared memory files (i.e. files in /dev/shm). The system is entirely lock-free and thread-safe, but supports only a single reader and a single writer.
+A captured video stream is transmitted to SimpleScreenRecorder using shared memory files (i.e. files in /dev/shm).
+The system is entirely lock-free and thread-safe, but supports only a single reader and a single writer.
 
 There are two types of files:
 
@@ -49,12 +50,6 @@ struct GLInjectHeader {
 	// capture parameters: set by SimpleScreenRecorder
 	uint32_t capture_flags;
 	uint32_t capture_target_fps;
-
-	// X11 hotkey support: set by SimpleScreenRecorder, counter is updated by the captured application
-	uint32_t x11hotkey_enabled;
-	uint32_t x11hotkey_keycode;
-	uint32_t x11hotkey_modifiers;
-	uint32_t x11hotkey_counter;
 
 };
 

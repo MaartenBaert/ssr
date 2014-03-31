@@ -98,10 +98,6 @@ void SSRVideoStreamReader::Init() {
 	GLInjectHeader *header = GetGLInjectHeader();
 	header->capture_flags = 0;
 	header->capture_target_fps = 0;
-	header->x11hotkey_enabled = false;
-	header->x11hotkey_keycode = 0;
-	header->x11hotkey_modifiers = 0;
-	header->x11hotkey_counter = 0;
 	std::atomic_thread_fence(std::memory_order_release);
 
 	// initialize frame counter
