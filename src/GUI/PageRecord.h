@@ -24,8 +24,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "PageInput.h"
 #include "OutputSettings.h"
 #include "OutputManager.h"
-
 #include "ElidedLabel.h"
+#include "HotkeyListener.h"
 
 class MainWindow;
 
@@ -93,6 +93,8 @@ private:
 	std::unique_ptr<SimpleSynth> m_simple_synth;
 	int64_t m_last_error_sound;
 
+	HotkeyCallback m_hotkey_start_pause;
+
 	QPushButton *m_pushbutton_start_pause;
 
 	QCheckBox *m_checkbox_hotkey_enable, *m_checkbox_sound_notifications_enable;
@@ -118,7 +120,7 @@ private:
 	QAction *m_systray_action_save;
 	QAction *m_systray_action_cancel;
 
-	QTimer *m_timer_update_info, *m_timer_glinject_event;
+	QTimer *m_timer_update_info;
 
 public:
 	PageRecord(MainWindow* main_window);
@@ -178,6 +180,5 @@ private slots:
 
 	void OnUpdateInformation();
 	void OnNewLogLine(Logger::enum_type type, QString string);
-	void OnCheckGLInjectEvents();
 
 };

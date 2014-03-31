@@ -20,29 +20,56 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-// Currently this class supports only one hotkey, and it's global because there can be only one X11 event filter.
-class HotkeyListener : public QObject {
+struct Hotkey {
+	unsigned int m_keycode, m_modifiers;
+	inline bool operator==(const Hotkey& other) const { return (m_keycode == other.m_keycode && m_modifiers == other.m_modifiers); }
+	inline bool operator<(const Hotkey& other) const { return (m_keycode < other.m_keycode || (m_keycode == other.m_keycode && m_modifiers < other.m_modifiers)); }
+};
+
+class HotkeyCallback;
+typedef std::multimap<Hotkey, HotkeyCallback*>::iterator HotkeyIterator;
+
+class HotkeyCallback : public QObject {
 	Q_OBJECT
 
 private:
-	unsigned int m_keycode, m_modifiers;
+	bool m_is_bound;
+	HotkeyIterator m_iterator;
 
 public:
-	HotkeyListener();
+	HotkeyCallback();
+	~HotkeyCallback();
 
 	// X11 modifiers:
 	// - Ctrl = ControlMask
 	// - Shift = ShiftMask
 	// - Alt = Mod1Mask
 	// - Super = Mod4Mask
-	void EnableHotkey(unsigned int keysym, unsigned int modifiers);
-	void DisableHotkey();
+	void Bind(unsigned int keysym, unsigned int modifiers);
+	void Unbind();
 
-	bool EventFilter(void* message);
-	static bool StaticEventFilter(void* message);
+public: // internal
+	void Trigger();
 
 signals:
 	void Triggered();
+
+};
+
+class HotkeyListener {
+
+private:
+	std::multimap<Hotkey, HotkeyCallback*> m_callbacks;
+
+public:
+	HotkeyListener();
+	~HotkeyListener();
+
+public: // internal
+	HotkeyIterator BindCallback(unsigned int keysym, unsigned int modifiers, HotkeyCallback* callback);
+	void UnbindCallback(HotkeyIterator it);
+
+	static bool EventFilter(void* message);
 
 };
 

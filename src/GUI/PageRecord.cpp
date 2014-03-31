@@ -343,10 +343,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 	UpdatePreview();
 
 	m_timer_update_info = new QTimer(this);
-	m_timer_glinject_event = new QTimer(this);
 	connect(m_timer_update_info, SIGNAL(timeout()), this, SLOT(OnUpdateInformation()));
-	connect(m_timer_glinject_event, SIGNAL(timeout()), this, SLOT(OnCheckGLInjectEvents()));
-	connect(&g_hotkey_listener, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()));
+	connect(&m_hotkey_start_pause, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()));
 	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(OnNewLogLine(Logger::enum_type,QString)), Qt::QueuedConnection);
 
 	if(m_systray_icon != NULL)
@@ -559,9 +557,6 @@ void PageRecord::StartPage() {
 	OnUpdateInformation();
 	m_timer_update_info->start(1000);
 
-	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
-		m_timer_glinject_event->start(100);
-
 }
 
 void PageRecord::StopPage(bool save) {
@@ -621,8 +616,6 @@ void PageRecord::StopPage(bool save) {
 
 	m_timer_update_info->stop();
 	OnUpdateInformation();
-
-	m_timer_glinject_event->stop();
 
 }
 
@@ -919,20 +912,14 @@ void PageRecord::OnUpdateHotkeyFields() {
 
 void PageRecord::OnUpdateHotkey() {
 	if(m_page_started && IsHotkeyEnabled()) {
-
 		unsigned int modifiers = 0;
 		if(IsHotkeyCtrlEnabled()) modifiers |= ControlMask;
 		if(IsHotkeyShiftEnabled()) modifiers |= ShiftMask;
 		if(IsHotkeyAltEnabled()) modifiers |= Mod1Mask;
 		if(IsHotkeySuperEnabled()) modifiers |= Mod4Mask;
-		g_hotkey_listener.EnableHotkey(XK_A + GetHotkeyKey(), modifiers);
-
-		//TODO//
-		/*if(m_gl_inject_launcher != NULL)
-			m_gl_inject_launcher->UpdateHotkey(IsHotkeyEnabled(), XK_A + GetHotkeyKey(), modifiers);*/
-
+		m_hotkey_start_pause.Bind(XK_A + GetHotkeyKey(), modifiers);
 	} else {
-		g_hotkey_listener.DisableHotkey();
+		m_hotkey_start_pause.Unbind();
 	}
 }
 
@@ -1126,13 +1113,4 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString str) {
 	if(should_scroll)
 		m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
 
-}
-
-void PageRecord::OnCheckGLInjectEvents() {
-	//TODO//
-	/*if(m_gl_inject_input == NULL)
-		return;
-	if(m_gl_inject_input->GetHotkeyPressed()) {
-		OnRecordStartPause();
-	}*/
 }

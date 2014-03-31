@@ -21,45 +21,79 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 HotkeyListener g_hotkey_listener;
 
-HotkeyListener::HotkeyListener() {
-	m_keycode = 0;
-	m_modifiers = 0;
-}
-
-void HotkeyListener::EnableHotkey(unsigned int keysym, unsigned int modifiers) {
-	DisableHotkey();
-	m_keycode = XKeysymToKeycode(QX11Info::display(), keysym);
-	m_modifiers = modifiers;
+static void GrabHotkey(const Hotkey& hotkey, bool enable) {
 	// ignore state of caps lock (LockMask) and num lock (Mod2Mask)
 	unsigned int masks[] = {0, LockMask, Mod2Mask, LockMask | Mod2Mask};
 	for(unsigned int i = 0; i < sizeof(masks) / sizeof(masks[0]); ++i) {
-		unsigned int m = masks[i] | m_modifiers;
-		XGrabKey(QX11Info::display(), m_keycode, m, QX11Info::appRootWindow(), false, GrabModeAsync, GrabModeAsync);
+		if(enable)
+			XGrabKey(QX11Info::display(), hotkey.m_keycode, masks[i] | hotkey.m_modifiers, QX11Info::appRootWindow(), false, GrabModeAsync, GrabModeAsync);
+		else
+			XUngrabKey(QX11Info::display(), hotkey.m_keycode, masks[i] | hotkey.m_modifiers, QX11Info::appRootWindow());
 	}
-	QAbstractEventDispatcher::instance()->setEventFilter(&HotkeyListener::StaticEventFilter);
+	QAbstractEventDispatcher::instance()->setEventFilter(&HotkeyListener::EventFilter);
 }
 
-void HotkeyListener::DisableHotkey() {
-	if(m_keycode == 0)
-		return;
-	QAbstractEventDispatcher::instance()->setEventFilter(NULL);
-	unsigned int masks[] = {0, LockMask, Mod2Mask, LockMask | Mod2Mask};
-	for(unsigned int i = 0; i < sizeof(masks) / sizeof(masks[0]); ++i) {
-		unsigned int m = masks[i] | m_modifiers;
-		XUngrabKey(QX11Info::display(), m_keycode, m, QX11Info::appRootWindow());
+HotkeyCallback::HotkeyCallback() {
+	m_is_bound = false;
+}
+
+HotkeyCallback::~HotkeyCallback() {
+	if(m_is_bound)
+		g_hotkey_listener.UnbindCallback(m_iterator);
+}
+
+void HotkeyCallback::Bind(unsigned int keysym, unsigned int modifiers) {
+	Unbind();
+	m_iterator = g_hotkey_listener.BindCallback(keysym, modifiers, this);
+	m_is_bound = true;
+}
+
+void HotkeyCallback::Unbind() {
+	if(m_is_bound) {
+		g_hotkey_listener.UnbindCallback(m_iterator);
+		m_is_bound = false;
 	}
-	m_keycode = 0;
+}
+
+void HotkeyCallback::Trigger() {
+	emit Triggered();
+}
+
+HotkeyListener::HotkeyListener() {
+}
+HotkeyListener::~HotkeyListener() {
+	assert(m_callbacks.empty());
+}
+
+HotkeyIterator HotkeyListener::BindCallback(unsigned int keysym, unsigned int modifiers, HotkeyCallback* callback) {
+	Hotkey hotkey;
+	hotkey.m_keycode = XKeysymToKeycode(QX11Info::display(), keysym);
+	hotkey.m_modifiers = modifiers;
+	if(m_callbacks.count(hotkey) == 0)
+		GrabHotkey(hotkey, true);
+	return m_callbacks.insert(std::make_pair(hotkey, callback));
+}
+
+void HotkeyListener::UnbindCallback(HotkeyIterator it) {
+	Hotkey hotkey = it->first;
+	m_callbacks.erase(it);
+	if(m_callbacks.count(hotkey) == 0)
+		GrabHotkey(hotkey, false);
 }
 
 bool HotkeyListener::EventFilter(void* message) {
 	XEvent *ev = (XEvent*) message;
-	if(ev->type == KeyPress && ev->xkey.keycode == m_keycode && (ev->xkey.state & ~LockMask & ~Mod2Mask) == m_modifiers) {
-		emit Triggered();
-		return true;
+	if(ev->type == KeyPress) {
+		Hotkey hotkey;
+		hotkey.m_keycode = ev->xkey.keycode;
+		hotkey.m_modifiers = ev->xkey.state & ~LockMask & ~Mod2Mask;
+		auto range = g_hotkey_listener.m_callbacks.equal_range(hotkey);
+		if(range.first != range.second) {
+			for(auto it = range.first; it != range.second; ++it) {
+				it->second->Trigger();
+			}
+			return true;
+		}
 	}
 	return false;
-}
-
-bool HotkeyListener::StaticEventFilter(void* message) {
-	return g_hotkey_listener.EventFilter(message);
 }
