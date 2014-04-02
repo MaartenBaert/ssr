@@ -440,10 +440,10 @@ void PageOutput::SaveProfileSettings(QSettings* settings) {
 
 	settings->setValue("output/file", GetFile());
 	settings->setValue("output/separate_files", GetSeparateFiles());
-	settings->setValue("output/container", m_containers[GetContainer()].avname);
+	settings->setValue("output/container", EnumToString(GetContainer()));
 	settings->setValue("output/container_av", m_containers_av[GetContainerAV()].avname);
 
-	settings->setValue("output/video_codec", m_video_codecs[GetVideoCodec()].avname);
+	settings->setValue("output/video_codec", EnumToString(GetVideoCodec()));
 	settings->setValue("output/video_codec_av", m_video_codecs_av[GetVideoCodecAV()].avname);
 	settings->setValue("output/video_kbit_rate", GetVideoKBitRate());
 	settings->setValue("output/video_h264_crf", GetH264CRF());
@@ -452,7 +452,7 @@ void PageOutput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("output/video_options", GetVideoOptions());
 	settings->setValue("output/video_allow_frame_skipping", GetVideoAllowFrameSkipping());
 
-	settings->setValue("output/audio_codec", m_audio_codecs[GetAudioCodec()].avname);
+	settings->setValue("output/audio_codec", EnumToString(GetAudioCodec()));
 	settings->setValue("output/audio_codec_av", m_audio_codecs_av[GetAudioCodecAV()].avname);
 	settings->setValue("output/audio_kbit_rate", GetAudioKBitRate());
 	settings->setValue("output/audio_options", GetAudioOptions());
