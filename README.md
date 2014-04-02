@@ -28,21 +28,22 @@ You will need the following packages to compile SimpleScreenRecorder:
 - libGL (32 and 64 bit)
 - libGLU (32 and 64 bit)
 - libX11 (32 and 64 bit)
-- libXext (32 and 64 bit)
 - libXfixes (32 and 64 bit)
+- libXext
+- libXi
 
 For Ubuntu 12.04 - 13.04:
 
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
-    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib ia32-libs
+    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev g++-multilib ia32-libs
 
 For Ubuntu 13.10:
 
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
-    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib \
-    libx11-6:i386 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
+    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev g++-multilib \
+    libx11-6:i386 libxfixes3:i386 libglu1-mesa:i386
 
 If the 32-bit version of some library isn't found, but 64-bit works fine, try this:
 
@@ -81,8 +82,8 @@ For Debian:
     sudo apt-get update
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
-    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxext-dev libxfixes-dev g++-multilib \
-    libx11-6 libxext6 libxfixes3 libxext6:i386 libxfixes3:i386 libglu1-mesa:i386
+    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev g++-multilib \
+    libx11-6 libxext6 libxfixes3 libxfixes3:i386 libglu1-mesa:i386
     
     cd /usr/lib/i386-linux-gnu
     ln -s libGL.so.1 libGL.so
@@ -95,8 +96,8 @@ For Debian:
 For OpenSUSE (incomplete list but usually enough):
 
     sudo zypper install gcc gcc-32bit libffmpeg-devel libqt4-devel libpulse-devel libjack-devel \
-    glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXext-devel libXext-devel-32bit \
-    libXfixes-devel libXfixes-devel-32bit libstdc++47-devel-32bit
+    glu-devel glu-devel-32bit libX11-devel libX11-devel-32bit libXfixes-devel libXfixes-devel-32bit \
+    libXext-devel libXi-devel libstdc++47-devel-32bit
     
     cd /usr/lib/i386-linux-gnu
     sudo ln -s libGLU.so.1 libGLU.so
@@ -111,7 +112,9 @@ Some packages (e.g. ffmpeg) are not in the official repository, but can be insta
 
 For Fedora:
 
-    sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel gcc make gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel.i686 libXfixes-devel.i686 mesa-libGL-devel.i686 mesa-libGLU-devel.i686
+    sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel \
+    gcc make gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel.i686 libXfixes-devel.i686 mesa-libGL-devel.i686 \
+    mesa-libGLU-devel.i686
 
 Compiling and installing
 ------------------------

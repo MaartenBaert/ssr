@@ -20,8 +20,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include <X11/extensions/record.h>
-
 struct Hotkey {
 	unsigned int m_keycode, m_modifiers;
 	inline bool operator==(const Hotkey& other) const { return (m_keycode == other.m_keycode && m_modifiers == other.m_modifiers); }
