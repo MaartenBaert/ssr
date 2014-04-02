@@ -49,7 +49,8 @@ private:
 		TempBuffer<float> m_temp_input_buffer;
 		TempBuffer<float> m_temp_output_buffer;
 
-		int64_t m_last_timestamp; // the timestamp of the last received audio frame (for gap detection)
+		int64_t m_filtered_timestamp; // the timestamp after noise filtering
+		int64_t m_last_timestamp; // the timestamp of the last received audio frame (to detect non-monotonic timestamps)
 		int64_t m_first_timestamp; // the timestamp of the first audio frame in the current segment (for drift correction)
 		int64_t m_samples_written; // total number of samples written to the queue in the current segment (for drift correction)
 		double m_average_drift; // drift averaged over time (for drift correction)
@@ -85,6 +86,7 @@ private:
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
+	static const int64_t AUDIO_TIMESTAMP_FILTER;
 	static const double DRIFT_CORRECTION_P, DRIFT_CORRECTION_I;
 	static const double DRIFT_ERROR_THRESHOLD, DRIFT_MAX_BLOCK;
 	static const size_t MAX_VIDEO_FRAMES_BUFFERED, MAX_AUDIO_SAMPLES_BUFFERED;
@@ -149,6 +151,7 @@ public: // internal
 
 private:
 	void InitAudioSegment(AudioData* audiolock);
+	double GetAudioDrift(AudioData* audiolock, unsigned int extra_samples = 0);
 	void NewSegment(SharedData* lock);
 	void InitSegment(SharedData* lock);
 	int64_t GetTotalTime(SharedData* lock);

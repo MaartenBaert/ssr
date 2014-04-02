@@ -27,6 +27,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SampleCast.h"
 #include "SyncDiagram.h"
 
+// The amount of filtering applied to audio timestamps to reduce noise. Higher values reduce timestamp noise (and associated drift correction),
+// but if the value is too high, it will take more time to detect gaps.
+const int64_t Synchronizer::AUDIO_TIMESTAMP_FILTER = 20;
+
 // These values change how fast the synchronizer does drift correction.
 // If this value is too low, the error will not be corrected fast enough. But if the value is too high, the audio
 // may get weird speed fluctuations caused by the limited accuracy of the recording timestamps.
@@ -34,14 +38,14 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 // so it is averaged out using exponential smoothing. However, since the difference tends to increase gradually over time,
 // exponential smoothing would constantly lag behind, so instead of simple proportional feedback, I use a PI controller.
 // For critical damping, choose I = P*P/4.
-const double Synchronizer::DRIFT_CORRECTION_P = 0.1;
-const double Synchronizer::DRIFT_CORRECTION_I = 0.1 * 0.1 / 4.0;
+const double Synchronizer::DRIFT_CORRECTION_P = 0.3;
+const double Synchronizer::DRIFT_CORRECTION_I = 0.3 * 0.3 / 4.0;
 
 // The maximum audio/video desynchronization allowed, in seconds. If the error is greater than this value, the synchronizer will insert zeros
 // rather than relying on normal drift correction. This is something that should be avoided since it will result in noticeable interruptions,
 // so it should only be triggered when something is really wrong. If the error is smaller, the synchronizer will do nothing and the
 // drift correction system will take care of it (eventually).
-const double Synchronizer::DRIFT_ERROR_THRESHOLD = 0.2;
+const double Synchronizer::DRIFT_ERROR_THRESHOLD = 0.05;
 
 // The maximum block size for drift correction, in seconds. This is needed to avoid numerical problems in the feedback system.
 const double Synchronizer::DRIFT_MAX_BLOCK = 0.5;
@@ -338,6 +342,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	// update the timestamps
 	int64_t previous_timestamp;
 	if(audiolock->m_first_timestamp == AV_NOPTS_VALUE) {
+		audiolock->m_filtered_timestamp = timestamp;
 		audiolock->m_first_timestamp = timestamp;
 		previous_timestamp = timestamp;
 	} else {
@@ -345,15 +350,33 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	}
 	audiolock->m_last_timestamp = timestamp;
 
+	// filter the timestamp
+	int64_t timestamp_delta = (int64_t) sample_count * (int64_t) 1000000 / (int64_t) sample_rate;
+	audiolock->m_filtered_timestamp += (timestamp - audiolock->m_filtered_timestamp) / AUDIO_TIMESTAMP_FILTER;
+
 	// calculate drift
-	double current_drift = ((double) audiolock->m_samples_written + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
-			- (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
+	double current_drift = GetAudioDrift(audiolock.get());
 
 	// if there are too many audio samples, drop some of them (unlikely unless you use PulseAudio)
-	if(current_drift > DRIFT_ERROR_THRESHOLD || audiolock->m_drop_samples) {
+	if(current_drift > DRIFT_ERROR_THRESHOLD && !audiolock->m_drop_samples) {
+		audiolock->m_drop_samples = true;
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Too many audio samples, dropping samples to keep the audio in sync with the video."));
+	}
 
-		if(!audiolock->m_drop_samples)
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Too many audio samples, dropping samples to keep the audio in sync with the video."));
+	// if there are not enough audio samples, insert zeros
+	if(current_drift < -DRIFT_ERROR_THRESHOLD && !audiolock->m_insert_samples) {
+		audiolock->m_insert_samples = true;
+		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video."));
+	}
+
+	// reset filter and recalculate drift if necessary
+	if(audiolock->m_drop_samples || audiolock->m_insert_samples) {
+		audiolock->m_filtered_timestamp = timestamp;
+		current_drift = GetAudioDrift(audiolock.get());
+	}
+
+	// drop samples
+	if(audiolock->m_drop_samples) {
 		audiolock->m_drop_samples = false;
 
 		// drop samples
@@ -375,12 +398,9 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 
 	}
 
-	// if there are not enough audio samples, insert zeros
+	// insert zeros
 	unsigned int sample_count_out = 0;
-	if(current_drift < -DRIFT_ERROR_THRESHOLD || audiolock->m_insert_samples) {
-
-		if(!audiolock->m_insert_samples)
-			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video."));
+	if(audiolock->m_insert_samples) {
 		audiolock->m_insert_samples = false;
 
 		// how many samples should be inserted?
@@ -394,20 +414,22 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 																	 audiolock->m_temp_input_buffer.GetData(), n, &audiolock->m_temp_output_buffer, sample_count_out);
 
 			// recalculate drift
-			current_drift = ((double) (audiolock->m_samples_written + sample_count_out) + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate
-					- (double) (timestamp - audiolock->m_first_timestamp) * 1.0e-6;
+			current_drift = GetAudioDrift(audiolock.get(), sample_count_out);
 
 		}
 
 	}
+
+	// increase filtered timestamp
+	audiolock->m_filtered_timestamp += timestamp_delta;
 
 	// do drift correction
 	// The point of drift correction is to keep video and audio in sync even when the clocks are not running at exactly the same speed.
 	// This can happen because the sample rate of the sound card is not always 100% accurate. Even a 0.1% error will result in audio that is
 	// seconds too early or too late at the end of a one hour video. This problem doesn't occur on all computers though (I'm not sure why).
 	// Another cause of desynchronization is problems/glitches with PulseAudio (e.g. jumps in time when switching between sources).
-	double dt = fmin((double) (timestamp - previous_timestamp) * 1.0e-6, DRIFT_MAX_BLOCK);
-	audiolock->m_average_drift = clamp(audiolock->m_average_drift + DRIFT_CORRECTION_I * current_drift * dt, -0.5, 0.5);
+	double drift_correction_dt = fmin((double) (timestamp - previous_timestamp) * 1.0e-6, DRIFT_MAX_BLOCK);
+	audiolock->m_average_drift = clamp(audiolock->m_average_drift + DRIFT_CORRECTION_I * current_drift * drift_correction_dt, -0.5, 0.5);
 	if(audiolock->m_average_drift < -0.02 && audiolock->m_warn_desync) {
 		audiolock->m_warn_desync = false;
 		Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Audio input is more than 2% too slow!"));
@@ -419,7 +441,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	double length = (double) sample_count / (double) sample_rate;
 	double drift_correction = clamp(DRIFT_CORRECTION_P * current_drift + audiolock->m_average_drift, -0.5, 0.5) * fmin(1.0, DRIFT_MAX_BLOCK / length);
 
-	//qDebug() << "current_drift" << current_drift << "average_drift" << audiolock->m_average_drift << "drift_correction" << drift_correction;
+	qDebug() << "current_drift" << current_drift << "average_drift" << audiolock->m_average_drift << "drift_correction" << drift_correction;
 
 	// convert the samples
 	const float *data_float;
@@ -444,7 +466,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	if(lock->m_audio_buffer.GetSize() / m_audio_channels >= MAX_AUDIO_SAMPLES_BUFFERED) {
 		if(lock->m_segment_video_started) {
 			Logger::LogWarning("[Synchronizer::ReadAudioSamples] " + Logger::tr("Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video "
-																				 "(some video and/or audio may be lost). The video input seems to be too slow."));
+																				"(some video and/or audio may be lost). The video input seems to be too slow."));
 			NewSegment(lock.get());
 		} else {
 			// If the video hasn't started yet, it makes more sense to drop the oldest samples.
@@ -478,10 +500,11 @@ void Synchronizer::ReadAudioHole() {
 	AudioLock audiolock(&m_audio_data);
 	if(audiolock->m_first_timestamp != AV_NOPTS_VALUE) {
 		audiolock->m_average_drift = 0.0;
-		if(!audiolock->m_drop_samples && !audiolock->m_insert_samples)
+		if(!audiolock->m_drop_samples || !audiolock->m_insert_samples) {
 			Logger::LogWarning("[Synchronizer::ReadAudioHole] " + Logger::tr("Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video."));
-		audiolock->m_drop_samples = true; // because PulseAudio is weird
-		audiolock->m_insert_samples = true;
+			audiolock->m_drop_samples = true; // because PulseAudio is weird
+			audiolock->m_insert_samples = true;
+		}
 	}
 
 }
@@ -493,6 +516,12 @@ void Synchronizer::InitAudioSegment(AudioData* audiolock) {
 	audiolock->m_average_drift = 0.0;
 	audiolock->m_drop_samples = false;
 	audiolock->m_insert_samples = false;
+}
+
+double Synchronizer::GetAudioDrift(AudioData* audiolock, unsigned int extra_samples) {
+	double sample_length = ((double) (audiolock->m_samples_written + extra_samples) + audiolock->m_fast_resampler->GetOutputLatency()) / (double) m_audio_sample_rate;
+	double time_length = (double) (audiolock->m_filtered_timestamp - audiolock->m_first_timestamp) * 1.0e-6;
+	return sample_length - time_length;
 }
 
 void Synchronizer::NewSegment(SharedData* lock) {
