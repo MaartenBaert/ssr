@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Icons.h"
 #include "Logger.h"
+#include "HotkeyListener.h"
 #include "MainWindow.h"
 
 #include "Version.h"
@@ -193,10 +194,19 @@ int main(int argc, char* argv[]) {
 	Logger::LogInfo(GetVersionInfo());
 	int ret;
 	{
+
+		// create hotkey listener
+		HotkeyListener hotkey_listener;
+		Q_UNUSED(hotkey_listener);
+
+		// create main window
 		MainWindow mainwindow;
 		if(!g_option_start_hidden)
 			mainwindow.show();
+
+		// run application
 		ret = application.exec();
+
 	}
 	Logger::LogInfo("==================== " + Logger::tr("SSR stopped") + " ====================");
 

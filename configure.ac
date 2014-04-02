@@ -71,6 +71,8 @@ AC_CHECK_LIB([Xfixes], [XFixesGetCursorImage], [ ], [AC_MSG_ERROR([required libr
 AM_COND_IF([ENABLE_SSRPROGRAM], [
 	AC_CHECK_HEADER([X11/extensions/XShm.h], [ ], [AC_MSG_ERROR([required header missing])], [#include <X11/Xlib.h>])
 	AC_CHECK_LIB([Xext], [XShmCreateImage], [ ], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([X11/extensions/XInput2.h], [ ], [AC_MSG_ERROR([required header missing])], [#include <X11/Xlib.h>])
+	AC_CHECK_LIB([Xi], [XIQueryVersion], [ ], [AC_MSG_ERROR([required library missing])])
 ])
 
 AM_COND_IF([ENABLE_SSRPROGRAM], [

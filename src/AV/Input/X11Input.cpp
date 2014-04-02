@@ -176,6 +176,7 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 	m_record_cursor = record_cursor;
 	m_follow_cursor = follow_cursor;
 
+	m_x11_display = NULL;
 	m_x11_shm_info.shmid = -1;
 	m_x11_shm_info.shmaddr = (char*) -1;
 	m_x11_shm_server_attached = false;
@@ -261,14 +262,13 @@ void X11Input::Init() {
 		// the server will attach later
 	} else {
 		Logger::LogInfo("[X11Input::Init] " + Logger::tr("Not using X11 shared memory."));
-		m_x11_image = NULL;
 	}
 
 	// showing the cursor requires XFixes (which should be supported on any modern X server, but let's check it anyway)
 	if(m_record_cursor) {
 		int event, error;
 		if(!XFixesQueryExtension(m_x11_display, &event, &error)) {
-			Logger::LogWarning("[X11Input::Init] " + Logger::tr("Warning: XFixes is not supported by server, the cursor has been hidden.", "Don't translate 'XFixes'"));
+			Logger::LogWarning("[X11Input::Init] " + Logger::tr("Warning: XFixes is not supported by X server, the cursor has been hidden.", "Don't translate 'XFixes'"));
 			m_record_cursor = false;
 		}
 	}

@@ -44,7 +44,7 @@ private:
 
 	Display *m_x11_display;
 	int m_x11_screen;
-	Qt::HANDLE m_x11_root;
+	Window m_x11_root;
 	Visual *m_x11_visual;
 	int m_x11_depth;
 	bool m_x11_use_shm;

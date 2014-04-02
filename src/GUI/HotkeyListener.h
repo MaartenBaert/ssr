@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include <X11/extensions/record.h>
+
 struct Hotkey {
 	unsigned int m_keycode, m_modifiers;
 	inline bool operator==(const Hotkey& other) const { return (m_keycode == other.m_keycode && m_modifiers == other.m_modifiers); }
@@ -56,21 +58,43 @@ signals:
 
 };
 
-class HotkeyListener {
+class HotkeyListener : public QObject {
+	Q_OBJECT
 
 private:
 	std::multimap<Hotkey, HotkeyCallback*> m_callbacks;
+
+	Display *m_x11_display;
+	int m_x11_screen;
+	Window m_x11_root;
+
+	bool m_has_xinput2;
+	int m_xinput2_opcode;
+	unsigned int m_xinput2_raw_modifiers;
+	unsigned long m_xinput2_raw_serial;
+	std::set<int> m_xinput2_master_keyboards;
+
+	static HotkeyListener *s_instance;
 
 public:
 	HotkeyListener();
 	~HotkeyListener();
 
+private:
+	void Init();
+	void Free();
+
+	void GrabHotkey(const Hotkey& hotkey, bool enable);
+	void ProcessHotkey(const Hotkey& hotkey);
+
+public:
+	inline static HotkeyListener* GetInstance() { assert(s_instance != NULL); return s_instance; }
+
 public: // internal
 	HotkeyIterator BindCallback(unsigned int keysym, unsigned int modifiers, HotkeyCallback* callback);
 	void UnbindCallback(HotkeyIterator it);
 
-	static bool EventFilter(void* message);
+private slots:
+	void ProcessEvents();
 
 };
-
-extern HotkeyListener g_hotkey_listener;

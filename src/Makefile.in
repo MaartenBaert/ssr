@@ -517,7 +517,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread \
 @ENABLE_SSRPROGRAM_TRUE@	$(QT4_LIBS) -lrt -lavformat -lavcodec \
 @ENABLE_SSRPROGRAM_TRUE@	-lavutil -lswscale -lX11 -lXext \
-@ENABLE_SSRPROGRAM_TRUE@	-lXfixes -lasound $(am__append_7) \
+@ENABLE_SSRPROGRAM_TRUE@	-lXfixes -lXi -lasound $(am__append_7) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_10)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_SOURCES = \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.cpp \
