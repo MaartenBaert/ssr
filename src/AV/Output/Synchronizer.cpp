@@ -320,7 +320,6 @@ void Synchronizer::ReadVideoPing(int64_t timestamp) {
 
 void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_rate, AVSampleFormat format, unsigned int sample_count, const uint8_t* data, int64_t timestamp) {
 	assert(m_audio_encoder != NULL);
-	assert(channels == m_audio_channels); // remixing isn't supported yet
 
 	// sanity check
 	if(sample_count == 0)
@@ -387,9 +386,9 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 				return; // drop all samples
 			}
 			if(format == AV_SAMPLE_FMT_FLT) {
-				data += n * m_audio_channels * sizeof(float);
+				data += n * channels * sizeof(float);
 			} else if(format == AV_SAMPLE_FMT_S16) {
-				data += n * m_audio_channels * sizeof(int16_t);
+				data += n * channels * sizeof(int16_t);
 			} else {
 				assert(false);
 			}
@@ -441,16 +440,22 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	double length = (double) sample_count / (double) sample_rate;
 	double drift_correction = clamp(DRIFT_CORRECTION_P * current_drift + audiolock->m_average_drift, -0.5, 0.5) * fmin(1.0, DRIFT_MAX_BLOCK / length);
 
-	qDebug() << "current_drift" << current_drift << "average_drift" << audiolock->m_average_drift << "drift_correction" << drift_correction;
+	//qDebug() << "current_drift" << current_drift << "average_drift" << audiolock->m_average_drift << "drift_correction" << drift_correction;
 
 	// convert the samples
 	const float *data_float;
 	if(format == AV_SAMPLE_FMT_FLT) {
-		data_float = (const float*) data;
+		if(channels == m_audio_channels) {
+			data_float = (const float*) data;
+		} else {
+			audiolock->m_temp_input_buffer.Alloc(sample_count * m_audio_channels);
+			data_float = audiolock->m_temp_input_buffer.GetData();
+			SampleChannelRemap(sample_count, (const float*) data, channels, audiolock->m_temp_input_buffer.GetData(), m_audio_channels);
+		}
 	} else if(format == AV_SAMPLE_FMT_S16) {
 		audiolock->m_temp_input_buffer.Alloc(sample_count * m_audio_channels);
 		data_float = audiolock->m_temp_input_buffer.GetData();
-		SampleCopy(sample_count * m_audio_channels, (const int16_t*) data, 1, audiolock->m_temp_input_buffer.GetData(), 1);
+		SampleChannelRemap(sample_count, (const int16_t*) data, channels, audiolock->m_temp_input_buffer.GetData(), m_audio_channels);
 	} else {
 		assert(false);
 	}

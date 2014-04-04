@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "SampleCast.h"
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 
@@ -27,9 +28,19 @@ class AudioPreviewer : public QWidget, public AudioSink {
 	Q_OBJECT
 
 private:
+	struct ChannelData {
+		float m_current_peak, m_current_rms;
+		float m_next_peak, m_next_rms;
+		inline ChannelData() { m_current_peak = m_current_rms = m_next_peak = m_next_rms = 0.0f; }
+		template<typename IN>
+		inline void Analyze(IN sample) {
+			float val = fabs(SampleCast<IN, float>(sample));
+			m_next_peak = fmax(m_next_peak, val);
+			m_next_rms += val * val;
+		}
+	};
 	struct SharedData {
-		float m_current_peak[2], m_current_rms[2];
-		float m_next_peak[2], m_next_rms[2];
+		std::vector<ChannelData> m_channel_data;
 		unsigned int m_next_samples;
 		int64_t m_next_frame_time;
 		bool m_is_visible;

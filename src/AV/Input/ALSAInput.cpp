@@ -114,15 +114,22 @@ void ALSAInput::Init() {
 		}
 		if(rate != m_sample_rate) {
 			Logger::LogWarning("[ALSAInput::Init] " + Logger::tr("Warning: Sample rate %1 is not supported, using %2 instead. "
-																  "This is not a problem.")
+																 "This is not a problem.")
 							   .arg(m_sample_rate).arg(rate));
 			m_sample_rate = rate;
 		}
 
 		// set channel count
-		if(snd_pcm_hw_params_set_channels(m_alsa_pcm, alsa_hw_params, m_channels) < 0) {
+		unsigned int channels = m_channels;
+		if(snd_pcm_hw_params_set_channels_near(m_alsa_pcm, alsa_hw_params, &channels) < 0) {
 			Logger::LogError("[ALSAInput::Init] " + Logger::tr("Error: Can't set channel count!"));
 			throw ALSAException();
+		}
+		if(channels != m_channels) {
+			Logger::LogWarning("[ALSAInput::Init] " + Logger::tr("Warning: Channel count %1 is not supported, using %2 instead. "
+																 "This is not a problem.")
+							   .arg(m_channels).arg(channels));
+			m_channels = channels;
 		}
 
 		// set period size
@@ -133,7 +140,7 @@ void ALSAInput::Init() {
 		}
 		if(period_size != m_alsa_period_size) {
 			Logger::LogWarning("[ALSAInput::Init] " + Logger::tr("Warning: Period size %1 is not supported, using %2 instead. "
-																  "This is not a problem.")
+																 "This is not a problem.")
 							   .arg(m_alsa_period_size).arg(period_size));
 			m_alsa_period_size = period_size;
 		}
@@ -146,7 +153,7 @@ void ALSAInput::Init() {
 		}
 		if(buffer_size != m_alsa_buffer_size) {
 			Logger::LogWarning("[ALSAInput::Init] " + Logger::tr("Warning: Buffer size %1 is not supported, using %2 instead. "
-																  "This is not a problem.")
+																 "This is not a problem.")
 							   .arg(m_alsa_buffer_size).arg(buffer_size));
 			m_alsa_buffer_size = buffer_size;
 		}

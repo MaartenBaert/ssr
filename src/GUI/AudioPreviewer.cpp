@@ -27,12 +27,6 @@ AudioPreviewer::AudioPreviewer(QWidget* parent)
 
 	{
 		SharedLock lock(&m_shared_data);
-		for(unsigned int channel = 0; channel < 2; ++channel) {
-			lock->m_current_peak[channel] = 0.0f;
-			lock->m_current_rms[channel] = 0.0f;
-			lock->m_next_peak[channel] = 0.0f;
-			lock->m_next_rms[channel] = 0.0f;
-		}
 		lock->m_next_samples = 0;
 		lock->m_next_frame_time = hrt_time_micro();
 		lock->m_frame_rate = 20;
@@ -53,12 +47,7 @@ AudioPreviewer::~AudioPreviewer() {
 
 void AudioPreviewer::Reset() {
 	SharedLock lock(&m_shared_data);
-	for(unsigned int channel = 0; channel < 2; ++channel) {
-		lock->m_current_peak[channel] = 0.0f;
-		lock->m_current_rms[channel] = 0.0f;
-		lock->m_next_peak[channel] = 0.0f;
-		lock->m_next_rms[channel] = 0.0f;
-	}
+	lock->m_channel_data.clear();
 	lock->m_next_samples = 0;
 	emit NeedsUpdate();
 }
@@ -76,17 +65,14 @@ void AudioPreviewer::ReadAudioSamples(unsigned int channels, unsigned int sample
 	if(sample_count == 0)
 		return;
 
-	assert(channels == 2); // only stereo is currently supported
-
 	// save the samples
+	lock->m_channel_data.resize(channels);
 	switch(format) {
 		case AV_SAMPLE_FMT_S16: {
 			const int16_t *data_in = (const int16_t*) data;
 			for(size_t i = 0; i < sample_count; ++i) {
-				for(unsigned int channel = 0; channel < 2; ++channel) {
-					float val = fabs(SampleCast<int16_t, float>(*(data_in++)));
-					lock->m_next_peak[channel] = fmax(lock->m_next_peak[channel], val);
-					lock->m_next_rms[channel] += val * val;
+				for(unsigned int c = 0; c < channels; ++c) {
+					lock->m_channel_data[c].Analyze(*(data_in++));
 				}
 			}
 			break;
@@ -94,10 +80,8 @@ void AudioPreviewer::ReadAudioSamples(unsigned int channels, unsigned int sample
 		case AV_SAMPLE_FMT_FLT: {
 			const float *data_in = (const float*) data;
 			for(size_t i = 0; i < sample_count; ++i) {
-				for(unsigned int channel = 0; channel < 2; ++channel) {
-					float val = fabs(*(data_in++));
-					lock->m_next_peak[channel] = fmax(lock->m_next_peak[channel], val);
-					lock->m_next_rms[channel] += val * val;
+				for(unsigned int c = 0; c < channels; ++c) {
+					lock->m_channel_data[c].Analyze(*(data_in++));
 				}
 			}
 			break;
@@ -116,12 +100,11 @@ void AudioPreviewer::ReadAudioSamples(unsigned int channels, unsigned int sample
 	lock->m_next_frame_time = std::max(lock->m_next_frame_time + 1000000 / lock->m_frame_rate, time);
 
 	// move the low/high values from 'next' to 'current'
-	for(unsigned int channel = 0; channel < 2; ++channel) {
-		lock->m_current_peak[channel] = lock->m_next_peak[channel];
-		if(lock->m_next_samples)
-		lock->m_current_rms[channel] = sqrt(lock->m_next_rms[channel] / (float) lock->m_next_samples);
-		lock->m_next_peak[channel] = 0.0f;
-		lock->m_next_rms[channel] = 0.0f;
+	for(unsigned int c = 0; c < channels; ++c) {
+		lock->m_channel_data[c].m_current_peak = lock->m_channel_data[c].m_next_peak;
+		lock->m_channel_data[c].m_current_rms = sqrt(lock->m_channel_data[c].m_next_rms / (float) lock->m_next_samples);
+		lock->m_channel_data[c].m_next_peak = 0.0f;
+		lock->m_channel_data[c].m_next_rms = 0.0f;
 	}
 	lock->m_next_samples = 0;
 
@@ -145,13 +128,10 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 	Q_UNUSED(event);
 	QPainter painter(this);
 
-	float current_peak[2], current_rms[2];
+	std::vector<ChannelData> channel_data;
 	{
 		SharedLock lock(&m_shared_data);
-		for(unsigned int channel = 0; channel < 2; ++channel) {
-			current_peak[channel] = lock->m_current_peak[channel];
-			current_rms[channel] = lock->m_current_rms[channel];
-		}
+		channel_data = lock->m_channel_data;
 	}
 
 	painter.fillRect(rect(), QColor(200, 200, 200));
@@ -167,12 +147,12 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 	grad2.setColorAt(0.5, QColor(150, 150, 0));
 	grad2.setColorAt(1.0, QColor(150, 0, 0));
 	painter.setPen(Qt::NoPen);
-	for(unsigned int channel = 0; channel < 2; ++channel) {
+	for(unsigned int c = 0; c < channel_data.size(); ++c) {
 		// the scale goes down to 80dB which corresponds to 1.0e-4 (for sound pressure, 20dB = 10x)
-		double val_peak = log10(fmax(1.0e-4, current_peak[channel])) / 4.0 + 1.0;
-		double val_rms = log10(fmax(1.0e-4, current_rms[channel])) / 4.0 + 1.0;
-		int x1 = 0, x2 = (int) round((double) w * val_rms), x3 = (int) round((double) w * val_peak);
-		int y1 = h * channel / 2, y2 = h * (channel + 1) / 2;
+		float val_peak = log10(fmax(1.0e-4f, channel_data[c].m_current_peak)) / 4.0f + 1.0f;
+		float val_rms = log10(fmax(1.0e-4f, channel_data[c].m_current_rms)) / 4.0f + 1.0f;
+		int x1 = 0, x2 = (int) round((float) w * val_rms), x3 = (int) round((float) w * val_peak);
+		int y1 = h * c / channel_data.size(), y2 = h * (c + 1) / channel_data.size();
 		painter.setBrush(grad1);
 		painter.drawRect(x1, y1, x2 - x1, y2 - y1);
 		painter.setBrush(grad2);
@@ -181,8 +161,9 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 
 	painter.setPen(QColor(0, 0, 0));
 	painter.setBrush(Qt::NoBrush);
-	for(unsigned int channel = 0; channel < 2; ++channel) {
-		painter.drawRect(0, h * channel / 2, w, h * (channel + 1) / 2 - h * channel / 2);
+	for(unsigned int c = 0; c < channel_data.size(); ++c) {
+		int y1 = h * c / channel_data.size(), y2 = h * (c + 1) / channel_data.size();
+		painter.drawRect(0, y1, w, y2 - y1);
 	}
 
 }
