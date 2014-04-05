@@ -68,7 +68,7 @@ private:
 	bool m_audio_enabled;
 	unsigned int m_audio_sample_rate;
 	PageInput::enum_audio_backend m_audio_backend;
-	QString m_alsa_device;
+	QString m_alsa_source;
 #if SSR_USE_PULSEAUDIO
 	QString m_pulseaudio_source;
 #endif
@@ -175,8 +175,6 @@ private slots:
 	void OnPreviewStartStop();
 	void OnCancel();
 	void OnSave();
-
-	void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
 	void OnUpdateInformation();
 	void OnNewLogLine(Logger::enum_type type, QString string);

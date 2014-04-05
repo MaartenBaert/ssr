@@ -43,6 +43,8 @@ public:
 private:
 	enum_nvidia_disable_flipping m_nvidia_disable_flipping;
 
+	QRect m_old_geometry;
+
 	QStackedLayout *m_stacked_layout;
 	PageWelcome *m_page_welcome;
 	PageInput *m_page_input;
@@ -74,5 +76,7 @@ public slots:
 	void GoPageOutput();
 	void GoPageRecord();
 	void GoPageDone();
+
+	void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
 };

@@ -102,7 +102,7 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 	sample_spec.channels = channels;
 
 	pa_buffer_attr buffer_attr;
-	buffer_attr.fragsize = period_size * channels * 2;
+	buffer_attr.fragsize = period_size * channels * sizeof(int16_t);
 	buffer_attr.maxlength = (uint32_t) -1;
 	buffer_attr.minreq = (uint32_t) -1;
 	buffer_attr.prebuf = (uint32_t) -1;
@@ -220,16 +220,16 @@ PulseAudioInput::~PulseAudioInput() {
 static void SourceNamesCallback(pa_context* context, const pa_source_info* info, int eol, void* userdata) {
 	Q_UNUSED(context);
 	if(!eol) {
+		Logger::LogInfo("[SourceNamesCallback] " + Logger::tr("Got %1 = %2.").arg(info->name).arg(info->description));
 		std::vector<PulseAudioInput::Source> &list = *((std::vector<PulseAudioInput::Source>*) userdata);
-		PulseAudioInput::Source source;
-		source.name = info->name;
-		source.description = info->description;
-		list.push_back(source);
+		list.push_back(PulseAudioInput::Source(info->name, info->description));
 	}
 }
 
 std::vector<PulseAudioInput::Source> PulseAudioInput::GetSourceList() {
 	std::vector<Source> list;
+
+	Logger::LogInfo("[PulseAudioInput::GetSourceList] " + Logger::tr("Generating source list ..."));
 
 	pa_mainloop *mainloop = NULL;
 	pa_context *context = NULL;
@@ -251,6 +251,7 @@ std::vector<PulseAudioInput::Source> PulseAudioInput::GetSourceList() {
 	} catch(...) {
 		PulseAudioCancelOperation(mainloop, &operation);
 		PulseAudioDisconnect(&mainloop, &context);
+		// don't re-throw exception
 	}
 
 	return list;

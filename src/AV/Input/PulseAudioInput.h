@@ -35,7 +35,8 @@ class PulseAudioInput : public AudioSource {
 
 public:
 	struct Source {
-		QString name, description;
+		std::string m_name, m_description;
+		inline Source(const std::string& name, const std::string& description) : m_name(name), m_description(description) {}
 	};
 
 private:

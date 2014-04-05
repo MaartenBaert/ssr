@@ -41,6 +41,8 @@ const QString MainWindow::WINDOW_CAPTION = "SimpleScreenRecorder";
 MainWindow::MainWindow()
 	: QMainWindow() {
 
+	m_old_geometry = QRect();
+
 	setWindowTitle(WINDOW_CAPTION);
 	setWindowIcon(g_icon_ssr);
 
@@ -150,4 +152,19 @@ void MainWindow::GoPageRecord() {
 }
 void MainWindow::GoPageDone() {
 	m_stacked_layout->setCurrentWidget(m_page_done);
+}
+
+void MainWindow::OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason) {
+	if(reason == QSystemTrayIcon::Trigger || reason == QSystemTrayIcon::DoubleClick) {
+		if(isVisible()) {
+			m_old_geometry = geometry();
+			hide();
+		} else {
+			show();
+			if(!m_old_geometry.isNull()) {
+				setGeometry(m_old_geometry);
+				m_old_geometry = QRect();
+			}
+		}
+	}
 }

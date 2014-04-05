@@ -40,9 +40,9 @@ static void ALSARecoverAfterOverrun(snd_pcm_t* pcm) {
 	}
 }
 
-ALSAInput::ALSAInput(const QString& device_name, unsigned int sample_rate) {
+ALSAInput::ALSAInput(const QString& source_name, unsigned int sample_rate) {
 
-	m_device_name = device_name;
+	m_source_name = source_name;
 	m_sample_rate = sample_rate;
 	m_channels = 2; // always 2 channels because the synchronizer and encoder don't support anything else at this point
 
@@ -73,6 +73,177 @@ ALSAInput::~ALSAInput() {
 
 }
 
+std::vector<ALSAInput::Source> ALSAInput::GetSourceList() {
+	std::vector<Source> list;
+
+	/*
+	This code is based on the ALSA device detection code used in PortAudio. I just ported it to C++ and improved it a bit.
+	All credit goes to the PortAudio devs, they saved me a lot of time :).
+	*/
+
+	// these ALSA plugins are blacklisted because they are always defined but rarely useful
+	std::vector<std::string> plugin_blacklist = {
+		"cards", "default", "sysdefault", "hw", "plughw", "plug", "dmix", "dsnoop", "shm", "tee", "file", "null",
+		"front", "rear", "center_lfe", "side", "surround40", "surround41", "surround50", "surround51", "surround71",
+		"iec958", "spdif", "hdmi", "modem", "phoneline",
+	};
+	std::sort(plugin_blacklist.begin(), plugin_blacklist.end());
+
+	// the 'default' PCM must be first, so add it explicitly
+	list.push_back(Source("default", "Default source"));
+
+	Logger::LogInfo("[ALSAInput::GetSourceList] " + Logger::tr("Generating source list ..."));
+
+	snd_ctl_card_info_t *alsa_card_info = NULL;
+	snd_pcm_info_t *alsa_pcm_info = NULL;
+	snd_ctl_t *alsa_ctl = NULL;
+
+	try {
+
+		// allocate card and PCM info structure
+		if(snd_ctl_card_info_malloc(&alsa_card_info) < 0) {
+			throw std::bad_alloc();
+		}
+		if(snd_pcm_info_malloc(&alsa_pcm_info) < 0) {
+			throw std::bad_alloc();
+		}
+
+		// update the ALSA configuration
+		snd_config_update_free_global();
+		if(snd_config_update() < 0) {
+			Logger::LogError("[ALSAInput::GetSourceList] " + Logger::tr("Error: Could not update ALSA configuration!"));
+			throw ALSAException();
+		}
+
+		// find all PCM plugins (by parsing the config file)
+		snd_config_t *alsa_config_pcms = NULL;
+		if(snd_config_search(snd_config, "pcm", &alsa_config_pcms) < 0) {
+			Logger::LogWarning("[ALSAInput::GetSourceList] " + Logger::tr("Warning: Could not find PCM plugins."));
+		} else {
+			snd_config_iterator_t i, next;
+			snd_config_for_each(i, next, alsa_config_pcms) {
+				snd_config_t *alsa_config_pcm = snd_config_iterator_entry(i);
+
+				// get the name
+				const char *id = NULL;
+				if(snd_config_get_id(alsa_config_pcm, &id) < 0 || id == NULL)
+					continue;
+				std::string plugin_name = id;
+
+				// ignore the plugin if it is blacklisted
+				if(std::binary_search(plugin_blacklist.begin(), plugin_blacklist.end(), plugin_name))
+					continue;
+
+				// try to get the description
+				std::string plugin_description;
+				snd_config_t *alsa_config_description = NULL;
+				if(snd_config_search(alsa_config_pcm, "hint.description", &alsa_config_description) >= 0) {
+					const char *str = NULL;
+					if(snd_config_get_string(alsa_config_description, &str) >= 0 && str != NULL) {
+						plugin_description = str;
+					}
+				}
+
+				// if there is no description, ignore it, because it's probably not meant to be used
+				if(plugin_description.empty())
+					continue;
+
+				// if there is no description, use the type instead
+				/*if(plugin_description.empty()) {
+					snd_config_t *alsa_config_type = NULL;
+					if(snd_config_search(alsa_config_pcm, "type", &alsa_config_type) >= 0) {
+						const char *str = NULL;
+						if(snd_config_get_string(alsa_config_type, &str) >= 0 && str != NULL) {
+							plugin_description = std::string(str) + " plugin";
+						}
+					}
+				}*/
+
+				// add to list
+				Logger::LogInfo("[ALSAInput::GetSourceList] " + Logger::tr("Found plugin %1 = %2.").arg(QString::fromStdString(plugin_name)).arg(QString::fromStdString(plugin_description)));
+				list.push_back(Source(plugin_name, plugin_description));
+
+			}
+		}
+
+		// find all sound cards
+		int card = -1;
+		while(snd_card_next(&card) == 0 && card >= 0) {
+
+			// try to open the card
+			std::string card_name = "hw:" + NumToString(card);
+			if(snd_ctl_open(&alsa_ctl, card_name.c_str(), 0) < 0) {
+				Logger::LogWarning("[ALSAInput::GetSourceList] " + Logger::tr("Warning: Could not open sound card %1.").arg(card));
+				continue;
+			}
+
+			// get card info
+			if(snd_ctl_card_info(alsa_ctl, alsa_card_info) < 0) {
+				Logger::LogWarning("[ALSAInput::GetSourceList] " + Logger::tr("Warning: Could not get info for sound card %1.").arg(card));
+				continue;
+			}
+			std::string card_description = snd_ctl_card_info_get_name(alsa_card_info);
+			Logger::LogInfo("[ALSAInput::GetSourceList] " + Logger::tr("Found card %1 = %2.").arg(QString::fromStdString(card_name)).arg(QString::fromStdString(card_description)));
+
+			// find all devices for this card
+			int device = -1;
+			bool should_add_shared = true;
+			while(snd_ctl_pcm_next_device(alsa_ctl, &device) == 0 && device >= 0) {
+
+				// get device info
+				snd_pcm_info_set_device(alsa_pcm_info, device);
+				snd_pcm_info_set_subdevice(alsa_pcm_info, 0);
+				snd_pcm_info_set_stream(alsa_pcm_info, SND_PCM_STREAM_CAPTURE);
+				if(snd_ctl_pcm_info(alsa_ctl, alsa_pcm_info) < 0)
+					continue; // not a capture device
+
+				// add a shared source if needed
+				if(should_add_shared) {
+					list.push_back(Source("sysdefault:" + NumToString(card), card_description + " (shared)"));
+					should_add_shared = false;
+				}
+
+				// get device description
+				std::string device_name = "hw:" + NumToString(card) + "," + NumToString(device);
+				std::string device_description = snd_pcm_info_get_name(alsa_pcm_info);
+
+				// add to list
+				Logger::LogInfo("[ALSAInput::GetSourceList] " + Logger::tr("Found device %1 = %2.").arg(QString::fromStdString(device_name)).arg(QString::fromStdString(device_description)));
+				list.push_back(Source(device_name, card_description + ": " + device_description));
+
+			}
+
+			// close the card
+			snd_ctl_close(alsa_ctl);
+			alsa_ctl = NULL;
+
+		}
+
+		// free card and PCM info struction
+		snd_pcm_info_free(alsa_pcm_info);
+		alsa_pcm_info = NULL;
+		snd_ctl_card_info_free(alsa_card_info);
+		alsa_card_info = NULL;
+
+	} catch(...) {
+		if(alsa_ctl != NULL) {
+			snd_ctl_close(alsa_ctl);
+			alsa_ctl = NULL;
+		}
+		if(alsa_pcm_info != NULL) {
+			snd_pcm_info_free(alsa_pcm_info);
+			alsa_pcm_info = NULL;
+		}
+		if(alsa_card_info != NULL) {
+			snd_ctl_card_info_free(alsa_card_info);
+			alsa_card_info = NULL;
+		}
+		// don't re-throw exception
+	}
+
+	return list;
+}
+
 void ALSAInput::Init() {
 
 	snd_pcm_hw_params_t *alsa_hw_params = NULL;
@@ -85,7 +256,7 @@ void ALSAInput::Init() {
 		}
 
 		// open PCM device
-		if(snd_pcm_open(&m_alsa_pcm, m_device_name.toAscii().constData(), SND_PCM_STREAM_CAPTURE, 0) < 0) {
+		if(snd_pcm_open(&m_alsa_pcm, m_source_name.toAscii().constData(), SND_PCM_STREAM_CAPTURE, 0) < 0) {
 			Logger::LogError("[ALSAInput::Init] " + Logger::tr("Error: Can't open PCM device!"));
 			throw ALSAException();
 		}

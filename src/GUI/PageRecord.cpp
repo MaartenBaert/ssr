@@ -326,7 +326,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	connect(button_cancel, SIGNAL(clicked()), this, SLOT(OnCancel()));
 	connect(button_save, SIGNAL(clicked()), this, SLOT(OnSave()));
 	if(m_systray_icon != NULL)
-		connect(m_systray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
+		connect(m_systray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), m_main_window, SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(groupbox_recording);
@@ -436,7 +436,7 @@ void PageRecord::StartPage() {
 	m_audio_enabled = page_input->GetAudioEnabled();
 	m_audio_sample_rate = 44100;
 	m_audio_backend = page_input->GetAudioBackend();
-	m_alsa_device = page_input->GetALSADevice();
+	m_alsa_source = page_input->GetALSASourceName();
 #if SSR_USE_PULSEAUDIO
 	m_pulseaudio_source = page_input->GetPulseAudioSourceName();
 #endif
@@ -765,7 +765,7 @@ void PageRecord::StartInput() {
 		// start the audio input
 		if(m_audio_enabled) {
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_ALSA)
-				m_alsa_input.reset(new ALSAInput(m_alsa_device, m_audio_sample_rate));
+				m_alsa_input.reset(new ALSAInput(m_alsa_source, m_audio_sample_rate));
 #if SSR_USE_PULSEAUDIO
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
 				m_pulseaudio_input.reset(new PulseAudioInput(m_pulseaudio_source, m_audio_sample_rate));
@@ -988,15 +988,6 @@ void PageRecord::OnSave() {
 	}
 	StopPage(true);
 	m_main_window->GoPageDone();
-}
-
-void PageRecord::OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason) {
-	if(reason == QSystemTrayIcon::Trigger || reason == QSystemTrayIcon::DoubleClick) {
-		if(m_main_window->isVisible())
-			m_main_window->hide();
-		else
-			m_main_window->show();
-	}
 }
 
 void PageRecord::OnUpdateInformation() {

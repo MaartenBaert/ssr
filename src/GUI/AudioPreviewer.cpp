@@ -27,6 +27,7 @@ AudioPreviewer::AudioPreviewer(QWidget* parent)
 
 	{
 		SharedLock lock(&m_shared_data);
+		lock->m_channel_data.resize(1);
 		lock->m_next_samples = 0;
 		lock->m_next_frame_time = hrt_time_micro();
 		lock->m_frame_rate = 20;
@@ -147,12 +148,13 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 	grad2.setColorAt(0.5, QColor(150, 150, 0));
 	grad2.setColorAt(1.0, QColor(150, 0, 0));
 	painter.setPen(Qt::NoPen);
-	for(unsigned int c = 0; c < channel_data.size(); ++c) {
+	unsigned int n = channel_data.size();
+	for(unsigned int c = 0; c < n; ++c) {
 		// the scale goes down to 80dB which corresponds to 1.0e-4 (for sound pressure, 20dB = 10x)
 		float val_peak = log10(fmax(1.0e-4f, channel_data[c].m_current_peak)) / 4.0f + 1.0f;
 		float val_rms = log10(fmax(1.0e-4f, channel_data[c].m_current_rms)) / 4.0f + 1.0f;
 		int x1 = 0, x2 = (int) round((float) w * val_rms), x3 = (int) round((float) w * val_peak);
-		int y1 = h * c / channel_data.size(), y2 = h * (c + 1) / channel_data.size();
+		int y1 = h * c / n, y2 = h * (c + 1) / n;
 		painter.setBrush(grad1);
 		painter.drawRect(x1, y1, x2 - x1, y2 - y1);
 		painter.setBrush(grad2);
@@ -161,8 +163,8 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 
 	painter.setPen(QColor(0, 0, 0));
 	painter.setBrush(Qt::NoBrush);
-	for(unsigned int c = 0; c < channel_data.size(); ++c) {
-		int y1 = h * c / channel_data.size(), y2 = h * (c + 1) / channel_data.size();
+	for(unsigned int c = 0; c < n; ++c) {
+		int y1 = h * c / n, y2 = h * (c + 1) / n;
 		painter.drawRect(0, y1, w, y2 - y1);
 	}
 

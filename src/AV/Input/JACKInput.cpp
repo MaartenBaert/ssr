@@ -239,27 +239,27 @@ void JACKInput::InputThread() {
 
 		while(!m_should_stop) {
 
+			// process connect commands
+			{
+				SharedLock lock(&m_shared_data);
+				for(ConnectCommand &cmd : lock->m_connect_commands) {
+					if(cmd.m_connect) {
+						Logger::LogInfo("[JACKInput::InputThread] " + Logger::tr("Connecting port %1 to %2.")
+										.arg(QString::fromStdString(cmd.m_source)).arg(QString::fromStdString(cmd.m_destination)));
+						jack_connect(m_jack_client, cmd.m_source.c_str(), cmd.m_destination.c_str());
+					} else {
+						Logger::LogInfo("[JACKInput::InputThread] " + Logger::tr("Disconnecting port %1 from %2.")
+										.arg(QString::fromStdString(cmd.m_source)).arg(QString::fromStdString(cmd.m_destination)));
+						jack_disconnect(m_jack_client, cmd.m_source.c_str(), cmd.m_destination.c_str());
+					}
+				}
+				lock->m_connect_commands.clear();
+			}
+
+			// is there a new message?
 			unsigned int message_size;
 			char *message = m_message_queue.PrepareReadMessage(&message_size);
 			if(message == NULL) {
-
-				// process connect commands
-				{
-					SharedLock lock(&m_shared_data);
-					for(ConnectCommand &cmd : lock->m_connect_commands) {
-						if(cmd.m_connect) {
-							Logger::LogInfo("[JACKInput::InputThread] " + Logger::tr("Connecting port %1 to %2.")
-											.arg(QString::fromStdString(cmd.m_source)).arg(QString::fromStdString(cmd.m_destination)));
-							jack_connect(m_jack_client, cmd.m_source.c_str(), cmd.m_destination.c_str());
-						} else {
-							Logger::LogInfo("[JACKInput::InputThread] " + Logger::tr("Disconnecting port %1 from %2.")
-											.arg(QString::fromStdString(cmd.m_source)).arg(QString::fromStdString(cmd.m_destination)));
-							jack_disconnect(m_jack_client, cmd.m_source.c_str(), cmd.m_destination.c_str());
-						}
-					}
-					lock->m_connect_commands.clear();
-				}
-
 				usleep(20000);
 				continue;
 			}

@@ -254,10 +254,13 @@ PageInput::PageInput(MainWindow* main_window)
 #endif
 		m_combobox_audio_backend->setToolTip(tr("The audio backend that will be used for recording.\n"
 												"The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly."));
-		m_label_alsa_device = new QLabel(tr("Device:"), groupbox_audio);
-		m_lineedit_alsa_device = new QLineEdit(groupbox_audio);
-		m_lineedit_alsa_device->setToolTip(tr("The ALSA device that will be used for recording. Normally this should be 'default'.\n"
-											  "You can change this to something like plughw:0,0 (which means sound card 0 input 0 with plugins enabled).", "Don't translate 'default' and 'plughw'"));
+		m_label_alsa_source = new QLabel(tr("Source:"), groupbox_audio);
+		m_combobox_alsa_source = new QComboBox(groupbox_audio);
+		m_combobox_alsa_source->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		m_combobox_alsa_source->setToolTip(tr("The ALSA source that will be used for recording.\n"
+											  "The default is usually fine. The 'shared' sources allow multiple programs to record at the same time, but they may be less reliable."));
+		m_pushbutton_alsa_refresh = new QPushButton(tr("Refresh"), groupbox_audio);
+		m_pushbutton_alsa_refresh->setToolTip(tr("Refreshes the list of ALSA sources."));
 #if SSR_USE_PULSEAUDIO
 		m_label_pulseaudio_source = new QLabel(tr("Source:"), groupbox_audio);
 		m_combobox_pulseaudio_source = new QComboBox(groupbox_audio);
@@ -276,6 +279,7 @@ PageInput::PageInput(MainWindow* main_window)
 
 		connect(m_checkbox_audio_enable, SIGNAL(clicked()), this, SLOT(OnUpdateAudioFields()));
 		connect(m_combobox_audio_backend, SIGNAL(activated(int)), this, SLOT(OnUpdateAudioFields()));
+		connect(m_pushbutton_alsa_refresh, SIGNAL(clicked()), this, SLOT(OnUpdateALSASources()));
 #if SSR_USE_PULSEAUDIO
 		connect(m_pushbutton_pulseaudio_refresh, SIGNAL(clicked()), this, SLOT(OnUpdatePulseAudioSources()));
 #endif
@@ -287,8 +291,9 @@ PageInput::PageInput(MainWindow* main_window)
 			layout->addLayout(layout2);
 			layout2->addWidget(m_label_audio_backend, 0, 0);
 			layout2->addWidget(m_combobox_audio_backend, 0, 1, 1, 2);
-			layout2->addWidget(m_label_alsa_device, 1, 0);
-			layout2->addWidget(m_lineedit_alsa_device, 1, 1, 1, 2);
+			layout2->addWidget(m_label_alsa_source, 2, 0);
+			layout2->addWidget(m_combobox_alsa_source, 2, 1);
+			layout2->addWidget(m_pushbutton_alsa_refresh, 2, 2);
 #if SSR_USE_PULSEAUDIO
 			layout2->addWidget(m_label_pulseaudio_source, 2, 0);
 			layout2->addWidget(m_combobox_pulseaudio_source, 2, 1);
@@ -326,6 +331,7 @@ PageInput::PageInput(MainWindow* main_window)
 	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(OnUpdateScreenConfiguration()));
 
 	LoadScreenConfigurations();
+	LoadALSASources();
 #if SSR_USE_PULSEAUDIO
 	LoadPulseAudioSources();
 #endif
@@ -379,7 +385,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	SetVideoRecordCursor(settings->value("input/video_record_cursor", true).toBool());
 	SetAudioEnabled(settings->value("input/audio_enabled", true).toBool());
 	SetAudioBackend(StringToEnum(settings->value("input/audio_backend", QString()).toString(), default_audio_backend));
-	SetALSADevice(settings->value("input/audio_alsa_device", "default").toString());
+	SetALSASource(FindALSASource(settings->value("input/audio_alsa_source", QString()).toString()));
 #if SSR_USE_PULSEAUDIO
 	SetPulseAudioSource(FindPulseAudioSource(settings->value("input/audio_pulseaudio_source", QString()).toString()));
 #endif
@@ -416,7 +422,7 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/video_record_cursor", GetVideoRecordCursor());
 	settings->setValue("input/audio_enabled", GetAudioEnabled());
 	settings->setValue("input/audio_backend", EnumToString(GetAudioBackend()));
-	settings->setValue("input/audio_alsa_device", GetALSADevice());
+	settings->setValue("input/audio_alsa_source", GetALSASourceName());
 #if SSR_USE_PULSEAUDIO
 	settings->setValue("input/audio_pulseaudio_source", GetPulseAudioSourceName());
 #endif
@@ -432,16 +438,28 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
 }
 
+QString PageInput::GetALSASourceName() {
+	return QString::fromStdString(m_alsa_sources[GetALSASource()].m_name);
+}
+
 #if SSR_USE_PULSEAUDIO
 QString PageInput::GetPulseAudioSourceName() {
-	return m_pulseaudio_sources[GetPulseAudioSource()].name;
+	return QString::fromStdString(m_pulseaudio_sources[GetPulseAudioSource()].m_name);
 }
 #endif
+
+unsigned int PageInput::FindALSASource(const QString& name) {
+	for(unsigned int i = 0; i < m_alsa_sources.size(); ++i) {
+		if(QString::fromStdString(m_alsa_sources[i].m_name) == name)
+			return i;
+	}
+	return 0;
+}
 
 #if SSR_USE_PULSEAUDIO
 unsigned int PageInput::FindPulseAudioSource(const QString& name) {
 	for(unsigned int i = 0; i < m_pulseaudio_sources.size(); ++i) {
-		if(m_pulseaudio_sources[i].name == name)
+		if(QString::fromStdString(m_pulseaudio_sources[i].m_name) == name)
 			return i;
 	}
 	return 0;
@@ -663,27 +681,34 @@ void PageInput::LoadScreenConfigurations() {
 	OnUpdateVideoAreaFields();
 }
 
-#if SSR_USE_PULSEAUDIO
+void PageInput::LoadALSASources() {
+	m_alsa_sources = ALSAInput::GetSourceList();
+	if(m_alsa_sources.empty()) {
+		m_alsa_sources.push_back(ALSAInput::Source("", "(no sources found)"));
+	}
+	m_combobox_alsa_source->clear();
+	for(unsigned int i = 0; i < m_alsa_sources.size(); ++i) {
+		QString elided = m_combobox_alsa_source->fontMetrics().elidedText("[" + QString::fromStdString(m_alsa_sources[i].m_name) + "] "
+																		  + QString::fromStdString(m_alsa_sources[i].m_description), Qt::ElideMiddle, 400);
+		m_combobox_alsa_source->addItem(elided);
+	}
+}
 
+#if SSR_USE_PULSEAUDIO
 void PageInput::LoadPulseAudioSources() {
 	m_pulseaudio_sources = PulseAudioInput::GetSourceList();
 	if(m_pulseaudio_sources.empty()) {
 		m_pulseaudio_available = false;
-		PulseAudioInput::Source source;
-		source.name = "";
-		source.description = "(no sources found)";
-		m_pulseaudio_sources.push_back(source);
+		m_pulseaudio_sources.push_back(PulseAudioInput::Source("", "(no sources found)"));
 	} else {
 		m_pulseaudio_available = true;
 	}
 	m_combobox_pulseaudio_source->clear();
 	for(unsigned int i = 0; i < m_pulseaudio_sources.size(); ++i) {
-		// limit the width of the strings (PulseAudio can generate really long names)
-		QString elided = m_combobox_pulseaudio_source->fontMetrics().elidedText(m_pulseaudio_sources[i].description, Qt::ElideMiddle, 400);
+		QString elided = m_combobox_pulseaudio_source->fontMetrics().elidedText(QString::fromStdString(m_pulseaudio_sources[i].m_description), Qt::ElideMiddle, 400);
 		m_combobox_pulseaudio_source->addItem(elided);
 	}
 }
-
 #endif
 
 void PageInput::OnUpdateRecordingFrame() {
@@ -767,7 +792,8 @@ void PageInput::OnUpdateAudioFields() {
 	bool enabled = GetAudioEnabled();
 	enum_audio_backend backend = GetAudioBackend();
 	GroupEnabled({
-		m_label_audio_backend, m_combobox_audio_backend, m_label_alsa_device, m_lineedit_alsa_device,
+		m_label_audio_backend, m_combobox_audio_backend,
+		m_label_alsa_source, m_combobox_alsa_source, m_pushbutton_alsa_refresh,
 #if SSR_USE_PULSEAUDIO
 		m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh,
 #endif
@@ -776,7 +802,7 @@ void PageInput::OnUpdateAudioFields() {
 #endif
 	}, enabled);
 	MultiGroupVisible({
-		{{m_label_alsa_device, m_lineedit_alsa_device}, (backend == AUDIO_BACKEND_ALSA)},
+		{{m_label_alsa_source, m_combobox_alsa_source, m_pushbutton_alsa_refresh}, (backend == AUDIO_BACKEND_ALSA)},
 #if SSR_USE_PULSEAUDIO
 		{{m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh}, (backend == AUDIO_BACKEND_PULSEAUDIO)},
 #endif
@@ -790,6 +816,12 @@ void PageInput::OnUpdateScreenConfiguration() {
 	unsigned int selected_screen = GetVideoAreaScreen();
 	LoadScreenConfigurations();
 	SetVideoAreaScreen(selected_screen);
+}
+
+void PageInput::OnUpdateALSASources() {
+	QString selected_source = GetALSASourceName();
+	LoadALSASources();
+	SetALSASource(FindALSASource(selected_source));
 }
 
 void PageInput::OnUpdatePulseAudioSources() {
