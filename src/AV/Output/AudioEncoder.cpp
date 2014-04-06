@@ -32,11 +32,12 @@ const std::vector<AVSampleFormat> AudioEncoder::SUPPORTED_SAMPLE_FORMATS = {
 };
 
 AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
-						   unsigned int bit_rate, unsigned int sample_rate)
+						   unsigned int bit_rate, unsigned int channels, unsigned int sample_rate)
 	: BaseEncoder(muxer) {
 	try {
 
 		m_bit_rate = bit_rate;
+		m_channels = channels;
 		m_sample_rate = sample_rate;
 
 		m_opt_threads = 1;
@@ -119,8 +120,8 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 	GetCodecContext()->time_base.num = 1;
 	GetCodecContext()->time_base.den = m_sample_rate;
 	GetCodecContext()->bit_rate = m_bit_rate;
+	GetCodecContext()->channels = m_channels;
 	GetCodecContext()->sample_rate = m_sample_rate;
-	GetCodecContext()->channels = 2;
 	GetCodecContext()->sample_fmt = AV_SAMPLE_FMT_NONE;
 	for(unsigned int i = 0; i < SUPPORTED_SAMPLE_FORMATS.size(); ++i) {
 		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i])) {
@@ -138,11 +139,13 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 
 bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 
-#if SSR_USE_AVFRAME_FORMAT
 	if(frame != NULL) {
+		assert((unsigned int) frame->channels == m_channels);
+		assert((unsigned int) frame->sample_rate == m_sample_rate);
+#if SSR_USE_AVFRAME_FORMAT
 		assert(frame->format == GetCodecContext()->sample_fmt);
-	}
 #endif
+	}
 
 #if SSR_USE_AVCODEC_ENCODE_AUDIO2
 

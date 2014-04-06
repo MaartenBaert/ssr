@@ -66,7 +66,7 @@ private:
 	unsigned int m_video_scaled_width, m_video_scaled_height;
 	bool m_video_record_cursor;
 	bool m_audio_enabled;
-	unsigned int m_audio_sample_rate;
+	unsigned int m_audio_channels, m_audio_sample_rate;
 	PageInput::enum_audio_backend m_audio_backend;
 	QString m_alsa_source;
 #if SSR_USE_PULSEAUDIO

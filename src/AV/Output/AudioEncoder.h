@@ -29,7 +29,7 @@ private:
 
 private:
 	unsigned int m_bit_rate;
-	unsigned int m_sample_rate;
+	unsigned int m_channels, m_sample_rate;
 
 	int m_opt_threads;
 
@@ -39,7 +39,7 @@ private:
 
 public:
 	AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
-				 unsigned int bit_rate, unsigned int sample_rate);
+				 unsigned int bit_rate, unsigned int channels, unsigned int sample_rate);
 	~AudioEncoder();
 
 	// Returns the required frame size, i.e. the number of samples (for each channel).
@@ -48,6 +48,7 @@ public:
 	// Returns the required sample format.
 	AVSampleFormat GetRequiredSampleFormat();
 
+	inline unsigned int GetChannels() { return m_channels; }
 	inline unsigned int GetSampleRate() { return m_sample_rate; }
 
 public:

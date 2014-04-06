@@ -35,6 +35,6 @@ struct OutputSettings {
 	QString audio_codec_avname;
 	unsigned int audio_kbit_rate;
 	std::vector<std::pair<QString, QString> > audio_options;
-	unsigned int audio_sample_rate;
+	unsigned int audio_channels, audio_sample_rate;
 
 };

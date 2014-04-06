@@ -434,6 +434,7 @@ void PageRecord::StartPage() {
 
 	// get the audio input settings
 	m_audio_enabled = page_input->GetAudioEnabled();
+	m_audio_channels = 2;
 	m_audio_sample_rate = 44100;
 	m_audio_backend = page_input->GetAudioBackend();
 	m_alsa_source = page_input->GetALSASourceName();
@@ -476,6 +477,7 @@ void PageRecord::StartPage() {
 	m_output_settings.audio_codec_avname = (m_audio_enabled)? page_output->GetAudioCodecAVName() : QString();
 	m_output_settings.audio_kbit_rate = page_output->GetAudioKBitRate();
 	m_output_settings.audio_options.clear();
+	m_output_settings.audio_channels = m_audio_channels;
 	m_output_settings.audio_sample_rate = m_audio_sample_rate;
 
 	// some codec-specific things

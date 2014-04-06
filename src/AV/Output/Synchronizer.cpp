@@ -75,6 +75,8 @@ static std::unique_ptr<AVFrameWrapper> CreateVideoFrameYUV(unsigned int width, u
 	frame->GetFrame()->linesize[0] = l1;
 	frame->GetFrame()->linesize[1] = l2;
 	frame->GetFrame()->linesize[2] = l2;
+	frame->GetFrame()->width = width;
+	frame->GetFrame()->height = height;
 #if SSR_USE_AVFRAME_FORMAT
 	frame->GetFrame()->format = PIX_FMT_YUV420P;
 #endif
@@ -82,7 +84,21 @@ static std::unique_ptr<AVFrameWrapper> CreateVideoFrameYUV(unsigned int width, u
 }
 
 // note: sample_size = sizeof(sampletype) * channels
-static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int planes, unsigned int samples, unsigned int sample_size, AVSampleFormat sample_format) {
+static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int channels, unsigned int sample_rate, unsigned int samples, unsigned int planes, AVSampleFormat sample_format) {
+	unsigned int sample_size;
+	switch(sample_format) {
+		case AV_SAMPLE_FMT_S16:
+#if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
+		case AV_SAMPLE_FMT_S16P:
+#endif
+			sample_size = channels * sizeof(int16_t); break;
+		case AV_SAMPLE_FMT_FLT:
+#if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
+		case AV_SAMPLE_FMT_FLTP:
+#endif
+			sample_size = channels * sizeof(float); break;
+		default: assert(false); break;
+	}
 	size_t plane_size = grow_align16(samples * sample_size / planes);
 	std::shared_ptr<AVFrameData> frame_data = std::make_shared<AVFrameData>(plane_size * planes);
 	std::unique_ptr<AVFrameWrapper> frame(new AVFrameWrapper(frame_data));
@@ -93,6 +109,8 @@ static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int planes, uns
 #if SSR_USE_AVFRAME_NB_SAMPLES
 	frame->GetFrame()->nb_samples = samples;
 #endif
+	frame->GetFrame()->channels = channels;
+	frame->GetFrame()->sample_rate = sample_rate;
 #if SSR_USE_AVFRAME_FORMAT
 	frame->GetFrame()->format = sample_format;
 #endif
@@ -154,23 +172,11 @@ void Synchronizer::Init() {
 
 	// initialize audio
 	if(m_audio_encoder != NULL) {
+		m_audio_channels = m_audio_encoder->GetChannels(); //TODO// never larger than AV_NUM_DATA_POINTERS
+		assert(m_audio_channels <= AV_NUM_DATA_POINTERS);
 		m_audio_sample_rate = m_audio_encoder->GetSampleRate();
-		m_audio_channels = 2; //TODO// never larger than AV_NUM_DATA_POINTERS
 		m_audio_required_frame_samples = m_audio_encoder->GetRequiredFrameSamples();
 		m_audio_required_sample_format = m_audio_encoder->GetRequiredSampleFormat();
-		switch(m_audio_required_sample_format) {
-			case AV_SAMPLE_FMT_S16:
-#if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
-			case AV_SAMPLE_FMT_S16P:
-#endif
-				m_audio_required_sample_size = m_audio_channels * 2; break;
-			case AV_SAMPLE_FMT_FLT:
-#if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
-			case AV_SAMPLE_FMT_FLTP:
-#endif
-				m_audio_required_sample_size = m_audio_channels * 4; break;
-			default: assert(false); break;
-		}
 		AudioLock audiolock(&m_audio_data);
 		audiolock->m_fast_resampler.reset(new FastResampler(m_audio_channels, 0.9f));
 		InitAudioSegment(audiolock.get());
@@ -751,7 +757,7 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 #else
 				unsigned int planes = 1;
 #endif
-				std::unique_ptr<AVFrameWrapper> audio_frame = CreateAudioFrame(planes, m_audio_required_frame_samples, m_audio_required_sample_size, m_audio_required_sample_format);
+				std::unique_ptr<AVFrameWrapper> audio_frame = CreateAudioFrame(m_audio_channels, m_audio_sample_rate, m_audio_required_frame_samples, planes, m_audio_required_sample_format);
 				audio_frame->GetFrame()->pts = lock->m_audio_samples;
 
 				// copy/convert the samples
@@ -765,7 +771,7 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 					case AV_SAMPLE_FMT_FLT: {
 						float *data_in = (float*) lock->m_partial_audio_frame.GetData();
 						float *data_out = (float*) audio_frame->GetFrame()->data[0];
-						memcpy(data_out, data_in, m_audio_required_frame_samples * m_audio_required_sample_size);
+						memcpy(data_out, data_in, m_audio_required_frame_samples * m_audio_channels * sizeof(float));
 						break;
 					}
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
