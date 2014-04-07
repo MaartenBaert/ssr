@@ -585,7 +585,7 @@ void PageRecord::StopPage(bool save) {
 			dialog.setCancelButton(NULL);
 			dialog.setMinimumDuration(500);
 			while(!m_output_manager->IsFinished()) {
-				qDebug() << "frames left" << frames_left << "current" << m_output_manager->GetVideoEncoder()->GetFrameLatency();
+				//qDebug() << "frames left" << frames_left << "current" << m_output_manager->GetVideoEncoder()->GetFrameLatency();
 				dialog.setValue(frames_left - clamp(m_output_manager->GetVideoEncoder()->GetFrameLatency(), 0u, frames_left));
 				usleep(20000);
 			}

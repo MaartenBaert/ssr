@@ -140,8 +140,12 @@ void AudioEncoder::FillCodecContext(AVCodec* codec) {
 bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 
 	if(frame != NULL) {
+#if SSR_USE_AVFRAME_CHANNELS
 		assert((unsigned int) frame->channels == m_channels);
+#endif
+#if SSR_USE_AVFRAME_SAMPLE_RATE
 		assert((unsigned int) frame->sample_rate == m_sample_rate);
+#endif
 #if SSR_USE_AVFRAME_FORMAT
 		assert(frame->format == GetCodecContext()->sample_fmt);
 #endif
