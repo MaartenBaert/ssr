@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoPreviewer.h"
 
 #include "Logger.h"
+#include "AVWrapper.h"
 
 QSize CalculateScaledSize(QSize in, QSize out) {
 	assert(in.width() > 0 && in.height() > 0);
