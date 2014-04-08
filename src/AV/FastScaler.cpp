@@ -21,6 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "FastScaler.h"
 
 #include "Logger.h"
+#include "AVWrapper.h"
 #include "DetectCPUFeatures.h"
 #include "TempBuffer.h"
 

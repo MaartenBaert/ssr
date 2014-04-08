@@ -12,14 +12,6 @@ if [ x"$( whoami )" = x"root" ]; then
 	exit 1
 fi
 
-echo "Removing old SSR libraries ..."
-sudo rm -f "/usr/lib/libssr-glinject."*
-sudo rm -f "/usr/lib32/libssr-glinject."*
-sudo rm -f "/usr/lib64/libssr-glinject."*
-sudo rm -f "/usr/lib/i386-linux-gnu/libssr-glinject."*
-sudo rm -f "/usr/lib/i686-linux-gnu/libssr-glinject."*
-sudo rm -f "/usr/lib/x86_64-linux-gnu/libssr-glinject."*
-
 echo "Detecting x86/x64 ..."
 case "$( uname -m )" in
 	"i386"|"i486"|"i586"|"i686"|"x86_64") ENABLE_X86_ASM="--enable-x86-asm" ;;
@@ -112,6 +104,14 @@ if [ x"$( uname -m )" = x"x86_64" ]; then
 	make -j "$( nproc )"
 	cd ..
 fi
+
+echo "Removing old SSR libraries ..."
+sudo rm -f "/usr/lib/libssr-glinject."*
+sudo rm -f "/usr/lib32/libssr-glinject."*
+sudo rm -f "/usr/lib64/libssr-glinject."*
+sudo rm -f "/usr/lib/i386-linux-gnu/libssr-glinject."*
+sudo rm -f "/usr/lib/i686-linux-gnu/libssr-glinject."*
+sudo rm -f "/usr/lib/x86_64-linux-gnu/libssr-glinject."*
 
 cd build
 echo "Installing ..."
