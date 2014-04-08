@@ -26,6 +26,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 class AVPacketWrapper;
 class BaseEncoder;
+class VideoEncoder;
+class AudioEncoder;
 
 class Muxer {
 
@@ -59,14 +61,17 @@ public:
 	Muxer(const QString& container_name, const QString& output_file);
 	~Muxer();
 
+	// Adds a video or audio encoder.
+	VideoEncoder* AddVideoEncoder(const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options, unsigned int bit_rate,
+								  unsigned int width, unsigned int height, unsigned int frame_rate);
+	AudioEncoder* AddAudioEncoder(const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options, unsigned int bit_rate,
+								  unsigned int channels, unsigned int sample_rate);
+
 	// Starts the muxer. You can't create new encoders after calling this function.
 	void Start();
 
 	// Tells the muxer to stop. It can take some time before the muxer really stops.
 	void Finish();
-
-	// Returns whether the muxer is running.
-	bool IsStarted();
 
 	// Returns the bit rate of the output stream.
 	// This function is thread-safe.
@@ -90,14 +95,6 @@ public:
 
 public: // internal
 
-	// Adds a new stream to the muxer. Called by the encoder.
-	AVStream* CreateStream(AVCodec* codec);
-
-	// Registers an encoder (so it can be stopped and deleted when the muxer is closed). Called by the encoder.
-	// Unlike CreateStream, this function is called at the end of the constructor of the encoder, to make sure that the pointer stays valid.
-	// If the encoder can't be opened, it won't be registered and Start can't be called, but the muxer can still be destroyed safely.
-	void RegisterEncoder(unsigned int stream_index, BaseEncoder* encoder);
-
 	// Ends the stream (i.e. tells the muxer that it shouldn't wait for more packets). Called by the encoder.
 	// This function is thread-safe.
 	void EndStream(unsigned int stream_index);
@@ -113,6 +110,9 @@ public: // internal
 private:
 	void Init();
 	void Free();
+
+	AVCodec* FindCodec(const QString& codec_name);
+	AVStream* AddStream(AVCodec* codec);
 
 	void MuxerThread();
 

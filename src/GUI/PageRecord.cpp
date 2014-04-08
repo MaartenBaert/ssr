@@ -409,8 +409,10 @@ void PageRecord::StartPage() {
 	m_textedit_log->clear();
 
 	// clear the preview
-	m_video_previewer->Reset();
-	m_audio_previewer->Reset();
+	if(m_previewing) {
+		m_video_previewer->Reset();
+		m_audio_previewer->Reset();
+	}
 
 	PageInput *page_input = m_main_window->GetPageInput();
 	PageOutput *page_output = m_main_window->GetPageOutput();
@@ -575,21 +577,22 @@ void PageRecord::StopPage(bool save) {
 
 		// stop the output
 		if(save) {
-			m_wait_saving = true;
 			m_output_manager->Finish();
-			assert(m_output_manager->GetVideoEncoder() != NULL);
-			unsigned int frames_left = m_output_manager->GetVideoEncoder()->GetFrameLatency();
-			QProgressDialog dialog(tr("Encoding remaining data ..."), QString(), 0, frames_left, this);
-			dialog.setWindowTitle(MainWindow::WINDOW_CAPTION);
-			dialog.setWindowModality(Qt::WindowModal);
-			dialog.setCancelButton(NULL);
-			dialog.setMinimumDuration(500);
-			while(!m_output_manager->IsFinished()) {
-				//qDebug() << "frames left" << frames_left << "current" << m_output_manager->GetVideoEncoder()->GetFrameLatency();
-				dialog.setValue(frames_left - clamp(m_output_manager->GetVideoEncoder()->GetFrameLatency(), 0u, frames_left));
-				usleep(20000);
+			if(m_output_manager->GetVideoEncoder() != NULL) {
+				m_wait_saving = true;
+				unsigned int frames_left = m_output_manager->GetVideoEncoder()->GetFrameLatency();
+				QProgressDialog dialog(tr("Encoding remaining data ..."), QString(), 0, frames_left, this);
+				dialog.setWindowTitle(MainWindow::WINDOW_CAPTION);
+				dialog.setWindowModality(Qt::WindowModal);
+				dialog.setCancelButton(NULL);
+				dialog.setMinimumDuration(500);
+				while(!m_output_manager->IsFinished()) {
+					//qDebug() << "frames left" << frames_left << "current" << m_output_manager->GetVideoEncoder()->GetFrameLatency();
+					dialog.setValue(frames_left - clamp(m_output_manager->GetVideoEncoder()->GetFrameLatency(), 0u, frames_left));
+					usleep(20000);
+				}
+				m_wait_saving = false;
 			}
-			m_wait_saving = false;
 		}
 		m_output_manager.reset();
 
@@ -956,9 +959,11 @@ void PageRecord::OnPreviewStartStop() {
 		return;
 	if(m_wait_saving)
 		return;
-	m_video_previewer->Reset();
-	m_audio_previewer->Reset();
 	m_previewing = !m_previewing;
+	if(m_previewing) {
+		m_video_previewer->Reset();
+		m_audio_previewer->Reset();
+	}
 	UpdatePreview();
 	UpdateInput();
 }

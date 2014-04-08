@@ -20,6 +20,24 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#if !SSR_USE_AV_CODEC_ID
+#define AV_CODEC_ID_NONE CODEC_ID_NONE
+#endif
+
+#if !SSR_USE_AV_PIX_FMT
+#define AV_PIX_FMT_NONE PIX_FMT_NONE
+#define AV_PIX_FMT_PAL8 PIX_FMT_PAL8
+#define AV_PIX_FMT_RGB565 PIX_FMT_RGB565
+#define AV_PIX_FMT_RGB555 PIX_FMT_RGB555
+#define AV_PIX_FMT_BGR24 PIX_FMT_BGR24
+#define AV_PIX_FMT_RGB24 PIX_FMT_RGB24
+#define AV_PIX_FMT_BGRA PIX_FMT_BGRA
+#define AV_PIX_FMT_RGBA PIX_FMT_RGBA
+#define AV_PIX_FMT_ABGR PIX_FMT_ABGR
+#define AV_PIX_FMT_ARGB PIX_FMT_ARGB
+#define AV_PIX_FMT_YUV420P PIX_FMT_YUV420P
+#endif
+
 // A trivial class that holds (aligned) frame data. This makes it easy to implement reference counting through std::shared_ptr.
 class AVFrameData {
 private:
@@ -83,15 +101,11 @@ public:
 
 bool AVFormatIsInstalled(const QString& format_name);
 bool AVCodecIsInstalled(const QString& codec_name);
-bool AVCodecSupportsPixelFormat(AVCodec* codec, PixelFormat pixel_fmt);
-bool AVCodecSupportsSampleFormat(AVCodec* codec, AVSampleFormat sample_fmt);
+bool AVCodecSupportsPixelFormat(const AVCodec* codec, PixelFormat pixel_fmt);
+bool AVCodecSupportsSampleFormat(const AVCodec* codec, AVSampleFormat sample_fmt);
 
 #if !SSR_USE_AV_CODEC_IS_ENCODER
 inline int av_codec_is_encoder(const AVCodec* codec) {
 	return (codec != NULL && (codec->encode != NULL || codec->encode2 != NULL));
 }
-#endif
-
-#if !SSR_USE_AV_CODEC_ID
-#define AV_CODEC_ID_NONE CODEC_ID_NONE
 #endif

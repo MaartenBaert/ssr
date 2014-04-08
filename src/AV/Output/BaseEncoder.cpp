@@ -35,19 +35,13 @@ int ParseCodecOptionInt(const QString& key, const QString& value, int min, int m
 	}
 }
 
-BaseEncoder::BaseEncoder(Muxer* muxer) {
+BaseEncoder::BaseEncoder(Muxer* muxer, AVStream* stream, AVCodec* codec, AVDictionary** options) {
 
-	m_destructed = false;
 	m_muxer = muxer;
+	m_stream = stream;
+	m_codec_opened = false;
 
-	m_codec_context = NULL;
-
-	// initialize thread signals
-	m_should_stop = false;
-	m_should_finish = false;
-	m_is_done = false;
-	m_error_occurred = false;
-
+	// initialize shared data
 	{
 		SharedLock lock(&m_shared_data);
 		lock->m_total_frames = 0;
@@ -57,70 +51,47 @@ BaseEncoder::BaseEncoder(Muxer* muxer) {
 		lock->m_stats_previous_frames = 0;
 	}
 
+	// initialize thread signals
+	m_should_stop = false;
+	m_should_finish = false;
+	m_is_done = false;
+	m_error_occurred = false;
+
+	try {
+		Init(codec, options);
+	} catch(...) {
+		Free();
+		throw;
+	}
+
 }
 
 BaseEncoder::~BaseEncoder() {
-	assert(m_destructed);
+	Free();
 }
 
-// Why not a real destructor? The problem is that a real destructor gets called *after* the derived class has already been destructed.
+// Why can't this be done in the constructor/destructor? The problem is that a real destructor gets called *after* the derived class has already been destructed.
 // This means virtual function calls, like EncodeFrame, will fail. This is a problem since the encoder thread doesn't know that the derived class is gone.
-// To fix this, the derived class should call Destruct() in its destructor.
-void BaseEncoder::Destruct() {
+// A similar thing can happen with the constructor. To fix this, the derived class should call StartThread() and StopThread() manually.
+
+void BaseEncoder::StartThread() {
+
+	// start encoder thread
+	m_thread = std::thread(&BaseEncoder::EncoderThread, this);
+
+}
+
+void BaseEncoder::StopThread() {
 
 	// tell the thread to stop
-	// normally the muxer should have stopped the thread already, unless the muxer wasn't actually started
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[BaseEncoder::Stop] " + Logger::tr("Stopping encoder thread ..."));
+		Logger::LogInfo("[BaseEncoder::~BaseEncoder] " + Logger::tr("Stopping encoder thread ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}
 
 	// free everything
-	if(m_codec_context != NULL) {
-		avcodec_close(m_codec_context);
-		m_codec_context = NULL;
-	}
-
-	m_destructed = true;
-
-}
-
-void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options) {
-
-	// get the codec we want
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
-	if(codec == NULL) {
-		Logger::LogError("[BaseEncoder::CreateCodec] " + Logger::tr("Error: Can't find codec!"));
-		throw LibavException();
-	}
-	m_delayed_packets = ((codec->capabilities & CODEC_CAP_DELAY) != 0);
-
-	Logger::LogInfo("[BaseEncoder::CreateCodec] " + Logger::tr("Using codec %1 (%2).").arg(codec->name).arg(codec->long_name));
-
-	// create stream and get codec context
-	AVStream *stream = m_muxer->CreateStream(codec);
-	m_codec_context = stream->codec;
-	m_stream_index = stream->index;
-
-	// if the codec is experimental, allow it
-	if(codec->capabilities & CODEC_CAP_EXPERIMENTAL) {
-		Logger::LogWarning("[BaseEncoder::CreateCodec] " + Logger::tr("Warning: This codec is considered experimental by libav/ffmpeg."));
-		m_codec_context->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
-	}
-
-	// set things like image size, frame rate, sample rate, bit rate ...
-	FillCodecContext(codec);
-	stream->sample_aspect_ratio = m_codec_context->sample_aspect_ratio;
-
-	// open codec
-	if(avcodec_open2(m_codec_context, codec, options) < 0) {
-		Logger::LogError("[BaseEncoder::CreateCodec] " + Logger::tr("Error: Can't open codec!"));
-		throw LibavException();
-	}
-
-	// start encoder thread
-	m_thread = std::thread(&BaseEncoder::EncoderThread, this);
+	Free();
 
 }
 
@@ -145,7 +116,6 @@ unsigned int BaseEncoder::GetQueuedFrameCount() {
 }
 
 void BaseEncoder::AddFrame(std::unique_ptr<AVFrameWrapper> frame) {
-	assert(m_muxer->IsStarted());
 	assert(frame->GetFrame()->pts != (int64_t) AV_NOPTS_VALUE);
 	SharedLock lock(&m_shared_data);
 	++lock->m_total_frames;
@@ -153,7 +123,7 @@ void BaseEncoder::AddFrame(std::unique_ptr<AVFrameWrapper> frame) {
 		lock->m_stats_previous_pts = frame->GetFrame()->pts;
 		lock->m_stats_previous_frames = lock->m_total_frames;
 	}
-	double timedelta = (double) (frame->GetFrame()->pts - lock->m_stats_previous_pts) * ToDouble(m_codec_context->time_base);
+	double timedelta = (double) (frame->GetFrame()->pts - lock->m_stats_previous_pts) * ToDouble(m_stream->codec->time_base);
 	if(timedelta > 0.999999) {
 		lock->m_stats_actual_frame_rate = (double) (lock->m_total_frames - lock->m_stats_previous_frames) / timedelta;
 		lock->m_stats_previous_pts = frame->GetFrame()->pts;
@@ -168,6 +138,30 @@ void BaseEncoder::Finish() {
 
 void BaseEncoder::Stop() {
 	m_should_stop = true;
+}
+
+void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
+
+	// open codec
+	if(avcodec_open2(m_stream->codec, codec, options) < 0) {
+		Logger::LogError("[BaseEncoder::Init] " + Logger::tr("Error: Can't open codec!"));
+		throw LibavException();
+	}
+	m_codec_opened = true;
+
+	// show a warning for every option that wasn't recognized
+	AVDictionaryEntry *t = NULL;
+	while((t = av_dict_get(*options, "", t, AV_DICT_IGNORE_SUFFIX)) != NULL) {
+		Logger::LogWarning("[BaseEncoder::Init] " + Logger::tr("Warning: Codec option '%1' was not recognised!").arg(t->key));
+	}
+
+}
+
+void BaseEncoder::Free() {
+	if(m_codec_opened) {
+		avcodec_close(m_stream->codec);
+		m_codec_opened = false;
+	}
 }
 
 void BaseEncoder::EncoderThread() {
@@ -205,7 +199,7 @@ void BaseEncoder::EncoderThread() {
 		}
 
 		// flush the encoder
-		if(!m_should_stop && m_delayed_packets) {
+		if(!m_should_stop && (m_stream->codec->codec->capabilities & CODEC_CAP_DELAY)) {
 			Logger::LogInfo("[BaseEncoder::EncoderThread] " + Logger::tr("Flushing encoder ..."));
 			while(!m_should_stop) {
 				if(EncodeFrame(NULL)) {
@@ -231,6 +225,6 @@ void BaseEncoder::EncoderThread() {
 	}
 
 	// always end the stream, even if there was an error, otherwise the muxer will wait forever
-	m_muxer->EndStream(m_stream_index);
+	m_muxer->EndStream(m_stream->index);
 
 }

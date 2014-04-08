@@ -23,6 +23,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "AVWrapper.h"
 #include "BaseEncoder.h"
+#include "VideoEncoder.h"
+#include "AudioEncoder.h"
 
 static const unsigned int INVALID_STREAM = std::numeric_limits<unsigned int>::max();
 static const double NOPTS_DOUBLE = -std::numeric_limits<double>::max();
@@ -87,10 +89,44 @@ Muxer::~Muxer() {
 
 }
 
+VideoEncoder* Muxer::AddVideoEncoder(const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
+									 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate) {
+	AVCodec *codec = FindCodec(codec_name);
+	AVStream *stream = AddStream(codec);
+	VideoEncoder *encoder;
+	AVDictionary *options = NULL;
+	try {
+		VideoEncoder::PrepareStream(stream, codec, &options, codec_options, bit_rate, width, height, frame_rate);
+		m_encoders[stream->index] = encoder = new VideoEncoder(this, stream, codec, &options);
+		av_dict_free(&options);
+	} catch(...) {
+		av_dict_free(&options);
+		throw;
+	}
+	return encoder;
+}
+
+AudioEncoder* Muxer::AddAudioEncoder(const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
+									 unsigned int bit_rate, unsigned int channels, unsigned int sample_rate) {
+	AVCodec *codec = FindCodec(codec_name);
+	AVStream *stream = AddStream(codec);
+	AudioEncoder *encoder;
+	AVDictionary *options = NULL;
+	try {
+		AudioEncoder::PrepareStream(stream, codec, &options, codec_options, bit_rate, channels, sample_rate);
+		m_encoders[stream->index] = encoder = new AudioEncoder(this, stream, codec, &options);
+		av_dict_free(&options);
+	} catch(...) {
+		av_dict_free(&options);
+		throw;
+	}
+	return encoder;
+}
+
 void Muxer::Start() {
 	assert(!m_started);
 
-	// make sure all encoders have registered
+	// make sure all encoders were created successfully
 	for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 		assert(m_encoders[i] != NULL);
 	}
@@ -115,10 +151,6 @@ void Muxer::Finish() {
 	}
 }
 
-bool Muxer::IsStarted() {
-	return m_started;
-}
-
 double Muxer::GetActualBitRate() {
 	SharedLock lock(&m_shared_data);
 	return lock->m_stats_actual_bit_rate;
@@ -127,44 +159,6 @@ double Muxer::GetActualBitRate() {
 uint64_t Muxer::GetTotalBytes() {
 	SharedLock lock(&m_shared_data);
 	return lock->m_total_bytes;
-}
-
-AVStream* Muxer::CreateStream(AVCodec* codec) {
-	assert(!m_started);
-	assert(m_format_context->nb_streams < MUXER_MAX_STREAMS);
-
-	// create a new stream
-#if SSR_USE_AVFORMAT_NEW_STREAM
-	AVStream *stream = avformat_new_stream(m_format_context, codec);
-#else
-	AVStream *stream = av_new_stream(m_format_context, m_format_context->nb_streams);
-#endif
-	if(stream == NULL) {
-		Logger::LogError("[Muxer::AddStream] " + Logger::tr("Error: Can't create new stream!"));
-		throw LibavException();
-	}
-
-#if !SSR_USE_AVFORMAT_NEW_STREAM
-	if(avcodec_get_context_defaults3(stream->codec, codec) < 0) {
-		Logger::LogError("[Muxer::AddStream] " + Logger::tr("Error: Can't get codec context defaults!"));
-		throw LibavException();
-	}
-	stream->codec->codec_id = codec->id;
-	stream->codec->codec_type = codec->type;
-#endif
-
-	// not sure why this is needed, but it's in the example code and it doesn't work without this
-	if(m_format_context->oformat->flags & AVFMT_GLOBALHEADER)
-		stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
-
-	return stream;
-}
-
-void Muxer::RegisterEncoder(unsigned int stream_index, BaseEncoder* encoder) {
-	assert(!m_started);
-	assert(stream_index < m_format_context->nb_streams);
-	assert(m_encoders[stream_index] == NULL);
-	m_encoders[stream_index] = encoder;
 }
 
 void Muxer::EndStream(unsigned int stream_index) {
@@ -249,6 +243,59 @@ void Muxer::Free() {
 		m_format_context = NULL;
 
 	}
+}
+
+AVCodec* Muxer::FindCodec(const QString& codec_name) {
+	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
+	if(codec == NULL) {
+		Logger::LogError("[Muxer::AddStream] " + Logger::tr("Error: Can't find codec!"));
+		throw LibavException();
+	}
+	return codec;
+}
+
+AVStream* Muxer::AddStream(AVCodec* codec) {
+	assert(!m_started);
+	assert(m_format_context->nb_streams < MUXER_MAX_STREAMS);
+
+	Logger::LogInfo("[Muxer::AddStream] " + Logger::tr("Using codec %1 (%2).").arg(codec->name).arg(codec->long_name));
+
+	// create a new stream
+#if SSR_USE_AVFORMAT_NEW_STREAM
+	AVStream *stream = avformat_new_stream(m_format_context, codec);
+#else
+	AVStream *stream = av_new_stream(m_format_context, m_format_context->nb_streams);
+#endif
+	if(stream == NULL) {
+		Logger::LogError("[Muxer::AddStream] " + Logger::tr("Error: Can't create new stream!"));
+		throw LibavException();
+	}
+	assert(stream->codec != NULL);
+
+#if !SSR_USE_AVFORMAT_NEW_STREAM
+	// initialize the codec context (only needed for old API)
+	if(avcodec_get_context_defaults3(stream->codec, codec) < 0) {
+		Logger::LogError("[Muxer::AddStream] " + Logger::tr("Error: Can't get codec context defaults!"));
+		throw LibavException();
+	}
+	stream->codec->codec_id = codec->id;
+	stream->codec->codec_type = codec->type;
+#else
+	assert(stream->codec->codec_id == codec->id);
+	assert(stream->codec->codec_type == codec->type);
+#endif
+
+	// not sure why this is needed, but it's in the example code and it doesn't work without this
+	if(m_format_context->oformat->flags & AVFMT_GLOBALHEADER)
+		stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
+
+	// if the codec is experimental, allow it
+	if(codec->capabilities & CODEC_CAP_EXPERIMENTAL) {
+		Logger::LogWarning("[Muxer::AddStream] " + Logger::tr("Warning: This codec is considered experimental by libav/ffmpeg."));
+		stream->codec->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
+	}
+
+	return stream;
 }
 
 void Muxer::MuxerThread() {

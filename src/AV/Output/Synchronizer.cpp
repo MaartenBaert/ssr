@@ -75,10 +75,16 @@ static std::unique_ptr<AVFrameWrapper> CreateVideoFrameYUV(unsigned int width, u
 	frame->GetFrame()->linesize[0] = l1;
 	frame->GetFrame()->linesize[1] = l2;
 	frame->GetFrame()->linesize[2] = l2;
+#if SSR_USE_AVFRAME_WIDTH_HEIGHT
 	frame->GetFrame()->width = width;
 	frame->GetFrame()->height = height;
+#endif
 #if SSR_USE_AVFRAME_FORMAT
-	frame->GetFrame()->format = PIX_FMT_YUV420P;
+	frame->GetFrame()->format = AV_PIX_FMT_YUV420P;
+#endif
+#if SSR_USE_AVFRAME_SAR
+	frame->GetFrame()->sample_aspect_ratio.num = 1;
+	frame->GetFrame()->sample_aspect_ratio.den = 1;
 #endif
 	return frame;
 }
@@ -278,7 +284,7 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 
 	// scale and convert the frame to YUV420P
 	videolock->m_fast_scaler.Scale(width, height, format, &data, &stride,
-			m_video_width, m_video_height, PIX_FMT_YUV420P, converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
+			m_video_width, m_video_height, AV_PIX_FMT_YUV420P, converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
 
 	SharedLock lock(&m_shared_data);
 

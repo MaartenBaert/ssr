@@ -49,6 +49,7 @@ AudioPreviewer::~AudioPreviewer() {
 void AudioPreviewer::Reset() {
 	SharedLock lock(&m_shared_data);
 	lock->m_channel_data.clear();
+	lock->m_channel_data.resize(1);
 	lock->m_next_samples = 0;
 	emit NeedsUpdate();
 }

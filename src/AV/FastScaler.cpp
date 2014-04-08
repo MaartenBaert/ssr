@@ -52,13 +52,13 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 					   unsigned int out_width, unsigned int out_height, PixelFormat out_format, uint8_t* const* out_data, const int* out_stride) {
 
 	// faster BGRA scaling
-	if(in_format == PIX_FMT_BGRA && out_format == PIX_FMT_BGRA) {
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_BGRA) {
 		Scale_BGRA(in_width, in_height, in_data[0], in_stride[0], out_width, out_height, out_data[0], out_stride[0]);
 		return;
 	}
 
 	// faster BGRA to YUV conversion
-	if(in_format == PIX_FMT_BGRA && out_format == PIX_FMT_YUV420P) {
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV420P) {
 		if(in_width == out_width && in_height == out_height) {
 			Convert_BGRA_YUV420(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
 		} else {

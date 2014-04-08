@@ -24,10 +24,8 @@ OutputManager::OutputManager(const OutputSettings& output_settings) {
 
 	m_output_settings = output_settings;
 
-	m_muxer = NULL;
 	m_video_encoder = NULL;
 	m_audio_encoder = NULL;
-	m_synchronizer = NULL;
 
 	try {
 		Init();
@@ -47,11 +45,10 @@ void OutputManager::Finish() {
 	// stop the synchronizer
 	if(m_synchronizer != NULL) {
 		m_synchronizer->NewSegment(); // needed to make sure that all data is sent to the encoders
-		delete m_synchronizer;
-		m_synchronizer = NULL;
+		m_synchronizer.reset();
 	}
 
-	// we have to wait for the encoders and mixer to finish or else the file will be corrupted.
+	// we have to wait for the encoders and muxer to finish or else the file will be corrupted.
 	m_muxer->Finish();
 
 }
@@ -61,31 +58,25 @@ bool OutputManager::IsFinished() {
 }
 
 void OutputManager::Init() {
-	m_muxer = new Muxer(m_output_settings.container_avname, m_output_settings.file);
+	m_muxer.reset(new Muxer(m_output_settings.container_avname, m_output_settings.file));
 	if(!m_output_settings.video_codec_avname.isEmpty())
-		m_video_encoder = new VideoEncoder(m_muxer, m_output_settings.video_codec_avname, m_output_settings.video_options, m_output_settings.video_kbit_rate * 1024,
-										   m_output_settings.video_width, m_output_settings.video_height, m_output_settings.video_frame_rate);
+		m_video_encoder = m_muxer->AddVideoEncoder(m_output_settings.video_codec_avname, m_output_settings.video_options, m_output_settings.video_kbit_rate * 1024,
+												   m_output_settings.video_width, m_output_settings.video_height, m_output_settings.video_frame_rate);
 	if(!m_output_settings.audio_codec_avname.isEmpty())
-		m_audio_encoder = new AudioEncoder(m_muxer, m_output_settings.audio_codec_avname, m_output_settings.audio_options, m_output_settings.audio_kbit_rate * 1024,
-										   m_output_settings.audio_channels, m_output_settings.audio_sample_rate);
+		m_audio_encoder = m_muxer->AddAudioEncoder(m_output_settings.audio_codec_avname, m_output_settings.audio_options, m_output_settings.audio_kbit_rate * 1024,
+												   m_output_settings.audio_channels, m_output_settings.audio_sample_rate);
 	m_muxer->Start();
-	m_synchronizer = new Synchronizer(m_video_encoder, m_audio_encoder, m_output_settings.video_allow_frame_skipping);
+	m_synchronizer.reset(new Synchronizer(m_video_encoder, m_audio_encoder, m_output_settings.video_allow_frame_skipping));
 }
 
 void OutputManager::Free() {
 
 	// stop the synchronizer
-	if(m_synchronizer != NULL) {
-		delete m_synchronizer;
-		m_synchronizer = NULL;
-	}
+	m_synchronizer.reset();
 
 	// stop the encoders and muxers
 	m_video_encoder = NULL; // deleted by muxer
 	m_audio_encoder = NULL; // deleted by muxer
-	if(m_muxer != NULL) {
-		delete m_muxer;
-		m_muxer = NULL;
-	}
+	m_muxer.reset();
 
 }

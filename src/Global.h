@@ -138,10 +138,6 @@ inline void atomic_thread_fence_replacement(memory_order) {
 #define SSR_USE_AVCODEC_ENCODE_VIDEO2    TEST_AV_VERSION(LIBAVCODEC, 54, 2, 54, 1)
 // avcodec_encode_audio2: lavc 53.56.105 / 53.34.0
 #define SSR_USE_AVCODEC_ENCODE_AUDIO2    TEST_AV_VERSION(LIBAVCODEC, 53, 56, 53, 34)
-// AVFrame::format: lavc 53.31 / 53.31
-// - ffmpeg: missing, commit: http://git.videolan.org/?p=ffmpeg.git;a=commit;h=8a4a5f6ff756fdba44254015c714f173b2db6f64
-// - libav: APIchanges says 53.31
-#define SSR_USE_AVFRAME_FORMAT           TEST_AV_VERSION(LIBAVCODEC, 53, 31, 53, 31)
 // AVFrame::nb_samples, AVFrame::extended_data and avcodec_decode_audio4: lavc 53.40.0 / 53.25.0
 #define SSR_USE_AVFRAME_NB_SAMPLES       TEST_AV_VERSION(LIBAVCODEC, 53, 40, 53, 25)
 #define SSR_USE_AVFRAME_EXTENDED_DATA    SSR_USE_AVFRAME_NB_SAMPLES
@@ -154,7 +150,15 @@ inline void atomic_thread_fence_replacement(memory_order) {
 // - ffmpeg: missing, commit: http://git.videolan.org/?p=ffmpeg.git;a=commit;h=d5dc8cc2974c816ba964692b75c9f17f40830414
 // - libav: missing, commit: https://git.libav.org/?p=libav.git;a=commit;f=libavcodec/libx264.c;h=d5dc8cc2974c816ba964692b75c9f17f40830414
 #define SSR_USE_AVCODEC_PRIVATE_CRF      TEST_AV_VERSION(LIBAVCODEC, 53, 8, 53, 8)
+// AVFrame::format: lavc 53.5.0 / 53.31.0
+#define SSR_USE_AVFRAME_FORMAT           TEST_AV_VERSION(LIBAVCODEC, 53, 5, 53, 31)
+// AVFrame::width, AVFrame::height: lavc 53.4.0 / 53.31.0
+#define SSR_USE_AVFRAME_WIDTH_HEIGHT     TEST_AV_VERSION(LIBAVCODEC, 53, 4, 53, 31)
+// AVFrame::sample_aspect_ratio: lavc 53.3.0 / 53.31.0
+#define SSR_USE_AVFRAME_SAR              TEST_AV_VERSION(LIBAVCODEC, 53, 3, 53, 31)
 
+// AV_PIX_FMT_* instead of PIX_FMT_*: lavu 51.74.100 / 51.42.0
+#define SSR_USE_AV_PIX_FMT               TEST_AV_VERSION(LIBAVUTIL, 51, 74, 51, 42)
 // planar sample formats: lavu 51.27.0 / 51.17.0
 #define SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT TEST_AV_VERSION(LIBAVUTIL, 51, 27, 51, 17)
 

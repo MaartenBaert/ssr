@@ -31,10 +31,10 @@ class OutputManager {
 private:
 	OutputSettings m_output_settings;
 
-	Muxer *m_muxer;
+	std::unique_ptr<Muxer> m_muxer;
 	VideoEncoder *m_video_encoder;
 	AudioEncoder *m_audio_encoder;
-	Synchronizer *m_synchronizer;
+	std::unique_ptr<Synchronizer> m_synchronizer;
 
 public:
 	OutputManager(const OutputSettings& output_settings);
@@ -48,9 +48,9 @@ private:
 	void Free();
 
 public:
-	inline Muxer* GetMuxer() { return m_muxer; }
+	inline Muxer* GetMuxer() { return m_muxer.get(); }
 	inline VideoEncoder* GetVideoEncoder() { return m_video_encoder; }
 	inline AudioEncoder* GetAudioEncoder() { return m_audio_encoder; }
-	inline Synchronizer* GetSynchronizer() { return m_synchronizer; }
+	inline Synchronizer* GetSynchronizer() { return m_synchronizer.get(); }
 
 };

@@ -29,26 +29,12 @@ private:
 	static const std::vector<PixelFormat> SUPPORTED_PIXEL_FORMATS;
 
 private:
-	unsigned int m_bit_rate;
-	unsigned int m_width, m_height, m_frame_rate;
-
-	int m_opt_threads;
-	int m_opt_minrate, m_opt_maxrate, m_opt_bufsize, m_opt_keyint;
-
-#if !SSR_USE_AVCODEC_PRIVATE_CRF
-	int m_opt_crf;
-#endif
-#if !SSR_USE_AVCODEC_PRIVATE_PRESET
-	QString m_opt_preset;
-#endif
-
 #if !SSR_USE_AVCODEC_ENCODE_VIDEO2
 	std::vector<uint8_t> m_temp_buffer;
 #endif
 
 public:
-	VideoEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
-				 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate);
+	VideoEncoder(Muxer* muxer, AVStream* stream, AVCodec* codec, AVDictionary** options);
 	~VideoEncoder();
 
 	// Returns an additional delay (in us) between frames, based on the queue size, to avoid memory problems.
@@ -56,15 +42,16 @@ public:
 	// This function is thread-safe.
 	int64_t GetFrameDelay();
 
-	inline unsigned int GetWidth() { return m_width; }
-	inline unsigned int GetHeight() { return m_height; }
-	inline unsigned int GetFrameRate() { return m_frame_rate; }
+	unsigned int GetWidth();
+	unsigned int GetHeight();
+	unsigned int GetFrameRate();
 
 public:
 	static bool AVCodecIsSupported(const QString& codec_name);
+	static void PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+							  unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate);
 
 private:
-	virtual void FillCodecContext(AVCodec* codec) override;
 	virtual bool EncodeFrame(AVFrame* frame) override;
 
 };
