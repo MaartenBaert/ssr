@@ -44,7 +44,7 @@ inline void SampleCopy(unsigned int sample_count, const IN* in_data, int in_step
 // Sample format conversion and channel remapping in one step.
 // This function only supports interleaved audio.
 template<typename IN, typename OUT>
-inline void SampleChannelRemap(unsigned int sample_count, const IN* in_data, int in_channels, OUT* out_data, int out_channels) {
+inline void SampleChannelRemap(unsigned int sample_count, const IN* in_data, unsigned int in_channels, OUT* out_data, unsigned int out_channels) {
 	if(in_channels == out_channels) { // no remapping needed
 		for(unsigned int i = 0; i < sample_count * in_channels; ++i) {
 			*(out_data++) = SampleCast<IN, OUT>(*(in_data++));
