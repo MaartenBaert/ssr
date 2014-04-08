@@ -91,7 +91,7 @@ static std::unique_ptr<AVFrameWrapper> CreateVideoFrameYUV(unsigned int width, u
 
 // note: sample_size = sizeof(sampletype) * channels
 static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int channels, unsigned int sample_rate, unsigned int samples, unsigned int planes, AVSampleFormat sample_format) {
-	unsigned int sample_size;
+	unsigned int sample_size = 0; // to keep GCC happy
 	switch(sample_format) {
 		case AV_SAMPLE_FMT_S16:
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
@@ -356,7 +356,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 
 	// update the timestamps
 	int64_t previous_timestamp;
-	if(audiolock->m_first_timestamp == AV_NOPTS_VALUE) {
+	if(audiolock->m_first_timestamp == (int64_t) AV_NOPTS_VALUE) {
 		audiolock->m_filtered_timestamp = timestamp;
 		audiolock->m_first_timestamp = timestamp;
 		previous_timestamp = timestamp;
@@ -459,7 +459,7 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 	//qDebug() << "current_drift" << current_drift << "average_drift" << audiolock->m_average_drift << "drift_correction" << drift_correction;
 
 	// convert the samples
-	const float *data_float;
+	const float *data_float = NULL; // to keep GCC happy
 	if(format == AV_SAMPLE_FMT_FLT) {
 		if(channels == m_audio_channels) {
 			data_float = (const float*) data;
@@ -519,7 +519,7 @@ void Synchronizer::ReadAudioHole() {
 	assert(m_audio_encoder != NULL);
 
 	AudioLock audiolock(&m_audio_data);
-	if(audiolock->m_first_timestamp != AV_NOPTS_VALUE) {
+	if(audiolock->m_first_timestamp != (int64_t) AV_NOPTS_VALUE) {
 		audiolock->m_average_drift = 0.0;
 		if(!audiolock->m_drop_samples || !audiolock->m_insert_samples) {
 			Logger::LogWarning("[Synchronizer::ReadAudioHole] " + Logger::tr("Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video."));
