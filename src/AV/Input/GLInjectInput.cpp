@@ -21,6 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLInjectInput.h"
 
 #include "Logger.h"
+#include "AVWrapper.h"
 #include "SSRVideoStreamWatcher.h"
 #include "SSRVideoStreamReader.h"
 
