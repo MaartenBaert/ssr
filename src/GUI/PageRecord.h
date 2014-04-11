@@ -50,6 +50,26 @@ class AudioPreviewer;
 class PageRecord : public QWidget {
 	Q_OBJECT
 
+public:
+	enum enum_schedule_timezone {
+		SCHEDULE_TIMEZONE_LOCAL,
+		SCHEDULE_TIMEZONE_UTC,
+	};
+	enum enum_schedule_timing {
+		SCHEDULE_TIMING_AFTER_PREVIOUS,
+		SCHEDULE_TIMING_FIXED_TIME,
+		SCHEDULE_TIMING_FIXED_DATE,
+	};
+	enum enum_schedule_action {
+		SCHEDULE_ACTION_START,
+		SCHEDULE_ACTION_PAUSE,
+	};
+	struct ScheduleEntry {
+		enum_schedule_timing m_timing;
+		int m_month, m_day, m_hour, m_minute, m_second;
+		enum_schedule_action m_action;
+	};
+
 private:
 	static const int PRIORITY_RECORD, PRIORITY_PREVIEW;
 
@@ -58,6 +78,9 @@ private:
 
 	bool m_page_started, m_input_started, m_output_started, m_previewing;
 	bool m_recorded_something, m_wait_saving;
+
+	std::vector<ScheduleEntry> m_schedule;
+	std::vector<QTimer> m_schedule_timers;
 
 	PageInput::enum_video_area m_video_area;
 	unsigned int m_video_x, m_video_y, m_video_in_width, m_video_in_height;
@@ -172,6 +195,7 @@ public slots:
 
 private slots:
 	void OnRecordStartPause();
+	void OnEditSchedule();
 	void OnPreviewStartStop();
 	void OnCancel();
 	void OnSave();
@@ -180,3 +204,7 @@ private slots:
 	void OnNewLogLine(Logger::enum_type type, QString string);
 
 };
+
+/*Q_DECLARE_METATYPE(PageRecord::enum_schedule_timezone)
+Q_DECLARE_METATYPE(PageRecord::enum_schedule_timing)
+Q_DECLARE_METATYPE(PageRecord::enum_schedule_action)*/

@@ -175,9 +175,10 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	common/Logger.h common/MutexDataPair.h common/QueueBuffer.h \
 	common/TempBuffer.h GUI/AudioPreviewer.cpp \
 	GUI/AudioPreviewer.h GUI/DialogGLInject.cpp \
-	GUI/DialogGLInject.h GUI/ElidedLabel.cpp GUI/ElidedLabel.h \
-	GUI/HotkeyListener.cpp GUI/HotkeyListener.h GUI/Icons.cpp \
-	GUI/Icons.h GUI/MainWindow.cpp GUI/MainWindow.h \
+	GUI/DialogGLInject.h GUI/DialogRecordSchedule.cpp \
+	GUI/DialogRecordSchedule.h GUI/ElidedLabel.cpp \
+	GUI/ElidedLabel.h GUI/HotkeyListener.cpp GUI/HotkeyListener.h \
+	GUI/Icons.cpp GUI/Icons.h GUI/MainWindow.cpp GUI/MainWindow.h \
 	GUI/PageDone.cpp GUI/PageDone.h GUI/PageInput.cpp \
 	GUI/PageInput.h GUI/PageOutput.cpp GUI/PageOutput.h \
 	GUI/PageRecord.cpp GUI/PageRecord.h GUI/PageWelcome.cpp \
@@ -213,6 +214,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-Logger.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-AudioPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-DialogGLInject.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-DialogRecordSchedule.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-ElidedLabel.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-HotkeyListener.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-Icons.$(OBJEXT) \
@@ -233,6 +235,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_Logger.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_AudioPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_DialogGLInject.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_DialogRecordSchedule.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_ElidedLabel.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_HotkeyListener.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_MainWindow.$(OBJEXT) \
@@ -585,6 +588,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	GUI/AudioPreviewer.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/DialogGLInject.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/DialogGLInject.h \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/DialogRecordSchedule.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/DialogRecordSchedule.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/ElidedLabel.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/ElidedLabel.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/HotkeyListener.cpp \
@@ -624,6 +629,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	moc_SyncDiagram.cpp moc_Logger.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_AudioPreviewer.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_DialogGLInject.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	moc_DialogRecordSchedule.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_ElidedLabel.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_HotkeyListener.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_MainWindow.cpp moc_PageDone.cpp \
@@ -860,6 +866,8 @@ GUI/simplescreenrecorder-AudioPreviewer.$(OBJEXT):  \
 	GUI/$(am__dirstamp) GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-DialogGLInject.$(OBJEXT):  \
 	GUI/$(am__dirstamp) GUI/$(DEPDIR)/$(am__dirstamp)
+GUI/simplescreenrecorder-DialogRecordSchedule.$(OBJEXT):  \
+	GUI/$(am__dirstamp) GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-ElidedLabel.$(OBJEXT): GUI/$(am__dirstamp) \
 	GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-HotkeyListener.$(OBJEXT):  \
@@ -904,6 +912,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Version.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_DialogGLInject.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_DialogRecordSchedule.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_ElidedLabel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_HotkeyListener.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_Logger.Po@am__quote@
@@ -947,6 +956,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@AV/Output/$(DEPDIR)/simplescreenrecorder-X264Presets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-AudioPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-DialogGLInject.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-DialogRecordSchedule.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-ElidedLabel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-HotkeyListener.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-Icons.Po@am__quote@
@@ -1413,6 +1423,20 @@ GUI/simplescreenrecorder-DialogGLInject.obj: GUI/DialogGLInject.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-DialogGLInject.obj `if test -f 'GUI/DialogGLInject.cpp'; then $(CYGPATH_W) 'GUI/DialogGLInject.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/DialogGLInject.cpp'; fi`
 
+GUI/simplescreenrecorder-DialogRecordSchedule.o: GUI/DialogRecordSchedule.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-DialogRecordSchedule.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-DialogRecordSchedule.Tpo -c -o GUI/simplescreenrecorder-DialogRecordSchedule.o `test -f 'GUI/DialogRecordSchedule.cpp' || echo '$(srcdir)/'`GUI/DialogRecordSchedule.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-DialogRecordSchedule.Tpo GUI/$(DEPDIR)/simplescreenrecorder-DialogRecordSchedule.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/DialogRecordSchedule.cpp' object='GUI/simplescreenrecorder-DialogRecordSchedule.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-DialogRecordSchedule.o `test -f 'GUI/DialogRecordSchedule.cpp' || echo '$(srcdir)/'`GUI/DialogRecordSchedule.cpp
+
+GUI/simplescreenrecorder-DialogRecordSchedule.obj: GUI/DialogRecordSchedule.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-DialogRecordSchedule.obj -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-DialogRecordSchedule.Tpo -c -o GUI/simplescreenrecorder-DialogRecordSchedule.obj `if test -f 'GUI/DialogRecordSchedule.cpp'; then $(CYGPATH_W) 'GUI/DialogRecordSchedule.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/DialogRecordSchedule.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-DialogRecordSchedule.Tpo GUI/$(DEPDIR)/simplescreenrecorder-DialogRecordSchedule.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/DialogRecordSchedule.cpp' object='GUI/simplescreenrecorder-DialogRecordSchedule.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-DialogRecordSchedule.obj `if test -f 'GUI/DialogRecordSchedule.cpp'; then $(CYGPATH_W) 'GUI/DialogRecordSchedule.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/DialogRecordSchedule.cpp'; fi`
+
 GUI/simplescreenrecorder-ElidedLabel.o: GUI/ElidedLabel.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-ElidedLabel.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-ElidedLabel.Tpo -c -o GUI/simplescreenrecorder-ElidedLabel.o `test -f 'GUI/ElidedLabel.cpp' || echo '$(srcdir)/'`GUI/ElidedLabel.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-ElidedLabel.Tpo GUI/$(DEPDIR)/simplescreenrecorder-ElidedLabel.Po
@@ -1692,6 +1716,20 @@ simplescreenrecorder-moc_DialogGLInject.obj: moc_DialogGLInject.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_DialogGLInject.cpp' object='simplescreenrecorder-moc_DialogGLInject.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_DialogGLInject.obj `if test -f 'moc_DialogGLInject.cpp'; then $(CYGPATH_W) 'moc_DialogGLInject.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_DialogGLInject.cpp'; fi`
+
+simplescreenrecorder-moc_DialogRecordSchedule.o: moc_DialogRecordSchedule.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_DialogRecordSchedule.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_DialogRecordSchedule.Tpo -c -o simplescreenrecorder-moc_DialogRecordSchedule.o `test -f 'moc_DialogRecordSchedule.cpp' || echo '$(srcdir)/'`moc_DialogRecordSchedule.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_DialogRecordSchedule.Tpo $(DEPDIR)/simplescreenrecorder-moc_DialogRecordSchedule.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_DialogRecordSchedule.cpp' object='simplescreenrecorder-moc_DialogRecordSchedule.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_DialogRecordSchedule.o `test -f 'moc_DialogRecordSchedule.cpp' || echo '$(srcdir)/'`moc_DialogRecordSchedule.cpp
+
+simplescreenrecorder-moc_DialogRecordSchedule.obj: moc_DialogRecordSchedule.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_DialogRecordSchedule.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_DialogRecordSchedule.Tpo -c -o simplescreenrecorder-moc_DialogRecordSchedule.obj `if test -f 'moc_DialogRecordSchedule.cpp'; then $(CYGPATH_W) 'moc_DialogRecordSchedule.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_DialogRecordSchedule.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_DialogRecordSchedule.Tpo $(DEPDIR)/simplescreenrecorder-moc_DialogRecordSchedule.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_DialogRecordSchedule.cpp' object='simplescreenrecorder-moc_DialogRecordSchedule.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_DialogRecordSchedule.obj `if test -f 'moc_DialogRecordSchedule.cpp'; then $(CYGPATH_W) 'moc_DialogRecordSchedule.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_DialogRecordSchedule.cpp'; fi`
 
 simplescreenrecorder-moc_ElidedLabel.o: moc_ElidedLabel.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_ElidedLabel.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_ElidedLabel.Tpo -c -o simplescreenrecorder-moc_ElidedLabel.o `test -f 'moc_ElidedLabel.cpp' || echo '$(srcdir)/'`moc_ElidedLabel.cpp
@@ -2095,6 +2133,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 @ENABLE_SSRPROGRAM_TRUE@moc_AudioPreviewer.cpp: $(srcdir)/GUI/AudioPreviewer.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_DialogGLInject.cpp: $(srcdir)/GUI/DialogGLInject.h
+@ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
+@ENABLE_SSRPROGRAM_TRUE@moc_DialogRecordSchedule.cpp: $(srcdir)/GUI/DialogRecordSchedule.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_ElidedLabel.cpp: $(srcdir)/GUI/ElidedLabel.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"

@@ -26,6 +26,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "MainWindow.h"
 #include "PageInput.h"
 #include "PageOutput.h"
+#include "DialogRecordSchedule.h"
 
 #include "HotkeyListener.h"
 
@@ -146,6 +147,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	QGroupBox *groupbox_recording = new QGroupBox(tr("Recording"), this);
 	{
 		m_pushbutton_start_pause = new QPushButton(groupbox_recording);
+		QPushButton *pushbutton_schedule = new QPushButton(tr("Edit schedule"));
 
 		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), groupbox_recording);
 		m_checkbox_sound_notifications_enable = new QCheckBox(tr("Enable sound notifications"), groupbox_recording);
@@ -164,6 +166,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		}
 
 		connect(m_pushbutton_start_pause, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
+		connect(pushbutton_schedule, SIGNAL(clicked()), this, SLOT(OnEditSchedule()));
 		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(OnUpdateHotkeyFields()));
 		connect(m_checkbox_sound_notifications_enable, SIGNAL(clicked()), this, SLOT(OnUpdateSoundNotifications()));
 		connect(m_checkbox_hotkey_ctrl, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
@@ -174,6 +177,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 		QVBoxLayout *layout = new QVBoxLayout(groupbox_recording);
 		layout->addWidget(m_pushbutton_start_pause);
+		layout->addWidget(pushbutton_schedule);
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
 			layout->addLayout(layout2);
@@ -354,6 +358,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 PageRecord::~PageRecord() {
 	StopPage(false);
+	m_schedule_timers.clear();
 }
 
 bool PageRecord::ShouldBlockClose() {
@@ -952,6 +957,11 @@ void PageRecord::OnRecordStartPause() {
 	} else {
 		StartOutput();
 	}
+}
+
+void PageRecord::OnEditSchedule() {
+	DialogRecordSchedule dialog(this);
+	dialog.exec();
 }
 
 void PageRecord::OnPreviewStartStop() {

@@ -45,6 +45,7 @@ SOURCES += \
 	common/Logger.cpp \
 	GUI/AudioPreviewer.cpp \
 	GUI/DialogGLInject.cpp \
+	GUI/DialogRecordSchedule.cpp \
 	GUI/ElidedLabel.cpp \
 	GUI/HotkeyListener.cpp \
 	GUI/Icons.cpp \
@@ -65,7 +66,7 @@ HEADERS  += \
 	AV/Input/GLInjectInput.h \
 	AV/Input/JACKInput.h \
 	AV/Input/PulseAudioInput.h \
-    AV/Input/SSRVideoStream.h \
+	AV/Input/SSRVideoStream.h \
 	AV/Input/SSRVideoStreamReader.h \
 	AV/Input/SSRVideoStreamWatcher.h \
 	AV/Input/X11Input.h \
@@ -90,6 +91,7 @@ HEADERS  += \
 	AV/SourceSink.h \
 	common/DetectCPUFeatures.h \
 	common/Dialogs.h \
+	common/EnumStrings.h \
 	common/LockFreeMessageQueue.h \
 	common/Logger.h \
 	common/MutexDataPair.h \
@@ -97,6 +99,7 @@ HEADERS  += \
 	common/TempBuffer.h \
 	GUI/AudioPreviewer.h \
 	GUI/DialogGLInject.h \
+	GUI/DialogRecordSchedule.h \
 	GUI/ElidedLabel.h \
 	GUI/HotkeyListener.h \
 	GUI/Icons.h \
@@ -111,8 +114,7 @@ HEADERS  += \
 	Global.h \
 	Main.h \
 	Version.h \
-	NVidia.h \
-    common/EnumStrings.h
+	NVidia.h
 
 RESOURCES += \
 	resources.qrc

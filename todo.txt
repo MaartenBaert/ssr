@@ -6,6 +6,7 @@ Testing:
 In progress:
 
 Todo:
+- Record start/stop scheduling system.
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
 - Command-line options for recording + skipping pages + systray.
 - Multiple audio inputs/outputs.

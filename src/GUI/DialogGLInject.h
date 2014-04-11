@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2014 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -30,9 +30,6 @@ class DialogGLInject : public QDialog {
 
 private:
 	PageInput *m_parent;
-
-	std::unique_ptr<SSRVideoStreamWatcher> m_stream_watcher;
-	std::vector<QTreeWidgetItem*> m_streams;
 
 	QLineEdit *m_lineedit_channel;
 	QCheckBox *m_checkbox_relax_permissions;
