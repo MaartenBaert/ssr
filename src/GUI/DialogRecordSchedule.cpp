@@ -22,155 +22,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "PageRecord.h"
 
-/*std::array<QString, 2> g_schedule_timing_strings = {
-	"Relative",
-	"Absolute",
-};
-std::array<QString, 2> g_schedule_action_strings = {
-	"Start recording",
-	"Pause recording",
-};
-
-ComboBox_ScheduleTiming::ComboBox_ScheduleTiming(QWidget* parent)
-	: QComboBox(parent) {
-	for(QString &str : g_schedule_timing_strings) {
-		addItem(str);
-	}
-}
-
-PageRecord::enum_schedule_timing ComboBox_ScheduleTiming::GetTiming() {
-	return (PageRecord::enum_schedule_timing) currentIndex();
-}
-
-void ComboBox_ScheduleTiming::SetTiming(PageRecord::enum_schedule_timing timing) {
-	setCurrentIndex(timing);
-}
-
-ScheduleModel::ScheduleModel() {
-
-	qRegisterMetaType<PageRecord::enum_schedule_timing>();
-	qRegisterMetaType<PageRecord::enum_schedule_action>();
-
-	m_schedule.push_back({PageRecord::SCHEDULE_TIMING_AFTER_PREVIOUS, 1, 2, 3, 4, 5, PageRecord::SCHEDULE_ACTION_START});
-	m_schedule.push_back({PageRecord::SCHEDULE_TIMING_FIXED_TIME, 6, 7, 8, 9, 10, PageRecord::SCHEDULE_ACTION_START});
-	m_schedule.push_back({PageRecord::SCHEDULE_TIMING_AFTER_PREVIOUS, 11, 12, 13, 14, 15, PageRecord::SCHEDULE_ACTION_PAUSE});
-
-	QComboBox dummy;
-	m_row_height = dummy.sizeHint().height();
-
-}
-
-ScheduleModel::~ScheduleModel() {
-
-}
-
-QModelIndex ScheduleModel::index(int row, int column, const QModelIndex& parent) const {
-	assert(!parent.isValid());
-	return createIndex(row, column);
-}
-
-QModelIndex ScheduleModel::parent(const QModelIndex& index) const {
-	assert(index.isValid());
-	return QModelIndex();
-}
-
-int ScheduleModel::rowCount(const QModelIndex& parent) const {
-	if(parent.isValid())
-		return 0;
-	else
-		return m_schedule.size();
-}
-
-int ScheduleModel::columnCount(const QModelIndex& parent) const {
-	Q_UNUSED(parent);
-	return 8;
-}
-
-Qt::ItemFlags ScheduleModel::flags(const QModelIndex& index) const {
-	assert(index.isValid());
-	return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
-}
-
-QVariant ScheduleModel::headerData(int section, Qt::Orientation orientation, int role) const {
-	if(orientation == Qt::Horizontal) {
-		if(role == Qt::DisplayRole) {
-			switch(section) {
-				case 0: return QString("Timing");
-				case 1: return QString("Month");
-				case 2: return QString("Day");
-				case 3: return QString("Hour");
-				case 4: return QString("Minute");
-				case 5: return QString("Second");
-				case 6: return QString("Action");
-				case 7: return QString("---");
-			}
-		}
-	}
-	return QVariant();
-}
-
-QVariant ScheduleModel::data(const QModelIndex& index, int role) const {
-	assert(index.isValid());
-	const PageRecord::ScheduleEntry &entry = m_schedule[index.row()];
-	if(role == Qt::DisplayRole) {
-		switch(index.column()) {
-			case 0: return g_schedule_timing_strings[entry.m_timing];
-			case 1: return entry.m_month;
-			case 2: return entry.m_day;
-			case 3: return entry.m_hour;
-			case 4: return entry.m_minute;
-			case 5: return entry.m_second;
-			case 6: return g_schedule_action_strings[entry.m_action];
-			case 7: return QDateTime(QDate(2014, entry.m_month, entry.m_day), QTime(entry.m_hour, entry.m_minute, entry.m_second));
-		}
-	}
-	if(role == Qt::EditRole) {
-		switch(index.column()) {
-			case 0: return QVariant::fromValue(entry.m_timing);
-			case 1: return entry.m_month;
-			case 2: return entry.m_day;
-			case 3: return entry.m_hour;
-			case 4: return entry.m_minute;
-			case 5: return entry.m_second;
-			case 6: return (int) entry.m_action;
-			case 7: return QDateTime(QDate(2014, entry.m_month, entry.m_day), QTime(entry.m_hour, entry.m_minute, entry.m_second));
-		}
-	}
-	if(role == Qt::SizeHintRole) {
-		return QSize(100, m_row_height);
-	}
-	return QVariant();
-}
-
-bool ScheduleModel::setData(const QModelIndex& index, const QVariant& value, int role) {
-	assert(index.isValid());
-	PageRecord::ScheduleEntry &entry = m_schedule[index.row()];
-	if(role == Qt::EditRole) {
-		switch(index.column()) {
-			case 0: entry.m_timing = value.value<PageRecord::enum_schedule_timing>(); return true;
-			case 1: entry.m_month = value.toInt(); return true;
-			case 2: entry.m_day = value.toInt(); return true;
-			case 3: entry.m_hour = value.toInt(); return true;
-			case 4: entry.m_minute = value.toInt(); return true;
-			case 5: entry.m_second = value.toInt(); return true;
-			case 6: entry.m_action = (PageRecord::enum_schedule_action) value.toInt(); return true;
-		}
-	}
-	return false;
-}*/
-
 RecordScheduleEntryWidget::RecordScheduleEntryWidget(PageRecord::ScheduleEntry entry, QWidget* parent)
-	: QFrame(parent) {
+	: QWidget(parent) {
 
-	setFrameStyle(QFrame::Box);
-	setBackgroundRole(QPalette::Window);
+	setFocusPolicy(Qt::ClickFocus);
 	setAutoFillBackground(true);
 
 	QLabel *label_time = new QLabel(tr("Time:"), this);
 	m_combobox_timing = new QComboBox(this);
 	m_combobox_timing->addItem(tr("After previous action"));
-	m_combobox_timing->addItem(tr("At fixed time"));
-	m_combobox_timing->addItem(tr("At fixed date/time"));
+	m_combobox_timing->addItem(tr("At absolute time"));
 	m_combobox_timing->setCurrentIndex(entry.m_timing);
 	m_timeedit_time = new QTimeEdit(QTime(entry.m_hour, entry.m_minute, entry.m_second), this);
 	m_timeedit_time->setDisplayFormat("hh:mm:ss");
@@ -183,7 +44,7 @@ RecordScheduleEntryWidget::RecordScheduleEntryWidget(PageRecord::ScheduleEntry e
 	m_combobox_action->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
 	QGridLayout *layout = new QGridLayout(this);
-	layout->setMargin(3);
+	layout->setMargin(5);
 	layout->addWidget(label_time, 0, 0);
 	layout->addWidget(m_combobox_timing, 0, 1);
 	layout->addWidget(m_timeedit_time, 0, 2);
@@ -196,17 +57,34 @@ RecordScheduleEntryWidget::~RecordScheduleEntryWidget() {
 
 }
 
+PageRecord::ScheduleEntry RecordScheduleEntryWidget::Get() {
+	PageRecord::ScheduleEntry entry;
+	entry.m_timing = (PageRecord::enum_schedule_timing) m_combobox_timing->currentIndex();
+	entry.m_hour = m_timeedit_time->time().hour();
+	entry.m_minute = m_timeedit_time->time().minute();
+	entry.m_second = m_timeedit_time->time().second();
+	entry.m_action = (PageRecord::enum_schedule_action) m_combobox_action->currentIndex();
+	return entry;
+}
+
+const unsigned int RecordScheduleListWidget::INVALID_ENTRY = (unsigned int) -1;
+const QPalette::ColorRole RecordScheduleListWidget::ROLE_NORMAL = QPalette::Base;
+const QPalette::ColorRole RecordScheduleListWidget::ROLE_SELECTED = QPalette::Highlight;
+
 RecordScheduleListWidget::RecordScheduleListWidget(QWidget* parent)
 	: QWidget(parent) {
+
+	m_selected_entry = INVALID_ENTRY;
 
 	setBackgroundRole(QPalette::Dark);
 	setAutoFillBackground(true);
 
 	m_layout = new QVBoxLayout(this);
-	m_layout->setMargin(3);
-	m_layout->setSpacing(3);
-	m_layout->addSpacing(20);
+	m_layout->setMargin(0);
+	m_layout->setSpacing(1);
 	m_layout->addStretch();
+
+	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(OnFocusChange(QWidget*, QWidget*)));
 
 }
 
@@ -214,15 +92,89 @@ RecordScheduleListWidget::~RecordScheduleListWidget() {
 
 }
 
-void RecordScheduleListWidget::AddEntry(PageRecord::ScheduleEntry entry) {
-	m_entries.push_back(new RecordScheduleEntryWidget(entry, this));
-	m_layout->insertWidget(m_entries.size() - 1, m_entries.back());
+unsigned int RecordScheduleListWidget::GetEntryCount() {
+	return m_entries.size();
+}
+
+PageRecord::ScheduleEntry RecordScheduleListWidget::GetEntry(unsigned int index) {
+	assert(index < m_entries.size());
+	return m_entries[index]->Get();
+}
+
+unsigned int RecordScheduleListWidget::GetSelectedEntry() {
+	return m_selected_entry;
+}
+
+void RecordScheduleListWidget::SetSelectedEntry(unsigned int index) {
+	if(m_selected_entry != INVALID_ENTRY)
+		m_entries[m_selected_entry]->setBackgroundRole(ROLE_NORMAL);
+	m_selected_entry = index;
+	if(m_selected_entry != INVALID_ENTRY)
+		m_entries[m_selected_entry]->setBackgroundRole(ROLE_SELECTED);
+	assert(m_selected_entry < m_entries.size() || m_selected_entry == INVALID_ENTRY);
+}
+
+void RecordScheduleListWidget::AddEntry(unsigned int index, PageRecord::ScheduleEntry entry) {
+	assert(index <= m_entries.size());
+	RecordScheduleEntryWidget *widget = new RecordScheduleEntryWidget(entry, this);
+	widget->setBackgroundRole(ROLE_NORMAL);
+	m_entries.insert(m_entries.begin() + index, widget);
+	m_layout->insertWidget(index, widget);
+	if(m_selected_entry != INVALID_ENTRY && index <= m_selected_entry)
+		++m_selected_entry;
+	assert(m_selected_entry < m_entries.size() || m_selected_entry == INVALID_ENTRY);
 }
 
 void RecordScheduleListWidget::RemoveEntry(unsigned int index) {
 	assert(index < m_entries.size());
 	delete m_entries[index];
 	m_entries.erase(m_entries.begin() + index);
+	if(m_selected_entry != INVALID_ENTRY) {
+		if(m_selected_entry == index) {
+			if(m_selected_entry < m_entries.size()) {
+				m_entries[m_selected_entry]->setBackgroundRole(ROLE_SELECTED);
+			} else if(m_entries.size() != 0) {
+				m_selected_entry = m_entries.size() - 1;
+				m_entries[m_selected_entry]->setBackgroundRole(ROLE_SELECTED);
+			} else {
+				m_selected_entry = INVALID_ENTRY;
+			}
+		} else if(m_selected_entry > index) {
+			--m_selected_entry;
+		}
+	}
+	assert(m_selected_entry < m_entries.size() || m_selected_entry == INVALID_ENTRY);
+}
+
+void RecordScheduleListWidget::MoveEntry(unsigned int from, unsigned int to) {
+	assert(from < m_entries.size());
+	assert(to < m_entries.size());
+	RecordScheduleEntryWidget *widget = m_entries[from];
+	m_entries.erase(m_entries.begin() + from);
+	m_entries.insert(m_entries.begin() + to, widget);
+	m_layout->removeWidget(widget);
+	m_layout->insertWidget(to, widget);
+	if(m_selected_entry != INVALID_ENTRY) {
+		if(m_selected_entry == from) {
+			m_selected_entry = to;
+		} else {
+			if(m_selected_entry > from && m_selected_entry <= to)
+				--m_selected_entry;
+			if(m_selected_entry < from && m_selected_entry >= to)
+				++m_selected_entry;
+		}
+	}
+	assert(m_selected_entry < m_entries.size() || m_selected_entry == INVALID_ENTRY);
+}
+
+void RecordScheduleListWidget::OnFocusChange(QWidget* old_widget, QWidget* new_widget) {
+	Q_UNUSED(old_widget);
+	for(unsigned int i = 0; i < m_entries.size(); ++i) {
+		if(m_entries[i]->isAncestorOf(new_widget)) {
+			SetSelectedEntry(i);
+			break;
+		}
+	}
 }
 
 DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
@@ -238,45 +190,17 @@ DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
 	m_combobox_timezone->addItem(tr("UTC"));
 	QLabel *label_time = new QLabel(tr("Current time:"), this);
 	m_label_time = new QLabel(this);
-	m_label_time->setMinimumWidth(m_label_time->fontMetrics().width("0000-00-00 00:00:00") + 20);
+	m_label_time->setMinimumWidth(m_label_time->fontMetrics().width("00:00:00") + 10);
 	m_label_time->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-	/*m_editor_factory.registerEditor((QVariant::Type) qMetaTypeId<PageRecord::enum_schedule_timing>(), new QStandardItemEditorCreator<ComboBox_ScheduleTiming>());
-	//m_editor_factory.registerEditor(qRegisterMetaType<PageRecord::enum_schedule_action>(), new QStandardItemEditorCreator<ComboBox_ScheduleAction>());
-
-	m_item_delegate = new QItemDelegate(this);
-	m_item_delegate->setItemEditorFactory(&m_editor_factory);
-
-	m_treeview_schedule = new QTreeView(this);
-	m_treeview_schedule->setUniformRowHeights(true);
-	m_treeview_schedule->setItemsExpandable(false);
-	m_treeview_schedule->setAllColumnsShowFocus(true);
-	m_treeview_schedule->setIndentation(0);
-	m_treeview_schedule->setItemDelegate(m_item_delegate);
-	m_treeview_schedule->setModel(&m_schedule_model);
-
-	{
-		std::vector<unsigned int> column_widths = {100, 30, 30, 30, 30, 30, 150, 150};
-		unsigned int total_width = 2;
-		for(unsigned int i = 0; i < column_widths.size(); ++i) {
-			unsigned int min_width = m_treeview_schedule->header()->fontMetrics().width(m_schedule_model.headerData(i, Qt::Horizontal, Qt::DisplayRole).toString()) + 10;
-			unsigned int width = std::max(min_width, column_widths[i]);
-			m_treeview_schedule->setColumnWidth(i, width);
-			total_width += width + 2;
-		}
-		m_treeview_schedule->setMinimumWidth(total_width);
-	}*/
-
 	m_schedule_list = new RecordScheduleListWidget(this);
-	m_schedule_list->AddEntry({PageRecord::SCHEDULE_TIMING_AFTER_PREVIOUS, 1, 2, 3, 4, 5, PageRecord::SCHEDULE_ACTION_START});
-	m_schedule_list->AddEntry({PageRecord::SCHEDULE_TIMING_FIXED_TIME, 6, 7, 8, 9, 10, PageRecord::SCHEDULE_ACTION_START});
-	m_schedule_list->AddEntry({PageRecord::SCHEDULE_TIMING_AFTER_PREVIOUS, 11, 12, 13, 14, 15, PageRecord::SCHEDULE_ACTION_PAUSE});
 
-	QScrollArea *scroll_area = new QScrollArea(this);
-	scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	scroll_area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-	scroll_area->setWidgetResizable(true);
-	scroll_area->setWidget(m_schedule_list);
+	m_scroll_area = new QScrollArea(this);
+	m_scroll_area->setMinimumSize(500, 300);
+	m_scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	//m_scroll_area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // buggy with GTK style, maximumViewportSize() doesn't take the border into account :(
+	m_scroll_area->setWidgetResizable(true);
+	m_scroll_area->setWidget(m_schedule_list);
 
 	QPushButton *pushbutton_add = new QPushButton(QIcon::fromTheme("list-add"), tr("Add"), this);
 	QPushButton *pushbutton_remove = new QPushButton(QIcon::fromTheme("list-remove"), tr("Remove"), this);
@@ -301,11 +225,12 @@ DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
 		layout->addLayout(layout2);
 		layout2->addWidget(label_info);
 		layout2->addWidget(m_combobox_timezone);
+		layout2->addSpacing(30);
 		layout2->addStretch();
 		layout2->addWidget(label_time);
 		layout2->addWidget(m_label_time);
 	}
-	layout->addWidget(scroll_area);
+	layout->addWidget(m_scroll_area);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
 		layout->addLayout(layout2);
@@ -357,23 +282,36 @@ void DialogRecordSchedule::OnUpdateTime() {
 	QDateTime now = GetCurrentTime();
 	if(m_clock_time.isNull() || now > m_clock_time || now.msecsTo(m_clock_time) > 100)
 		m_clock_time = now.addMSecs(-now.time().msec());
-	m_label_time->setText(m_clock_time.toString("yyyy-MM-dd hh:mm:ss"));
+	m_label_time->setText(m_clock_time.toString("hh:mm:ss"));
 	m_clock_time = m_clock_time.addSecs(1);
 	m_timer_clock->start(now.msecsTo(m_clock_time));
 }
 
 void DialogRecordSchedule::OnAdd() {
-
+	PageRecord::ScheduleEntry entry{PageRecord::SCHEDULE_TIMING_RELATIVE, 0, 0, 0, PageRecord::SCHEDULE_ACTION_START};
+	unsigned int selected = m_schedule_list->GetSelectedEntry();
+	unsigned int index = (selected == RecordScheduleListWidget::INVALID_ENTRY)? m_schedule_list->GetEntryCount() : selected + 1;
+	m_schedule_list->AddEntry(index, entry);
+	m_schedule_list->SetSelectedEntry(index);
 }
 
 void DialogRecordSchedule::OnRemove() {
-
+	unsigned int selected = m_schedule_list->GetSelectedEntry();
+	if(selected != RecordScheduleListWidget::INVALID_ENTRY) {
+		m_schedule_list->RemoveEntry(selected);
+	}
 }
 
 void DialogRecordSchedule::OnMoveUp() {
-
+	unsigned int selected = m_schedule_list->GetSelectedEntry();
+	if(selected != RecordScheduleListWidget::INVALID_ENTRY && selected > 0) {
+		m_schedule_list->MoveEntry(selected, selected - 1);
+	}
 }
 
 void DialogRecordSchedule::OnMoveDown() {
-
+	unsigned int selected = m_schedule_list->GetSelectedEntry();
+	if(selected != RecordScheduleListWidget::INVALID_ENTRY && selected < m_schedule_list->GetEntryCount() - 1) {
+		m_schedule_list->MoveEntry(selected, selected + 1);
+	}
 }

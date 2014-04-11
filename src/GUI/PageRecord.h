@@ -56,9 +56,8 @@ public:
 		SCHEDULE_TIMEZONE_UTC,
 	};
 	enum enum_schedule_timing {
-		SCHEDULE_TIMING_AFTER_PREVIOUS,
-		SCHEDULE_TIMING_FIXED_TIME,
-		SCHEDULE_TIMING_FIXED_DATE,
+		SCHEDULE_TIMING_RELATIVE,
+		SCHEDULE_TIMING_ABSOLUTE,
 	};
 	enum enum_schedule_action {
 		SCHEDULE_ACTION_START,
@@ -66,7 +65,7 @@ public:
 	};
 	struct ScheduleEntry {
 		enum_schedule_timing m_timing;
-		int m_month, m_day, m_hour, m_minute, m_second;
+		int m_hour, m_minute, m_second;
 		enum_schedule_action m_action;
 	};
 
@@ -204,7 +203,3 @@ private slots:
 	void OnNewLogLine(Logger::enum_type type, QString string);
 
 };
-
-/*Q_DECLARE_METATYPE(PageRecord::enum_schedule_timezone)
-Q_DECLARE_METATYPE(PageRecord::enum_schedule_timing)
-Q_DECLARE_METATYPE(PageRecord::enum_schedule_action)*/
