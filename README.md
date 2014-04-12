@@ -43,7 +43,7 @@ For Ubuntu 13.10:
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev g++-multilib \
-    libx11-6:i386 libxfixes3:i386 libglu1-mesa:i386
+    libglu1-mesa:i386 libx11-6:i386 libxfixes3:i386
 
 If the 32-bit version of some library isn't found, but 64-bit works fine, try this:
 
@@ -83,7 +83,7 @@ For Debian:
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev g++-multilib \
-    libx11-6 libxext6 libxfixes3 libxfixes3:i386 libglu1-mesa:i386
+    libx11-6 libxext6 libxfixes3 libglu1-mesa:i386 libx11-6:i386 libxfixes3:i386
     
     cd /usr/lib/i386-linux-gnu
     ln -s libGL.so.1 libGL.so
@@ -112,9 +112,9 @@ Some packages (e.g. ffmpeg) are not in the official repository, but can be insta
 
 For Fedora:
 
-    sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel \
-    gcc make gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel.i686 libXfixes-devel.i686 mesa-libGL-devel.i686 \
-    mesa-libGLU-devel.i686
+    sudo yum install gcc make gcc-c++ ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel \
+    mesa-libGL-devel mesa-libGLU-devel libX11-devel libXfixes-devel libXext-devel libXi-devel \
+    glibc-devel.i686 libgcc.i686 mesa-libGL-devel.i686 mesa-libGLU-devel.i686 libX11-devel.i686 libXfixes-devel.i686
 
 Compiling and installing
 ------------------------

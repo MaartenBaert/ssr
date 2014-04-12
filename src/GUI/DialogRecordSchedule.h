@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "WidgetRack.h"
 #include "PageRecord.h"
 
 class RecordScheduleEntryWidget : public QWidget {
@@ -38,39 +39,6 @@ public:
 
 };
 
-class RecordScheduleListWidget : public QWidget {
-	Q_OBJECT
-
-public:
-	static const unsigned int INVALID_ENTRY;
-
-private:
-	static const QPalette::ColorRole ROLE_NORMAL, ROLE_SELECTED;
-
-private:
-	std::vector<RecordScheduleEntryWidget*> m_entries;
-	unsigned int m_selected_entry;
-
-	QVBoxLayout *m_layout;
-
-public:
-	RecordScheduleListWidget(QWidget* parent = NULL);
-	~RecordScheduleListWidget();
-
-	unsigned int GetEntryCount();
-	PageRecord::ScheduleEntry GetEntry(unsigned int index);
-	unsigned int GetSelectedEntry();
-	void SetSelectedEntry(unsigned int index);
-
-	void AddEntry(unsigned int index, PageRecord::ScheduleEntry entry);
-	void RemoveEntry(unsigned int index);
-	void MoveEntry(unsigned int from, unsigned int to);
-
-private slots:
-	void OnFocusChange(QWidget* old_widget, QWidget* new_widget);
-
-};
-
 class DialogRecordSchedule : public QDialog {
 	Q_OBJECT
 
@@ -79,7 +47,7 @@ private:
 
 	QComboBox *m_combobox_timezone;
 	QLabel *m_label_time;
-	RecordScheduleListWidget *m_schedule_list;
+	WidgetRack *m_widgetrack_schedule;
 	QScrollArea *m_scroll_area;
 
 	QDateTime m_clock_time;

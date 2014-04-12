@@ -19,7 +19,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DialogGLInject.h"
 
-#include "Logger.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 

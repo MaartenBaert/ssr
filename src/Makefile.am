@@ -141,6 +141,8 @@ simplescreenrecorder_SOURCES = \
 	GUI/ProfileBox.h \
 	GUI/VideoPreviewer.cpp \
 	GUI/VideoPreviewer.h \
+	GUI/WidgetRack.cpp \
+	GUI/WidgetRack.h \
 	Global.h \
 	Main.cpp \
 	Main.h \
@@ -205,7 +207,8 @@ nodist_simplescreenrecorder_SOURCES += \
 	moc_PageRecord.cpp \
 	moc_PageWelcome.cpp \
 	moc_ProfileBox.cpp \
-	moc_VideoPreviewer.cpp
+	moc_VideoPreviewer.cpp \
+	moc_WidgetRack.cpp
 
 moc_X11Input.cpp: $(srcdir)/AV/Input/X11Input.h
 	$(MOC) "$<" -o "$@"
@@ -238,6 +241,8 @@ moc_PageWelcome.cpp: $(srcdir)/GUI/PageWelcome.h
 moc_ProfileBox.cpp: $(srcdir)/GUI/ProfileBox.h
 	$(MOC) "$<" -o "$@"
 moc_VideoPreviewer.cpp: $(srcdir)/GUI/VideoPreviewer.h
+	$(MOC) "$<" -o "$@"
+moc_WidgetRack.cpp: $(srcdir)/GUI/WidgetRack.h
 	$(MOC) "$<" -o "$@"
 
 clean-moc-extra:
