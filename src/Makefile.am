@@ -9,7 +9,8 @@ simplescreenrecorder_CPPFLAGS = \
 	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
 	-I$(srcdir)/common \
-	-I$(srcdir)/GUI
+	-I$(srcdir)/GUI \
+	-I$(srcdir)/settings
 simplescreenrecorder_CFLAGS = \
 	-pthread
 simplescreenrecorder_CXXFLAGS = \
@@ -75,7 +76,6 @@ simplescreenrecorder_SOURCES = \
 	AV/Output/Muxer.h \
 	AV/Output/OutputManager.cpp \
 	AV/Output/OutputManager.h \
-	AV/Output/OutputSettings.h \
 	AV/Output/SyncDiagram.cpp \
 	AV/Output/SyncDiagram.h \
 	AV/Output/Synchronizer.cpp \
@@ -107,6 +107,7 @@ simplescreenrecorder_SOURCES = \
 	common/DetectCPUFeatures.h \
 	common/Dialogs.cpp \
 	common/Dialogs.h \
+	common/EnumTranslator.h \
 	common/LockFreeMessageQueue.h \
 	common/Logger.cpp \
 	common/Logger.h \
@@ -125,6 +126,7 @@ simplescreenrecorder_SOURCES = \
 	GUI/HotkeyListener.h \
 	GUI/Icons.cpp \
 	GUI/Icons.h \
+	GUI/KeyboardKeys.cpp \
 	GUI/MainWindow.cpp \
 	GUI/MainWindow.h \
 	GUI/PageDone.cpp \
@@ -143,6 +145,8 @@ simplescreenrecorder_SOURCES = \
 	GUI/VideoPreviewer.h \
 	GUI/WidgetRack.cpp \
 	GUI/WidgetRack.h \
+	settings/OutputSettings.h \
+	settings/RecordSettings.h \
 	Global.h \
 	Main.cpp \
 	Main.h \

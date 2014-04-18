@@ -22,7 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Main.h"
 #include "Logger.h"
 #include "Dialogs.h"
-#include "EnumStrings.h"
+#include "EnumTranslator.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 

@@ -9,8 +9,8 @@ DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_PULSEAUDIO=1 SSR_
 QMAKE_CXXFLAGS += -std=c++0x -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 
-INCLUDEPATH += AV AV/Input AV/Output common GUI
-DEPENDPATH += AV AV/Input AV/Output common GUI
+INCLUDEPATH += AV AV/Input AV/Output common GUI settings
+DEPENDPATH += AV AV/Input AV/Output common GUI settings
 
 SOURCES += \
 	AV/Input/ALSAInput.cpp \
@@ -49,6 +49,7 @@ SOURCES += \
 	GUI/ElidedLabel.cpp \
 	GUI/HotkeyListener.cpp \
 	GUI/Icons.cpp \
+	GUI/KeyboardKeys.cpp \
 	GUI/MainWindow.cpp \
 	GUI/PageDone.cpp \
 	GUI/PageInput.cpp \
@@ -75,7 +76,6 @@ HEADERS  += \
 	AV/Output/BaseEncoder.h \
 	AV/Output/Muxer.h \
 	AV/Output/OutputManager.h \
-	AV/Output/OutputSettings.h \
 	AV/Output/SyncDiagram.h \
 	AV/Output/Synchronizer.h \
 	AV/Output/VideoEncoder.h \
@@ -92,7 +92,7 @@ HEADERS  += \
 	AV/SourceSink.h \
 	common/DetectCPUFeatures.h \
 	common/Dialogs.h \
-	common/EnumStrings.h \
+	common/EnumTranslator.h \
 	common/LockFreeMessageQueue.h \
 	common/Logger.h \
 	common/MutexDataPair.h \
@@ -113,10 +113,12 @@ HEADERS  += \
 	GUI/ProfileBox.h \
 	GUI/VideoPreviewer.h \
 	GUI/WidgetRack.h \
+	settings/OutputSettings.h \
 	Global.h \
 	Main.h \
 	Version.h \
-	NVidia.h
+	NVidia.h \
+	settings/RecordSettings.h
 
 RESOURCES += \
 	resources.qrc

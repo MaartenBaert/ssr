@@ -163,12 +163,14 @@ public:
 	void StopInput();
 
 private:
+	void UpdateSchedule();
 	void UpdateInput();
 	void UpdateSysTray();
 	void UpdateRecordPauseButton();
 	void UpdatePreview();
 
 public:
+	inline std::vector<ScheduleEntry> GetSchedule() { return m_schedule; }
 	inline bool IsHotkeyEnabled() { return m_checkbox_hotkey_enable->isChecked(); }
 	inline bool IsHotkeyCtrlEnabled() { return m_checkbox_hotkey_ctrl->isChecked(); }
 	inline bool IsHotkeyShiftEnabled() { return m_checkbox_hotkey_shift->isChecked(); }
@@ -178,6 +180,7 @@ public:
 	inline bool AreSoundNotificationsEnabled() { return m_checkbox_sound_notifications_enable->isChecked(); }
 	inline unsigned int GetPreviewFrameRate() { return m_spinbox_preview_frame_rate->value(); }
 
+	inline void SetSchedule(const std::vector<ScheduleEntry>& schedule) { m_schedule = schedule; }
 	inline void SetHotkeyEnabled(bool enable) { m_checkbox_hotkey_enable->setChecked(enable); }
 	inline void SetHotkeyCtrlEnabled(bool enable) { m_checkbox_hotkey_ctrl->setChecked(enable); }
 	inline void SetHotkeyShiftEnabled(bool enable) { m_checkbox_hotkey_shift->setChecked(enable); }

@@ -20,7 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "PageInput.h"
 
 #include "Dialogs.h"
-#include "EnumStrings.h"
+#include "EnumTranslator.h"
 #include "MainWindow.h"
 #include "DialogGLInject.h"
 

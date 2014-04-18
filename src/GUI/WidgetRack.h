@@ -20,7 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-class WidgetRack : public QWidget {
+class WidgetRack : public QAbstractScrollArea {
 	Q_OBJECT
 
 public:
@@ -29,7 +29,6 @@ public:
 private:
 	std::vector<QWidget*> m_widgets;
 	unsigned int m_selected_widget;
-	QSize m_size_hint;
 
 public:
 	WidgetRack(QWidget* parent = NULL);
@@ -45,14 +44,17 @@ public:
 	void RemoveWidget(unsigned int index);
 	void MoveWidget(unsigned int from, unsigned int to);
 
+	void MakeVisible(QWidget* widget);
+
 protected:
-	virtual QSize sizeHint() const override;
+	virtual bool viewportEvent(QEvent* event) override;
 	virtual void resizeEvent(QResizeEvent* event) override;
-	virtual bool event(QEvent* event) override;
+	virtual void scrollContentsBy(int dx, int dy) override;
+	virtual bool focusNextPrevChild(bool next) override;
 
 private:
 	void UpdateFocusChain();
-	void UpdateSizeHint();
+	void UpdateRange();
 	void UpdateLayout();
 	void UpdateSelection();
 

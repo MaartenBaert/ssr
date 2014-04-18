@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "HotkeyListener.h"
 
 #include "Logger.h"
+#include "EnumTranslator.h"
 
 #include <X11/keysym.h>
 #include <X11/extensions/XInput2.h>
@@ -67,9 +68,9 @@ HotkeyCallback::~HotkeyCallback() {
 		HotkeyListener::GetInstance()->UnbindCallback(m_iterator);
 }
 
-void HotkeyCallback::Bind(unsigned int keysym, unsigned int modifiers) {
+void HotkeyCallback::Bind(Qt::Key key, Qt::KeyboardModifiers modifiers) {
 	Unbind();
-	m_iterator = HotkeyListener::GetInstance()->BindCallback(keysym, modifiers, this);
+	m_iterator = HotkeyListener::GetInstance()->BindCallback(key, modifiers, this);
 	m_is_bound = true;
 }
 
@@ -177,9 +178,12 @@ void HotkeyListener::Free() {
 	}
 }
 
-void HotkeyListener::GrabHotkey(const Hotkey& hotkey, bool enable) {
+void HotkeyListener::GrabHotkey(const HotkeyData& hotkey, bool enable) {
 
-	// we need to grab multiple modifiers combinations to ignore the state of caps lock (LockMask) and num lock (Mod2Mask)
+	if(hotkey.m_keycode == 0)
+		return;
+
+	// we need to grab multiple modifier combinations to ignore the state of caps lock (LockMask) and num lock (Mod2Mask)
 	unsigned int masks[] = {0, LockMask, Mod2Mask, LockMask | Mod2Mask};
 
 	// do we have XInput2?
@@ -225,7 +229,7 @@ void HotkeyListener::GrabHotkey(const Hotkey& hotkey, bool enable) {
 
 }
 
-void HotkeyListener::ProcessHotkey(const Hotkey& hotkey) {
+void HotkeyListener::ProcessHotkey(const HotkeyData& hotkey) {
 	auto range = m_callbacks.equal_range(hotkey);
 	if(range.first != range.second) {
 		for(auto it = range.first; it != range.second; ++it) {
@@ -234,17 +238,32 @@ void HotkeyListener::ProcessHotkey(const Hotkey& hotkey) {
 	}
 }
 
-HotkeyIterator HotkeyListener::BindCallback(unsigned int keysym, unsigned int modifiers, HotkeyCallback* callback) {
-	Hotkey hotkey;
-	hotkey.m_keycode = XKeysymToKeycode(m_x11_display, keysym);
-	hotkey.m_modifiers = modifiers;
+HotkeyCallbackIterator HotkeyListener::BindCallback(Qt::Key key, Qt::KeyboardModifiers modifiers, HotkeyCallback* callback) {
+
+	// translate to X11
+	HotkeyData hotkey;
+	hotkey.m_keycode = XKeysymToKeycode(m_x11_display, EnumTranslator<Qt::Key, unsigned int>::ToSecond(key, NoSymbol));
+	hotkey.m_modifiers = 0;
+	if(modifiers & Qt::ControlModifier)
+		hotkey.m_modifiers |= ControlMask;
+	if(modifiers & Qt::ShiftModifier)
+		hotkey.m_modifiers |= ShiftMask;
+	if(modifiers & Qt::AltModifier)
+		hotkey.m_modifiers |= Mod1Mask;
+	if(modifiers & Qt::MetaModifier)
+		hotkey.m_modifiers |= Mod4Mask;
+
+	// grab if it wasn't grabbed already
 	if(m_callbacks.count(hotkey) == 0)
 		GrabHotkey(hotkey, true);
+
+	// add to map
 	return m_callbacks.insert(std::make_pair(hotkey, callback));
+
 }
 
-void HotkeyListener::UnbindCallback(HotkeyIterator it) {
-	Hotkey hotkey = it->first;
+void HotkeyListener::UnbindCallback(HotkeyCallbackIterator it) {
+	HotkeyData hotkey = it->first;
 	m_callbacks.erase(it);
 	if(m_callbacks.count(hotkey) == 0)
 		GrabHotkey(hotkey, false);
@@ -276,7 +295,7 @@ void HotkeyListener::ProcessEvents() {
 							XFree(keysym);
 
 						// process hotkey
-						Hotkey hotkey;
+						HotkeyData hotkey;
 						hotkey.m_keycode = xide->detail;
 						hotkey.m_modifiers = m_xinput2_raw_modifiers;
 						ProcessHotkey(hotkey);
@@ -309,7 +328,7 @@ void HotkeyListener::ProcessEvents() {
 					if(!(xide->flags & XIKeyRepeat)) {
 
 						// process hotkey
-						Hotkey hotkey;
+						HotkeyData hotkey;
 						hotkey.m_keycode = xide->detail;
 						hotkey.m_modifiers = xide->mods.effective & ~LockMask & ~Mod2Mask;
 						ProcessHotkey(hotkey);
@@ -320,7 +339,7 @@ void HotkeyListener::ProcessEvents() {
 			XFreeEventData(m_x11_display, &event.xcookie);
 		} else {
 			if(event.type == KeyPress) {
-				Hotkey hotkey;
+				HotkeyData hotkey;
 				hotkey.m_keycode = event.xkey.keycode;
 				hotkey.m_modifiers = event.xkey.state & ~LockMask & ~Mod2Mask;
 				ProcessHotkey(hotkey);

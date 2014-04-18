@@ -22,7 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Main.h"
 #include "Icons.h"
 #include "Dialogs.h"
-#include "EnumStrings.h"
+#include "EnumTranslator.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 #include "PageOutput.h"
@@ -825,6 +825,14 @@ void PageRecord::StopInput() {
 
 }
 
+void PageRecord::UpdateSchedule() {
+
+
+	//TODO//
+
+
+}
+
 void PageRecord::UpdateInput() {
 	assert(m_page_started);
 
@@ -922,12 +930,12 @@ void PageRecord::OnUpdateHotkeyFields() {
 
 void PageRecord::OnUpdateHotkey() {
 	if(m_page_started && IsHotkeyEnabled()) {
-		unsigned int modifiers = 0;
-		if(IsHotkeyCtrlEnabled()) modifiers |= ControlMask;
-		if(IsHotkeyShiftEnabled()) modifiers |= ShiftMask;
-		if(IsHotkeyAltEnabled()) modifiers |= Mod1Mask;
-		if(IsHotkeySuperEnabled()) modifiers |= Mod4Mask;
-		m_hotkey_start_pause.Bind(XK_A + GetHotkeyKey(), modifiers);
+		Qt::KeyboardModifiers modifiers = 0;
+		if(IsHotkeyCtrlEnabled()) modifiers |= Qt::ControlModifier;
+		if(IsHotkeyShiftEnabled()) modifiers |= Qt::ShiftModifier;
+		if(IsHotkeyAltEnabled()) modifiers |= Qt::AltModifier;
+		if(IsHotkeySuperEnabled()) modifiers |= Qt::MetaModifier;
+		m_hotkey_start_pause.Bind((Qt::Key) (Qt::Key_A + GetHotkeyKey()), modifiers);
 	} else {
 		m_hotkey_start_pause.Unbind();
 	}
@@ -961,7 +969,9 @@ void PageRecord::OnRecordStartPause() {
 
 void PageRecord::OnEditSchedule() {
 	DialogRecordSchedule dialog(this);
-	dialog.exec();
+	if(dialog.exec()) {
+		SetSchedule(dialog.GetSchedule());
+	}
 }
 
 void PageRecord::OnPreviewStartStop() {

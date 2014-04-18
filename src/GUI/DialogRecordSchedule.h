@@ -48,7 +48,6 @@ private:
 	QComboBox *m_combobox_timezone;
 	QLabel *m_label_time;
 	WidgetRack *m_widgetrack_schedule;
-	QScrollArea *m_scroll_area;
 
 	QDateTime m_clock_time;
 	QTimer *m_timer_clock;
@@ -57,11 +56,12 @@ public:
 	DialogRecordSchedule(PageRecord* parent);
 	~DialogRecordSchedule();
 
+	std::vector<PageRecord::ScheduleEntry> GetSchedule();
+
 private:
 	QDateTime GetCurrentTime();
 
 private slots:
-	void OnWriteBack();
 	void OnTimeZoneChanged();
 	void OnUpdateTime();
 	void OnAdd();

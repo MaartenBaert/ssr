@@ -19,25 +19,38 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "WidgetRack.h"
 
+static QSize GetWidgetSize(QWidget* widget) {
+	QSize size = widget->sizeHint();
+	if(!size.isValid())
+		size = QSize(0, 0);
+	QSize minimumsize = widget->minimumSize();
+	if(!minimumsize.isValid())
+		minimumsize = widget->minimumSizeHint();
+	if(minimumsize.isValid())
+		size.expandedTo(minimumsize);
+	QSize maximumsize = widget->maximumSize();
+	if(maximumsize.isValid())
+		size.boundedTo(maximumsize);
+	return size;
+}
+
 const unsigned int WidgetRack::NO_SELECTION = (unsigned int) -1;
 
 WidgetRack::WidgetRack(QWidget* parent)
-	: QWidget(parent) {
+	: QAbstractScrollArea(parent) {
 
 	m_selected_widget = NO_SELECTION;
 
-	setBackgroundRole(QPalette::Dark);
-	setAutoFillBackground(true);
-	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	//setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // buggy with GTK style, maximumViewportSize() doesn't take the border into account :(
+	verticalScrollBar()->setSingleStep(20);
 
-	/*m_layout = new QBoxLayout(direction, this);
-	m_layout->setMargin(0);
-	m_layout->setSpacing(1);
-	m_layout->addStretch();*/
+	viewport()->setBackgroundRole(QPalette::Dark);
+	viewport()->setAutoFillBackground(true);
 
 	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(OnFocusChange(QWidget*, QWidget*)));
 
-	UpdateSizeHint();
+	UpdateRange();
 
 }
 
@@ -65,7 +78,7 @@ void WidgetRack::SetSelected(unsigned int index) {
 
 void WidgetRack::AddWidget(unsigned int index, QWidget* widget) {
 	assert(index <= m_widgets.size());
-	assert(widget->parent() == this);
+	assert(widget->parent() == viewport());
 
 	widget->setAutoFillBackground(true);
 	widget->setBackgroundRole(QPalette::Base);
@@ -75,7 +88,7 @@ void WidgetRack::AddWidget(unsigned int index, QWidget* widget) {
 
 	m_widgets.insert(m_widgets.begin() + index, widget);
 	UpdateFocusChain();
-	UpdateSizeHint();
+	UpdateRange();
 	UpdateLayout();
 
 	if(m_selected_widget != NO_SELECTION && index <= m_selected_widget)
@@ -89,7 +102,7 @@ void WidgetRack::RemoveWidget(unsigned int index) {
 	delete m_widgets[index];
 	m_widgets.erase(m_widgets.begin() + index);
 	UpdateFocusChain();
-	UpdateSizeHint();
+	UpdateRange();
 	UpdateLayout();
 
 	if(m_selected_widget != NO_SELECTION) {
@@ -126,24 +139,51 @@ void WidgetRack::MoveWidget(unsigned int from, unsigned int to) {
 
 }
 
-QSize WidgetRack::sizeHint() const {
-	return m_size_hint;
+void WidgetRack::MakeVisible(QWidget* widget) {
+	assert(viewport()->isAncestorOf(widget));
+	QRect widget_rect(widget->mapTo(viewport(), QPoint(0, verticalScrollBar()->value())), widget->size());
+	QRect visible_rect(QPoint(0, verticalScrollBar()->value()), viewport()->size());
+	if(widget_rect.height() > visible_rect.height()) {
+		if(widget_rect.top() > visible_rect.top()) {
+			verticalScrollBar()->setValue(widget_rect.top());
+		} else if(widget_rect.bottom() < visible_rect.bottom()) {
+			verticalScrollBar()->setValue(visible_rect.top() + widget_rect.bottom() - visible_rect.bottom());
+		}
+	} else {
+		if(widget_rect.top() < visible_rect.top()) {
+			verticalScrollBar()->setValue(widget_rect.top());
+		} else if(widget_rect.bottom() > visible_rect.bottom()) {
+			verticalScrollBar()->setValue(visible_rect.top() + widget_rect.bottom() - visible_rect.bottom());
+		}
+	}
+}
+
+bool WidgetRack::viewportEvent(QEvent* event) {
+	switch(event->type()) {
+		case QEvent::LayoutRequest: {
+			UpdateRange();
+			UpdateLayout();
+			event->accept();
+			return true;
+		}
+		default: return QAbstractScrollArea::viewportEvent(event);
+	}
 }
 
 void WidgetRack::resizeEvent(QResizeEvent* event) {
 	Q_UNUSED(event);
+	UpdateRange();
 	UpdateLayout();
 }
 
-bool WidgetRack::event(QEvent* event) {
-	if(event->type() == QEvent::LayoutRequest) {
-		qDebug() << "LayoutRequest";
-		UpdateSizeHint();
-		UpdateLayout();
-		event->accept();
-		return true;
-	}
-	return QWidget::event(event);
+void WidgetRack::scrollContentsBy(int dx, int dy) {
+	if(dx == 0 && dy == 0)
+		return;
+	UpdateLayout();
+}
+
+bool WidgetRack::focusNextPrevChild(bool next) {
+	return QWidget::focusNextPrevChild(next); //TODO// remove?
 }
 
 void WidgetRack::UpdateFocusChain() {
@@ -178,41 +218,21 @@ void WidgetRack::UpdateFocusChain() {
 	}
 }
 
-void WidgetRack::UpdateSizeHint() {
-	int width = 0, height = 0;
+void WidgetRack::UpdateRange() {
+	int height = 0;
 	for(unsigned int i = 0; i < m_widgets.size(); ++i) {
-		QSize size = m_widgets[i]->sizeHint();
-		if(!size.isValid())
-			size = QSize(0, 0);
-		QSize minimumsize = m_widgets[i]->minimumSize();
-		if(!minimumsize.isValid())
-			minimumsize = m_widgets[i]->minimumSizeHint();
-		if(minimumsize.isValid())
-			size.expandedTo(minimumsize);
-		if(size.width() > width)
-			width = size.width();
+		QSize size = GetWidgetSize(m_widgets[i]);
 		height += size.height() + 1;
 	}
-	qDebug() << "sizeHint =" << QSize(width, std::max(height - 1, 0));
-	QSize size_hint(width, std::max(height - 1, 0));
-	if(size_hint != m_size_hint) {
-		m_size_hint = size_hint;
-		updateGeometry();
-	}
+	verticalScrollBar()->setPageStep(viewport()->height());
+	verticalScrollBar()->setRange(0, std::max(0, height - 1 - viewport()->height()));
 }
 
 void WidgetRack::UpdateLayout() {
-	int y = 0;
+	int y = -verticalScrollBar()->value();
 	for(unsigned int i = 0; i < m_widgets.size(); ++i) {
-		QSize size = m_widgets[i]->sizeHint();
-		if(!size.isValid())
-			size = QSize(0, 0);
-		QSize minimumsize = m_widgets[i]->minimumSize();
-		if(!minimumsize.isValid())
-			minimumsize = m_widgets[i]->minimumSizeHint();
-		if(minimumsize.isValid())
-			size.expandedTo(minimumsize);
-		m_widgets[i]->setGeometry(0, y, width(), size.height());
+		QSize size = GetWidgetSize(m_widgets[i]);
+		m_widgets[i]->setGeometry(0, y, viewport()->width(), size.height());
 		y += size.height() + 1;
 	}
 }
@@ -229,7 +249,11 @@ void WidgetRack::OnFocusChange(QWidget* old_widget, QWidget* new_widget) {
 	for(unsigned int i = 0; i < m_widgets.size(); ++i) {
 		if(m_widgets[i]->isAncestorOf(new_widget)) {
 			SetSelected(i);
+			MakeVisible(m_widgets[i]);
 			break;
 		}
+	}
+	if(viewport()->isAncestorOf(new_widget)) {
+		MakeVisible(new_widget);
 	}
 }

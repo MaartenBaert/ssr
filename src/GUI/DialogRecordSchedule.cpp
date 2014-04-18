@@ -78,14 +78,15 @@ DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
 	m_label_time->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
 	m_widgetrack_schedule = new WidgetRack(this);
-	//TODO// load
-
-	m_scroll_area = new QScrollArea(this);
-	m_scroll_area->setMinimumSize(500, 300);
-	m_scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	//m_scroll_area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // buggy with GTK style, maximumViewportSize() doesn't take the border into account :(
-	m_scroll_area->setWidgetResizable(true);
-	m_scroll_area->setWidget(m_widgetrack_schedule);
+	m_widgetrack_schedule->setMinimumSize(500, 300);
+	{
+		auto schedule = m_parent->GetSchedule();
+		for(unsigned int i = 0; i < schedule.size(); ++i) {
+			PageRecord::ScheduleEntry entry = schedule[i];
+			QWidget *widget = new RecordScheduleEntryWidget(entry, m_widgetrack_schedule->viewport());
+			m_widgetrack_schedule->AddWidget(i, widget);
+		}
+	}
 
 	QPushButton *pushbutton_add = new QPushButton(QIcon::fromTheme("list-add"), tr("Add"), this);
 	QPushButton *pushbutton_remove = new QPushButton(QIcon::fromTheme("list-remove"), tr("Remove"), this);
@@ -101,8 +102,6 @@ DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
 	connect(pushbutton_move_up, SIGNAL(clicked()), this, SLOT(OnMoveUp()));
 	connect(pushbutton_move_down, SIGNAL(clicked()), this, SLOT(OnMoveDown()));
 	connect(pushbutton_close, SIGNAL(clicked()), this, SLOT(accept()));
-	connect(this, SIGNAL(accepted()), this, SLOT(OnWriteBack()));
-	connect(this, SIGNAL(rejected()), this, SLOT(OnWriteBack()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	{
@@ -115,7 +114,7 @@ DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
 		layout2->addWidget(label_time);
 		layout2->addWidget(m_label_time);
 	}
-	layout->addWidget(m_scroll_area);
+	layout->addWidget(m_widgetrack_schedule);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
 		layout->addLayout(layout2);
@@ -147,15 +146,20 @@ DialogRecordSchedule::~DialogRecordSchedule() {
 
 }
 
+std::vector<PageRecord::ScheduleEntry> DialogRecordSchedule::GetSchedule() {
+	std::vector<PageRecord::ScheduleEntry> schedule;
+	for(unsigned int i = 0; i < m_widgetrack_schedule->GetWidgetCount(); ++i) {
+		RecordScheduleEntryWidget *widget = static_cast<RecordScheduleEntryWidget*>(m_widgetrack_schedule->GetWidget(i));
+		schedule[i] = widget->Get();
+	}
+	return schedule;
+}
+
 QDateTime DialogRecordSchedule::GetCurrentTime() {
 	if(m_combobox_timezone->currentIndex() == PageRecord::SCHEDULE_TIMEZONE_LOCAL)
 		return QDateTime::currentDateTime();
 	else
 		return QDateTime::currentDateTimeUtc();
-}
-
-void DialogRecordSchedule::OnWriteBack() {
-
 }
 
 void DialogRecordSchedule::OnTimeZoneChanged() {
@@ -176,10 +180,10 @@ void DialogRecordSchedule::OnAdd() {
 	PageRecord::ScheduleEntry entry{PageRecord::SCHEDULE_TIMING_RELATIVE, 0, 0, 0, PageRecord::SCHEDULE_ACTION_START};
 	unsigned int selected = m_widgetrack_schedule->GetSelected();
 	unsigned int index = (selected == WidgetRack::NO_SELECTION)? m_widgetrack_schedule->GetWidgetCount() : selected + 1;
-	QWidget *widget = new RecordScheduleEntryWidget(entry, m_widgetrack_schedule);
+	QWidget *widget = new RecordScheduleEntryWidget(entry, m_widgetrack_schedule->viewport());
 	m_widgetrack_schedule->AddWidget(index, widget);
 	m_widgetrack_schedule->SetSelected(index);
-	m_scroll_area->ensureWidgetVisible(widget);
+	m_widgetrack_schedule->MakeVisible(widget);
 }
 
 void DialogRecordSchedule::OnRemove() {
@@ -193,7 +197,7 @@ void DialogRecordSchedule::OnMoveUp() {
 	unsigned int selected = m_widgetrack_schedule->GetSelected();
 	if(selected != WidgetRack::NO_SELECTION && selected > 0) {
 		m_widgetrack_schedule->MoveWidget(selected, selected - 1);
-		m_scroll_area->ensureWidgetVisible(m_widgetrack_schedule->GetWidget(selected - 1));
+		m_widgetrack_schedule->MakeVisible(m_widgetrack_schedule->GetWidget(selected - 1));
 	}
 }
 
@@ -201,6 +205,6 @@ void DialogRecordSchedule::OnMoveDown() {
 	unsigned int selected = m_widgetrack_schedule->GetSelected();
 	if(selected != WidgetRack::NO_SELECTION && selected < m_widgetrack_schedule->GetWidgetCount() - 1) {
 		m_widgetrack_schedule->MoveWidget(selected, selected + 1);
-		m_scroll_area->ensureWidgetVisible(m_widgetrack_schedule->GetWidget(selected + 1));
+		m_widgetrack_schedule->MakeVisible(m_widgetrack_schedule->GetWidget(selected + 1));
 	}
 }

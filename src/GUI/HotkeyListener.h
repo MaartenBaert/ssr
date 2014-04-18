@@ -20,32 +20,27 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-struct Hotkey {
+struct HotkeyData {
 	unsigned int m_keycode, m_modifiers;
-	inline bool operator==(const Hotkey& other) const { return (m_keycode == other.m_keycode && m_modifiers == other.m_modifiers); }
-	inline bool operator<(const Hotkey& other) const { return (m_keycode < other.m_keycode || (m_keycode == other.m_keycode && m_modifiers < other.m_modifiers)); }
+	inline bool operator==(const HotkeyData& other) const { return (m_keycode == other.m_keycode && m_modifiers == other.m_modifiers); }
+	inline bool operator<(const HotkeyData& other) const { return (m_keycode < other.m_keycode || (m_keycode == other.m_keycode && m_modifiers < other.m_modifiers)); }
 };
 
 class HotkeyCallback;
-typedef std::multimap<Hotkey, HotkeyCallback*>::iterator HotkeyIterator;
+typedef std::multimap<HotkeyData, HotkeyCallback*>::iterator HotkeyCallbackIterator;
 
 class HotkeyCallback : public QObject {
 	Q_OBJECT
 
 private:
 	bool m_is_bound;
-	HotkeyIterator m_iterator;
+	HotkeyCallbackIterator m_iterator;
 
 public:
 	HotkeyCallback();
 	~HotkeyCallback();
 
-	// X11 modifiers:
-	// - Ctrl = ControlMask
-	// - Shift = ShiftMask
-	// - Alt = Mod1Mask
-	// - Super = Mod4Mask
-	void Bind(unsigned int keysym, unsigned int modifiers);
+	void Bind(Qt::Key key, Qt::KeyboardModifiers modifiers);
 	void Unbind();
 
 public: // internal
@@ -60,7 +55,7 @@ class HotkeyListener : public QObject {
 	Q_OBJECT
 
 private:
-	std::multimap<Hotkey, HotkeyCallback*> m_callbacks;
+	std::multimap<HotkeyData, HotkeyCallback*> m_callbacks;
 
 	Display *m_x11_display;
 	int m_x11_screen;
@@ -82,15 +77,15 @@ private:
 	void Init();
 	void Free();
 
-	void GrabHotkey(const Hotkey& hotkey, bool enable);
-	void ProcessHotkey(const Hotkey& hotkey);
+	void GrabHotkey(const HotkeyData& hotkey, bool enable);
+	void ProcessHotkey(const HotkeyData& hotkey);
 
 public:
 	inline static HotkeyListener* GetInstance() { assert(s_instance != NULL); return s_instance; }
 
 public: // internal
-	HotkeyIterator BindCallback(unsigned int keysym, unsigned int modifiers, HotkeyCallback* callback);
-	void UnbindCallback(HotkeyIterator it);
+	HotkeyCallbackIterator BindCallback(Qt::Key key, Qt::KeyboardModifiers modifiers, HotkeyCallback* callback);
+	void UnbindCallback(HotkeyCallbackIterator it);
 
 private slots:
 	void ProcessEvents();
