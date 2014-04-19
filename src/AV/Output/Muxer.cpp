@@ -248,7 +248,7 @@ void Muxer::Free() {
 AVCodec* Muxer::FindCodec(const QString& codec_name) {
 	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
 	if(codec == NULL) {
-		Logger::LogError("[Muxer::AddStream] " + Logger::tr("Error: Can't find codec!"));
+		Logger::LogError("[Muxer::FindCodec] " + Logger::tr("Error: Can't find codec!"));
 		throw LibavException();
 	}
 	return codec;
@@ -270,7 +270,9 @@ AVStream* Muxer::AddStream(AVCodec* codec) {
 		Logger::LogError("[Muxer::AddStream] " + Logger::tr("Error: Can't create new stream!"));
 		throw LibavException();
 	}
+	assert(stream->index == (int) m_format_context->nb_streams - 1);
 	assert(stream->codec != NULL);
+	//stream->id = m_format_context->nb_streams - 1;
 
 #if !SSR_USE_AVFORMAT_NEW_STREAM
 	// initialize the codec context (only needed for old API)
@@ -281,8 +283,8 @@ AVStream* Muxer::AddStream(AVCodec* codec) {
 	stream->codec->codec_id = codec->id;
 	stream->codec->codec_type = codec->type;
 #else
-	assert(stream->codec->codec_id == codec->id);
-	assert(stream->codec->codec_type == codec->type);
+	//assert(stream->codec->codec_id == codec->id);
+	//assert(stream->codec->codec_type == codec->type);
 #endif
 
 	// not sure why this is needed, but it's in the example code and it doesn't work without this
