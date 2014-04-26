@@ -632,8 +632,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	moc_ProfileBox.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_VideoPreviewer.cpp
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDADD = $(am__append_13)
-@ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = translations/simplescreenrecorder_de.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_es.ts \
+@ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = translations/simplescreenrecorder_es.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_hu.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_it.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_nl.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_pl.ts \
@@ -658,8 +658,8 @@ top_srcdir = @top_srcdir@
 ########## Qt translation system ##########
 @ENABLE_SSRPROGRAM_TRUE@translationsdir = $(pkgdatadir)/translations
 @ENABLE_SSRPROGRAM_TRUE@nodist_translations_DATA = \
-@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_de.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_es.qm \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_hu.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_it.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_nl.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_pl.qm \
@@ -2120,9 +2120,9 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 @ENABLE_SSRPROGRAM_TRUE@clean-moc-extra:
 @ENABLE_SSRPROGRAM_TRUE@	rm -f moc_*.cpp
 
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
-@ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_es.qm: $(srcdir)/translations/simplescreenrecorder_es.ts
+@ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_hu.qm: $(srcdir)/translations/simplescreenrecorder_hu.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_it.qm: $(srcdir)/translations/simplescreenrecorder_it.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
