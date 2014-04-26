@@ -61,26 +61,26 @@ SSRVideoStreamReader::~SSRVideoStreamReader() {
 
 void SSRVideoStreamReader::Init() {
 
-	Logger::LogInfo("[SSRVideoStreamReader::Init] " + QObject::tr("Created video stream reader."));
+	Logger::LogInfo("[SSRVideoStreamReader::Init] " + Logger::tr("Created video stream reader."));
 
 	// open main file
 	m_fd_main = open(m_filename_main.c_str(), O_RDWR | O_CLOEXEC);
 	if(m_fd_main == -1) {
-		Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Can't open video stream file!"));
+		Logger::LogError("[SSRVideoStreamReader::Init] " + Logger::tr("Error: Can't open video stream file!"));
 		throw SSRStreamException();
 	}
 
 	// resize main file
 	m_mmap_size_main = (sizeof(GLInjectHeader) + GLINJECT_RING_BUFFER_SIZE * sizeof(GLInjectFrameInfo) + m_page_size - 1) / m_page_size * m_page_size;
 	if(ftruncate(m_fd_main, m_mmap_size_main) == -1) {
-		Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Can't resize video stream file!"));
+		Logger::LogError("[SSRVideoStreamReader::Init] " + Logger::tr("Error: Can't resize video stream file!"));
 		throw SSRStreamException();
 	}
 
 	// map main file
 	m_mmap_ptr_main = mmap(NULL, m_mmap_size_main, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd_main, 0);
 	if(m_mmap_ptr_main == MAP_FAILED) {
-		Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Can't memory-map video stream file!"));
+		Logger::LogError("[SSRVideoStreamReader::Init] " + Logger::tr("Error: Can't memory-map video stream file!"));
 		throw SSRStreamException();
 	}
 
@@ -89,7 +89,7 @@ void SSRVideoStreamReader::Init() {
 		FrameData &fd = m_frame_data[i];
 		fd.m_fd_frame = open(fd.m_filename_frame.c_str(), O_RDWR | O_CLOEXEC);
 		if(fd.m_fd_frame == -1) {
-			Logger::LogError("[SSRVideoStreamReader::Init] " + QObject::tr("Error: Can't open video frame file!"));
+			Logger::LogError("[SSRVideoStreamReader::Init] " + Logger::tr("Error: Can't open video frame file!"));
 			throw SSRStreamException();
 		}
 	}
@@ -139,7 +139,7 @@ void SSRVideoStreamReader::Free() {
 		m_fd_main = -1;
 	}
 
-	Logger::LogInfo("[SSRVideoStreamReader::Init] " + QObject::tr("Destroyed video stream reader."));
+	Logger::LogInfo("[SSRVideoStreamReader::Init] " + Logger::tr("Destroyed video stream reader."));
 
 }
 
@@ -235,7 +235,7 @@ void* SSRVideoStreamReader::GetFrame(int64_t* timestamp, unsigned int* width, un
 		{
 			struct stat statinfo;
 			if(fstat(fd.m_fd_frame, &statinfo) == -1 || (size_t) statinfo.st_size < required_size) {
-				Logger::LogError("[SSRVideoStreamReader::GetFrame] " + QObject::tr("Error: Size of video frame file is incorrect!"));
+				Logger::LogError("[SSRVideoStreamReader::GetFrame] " + Logger::tr("Error: Size of video frame file is incorrect!"));
 				throw SSRStreamException();
 			}
 			required_size = statinfo.st_size / m_page_size * m_page_size;
@@ -244,7 +244,7 @@ void* SSRVideoStreamReader::GetFrame(int64_t* timestamp, unsigned int* width, un
 		// map frame file
 		fd.m_mmap_ptr_frame = mmap(NULL, required_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd.m_fd_frame, 0);
 		if(fd.m_mmap_ptr_frame == MAP_FAILED) {
-			Logger::LogError("[SSRVideoStreamReader::GetFrame] " + QObject::tr("Error: Can't memory-map video frame file!"));
+			Logger::LogError("[SSRVideoStreamReader::GetFrame] " + Logger::tr("Error: Can't memory-map video frame file!"));
 			throw SSRStreamException();
 		}
 		fd.m_mmap_size_frame = required_size;

@@ -153,6 +153,6 @@ void DialogGLInject::OnWriteBack() {
 
 void DialogGLInject::OnLaunchNow() {
 	if(!GLInjectInput::LaunchApplication(m_lineedit_channel->text(), m_checkbox_relax_permissions->isChecked(), m_lineedit_command->text(), m_lineedit_working_directory->text())) {
-		QMessageBox::critical(NULL, MainWindow::WINDOW_CAPTION, QObject::tr("The application could not be launched."), QMessageBox::Ok);
+		QMessageBox::critical(NULL, MainWindow::WINDOW_CAPTION, Logger::tr("The application could not be launched."), QMessageBox::Ok);
 	}
 }

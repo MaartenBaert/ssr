@@ -146,7 +146,7 @@ bool GLInjectInput::SwitchStream(SharedData* lock, const SSRVideoStream& stream)
 		lock->m_stream_reader = std::move(stream_reader);
 
 	} catch(...) {
-		Logger::LogError("[GLInjectInput::SwitchStream] " + QObject::tr("Error: Could not read stream, this usually means that the stream was already gone."));
+		Logger::LogError("[GLInjectInput::SwitchStream] " + Logger::tr("Error: Could not read stream, this usually means that the stream was already gone."));
 		return false;
 	}
 	return true;
