@@ -245,8 +245,8 @@ translationsdir = $(pkgdatadir)/translations
 simplescreenrecorder_CPPFLAGS += -DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
 
 nodist_translations_DATA = \
-	simplescreenrecorder_de.qm \
 	simplescreenrecorder_es.qm \
+	simplescreenrecorder_hu.qm \
 	simplescreenrecorder_it.qm \
 	simplescreenrecorder_nl.qm \
 	simplescreenrecorder_pl.qm \
@@ -254,17 +254,17 @@ nodist_translations_DATA = \
 	simplescreenrecorder_zh_CN.qm
 
 EXTRA_DIST += \
-	translations/simplescreenrecorder_de.ts \
 	translations/simplescreenrecorder_es.ts \
+	translations/simplescreenrecorder_hu.ts \
 	translations/simplescreenrecorder_it.ts \
 	translations/simplescreenrecorder_nl.ts \
 	translations/simplescreenrecorder_pl.ts \
 	translations/simplescreenrecorder_pt_BR.ts \
 	translations/simplescreenrecorder_zh_CN.ts
 
-simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
-	$(LRELEASE) "$<" -qm "$@"
 simplescreenrecorder_es.qm: $(srcdir)/translations/simplescreenrecorder_es.ts
+	$(LRELEASE) "$<" -qm "$@"
+simplescreenrecorder_hu.qm: $(srcdir)/translations/simplescreenrecorder_hu.ts
 	$(LRELEASE) "$<" -qm "$@"
 simplescreenrecorder_it.qm: $(srcdir)/translations/simplescreenrecorder_it.ts
 	$(LRELEASE) "$<" -qm "$@"
