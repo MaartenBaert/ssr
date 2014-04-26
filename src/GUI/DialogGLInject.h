@@ -31,9 +31,6 @@ class DialogGLInject : public QDialog {
 private:
 	PageInput *m_parent;
 
-	std::unique_ptr<SSRVideoStreamWatcher> m_stream_watcher;
-	std::vector<QTreeWidgetItem*> m_streams;
-
 	QLineEdit *m_lineedit_channel;
 	QCheckBox *m_checkbox_relax_permissions;
 
