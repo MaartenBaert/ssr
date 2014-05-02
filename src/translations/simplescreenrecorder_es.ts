@@ -685,7 +685,7 @@ Es posible que tu sistema no use PulseAudio. Intenta usar el sistema de ALSA en 
         <translation type="unfinished">Usando codec %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="294"/>
+        <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation type="unfinished">Aviso: este codec se considera experimental por libav/ffmpeg.</translation>
     </message>
@@ -746,7 +746,7 @@ Es posible que tu sistema no use PulseAudio. Intenta usar el sistema de ALSA en 
         <translation type="unfinished">Error: ¡No se puede crear un nuevo flujo!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="278"/>
+        <location filename="../AV/Output/Muxer.cpp" line="280"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
         <translation type="unfinished">Error: ¡No se puede obtener los ajustes por defecto del contexto del códec!</translation>
     </message>
@@ -777,27 +777,27 @@ Es posible que tu sistema no use PulseAudio. Intenta usar el sistema de ALSA en 
         <translation type="unfinished">Error: No se puede escribir el trailer, continuando de todos modos.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="304"/>
+        <location filename="../AV/Output/Muxer.cpp" line="306"/>
         <source>Muxer thread started.</source>
         <translation type="unfinished">Hilo del muxer iniciado.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="358"/>
+        <location filename="../AV/Output/Muxer.cpp" line="360"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
         <translation type="unfinished">Error: ¡No se puede escribir el fotograma en el muxer!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="386"/>
+        <location filename="../AV/Output/Muxer.cpp" line="388"/>
         <source>Muxer thread stopped.</source>
         <translation type="unfinished">Hilo del muxer detenido.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="390"/>
+        <location filename="../AV/Output/Muxer.cpp" line="392"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
         <translation type="unfinished">Excepción &apos;%1&apos; en el hilo del mutex.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="393"/>
+        <location filename="../AV/Output/Muxer.cpp" line="395"/>
         <source>Unknown exception in muxer thread.</source>
         <translation type="unfinished">Excepción desconocida en el hilo del mutex.</translation>
     </message>

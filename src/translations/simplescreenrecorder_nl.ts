@@ -743,7 +743,7 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
         <translation>Gebruik codec %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="294"/>
+        <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation>Waarschuwing: Deze codec wordt gezien als experimenteel door libav/ffmpeg.</translation>
     </message>
@@ -804,7 +804,7 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
         <translation>Fout: Kan geen nieuwe stream maken!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="278"/>
+        <location filename="../AV/Output/Muxer.cpp" line="280"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
         <translation>Fout: Kan codec-context standaardwaarden niet krijgen!</translation>
     </message>
@@ -835,27 +835,27 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
         <translation>Fout: Kan trailer niet schrijven, ga toch verder.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="304"/>
+        <location filename="../AV/Output/Muxer.cpp" line="306"/>
         <source>Muxer thread started.</source>
         <translation>Muxer thread gestart.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="358"/>
+        <location filename="../AV/Output/Muxer.cpp" line="360"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
         <translation>Fout: Kan geen frame naar de muxer schrijven!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="386"/>
+        <location filename="../AV/Output/Muxer.cpp" line="388"/>
         <source>Muxer thread stopped.</source>
         <translation>Muxer thread gestopt.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="390"/>
+        <location filename="../AV/Output/Muxer.cpp" line="392"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
         <translation>Exceptie &apos;%1&apos; in muxer thread.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="393"/>
+        <location filename="../AV/Output/Muxer.cpp" line="395"/>
         <source>Unknown exception in muxer thread.</source>
         <translation>Onbekende exceptie in muxer thread.</translation>
     </message>

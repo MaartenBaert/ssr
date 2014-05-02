@@ -710,7 +710,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <translation type="unfinished">Kodek %1 (%2) został użyty.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="294"/>
+        <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation type="unfinished">Uwaga: Ten kodek jest Uważany za eksperymentalny przez libav/ffmpeg.</translation>
     </message>
@@ -771,7 +771,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <translation type="unfinished">Błąd: Nie udało się rozpocząć nowego strumienia!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="278"/>
+        <location filename="../AV/Output/Muxer.cpp" line="280"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
         <translation type="unfinished">Błąd: Nie otrzymano kontekstu kodeka!</translation>
     </message>
@@ -802,27 +802,27 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <translation type="unfinished">Błąd: nie można zapisać &apos;trailer&apos;, mimo to kontynuowano.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="304"/>
+        <location filename="../AV/Output/Muxer.cpp" line="306"/>
         <source>Muxer thread started.</source>
         <translation type="unfinished">Uruchomiono wątek multipleksera.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="358"/>
+        <location filename="../AV/Output/Muxer.cpp" line="360"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
         <translation type="unfinished">Błąd: Nie można zapisać klatki do multipleksera!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="386"/>
+        <location filename="../AV/Output/Muxer.cpp" line="388"/>
         <source>Muxer thread stopped.</source>
         <translation type="unfinished">Zatrzymano wątek multipleksera.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="390"/>
+        <location filename="../AV/Output/Muxer.cpp" line="392"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
         <translation type="unfinished">Wyjątek &apos;%1&apos; w wątku multipleksera.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="393"/>
+        <location filename="../AV/Output/Muxer.cpp" line="395"/>
         <source>Unknown exception in muxer thread.</source>
         <translation type="unfinished">Nieznany wyjatek w wątku multipleksera.</translation>
     </message>
