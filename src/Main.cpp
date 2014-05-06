@@ -27,6 +27,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Version.h"
 
+#include "RecordSettings.h" //TODO// remove
+
 bool g_option_logfile;
 QString g_option_statsfile;
 bool g_option_syncdiagram;
@@ -188,6 +190,15 @@ int main(int argc, char* argv[]) {
 		dup2(fileno(f), 1); // redirect stdout
 		dup2(fileno(f), 2); // redirect stderr
 
+	}
+
+	//TODO// remove
+	{
+		RecordSettings settings;
+		settings.m_schedule_entries.resize(2);
+		SimpleJSON json;
+		settings.ToJSON(json);
+		json.WriteToFile("/tmp/ssr-recordsettings-test.json");
 	}
 
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");

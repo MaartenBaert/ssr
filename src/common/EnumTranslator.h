@@ -55,9 +55,16 @@ public:
 };
 
 template<typename E>
-inline QString EnumToString(E value) { return EnumTranslator<E, QString>::ToSecond(value, QString()); }
+inline std::string EnumToString(E value) { return EnumTranslator<E, std::string>::ToSecond(value, std::string()); }
 template<typename E>
-inline E StringToEnum(const QString& string, E fallback) { return EnumTranslator<E, QString>::ToFirst(string, fallback); }
+inline E StringToEnum(const std::string& string, E fallback) { return EnumTranslator<E, std::string>::ToFirst(string, fallback); }
+
+//TODO// remove
+template<typename E>
+inline QString EnumToQString(E value) { return QString::fromStdString(EnumToString(value)); }
+template<typename E>
+inline E QStringToEnum(const QString& string, E fallback) { return StringToEnum(string.toStdString(), fallback); }
+
 
 #define ENUMTRANSLATOR(A, B) template<> const EnumTranslator<A, B> EnumTranslator<A, B>::SINGLETON
-#define ENUMSTRINGS(E) ENUMTRANSLATOR(E, QString)
+#define ENUMSTRINGS(E) ENUMTRANSLATOR(E, std::string)

@@ -172,19 +172,20 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	common/DetectCPUFeatures.h common/Dialogs.cpp common/Dialogs.h \
 	common/EnumTranslator.h common/LockFreeMessageQueue.h \
 	common/Logger.cpp common/Logger.h common/MutexDataPair.h \
-	common/QueueBuffer.h common/TempBuffer.h \
-	GUI/AudioPreviewer.cpp GUI/AudioPreviewer.h \
-	GUI/DialogGLInject.cpp GUI/DialogGLInject.h \
-	GUI/DialogRecordSchedule.cpp GUI/DialogRecordSchedule.h \
-	GUI/ElidedLabel.cpp GUI/ElidedLabel.h GUI/HotkeyListener.cpp \
-	GUI/HotkeyListener.h GUI/Icons.cpp GUI/Icons.h \
-	GUI/KeyboardKeys.cpp GUI/MainWindow.cpp GUI/MainWindow.h \
-	GUI/PageDone.cpp GUI/PageDone.h GUI/PageInput.cpp \
-	GUI/PageInput.h GUI/PageOutput.cpp GUI/PageOutput.h \
-	GUI/PageRecord.cpp GUI/PageRecord.h GUI/PageWelcome.cpp \
-	GUI/PageWelcome.h GUI/ProfileBox.cpp GUI/ProfileBox.h \
-	GUI/VideoPreviewer.cpp GUI/VideoPreviewer.h GUI/WidgetRack.cpp \
-	GUI/WidgetRack.h settings/OutputSettings.h \
+	common/QueueBuffer.h common/SimpleJSON.cpp common/SimpleJSON.h \
+	common/TempBuffer.h GUI/AudioPreviewer.cpp \
+	GUI/AudioPreviewer.h GUI/DialogGLInject.cpp \
+	GUI/DialogGLInject.h GUI/DialogRecordSchedule.cpp \
+	GUI/DialogRecordSchedule.h GUI/ElidedLabel.cpp \
+	GUI/ElidedLabel.h GUI/HotkeyListener.cpp GUI/HotkeyListener.h \
+	GUI/Icons.cpp GUI/Icons.h GUI/KeyboardKeys.cpp \
+	GUI/MainWindow.cpp GUI/MainWindow.h GUI/PageDone.cpp \
+	GUI/PageDone.h GUI/PageInput.cpp GUI/PageInput.h \
+	GUI/PageOutput.cpp GUI/PageOutput.h GUI/PageRecord.cpp \
+	GUI/PageRecord.h GUI/PageWelcome.cpp GUI/PageWelcome.h \
+	GUI/ProfileBox.cpp GUI/ProfileBox.h GUI/VideoPreviewer.cpp \
+	GUI/VideoPreviewer.h GUI/WidgetRack.cpp GUI/WidgetRack.h \
+	settings/OutputSettings.h settings/RecordSettings.cpp \
 	settings/RecordSettings.h Global.h Main.cpp Main.h NVidia.cpp \
 	NVidia.h Version.cpp Version.h
 @ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
@@ -214,6 +215,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-DetectCPUFeatures.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-Dialogs.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-Logger.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-SimpleJSON.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-AudioPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-DialogGLInject.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-DialogRecordSchedule.$(OBJEXT) \
@@ -230,6 +232,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-ProfileBox.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-VideoPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-WidgetRack.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	settings/simplescreenrecorder-RecordSettings.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Main.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-NVidia.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Version.$(OBJEXT)
@@ -588,6 +591,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	common/Logger.h \
 @ENABLE_SSRPROGRAM_TRUE@	common/MutexDataPair.h \
 @ENABLE_SSRPROGRAM_TRUE@	common/QueueBuffer.h \
+@ENABLE_SSRPROGRAM_TRUE@	common/SimpleJSON.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	common/SimpleJSON.h \
 @ENABLE_SSRPROGRAM_TRUE@	common/TempBuffer.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/AudioPreviewer.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/AudioPreviewer.h \
@@ -621,6 +626,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	GUI/WidgetRack.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/WidgetRack.h \
 @ENABLE_SSRPROGRAM_TRUE@	settings/OutputSettings.h \
+@ENABLE_SSRPROGRAM_TRUE@	settings/RecordSettings.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	settings/RecordSettings.h \
 @ENABLE_SSRPROGRAM_TRUE@	Global.h \
 @ENABLE_SSRPROGRAM_TRUE@	Main.cpp \
@@ -867,6 +873,8 @@ common/simplescreenrecorder-Dialogs.$(OBJEXT): common/$(am__dirstamp) \
 	common/$(DEPDIR)/$(am__dirstamp)
 common/simplescreenrecorder-Logger.$(OBJEXT): common/$(am__dirstamp) \
 	common/$(DEPDIR)/$(am__dirstamp)
+common/simplescreenrecorder-SimpleJSON.$(OBJEXT):  \
+	common/$(am__dirstamp) common/$(DEPDIR)/$(am__dirstamp)
 GUI/$(am__dirstamp):
 	@$(MKDIR_P) GUI
 	@: > GUI/$(am__dirstamp)
@@ -905,6 +913,14 @@ GUI/simplescreenrecorder-VideoPreviewer.$(OBJEXT):  \
 	GUI/$(am__dirstamp) GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-WidgetRack.$(OBJEXT): GUI/$(am__dirstamp) \
 	GUI/$(DEPDIR)/$(am__dirstamp)
+settings/$(am__dirstamp):
+	@$(MKDIR_P) settings
+	@: > settings/$(am__dirstamp)
+settings/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) settings/$(DEPDIR)
+	@: > settings/$(DEPDIR)/$(am__dirstamp)
+settings/simplescreenrecorder-RecordSettings.$(OBJEXT):  \
+	settings/$(am__dirstamp) settings/$(DEPDIR)/$(am__dirstamp)
 
 simplescreenrecorder$(EXEEXT): $(simplescreenrecorder_OBJECTS) $(simplescreenrecorder_DEPENDENCIES) $(EXTRA_simplescreenrecorder_DEPENDENCIES) 
 	@rm -f simplescreenrecorder$(EXEEXT)
@@ -918,6 +934,7 @@ mostlyclean-compile:
 	-rm -f AV/Output/*.$(OBJEXT)
 	-rm -f GUI/*.$(OBJEXT)
 	-rm -f common/*.$(OBJEXT)
+	-rm -f settings/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -989,6 +1006,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-Dialogs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-Logger.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-SimpleJSON.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@settings/$(DEPDIR)/simplescreenrecorder-RecordSettings.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -1413,6 +1432,20 @@ common/simplescreenrecorder-Logger.obj: common/Logger.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o common/simplescreenrecorder-Logger.obj `if test -f 'common/Logger.cpp'; then $(CYGPATH_W) 'common/Logger.cpp'; else $(CYGPATH_W) '$(srcdir)/common/Logger.cpp'; fi`
 
+common/simplescreenrecorder-SimpleJSON.o: common/SimpleJSON.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT common/simplescreenrecorder-SimpleJSON.o -MD -MP -MF common/$(DEPDIR)/simplescreenrecorder-SimpleJSON.Tpo -c -o common/simplescreenrecorder-SimpleJSON.o `test -f 'common/SimpleJSON.cpp' || echo '$(srcdir)/'`common/SimpleJSON.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) common/$(DEPDIR)/simplescreenrecorder-SimpleJSON.Tpo common/$(DEPDIR)/simplescreenrecorder-SimpleJSON.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='common/SimpleJSON.cpp' object='common/simplescreenrecorder-SimpleJSON.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o common/simplescreenrecorder-SimpleJSON.o `test -f 'common/SimpleJSON.cpp' || echo '$(srcdir)/'`common/SimpleJSON.cpp
+
+common/simplescreenrecorder-SimpleJSON.obj: common/SimpleJSON.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT common/simplescreenrecorder-SimpleJSON.obj -MD -MP -MF common/$(DEPDIR)/simplescreenrecorder-SimpleJSON.Tpo -c -o common/simplescreenrecorder-SimpleJSON.obj `if test -f 'common/SimpleJSON.cpp'; then $(CYGPATH_W) 'common/SimpleJSON.cpp'; else $(CYGPATH_W) '$(srcdir)/common/SimpleJSON.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) common/$(DEPDIR)/simplescreenrecorder-SimpleJSON.Tpo common/$(DEPDIR)/simplescreenrecorder-SimpleJSON.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='common/SimpleJSON.cpp' object='common/simplescreenrecorder-SimpleJSON.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o common/simplescreenrecorder-SimpleJSON.obj `if test -f 'common/SimpleJSON.cpp'; then $(CYGPATH_W) 'common/SimpleJSON.cpp'; else $(CYGPATH_W) '$(srcdir)/common/SimpleJSON.cpp'; fi`
+
 GUI/simplescreenrecorder-AudioPreviewer.o: GUI/AudioPreviewer.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-AudioPreviewer.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-AudioPreviewer.Tpo -c -o GUI/simplescreenrecorder-AudioPreviewer.o `test -f 'GUI/AudioPreviewer.cpp' || echo '$(srcdir)/'`GUI/AudioPreviewer.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-AudioPreviewer.Tpo GUI/$(DEPDIR)/simplescreenrecorder-AudioPreviewer.Po
@@ -1636,6 +1669,20 @@ GUI/simplescreenrecorder-WidgetRack.obj: GUI/WidgetRack.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/WidgetRack.cpp' object='GUI/simplescreenrecorder-WidgetRack.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-WidgetRack.obj `if test -f 'GUI/WidgetRack.cpp'; then $(CYGPATH_W) 'GUI/WidgetRack.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/WidgetRack.cpp'; fi`
+
+settings/simplescreenrecorder-RecordSettings.o: settings/RecordSettings.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT settings/simplescreenrecorder-RecordSettings.o -MD -MP -MF settings/$(DEPDIR)/simplescreenrecorder-RecordSettings.Tpo -c -o settings/simplescreenrecorder-RecordSettings.o `test -f 'settings/RecordSettings.cpp' || echo '$(srcdir)/'`settings/RecordSettings.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) settings/$(DEPDIR)/simplescreenrecorder-RecordSettings.Tpo settings/$(DEPDIR)/simplescreenrecorder-RecordSettings.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='settings/RecordSettings.cpp' object='settings/simplescreenrecorder-RecordSettings.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o settings/simplescreenrecorder-RecordSettings.o `test -f 'settings/RecordSettings.cpp' || echo '$(srcdir)/'`settings/RecordSettings.cpp
+
+settings/simplescreenrecorder-RecordSettings.obj: settings/RecordSettings.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT settings/simplescreenrecorder-RecordSettings.obj -MD -MP -MF settings/$(DEPDIR)/simplescreenrecorder-RecordSettings.Tpo -c -o settings/simplescreenrecorder-RecordSettings.obj `if test -f 'settings/RecordSettings.cpp'; then $(CYGPATH_W) 'settings/RecordSettings.cpp'; else $(CYGPATH_W) '$(srcdir)/settings/RecordSettings.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) settings/$(DEPDIR)/simplescreenrecorder-RecordSettings.Tpo settings/$(DEPDIR)/simplescreenrecorder-RecordSettings.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='settings/RecordSettings.cpp' object='settings/simplescreenrecorder-RecordSettings.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o settings/simplescreenrecorder-RecordSettings.obj `if test -f 'settings/RecordSettings.cpp'; then $(CYGPATH_W) 'settings/RecordSettings.cpp'; else $(CYGPATH_W) '$(srcdir)/settings/RecordSettings.cpp'; fi`
 
 simplescreenrecorder-Main.o: Main.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-Main.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-Main.Tpo -c -o simplescreenrecorder-Main.o `test -f 'Main.cpp' || echo '$(srcdir)/'`Main.cpp
@@ -2084,6 +2131,8 @@ distclean-generic:
 	-rm -f GUI/$(am__dirstamp)
 	-rm -f common/$(DEPDIR)/$(am__dirstamp)
 	-rm -f common/$(am__dirstamp)
+	-rm -f settings/$(DEPDIR)/$(am__dirstamp)
+	-rm -f settings/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -2095,7 +2144,7 @@ clean-am: clean-binPROGRAMS clean-generic clean-libtool clean-local \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR) AV/$(DEPDIR) AV/Input/$(DEPDIR) AV/Output/$(DEPDIR) GUI/$(DEPDIR) common/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) AV/$(DEPDIR) AV/Input/$(DEPDIR) AV/Output/$(DEPDIR) GUI/$(DEPDIR) common/$(DEPDIR) settings/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -2141,7 +2190,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR) AV/$(DEPDIR) AV/Input/$(DEPDIR) AV/Output/$(DEPDIR) GUI/$(DEPDIR) common/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) AV/$(DEPDIR) AV/Input/$(DEPDIR) AV/Output/$(DEPDIR) GUI/$(DEPDIR) common/$(DEPDIR) settings/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

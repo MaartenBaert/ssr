@@ -20,12 +20,13 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "Logger.h"
-#include "PageInput.h"
-#include "OutputSettings.h"
-#include "OutputManager.h"
 #include "ElidedLabel.h"
 #include "HotkeyListener.h"
+#include "Logger.h"
+#include "OutputManager.h"
+#include "OutputSettings.h"
+#include "PageInput.h"
+#include "RecordSettings.h"
 
 class MainWindow;
 
@@ -50,25 +51,6 @@ class AudioPreviewer;
 class PageRecord : public QWidget {
 	Q_OBJECT
 
-public:
-	enum enum_schedule_timezone {
-		SCHEDULE_TIMEZONE_LOCAL,
-		SCHEDULE_TIMEZONE_UTC,
-	};
-	enum enum_schedule_timing {
-		SCHEDULE_TIMING_RELATIVE,
-		SCHEDULE_TIMING_ABSOLUTE,
-	};
-	enum enum_schedule_action {
-		SCHEDULE_ACTION_START,
-		SCHEDULE_ACTION_PAUSE,
-	};
-	struct ScheduleEntry {
-		enum_schedule_timing m_timing;
-		int m_hour, m_minute, m_second;
-		enum_schedule_action m_action;
-	};
-
 private:
 	static const int PRIORITY_RECORD, PRIORITY_PREVIEW;
 
@@ -78,8 +60,8 @@ private:
 	bool m_page_started, m_input_started, m_output_started, m_previewing;
 	bool m_recorded_something, m_wait_saving;
 
-	std::vector<ScheduleEntry> m_schedule;
-	std::vector<QTimer> m_schedule_timers;
+	enum_schedule_timezone m_schedule_time_zone;
+	std::vector<ScheduleEntry> m_schedule_entries;
 
 	PageInput::enum_video_area m_video_area;
 	unsigned int m_video_x, m_video_y, m_video_in_width, m_video_in_height;
@@ -152,6 +134,8 @@ public:
 	// This is used to display a warning if the user is about to close the program during a recording.
 	bool ShouldBlockClose();
 
+	void LoadSettings(RecordSettings* settings);
+	void SaveSettings(RecordSettings* settings);
 	void LoadSettings(QSettings* settings);
 	void SaveSettings(QSettings* settings);
 
@@ -170,7 +154,8 @@ private:
 	void UpdatePreview();
 
 public:
-	inline std::vector<ScheduleEntry> GetSchedule() { return m_schedule; }
+	inline enum_schedule_timezone GetScheduleTimeZone() { return m_schedule_time_zone; }
+	inline std::vector<ScheduleEntry> GetScheduleEntries() { return m_schedule_entries; }
 	inline bool IsHotkeyEnabled() { return m_checkbox_hotkey_enable->isChecked(); }
 	inline bool IsHotkeyCtrlEnabled() { return m_checkbox_hotkey_ctrl->isChecked(); }
 	inline bool IsHotkeyShiftEnabled() { return m_checkbox_hotkey_shift->isChecked(); }
@@ -180,7 +165,8 @@ public:
 	inline bool AreSoundNotificationsEnabled() { return m_checkbox_sound_notifications_enable->isChecked(); }
 	inline unsigned int GetPreviewFrameRate() { return m_spinbox_preview_frame_rate->value(); }
 
-	inline void SetSchedule(const std::vector<ScheduleEntry>& schedule) { m_schedule = schedule; }
+	inline void SetScheduleTimeZone(enum_schedule_timezone time_zone) { m_schedule_time_zone = time_zone; }
+	inline void SetScheduleEntries(const std::vector<ScheduleEntry>& schedule) { m_schedule_entries = schedule; }
 	inline void SetHotkeyEnabled(bool enable) { m_checkbox_hotkey_enable->setChecked(enable); }
 	inline void SetHotkeyCtrlEnabled(bool enable) { m_checkbox_hotkey_ctrl->setChecked(enable); }
 	inline void SetHotkeyShiftEnabled(bool enable) { m_checkbox_hotkey_shift->setChecked(enable); }

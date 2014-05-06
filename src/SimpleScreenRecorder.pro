@@ -43,6 +43,7 @@ SOURCES += \
 	common/DetectCPUFeatures.cpp \
 	common/Dialogs.cpp \
 	common/Logger.cpp \
+	common/SimpleJSON.cpp \
 	GUI/AudioPreviewer.cpp \
 	GUI/DialogGLInject.cpp \
 	GUI/DialogRecordSchedule.cpp \
@@ -59,9 +60,11 @@ SOURCES += \
 	GUI/ProfileBox.cpp \
 	GUI/VideoPreviewer.cpp \
 	GUI/WidgetRack.cpp \
+	settings/OutputSettings.cpp \
+	settings/RecordSettings.cpp \
 	Main.cpp \
-	Version.cpp \
-	NVidia.cpp
+	NVidia.cpp \
+	Version.cpp
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
@@ -97,6 +100,7 @@ HEADERS  += \
 	common/Logger.h \
 	common/MutexDataPair.h \
 	common/QueueBuffer.h \
+	common/SimpleJSON.h \
 	common/TempBuffer.h \
 	GUI/AudioPreviewer.h \
 	GUI/DialogGLInject.h \
@@ -114,11 +118,11 @@ HEADERS  += \
 	GUI/VideoPreviewer.h \
 	GUI/WidgetRack.h \
 	settings/OutputSettings.h \
+	settings/RecordSettings.h \
 	Global.h \
 	Main.h \
-	Version.h \
 	NVidia.h \
-	settings/RecordSettings.h
+	Version.h
 
 RESOURCES += \
 	resources.qrc

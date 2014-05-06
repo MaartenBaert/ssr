@@ -58,15 +58,15 @@ bool OutputManager::IsFinished() {
 }
 
 void OutputManager::Init() {
-	m_muxer.reset(new Muxer(m_output_settings.container_avname, m_output_settings.file));
-	if(!m_output_settings.video_codec_avname.isEmpty())
-		m_video_encoder = m_muxer->AddVideoEncoder(m_output_settings.video_codec_avname, m_output_settings.video_options, m_output_settings.video_kbit_rate * 1024,
+	m_muxer.reset(new Muxer(m_output_settings.m_container_avname, m_output_settings.m_file));
+	if(!m_output_settings.m_video_codec_avname.isEmpty())
+		m_video_encoder = m_muxer->AddVideoEncoder(m_output_settings.m_video_codec_avname, m_output_settings.video_options, m_output_settings.m_video_kbit_rate * 1024,
 												   m_output_settings.video_width, m_output_settings.video_height, m_output_settings.video_frame_rate);
 	if(!m_output_settings.audio_codec_avname.isEmpty())
 		m_audio_encoder = m_muxer->AddAudioEncoder(m_output_settings.audio_codec_avname, m_output_settings.audio_options, m_output_settings.audio_kbit_rate * 1024,
 												   m_output_settings.audio_channels, m_output_settings.audio_sample_rate);
 	m_muxer->Start();
-	m_synchronizer.reset(new Synchronizer(m_video_encoder, m_audio_encoder, m_output_settings.video_allow_frame_skipping));
+	m_synchronizer.reset(new Synchronizer(m_video_encoder, m_audio_encoder, m_output_settings.m_video_allow_frame_skipping));
 }
 
 void OutputManager::Free() {

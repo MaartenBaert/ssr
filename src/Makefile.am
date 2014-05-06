@@ -113,6 +113,8 @@ simplescreenrecorder_SOURCES = \
 	common/Logger.h \
 	common/MutexDataPair.h \
 	common/QueueBuffer.h \
+	common/SimpleJSON.cpp \
+	common/SimpleJSON.h \
 	common/TempBuffer.h \
 	GUI/AudioPreviewer.cpp \
 	GUI/AudioPreviewer.h \
@@ -145,7 +147,9 @@ simplescreenrecorder_SOURCES = \
 	GUI/VideoPreviewer.h \
 	GUI/WidgetRack.cpp \
 	GUI/WidgetRack.h \
+	settings/OutputSettings.cpp \
 	settings/OutputSettings.h \
+	settings/RecordSettings.cpp \
 	settings/RecordSettings.h \
 	Global.h \
 	Main.cpp \

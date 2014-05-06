@@ -375,6 +375,47 @@ bool PageRecord::ShouldBlockClose() {
 
 }
 
+void PageRecord::LoadSettings(RecordSettings* settings) {
+
+	SetHotkeyEnabled(settings->m_hotkey_enable);
+	SetHotkeyKey(settings->m_hotkey_key - Qt::Key_A);
+	SetHotkeyCtrlEnabled(settings->m_hotkey_modifiers & Qt::ControlModifier);
+	SetHotkeyShiftEnabled(settings->m_hotkey_modifiers & Qt::ShiftModifier);
+	SetHotkeyAltEnabled(settings->m_hotkey_modifiers & Qt::AltModifier);
+	SetHotkeySuperEnabled(settings->m_hotkey_modifiers & Qt::MetaModifier);
+
+	SetSoundNotificationsEnabled(settings->m_sound_notifications);
+	SetPreviewFrameRate(settings->m_preview_frame_rate);
+
+	SetScheduleTimezone(settings->m_schedule_timezone);
+	SetScheduleEntries(settings->m_schedule_entries);
+
+	OnUpdateHotkeyFields();
+	OnUpdateSoundNotifications();
+}
+
+void PageRecord::SaveSettings(RecordSettings* settings) {
+
+	settings->m_hotkey_enable = IsHotkeyEnabled();
+	settings->m_hotkey_key = Qt::Key_A + GetHotkeyKey();
+	settings->m_hotkey_modifiers = 0;
+	if(IsHotkeyCtrlEnabled())
+		settings->m_hotkey_modifiers |= Qt::ControlModifier;
+	if(IsHotkeyShiftEnabled())
+		settings->m_hotkey_modifiers |= Qt::ShiftModifier;
+	if(IsHotkeyAltEnabled())
+		settings->m_hotkey_modifiers |= Qt::AltModifier;
+	if(IsHotkeySuperEnabled())
+		settings->m_hotkey_modifiers |= Qt::MetaModifier;
+
+	settings->m_sound_notifications = AreSoundNotificationsEnabled();
+	settings->m_preview_frame_rate = GetPreviewFrameRate();
+
+	settings->m_schedule_timezone = GetScheduleTimeZone();
+	settings->m_schedule_entries = GetScheduleEntries();
+
+}
+
 void PageRecord::LoadSettings(QSettings *settings) {
 	SetHotkeyEnabled(settings->value("record/hotkey_enable", true).toBool());
 	SetHotkeyCtrlEnabled(settings->value("record/hotkey_ctrl", true).toBool());
@@ -468,18 +509,18 @@ void PageRecord::StartPage() {
 
 	// get the output settings
 	if(m_separate_files)
-		m_output_settings.file = QString(); // will be set later
+		m_output_settings.m_file = QString(); // will be set later
 	else
-		m_output_settings.file = m_file_base;
-	m_output_settings.container_avname = page_output->GetContainerAVName();
+		m_output_settings.m_file = m_file_base;
+	m_output_settings.m_container_avname = page_output->GetContainerAVName();
 
-	m_output_settings.video_codec_avname = page_output->GetVideoCodecAVName();
-	m_output_settings.video_kbit_rate = page_output->GetVideoKBitRate();
+	m_output_settings.m_video_codec_avname = page_output->GetVideoCodecAVName();
+	m_output_settings.m_video_kbit_rate = page_output->GetVideoKBitRate();
 	m_output_settings.video_options.clear();
 	m_output_settings.video_width = 0;
 	m_output_settings.video_height = 0;
 	m_output_settings.video_frame_rate = m_video_frame_rate;
-	m_output_settings.video_allow_frame_skipping = page_output->GetVideoAllowFrameSkipping();
+	m_output_settings.m_video_allow_frame_skipping = page_output->GetVideoAllowFrameSkipping();
 
 	m_output_settings.audio_codec_avname = (m_audio_enabled)? page_output->GetAudioCodecAVName() : QString();
 	m_output_settings.audio_kbit_rate = page_output->GetAudioKBitRate();
@@ -495,7 +536,7 @@ void PageRecord::StartPage() {
 			// with the 'crf' option. 'preset' changes the encoding speed (and hence the efficiency of the compression) but doesn't really influence the quality,
 			// which is great because it means you don't have to experiment with different bit rates and different speeds to get good results.
 			m_output_settings.video_options.push_back(std::make_pair(QString("crf"), QString::number(page_output->GetH264CRF())));
-			m_output_settings.video_options.push_back(std::make_pair(QString("preset"), EnumToString(page_output->GetH264Preset())));
+			m_output_settings.video_options.push_back(std::make_pair(QString("preset"), EnumToQString(page_output->GetH264Preset())));
 			break;
 		}
 		case PageOutput::VIDEO_CODEC_VP8: {
@@ -603,8 +644,8 @@ void PageRecord::StopPage(bool save) {
 
 		// delete the file if it isn't needed
 		if(!save && m_file_protocol.isNull()) {
-			if(QFileInfo(m_output_settings.file).exists())
-				QFile(m_output_settings.file).remove();
+			if(QFileInfo(m_output_settings.m_file).exists())
+				QFile(m_output_settings.m_file).remove();
 		}
 
 	}
@@ -648,7 +689,7 @@ void PageRecord::StartOutput() {
 
 			// set the file name
 			if(m_separate_files)
-				m_output_settings.file = GetNewSegmentFile(m_file_base);
+				m_output_settings.m_file = GetNewSegmentFile(m_file_base);
 
 			// for OpenGL recording, detect the application size
 			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT && !m_video_scaling) {
@@ -724,7 +765,7 @@ void PageRecord::StopOutput(bool final) {
 		m_output_manager.reset();
 
 		// change the file name
-		m_output_settings.file = QString();
+		m_output_settings.m_file = QString();
 
 		// reset the output video size
 		m_output_settings.video_width = 0;
@@ -970,7 +1011,7 @@ void PageRecord::OnRecordStartPause() {
 void PageRecord::OnEditSchedule() {
 	DialogRecordSchedule dialog(this);
 	if(dialog.exec()) {
-		SetSchedule(dialog.GetSchedule());
+		SetScheduleEntries(dialog.GetSchedule());
 	}
 }
 
@@ -1041,7 +1082,7 @@ void PageRecord::OnUpdateInformation() {
 
 		QString file_name;
 		if(m_file_protocol.isNull())
-			file_name = (m_output_settings.file.isNull())? "?" : QFileInfo(m_output_settings.file).fileName();
+			file_name = (m_output_settings.m_file.isNull())? "?" : QFileInfo(m_output_settings.m_file).fileName();
 		else
 			file_name = "(" + m_file_protocol + ")";
 

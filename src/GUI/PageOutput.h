@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "OutputSettings.h"
 #include "ProfileBox.h"
 
 class MainWindow;
@@ -28,29 +29,6 @@ class PageOutput : public QWidget {
 	Q_OBJECT
 
 public:
-	enum enum_container {
-		CONTAINER_MKV,
-		CONTAINER_MP4,
-		CONTAINER_WEBM,
-		CONTAINER_OGG,
-		CONTAINER_OTHER,
-		CONTAINER_COUNT // must be last
-	};
-	enum enum_video_codec {
-		VIDEO_CODEC_H264,
-		VIDEO_CODEC_VP8,
-		VIDEO_CODEC_THEORA,
-		VIDEO_CODEC_OTHER,
-		VIDEO_CODEC_COUNT // must be last
-	};
-	enum enum_audio_codec {
-		AUDIO_CODEC_VORBIS,
-		AUDIO_CODEC_MP3,
-		AUDIO_CODEC_AAC,
-		AUDIO_CODEC_UNCOMPRESSED,
-		AUDIO_CODEC_OTHER,
-		AUDIO_CODEC_COUNT // must be last
-	};
 	enum enum_h264_preset {
 		H264_PRESET_ULTRAFAST,
 		H264_PRESET_SUPERFAST,

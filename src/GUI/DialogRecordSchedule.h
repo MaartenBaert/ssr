@@ -20,8 +20,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "WidgetRack.h"
 #include "PageRecord.h"
+#include "RecordSettings.h"
+#include "WidgetRack.h"
 
 class RecordScheduleEntryWidget : public QWidget {
 	Q_OBJECT
@@ -32,10 +33,10 @@ private:
 	QComboBox *m_combobox_action;
 
 public:
-	RecordScheduleEntryWidget(PageRecord::ScheduleEntry entry, QWidget* parent = NULL);
+	RecordScheduleEntryWidget(ScheduleEntry entry, QWidget* parent = NULL);
 	~RecordScheduleEntryWidget();
 
-	PageRecord::ScheduleEntry Get();
+	ScheduleEntry Get();
 
 };
 
@@ -56,7 +57,7 @@ public:
 	DialogRecordSchedule(PageRecord* parent);
 	~DialogRecordSchedule();
 
-	std::vector<PageRecord::ScheduleEntry> GetSchedule();
+	std::vector<ScheduleEntry> GetSchedule();
 
 private:
 	QDateTime GetCurrentTime();

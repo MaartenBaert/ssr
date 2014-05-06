@@ -20,10 +20,49 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "SimpleJSON.h"
+
+enum enum_schedule_timezone {
+	SCHEDULE_TIMEZONE_LOCAL,
+	SCHEDULE_TIMEZONE_UTC,
+};
+enum enum_schedule_timing {
+	SCHEDULE_TIMING_RELATIVE,
+	SCHEDULE_TIMING_ABSOLUTE,
+};
+enum enum_schedule_action {
+	SCHEDULE_ACTION_START,
+	SCHEDULE_ACTION_PAUSE,
+};
+
+struct ScheduleEntry {
+
+	enum_schedule_timing m_timing;
+	unsigned int m_hour, m_minute, m_second;
+	enum_schedule_action m_action;
+
+	inline ScheduleEntry() { Defaults(); }
+	void Defaults();
+	void FromJSON(const SimpleJSON& json);
+	void ToJSON(SimpleJSON& json);
+
+};
+
 struct RecordSettings {
 
-	bool hotkey_enable;
-	bool hotkey_ctrl, hotkey_shift, hotkey_alt, hotkey_super;
+	bool m_hotkey_enable;
+	Qt::Key m_hotkey_key;
+	Qt::KeyboardModifiers m_hotkey_modifiers;
 
+	bool m_sound_notifications;
+	unsigned int m_preview_frame_rate;
+
+	enum_schedule_timezone m_schedule_timezone;
+	std::vector<ScheduleEntry> m_schedule_entries;
+
+	inline RecordSettings() { Defaults(); }
+	void Defaults();
+	void FromJSON(const SimpleJSON& json);
+	void ToJSON(SimpleJSON& json);
 
 };

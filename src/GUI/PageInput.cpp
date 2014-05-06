@@ -372,7 +372,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 #endif
 
 	// load settings
-	SetVideoArea(StringToEnum(settings->value("input/video_area", QString()).toString(), VIDEO_AREA_SCREEN));
+	SetVideoArea(QStringToEnum(settings->value("input/video_area", QString()).toString(), VIDEO_AREA_SCREEN));
 	SetVideoAreaScreen(settings->value("input/video_area_screen", 0).toUInt());
 	SetVideoX(settings->value("input/video_x", 0).toUInt());
 	SetVideoY(settings->value("input/video_y", 0).toUInt());
@@ -384,7 +384,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	SetVideoScaledH(settings->value("input/video_scaled_h", 480).toUInt());
 	SetVideoRecordCursor(settings->value("input/video_record_cursor", true).toBool());
 	SetAudioEnabled(settings->value("input/audio_enabled", true).toBool());
-	SetAudioBackend(StringToEnum(settings->value("input/audio_backend", QString()).toString(), default_audio_backend));
+	SetAudioBackend(QStringToEnum(settings->value("input/audio_backend", QString()).toString(), default_audio_backend));
 	SetALSASource(FindALSASource(settings->value("input/audio_alsa_source", QString()).toString()));
 #if SSR_USE_PULSEAUDIO
 	SetPulseAudioSource(FindPulseAudioSource(settings->value("input/audio_pulseaudio_source", QString()).toString()));
@@ -409,7 +409,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 }
 
 void PageInput::SaveProfileSettings(QSettings* settings) {
-	settings->setValue("input/video_area", EnumToString(GetVideoArea()));
+	settings->setValue("input/video_area", EnumToQString(GetVideoArea()));
 	settings->setValue("input/video_area_screen", GetVideoAreaScreen());
 	settings->setValue("input/video_x", GetVideoX());
 	settings->setValue("input/video_y", GetVideoY());
@@ -421,7 +421,7 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/video_scaled_h", GetVideoScaledH());
 	settings->setValue("input/video_record_cursor", GetVideoRecordCursor());
 	settings->setValue("input/audio_enabled", GetAudioEnabled());
-	settings->setValue("input/audio_backend", EnumToString(GetAudioBackend()));
+	settings->setValue("input/audio_backend", EnumToQString(GetAudioBackend()));
 	settings->setValue("input/audio_alsa_source", GetALSASourceName());
 #if SSR_USE_PULSEAUDIO
 	settings->setValue("input/audio_pulseaudio_source", GetPulseAudioSourceName());

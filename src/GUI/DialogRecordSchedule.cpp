@@ -19,7 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DialogRecordSchedule.h"
 
-RecordScheduleEntryWidget::RecordScheduleEntryWidget(PageRecord::ScheduleEntry entry, QWidget* parent)
+RecordScheduleEntryWidget::RecordScheduleEntryWidget(ScheduleEntry entry, QWidget* parent)
 	: QWidget(parent) {
 
 	QLabel *label_time = new QLabel(tr("Time:"), this);
@@ -51,13 +51,13 @@ RecordScheduleEntryWidget::~RecordScheduleEntryWidget() {
 
 }
 
-PageRecord::ScheduleEntry RecordScheduleEntryWidget::Get() {
-	PageRecord::ScheduleEntry entry;
-	entry.m_timing = (PageRecord::enum_schedule_timing) m_combobox_timing->currentIndex();
+ScheduleEntry RecordScheduleEntryWidget::Get() {
+	ScheduleEntry entry;
+	entry.m_timing = (enum_schedule_timing) m_combobox_timing->currentIndex();
 	entry.m_hour = m_timeedit_time->time().hour();
 	entry.m_minute = m_timeedit_time->time().minute();
 	entry.m_second = m_timeedit_time->time().second();
-	entry.m_action = (PageRecord::enum_schedule_action) m_combobox_action->currentIndex();
+	entry.m_action = (enum_schedule_action) m_combobox_action->currentIndex();
 	return entry;
 }
 
@@ -80,9 +80,9 @@ DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
 	m_widgetrack_schedule = new WidgetRack(this);
 	m_widgetrack_schedule->setMinimumSize(500, 300);
 	{
-		auto schedule = m_parent->GetSchedule();
+		auto schedule = m_parent->GetScheduleEntries();
 		for(unsigned int i = 0; i < schedule.size(); ++i) {
-			PageRecord::ScheduleEntry entry = schedule[i];
+			ScheduleEntry entry = schedule[i];
 			QWidget *widget = new RecordScheduleEntryWidget(entry, m_widgetrack_schedule->viewport());
 			m_widgetrack_schedule->AddWidget(i, widget);
 		}
@@ -146,8 +146,8 @@ DialogRecordSchedule::~DialogRecordSchedule() {
 
 }
 
-std::vector<PageRecord::ScheduleEntry> DialogRecordSchedule::GetSchedule() {
-	std::vector<PageRecord::ScheduleEntry> schedule;
+std::vector<ScheduleEntry> DialogRecordSchedule::GetSchedule() {
+	std::vector<ScheduleEntry> schedule;
 	for(unsigned int i = 0; i < m_widgetrack_schedule->GetWidgetCount(); ++i) {
 		RecordScheduleEntryWidget *widget = static_cast<RecordScheduleEntryWidget*>(m_widgetrack_schedule->GetWidget(i));
 		schedule[i] = widget->Get();
@@ -156,7 +156,7 @@ std::vector<PageRecord::ScheduleEntry> DialogRecordSchedule::GetSchedule() {
 }
 
 QDateTime DialogRecordSchedule::GetCurrentTime() {
-	if(m_combobox_timezone->currentIndex() == PageRecord::SCHEDULE_TIMEZONE_LOCAL)
+	if(m_combobox_timezone->currentIndex() == SCHEDULE_TIMEZONE_LOCAL)
 		return QDateTime::currentDateTime();
 	else
 		return QDateTime::currentDateTimeUtc();
@@ -177,7 +177,7 @@ void DialogRecordSchedule::OnUpdateTime() {
 }
 
 void DialogRecordSchedule::OnAdd() {
-	PageRecord::ScheduleEntry entry{PageRecord::SCHEDULE_TIMING_RELATIVE, 0, 0, 0, PageRecord::SCHEDULE_ACTION_START};
+	ScheduleEntry entry;
 	unsigned int selected = m_widgetrack_schedule->GetSelected();
 	unsigned int index = (selected == WidgetRack::NO_SELECTION)? m_widgetrack_schedule->GetWidgetCount() : selected + 1;
 	QWidget *widget = new RecordScheduleEntryWidget(entry, m_widgetrack_schedule->viewport());
