@@ -157,7 +157,8 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
     <message>
         <location filename="../AV/FastResampler.cpp" line="126"/>
         <source>Error: Resample ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Not fully translated</translatorcomment>
+        <translation type="unfinished">Fehler: Resample ratio out of range!</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="130"/>
@@ -1512,7 +1513,7 @@ Wenn Sie keine Idee haben, womit Sie beginnen sollen, versuchen Sie 5000 und ver
         <location filename="../GUI/PageOutput.cpp" line="243"/>
         <source>Constant rate factor:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="248"/>
@@ -1525,7 +1526,7 @@ Der erlaubte Bereich liegt bei 0-51 (0 bedeutet verlustlos, der Standard ist 23)
         <location filename="../GUI/PageOutput.cpp" line="254"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="259"/>
@@ -1539,7 +1540,7 @@ nicht zu sehr betroffen sein.</translation>
         <location filename="../GUI/PageOutput.cpp" line="261"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="263"/>
@@ -1680,33 +1681,34 @@ große Rolle.
     <message>
         <location filename="../GUI/PageRecord.cpp" line="152"/>
         <source>Hotkey:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnelltaste:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="153"/>
         <source>Ctrl +</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg +</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="154"/>
         <source>Shift +</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift +</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="155"/>
         <source>Alt +</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt +</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="156"/>
         <source>Super +</source>
-        <translation type="unfinished"></translation>
+        <translation>Super +</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="158"/>
         <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
 The program that you are recording will not receive the key press.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Taste, die zusammen mit dem angegebenen Modifizierer gedrückt werden muss, um die Aufnahme zu starten oder pausieren.
+Das aufgenommene Programm wird diesen Tastendruck nicht erhalten.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="198"/>
@@ -1721,22 +1723,22 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="202"/>
         <source>FPS in:</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS ein:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="204"/>
         <source>FPS out:</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS aus:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="206"/>
         <source>Size in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe ein:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="208"/>
         <source>Size out:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe aus:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="210"/>
@@ -1771,7 +1773,7 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="295"/>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Log</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="310"/>
@@ -1795,7 +1797,7 @@ Sind Sie sicher, dass Sie beenden wollen?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="522"/>
         <source>Starting page ...</source>
-        <translation type="unfinished">Start</translation>
+        <translation>Start-Seite...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="543"/>
@@ -1807,77 +1809,80 @@ Sind Sie sicher, dass Sie beenden wollen?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="550"/>
         <source>Started page.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Where does this appear?</translatorcomment>
+        <translation>Seite gestartet.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="574"/>
         <source>Stopping page ...</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Where does this appear? Log only?</translatorcomment>
+        <translation>Seite wird angehalten...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="584"/>
         <source>Encoding remaining data ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbleibende Daten werden kodiert...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="615"/>
         <source>Stopped page.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Where does this appear?</translatorcomment>
+        <translation>Seite gestoppt.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="640"/>
         <source>Starting output ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabe wird gestoppt...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="651"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: die Größe der OpenGL-Applikation konnte nicht bestimmt werden, da die GLInject-Eingabe nicht erzeugt wurde.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="656"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: die Größe der OpenGL-Applikation konnte nicht bestimmt werden. Entweder wurde die Applikation nicht korrekt gestartet, oder die Applikation hat noch kein OpenGL Fenster erzeugt. Wenn Sie die Aufnahme starten möchten, bevor Sie die Applikation gestartet haben, müssen Sie Skalierung aktivieren und die Größe des Videos manuell eingeben.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="692"/>
         <source>Started output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabe gestartet.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="712"/>
         <source>Stopping output ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabe wird angehalten...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="730"/>
         <source>Stopped output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabe angehalten.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="757"/>
         <source>Starting input ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabe wird gestartet...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="762"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: GLInject-Eingabe konnte nicht gestartet werden, weil es nicht erzeugt wurde.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="781"/>
         <source>Started input.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabe gestartet.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="806"/>
         <source>Stopping input ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabe wird angehalten...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="817"/>
         <source>Stopped input.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabe angehalten.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="880"/>
