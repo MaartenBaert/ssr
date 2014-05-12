@@ -163,48 +163,48 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
     <message>
         <location filename="../AV/FastResampler.cpp" line="130"/>
         <source>Error: Drift ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler: Drift ratio is out of range!</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="160"/>
         <source>Resample ratio is %1 (was %2).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Resample ratio is %1 (was %2).</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="77"/>
         <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warnung: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="86"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler: Can&apos;t get swscale context!</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="105"/>
         <location filename="../AV/FastScaler.cpp" line="128"/>
         <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
         <comment>Don&apos;t translate &apos;fallback&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warnung: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="32"/>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warnung: An overrun has occurred, some samples were lost.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="34"/>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler: Can&apos;t recover device after overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="38"/>
         <source>Error: Can&apos;t start PCM device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler: Can&apos;t start PCM device after overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="66"/>
@@ -212,130 +212,130 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
         <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="207"/>
         <source>Stopping input thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoppe Eingabe Prozess...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="95"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="232"/>
         <source>Generating source list ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Generiere Quell-Liste...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="114"/>
         <source>Error: Could not update ALSA configuration!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: die ALSA-Konfiguration konnte nicht aktualisiert werden!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="121"/>
         <source>Warning: Could not find PCM plugins.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warnung: es konnten keine PCM-PLugins gefunden werden.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="163"/>
         <source>Found plugin %1 = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin gefunden %1 = %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="176"/>
         <source>Warning: Could not open sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warnung: konnte die Sound-Karte %1 nicht öffnen.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="182"/>
         <source>Warning: Could not get info for sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warnung: konnte keine Informationen für Sound-Karte %1 abrufen.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="186"/>
         <source>Found card %1 = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Karte gefunden %1 = %2. </translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="211"/>
         <source>Found device %1 = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerät gefunden %1 = %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="260"/>
         <location filename="../AV/SimpleSynth.cpp" line="121"/>
         <source>Error: Can&apos;t open PCM device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: konnte das PCM-Gerät nicht öffnen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="264"/>
         <location filename="../AV/SimpleSynth.cpp" line="125"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: konnte keine PCM-Hardware-Parameter abrufen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="270"/>
         <location filename="../AV/SimpleSynth.cpp" line="131"/>
         <source>Error: Can&apos;t set access type!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: konnte Zugriffs-Typ nicht setzen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="276"/>
         <location filename="../AV/SimpleSynth.cpp" line="137"/>
         <source>Error: Can&apos;t set sample format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: konnte das Sample-Format nicht setzen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="283"/>
         <location filename="../AV/SimpleSynth.cpp" line="144"/>
         <source>Error: Can&apos;t set sample rate!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: konnte die Sample-Rate nicht setzen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="287"/>
         <location filename="../AV/SimpleSynth.cpp" line="148"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warnung: Sample-Rate %1 wird nicht unterstützt, es wird statt dessen %2 verwendet. Das ist kein Problem.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="296"/>
         <location filename="../AV/SimpleSynth.cpp" line="156"/>
         <source>Error: Can&apos;t set channel count!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: konnte die Kanal-Anzahl nicht setzen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="300"/>
         <source>Warning: Channel count %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warnung: Kanal-Anzahl %1 wird nicht unterstützt, benutze statt dessen %2. Das ist kein Problem.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="309"/>
         <location filename="../AV/SimpleSynth.cpp" line="163"/>
         <source>Error: Can&apos;t set period size!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t set period size!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="313"/>
         <location filename="../AV/SimpleSynth.cpp" line="167"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="322"/>
         <location filename="../AV/SimpleSynth.cpp" line="176"/>
         <source>Error: Can&apos;t set buffer size!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t set buffer size!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="326"/>
         <location filename="../AV/SimpleSynth.cpp" line="180"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="334"/>
         <location filename="../AV/SimpleSynth.cpp" line="188"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t apply PCM hardware parameters!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="352"/>
         <source>Error: Can&apos;t start PCM device!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t start PCM device!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="373"/>
@@ -344,12 +344,12 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
         <location filename="../AV/Input/PulseAudioInput.cpp" line="299"/>
         <location filename="../AV/Input/X11Input.cpp" line="345"/>
         <source>Input thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabe-Prozess gestartet.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="388"/>
         <source>Error: Can&apos;t read samples!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t read samples!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="414"/>
@@ -358,7 +358,7 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
         <location filename="../AV/Input/PulseAudioInput.cpp" line="387"/>
         <location filename="../AV/Input/X11Input.cpp" line="435"/>
         <source>Input thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabe-Prozess angehalten.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="418"/>
@@ -367,7 +367,7 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
         <location filename="../AV/Input/PulseAudioInput.cpp" line="391"/>
         <location filename="../AV/Input/X11Input.cpp" line="439"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exception &apos;%1&apos; in input thread.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="421"/>
@@ -376,692 +376,695 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
         <location filename="../AV/Input/PulseAudioInput.cpp" line="394"/>
         <location filename="../AV/Input/X11Input.cpp" line="442"/>
         <source>Unknown exception in input thread.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unknown exception in input thread.</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="149"/>
         <source>Error: Could not read stream, this usually means that the stream was already gone.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not read stream, this usually means that the stream was already gone.</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="72"/>
         <source>Error: Could not connect to JACK!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not connect to JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="81"/>
         <source>Error: Could not create JACK port!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not create JACK port!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="87"/>
         <source>Error: Could not set JACK process callback!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not set JACK process callback!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="91"/>
         <source>Error: Could not set JACK sample rate callback!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not set JACK sample rate callback!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="95"/>
         <source>Error: Could not set JACK xrun callback!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not set JACK xrun callback!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="99"/>
         <source>Error: Could not set JACK port connect callback!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not set JACK port connect callback!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="104"/>
         <source>Error: Could not activate JACK client!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not activate JACK client!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="112"/>
         <location filename="../AV/Input/JACKInput.cpp" line="123"/>
         <location filename="../AV/Input/JACKInput.cpp" line="247"/>
         <source>Connecting port %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Connecting port %1 to %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="251"/>
         <source>Disconnecting port %1 from %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Disconnecting port %1 from %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="35"/>
         <source>Error: pa_mainloop_prepare failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_prepare&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: pa_mainloop_prepare failed!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="39"/>
         <source>Error: pa_mainloop_poll failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_poll&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: pa_mainloop_poll failed!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="43"/>
         <source>Error: pa_mainloop_dispatch failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_dispatch&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: pa_mainloop_dispatch failed!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="53"/>
         <source>Error: Could not create main loop!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not create main loop!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="60"/>
         <source>Error: Could not create context!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not create context!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="64"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA backend instead.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not connect! Reason: %1
+It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA backend instead.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="77"/>
         <source>Error: Connection attempt failed! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Connection attempt failed! Reason: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="114"/>
         <source>Error: Could not create stream! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not create stream! Reason: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="121"/>
         <source>Error: Could not connect stream! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not connect stream! Reason: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="132"/>
         <source>Error: Stream connection attempt failed! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Stream connection attempt failed! Reason: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="223"/>
         <source>Got %1 = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Got %1 = %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="244"/>
         <source>Error: Could not get names of sources! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Could not get names of sources! Reason: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="313"/>
         <source>Error: pa_stream_peek failed!</source>
         <comment>Don&apos;t translate &apos;pa_stream_peek&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: pa_stream_peek failed!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="376"/>
         <source>Warning: Audio source was suspended. The current segment will be stopped until the source is resumed.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Audio source was suspended. The current segment will be stopped until the source is resumed.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="381"/>
         <source>Warning: Stream was moved to a different source.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Stream was moved to a different source.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="64"/>
         <source>Created video stream reader.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Created video stream reader.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="69"/>
         <source>Error: Can&apos;t open video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t open video stream file!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="76"/>
         <source>Error: Can&apos;t resize video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t resize video stream file!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="83"/>
         <source>Error: Can&apos;t memory-map video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t memory-map video stream file!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="92"/>
         <source>Error: Can&apos;t open video frame file!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t open video frame file!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="142"/>
         <source>Destroyed video stream reader.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Destroyed video stream reader.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="238"/>
         <source>Error: Size of video frame file is incorrect!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Size of video frame file is incorrect!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="247"/>
         <source>Error: Can&apos;t memory-map video frame file!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t memory-map video frame file!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="86"/>
         <source>Error: Can&apos;t create channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t create channel directory!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="93"/>
         <source>Error: Can&apos;t stat channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t stat channel directory!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="97"/>
         <source>Error: Channel directory is not a regular directory!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Channel directory is not a regular directory!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="102"/>
         <source>Error: Can&apos;t set channel directory mode!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t set channel directory mode!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="107"/>
         <source>Error: Channel directory is owned by a different user! Choose a different channel name, or enable relaxed file permissions to use it anyway.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Channel directory is owned by a different user! Choose a different channel name, or enable relaxed file permissions to use it anyway.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="118"/>
         <source>Error: Can&apos;t initialize inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t initialize inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="124"/>
         <source>Error: Can&apos;t watch shared memory directory!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t watch shared memory directory!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="135"/>
         <source>Error: Can&apos;t open shared memory directory!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t open shared memory directory!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="153"/>
         <source>Added pre-existing stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Added pre-existing stream %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="187"/>
         <source>Error: Can&apos;t get read length from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t get read length from inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="195"/>
         <source>Error: Can&apos;t read from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t read from inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="205"/>
         <source>Error: Received partial event from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Received partial event from inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="217"/>
         <source>Error: Received partial name from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Received partial name from inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="231"/>
         <source>Added stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Added stream %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="239"/>
         <source>Removed stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Removed stream %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="265"/>
         <source>Deleted abandoned stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deleted abandoned stream %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="74"/>
         <source>Error: Unsupported X11 image pixel format!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Unsupported X11 image pixel format!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="186"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="104"/>
         <source>Error: Width or height is zero!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Width or height is zero!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="190"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="108"/>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Width or height is too large, the maximum width and height is %1!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="236"/>
         <location filename="../GUI/HotkeyListener.cpp" line="118"/>
         <source>Error: Can&apos;t open X display!</source>
         <comment>Don&apos;t translate &apos;display&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: konnte das X-Display nicht öffnen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="245"/>
         <source>Using X11 shared memory.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Using X11 shared memory.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="248"/>
         <source>Error: Can&apos;t create shared image!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t create shared image!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="253"/>
         <source>Error: Can&apos;t get shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t get shared memory!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="258"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t attach to shared memory!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="264"/>
         <source>Not using X11 shared memory.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Not using X11 shared memory.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="271"/>
         <source>Warning: XFixes is not supported by X server, the cursor has been hidden.</source>
         <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: XFixes is not supported by X server, the cursor has been hidden.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="329"/>
         <source>Error: Invalid screen bounding box!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Invalid screen bounding box!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="385"/>
         <source>Error: Can&apos;t attach server to shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t attach server to shared memory!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="391"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t get image (using shared memory)!
+    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="402"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t get image (not using shared memory)!
+    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="97"/>
         <source>Error: Channel count is zero.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Channel count is zero.</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="101"/>
         <source>Error: Sample rate is zero.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Sample rate is zero.</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="118"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Encoder requires an unsupported sample format!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="159"/>
         <location filename="../AV/Output/AudioEncoder.cpp" line="180"/>
         <source>Error: Encoding of audio frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Encoding of audio frame failed!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="33"/>
         <source>Error: Option &apos;%1&apos; could not be parsed!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Option &apos;%1&apos; could not be parsed!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="88"/>
         <source>Stopping encoder thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stopping encoder thread ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="147"/>
         <source>Error: Can&apos;t open codec!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t open codec!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="155"/>
         <source>Warning: Codec option &apos;%1&apos; was not recognised!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Codec option &apos;%1&apos; was not recognised!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="171"/>
         <source>Encoder thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Encoder thread started.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="203"/>
         <source>Flushing encoder ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Flushing encoder ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="217"/>
         <source>Encoder thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Encoder thread stopped.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="221"/>
         <source>Exception &apos;%1&apos; in encoder thread.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exception &apos;%1&apos; in encoder thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="224"/>
         <source>Unknown exception in encoder thread.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unknown exception in encoder thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="74"/>
         <source>Stopping encoders ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stopping encoders ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="81"/>
         <source>Waiting for muxer thread to stop ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Waiting for muxer thread to stop ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="136"/>
         <source>Error: Can&apos;t write header!</source>
         <comment>Don&apos;t translate &apos;header&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t write header!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="147"/>
         <source>Finishing encoders ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Finishing encoders ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="189"/>
         <source>Error: Can&apos;t find chosen output format!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t find chosen output format!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="193"/>
         <source>Using format %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Using format %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="198"/>
         <source>Error: Can&apos;t allocate format context!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t allocate format context!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="205"/>
         <source>Error: Can&apos;t open output file!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t open output file!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="218"/>
         <source>Error: Can&apos;t write trailer, continuing anyway.</source>
         <comment>Don&apos;t translate &apos;trailer&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t write trailer, continuing anyway.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="251"/>
         <source>Error: Can&apos;t find codec!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t find codec!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="261"/>
         <source>Using codec %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Using codec %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="270"/>
         <source>Error: Can&apos;t create new stream!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t create new stream!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="280"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t get codec context defaults!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: This codec is considered experimental by libav/ffmpeg.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="306"/>
         <source>Muxer thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Muxer thread started.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="360"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t write frame to muxer!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="388"/>
         <source>Muxer thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Muxer thread stopped.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="392"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exception &apos;%1&apos; in muxer thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="395"/>
         <source>Unknown exception in muxer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unknown exception in muxer thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="154"/>
         <source>Stopping synchronizer thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stopping synchronizer thread ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="270"/>
         <source>Warning: Received video frame with non-monotonic timestamp.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Received video frame with non-monotonic timestamp.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="296"/>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="353"/>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Received audio samples with non-monotonic timestamp.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="378"/>
         <source>Warning: Too many audio samples, dropping samples to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Too many audio samples, dropping samples to keep the audio in sync with the video.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="384"/>
         <source>Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="450"/>
         <source>Warning: Audio input is more than 2% too slow!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Audio input is more than 2% too slow!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="454"/>
         <source>Warning: Audio input is more than 2% too fast!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Audio input is more than 2% too fast!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="489"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="525"/>
         <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="825"/>
         <source>Synchronizer thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Synchronizer thread started.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="847"/>
         <source>Synchronizer thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Synchronizer thread stopped.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="851"/>
         <source>Exception &apos;%1&apos; in synchronizer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exception &apos;%1&apos; in synchronizer thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="854"/>
         <source>Unknown exception in synchronizer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unknown exception in synchronizer thread.</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="112"/>
         <source>Error: Width or height is not an even number!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Width or height is not an even number!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="116"/>
         <source>Error: Frame rate is zero!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Frame rate is zero!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="133"/>
         <source>Error: Encoder requires an unsupported pixel format!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Encoder requires an unsupported pixel format!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="192"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="212"/>
         <source>Error: Encoding of video frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Encoding of video frame failed!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="39"/>
         <source>Using real-time priority.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Using real-time priority.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="49"/>
         <source>Using nice priority.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Using nice priority.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="54"/>
         <source>Warning: Can&apos;t increase the thread priority.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: Can&apos;t increase the thread priority.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="61"/>
         <source>Error: Can&apos;t recover device after underrun!</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t recover device after underrun!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="88"/>
         <source>Stopping synth thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stopping synth thread ...</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="221"/>
         <source>Synth thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Synth thread started.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="274"/>
         <source>Error: Can&apos;t write samples!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Can&apos;t write samples!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="282"/>
         <source>Synth thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Synth thread stopped.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="286"/>
         <source>Exception &apos;%1&apos; in synth thread.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exception &apos;%1&apos; in synth thread.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="289"/>
         <source>Unknown exception in synth thread.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unknown exception in synth thread.</translation>
     </message>
     <message>
         <location filename="../common/DetectCPUFeatures.cpp" line="39"/>
         <source>CPU features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CPU features</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="158"/>
         <source>The application could not be launched.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">The application could not be launched.</translation>
     </message>
     <message>
         <location filename="../GUI/HotkeyListener.cpp" line="164"/>
         <source>Warning: XInput2 is not supported by X server, hotkeys may not work in some applications.</source>
         <comment>Don&apos;t translate &apos;XInput2&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warning: XInput2 is not supported by X server, hotkeys may not work in some applications.</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="116"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Command-line option &apos;%1&apos; does not take a value!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="144"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Unknown command-line option &apos;%1&apos;!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="154"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error: Unknown command-line argument &apos;%1&apos;!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="193"/>
         <source>SSR started</source>
-        <translation type="unfinished"></translation>
+        <translation>SSR gestartet</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="211"/>
         <source>SSR stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>SSR angehalten</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="228"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: konnte Verzeichnis .ssr nicht anlegen!</translation>
     </message>
 </context>
 <context>
@@ -1513,7 +1516,7 @@ Wenn Sie keine Idee haben, womit Sie beginnen sollen, versuchen Sie 5000 und ver
         <location filename="../GUI/PageOutput.cpp" line="243"/>
         <source>Constant rate factor:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation></translation>
+        <translation>Constant rate factor:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="248"/>
@@ -1526,7 +1529,7 @@ Der erlaubte Bereich liegt bei 0-51 (0 bedeutet verlustlos, der Standard ist 23)
         <location filename="../GUI/PageOutput.cpp" line="254"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation></translation>
+        <translation>Preset:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="259"/>
@@ -1540,7 +1543,7 @@ nicht zu sehr betroffen sein.</translation>
         <location filename="../GUI/PageOutput.cpp" line="261"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation></translation>
+        <translation>CPU used:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="263"/>
