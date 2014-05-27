@@ -713,7 +713,7 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished">Utilizzando codec %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="294"/>
+        <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation type="unfinished">Avvertenza: Questo codec è considerato sperimentale per libav/ffmpeg.</translation>
     </message>
@@ -774,7 +774,7 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished">Errore: Impossibile creare nuovo stream!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="278"/>
+        <location filename="../AV/Output/Muxer.cpp" line="280"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
         <translation type="unfinished">Errore: Impossibile ottenere le impostazioni predefinite del contesto codec!</translation>
     </message>
@@ -805,27 +805,27 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished">Errore: Impossibile scrivere trailer, continua comunque.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="304"/>
+        <location filename="../AV/Output/Muxer.cpp" line="306"/>
         <source>Muxer thread started.</source>
         <translation type="unfinished">Muxer thread avviato.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="358"/>
+        <location filename="../AV/Output/Muxer.cpp" line="360"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
         <translation type="unfinished">Errore: Impossibile scrivere frame per muxer!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="386"/>
+        <location filename="../AV/Output/Muxer.cpp" line="388"/>
         <source>Muxer thread stopped.</source>
         <translation type="unfinished">Muxer thread fermato.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="390"/>
+        <location filename="../AV/Output/Muxer.cpp" line="392"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
         <translation type="unfinished">Eccezione &apos;%1&apos; in muxer thread.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="393"/>
+        <location filename="../AV/Output/Muxer.cpp" line="395"/>
         <source>Unknown exception in muxer thread.</source>
         <translation type="unfinished">Eccezione sconosciuta in muxer thread.</translation>
     </message>
