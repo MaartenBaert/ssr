@@ -86,12 +86,12 @@ For Debian:
     libx11-6 libxext6 libxfixes3 libxfixes3:i386 libglu1-mesa:i386
     
     cd /usr/lib/i386-linux-gnu
-    ln -s libGL.so.1 libGL.so
-    ln -s libGLU.so.1 libGLU.so
-    ln -s libX11.so.6 libX11.so
-    ln -s libXext.so.6 libXext.so
-    ln -s libXfixes.so.3 libXfixes.so
-    ldconfig
+    sudo ln -s libGL.so.1 libGL.so
+    sudo ln -s libGLU.so.1 libGLU.so
+    sudo ln -s libX11.so.6 libX11.so
+    sudo ln -s libXext.so.6 libXext.so
+    sudo ln -s libXfixes.so.3 libXfixes.so
+    sudo ldconfig
 
 For OpenSUSE (incomplete list but usually enough):
 
