@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "InputSettings.h"
 #include "ProfileBox.h"
 
 #include "ALSAInput.h"
@@ -135,28 +136,28 @@ private:
 	QLabel *m_label_audio_backend;
 	QComboBox *m_combobox_audio_backend;
 	QLabel *m_label_alsa_source;
-	QComboBox *m_combobox_alsa_source;
+	QComboBox *m_combobox_audio_alsa_source;
 	QPushButton *m_pushbutton_alsa_refresh;
 #if SSR_USE_PULSEAUDIO
 	QLabel *m_label_pulseaudio_source;
-	QComboBox *m_combobox_pulseaudio_source;
+	QComboBox *m_combobox_audio_pulseaudio_source;
 	QPushButton *m_pushbutton_pulseaudio_refresh;
 #endif
 #if SSR_USE_JACK
-	QCheckBox *m_checkbox_jack_connect_system_capture, *m_checkbox_jack_connect_system_playback;
+	QCheckBox *m_checkbox_audio_jack_connect_system_capture, *m_checkbox_audio_jack_connect_system_playback;
 #endif
 
 public:
 	PageInput(MainWindow* main_window);
 
-	void LoadSettings(QSettings* settings);
-	void SaveSettings(QSettings* settings);
+	void LoadSettings(InputSettings* settings);
+	void SaveSettings(InputSettings* settings);
 
 private:
-	static void LoadProfileSettingsCallback(QSettings* settings, void* userdata);
-	static void SaveProfileSettingsCallback(QSettings* settings, void* userdata);
-	void LoadProfileSettings(QSettings* settings);
-	void SaveProfileSettings(QSettings* settings);
+	static void LoadProfileSettingsCallback(const SimpleJSON& json, void* userdata);
+	static void SaveProfileSettingsCallback(SimpleJSON& json, void* userdata);
+	void LoadProfileSettings(const SimpleJSON& json);
+	void SaveProfileSettings(SimpleJSON& json);
 
 public:
 	QString GetALSASourceName();
@@ -219,13 +220,13 @@ public:
 	inline bool GetVideoRecordCursor() { return m_checkbox_record_cursor->isChecked(); }
 	inline bool GetAudioEnabled() { return m_checkbox_audio_enable->isChecked(); }
 	inline enum_audio_backend GetAudioBackend() { return (enum_audio_backend) clamp(m_combobox_audio_backend->currentIndex(), 0, AUDIO_BACKEND_COUNT - 1); }
-	inline unsigned int GetALSASource() { return clamp(m_combobox_alsa_source->currentIndex(), 0, (int) m_alsa_sources.size() - 1); }
+	inline unsigned int GetAudioALSASource() { return clamp(m_combobox_audio_alsa_source->currentIndex(), 0, (int) m_alsa_sources.size() - 1); }
 #if SSR_USE_PULSEAUDIO
-	inline unsigned int GetPulseAudioSource() { return clamp(m_combobox_pulseaudio_source->currentIndex(), 0, (int) m_pulseaudio_sources.size() - 1); }
+	inline unsigned int GetAudioPulseAudioSource() { return clamp(m_combobox_audio_pulseaudio_source->currentIndex(), 0, (int) m_pulseaudio_sources.size() - 1); }
 #endif
 #if SSR_USE_JACK
-	inline bool GetJackConnectSystemCapture() { return m_checkbox_jack_connect_system_capture->isChecked(); }
-	inline bool GetJackConnectSystemPlayback() { return m_checkbox_jack_connect_system_playback->isChecked(); }
+	inline bool GetAudioJackConnectSystemCapture() { return m_checkbox_audio_jack_connect_system_capture->isChecked(); }
+	inline bool GetAudioJackConnectSystemPlayback() { return m_checkbox_audio_jack_connect_system_playback->isChecked(); }
 #endif
 	inline QString GetGLInjectChannel() { return m_glinject_channel; }
 	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
@@ -248,13 +249,13 @@ public:
 	inline void SetVideoRecordCursor(bool show) { m_checkbox_record_cursor->setChecked(show); }
 	inline void SetAudioEnabled(bool enable) { m_checkbox_audio_enable->setChecked(enable); }
 	inline void SetAudioBackend(enum_audio_backend backend) { m_combobox_audio_backend->setCurrentIndex(clamp((int) backend, 0, AUDIO_BACKEND_COUNT - 1)); }
-	inline void SetALSASource(unsigned int source) { m_combobox_alsa_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_alsa_sources.size() - 1)); }
+	inline void SetAudioALSASource(unsigned int source) { m_combobox_audio_alsa_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_alsa_sources.size() - 1)); }
 #if SSR_USE_PULSEAUDIO
-	inline void SetPulseAudioSource(unsigned int source) { m_combobox_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
+	inline void SetAudioPulseAudioSource(unsigned int source) { m_combobox_audio_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
 #endif
 #if SSR_USE_JACK
-	inline void SetJackConnectSystemCapture(bool connect) { m_checkbox_jack_connect_system_capture->setChecked(connect); }
-	inline void SetJackConnectSystemPlayback(bool connect) { m_checkbox_jack_connect_system_playback->setChecked(connect); }
+	inline void SetAudioJackConnectSystemCapture(bool connect) { m_checkbox_audio_jack_connect_system_capture->setChecked(connect); }
+	inline void SetAudioJackConnectSystemPlayback(bool connect) { m_checkbox_audio_jack_connect_system_playback->setChecked(connect); }
 #endif
 	inline void SetGLInjectChannel(const QString& channel) { m_glinject_channel = channel; }
 	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }

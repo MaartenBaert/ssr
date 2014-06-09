@@ -102,10 +102,10 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::LoadSettings() {
+	SimpleJSON json;
+	json.ReadFromFile(GetApplicationUserDir().toStdString() + "/settings.conf");
 
-	QSettings settings(GetApplicationUserDir() + "/settings.conf", QSettings::IniFormat);
-
-	SetNVidiaDisableFlipping(QStringToEnum(settings.value("global/nvidia_disable_flipping", QString()).toString(), NVIDIA_DISABLE_FLIPPING_ASK));
+	m_nvidia_disable_flipping = StringToEnum(json["global"]["nvidia_disable_flipping"].ToString(""), NVIDIA_DISABLE_FLIPPING_ASK);
 
 	m_page_input->LoadSettings(&settings);
 	m_page_output->LoadSettings(&settings);
@@ -114,16 +114,15 @@ void MainWindow::LoadSettings() {
 }
 
 void MainWindow::SaveSettings() {
+	SimpleJSON json;
 
-	QSettings settings(GetApplicationUserDir() + "/settings.conf", QSettings::IniFormat);
-	settings.clear();
-
-	settings.setValue("global/nvidia_disable_flipping", EnumToQString(GetNVidiaDisableFlipping()));
+	json("global")("nvidia_disable_flipping") = EnumToString(m_nvidia_disable_flipping);
 
 	m_page_input->SaveSettings(&settings);
 	m_page_output->SaveSettings(&settings);
 	m_page_record->SaveSettings(&settings);
 
+	json.ReadFromFile(GetApplicationUserDir().toStdString() + "/settings.conf");
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {

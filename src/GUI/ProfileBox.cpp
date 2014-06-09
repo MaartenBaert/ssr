@@ -19,10 +19,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ProfileBox.h"
 
-#include "Main.h"
-#include "Logger.h"
 #include "Dialogs.h"
+#include "Logger.h"
+#include "Main.h"
 #include "MainWindow.h"
+#include "SimpleJSON.h"
 
 ProfileBox::ProfileBox(QWidget* parent, const QString& type, LoadCallback load_callback, SaveCallback save_callback, void *userdata)
 	: QGroupBox(tr("Profile"), parent) {
@@ -125,18 +126,16 @@ void ProfileBox::OnProfileChange() {
 	if(name.isEmpty())
 		return;
 	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".conf";
-	if(QFileInfo(filename).exists()) {
-		QSettings settings(filename, QSettings::IniFormat);
-		m_load_callback(&settings, m_userdata);
-		return;
+	if(!QFileInfo(filename).exists()) {
+		filename = GetApplicationSystemDir(m_type) + "/" + name + ".conf";
+		if(!QFileInfo(filename).exists()) {
+			Logger::LogError("[ProfileBox::OnProfileChange] " + tr("Error: Can't load profile!"));
+			return;
+		}
 	}
-	filename = GetApplicationSystemDir(m_type) + "/" + name + ".conf";
-	if(QFileInfo(filename).exists()) {
-		QSettings settings(filename, QSettings::IniFormat);
-		m_load_callback(&settings, m_userdata);
-		return;
-	}
-	Logger::LogError("[ProfileBox::OnProfileChange] " + tr("Error: Can't load profile!"));
+	SimpleJSON json;
+	json.ReadFromFile(filename.toStdString());
+	m_load_callback(&settings, m_userdata);
 }
 
 void ProfileBox::OnProfileSave() {

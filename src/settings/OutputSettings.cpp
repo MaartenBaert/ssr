@@ -59,11 +59,11 @@ void OutputSettings::FromJSON(const SimpleJSON& json) {
 		m_video_codec_avname = json["video"]["codec_avname"].ToString(m_video_codec_avname);
 		m_video_kbit_rate = json["video"]["kbit_rate"].ToUint32(m_video_kbit_rate);
 		const SimpleJSON &video_options = json["video"]["options"];
-		m_video_options.resize(video_options.GetElementCount());
-		for(size_t i = 0; i < video_options.GetElementCount(); ++i) {
+		m_video_options.resize(video_options.GetMemberCount());
+		for(size_t i = 0; i < video_options.GetMemberCount(); ++i) {
 			auto &p = m_video_options[i];
-			p.first = video_options[i]["name"].ToString(p.first);
-			p.second = video_options[i]["value"].ToString(p.second);
+			p.first = video_options.GetMemberKey(i);
+			p.second = video_options.GetMemberValue(i).ToString("");
 		}
 		m_video_allow_frame_skipping = json["video"]["allow_frame_skipping"].ToBool(m_video_allow_frame_skipping);
 
@@ -79,7 +79,7 @@ void OutputSettings::FromJSON(const SimpleJSON& json) {
 		}
 
 	} catch(const JSONException&) {
-		Logger::LogError("[RecordSettings::FromJSON] " + Logger::tr("Error: Invalid JSON data."));
+		Logger::LogError("[OutputSettings::FromJSON] " + Logger::tr("Error: Invalid JSON data."));
 	}
 }
 
@@ -95,9 +95,7 @@ void OutputSettings::ToJSON(SimpleJSON& json) {
 	json("video")("kbit_rate") = m_video_kbit_rate;
 	json("video")("options").ResetArray();
 	for(auto &p : m_video_options) {
-		SimpleJSON &option = json("video")("options").AddElement();
-		option("name") = p.first;
-		option("value") = p.second;
+		json("video")("options")(p.first) = p.second;
 	}
 	json("video")("allow_frame_skipping") = m_video_allow_frame_skipping;
 
@@ -105,7 +103,7 @@ void OutputSettings::ToJSON(SimpleJSON& json) {
 	json("audio")("codec_avname") = m_video_codec_avname;
 	json("audio")("kbit_rate") = m_video_kbit_rate;
 	json("audio")("options").ResetObject();
-	for(auto &p : m_video_options) {
+	for(auto &p : m_audio_options) {
 		json("audio")("options")(p.first) = p.second;
 	}
 

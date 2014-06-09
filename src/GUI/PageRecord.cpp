@@ -490,8 +490,8 @@ void PageRecord::StartPage() {
 	m_pulseaudio_source = page_input->GetPulseAudioSourceName();
 #endif
 #if SSR_USE_JACK
-	bool jack_connect_system_capture = page_input->GetJackConnectSystemCapture();
-	bool jack_connect_system_playback = page_input->GetJackConnectSystemPlayback();
+	bool jack_connect_system_capture = page_input->GetAudioJackConnectSystemCapture();
+	bool jack_connect_system_playback = page_input->GetAudioJackConnectSystemPlayback();
 #endif
 
 	// get the glinject settings

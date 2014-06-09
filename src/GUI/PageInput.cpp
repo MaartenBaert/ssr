@@ -255,26 +255,26 @@ PageInput::PageInput(MainWindow* main_window)
 		m_combobox_audio_backend->setToolTip(tr("The audio backend that will be used for recording.\n"
 												"The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly."));
 		m_label_alsa_source = new QLabel(tr("Source:"), groupbox_audio);
-		m_combobox_alsa_source = new QComboBox(groupbox_audio);
-		m_combobox_alsa_source->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_combobox_alsa_source->setToolTip(tr("The ALSA source that will be used for recording.\n"
+		m_combobox_audio_alsa_source = new QComboBox(groupbox_audio);
+		m_combobox_audio_alsa_source->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		m_combobox_audio_alsa_source->setToolTip(tr("The ALSA source that will be used for recording.\n"
 											  "The default is usually fine. The 'shared' sources allow multiple programs to record at the same time, but they may be less reliable."));
 		m_pushbutton_alsa_refresh = new QPushButton(tr("Refresh"), groupbox_audio);
 		m_pushbutton_alsa_refresh->setToolTip(tr("Refreshes the list of ALSA sources."));
 #if SSR_USE_PULSEAUDIO
 		m_label_pulseaudio_source = new QLabel(tr("Source:"), groupbox_audio);
-		m_combobox_pulseaudio_source = new QComboBox(groupbox_audio);
-		m_combobox_pulseaudio_source->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		m_combobox_pulseaudio_source->setToolTip(tr("The PulseAudio source that will be used for recording.\n"
+		m_combobox_audio_pulseaudio_source = new QComboBox(groupbox_audio);
+		m_combobox_audio_pulseaudio_source->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		m_combobox_audio_pulseaudio_source->setToolTip(tr("The PulseAudio source that will be used for recording.\n"
 													"A 'monitor' is a source that records the audio played by other applications.", "Don't translate 'monitor' unless PulseAudio does this as well"));
 		m_pushbutton_pulseaudio_refresh = new QPushButton(tr("Refresh"), groupbox_audio);
 		m_pushbutton_pulseaudio_refresh->setToolTip(tr("Refreshes the list of PulseAudio sources."));
 #endif
 #if SSR_USE_JACK
-		m_checkbox_jack_connect_system_capture = new QCheckBox(tr("Record system microphone"));
-		m_checkbox_jack_connect_system_capture->setToolTip(tr("If checked, the ports will be automatically connected to the system capture ports."));
-		m_checkbox_jack_connect_system_playback = new QCheckBox(tr("Record system speakers"));
-		m_checkbox_jack_connect_system_playback->setToolTip(tr("If checked, the ports will be automatically connected to anything that connects to the system playback ports."));
+		m_checkbox_audio_jack_connect_system_capture = new QCheckBox(tr("Record system microphone"));
+		m_checkbox_audio_jack_connect_system_capture->setToolTip(tr("If checked, the ports will be automatically connected to the system capture ports."));
+		m_checkbox_audio_jack_connect_system_playback = new QCheckBox(tr("Record system speakers"));
+		m_checkbox_audio_jack_connect_system_playback->setToolTip(tr("If checked, the ports will be automatically connected to anything that connects to the system playback ports."));
 #endif
 
 		connect(m_checkbox_audio_enable, SIGNAL(clicked()), this, SLOT(OnUpdateAudioFields()));
@@ -292,11 +292,11 @@ PageInput::PageInput(MainWindow* main_window)
 			layout2->addWidget(m_label_audio_backend, 0, 0);
 			layout2->addWidget(m_combobox_audio_backend, 0, 1, 1, 2);
 			layout2->addWidget(m_label_alsa_source, 2, 0);
-			layout2->addWidget(m_combobox_alsa_source, 2, 1);
+			layout2->addWidget(m_combobox_audio_alsa_source, 2, 1);
 			layout2->addWidget(m_pushbutton_alsa_refresh, 2, 2);
 #if SSR_USE_PULSEAUDIO
 			layout2->addWidget(m_label_pulseaudio_source, 2, 0);
-			layout2->addWidget(m_combobox_pulseaudio_source, 2, 1);
+			layout2->addWidget(m_combobox_audio_pulseaudio_source, 2, 1);
 			layout2->addWidget(m_pushbutton_pulseaudio_refresh, 2, 2);
 #endif
 		}
@@ -304,8 +304,8 @@ PageInput::PageInput(MainWindow* main_window)
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
 			layout->addLayout(layout2);
-			layout2->addWidget(m_checkbox_jack_connect_system_capture);
-			layout2->addWidget(m_checkbox_jack_connect_system_playback);
+			layout2->addWidget(m_checkbox_audio_jack_connect_system_capture);
+			layout2->addWidget(m_checkbox_audio_jack_connect_system_playback);
 		}
 #endif
 	}
@@ -342,6 +342,66 @@ PageInput::PageInput(MainWindow* main_window)
 
 }
 
+void PageInput::LoadSettings(InputSettings* settings) {
+
+	settings->m_video_area = GetVideoArea();
+	settings->m_video_area_screen = GetVideoAreaScreen();
+	settings->m_video_x = GetVideoX();
+	settings->m_video_y = GetVideoY();
+	settings->m_video_w = GetVideoW();
+	settings->m_video_h = GetVideoH();
+	settings->m_video_frame_rate = GetVideoFrameRate();
+	settings->m_video_scaling_enabled = GetVideoScalingEnabled();
+	settings->m_video_scaled_w = GetVideoScaledW();
+	settings->m_video_scaled_h = GetVideoScaledH();
+	settings->m_video_record_cursor = GetVideoRecordCursor();
+
+	settings->m_audio_enabled = GetAudioEnabled();
+	settings->m_audio_backend = GetAudioBackend();
+	settings->m_audio_alsa_source = GetAudioALSASource();
+	settings->m_audio_pulseaudio_source = GetAudioPulseAudioSource();
+	settings->m_audio_jack_connect_system_capture = GetAudioJackConnectSystemCapture();
+	settings->m_audio_jack_connect_system_playback = GetAudioJackConnectSystemPlayback();
+
+	settings->m_glinject_channel = GetGLInjectChannel().toStdString();
+	settings->m_glinject_relax_permissions = GetGLInjectRelaxPermissions();
+	settings->m_glinject_command = GetGLInjectCommand().toStdString();
+	settings->m_glinject_working_directory = GetGLInjectWorkingDirectory().toStdString();
+	settings->m_glinject_auto_launch = GetGLInjectAutoLaunch();
+	settings->m_glinject_limit_fps = GetGLInjectLimitFPS();
+
+}
+
+void PageInput::SaveSettings(InputSettings* settings) {
+
+	SetVideoArea(settings->m_video_area);
+	SetVideoAreaScreen(settings->m_video_area_screen);
+	SetVideoX(settings->m_video_x);
+	SetVideoY(settings->m_video_y);
+	SetVideoW(settings->m_video_w);
+	SetVideoH(settings->m_video_h);
+	SetVideoFrameRate(settings->m_video_frame_rate);
+	SetVideoScalingEnabled(settings->m_video_scaling_enabled);
+	SetVideoScaledW(settings->m_video_scaled_w);
+	SetVideoScaledH(settings->m_video_scaled_h);
+	SetVideoRecordCursor(settings->m_video_record_cursor);
+
+	SetAudioEnabled(settings->m_audio_enabled);
+	SetAudioBackend(settings->m_audio_backend);
+	SetAudioALSASource(settings->m_audio_alsa_source);
+	SetAudioPulseAudioSource(settings->m_audio_pulseaudio_source);
+	SetAudioJackConnectSystemCapture(settings->m_audio_jack_connect_system_capture);
+	SetAudioJackConnectSystemPlayback(settings->m_audio_jack_connect_system_playback);
+
+	SetGLInjectChannel(QString::fromStdString(settings->m_glinject_channel));
+	SetGLInjectRelaxPermissions(settings->m_glinject_relax_permissions);
+	SetGLInjectCommand(QString::fromStdString(settings->m_glinject_command));
+	SetGLInjectWorkingDirectory(QString::fromStdString(settings->m_glinject_working_directory));
+	SetGLInjectAutoLaunch(settings->m_glinject_auto_launch);
+	SetGLInjectLimitFPS(settings->m_glinject_limit_fps);
+
+}
+
 void PageInput::LoadSettings(QSettings* settings) {
 	SetProfile(m_profile_box->FindProfile(settings->value("input/profile", QString()).toString()));
 	LoadProfileSettings(settings);
@@ -352,17 +412,17 @@ void PageInput::SaveSettings(QSettings* settings) {
 	SaveProfileSettings(settings);
 }
 
-void PageInput::LoadProfileSettingsCallback(QSettings* settings, void* userdata) {
+void PageInput::LoadProfileSettingsCallback(const SimpleJSON& json, void* userdata) {
 	PageInput *page = (PageInput*) userdata;
 	page->LoadProfileSettings(settings);
 }
 
-void PageInput::SaveProfileSettingsCallback(QSettings* settings, void* userdata) {
+void PageInput::SaveProfileSettingsCallback(SimpleJSON& json, void* userdata) {
 	PageInput *page = (PageInput*) userdata;
 	page->SaveProfileSettings(settings);
 }
 
-void PageInput::LoadProfileSettings(QSettings* settings) {
+void PageInput::LoadProfileSettings(const SimpleJSON& json) {
 
 	// choose default audio backend
 #if SSR_USE_PULSEAUDIO
@@ -385,13 +445,13 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	SetVideoRecordCursor(settings->value("input/video_record_cursor", true).toBool());
 	SetAudioEnabled(settings->value("input/audio_enabled", true).toBool());
 	SetAudioBackend(QStringToEnum(settings->value("input/audio_backend", QString()).toString(), default_audio_backend));
-	SetALSASource(FindALSASource(settings->value("input/audio_alsa_source", QString()).toString()));
+	SetAudioALSASource(FindALSASource(settings->value("input/audio_alsa_source", QString()).toString()));
 #if SSR_USE_PULSEAUDIO
-	SetPulseAudioSource(FindPulseAudioSource(settings->value("input/audio_pulseaudio_source", QString()).toString()));
+	SetAudioPulseAudioSource(FindPulseAudioSource(settings->value("input/audio_pulseaudio_source", QString()).toString()));
 #endif
 #if SSR_USE_JACK
-	SetJackConnectSystemCapture(settings->value("input/audio_jack_connect_system_capture", true).toBool());
-	SetJackConnectSystemPlayback(settings->value("input/audio_jack_connect_system_playback", false).toBool());
+	SetAudioJackConnectSystemCapture(settings->value("input/audio_jack_connect_system_capture", true).toBool());
+	SetAudioJackConnectSystemPlayback(settings->value("input/audio_jack_connect_system_playback", false).toBool());
 #endif
 	SetGLInjectChannel(settings->value("input/glinject_channel", "channel-" + QString::fromStdString(GetUserName())).toString());
 	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
@@ -408,7 +468,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 
 }
 
-void PageInput::SaveProfileSettings(QSettings* settings) {
+void PageInput::SaveProfileSettings(SimpleJSON& json) {
 	settings->setValue("input/video_area", EnumToQString(GetVideoArea()));
 	settings->setValue("input/video_area_screen", GetVideoAreaScreen());
 	settings->setValue("input/video_x", GetVideoX());
@@ -427,8 +487,8 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/audio_pulseaudio_source", GetPulseAudioSourceName());
 #endif
 #if SSR_USE_JACK
-	settings->setValue("input/audio_jack_connect_system_capture", GetJackConnectSystemCapture());
-	settings->setValue("input/audio_jack_connect_system_playback", GetJackConnectSystemPlayback());
+	settings->setValue("input/audio_jack_connect_system_capture", GetAudioJackConnectSystemCapture());
+	settings->setValue("input/audio_jack_connect_system_playback", GetAudioJackConnectSystemPlayback());
 #endif
 	settings->setValue("input/glinject_channel", GetGLInjectChannel());
 	settings->setValue("input/glinject_relax_permissions", GetGLInjectRelaxPermissions());
@@ -439,12 +499,12 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 }
 
 QString PageInput::GetALSASourceName() {
-	return QString::fromStdString(m_alsa_sources[GetALSASource()].m_name);
+	return QString::fromStdString(m_alsa_sources[GetAudioALSASource()].m_name);
 }
 
 #if SSR_USE_PULSEAUDIO
 QString PageInput::GetPulseAudioSourceName() {
-	return QString::fromStdString(m_pulseaudio_sources[GetPulseAudioSource()].m_name);
+	return QString::fromStdString(m_pulseaudio_sources[GetAudioPulseAudioSource()].m_name);
 }
 #endif
 
@@ -686,11 +746,11 @@ void PageInput::LoadALSASources() {
 	if(m_alsa_sources.empty()) {
 		m_alsa_sources.push_back(ALSAInput::Source("", "(no sources found)"));
 	}
-	m_combobox_alsa_source->clear();
+	m_combobox_audio_alsa_source->clear();
 	for(unsigned int i = 0; i < m_alsa_sources.size(); ++i) {
-		QString elided = m_combobox_alsa_source->fontMetrics().elidedText("[" + QString::fromStdString(m_alsa_sources[i].m_name) + "] "
+		QString elided = m_combobox_audio_alsa_source->fontMetrics().elidedText("[" + QString::fromStdString(m_alsa_sources[i].m_name) + "] "
 																		  + QString::fromStdString(m_alsa_sources[i].m_description), Qt::ElideMiddle, 400);
-		m_combobox_alsa_source->addItem(elided);
+		m_combobox_audio_alsa_source->addItem(elided);
 	}
 }
 
@@ -703,10 +763,10 @@ void PageInput::LoadPulseAudioSources() {
 	} else {
 		m_pulseaudio_available = true;
 	}
-	m_combobox_pulseaudio_source->clear();
+	m_combobox_audio_pulseaudio_source->clear();
 	for(unsigned int i = 0; i < m_pulseaudio_sources.size(); ++i) {
-		QString elided = m_combobox_pulseaudio_source->fontMetrics().elidedText(QString::fromStdString(m_pulseaudio_sources[i].m_description), Qt::ElideMiddle, 400);
-		m_combobox_pulseaudio_source->addItem(elided);
+		QString elided = m_combobox_audio_pulseaudio_source->fontMetrics().elidedText(QString::fromStdString(m_pulseaudio_sources[i].m_description), Qt::ElideMiddle, 400);
+		m_combobox_audio_pulseaudio_source->addItem(elided);
 	}
 }
 #endif
@@ -793,21 +853,21 @@ void PageInput::OnUpdateAudioFields() {
 	enum_audio_backend backend = GetAudioBackend();
 	GroupEnabled({
 		m_label_audio_backend, m_combobox_audio_backend,
-		m_label_alsa_source, m_combobox_alsa_source, m_pushbutton_alsa_refresh,
+		m_label_alsa_source, m_combobox_audio_alsa_source, m_pushbutton_alsa_refresh,
 #if SSR_USE_PULSEAUDIO
-		m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh,
+		m_label_pulseaudio_source, m_combobox_audio_pulseaudio_source, m_pushbutton_pulseaudio_refresh,
 #endif
 #if SSR_USE_JACK
-		m_checkbox_jack_connect_system_capture, m_checkbox_jack_connect_system_playback,
+		m_checkbox_audio_jack_connect_system_capture, m_checkbox_audio_jack_connect_system_playback,
 #endif
 	}, enabled);
 	MultiGroupVisible({
-		{{m_label_alsa_source, m_combobox_alsa_source, m_pushbutton_alsa_refresh}, (backend == AUDIO_BACKEND_ALSA)},
+		{{m_label_alsa_source, m_combobox_audio_alsa_source, m_pushbutton_alsa_refresh}, (backend == AUDIO_BACKEND_ALSA)},
 #if SSR_USE_PULSEAUDIO
-		{{m_label_pulseaudio_source, m_combobox_pulseaudio_source, m_pushbutton_pulseaudio_refresh}, (backend == AUDIO_BACKEND_PULSEAUDIO)},
+		{{m_label_pulseaudio_source, m_combobox_audio_pulseaudio_source, m_pushbutton_pulseaudio_refresh}, (backend == AUDIO_BACKEND_PULSEAUDIO)},
 #endif
 #if SSR_USE_JACK
-		{{m_checkbox_jack_connect_system_capture, m_checkbox_jack_connect_system_playback}, (backend == AUDIO_BACKEND_JACK)},
+		{{m_checkbox_audio_jack_connect_system_capture, m_checkbox_audio_jack_connect_system_playback}, (backend == AUDIO_BACKEND_JACK)},
 #endif
 	});
 }
@@ -821,14 +881,14 @@ void PageInput::OnUpdateScreenConfiguration() {
 void PageInput::OnUpdateALSASources() {
 	QString selected_source = GetALSASourceName();
 	LoadALSASources();
-	SetALSASource(FindALSASource(selected_source));
+	SetAudioALSASource(FindALSASource(selected_source));
 }
 
 void PageInput::OnUpdatePulseAudioSources() {
 #if SSR_USE_PULSEAUDIO
 	QString selected_source = GetPulseAudioSourceName();
 	LoadPulseAudioSources();
-	SetPulseAudioSource(FindPulseAudioSource(selected_source));
+	SetAudioPulseAudioSource(FindPulseAudioSource(selected_source));
 #endif
 }
 

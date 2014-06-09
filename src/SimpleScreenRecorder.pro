@@ -64,7 +64,8 @@ SOURCES += \
 	settings/RecordSettings.cpp \
 	Main.cpp \
 	NVidia.cpp \
-	Version.cpp
+	Version.cpp \
+    settings/InputSettings.cpp
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
@@ -122,7 +123,8 @@ HEADERS  += \
 	Global.h \
 	Main.h \
 	NVidia.h \
-	Version.h
+	Version.h \
+    settings/InputSettings.h
 
 RESOURCES += \
 	resources.qrc

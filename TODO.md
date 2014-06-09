@@ -1,11 +1,16 @@
-Testing:
+Testing
+-------
+
 - New GLInject implementation.
 - Refactored output backend.
 - Input + output profiles.
 
-In progress:
+In progress
+-----------
 
-Todo:
+Todo
+----
+
 - Record start/stop scheduling system.
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
 - Command-line options for recording + skipping pages + systray.
@@ -13,8 +18,11 @@ Todo:
 - X11Input should track resolution changes.
 - Show recorded area while recording.
 - Check disk space (Muxer).
+- Button that restores default settings.
 
-Wishlist:
+Wishlist
+--------
+
 - Improve interface for small screens.
 - FPS counter of GLInject. (overlay + option to record?)
 - Built-in re-encoding after recording.
@@ -22,7 +30,9 @@ Wishlist:
 - Easier GLInject application selection (as an alternative to entering the command).
 - Timelapse recording, i.e. recording at a slow speed but playing it back faster (without sound obviously).
 
-Not sure yet:
+Not sure yet
+------------
+
 - Fixed cursor position when using 'follow cursor'?
 - redesigned interface? (https://github.com/swick/glc2/issues/1)
 - audio effects (equalizer, noise gate, duck)?
