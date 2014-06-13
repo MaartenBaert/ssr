@@ -14,7 +14,7 @@ Translations
 - German: Manuel Schömburg
 - Greek: Nick Thom
 - Spanish: Dani Rodríguez
-- Hungarian: Ákos
+- Hungarian: ViBE
 - Italian: Bersil
 - Dutch: Maarten Baert
 - Polish: Szamanx0
