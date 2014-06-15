@@ -45,16 +45,22 @@ extern "C" {
 # define __elf32
 #endif
 
-#ifdef __elf64
+#if defined(__elf64)
 # define ELFW_R_SYM ELF64_R_SYM
 # define ElfW_Sword Elf64_Sxword
-#else
-# ifdef __elf32
-#  define ELFW_R_SYM ELF32_R_SYM
-#  define ElfW_Sword Elf32_Sword
-# else
-#  error neither __elf32 nor __elf64 is defined
+# ifdef BSD
+#  define ElfW(v) Elf64_##v
+#  define __ELF_NATIVE_CLASS 64
 # endif
+#elif defined(__elf32)
+# define ELFW_R_SYM ELF32_R_SYM
+# define ElfW_Sword Elf32_Sword
+# ifdef BSD
+#  define ElfW(v) Elf32_##v
+#  define __ELF_NATIVE_CLASS 32
+# endif
+#else
+# error neither __elf32 nor __elf64 is defined
 #endif
 
 /**
