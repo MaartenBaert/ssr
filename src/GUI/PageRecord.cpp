@@ -576,24 +576,8 @@ void PageRecord::StopPage(bool save) {
 	if(m_output_manager != NULL) {
 
 		// stop the output
-		if(save) {
-			m_output_manager->Finish();
-			if(m_output_manager->GetVideoEncoder() != NULL) {
-				m_wait_saving = true;
-				unsigned int frames_left = m_output_manager->GetVideoEncoder()->GetFrameLatency();
-				QProgressDialog dialog(tr("Encoding remaining data ..."), QString(), 0, frames_left, this);
-				dialog.setWindowTitle(MainWindow::WINDOW_CAPTION);
-				dialog.setWindowModality(Qt::WindowModal);
-				dialog.setCancelButton(NULL);
-				dialog.setMinimumDuration(500);
-				while(!m_output_manager->IsFinished()) {
-					//qDebug() << "frames left" << frames_left << "current" << m_output_manager->GetVideoEncoder()->GetFrameLatency();
-					dialog.setValue(frames_left - clamp(m_output_manager->GetVideoEncoder()->GetFrameLatency(), 0u, frames_left));
-					usleep(20000);
-				}
-				m_wait_saving = false;
-			}
-		}
+		if(save)
+			FinishOutput();
 		m_output_manager.reset();
 
 		// delete the file if it isn't needed
@@ -715,7 +699,7 @@ void PageRecord::StopOutput(bool final) {
 	if(m_separate_files && !final) {
 
 		// stop the output
-		m_output_manager->Finish();
+		FinishOutput();
 		m_output_manager.reset();
 
 		// change the file name
@@ -818,6 +802,30 @@ void PageRecord::StopInput() {
 
 	m_input_started = false;
 
+}
+
+void PageRecord::FinishOutput() {
+	assert(m_output_manager != NULL);
+	assert(m_output_manager->GetVideoEncoder() != NULL);
+	
+	// tell the output manager to finish
+	m_output_manager->Finish();
+	
+	// wait until it has actually finished
+	m_wait_saving = true;
+	unsigned int frames_left = m_output_manager->GetVideoEncoder()->GetFrameLatency();
+	QProgressDialog dialog(tr("Encoding remaining data ..."), QString(), 0, frames_left, this);
+	dialog.setWindowTitle(MainWindow::WINDOW_CAPTION);
+	dialog.setWindowModality(Qt::WindowModal);
+	dialog.setCancelButton(NULL);
+	dialog.setMinimumDuration(500);
+	while(!m_output_manager->IsFinished()) {
+		//qDebug() << "frames left" << frames_left << "current" << m_output_manager->GetVideoEncoder()->GetFrameLatency();
+		dialog.setValue(frames_left - clamp(m_output_manager->GetVideoEncoder()->GetFrameLatency(), 0u, frames_left));
+		usleep(20000);
+	}
+	m_wait_saving = false;
+	
 }
 
 void PageRecord::UpdateInput() {

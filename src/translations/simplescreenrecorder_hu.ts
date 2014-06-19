@@ -6,37 +6,37 @@
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="79"/>
         <source>About SimpleScreenRecorder</source>
-        <translation type="unfinished"></translation>
+        <translation>A SimpleScreenRecorder névjegye</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="88"/>
         <source>For more information:</source>
-        <translation type="unfinished"></translation>
+        <translation>További információ:</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="89"/>
         <source>The source code of this program can be found at:</source>
-        <translation type="unfinished"></translation>
+        <translation>Az alkalmazás forráskódját itt találod:</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="90"/>
         <source>This program uses:</source>
-        <translation type="unfinished"></translation>
+        <translation>Az alkalmazás az alábbiakat használja:</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="91"/>
         <source>%1 for the graphical user interface</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 grafikus felület</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="92"/>
         <source>%1 or %2 (depending on your distribution) for video/audio encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, vagy %2 (rendszertől függ) hang-; és videókódoló</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="93"/>
         <source>%1 for hooking system functions for OpenGL recording</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 az OpenGL alapú alkalmazások rögzítéséhez</translation>
     </message>
 </context>
 <context>
@@ -44,7 +44,7 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="34"/>
         <source>OpenGL Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenGL beállítások</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="37"/>
@@ -53,7 +53,11 @@
 &lt;p&gt;Another warning: OpenGL recording is experimental, it may not work or even crash the program you are recording. If you are worried about losing program data, make a backup first!&lt;/p&gt;
 
 &lt;p&gt;If you want to record Steam games, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;read this first&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Figyelem: Az OpenGL alkalmazások rögzítése úgy történik, hogy a program megpróbál beépülni a rögzíteni kívánt alkalmazásba. Ez felülbírálhat egyes rendszerszintű és az alkalmazás által használt funkciókat rögzítés során. Ha például egy olyan játékról szeretnél felvételt készíteni, ami valamilyen csalás elleni védelemmel van ellátva, úgy rögzítés előtt győződj meg arról, hogy az nem szűri és nem tilt le téged a porgram használata miatt. Elképzelhető ugyanis, hogy az adott játék csalásnak érzékeli a SimpleScreenRecorder-t. Úgyhogy légy körültekintő, mi szóltunk.&lt;/p&gt;
+
+&lt;p&gt;Egyéb megjegyzés: Ez az eljárás jelenleg kísérleti állapotban van, emiatt egyes esetekben nem működik megfelelően és/vagy az adott alkalmazás összeomlásához vezethet.&lt;/p&gt;
+
+&lt;p&gt;Steam-es játékok rögzítése előtt &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;ezt&lt;/a&gt; olvasd el!&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
@@ -85,22 +89,22 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="72"/>
         <source>Launch application</source>
-        <translation type="unfinished"></translation>
+        <translation>Alkalmazás indítása</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="74"/>
         <source>Command:</source>
-        <translation type="unfinished"></translation>
+        <translation>Parancs:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="76"/>
         <source>This command will be executed to start the program that should be recorded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Itt adhatod meg a rögzíteni kívánt alkalmazás elindításához szükséges parancsot.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="78"/>
         <source>Working directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Műveleti könyvtár:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="80"/>
@@ -110,7 +114,7 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="82"/>
         <source>Launch automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Alkalmazás automatikus futtatása</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
@@ -120,7 +124,7 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="85"/>
         <source>Launch now</source>
-        <translation type="unfinished"></translation>
+        <translation>Indítás most</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="106"/>
@@ -130,19 +134,21 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="108"/>
         <source>Limit application frame rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Alkalmazás képsebességének korlátozása</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="109"/>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
-        <translation type="unfinished"></translation>
+        <translation>Bekapcsolása esetén korlátozza az adott alkalmazás képsebességét a korábban meghatározott szintre.
+Ez valamilyen szinten csökkenti az erőforrásigényt és olykor folytonosabb képet eredményez
+(alkalmazástól függően).</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="118"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezárás</translation>
     </message>
 </context>
 <context>
@@ -184,7 +190,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/ALSAInput.cpp" line="32"/>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Figyelem: Túlcsordulás történt. A minta egy része elveszett.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="34"/>
@@ -204,7 +210,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="207"/>
         <source>Stopping input thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Feldolgozás leállítása...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="95"/>
@@ -249,45 +255,45 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="260"/>
-        <location filename="../AV/SimpleSynth.cpp" line="121"/>
+        <location filename="../AV/SimpleSynth.cpp" line="123"/>
         <source>Error: Can&apos;t open PCM device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: A PCM jelforrás nem elérhető!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="264"/>
-        <location filename="../AV/SimpleSynth.cpp" line="125"/>
+        <location filename="../AV/SimpleSynth.cpp" line="127"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: A PCM-eszköz paramétereinek beolvasása nem sikerült!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="270"/>
-        <location filename="../AV/SimpleSynth.cpp" line="131"/>
+        <location filename="../AV/SimpleSynth.cpp" line="133"/>
         <source>Error: Can&apos;t set access type!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="276"/>
-        <location filename="../AV/SimpleSynth.cpp" line="137"/>
+        <location filename="../AV/SimpleSynth.cpp" line="139"/>
         <source>Error: Can&apos;t set sample format!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="283"/>
-        <location filename="../AV/SimpleSynth.cpp" line="144"/>
+        <location filename="../AV/SimpleSynth.cpp" line="146"/>
         <source>Error: Can&apos;t set sample rate!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: A mintavétel nem módosítható!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="287"/>
-        <location filename="../AV/SimpleSynth.cpp" line="148"/>
+        <location filename="../AV/SimpleSynth.cpp" line="150"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Figyelem: %1 mintavétel nem támogatott, %2 lesz alkalmazva. Ez nem hiba.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="296"/>
-        <location filename="../AV/SimpleSynth.cpp" line="156"/>
+        <location filename="../AV/SimpleSynth.cpp" line="158"/>
         <source>Error: Can&apos;t set channel count!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: A csatornák száma nem módosítható!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="300"/>
@@ -296,31 +302,31 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="309"/>
-        <location filename="../AV/SimpleSynth.cpp" line="163"/>
+        <location filename="../AV/SimpleSynth.cpp" line="165"/>
         <source>Error: Can&apos;t set period size!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="313"/>
-        <location filename="../AV/SimpleSynth.cpp" line="167"/>
+        <location filename="../AV/SimpleSynth.cpp" line="169"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="322"/>
-        <location filename="../AV/SimpleSynth.cpp" line="176"/>
+        <location filename="../AV/SimpleSynth.cpp" line="178"/>
         <source>Error: Can&apos;t set buffer size!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="326"/>
-        <location filename="../AV/SimpleSynth.cpp" line="180"/>
+        <location filename="../AV/SimpleSynth.cpp" line="182"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="334"/>
-        <location filename="../AV/SimpleSynth.cpp" line="188"/>
+        <location filename="../AV/SimpleSynth.cpp" line="190"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -348,16 +354,16 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/GLInjectInput.cpp" line="248"/>
         <location filename="../AV/Input/JACKInput.cpp" line="286"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="387"/>
-        <location filename="../AV/Input/X11Input.cpp" line="435"/>
+        <location filename="../AV/Input/X11Input.cpp" line="444"/>
         <source>Input thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Feldolgozás leállítva.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="418"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="252"/>
         <location filename="../AV/Input/JACKInput.cpp" line="290"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="391"/>
-        <location filename="../AV/Input/X11Input.cpp" line="439"/>
+        <location filename="../AV/Input/X11Input.cpp" line="448"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -366,7 +372,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/GLInjectInput.cpp" line="255"/>
         <location filename="../AV/Input/JACKInput.cpp" line="293"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="394"/>
-        <location filename="../AV/Input/X11Input.cpp" line="442"/>
+        <location filename="../AV/Input/X11Input.cpp" line="451"/>
         <source>Unknown exception in input thread.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -378,7 +384,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="72"/>
         <source>Error: Could not connect to JACK!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: Nem lehet csatlakozni a JACK kiszolgálóhoz.</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="81"/>
@@ -543,87 +549,87 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="86"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="88"/>
         <source>Error: Can&apos;t create channel directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="93"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="95"/>
         <source>Error: Can&apos;t stat channel directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="97"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="99"/>
         <source>Error: Channel directory is not a regular directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="102"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="104"/>
         <source>Error: Can&apos;t set channel directory mode!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="107"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="109"/>
         <source>Error: Channel directory is owned by a different user! Choose a different channel name, or enable relaxed file permissions to use it anyway.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="118"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="121"/>
         <source>Error: Can&apos;t initialize inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="124"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="127"/>
         <source>Error: Can&apos;t watch shared memory directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="135"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="139"/>
         <source>Error: Can&apos;t open shared memory directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="153"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="157"/>
         <source>Added pre-existing stream %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="187"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="192"/>
         <source>Error: Can&apos;t get read length from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="195"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="200"/>
         <source>Error: Can&apos;t read from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="205"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="210"/>
         <source>Error: Received partial event from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="217"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="222"/>
         <source>Error: Received partial name from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="231"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="236"/>
         <source>Added stream %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="239"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="244"/>
         <source>Removed stream %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="265"/>
+        <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="270"/>
         <source>Deleted abandoned stream %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -654,7 +660,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="245"/>
         <source>Using X11 shared memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>X11 osztott memóriájának használata.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="248"/>
@@ -688,18 +694,18 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="385"/>
+        <location filename="../AV/Input/X11Input.cpp" line="393"/>
         <source>Error: Can&apos;t attach server to shared memory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="391"/>
+        <location filename="../AV/Input/X11Input.cpp" line="399"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="402"/>
+        <location filename="../AV/Input/X11Input.cpp" line="410"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation type="unfinished"></translation>
@@ -748,7 +754,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="171"/>
         <source>Encoder thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kódolás folyamatban.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="203"/>
@@ -799,7 +805,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="193"/>
         <source>Using format %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Kimeneti formátum: %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="198"/>
@@ -825,7 +831,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="261"/>
         <source>Using codec %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Kódoló beállításai: %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="270"/>
@@ -845,7 +851,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="306"/>
         <source>Muxer thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lekeverés folyamatban.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="360"/>
@@ -920,7 +926,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="825"/>
         <source>Synchronizer thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Összefűzés folyamatban.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="847"/>
@@ -959,60 +965,60 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/SimpleSynth.cpp" line="39"/>
+        <location filename="../AV/SimpleSynth.cpp" line="40"/>
         <source>Using real-time priority.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/SimpleSynth.cpp" line="49"/>
+        <location filename="../AV/SimpleSynth.cpp" line="50"/>
         <source>Using nice priority.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/SimpleSynth.cpp" line="54"/>
+        <location filename="../AV/SimpleSynth.cpp" line="55"/>
         <source>Warning: Can&apos;t increase the thread priority.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/SimpleSynth.cpp" line="61"/>
+        <location filename="../AV/SimpleSynth.cpp" line="63"/>
         <source>Error: Can&apos;t recover device after underrun!</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/SimpleSynth.cpp" line="88"/>
+        <location filename="../AV/SimpleSynth.cpp" line="90"/>
         <source>Stopping synth thread ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/SimpleSynth.cpp" line="221"/>
+        <location filename="../AV/SimpleSynth.cpp" line="223"/>
         <source>Synth thread started.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/SimpleSynth.cpp" line="274"/>
+        <location filename="../AV/SimpleSynth.cpp" line="276"/>
         <source>Error: Can&apos;t write samples!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/SimpleSynth.cpp" line="282"/>
+        <location filename="../AV/SimpleSynth.cpp" line="284"/>
         <source>Synth thread stopped.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/SimpleSynth.cpp" line="286"/>
+        <location filename="../AV/SimpleSynth.cpp" line="288"/>
         <source>Exception &apos;%1&apos; in synth thread.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/SimpleSynth.cpp" line="289"/>
+        <location filename="../AV/SimpleSynth.cpp" line="291"/>
         <source>Unknown exception in synth thread.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/DetectCPUFeatures.cpp" line="39"/>
         <source>CPU features</source>
-        <translation type="unfinished"></translation>
+        <translation>Processzor által támogatott utasításkészletek</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="158"/>
@@ -1043,17 +1049,17 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../Main.cpp" line="193"/>
         <source>SSR started</source>
-        <translation type="unfinished"></translation>
+        <translation>SSR elindítva</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="211"/>
         <source>SSR stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>SSR leállítva</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="228"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: Nem lehet hozzáférni a .ssr könyvtárhoz.</translation>
     </message>
 </context>
 <context>
@@ -1064,7 +1070,9 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
 
 You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished"></translation>
+        <translation>A SimpleScreenRecorder úgy észlelte, hogy zárt NVIDIA illesztőprogram van telepítve és engedélyezve van a kép tükrözése. Ez grafikai problémákhoz vezethet rögzítés közben. Erősen ajánlott a letiltása. Le szeretnéd tiltani most?
+
+Ezt később bármikor módosíthatod az NVIDIA Vezérlőpultján keresztül.</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="90"/>
@@ -1078,12 +1086,12 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageDone.cpp" line="29"/>
         <source>The recording has been saved. You can edit the video now, or re-encode it with better settings to make the file smaller (the default settings are optimized for quality and speed, not file size).</source>
-        <translation type="unfinished"></translation>
+        <translation>A felvétel elkészült. A videód most már szerkeszthető. Ne feledd, hogy a felvétel mérete a minőség függvényében változik.</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="32"/>
         <source>Back to the start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Vissza a kezdőlapra</translation>
     </message>
 </context>
 <context>
@@ -1091,170 +1099,178 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="113"/>
         <source>Video input</source>
-        <translation type="unfinished"></translation>
+        <translation>Képrögzítés</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="116"/>
         <source>Record the entire screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Kijelző(k) rögzítése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="117"/>
         <source>Record a fixed rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Kijelölt terület rögzítése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="118"/>
         <source>Follow the cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Egérkurzor követése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="119"/>
         <source>Record OpenGL (experimental)</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenGL alapú alkalmazás rögzítése (kísérleti)</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="125"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rögzíteni kívánt kijelző kiválasztása több megjelenítős konfiguráció esetén.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="126"/>
         <source>Select rectangle...</source>
-        <translation type="unfinished"></translation>
+        <translation>Terület kijelölése...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="127"/>
         <source>Use the mouse to select the recorded rectangle.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rögzíteni kívánt terület kijelölése egérrel.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="128"/>
         <source>Select window...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ablak kiválasztása...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="129"/>
         <source>Use the mouse to select a window to record.
 Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only
 the client area of the window will be recorded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rögzíteni kívánt ablak kijelölése egérrel.
+Megjegyzés: Az ablak keretére kattintva a keret is rögzítésre kerül.
+Ellenkező esetben kizárólag az ablak tartalma lesz rögzítve.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="132"/>
         <source>OpenGL settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenGL beállítások...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="133"/>
         <source>Change the settings for OpenGL recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rögzítés beállításainak finomhangolása.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="134"/>
         <source>Left:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bal:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="138"/>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">The x coordinate of the upper-left corner of the recorded rectangle.
+Megjegyzés: Az érték egyszerűen módosítható görgővel, vagy a kurzorbillentyűk segítségével.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="140"/>
         <source>Top:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fent:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="144"/>
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">The y coordinate of the upper-left corner of the recorded rectangle
+Megjegyzés: Az érték egyszerűen módosítható görgővel, vagy a kurzorbillentyűk segítségével.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="146"/>
         <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Szélesség:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="150"/>
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kijelölt terület szélessége.
+Megjegyzés: Az érték egyszerűen módosítható görgővel, vagy a kurzorbillentyűk segítségével.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="152"/>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Magasság:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="156"/>
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kijelölt terület magassága.
+Megjegyzés: Az érték egyszerűen módosítható görgővel, vagy a kurzorbillentyűk segítségével.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="158"/>
         <source>Frame rate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Képsebesség:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="162"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
-        <translation type="unfinished"></translation>
+        <translation>A másodpercenként rögzített képkockák mennyiségét határozza meg. A magasabb érték több erőforrást igényel.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="163"/>
         <source>Scale video</source>
-        <translation type="unfinished"></translation>
+        <translation>Kép átméretezése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="164"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kép átméretezése rögzítés közben. Ez további erőforrást igényel. </translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="165"/>
         <source>Scaled width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Szélesség:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="169"/>
         <source>Scaled height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Magasság:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="173"/>
         <source>Record cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Egérkurzor rögzítése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="243"/>
         <source>Audio input</source>
-        <translation type="unfinished"></translation>
+        <translation>Hangrögzítés</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="245"/>
         <source>Record audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Hang rögzítése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="246"/>
         <source>Backend:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiszolgáló:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="255"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rögzíteni kívánt hangforrás kiszolgálója.
+A PulseAudio-t használó rendszerek többségén az ALSA is működhet,
+de a PulseAudio ajánlott közvetlen hozzáférése miatt.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="257"/>
         <location filename="../GUI/PageInput.cpp" line="265"/>
         <source>Source:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forrás:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="260"/>
@@ -1266,7 +1282,7 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
         <location filename="../GUI/PageInput.cpp" line="262"/>
         <location filename="../GUI/PageInput.cpp" line="270"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Ellenőrzés</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="263"/>
@@ -1283,134 +1299,135 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageInput.cpp" line="271"/>
         <source>Refreshes the list of PulseAudio sources.</source>
-        <translation type="unfinished"></translation>
+        <translation>PulseAudio jelforrásainak újraellenőrzése.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>Record system microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>Mikrofon hangjának rögzítése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mikrofon hangjának rögzítése, ha csatlakoztatva van.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>Record system speakers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendszer hangjának rögzítése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="277"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az általad hallható, kimeneti hang rögzítése.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Vissza</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="313"/>
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Tovább</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="673"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation type="unfinished"></translation>
+        <translation>Minden kijelző: %1x%2</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="677"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation type="unfinished"></translation>
+        <translation>%1. kijelző: %2x%3, kezdés: %4,%5</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="839"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
-        <translation type="unfinished"></translation>
+        <translation>%1. kijelző</translation>
     </message>
 </context>
 <context>
     <name>PageOutput</name>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="80"/>
-        <location filename="../GUI/PageOutput.cpp" line="83"/>
-        <location filename="../GUI/PageOutput.cpp" line="86"/>
-        <location filename="../GUI/PageOutput.cpp" line="89"/>
-        <location filename="../GUI/PageOutput.cpp" line="125"/>
+        <location filename="../GUI/PageOutput.cpp" line="81"/>
+        <location filename="../GUI/PageOutput.cpp" line="84"/>
+        <location filename="../GUI/PageOutput.cpp" line="87"/>
+        <location filename="../GUI/PageOutput.cpp" line="90"/>
+        <location filename="../GUI/PageOutput.cpp" line="126"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>%1 fájl</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="92"/>
-        <location filename="../GUI/PageOutput.cpp" line="98"/>
-        <location filename="../GUI/PageOutput.cpp" line="105"/>
+        <location filename="../GUI/PageOutput.cpp" line="93"/>
+        <location filename="../GUI/PageOutput.cpp" line="99"/>
+        <location filename="../GUI/PageOutput.cpp" line="106"/>
         <source>Other...</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyéb...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="104"/>
+        <location filename="../GUI/PageOutput.cpp" line="105"/>
         <source>Uncompressed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tömörítetlen</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="159"/>
+        <location filename="../GUI/PageOutput.cpp" line="160"/>
         <source>Error: Could not find any suitable container in libavformat!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="163"/>
+        <location filename="../GUI/PageOutput.cpp" line="164"/>
         <source>Error: Could not find any suitable video codec in libavcodec!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="167"/>
+        <location filename="../GUI/PageOutput.cpp" line="168"/>
         <source>Error: Could not find any suitable audio codec in libavcodec!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="173"/>
+        <location filename="../GUI/PageOutput.cpp" line="174"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájl</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="175"/>
+        <location filename="../GUI/PageOutput.cpp" line="176"/>
         <source>Save as:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="177"/>
-        <source>The recording will be saved to this location.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés helye:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="178"/>
-        <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <source>The recording will be saved to this location.</source>
+        <translation>A felvétel ide lesz mentve.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="179"/>
-        <source>Separate file per segment</source>
-        <translation type="unfinished"></translation>
+        <source>Browse...</source>
+        <translation>Tallózás...</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="180"/>
+        <source>Separate file per segment</source>
+        <translation>Felvétel darabolása</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="181"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bekapcsolás esetén minden szüneteltetéskor darabolva lesz a felvétel.
+A rögzített darabok dátummal ellátva kerülnek mentésre.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="182"/>
+        <location filename="../GUI/PageOutput.cpp" line="183"/>
         <source>Container:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tároló:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="190"/>
+        <location filename="../GUI/PageOutput.cpp" line="191"/>
         <source>The container (file format) that will be used to save the recording.
 Note that not all codecs are supported by all containers, and that not all media players can read all file formats.
 - Matroska (MKV) supports all the codecs, but is less well-known.
@@ -1420,125 +1437,141 @@ Note that not all codecs are supported by all containers, and that not all media
    WebM is supported by default in Firefox, Chrome and Opera, and plugins are available for Internet Explorer and Safari.
    It supports only VP8 and Vorbis.
 - OGG supports only Theora and Vorbis.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rögzítéshez használt tároló (formátum).
+Érdemes figyelembe venni, hogy nem minden tároló kompatibilis minden kódolóval.
+- Matroska (MKV): minden kódolót támogat, de kevésbé ismert.
+- MP4: jól ismert és a legtöbb eszköz támogatja, de csak H.264 kódolóval használható
+   (és a legtöbb lejátszó csak az AAC hangformátumot kezeli).
+- WebM: többnyire HTML5 alapú oldalakon beágyazva alkalmazzák. Ezt a formátumot a Google fejleszti.
+   A WebM formátumot a legtöbb böngésző támogatja valamilyen szinten akár natívan, akár bővítmény segítségével.
+   Kizárólag VP8 &amp; Vorbis kódolókkal használható.
+- OGG: csak Theora &amp; Vorbis kódolókkal haszálható.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="199"/>
+        <location filename="../GUI/PageOutput.cpp" line="200"/>
         <source>Container name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tároló neve:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="205"/>
+        <location filename="../GUI/PageOutput.cpp" line="206"/>
         <source>For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="221"/>
+        <location filename="../GUI/PageOutput.cpp" line="222"/>
         <source>Video</source>
-        <translation type="unfinished"></translation>
+        <translation>Kép</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="223"/>
-        <location filename="../GUI/PageOutput.cpp" line="303"/>
+        <location filename="../GUI/PageOutput.cpp" line="224"/>
+        <location filename="../GUI/PageOutput.cpp" line="304"/>
         <source>Codec:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kódoló:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="228"/>
+        <location filename="../GUI/PageOutput.cpp" line="229"/>
         <source>The codec that will be used to compress the video stream.
 - H.264 (libx264) is by far the best codec - high quality and very fast.
 - VP8 (libvpx) is quite good but also quite slow.
 - Theora (libtheora) isn&apos;t really recommended because the quality isn&apos;t very good.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rögzítéshez használni kívánt kódoló.
+- A H.264 (libx264) eddig talán a legjobb. Jó minőség/sebesség arány jellemzi.
+- A VP8 (libvpx)nem rossz, de nem is gyors.
+- A Theora (libtheora) rossz minősége miatt nem ajánlott.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="232"/>
-        <location filename="../GUI/PageOutput.cpp" line="316"/>
+        <location filename="../GUI/PageOutput.cpp" line="233"/>
+        <location filename="../GUI/PageOutput.cpp" line="317"/>
         <source>Codec name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="238"/>
-        <source>For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyéb kódoló:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="239"/>
-        <location filename="../GUI/PageOutput.cpp" line="323"/>
-        <source>Bit rate (in kbps):</source>
-        <translation type="unfinished"></translation>
+        <source>For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.</source>
+        <translation type="unfinished">Tapasztaltabb felhasználók számára.
+You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="241"/>
+        <location filename="../GUI/PageOutput.cpp" line="240"/>
+        <location filename="../GUI/PageOutput.cpp" line="324"/>
+        <source>Bit rate (in kbps):</source>
+        <translation>Bitsűrűség (kbps):</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="242"/>
         <source>The video bit rate (in kilobit per second). A higher value means a higher quality.
 If you have no idea where to start, try 5000 and change it if needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Videó bitsűrűsége (kilobit/másodpercben megadva). A magasabb érték jobb minőséget eredményez.
+Ha nem tudod mi a megfelelő beállítás, először próbáld ki alapértelmezett (5000) értékkel.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="243"/>
+        <location filename="../GUI/PageOutput.cpp" line="244"/>
         <source>Constant rate factor:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished"></translation>
+        <translation>Minőségi szint:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="248"/>
+        <location filename="../GUI/PageOutput.cpp" line="249"/>
         <source>This setting changes the video quality. A lower value means a higher quality.
 The allowed range is 0-51 (0 means lossless, the default is 23).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="254"/>
+        <location filename="../GUI/PageOutput.cpp" line="255"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished"></translation>
+        <translation>Profil:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="259"/>
+        <location filename="../GUI/PageOutput.cpp" line="260"/>
         <source>The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),
 but results in larger files. The quality shouldn&apos;t be affected too much.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kódolási folyamat sebessége. A nagyobb sebesség kisebb erőforrást igényel,
+de nagyobb fájlméretet eredményez.. A minőséget nem befolyásolja.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="261"/>
+        <location filename="../GUI/PageOutput.cpp" line="262"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kódolási sebesség:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="263"/>
+        <location filename="../GUI/PageOutput.cpp" line="264"/>
         <source>fastest</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="268"/>
-        <source>slowest</source>
-        <translation type="unfinished"></translation>
+        <translation>leggyorsabb</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="269"/>
+        <source>slowest</source>
+        <translation>leglassabb</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="270"/>
         <source>The encoding speed. A higher value uses *less* CPU time. (I didn&apos;t choose the name, this is the name
 used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kódolás sebessége. A magasabb érték kevesebb erőforrást igényel,
+de rosszabb minőséget eredményez, ha csak nem növeled meg a bitsűrűséget.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="271"/>
-        <location filename="../GUI/PageOutput.cpp" line="326"/>
+        <location filename="../GUI/PageOutput.cpp" line="272"/>
+        <location filename="../GUI/PageOutput.cpp" line="327"/>
         <source>Custom options:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="273"/>
-        <location filename="../GUI/PageOutput.cpp" line="328"/>
-        <source>Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Paraméterek:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="274"/>
-        <source>Allow frame skipping</source>
-        <translation type="unfinished"></translation>
+        <location filename="../GUI/PageOutput.cpp" line="329"/>
+        <source>Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)</source>
+        <translation>További rögzítési paraméter megadása vesszőkkel elválasztva
+(például: opció1=érték1,opció2=érték2,opció3=érték3).</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="275"/>
+        <source>Allow frame skipping</source>
+        <translation>Képkockák átugrása</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="276"/>
         <source>If checked, the video encoder will be allowed to skip frames if the input frame rate is
 lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.
 This increases the file size and CPU usage, but reduces the latency for live streams in some cases.
@@ -1546,12 +1579,12 @@ It shouldn&apos;t affect the appearance of the video.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="301"/>
+        <location filename="../GUI/PageOutput.cpp" line="302"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Hang</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="308"/>
+        <location filename="../GUI/PageOutput.cpp" line="309"/>
         <source>The codec that will be used to compress the audio stream. You shouldn&apos;t worry too much about
 this, because the size of the audio data is usually negligible compared to the size of the video data.
 And if you&apos;re only recording your own voice (i.e. no music), the quality won&apos;t matter that much anyway.
@@ -1560,54 +1593,62 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
 - AAC is a good codec, but the implementations used here (libvo_aacenc or the experimental ffmpeg aac encoder)
    are pretty bad. Only use it if you have no other choice.
 - Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it&apos;s very fast.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hangrögzítéshez használt kódoló. Ritkán szorul konfigurálásra.
+- A Vorbis (libvorbis) az egyik legjobb kódoló minden tekintetben.
+- Az MP3 (libmp3lame) hasonlóan jó.
+- Az AAC minősége szintén jó, de kompatibiltás hiánya miatt kényes,
+   így csak legvégső esetben ajánlott.
+- A tömörítetlen  hang minőség/sebesség aránya kiváló,
+   de utólagos kódolásra lehet szükség a nagy méret miatt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="322"/>
+        <location filename="../GUI/PageOutput.cpp" line="323"/>
         <source>For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="325"/>
+        <location filename="../GUI/PageOutput.cpp" line="326"/>
         <source>The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="342"/>
-        <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Hang bitsűrűsége (kilobit/másodpercben megadva). A magasabb érték jobb minőséget eredményez.
+Az alapértelmezett 128kbps általában elegendő szokott lenni az esetek többségében.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="343"/>
+        <source>Back</source>
+        <translation>Vissza</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="344"/>
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Tovább</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="562"/>
-        <location filename="../GUI/PageOutput.cpp" line="570"/>
+        <location filename="../GUI/PageOutput.cpp" line="563"/>
+        <location filename="../GUI/PageOutput.cpp" line="571"/>
         <source>not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>nincs telepítve</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="564"/>
-        <location filename="../GUI/PageOutput.cpp" line="572"/>
+        <location filename="../GUI/PageOutput.cpp" line="565"/>
+        <location filename="../GUI/PageOutput.cpp" line="573"/>
         <source>not supported by container</source>
-        <translation type="unfinished"></translation>
+        <translation>nem ajánlott ehhez a tárolóhoz</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="615"/>
+        <location filename="../GUI/PageOutput.cpp" line="616"/>
         <source>Save recording as</source>
-        <translation type="unfinished"></translation>
+        <translation>Felvétel mentésének helye</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="655"/>
+        <location filename="../GUI/PageOutput.cpp" line="656"/>
         <source>You did not select an output file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs megadva a mentés helye!</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="660"/>
+        <location filename="../GUI/PageOutput.cpp" line="661"/>
         <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) &apos;%1&apos; fájl már létezik.
+Biztos vagy benne, hogy felülírod?</translation>
     </message>
 </context>
 <context>
@@ -1615,42 +1656,42 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageRecord.cpp" line="146"/>
         <source>Recording</source>
-        <translation type="unfinished"></translation>
+        <translation>Felvétel</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="150"/>
         <source>Enable recording hotkey</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyorsbillentyűk engedélyezése</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="151"/>
         <source>Enable sound notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Hangjelzések engedélyezése</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="152"/>
         <source>Hotkey:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kombináció:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="153"/>
         <source>Ctrl +</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl +</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="154"/>
         <source>Shift +</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift +</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="155"/>
         <source>Alt +</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt +</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="156"/>
         <source>Super +</source>
-        <translation type="unfinished"></translation>
+        <translation>Super/Win +</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="158"/>
@@ -1661,212 +1702,214 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="198"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulajdonságok</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="200"/>
         <source>Total time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Időtartam:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="202"/>
         <source>FPS in:</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS (be):</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="204"/>
         <source>FPS out:</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS (ki):</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="206"/>
         <source>Size in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Felbontás (be):</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="208"/>
         <source>Size out:</source>
-        <translation type="unfinished"></translation>
+        <translation>Felbontás (ki):</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="210"/>
         <source>File name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájl:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="213"/>
         <source>File size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájlméret:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="215"/>
         <source>Bit rate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitsűrűség:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="238"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Előnézet</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="242"/>
         <source>Preview frame rate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Előnézet képsebessége:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="246"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés: Az előnézet használata további erőforrást igényel.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="295"/>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Napló</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="310"/>
         <location filename="../GUI/PageRecord.cpp" line="318"/>
         <source>Cancel recording</source>
-        <translation type="unfinished"></translation>
+        <translation>Felvétel megszakítása</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="311"/>
         <location filename="../GUI/PageRecord.cpp" line="317"/>
         <source>Save recording</source>
-        <translation type="unfinished"></translation>
+        <translation>Felvétel mentése</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="363"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
-        <translation type="unfinished"></translation>
+        <translation>A felvétel mentése még nem történt meg. Ha most bezárod az alkalmazást, a felvétel elvész.
+Biztos vagy benne, hogy kilépsz?</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="522"/>
         <source>Starting page ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Előkészítés...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="543"/>
-        <location filename="../GUI/PageRecord.cpp" line="701"/>
-        <location filename="../GUI/PageRecord.cpp" line="786"/>
+        <location filename="../GUI/PageRecord.cpp" line="685"/>
+        <location filename="../GUI/PageRecord.cpp" line="770"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="550"/>
         <source>Started page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Előkészítve.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="574"/>
         <source>Stopping page ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Leállítás...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="584"/>
+        <location filename="../GUI/PageRecord.cpp" line="817"/>
         <source>Encoding remaining data ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hátralévő anyag kódolása...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="615"/>
+        <location filename="../GUI/PageRecord.cpp" line="599"/>
         <source>Stopped page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Leállítva.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="640"/>
+        <location filename="../GUI/PageRecord.cpp" line="624"/>
         <source>Starting output ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rögzítés megkezdődött...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="651"/>
+        <location filename="../GUI/PageRecord.cpp" line="635"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="656"/>
+        <location filename="../GUI/PageRecord.cpp" line="640"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="692"/>
+        <location filename="../GUI/PageRecord.cpp" line="676"/>
         <source>Started output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés folyamatban.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="712"/>
+        <location filename="../GUI/PageRecord.cpp" line="696"/>
         <source>Stopping output ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés leállítása...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="730"/>
+        <location filename="../GUI/PageRecord.cpp" line="714"/>
         <source>Stopped output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés leállítva.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="757"/>
+        <location filename="../GUI/PageRecord.cpp" line="741"/>
         <source>Starting input ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Feldolgozás megkezdése...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="762"/>
+        <location filename="../GUI/PageRecord.cpp" line="746"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="781"/>
+        <location filename="../GUI/PageRecord.cpp" line="765"/>
         <source>Started input.</source>
-        <translation type="unfinished"></translation>
+        <translation>Feldolgozás folyamatban.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="806"/>
+        <location filename="../GUI/PageRecord.cpp" line="790"/>
         <source>Stopping input ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Feldolgozás leállítása...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="817"/>
+        <location filename="../GUI/PageRecord.cpp" line="801"/>
         <source>Stopped input.</source>
-        <translation type="unfinished"></translation>
+        <translation>Feldolgozás leállítva.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="880"/>
-        <location filename="../GUI/PageRecord.cpp" line="894"/>
+        <location filename="../GUI/PageRecord.cpp" line="888"/>
+        <location filename="../GUI/PageRecord.cpp" line="902"/>
         <source>Pause recording</source>
-        <translation type="unfinished"></translation>
+        <translation>Felvétel szüneteltetése</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="883"/>
-        <location filename="../GUI/PageRecord.cpp" line="887"/>
-        <location filename="../GUI/PageRecord.cpp" line="897"/>
-        <source>Start recording</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
+        <location filename="../GUI/PageRecord.cpp" line="891"/>
+        <location filename="../GUI/PageRecord.cpp" line="895"/>
         <location filename="../GUI/PageRecord.cpp" line="905"/>
+        <source>Start recording</source>
+        <translation>Felvétel indítása</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="913"/>
         <source>Stop preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Előnézet leállítása</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="908"/>
+        <location filename="../GUI/PageRecord.cpp" line="916"/>
         <source>Start preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Előnézet indítása</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="937"/>
+        <location filename="../GUI/PageRecord.cpp" line="945"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: Nem sikerült az összefüzés. </translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="977"/>
+        <location filename="../GUI/PageRecord.cpp" line="985"/>
         <source>Are you sure that you want to cancel this recording?</source>
-        <translation type="unfinished"></translation>
+        <translation>Biztos vagy benne, hogy megszakítod a felvételt?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="992"/>
+        <location filename="../GUI/PageRecord.cpp" line="1000"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs mit menteni.
+A felvétel megkezdéséhez kattints a fenti gombra.</translation>
     </message>
 </context>
 <context>
@@ -1879,17 +1922,20 @@ The start button is at the top ;).</source>
 
 &lt;p&gt;For more information:&lt;br&gt;
 %1&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Üdvözöl a SimpleScreenRecorder!&lt;/p&gt;
+&lt;p&gt;Senkit se tévesszen meg az elnevezés, a program igenis sok beállítási lehetőséggel van felvértezve. Ne aggódj, csupán két dologra kell odafigyelned. Először is az alapértelmezett beállítások általában  megfelelőek a többség számára. Ha valamiről nem tudod, hogy mire való, akkor egyszerűen csak használd a meglévő beállításokat. Másodszor pedig a legtöbb beállításhoz tartózik súgóinformáció. Ezek megtekintéséhez egyszerűen csak húzd az adott beállítás fölé az egérkurzort.&lt;/p&gt;
+&lt;p&gt;További információ:&lt;br&gt;
+%1&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="45"/>
         <source>About SimpleScreenRecorder</source>
-        <translation type="unfinished"></translation>
+        <translation>A SimpleScreenRecorder névjegye</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="46"/>
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdés</translation>
     </message>
 </context>
 <context>
@@ -1897,62 +1943,62 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="28"/>
         <source>Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="37"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="38"/>
         <source>Save the current settings to this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelenlegi beállítások mentése profilba.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="39"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Új profil</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="40"/>
         <source>Create a new profile with the current settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Új profil létrehozása a jelenlegi beállításokkal.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="41"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="42"/>
         <source>Delete this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil törlése.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(nincs)</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
         <source>Error: Can&apos;t load profile!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: Nem sikerült a profil betöltése.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="147"/>
         <source>Are you sure that you want to overwrite this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Biztos vagy benne, hogy felül szeretnéd írni a meglévő profilt?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Már van egy ilyen nevű profil. Biztos vagy benne, hogy felül szeretnéd írni?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="181"/>
         <source>Are you sure that you want to delete this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Biztos vagy benne, hogy törölni szeretnéd a meglévő profilt?</translation>
     </message>
 </context>
 <context>
@@ -1961,33 +2007,33 @@ The start button is at the top ;).</source>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rendben</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mégsem</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Igen</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished"></translation>
+        <translation>Igen, mindig</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nem</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished"></translation>
+        <translation>Soha</translation>
     </message>
 </context>
 <context>

@@ -141,6 +141,7 @@ public:
 	void StopInput();
 
 private:
+	void FinishOutput();
 	void UpdateInput();
 	void UpdateSysTray();
 	void UpdateRecordPauseButton();

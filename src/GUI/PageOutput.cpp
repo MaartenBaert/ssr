@@ -76,20 +76,21 @@ PageOutput::PageOutput(MainWindow* main_window)
 	m_old_container_av = 0;
 
 	// main codecs
+	// (initializer lists should use explicit types for Clang)
 	m_containers = {
-		{"Matroska (MKV)", "matroska", {"mkv"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("Matroska") + " (*.mkv)",
+		ContainerData({"Matroska (MKV)", "matroska", QStringList({"mkv"}), tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("Matroska") + " (*.mkv)",
 			{VIDEO_CODEC_H264, VIDEO_CODEC_VP8, VIDEO_CODEC_THEORA},
-			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC, AUDIO_CODEC_UNCOMPRESSED}},
-		{"MP4", "mp4", {"mp4"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("MP4") + " (*.mp4)",
+			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC, AUDIO_CODEC_UNCOMPRESSED}}),
+		ContainerData({"MP4", "mp4", QStringList({"mp4"}), tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("MP4") + " (*.mp4)",
 			{VIDEO_CODEC_H264},
-			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC}},
-		{"WebM", "webm", {"webm"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("WebM") + " (*.webm)",
+			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC}}),
+		ContainerData({"WebM", "webm", QStringList({"webm"}), tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("WebM") + " (*.webm)",
 			{VIDEO_CODEC_VP8},
-			{AUDIO_CODEC_VORBIS}},
-		{"OGG", "ogg", {"ogg"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("OGG") + " (*.ogg)",
+			{AUDIO_CODEC_VORBIS}}),
+		ContainerData({"OGG", "ogg", QStringList({"ogg"}), tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("OGG") + " (*.ogg)",
 			{VIDEO_CODEC_THEORA},
-			{AUDIO_CODEC_VORBIS}},
-		{tr("Other..."), "other", {}, "", {}, {}},
+			{AUDIO_CODEC_VORBIS}}),
+		ContainerData({tr("Other..."), "other", QStringList(), "", std::set<enum_video_codec>({}), std::set<enum_audio_codec>({})}),
 	};
 	m_video_codecs = {
 		{"H.264"       , "libx264"  },

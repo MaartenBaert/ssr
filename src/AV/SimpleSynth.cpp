@@ -28,6 +28,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/resource.h>
 
 static void MakeThreadHighPriority() {
+#ifdef __linux__
 	rlimit limit;
 
 	// try to get real-time priority
@@ -52,6 +53,7 @@ static void MakeThreadHighPriority() {
 	}
 
 	Logger::LogWarning("[MakeThreadHighPriority] " + Logger::tr("Warning: Can't increase the thread priority."));
+#endif
 }
 
 static void ALSARecoverAfterUnderrun(snd_pcm_t* pcm) {

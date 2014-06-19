@@ -23,7 +23,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <dirent.h>
 #include <signal.h>
+#ifdef __linux__
 #include <sys/inotify.h>
+#endif
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -112,6 +114,7 @@ void SSRVideoStreamWatcher::Init() {
 
 	}
 
+#ifdef __linux__
 	// initialize inotify
 	m_fd_notify = inotify_init1(IN_CLOEXEC | IN_NONBLOCK);
 	if(m_fd_notify == -1) {
@@ -124,6 +127,7 @@ void SSRVideoStreamWatcher::Init() {
 		Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Can't watch shared memory directory!"));
 		throw SSRStreamException();
 	}
+#endif
 
 	// get all the files that existed already
 	DIR *dir = NULL;
@@ -180,6 +184,7 @@ void SSRVideoStreamWatcher::Free() {
 }
 
 void SSRVideoStreamWatcher::HandleChanges(AddCallback add_callback, RemoveCallback remove_callback, void* userdata) {
+#ifdef __linux__
 
 	// find out how much we can read
 	int len;
@@ -271,4 +276,5 @@ void SSRVideoStreamWatcher::HandleChanges(AddCallback add_callback, RemoveCallba
 
 	}
 
+#endif
 }

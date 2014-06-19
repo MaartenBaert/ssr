@@ -40,7 +40,11 @@ public:
 	OutputManager(const OutputSettings& output_settings);
 	~OutputManager();
 
+	// Tells the encoders and muxer to finish. After calling this function, you should wait until
+	// IsFinished returns true before deleting the output manager.
 	void Finish();
+	
+	// Returns whether the encoders and muxer have finished.
 	bool IsFinished();
 
 private:
