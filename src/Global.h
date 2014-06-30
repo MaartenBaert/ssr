@@ -259,15 +259,6 @@ template<> inline double clamp<double>(double v, double lo, double hi) {
 	return fmin(fmax(v, lo), hi);
 }
 
-template<typename I, typename F>
-inline I round_to(F x) {
-	if(sizeof(long) >= sizeof(I))
-		return lrint(x);
-	if(sizeof(long long) >= sizeof(I))
-		return llrint(x);
-	return (I) rint(x);
-}
-
 // Generic number-to-string conversion and vice versa
 // Unlike the standard functions, these are locale-independent, and the functions never throw exceptions.
 template<typename T>

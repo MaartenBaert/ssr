@@ -237,7 +237,11 @@ inline QString av_version(unsigned int ver) {
 QString GetVersionInfo() {
 	return QString() +
 			"SimpleScreenRecorder " + SSR_VERSION + "\n"
+#ifdef __clang__
+			"Compiled with Clang " + QString::number(__clang_major__) + "." + QString::number(__clang_minor__) + "." + QString::number(__clang_patchlevel__) + "\n"
+#else
 			"Compiled with GCC " + QString::number(__GNUC__) + "." + QString::number(__GNUC_MINOR__) + "." + QString::number(__GNUC_PATCHLEVEL__) + "\n"
+#endif
 			"Qt: header " + QT_VERSION_STR + ", lib " + qVersion() + "\n"
 			"libavformat: header " + av_version(LIBAVFORMAT_VERSION_INT) + ", lib " + av_version(avformat_version()) + "\n"
 			"libavcodec: header " + av_version(LIBAVCODEC_VERSION_INT) + ", lib " + av_version(avcodec_version()) + "\n"

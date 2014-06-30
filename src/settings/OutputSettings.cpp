@@ -30,21 +30,22 @@ CodecInfo::CodecInfo() {
 	s_instance = this;
 
 	// main codecs
+	// (initializer lists should use explicit types for Clang)
 	QString diagfiles = tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'");
 	m_containers = {
-		{"Matroska (MKV)", "matroska", {"mkv"}, diagfiles.arg("Matroska") + " (*.mkv)",
+		ContainerData{"Matroska (MKV)", "matroska", QStringList({"mkv"}), diagfiles.arg("Matroska") + " (*.mkv)",
 			{VIDEO_CODEC_H264, VIDEO_CODEC_VP8, VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC, AUDIO_CODEC_UNCOMPRESSED}},
-		{"MP4", "mp4", {"mp4"}, diagfiles.arg("MP4") + " (*.mp4)",
+		ContainerData{"MP4", "mp4", QStringList({"mp4"}), diagfiles.arg("MP4") + " (*.mp4)",
 			{VIDEO_CODEC_H264},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC}},
-		{"WebM", "webm", {"webm"}, diagfiles.arg("WebM") + " (*.webm)",
+		ContainerData{"WebM", "webm", QStringList({"webm"}), diagfiles.arg("WebM") + " (*.webm)",
 			{VIDEO_CODEC_VP8},
 			{AUDIO_CODEC_VORBIS}},
-		{"OGG", "ogg", {"ogg"}, diagfiles.arg("OGG") + " (*.ogg)",
+		ContainerData{"OGG", "ogg", QStringList({"ogg"}), diagfiles.arg("OGG") + " (*.ogg)",
 			{VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS}},
-		{tr("Other..."), "other", {}, "", {}, {}},
+		ContainerData{tr("Other..."), "other", QStringList(), "", {}, {}},
 	};
 	m_video_codecs = {
 		{"H.264"       , "libx264"  },

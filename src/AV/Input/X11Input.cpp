@@ -344,7 +344,9 @@ void X11Input::InputThread() {
 
 		Logger::LogInfo("[X11Input::InputThread] " + Logger::tr("Input thread started."));
 
-		unsigned int grab_x = m_x, grab_y = m_y;
+		int grab_x = m_x, grab_y = m_y;
+		bool has_initial_cursor = false;
+		int64_t last_timestamp = hrt_time_micro();
 
 		while(!m_should_stop) {
 
@@ -373,9 +375,15 @@ void X11Input::InputThread() {
 				Window dummy_win;
 				unsigned int dummy_mask;
 				if(XQueryPointer(m_x11_display, m_x11_root, &dummy_win, &dummy_win, &dummy, &dummy, &mouse_x, &mouse_y, &dummy_mask)) {
-					grab_x = clamp(mouse_x - (int) m_width / 2, lock->m_screen_bbox.x(), lock->m_screen_bbox.x() + lock->m_screen_bbox.width() - (int) m_width);
-					grab_y = clamp(mouse_y - (int) m_height / 2, lock->m_screen_bbox.y(), lock->m_screen_bbox.y() + lock->m_screen_bbox.height() - (int) m_height);
+					int grab_x_target = (mouse_x - (int) m_width / 2) >> 1;
+					int grab_y_target = (mouse_y - (int) m_height / 2) >> 1;
+					int frac = (has_initial_cursor)? lrint(1024.0 * exp(-1e-5 * (double) (timestamp - last_timestamp))) : 0;
+					grab_x = (grab_x_target + ((grab_x >> 1) - grab_x_target) * frac / 1024) << 1;
+					grab_y = (grab_y_target + ((grab_y >> 1) - grab_y_target) * frac / 1024) << 1;
+					grab_x = clamp(grab_x, lock->m_screen_bbox.x(), lock->m_screen_bbox.x() + lock->m_screen_bbox.width() - (int) m_width);
+					grab_y = clamp(grab_y, lock->m_screen_bbox.y(), lock->m_screen_bbox.y() + lock->m_screen_bbox.height() - (int) m_height);
 				}
+				has_initial_cursor = true;
 			}
 
 			// get the image
@@ -429,6 +437,7 @@ void X11Input::InputThread() {
 			int image_stride = m_x11_image->bytes_per_line;
 			PixelFormat x11_image_format = X11ImageGetPixelFormat(m_x11_image);
 			PushVideoFrame(m_width, m_height, image_data, image_stride, x11_image_format, timestamp);
+			last_timestamp = timestamp;
 
 		}
 
