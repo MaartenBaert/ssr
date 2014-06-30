@@ -84,10 +84,9 @@ void QSpinBoxWithSignal::focusOutEvent(QFocusEvent* event) {
 WidgetScreenLabel::WidgetScreenLabel(QWidget* parent, const QString &text)
 	: QWidget(parent, Qt::Window | Qt::X11BypassWindowManagerHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint) {
 	m_text = text;
-}
-
-QSize WidgetScreenLabel::sizeHint() const {
-	return QSize(180, 60);
+	m_font = QFont("Sans", 18, QFont::Bold);
+	QFontMetrics fm(m_font);
+	setFixedSize(fm.size(Qt::TextSingleLine, m_text) + QSize(60, 40));
 }
 
 void WidgetScreenLabel::paintEvent(QPaintEvent* event) {
@@ -96,7 +95,7 @@ void WidgetScreenLabel::paintEvent(QPaintEvent* event) {
 	painter.setPen(QColor(0, 0, 0));
 	painter.setBrush(QColor(255, 192, 128));
 	painter.drawRect(0, 0, width() - 1, height() - 1);
-	painter.setFont(QFont("Sans", 18, QFont::Bold));
+	painter.setFont(m_font);
 	painter.drawText(0, 0, width(), height(), Qt::AlignHCenter | Qt::AlignVCenter | Qt::TextSingleLine, m_text);
 }
 

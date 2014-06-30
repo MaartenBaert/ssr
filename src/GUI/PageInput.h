@@ -62,12 +62,12 @@ class WidgetScreenLabel : public QWidget {
 
 private:
 	QString m_text;
+	QFont m_font;
 
 public:
 	WidgetScreenLabel(QWidget* parent, const QString& text);
 
 protected:
-	virtual QSize sizeHint() const override;
 	virtual void paintEvent(QPaintEvent* event) override;
 
 };
