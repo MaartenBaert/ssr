@@ -8,6 +8,12 @@ Programming
 - Boran Car (GLInject hotkey workaround)
 - Dubslow (profiles)
 
+Graphics
+--------
+
+- David Revoy (icon)
+- Mrallowski (original camera lens from openclipart.org)
+
 Translations
 ------------
 

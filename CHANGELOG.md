@@ -4,6 +4,7 @@ SimpleScreenRecorder changes
 Git master
 ----------
 
+- Added profile support.
 - New, more flexible OpenGL recording system (glinject-next branch merged).
 - More robust sound notifications.
 - Show progress dialog while flushing the encoders.
@@ -12,6 +13,8 @@ Git master
 - Native support for mono microphones (plughw no longer needed).
 - Added source detection for ALSA.
 - Partially rewritten output backend.
+- Improved mouse following algorithm.
+- New icon.
 - Bugfixes.
 
 Version 0.2.2
