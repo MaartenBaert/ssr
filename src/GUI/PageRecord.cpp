@@ -314,10 +314,14 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_systray_icon = new QSystemTrayIcon(g_icon_ssr, m_main_window);
 		QMenu *menu = new QMenu(m_main_window);
 		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
-		m_systray_action_save = menu->addAction(tr("Save recording"), this, SLOT(OnSave()));
-		m_systray_action_cancel = menu->addAction(tr("Cancel recording"), this, SLOT(OnCancel()));
+		m_systray_action_start_pause->setIconVisibleInMenu(true);
+		m_systray_action_cancel = menu->addAction(QIcon::fromTheme("process-stop"), tr("Cancel recording"), this, SLOT(OnCancel()));
+		m_systray_action_cancel->setIconVisibleInMenu(true);
+		m_systray_action_save = menu->addAction(QIcon::fromTheme("document-save"), tr("Save recording"), this, SLOT(OnSave()));
+		m_systray_action_save->setIconVisibleInMenu(true);
 		menu->addSeparator();
-		menu->addAction("Quit", m_main_window, SLOT(close()));
+		QAction *systray_action_quit = menu->addAction(QIcon::fromTheme("application-exit"), tr("Quit"), m_main_window, SLOT(close()));
+		systray_action_quit->setIconVisibleInMenu(true);
 		m_systray_icon->setContextMenu(menu);
 	} else {
 		m_systray_icon = NULL;
@@ -807,10 +811,10 @@ void PageRecord::StopInput() {
 void PageRecord::FinishOutput() {
 	assert(m_output_manager != NULL);
 	assert(m_output_manager->GetVideoEncoder() != NULL);
-	
+
 	// tell the output manager to finish
 	m_output_manager->Finish();
-	
+
 	// wait until it has actually finished
 	m_wait_saving = true;
 	unsigned int frames_left = m_output_manager->GetVideoEncoder()->GetFrameLatency();
@@ -825,7 +829,7 @@ void PageRecord::FinishOutput() {
 		usleep(20000);
 	}
 	m_wait_saving = false;
-	
+
 }
 
 void PageRecord::UpdateInput() {
@@ -881,13 +885,15 @@ void PageRecord::UpdateInput() {
 void PageRecord::UpdateSysTray() {
 	if(m_systray_icon == NULL)
 		return;
-	GroupEnabled({m_systray_action_start_pause, m_systray_action_save, m_systray_action_cancel}, m_page_started);
+	GroupEnabled({m_systray_action_start_pause, m_systray_action_cancel, m_systray_action_save}, m_page_started);
 	if(m_page_started) {
 		if(m_output_started) {
 			m_systray_icon->setIcon(g_icon_ssr_recording);
+			m_systray_action_start_pause->setIcon(g_icon_pause);
 			m_systray_action_start_pause->setText(tr("Pause recording"));
 		} else {
 			m_systray_icon->setIcon(g_icon_ssr_paused);
+			m_systray_action_start_pause->setIcon(g_icon_record);
 			m_systray_action_start_pause->setText(tr("Start recording"));
 		}
 	} else {

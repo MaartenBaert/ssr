@@ -117,8 +117,8 @@ private:
 
 	QSystemTrayIcon *m_systray_icon;
 	QAction *m_systray_action_start_pause;
-	QAction *m_systray_action_save;
 	QAction *m_systray_action_cancel;
+	QAction *m_systray_action_save;
 
 	QTimer *m_timer_update_info;
 
