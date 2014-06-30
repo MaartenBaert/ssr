@@ -47,7 +47,7 @@ static void MakeThreadHighPriority() {
 	int nice_limit = (limit.rlim_cur == RLIM_INFINITY)? std::numeric_limits<int>::min() : 20 - limit.rlim_cur; // see man page
 	if(nice_limit < 0) {
 		if(setpriority(PRIO_PROCESS, 0, std::max(-10, nice_limit)) == 0) {
-			Logger::LogInfo("[MakeThreadHighPriority] " + Logger::tr("Using nice priority."));
+			Logger::LogInfo("[MakeThreadHighPriority] " + Logger::tr("Using nice priority.", "Don't translate 'nice', it's a UNIX parameter that defines the priority of a process."));
 			return;
 		}
 	}

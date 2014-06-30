@@ -62,22 +62,22 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
         <source>Choose channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies kanaal</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="53"/>
         <source>Channel name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanaalnaam:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to change this if you want to record multiple applications at the same time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanaalnamen worden gebruikt om applicaties te identificeren. Je moet dit enkel aanpassen als je meerdere applicaties tegelijk wil opnemen.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="72"/>
         <source>Launch application</source>
-        <translation type="unfinished">Start applicatie</translation>
+        <translation>Start applicatie</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="74"/>
@@ -102,22 +102,22 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="82"/>
         <source>Launch automatically</source>
-        <translation type="unfinished">Start automatisch</translation>
+        <translation>Start automatisch</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
-        <translation type="unfinished">Indien aangevinkt zal de applicatie automatisch gestart worden zodra je naar de opnamepagina gaat. Indien niet aangevinkt moet de applicatie manueel gestart worden.</translation>
+        <translation>Indien aangevinkt zal de applicatie automatisch gestart worden zodra je naar de opnamepagina gaat. Indien niet aangevinkt moet de applicatie manueel gestart worden.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="85"/>
         <source>Launch now</source>
-        <translation type="unfinished">Start nu</translation>
+        <translation>Start nu</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="106"/>
         <source>Stream settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Streaminstellingen</translation>
     </message>
     <message>
         <source>Select stream</source>
@@ -288,42 +288,42 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <location filename="../AV/Input/ALSAInput.cpp" line="95"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="232"/>
         <source>Generating source list ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bronnenlijst genereren ...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="114"/>
         <source>Error: Could not update ALSA configuration!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan ALSA configuratie niet updaten!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="121"/>
         <source>Warning: Could not find PCM plugins.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Kan PCM plugins niet vinden.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="163"/>
         <source>Found plugin %1 = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin %1 = %2 gevonden.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="176"/>
         <source>Warning: Could not open sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Kan geluidskaart %1 niet openen.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="182"/>
         <source>Warning: Could not get info for sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Kan geen informatie verkrijgen over geluidskaard %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="186"/>
         <source>Found card %1 = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaart %1 = %2 gevonden.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="211"/>
         <source>Found device %1 = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Apparaat %1 = %2 gevonden.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="260"/>
@@ -370,7 +370,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="300"/>
         <source>Warning: Channel count %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Aantal kanalen %1 wordt niet ondersteund, gebruik %2 in de plaats. Dit is geen probleem.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="309"/>
@@ -595,7 +595,7 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="223"/>
         <source>Got %1 = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verkreeg %1 = %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="244"/>
@@ -661,7 +661,7 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
         <location filename="../AV/Input/X11Input.cpp" line="271"/>
         <source>Warning: XFixes is not supported by X server, the cursor has been hidden.</source>
         <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: XFixes wordt niet ondersteund door de X server, de cursor is verborgen.</translation>
     </message>
     <message>
         <source>Warning: XFixes is not supported by server, the cursor has been hidden.</source>
@@ -704,12 +704,12 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="97"/>
         <source>Error: Channel count is zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Aantal kanalen is nul.</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="101"/>
         <source>Error: Sample rate is zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Samplefrequentie is nul.</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="118"/>
@@ -941,12 +941,12 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="116"/>
         <source>Error: Frame rate is zero!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Beelden per seconde is nul!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="133"/>
         <source>Error: Encoder requires an unsupported pixel format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Encoder vereist een sampleformaat dat niet ondersteund wordt!</translation>
     </message>
     <message>
         <source>Error: Frame rate it zero!</source>
@@ -966,17 +966,22 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="40"/>
         <source>Using real-time priority.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik real-time prioriteit.</translation>
+    </message>
+    <message>
+        <source>Using nice priority.</source>
+        <translation type="obsolete">Gebruik nice prioriteit.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="50"/>
         <source>Using nice priority.</source>
-        <translation type="unfinished"></translation>
+        <comment>Don&apos;t translate &apos;nice&apos;, it&apos;s a UNIX parameter that defines the priority of a process.</comment>
+        <translation>Gebruik nice prioriteit.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="55"/>
         <source>Warning: Can&apos;t increase the thread priority.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Kan de thread prioriteit niet verhogen.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="63"/>
@@ -1047,148 +1052,156 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
     <message>
         <location filename="../Main.cpp" line="228"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
-        <translation>Fout: Kan geen .ssr-map maken!</translation>
+        <translation>Fout: Kan geen .ssr map maken!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="149"/>
         <source>Error: Could not read stream, this usually means that the stream was already gone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan stream niet lezen, dit betekent meestal dat de stream al verdwenen is.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="64"/>
         <source>Created video stream reader.</source>
-        <translation type="unfinished"></translation>
+        <translation>Video stream lezer gemaakt.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="69"/>
         <source>Error: Can&apos;t open video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan video stream bestand niet openen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="76"/>
         <source>Error: Can&apos;t resize video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan video stream bestand niet vergroten!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="83"/>
         <source>Error: Can&apos;t memory-map video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan video stream bestand niet memory-mappen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="92"/>
         <source>Error: Can&apos;t open video frame file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan video frame bestand niet openen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="142"/>
         <source>Destroyed video stream reader.</source>
-        <translation type="unfinished"></translation>
+        <translation>Video stream lezer vernietigd.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="238"/>
         <source>Error: Size of video frame file is incorrect!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Grootte van video frame bestand is incorrect!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="247"/>
         <source>Error: Can&apos;t memory-map video frame file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan video frame bestand niet memory-mappen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="88"/>
         <source>Error: Can&apos;t create channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan kanaalmap niet aanmaken!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="95"/>
         <source>Error: Can&apos;t stat channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan &apos;stat&apos; niet uitvoeren op kanaalmap!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="99"/>
         <source>Error: Channel directory is not a regular directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kanaalmap is geen normale map!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="104"/>
         <source>Error: Can&apos;t set channel directory mode!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan mode van kanaalmap niet instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="109"/>
         <source>Error: Channel directory is owned by a different user! Choose a different channel name, or enable relaxed file permissions to use it anyway.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kanaalmap is eigendom van een andere gebruiker! Kies een andere kanaalnaam of schakel stricte permissies uit om deze toch te gebruiken.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="121"/>
         <source>Error: Can&apos;t initialize inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan inotify niet initialiseren!</translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t watch shared memory directory!</source>
+        <translation type="obsolete">Fout: Kan </translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="127"/>
-        <source>Error: Can&apos;t watch shared memory directory!</source>
-        <translation type="unfinished"></translation>
+        <source>Error: Can&apos;t watch channel directory!</source>
+        <translation>Fout: Kan kanaalmap niet bekijken!</translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t open shared memory directory!</source>
+        <translation type="obsolete">Fout: </translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="139"/>
-        <source>Error: Can&apos;t open shared memory directory!</source>
-        <translation type="unfinished"></translation>
+        <source>Error: Can&apos;t open channel directory!</source>
+        <translation>Fout: Kan kanaalmap niet openen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="157"/>
         <source>Added pre-existing stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestaande stream %1 toegevoegd.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="192"/>
         <source>Error: Can&apos;t get read length from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan leeslengte van inotify niet krijgen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="200"/>
         <source>Error: Can&apos;t read from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan niet lezen van inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="210"/>
         <source>Error: Received partial event from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Onvolledige event ontvangen van inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="222"/>
         <source>Error: Received partial name from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Onvolledige naam ontvangen van inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="236"/>
         <source>Added stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stream %1 toegevoegd.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="244"/>
         <source>Removed stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stream %1 verwijderd.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="270"/>
         <source>Deleted abandoned stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verlaten stream %1 gewist.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="158"/>
         <source>The application could not be launched.</source>
-        <translation type="unfinished"></translation>
+        <translation>De applicatie kon niet gestart worden.</translation>
     </message>
     <message>
         <location filename="../GUI/HotkeyListener.cpp" line="164"/>
         <source>Warning: XInput2 is not supported by X server, hotkeys may not work in some applications.</source>
         <comment>Don&apos;t translate &apos;XInput2&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: XInput2 wordt niet ondersteund door de X server, sneltoetsen werken mogelijk niet in sommige applicaties.</translation>
     </message>
 </context>
 <context>
@@ -1457,7 +1470,8 @@ De ALSA-backend zal ook werken op systemen die PulseAudio gebruiken, maar het is
         <location filename="../GUI/PageInput.cpp" line="260"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
-        <translation type="unfinished"></translation>
+        <translation>De ALSA-bron die gebruikt wordt voor opname.
+De standaardkeuze is meestal goed. De &apos;shared&apos; bronnen kunnen door meerdere programma&apos;s tegelijk worden opgenomen, maar zijn mogelijk minder betrouwbaar.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="262"/>
@@ -1468,7 +1482,7 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageInput.cpp" line="263"/>
         <source>Refreshes the list of ALSA sources.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vernieuwt de lijst met ALSA-bronnen.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="271"/>
@@ -1701,7 +1715,8 @@ Het toegestane bereik is 0-51 (0 betekent verliesvrij, de standaardwaarde is 23)
         <location filename="../GUI/PageOutput.cpp" line="181"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indien aangevinkt zal een apart videobestand aangemaakt worden elke keer wanneer je de opname pauzeert en hervat.
+Als de originele bestandsnaam &apos;test.mkv&apos; is, zullen de segmenten worden opgeslagen als &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="260"/>
@@ -1932,74 +1947,79 @@ Het programma dat je aan het opnemen bent zal de toets niet ontvangen.</translat
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="311"/>
-        <location filename="../GUI/PageRecord.cpp" line="317"/>
+        <location filename="../GUI/PageRecord.cpp" line="320"/>
         <source>Save recording</source>
         <translation>Opname opslaan</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="363"/>
+        <location filename="../GUI/PageRecord.cpp" line="323"/>
+        <source>Quit</source>
+        <translation>Afsluiten</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="367"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
         <translation>Je hebt de huidige opname nog niet opgeslagen, als je het programma nu sluit zal deze verloren gaan.
 Weet je zeker dat je het programma wilt sluiten?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="817"/>
+        <location filename="../GUI/PageRecord.cpp" line="821"/>
         <source>Encoding remaining data ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Overblijvende data encoderen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="624"/>
+        <location filename="../GUI/PageRecord.cpp" line="628"/>
         <source>Starting output ...</source>
         <translation>Output starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="635"/>
+        <location filename="../GUI/PageRecord.cpp" line="639"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan de grootte van de OpenGL-applicatie niet krijgen omdat de GLInject input niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="676"/>
+        <location filename="../GUI/PageRecord.cpp" line="680"/>
         <source>Started output.</source>
         <translation>Output gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="696"/>
+        <location filename="../GUI/PageRecord.cpp" line="700"/>
         <source>Stopping output ...</source>
         <translation>Output stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="714"/>
+        <location filename="../GUI/PageRecord.cpp" line="718"/>
         <source>Stopped output.</source>
         <translation>Output gestopt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="741"/>
+        <location filename="../GUI/PageRecord.cpp" line="745"/>
         <source>Starting input ...</source>
         <translation>Input starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="746"/>
+        <location filename="../GUI/PageRecord.cpp" line="750"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan de GLInject input niet starten omdat deze niet aangemaakt is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="765"/>
+        <location filename="../GUI/PageRecord.cpp" line="769"/>
         <source>Started input.</source>
         <translation>Input gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="790"/>
+        <location filename="../GUI/PageRecord.cpp" line="794"/>
         <source>Stopping input ...</source>
         <translation>Input stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="801"/>
+        <location filename="../GUI/PageRecord.cpp" line="805"/>
         <source>Stopped input.</source>
         <translation>Input gestopt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="522"/>
+        <location filename="../GUI/PageRecord.cpp" line="526"/>
         <source>Starting page ...</source>
         <translation>Pagina starten ...</translation>
     </message>
@@ -2008,17 +2028,17 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Er ging iets fout tijdens de GLInject initialisatie.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="550"/>
+        <location filename="../GUI/PageRecord.cpp" line="554"/>
         <source>Started page.</source>
         <translation>Pagina gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="574"/>
+        <location filename="../GUI/PageRecord.cpp" line="578"/>
         <source>Stopping page ...</source>
         <translation>Pagina stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="599"/>
+        <location filename="../GUI/PageRecord.cpp" line="603"/>
         <source>Stopped page.</source>
         <translation>Pagina gestopt.</translation>
     </message>
@@ -2027,14 +2047,14 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Kan de grootte van de OpenGL-applicatie niet krijgen omdat GLInject niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="640"/>
+        <location filename="../GUI/PageRecord.cpp" line="644"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation>Fout: Kon de grootte van de OpenGL-applicatie niet krijgen. Ofwel is de applicatie niet correct gestart, ofwel heeft de applicatie nog geen OpenGL-venster gemaakt. Als je wil beginnen met opnemen voordat de applicatie is gestart, dan moet je schalen inschakelen en manueel de videogrootte instellen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="543"/>
-        <location filename="../GUI/PageRecord.cpp" line="685"/>
-        <location filename="../GUI/PageRecord.cpp" line="770"/>
+        <location filename="../GUI/PageRecord.cpp" line="547"/>
+        <location filename="../GUI/PageRecord.cpp" line="689"/>
+        <location filename="../GUI/PageRecord.cpp" line="774"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation>Fout: Er ging iets fout tijdens de initialisatie.</translation>
     </message>
@@ -2043,40 +2063,40 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Kan geen GLInject input maken omdat GLInject niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="888"/>
-        <location filename="../GUI/PageRecord.cpp" line="902"/>
+        <location filename="../GUI/PageRecord.cpp" line="893"/>
+        <location filename="../GUI/PageRecord.cpp" line="908"/>
         <source>Pause recording</source>
         <translation>Opname pauzeren</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="891"/>
-        <location filename="../GUI/PageRecord.cpp" line="895"/>
-        <location filename="../GUI/PageRecord.cpp" line="905"/>
+        <location filename="../GUI/PageRecord.cpp" line="897"/>
+        <location filename="../GUI/PageRecord.cpp" line="901"/>
+        <location filename="../GUI/PageRecord.cpp" line="911"/>
         <source>Start recording</source>
         <translation>Opname starten</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="913"/>
+        <location filename="../GUI/PageRecord.cpp" line="919"/>
         <source>Stop preview</source>
         <translation>Voorbeeld stoppen</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="916"/>
+        <location filename="../GUI/PageRecord.cpp" line="922"/>
         <source>Start preview</source>
         <translation>Voorbeeld starten</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="945"/>
+        <location filename="../GUI/PageRecord.cpp" line="951"/>
         <source>Error: Something went wrong while creating the synth.</source>
         <translation>Fout: Er ging iets fout bij het maken van de synth.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="985"/>
+        <location filename="../GUI/PageRecord.cpp" line="991"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>Weet je zeker dat je deze opname wilt annuleren?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1000"/>
+        <location filename="../GUI/PageRecord.cpp" line="1006"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
@@ -2118,62 +2138,62 @@ De startknop staat bovenaan ;).</translation>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="28"/>
         <source>Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiel</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="37"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="38"/>
         <source>Save the current settings to this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sla de huidige instellingen op in dit profiel.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="39"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="40"/>
         <source>Create a new profile with the current settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een nieuw profiel met de huidige instellingen.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="41"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="42"/>
         <source>Delete this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder dit profiel.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(geen)</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
         <source>Error: Can&apos;t load profile!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan profiel niet laden!</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="147"/>
         <source>Are you sure that you want to overwrite this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Weet je zeker dat je dit profiel wil overschrijven?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Een profiel met dezelfde naam bestaat al. Weet je zeker dat je het wil vervangen?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="181"/>
         <source>Are you sure that you want to delete this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Weet je zeker dat je dit profiel wil verwijderen?</translation>
     </message>
 </context>
 <context>
@@ -2182,7 +2202,7 @@ De startknop staat bovenaan ;).</translation>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
@@ -2192,7 +2212,7 @@ De startknop staat bovenaan ;).</translation>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished"></translation>
+        <translation>Ja, altijd</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
@@ -2202,7 +2222,7 @@ De startknop staat bovenaan ;).</translation>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished"></translation>
+        <translation>Nee, nooit</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>

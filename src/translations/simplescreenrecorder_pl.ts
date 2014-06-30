@@ -929,6 +929,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="50"/>
         <source>Using nice priority.</source>
+        <comment>Don&apos;t translate &apos;nice&apos;, it&apos;s a UNIX parameter that defines the priority of a process.</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1085,12 +1086,12 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="127"/>
-        <source>Error: Can&apos;t watch shared memory directory!</source>
+        <source>Error: Can&apos;t watch channel directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="139"/>
-        <source>Error: Can&apos;t open shared memory directory!</source>
+        <source>Error: Can&apos;t open channel directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1890,74 +1891,79 @@ Aplikacja którą nagrywasz nie przechwyci tych klawiszy.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="311"/>
-        <location filename="../GUI/PageRecord.cpp" line="317"/>
+        <location filename="../GUI/PageRecord.cpp" line="320"/>
         <source>Save recording</source>
         <translation>Zapisz nagranie</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="363"/>
+        <location filename="../GUI/PageRecord.cpp" line="323"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="367"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
         <translation>Nie zapisano aktualnego nagrania. Jezeli teraz wyjdziesz zostanie ono utracone.
 Czy na pewno chcesz wyjść?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="817"/>
+        <location filename="../GUI/PageRecord.cpp" line="821"/>
         <source>Encoding remaining data ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="624"/>
+        <location filename="../GUI/PageRecord.cpp" line="628"/>
         <source>Starting output ...</source>
         <translation>Uruchamianie wyjścia ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="635"/>
+        <location filename="../GUI/PageRecord.cpp" line="639"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="676"/>
+        <location filename="../GUI/PageRecord.cpp" line="680"/>
         <source>Started output.</source>
         <translation>Uruchomiono wyjście.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="696"/>
+        <location filename="../GUI/PageRecord.cpp" line="700"/>
         <source>Stopping output ...</source>
         <translation>Zatrzymywanie wyjścia ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="714"/>
+        <location filename="../GUI/PageRecord.cpp" line="718"/>
         <source>Stopped output.</source>
         <translation>Zatrzymano wyjście.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="741"/>
+        <location filename="../GUI/PageRecord.cpp" line="745"/>
         <source>Starting input ...</source>
         <translation>Uruchamianie wejścia ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="746"/>
+        <location filename="../GUI/PageRecord.cpp" line="750"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="765"/>
+        <location filename="../GUI/PageRecord.cpp" line="769"/>
         <source>Started input.</source>
         <translation>Uruchomiono wejście.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="790"/>
+        <location filename="../GUI/PageRecord.cpp" line="794"/>
         <source>Stopping input ...</source>
         <translation>Zatrzymywanie wejścia ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="801"/>
+        <location filename="../GUI/PageRecord.cpp" line="805"/>
         <source>Stopped input.</source>
         <translation>Zatrzymano wejście.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="522"/>
+        <location filename="../GUI/PageRecord.cpp" line="526"/>
         <source>Starting page ...</source>
         <translation>Uruchamianie strony ...</translation>
     </message>
@@ -1966,17 +1972,17 @@ Czy na pewno chcesz wyjść?</translation>
         <translation type="obsolete">Błąd: Coś poszło nie tak przy inicjalizacji GLInject.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="550"/>
+        <location filename="../GUI/PageRecord.cpp" line="554"/>
         <source>Started page.</source>
         <translation>Uruchomiono stronę.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="574"/>
+        <location filename="../GUI/PageRecord.cpp" line="578"/>
         <source>Stopping page ...</source>
         <translation>Zatrzymywanie strony ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="599"/>
+        <location filename="../GUI/PageRecord.cpp" line="603"/>
         <source>Stopped page.</source>
         <translation>Zatrzymano stronę.</translation>
     </message>
@@ -1985,14 +1991,14 @@ Czy na pewno chcesz wyjść?</translation>
         <translation type="obsolete">Błąd: Nie udało się przechwycić rozmiaru aplikacji OpenGL ponieważ GLInject nie został uruchomiony.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="640"/>
+        <location filename="../GUI/PageRecord.cpp" line="644"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation>Błąd: Nie udało się przechwycić rozmiaru aplikacji OpenGL. Aplikacja nie została prawidłowo uruchomiona lub aplikacja nie stworzyła jeszcze okna OpenGL. Jeżeli chcesz rozpocząć nagrywanie przed uruchomieniem aplikacji musisz zezwolić na skalowanie oraz ręcznie wprowadzić rozmiar wideo.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="543"/>
-        <location filename="../GUI/PageRecord.cpp" line="685"/>
-        <location filename="../GUI/PageRecord.cpp" line="770"/>
+        <location filename="../GUI/PageRecord.cpp" line="547"/>
+        <location filename="../GUI/PageRecord.cpp" line="689"/>
+        <location filename="../GUI/PageRecord.cpp" line="774"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation>Błąd: Coś poszło nie tak w trakcie inicjalizacji.</translation>
     </message>
@@ -2001,40 +2007,40 @@ Czy na pewno chcesz wyjść?</translation>
         <translation type="obsolete">Błąd: Nie udało się stworzyć wejścia GLInject ponieważ GLInject nie został uruchomiony.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="888"/>
-        <location filename="../GUI/PageRecord.cpp" line="902"/>
+        <location filename="../GUI/PageRecord.cpp" line="893"/>
+        <location filename="../GUI/PageRecord.cpp" line="908"/>
         <source>Pause recording</source>
         <translation>Wstrzymaj nagrywanie</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="891"/>
-        <location filename="../GUI/PageRecord.cpp" line="895"/>
-        <location filename="../GUI/PageRecord.cpp" line="905"/>
+        <location filename="../GUI/PageRecord.cpp" line="897"/>
+        <location filename="../GUI/PageRecord.cpp" line="901"/>
+        <location filename="../GUI/PageRecord.cpp" line="911"/>
         <source>Start recording</source>
         <translation>Rozpocznij nagrywanie</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="913"/>
+        <location filename="../GUI/PageRecord.cpp" line="919"/>
         <source>Stop preview</source>
         <translation>Zatrzymaj podgląd</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="916"/>
+        <location filename="../GUI/PageRecord.cpp" line="922"/>
         <source>Start preview</source>
         <translation>Rozocznij podgląd</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="945"/>
+        <location filename="../GUI/PageRecord.cpp" line="951"/>
         <source>Error: Something went wrong while creating the synth.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="985"/>
+        <location filename="../GUI/PageRecord.cpp" line="991"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>Czy na pewno chcesz anulować to nagrywanie?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1000"/>
+        <location filename="../GUI/PageRecord.cpp" line="1006"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>

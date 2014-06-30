@@ -122,9 +122,9 @@ void SSRVideoStreamWatcher::Init() {
 		throw SSRStreamException();
 	}
 
-	// watch shared memory directory
+	// watch channel directory
 	if(inotify_add_watch(m_fd_notify, m_channel_directory.c_str(), IN_CREATE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) == -1) {
-		Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Can't watch shared memory directory!"));
+		Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Can't watch channel directory!"));
 		throw SSRStreamException();
 	}
 #endif
@@ -136,7 +136,7 @@ void SSRVideoStreamWatcher::Init() {
 		// open directory
 		dir = opendir(m_channel_directory.c_str());
 		if(dir == NULL) {
-			Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Can't open shared memory directory!"));
+			Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Can't open channel directory!"));
 			throw SSRStreamException();
 		}
 

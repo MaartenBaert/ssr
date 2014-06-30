@@ -442,14 +442,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <source>Error: Can&apos;t watch shared memory directory!</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Error: Can&apos;t open shared memory directory!</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Added pre-existing stream %1.</source>
         <translation></translation>
     </message>
@@ -752,10 +744,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <source>Using nice priority.</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Warning: Can&apos;t increase the thread priority.</source>
         <translation></translation>
     </message>
@@ -824,6 +812,19 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t watch channel directory!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Using nice priority.</source>
+        <comment>Don&apos;t translate &apos;nice&apos;, it&apos;s a UNIX parameter that defines the priority of a process.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t open channel directory!</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1512,6 +1513,10 @@ The start button is at the top ;).</source>
         <translation>Δεν έχετε εγγράψει κάτι, δεν υπάρχει κάτι για να αποθηκευτεί.
 
 Το πλήκτρο έναρξης είναι στην κορυφή ;).</translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
