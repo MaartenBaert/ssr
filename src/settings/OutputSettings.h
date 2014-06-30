@@ -46,6 +46,49 @@ enum enum_audio_codec {
 	AUDIO_CODEC_COUNT // must be last
 };
 
+class CodecInfo {
+
+public:
+	struct ContainerData {
+		QString name, avname;
+		QStringList suffixes;
+		QString filter;
+		std::set<enum_video_codec> supported_video_codecs;
+		std::set<enum_audio_codec> supported_audio_codecs;
+		inline bool operator<(const ContainerData& other) const { return (avname < other.avname); }
+	};
+	struct VideoCodecData {
+		QString name, avname;
+		inline bool operator<(const VideoCodecData& other) const { return (avname < other.avname); }
+	};
+	struct AudioCodecData {
+		QString name, avname;
+		inline bool operator<(const AudioCodecData& other) const { return (avname < other.avname); }
+	};
+
+private:
+	static CodecInfo *s_instance;
+
+private:
+	std::vector<ContainerData> m_containers, m_containers_av;
+	std::vector<VideoCodecData> m_video_codecs, m_video_codecs_av;
+	std::vector<AudioCodecData> m_audio_codecs, m_audio_codecs_av;
+
+public:
+	CodecInfo();
+	~CodecInfo();
+
+	inline static std::vector<ContainerData>& GetContainers() { return GetInstance()->m_containers; }
+	inline static std::vector<ContainerData>& GetContainersAV() { return GetInstance()->m_containers_av; }
+	inline static std::vector<VideoCodecData>& GetVideoCodecs() { return GetInstance()->m_video_codecs; }
+	inline static std::vector<VideoCodecData>& GetVideoCodecsAV() { return GetInstance()->m_video_codecs_av; }
+	inline static std::vector<AudioCodecData>& GetAudioCodecs() { return GetInstance()->m_audio_codecs; }
+	inline static std::vector<AudioCodecData>& GetAudioCodecsAV() { return GetInstance()->m_audio_codecs_av; }
+
+	inline static CodecInfo* GetInstance() { assert(s_instance != NULL); return s_instance; }
+
+};
+
 struct OutputSettings {
 
 	std::string m_file;
@@ -70,3 +113,7 @@ struct OutputSettings {
 	void ToJSON(SimpleJSON& json);
 
 };
+
+void StringToOptions(const std::string& str);
+std::string OptionsToString(const std::vector<std::pair<std::string, std::string> >& options);
+

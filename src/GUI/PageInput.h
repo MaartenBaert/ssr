@@ -150,14 +150,12 @@ private:
 public:
 	PageInput(MainWindow* main_window);
 
-	void LoadSettings(InputSettings* settings);
-	void SaveSettings(InputSettings* settings);
+	void ImportSettings();
+	void ExportSettings();
 
 private:
-	static void LoadProfileSettingsCallback(const SimpleJSON& json, void* userdata);
-	static void SaveProfileSettingsCallback(SimpleJSON& json, void* userdata);
-	void LoadProfileSettings(const SimpleJSON& json);
-	void SaveProfileSettings(SimpleJSON& json);
+	static void LoadProfileCallback(const SimpleJSON& json, void* userdata);
+	static void SaveProfileCallback(SimpleJSON& json, void* userdata);
 
 public:
 	QString GetALSASourceName();

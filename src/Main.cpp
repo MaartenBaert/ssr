@@ -20,20 +20,18 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "Main.h"
 
+#include "HotkeyListener.h"
 #include "Icons.h"
 #include "Logger.h"
-#include "HotkeyListener.h"
 #include "MainWindow.h"
-
+#include "OutputSettings.h"
 #include "Version.h"
 
-#include "RecordSettings.h" //TODO// remove
-
-bool g_option_logfile;
-QString g_option_statsfile;
-bool g_option_syncdiagram;
-bool g_option_systray;
-bool g_option_start_hidden;
+bool g_option_logfile = false;
+QString g_option_statsfile = QString();
+bool g_option_syncdiagram = false;
+bool g_option_systray = true;
+bool g_option_start_hidden = false;
 
 void PrintOptionHelp() {
 	Logger::LogInfo(
@@ -81,19 +79,12 @@ int main(int argc, char* argv[]) {
 	// That's not what we want, so disable this and do it manually.
 	QApplication::setQuitOnLastWindowClosed(false);
 
-	// create logger
-	Logger logger;
-	Q_UNUSED(logger);
+	// create logger and codec info
+	Logger logger; Q_UNUSED(logger);
+	CodecInfo codec_info; Q_UNUSED(codec_info);
 
 	// load icons
 	LoadIcons();
-
-	// initialize default command-line options
-	g_option_logfile = false;
-	g_option_statsfile = QString();
-	g_option_syncdiagram = false;
-	g_option_systray = true;
-	g_option_start_hidden = false;
 
 	// read command-line arguments
 	QStringList args = QCoreApplication::arguments();
@@ -187,18 +178,14 @@ int main(int argc, char* argv[]) {
 		// open new log
 		QString file = dir.path() + "/log-" + now.toString("yyyy-MM-dd_hh.mm.ss") + ".txt";
 		FILE *f = fopen(file.toLocal8Bit().constData(), "a");
-		dup2(fileno(f), 1); // redirect stdout
-		dup2(fileno(f), 2); // redirect stderr
+		if(f == NULL) {
+			Logger::LogWarning("[main] " + Logger::tr("Warning: Could not create log file!"));
+		} else {
+			dup2(fileno(f), 1); // redirect stdout
+			dup2(fileno(f), 2); // redirect stderr
+			fclose(f);
+		}
 
-	}
-
-	//TODO// remove
-	{
-		RecordSettings settings;
-		settings.m_schedule_entries.resize(2);
-		SimpleJSON json;
-		settings.ToJSON(json);
-		json.WriteToFile("/tmp/ssr-recordsettings-test.json");
 	}
 
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");

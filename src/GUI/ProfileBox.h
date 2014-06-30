@@ -20,12 +20,14 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "SimpleJSON.h"
+
 class ProfileBox : public QGroupBox {
 	Q_OBJECT
 
 public:
-	typedef void (*LoadCallback)(QSettings*, void*);
-	typedef void (*SaveCallback)(QSettings*, void*);
+	typedef void (*LoadCallback)(const SimpleJSON&, void*);
+	typedef void (*SaveCallback)(SimpleJSON&, void*);
 
 private:
 	struct Profile {
@@ -39,6 +41,7 @@ private:
 	LoadCallback m_load_callback;
 	SaveCallback m_save_callback;
 	void *m_userdata;
+	unsigned int m_last_profile;
 
 	std::vector<Profile> m_profiles;
 
@@ -49,7 +52,7 @@ public:
 	ProfileBox(QWidget* parent, const QString& type, LoadCallback load_callback, SaveCallback save_callback, void* userdata);
 
 	QString GetProfileName();
-	unsigned int FindProfile(const QString& name);
+	void SetProfile(const QString& name);
 
 private:
 	void LoadProfiles();
@@ -63,7 +66,8 @@ private slots:
 	void OnProfileDelete();
 
 public:
-	inline unsigned int GetProfile() { return clamp(m_combobox_profiles->currentIndex(), 0, (int) m_profiles.size()); }
-	inline void SetProfile(unsigned int profile) { m_combobox_profiles->setCurrentIndex(clamp(profile, 0u, (unsigned int) m_profiles.size())); UpdateProfileFields(); }
+	inline unsigned int GetProfile() {
+		return clamp(m_combobox_profiles->currentIndex(), 0, (int) m_profiles.size());
+	}
 
 };

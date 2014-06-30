@@ -43,6 +43,9 @@ MainWindow::MainWindow()
 
 	m_old_geometry = QRect();
 
+	m_nvidia_disable_flipping = NVIDIA_DISABLE_FLIPPING_ASK;
+	LoadSettings();
+
 	setWindowTitle(WINDOW_CAPTION);
 	setWindowIcon(g_icon_ssr);
 
@@ -62,8 +65,6 @@ MainWindow::MainWindow()
 	m_stacked_layout->addWidget(m_page_record);
 	m_stacked_layout->addWidget(m_page_done);
 	m_stacked_layout->setCurrentWidget(m_page_welcome);
-
-	LoadSettings();
 
 	// warning for glitch with proprietary NVIDIA drivers
 	if(GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_ASK || GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_YES) {
@@ -105,24 +106,25 @@ void MainWindow::LoadSettings() {
 	SimpleJSON json;
 	json.ReadFromFile(GetApplicationUserDir().toStdString() + "/settings.conf");
 
-	m_nvidia_disable_flipping = StringToEnum(json["global"]["nvidia_disable_flipping"].ToString(""), NVIDIA_DISABLE_FLIPPING_ASK);
+	json["global"]["nvidia_disable_flipping"].GetEnum(m_nvidia_disable_flipping);
 
-	m_page_input->LoadSettings(&settings);
-	m_page_output->LoadSettings(&settings);
-	m_page_record->LoadSettings(&settings);
+
+	m_input_settings.FromJSON(json["input"]);
+	m_output_settings.FromJSON(json["output"]);
+	m_record_settings.FromJSON(json["record"]);
 
 }
 
 void MainWindow::SaveSettings() {
 	SimpleJSON json;
 
-	json("global")("nvidia_disable_flipping") = EnumToString(m_nvidia_disable_flipping);
+	json("global")("nvidia_disable_flipping").SetEnum(m_nvidia_disable_flipping);
 
-	m_page_input->SaveSettings(&settings);
-	m_page_output->SaveSettings(&settings);
-	m_page_record->SaveSettings(&settings);
+	m_input_settings.ToJSON(json("input"));
+	m_output_settings.ToJSON(json("output"));
+	m_record_settings.ToJSON(json("record"));
 
-	json.ReadFromFile(GetApplicationUserDir().toStdString() + "/settings.conf");
+	json.WriteToFile(GetApplicationUserDir().toStdString() + "/settings.conf");
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {

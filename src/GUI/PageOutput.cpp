@@ -63,6 +63,12 @@ ENUMSTRINGS(PageOutput::enum_h264_preset) = {
 	{PageOutput::H264_PRESET_PLACEBO, "placebo"},
 };
 
+static std::string Trim(const std::string& str) {
+	size_t p = str.find_first_not_of(" \n\r\t");
+	size_t q = str.find_last_not_of(" \n\r\t");
+	return (q > p)? str.substr(p, q - p) : std::string();
+}
+
 static bool MatchSuffix(const QString& suffix, const QStringList& suffixes) {
 	return ((suffix.isEmpty() && suffixes.isEmpty()) || suffixes.contains(suffix, Qt::CaseInsensitive));
 }
@@ -74,99 +80,6 @@ PageOutput::PageOutput(MainWindow* main_window)
 
 	m_old_container = (enum_container) 0;
 	m_old_container_av = 0;
-
-	// main codecs
-	m_containers = {
-		{"Matroska (MKV)", "matroska", {"mkv"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("Matroska") + " (*.mkv)",
-			{VIDEO_CODEC_H264, VIDEO_CODEC_VP8, VIDEO_CODEC_THEORA},
-			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC, AUDIO_CODEC_UNCOMPRESSED}},
-		{"MP4", "mp4", {"mp4"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("MP4") + " (*.mp4)",
-			{VIDEO_CODEC_H264},
-			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC}},
-		{"WebM", "webm", {"webm"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("WebM") + " (*.webm)",
-			{VIDEO_CODEC_VP8},
-			{AUDIO_CODEC_VORBIS}},
-		{"OGG", "ogg", {"ogg"}, tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("OGG") + " (*.ogg)",
-			{VIDEO_CODEC_THEORA},
-			{AUDIO_CODEC_VORBIS}},
-		{tr("Other..."), "other", {}, "", {}, {}},
-	};
-	m_video_codecs = {
-		{"H.264"       , "libx264"  },
-		{"VP8"         , "libvpx"   },
-		{"Theora"      , "libtheora"},
-		{tr("Other..."), "other"    },
-	};
-	m_audio_codecs = {
-		{"Vorbis"          , "libvorbis"   },
-		{"MP3"             , "libmp3lame"  },
-		{"AAC"             , "libvo_aacenc"},
-		{tr("Uncompressed"), "pcm_s16le"   },
-		{tr("Other...")    , "other"       },
-	};
-
-	// alternative aac codec
-	if(!AVCodecIsInstalled(m_audio_codecs[AUDIO_CODEC_AAC].avname)) {
-		m_audio_codecs[AUDIO_CODEC_AAC].avname = "aac";
-	}
-
-	// load AV container list
-	m_containers_av.clear();
-	for(AVOutputFormat *format = av_oformat_next(NULL); format != NULL; format = av_oformat_next(format)) {
-		if(format->video_codec == AV_CODEC_ID_NONE)
-			continue;
-		ContainerData c;
-		c.name = format->long_name;
-		c.avname = format->name;
-		c.suffixes = QString(format->extensions).split(',', QString::SkipEmptyParts);
-		if(c.suffixes.isEmpty()) {
-			c.filter = "";
-		} else {
-			c.filter = tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg(c.avname) + " (*." + c.suffixes[0];
-			for(int i = 1; i < c.suffixes.size(); ++i) {
-				c.suffixes[i] = c.suffixes[i].trimmed(); // needed because libav/ffmpeg isn't very consistent when they say 'comma-separated'
-				c.filter += " *." + c.suffixes[i];
-			}
-			c.filter += ")";
-		}
-		m_containers_av.push_back(c);
-	}
-	std::sort(m_containers_av.begin(), m_containers_av.end());
-
-	// load AV codec list
-	m_video_codecs_av.clear();
-	m_audio_codecs_av.clear();
-	for(AVCodec *codec = av_codec_next(NULL); codec != NULL; codec = av_codec_next(codec)) {
-		if(!av_codec_is_encoder(codec))
-			continue;
-		if(codec->type == AVMEDIA_TYPE_VIDEO && VideoEncoder::AVCodecIsSupported(codec->name)) {
-			VideoCodecData c;
-			c.name = codec->long_name;
-			c.avname = codec->name;
-			m_video_codecs_av.push_back(c);
-		}
-		if(codec->type == AVMEDIA_TYPE_AUDIO && AudioEncoder::AVCodecIsSupported(codec->name)) {
-			AudioCodecData c;
-			c.name = codec->long_name;
-			c.avname = codec->name;
-			m_audio_codecs_av.push_back(c);
-		}
-	}
-	std::sort(m_video_codecs_av.begin(), m_video_codecs_av.end());
-	std::sort(m_audio_codecs_av.begin(), m_audio_codecs_av.end());
-
-	if(m_containers_av.empty()) {
-		Logger::LogError("[PageOutput::PageOutput] " + tr("Error: Could not find any suitable container in libavformat!"));
-		throw LibavException();
-	}
-	if(m_video_codecs_av.empty()) {
-		Logger::LogError("[PageOutput::PageOutput] " + tr("Error: Could not find any suitable video codec in libavcodec!"));
-		throw LibavException();
-	}
-	if(m_audio_codecs_av.empty()) {
-		Logger::LogError("[PageOutput::PageOutput] " + tr("Error: Could not find any suitable audio codec in libavcodec!"));
-		throw LibavException();
-	}
 
 	m_profile_box = new ProfileBox(this, "output-profiles", &LoadProfileSettingsCallback, &SaveProfileSettingsCallback, this);
 
@@ -364,24 +277,108 @@ PageOutput::PageOutput(MainWindow* main_window)
 
 }
 
-void PageOutput::LoadSettings(QSettings* settings) {
-	SetProfile(m_profile_box->FindProfile(settings->value("output/profile", QString()).toString()));
-	LoadProfileSettings(settings);
+void PageOutput::ImportSettings() {
+	OutputSettings *settings = m_main_window->GetOutputSettings();
+
+	SetFile(QString::fromStdString(settings->m_file));
+	SetSeparateFiles(settings->m_separate_files);
+	SetContainer(settings->m_container);
+	SetContainerAV(FindContainerAV(QString::fromStdString(settings->m_container_avname)));
+
+	SetVideoCodec(settings->m_video_codec);
+	SetVideoCodecAV(FindVideoCodecAV(QString::fromStdString(settings->m_video_codec_avname)));
+	SetVideoKBitRate(settings->m_video_kbit_rate);
+	SetH264CRF(23);
+	SetH264Preset(H264_PRESET_SUPERFAST);
+	SetVP8CPUUsed(5);
+	for(auto &p : settings->m_video_options) {
+		if(p.first == "crf") {
+			unsigned int val;
+			if(StringToNum(p.second, &val))
+				SetH264CRF(val);
+		} else if(p.first == "preset") {
+			SetH264Preset(StringToEnum(p.second));
+		} else if(p.first == "cpu-used") {
+			unsigned int val;
+			if(StringToNum(p.second, &val))
+				SetVP8CPUUsed(val);
+		}
+
+	}
+
+	// update things
+	OnUpdateContainerFields();
+	OnUpdateVideoCodecFields();
+	OnUpdateAudioCodecFields();
+
 }
 
-void PageOutput::SaveSettings(QSettings* settings) {
-	settings->setValue("output/profile", m_profile_box->GetProfileName());
-	SaveProfileSettings(settings);
+void PageOutput::ExportSettings() {
+	OutputSettings *settings = m_main_window->GetOutputSettings();
+
+	settings->m_file = GetFile().toStdString();
+	settings->m_separate_files = GetSeparateFiles();
+	settings->m_container = GetContainer();
+	settings->m_container_avname = GetContainerAVName();
+
+	settings->m_video_codec = GetVideoCodec();
+	settings->m_video_codec_avname = GetVideoCodecAVName();
+	settings->m_video_kbit_rate = GetVideoKBitRate();
+	settings->m_video_options.clear();
+	settings->m_video_allow_frame_skipping = GetVideoAllowFrameSkipping();
+
+	settings->m_audio_codec = GetAudioCodec();
+	settings->m_audio_codec_avname = GetAudioCodecAVName();
+	settings->m_audio_kbit_rate = GetAudioKBitRate();
+	settings->m_audio_options.clear();
+
+	// some codec-specific things
+	switch(GetVideoCodec()) {
+		case VIDEO_CODEC_H264: {
+			// x264 has a 'constant quality' mode, where the bit rate is simply set to whatever is needed to keep a certain quality. The quality is set
+			// with the 'crf' option. 'preset' changes the encoding speed (and hence the efficiency of the compression) but doesn't really influence the quality,
+			// which is great because it means you don't have to experiment with different bit rates and different speeds to get good results.
+			settings->m_video_options.push_back(std::make_pair(std::string("crf"), NumToString(GetH264CRF())));
+			settings->m_video_options.push_back(std::make_pair(std::string("preset"), EnumToString(GetH264Preset())));
+			break;
+		}
+		case VIDEO_CODEC_VP8: {
+			// The names of there parameters are very unintuitive. The two options we care about (because they change the speed) are 'deadline' and 'cpu-used'.
+			// 'deadline=best' is unusably slow. 'deadline=good' is the normal setting, it tells the encoder to use the speed set with 'cpu-used'. Higher numbers
+			// will use *less* CPU, confusingly, so a higher number is faster. I haven't done much testing with 'realtime' so I'm not sure if it's a good idea here.
+			// It sounds useful, but I think it will use so much CPU that it will slow down the program that is being recorded.
+			settings->m_video_options.push_back(std::make_pair(std::string("deadline"), std::string("good")));
+			settings->m_video_options.push_back(std::make_pair(std::string("cpu-used"), NumToString(GetVP8CPUUsed())));
+			break;
+		}
+		case VIDEO_CODEC_OTHER: {
+			settings->m_video_options = StringToOptions(GetVideoOptions().toStdString());
+			break;
+		}
+		default: break; // to keep GCC happy
+	}
+	switch(GetAudioCodec()) {
+		case AUDIO_CODEC_OTHER: {
+			settings->m_audio_options = StringToOptions(GetAudioOptions().toStdString());
+			break;
+		}
+		default: break; // to keep GCC happy
+	}
+
 }
 
-void PageOutput::LoadProfileSettingsCallback(QSettings* settings, void* userdata) {
+void PageOutput::LoadProfileSettingsCallback(const SimpleJSON& json, void* userdata) {
 	PageOutput *page = (PageOutput*) userdata;
-	page->LoadProfileSettings(settings);
+	InputSettings *settings = page->m_main_window->GetInputSettings();
+	settings->FromJSON(json);
+	page->ImportSettings();
 }
 
-void PageOutput::SaveProfileSettingsCallback(QSettings* settings, void* userdata) {
+void PageOutput::SaveProfileSettingsCallback(SimpleJSON& json, void* userdata) {
 	PageOutput *page = (PageOutput*) userdata;
-	page->SaveProfileSettings(settings);
+	InputSettings *settings = page->m_main_window->GetInputSettings();
+	page->ExportSettings();
+	settings->ToJSON(json);
 }
 
 void PageOutput::LoadProfileSettings(QSettings* settings) {

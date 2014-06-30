@@ -32,6 +32,7 @@ ProfileBox::ProfileBox(QWidget* parent, const QString& type, LoadCallback load_c
 	m_load_callback = load_callback;
 	m_save_callback = save_callback;
 	m_userdata = userdata;
+	m_last_profile = 0;
 
 	m_combobox_profiles = new QComboBox(this);
 	m_combobox_profiles->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -59,17 +60,23 @@ ProfileBox::ProfileBox(QWidget* parent, const QString& type, LoadCallback load_c
 }
 
 QString ProfileBox::GetProfileName() {
-	unsigned int profile = GetProfile();
+	unsigned int profile = m_combobox_profiles->currentIndex();
 	if(profile == 0)
 		return QString();
 	return m_profiles[profile - 1].m_name;
 }
 
-unsigned int ProfileBox::FindProfile(const QString& name) {
+void ProfileBox::SetProfile(const QString& name) {
+	unsigned profile = 0;
 	for(unsigned int i = 0; i < m_profiles.size(); ++i) {
-		if(m_profiles[i].m_name == name)
-			return i + 1;
+		if(m_profiles[i].m_name == name) {
+			profile = i + 1;
+			break;
+		}
 	}
+	m_combobox_profiles->setCurrentIndex(profile);
+	m_last_profile = profile;
+	UpdateProfileFields();
 	return 0;
 }
 
@@ -114,20 +121,23 @@ void ProfileBox::LoadProfilesFromDir(std::vector<Profile>* profiles, const QStri
 }
 
 void ProfileBox::UpdateProfileFields() {
-	unsigned int profile = GetProfile();
+	unsigned int profile = m_combobox_profiles->currentIndex();
 	m_pushbutton_save->setEnabled(profile != 0);
 	m_pushbutton_new->setEnabled(true);
 	m_pushbutton_delete->setEnabled(profile != 0 && m_profiles[profile - 1].m_can_delete);
 }
 
 void ProfileBox::OnProfileChange() {
+	if(m_combobox_profiles->currentIndex() == m_last_profile)
+		return;
+	m_last_profile = m_combobox_profiles->currentIndex();
 	UpdateProfileFields();
 	QString name = GetProfileName();
 	if(name.isEmpty())
 		return;
-	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".conf";
+	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".json";
 	if(!QFileInfo(filename).exists()) {
-		filename = GetApplicationSystemDir(m_type) + "/" + name + ".conf";
+		filename = GetApplicationSystemDir(m_type) + "/" + name + ".json";
 		if(!QFileInfo(filename).exists()) {
 			Logger::LogError("[ProfileBox::OnProfileChange] " + tr("Error: Can't load profile!"));
 			return;
@@ -135,22 +145,20 @@ void ProfileBox::OnProfileChange() {
 	}
 	SimpleJSON json;
 	json.ReadFromFile(filename.toStdString());
-	m_load_callback(&settings, m_userdata);
+	m_load_callback(json, m_userdata);
 }
 
 void ProfileBox::OnProfileSave() {
 	QString name = GetProfileName();
 	if(name.isEmpty())
 		return;
-	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".conf";
+	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".json";
 	if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to overwrite this profile?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
-		{
-			QSettings settings(filename, QSettings::IniFormat);
-			m_save_callback(&settings, m_userdata);
-		}
+		SimpleJSON json;
+		m_save_callback(json, m_userdata);
+		json.WriteToFile(filename.toStdString());
 		LoadProfiles();
-		SetProfile(FindProfile(name));
-		UpdateProfileFields();
+		SetProfile(name);
 	}
 }
 
@@ -159,16 +167,14 @@ void ProfileBox::OnProfileNew() {
 	if(name.isEmpty())
 		return;
 	name = name.toAscii().toPercentEncoding();
-	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".conf";
+	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".json";
 	if(!QFileInfo(filename).exists() || MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 			tr("A profile with the same name already exists. Are you sure that you want to replace it?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
-		{
-			QSettings settings(filename, QSettings::IniFormat);
-			m_save_callback(&settings, m_userdata);
-		}
+		SimpleJSON json;
+		m_save_callback(json, m_userdata);
+		json.WriteToFile(filename.toStdString());
 		LoadProfiles();
-		SetProfile(FindProfile(name));
-		UpdateProfileFields();
+		SetProfile(name);
 	}
 }
 
@@ -176,7 +182,7 @@ void ProfileBox::OnProfileDelete() {
 	QString name = GetProfileName();
 	if(name.isEmpty())
 		return;
-	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".conf";
+	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".json";
 	if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to delete this profile?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
 		QFile(filename).remove();
 		LoadProfiles();

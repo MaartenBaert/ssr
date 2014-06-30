@@ -342,37 +342,8 @@ PageInput::PageInput(MainWindow* main_window)
 
 }
 
-void PageInput::LoadSettings(InputSettings* settings) {
-
-	settings->m_video_area = GetVideoArea();
-	settings->m_video_area_screen = GetVideoAreaScreen();
-	settings->m_video_x = GetVideoX();
-	settings->m_video_y = GetVideoY();
-	settings->m_video_w = GetVideoW();
-	settings->m_video_h = GetVideoH();
-	settings->m_video_frame_rate = GetVideoFrameRate();
-	settings->m_video_scaling_enabled = GetVideoScalingEnabled();
-	settings->m_video_scaled_w = GetVideoScaledW();
-	settings->m_video_scaled_h = GetVideoScaledH();
-	settings->m_video_record_cursor = GetVideoRecordCursor();
-
-	settings->m_audio_enabled = GetAudioEnabled();
-	settings->m_audio_backend = GetAudioBackend();
-	settings->m_audio_alsa_source = GetAudioALSASource();
-	settings->m_audio_pulseaudio_source = GetAudioPulseAudioSource();
-	settings->m_audio_jack_connect_system_capture = GetAudioJackConnectSystemCapture();
-	settings->m_audio_jack_connect_system_playback = GetAudioJackConnectSystemPlayback();
-
-	settings->m_glinject_channel = GetGLInjectChannel().toStdString();
-	settings->m_glinject_relax_permissions = GetGLInjectRelaxPermissions();
-	settings->m_glinject_command = GetGLInjectCommand().toStdString();
-	settings->m_glinject_working_directory = GetGLInjectWorkingDirectory().toStdString();
-	settings->m_glinject_auto_launch = GetGLInjectAutoLaunch();
-	settings->m_glinject_limit_fps = GetGLInjectLimitFPS();
-
-}
-
-void PageInput::SaveSettings(InputSettings* settings) {
+void PageInput::ImportSettings() {
+	InputSettings *settings = m_main_window->GetInputSettings();
 
 	SetVideoArea(settings->m_video_area);
 	SetVideoAreaScreen(settings->m_video_area_screen);
@@ -402,7 +373,38 @@ void PageInput::SaveSettings(InputSettings* settings) {
 
 }
 
-void PageInput::LoadSettings(QSettings* settings) {
+void PageInput::ExportSettings() {
+	InputSettings *settings = m_main_window->GetInputSettings();
+
+	settings->m_video_area = GetVideoArea();
+	settings->m_video_area_screen = GetVideoAreaScreen();
+	settings->m_video_x = GetVideoX();
+	settings->m_video_y = GetVideoY();
+	settings->m_video_w = GetVideoW();
+	settings->m_video_h = GetVideoH();
+	settings->m_video_frame_rate = GetVideoFrameRate();
+	settings->m_video_scaling_enabled = GetVideoScalingEnabled();
+	settings->m_video_scaled_w = GetVideoScaledW();
+	settings->m_video_scaled_h = GetVideoScaledH();
+	settings->m_video_record_cursor = GetVideoRecordCursor();
+
+	settings->m_audio_enabled = GetAudioEnabled();
+	settings->m_audio_backend = GetAudioBackend();
+	settings->m_audio_alsa_source = GetAudioALSASource();
+	settings->m_audio_pulseaudio_source = GetAudioPulseAudioSource();
+	settings->m_audio_jack_connect_system_capture = GetAudioJackConnectSystemCapture();
+	settings->m_audio_jack_connect_system_playback = GetAudioJackConnectSystemPlayback();
+
+	settings->m_glinject_channel = GetGLInjectChannel().toStdString();
+	settings->m_glinject_relax_permissions = GetGLInjectRelaxPermissions();
+	settings->m_glinject_command = GetGLInjectCommand().toStdString();
+	settings->m_glinject_working_directory = GetGLInjectWorkingDirectory().toStdString();
+	settings->m_glinject_auto_launch = GetGLInjectAutoLaunch();
+	settings->m_glinject_limit_fps = GetGLInjectLimitFPS();
+
+}
+
+/*void PageInput::LoadSettings(QSettings* settings) {
 	SetProfile(m_profile_box->FindProfile(settings->value("input/profile", QString()).toString()));
 	LoadProfileSettings(settings);
 }
@@ -410,16 +412,20 @@ void PageInput::LoadSettings(QSettings* settings) {
 void PageInput::SaveSettings(QSettings* settings) {
 	settings->setValue("input/profile", m_profile_box->GetProfileName());
 	SaveProfileSettings(settings);
-}
+}*/
 
 void PageInput::LoadProfileSettingsCallback(const SimpleJSON& json, void* userdata) {
 	PageInput *page = (PageInput*) userdata;
-	page->LoadProfileSettings(settings);
+	InputSettings *settings = page->m_main_window->GetInputSettings();
+	settings->FromJSON(json);
+	page->ImportSettings();
 }
 
 void PageInput::SaveProfileSettingsCallback(SimpleJSON& json, void* userdata) {
 	PageInput *page = (PageInput*) userdata;
-	page->SaveProfileSettings(settings);
+	InputSettings *settings = page->m_main_window->GetInputSettings();
+	page->ExportSettings();
+	settings->ToJSON(json);
 }
 
 void PageInput::LoadProfileSettings(const SimpleJSON& json) {

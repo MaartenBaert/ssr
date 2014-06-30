@@ -39,32 +39,41 @@ public:
 		std::stable_sort(m_to_second.begin(), m_to_second.end(), CompareFirst);
 		std::stable_sort(m_to_first.begin(), m_to_first.end(), CompareSecond);
 	}
-	inline static A ToFirst(const B& value, const A& fallback) {
-		auto it = std::lower_bound(SINGLETON.m_to_first.begin(), SINGLETON.m_to_first.end(), std::make_pair(A(), value), CompareSecond);
-		if(it == SINGLETON.m_to_first.end() || it->second != value)
-			return fallback;
-		return it->first;
+	inline static bool ToFirst(A& first, const B& second) {
+		auto it = std::lower_bound(SINGLETON.m_to_first.begin(), SINGLETON.m_to_first.end(), std::make_pair(A(), second), CompareSecond);
+		if(it == SINGLETON.m_to_first.end() || it->second != second)
+			return false;
+		first = it->first;
+		return true;
 	}
-	inline static B ToSecond(const A& value, const B& fallback) {
-		auto it = std::lower_bound(SINGLETON.m_to_second.begin(), SINGLETON.m_to_second.end(), std::make_pair(value, B()), CompareFirst);
-		if(it == SINGLETON.m_to_second.end() || it->first != value)
-			return fallback;
-		return it->second;
+	inline static B ToSecond(const A& first, B& second) {
+		auto it = std::lower_bound(SINGLETON.m_to_second.begin(), SINGLETON.m_to_second.end(), std::make_pair(first, B()), CompareFirst);
+		if(it == SINGLETON.m_to_second.end() || it->first != first)
+			return false;
+		second = it->second;
+		return true;
 	}
 
 };
 
 template<typename E>
-inline std::string EnumToString(E value) { return EnumTranslator<E, std::string>::ToSecond(value, std::string()); }
+inline std::string EnumToString(E value) {
+	std::string string;
+	EnumTranslator<E, std::string>::ToSecond(value, string);
+	return string;
+}
 template<typename E>
-inline E StringToEnum(const std::string& string, E fallback) { return EnumTranslator<E, std::string>::ToFirst(string, fallback); }
+inline E StringToEnum(const std::string& string, E fallback) {
+	E value = fallback;
+	EnumTranslator<E, std::string>::ToFirst(value, string);
+	return value;
+}
 
 //TODO// remove
 template<typename E>
 inline QString EnumToQString(E value) { return QString::fromStdString(EnumToString(value)); }
 template<typename E>
 inline E QStringToEnum(const QString& string, E fallback) { return StringToEnum(string.toStdString(), fallback); }
-
 
 #define ENUMTRANSLATOR(A, B) template<> const EnumTranslator<A, B> EnumTranslator<A, B>::SINGLETON
 #define ENUMSTRINGS(E) ENUMTRANSLATOR(E, std::string)

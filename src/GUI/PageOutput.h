@@ -44,32 +44,10 @@ public:
 	};
 
 private:
-	struct ContainerData {
-		QString name, avname;
-		QStringList suffixes;
-		QString filter;
-		std::set<enum_video_codec> supported_video_codecs;
-		std::set<enum_audio_codec> supported_audio_codecs;
-		inline bool operator<(const ContainerData& other) const { return (avname < other.avname); }
-	};
-	struct VideoCodecData {
-		QString name, avname;
-		inline bool operator<(const VideoCodecData& other) const { return (avname < other.avname); }
-	};
-	struct AudioCodecData {
-		QString name, avname;
-		inline bool operator<(const AudioCodecData& other) const { return (avname < other.avname); }
-	};
-
-private:
 	MainWindow *m_main_window;
 
 	enum_container m_old_container;
 	unsigned int m_old_container_av;
-
-	std::vector<ContainerData> m_containers, m_containers_av;
-	std::vector<VideoCodecData> m_video_codecs, m_video_codecs_av;
-	std::vector<AudioCodecData> m_audio_codecs, m_audio_codecs_av;
 
 	ProfileBox *m_profile_box;
 
@@ -110,14 +88,12 @@ private:
 public:
 	PageOutput(MainWindow* main_window);
 
-	void LoadSettings(QSettings* settings);
-	void SaveSettings(QSettings* settings);
+	void ImportSettings();
+	void ExportSettings();
 
 private:
-	static void LoadProfileSettingsCallback(QSettings* settings, void* userdata);
-	static void SaveProfileSettingsCallback(QSettings* settings, void* userdata);
-	void LoadProfileSettings(QSettings* settings);
-	void SaveProfileSettings(QSettings* settings);
+	static void LoadProfileCallback(const SimpleJSON& json, void* userdata);
+	static void SaveProfileCallback(SimpleJSON& json, void* userdata);
 
 public:
 	void PageStart();

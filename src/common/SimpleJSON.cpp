@@ -173,12 +173,12 @@ size_t SimpleJSON::GetMemberCount() const {
 	return m_members_order.size();
 }
 
-std::string SimpleJSON::GetMemberKey(size_t index) const {
+void SimpleJSON::GetMemberKey(size_t index, std::string& key) const {
 	if(m_type != JSONTYPE_OBJECT)
 		throw JSONTypeException();
 	if(index >= m_members_order.size())
 		throw JSONTypeException();
-	return m_members_order[index]->first;
+	key = m_members_order[index]->first;
 }
 
 const SimpleJSON& SimpleJSON::GetMemberValue(size_t index) const {
@@ -187,14 +187,6 @@ const SimpleJSON& SimpleJSON::GetMemberValue(size_t index) const {
 	if(index >= m_members_order.size())
 		throw JSONTypeException();
 	return m_members_order[index]->second;
-}
-
-SimpleJSON& SimpleJSON::operator()(const std::string& key) {
-	MakeType(JSONTYPE_OBJECT);
-	auto p = m_members.emplace(key, nullptr);
-	if(p.second)
-		m_members_order.push_back(p.first);
-	return p.first->second;
 }
 
 const SimpleJSON& SimpleJSON::operator[](const std::string& key) const {
@@ -206,6 +198,14 @@ const SimpleJSON& SimpleJSON::operator[](const std::string& key) const {
 	if(it == m_members.end())
 		return NULL_VALUE;
 	return it->second;
+}
+
+SimpleJSON& SimpleJSON::operator()(const std::string& key) {
+	MakeType(JSONTYPE_OBJECT);
+	auto p = m_members.emplace(key, nullptr);
+	if(p.second)
+		m_members_order.push_back(p.first);
+	return p.first->second;
 }
 
 void SimpleJSON::ResetArray() {
@@ -232,13 +232,6 @@ SimpleJSON& SimpleJSON::AddElement() {
 	return m_elements.back();
 }
 
-SimpleJSON& SimpleJSON::operator()(size_t index) {
-	MakeType(JSONTYPE_ARRAY);
-	if(index >= m_elements.size())
-		m_elements.resize(index + 1);
-	return m_elements[index];
-}
-
 const SimpleJSON& SimpleJSON::operator[](size_t index) const {
 	if(m_type != JSONTYPE_ARRAY)
 		throw JSONTypeException();
@@ -247,242 +240,11 @@ const SimpleJSON& SimpleJSON::operator[](size_t index) const {
 	return m_elements[index];
 }
 
-SimpleJSON& SimpleJSON::operator=(const std::string& value) {
-	MakeType(JSONTYPE_STRING);
-	m_string = value;
-	return *this;
-}
-
-std::string SimpleJSON::ToString(const std::string& fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_STRING)
-		throw JSONTypeException();
-	return m_string;
-}
-
-SimpleJSON& SimpleJSON::operator=(int8_t value) {
-	MakeType(JSONTYPE_NUMBER);
-	std::ostringstream ss;
-	ss << value;
-	m_string = ss.str();
-	return *this;
-}
-
-SimpleJSON& SimpleJSON::operator=(uint8_t value) {
-	MakeType(JSONTYPE_NUMBER);
-	std::ostringstream ss;
-	ss << value;
-	m_string = ss.str();
-	return *this;
-}
-
-SimpleJSON& SimpleJSON::operator=(int16_t value) {
-	MakeType(JSONTYPE_NUMBER);
-	std::ostringstream ss;
-	ss << value;
-	m_string = ss.str();
-	return *this;
-}
-
-SimpleJSON& SimpleJSON::operator=(uint16_t value) {
-	MakeType(JSONTYPE_NUMBER);
-	std::ostringstream ss;
-	ss << value;
-	m_string = ss.str();
-	return *this;
-}
-
-SimpleJSON& SimpleJSON::operator=(int32_t value) {
-	MakeType(JSONTYPE_NUMBER);
-	std::ostringstream ss;
-	ss << value;
-	m_string = ss.str();
-	return *this;
-}
-
-SimpleJSON& SimpleJSON::operator=(uint32_t value) {
-	MakeType(JSONTYPE_NUMBER);
-	std::ostringstream ss;
-	ss << value;
-	m_string = ss.str();
-	return *this;
-}
-
-SimpleJSON& SimpleJSON::operator=(int64_t value) {
-	MakeType(JSONTYPE_NUMBER);
-	std::ostringstream ss;
-	ss << value;
-	m_string = ss.str();
-	return *this;
-}
-
-SimpleJSON& SimpleJSON::operator=(uint64_t value) {
-	MakeType(JSONTYPE_NUMBER);
-	std::ostringstream ss;
-	ss << value;
-	m_string = ss.str();
-	return *this;
-}
-
-SimpleJSON& SimpleJSON::operator=(float value) {
-	if(std::isfinite(value)) {
-		MakeType(JSONTYPE_NUMBER);
-		std::ostringstream ss;
-		ss.precision(9); // ceil(24*log10(2))+1
-		ss << value;
-		m_string = ss.str();
-	} else {
-		Reset();
-	}
-	return *this;
-}
-
-SimpleJSON& SimpleJSON::operator=(double value) {
-	if(std::isfinite(value)) {
-		MakeType(JSONTYPE_NUMBER);
-		std::ostringstream ss;
-		ss.precision(17); // ceil(53*log10(2))+1
-		ss << value;
-		m_string = ss.str();
-	} else {
-		Reset();
-	}
-	return *this;
-}
-
-int8_t SimpleJSON::ToInt8(int8_t fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_NUMBER)
-		throw JSONTypeException();
-	std::istringstream ss(m_string);
-	ss >> fallback;
-	if(ss.fail())
-		throw JSONParseException();
-	return fallback;
-}
-
-uint8_t SimpleJSON::ToUint8(uint8_t fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_NUMBER)
-		throw JSONTypeException();
-	std::istringstream ss(m_string);
-	ss >> fallback;
-	if(ss.fail())
-		throw JSONParseException();
-	return fallback;
-}
-
-int16_t SimpleJSON::ToInt16(int16_t fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_NUMBER)
-		throw JSONTypeException();
-	std::istringstream ss(m_string);
-	ss >> fallback;
-	if(ss.fail())
-		throw JSONParseException();
-	return fallback;
-}
-
-uint16_t SimpleJSON::ToUint16(uint16_t fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_NUMBER)
-		throw JSONTypeException();
-	std::istringstream ss(m_string);
-	ss >> fallback;
-	if(ss.fail())
-		throw JSONParseException();
-	return fallback;
-}
-
-int32_t SimpleJSON::ToInt32(int32_t fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_NUMBER)
-		throw JSONTypeException();
-	std::istringstream ss(m_string);
-	ss >> fallback;
-	if(ss.fail())
-		throw JSONParseException();
-	return fallback;
-}
-
-uint32_t SimpleJSON::ToUint32(uint32_t fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_NUMBER)
-		throw JSONTypeException();
-	std::istringstream ss(m_string);
-	ss >> fallback;
-	if(ss.fail())
-		throw JSONParseException();
-	return fallback;
-}
-
-int64_t SimpleJSON::ToInt64(int64_t fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_NUMBER)
-		throw JSONTypeException();
-	std::istringstream ss(m_string);
-	ss >> fallback;
-	if(ss.fail())
-		throw JSONParseException();
-	return fallback;
-}
-
-uint64_t SimpleJSON::ToUint64(uint64_t fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_NUMBER)
-		throw JSONTypeException();
-	std::istringstream ss(m_string);
-	ss >> fallback;
-	if(ss.fail())
-		throw JSONParseException();
-	return fallback;
-}
-
-float SimpleJSON::ToFloat(float fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_NUMBER)
-		throw JSONTypeException();
-	std::istringstream ss(m_string);
-	ss >> fallback;
-	if(ss.fail())
-		throw JSONParseException();
-	return fallback;
-}
-
-double SimpleJSON::ToDouble(double fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_NUMBER)
-		throw JSONTypeException();
-	std::istringstream ss(m_string);
-	ss >> fallback;
-	if(ss.fail())
-		throw JSONParseException();
-	return fallback;
-}
-
-SimpleJSON& SimpleJSON::operator=(bool value) {
-	MakeType(JSONTYPE_BOOL);
-	m_bool = value;
-	return *this;
-}
-
-bool SimpleJSON::ToBool(bool fallback) const {
-	if(m_type == JSONTYPE_NULL)
-		return fallback;
-	if(m_type != JSONTYPE_BOOL)
-		throw JSONTypeException();
-	return m_bool;
+SimpleJSON& SimpleJSON::operator()(size_t index) {
+	MakeType(JSONTYPE_ARRAY);
+	if(index >= m_elements.size())
+		m_elements.resize(index + 1);
+	return m_elements[index];
 }
 
 void SimpleJSON::ReadFromStream(std::streambuf* stream) {

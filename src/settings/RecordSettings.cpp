@@ -45,22 +45,22 @@ void ScheduleEntry::Defaults() {
 
 void ScheduleEntry::FromJSON(const SimpleJSON& json) {
 	try {
-		m_timing = StringToEnum(json["timing"].ToString(""), m_timing);
-		m_hour = json["hour"].ToUint32(m_hour);
-		m_minute = json["minute"].ToUint32(m_minute);
-		m_second = json["second"].ToUint32(m_second);
-		m_action = StringToEnum(json["action"].ToString(""), m_action);
+		json["timing"].GetEnum(m_timing);
+		json["hour"].GetNumber(m_hour);
+		json["minute"].GetNumber(m_minute);
+		json["second"].GetNumber(m_second);
+		json["action"].GetEnum(m_action);
 	} catch(const JSONException&) {
 		Logger::LogError("[ScheduleEntry::FromJSON] " + Logger::tr("Error: Invalid JSON data."));
 	}
 }
 
 void ScheduleEntry::ToJSON(SimpleJSON& json) {
-	json("timing") = EnumToString(m_timing);
-	json("hour") = m_hour;
-	json("minute") = m_minute;
-	json("second") = m_second;
-	json("action") = EnumToString(m_action);
+	json("timing").SetEnum(m_timing);
+	json("hour").SetNumber(m_hour);
+	json("minute").SetNumber(m_minute);
+	json("second").SetNumber(m_second);
+	json("action").SetEnum(m_action);
 }
 
 void RecordSettings::Defaults() {
@@ -80,20 +80,22 @@ void RecordSettings::Defaults() {
 void RecordSettings::FromJSON(const SimpleJSON& json) {
 	try {
 
-		m_hotkey_enable = json["hotkey"]["enable"].ToBool(m_hotkey_enable);
-		m_hotkey_key = StringToEnum(json["hotkey"]["key"].ToString(""), m_hotkey_key);
+		json["hotkey"]["enable"].GetBool(m_hotkey_enable);
+		json["hotkey"]["key"].GetEnum(m_hotkey_key);
 		const SimpleJSON &modifiers = json["hotkey"]["modifiers"];
 		if(!modifiers.IsNull()) {
 			m_hotkey_modifiers = 0;
 			for(size_t i = 0; i < modifiers.GetElementCount(); ++i) {
-				m_hotkey_modifiers |= StringToEnum(modifiers[i].ToString(""), Qt::NoModifier);
+				Qt::KeyboardModifier mod = Qt::NoModifier;
+				modifiers[i].GetEnum(mod);
+				m_hotkey_modifiers |= mod;
 			}
 		}
 
-		m_sound_notifications = json["sound_notifications"].ToBool(m_sound_notifications);
-		m_preview_frame_rate = json["preview_frame_rate"].ToUint32(m_preview_frame_rate);
+		json["sound_notifications"].GetBool(m_sound_notifications);
+		json["preview_frame_rate"].GetNumber(m_preview_frame_rate);
 
-		m_schedule_timezone = StringToEnum(json["schedule"]["timezone"].ToString(""), m_schedule_timezone);
+		json["schedule"]["timezone"].GetEnum(m_schedule_timezone);
 		const SimpleJSON &entries = json["schedule"]["entries"];
 		m_schedule_entries.resize(entries.GetElementCount());
 		for(size_t i = 0; i < entries.GetElementCount(); ++i) {
@@ -107,21 +109,22 @@ void RecordSettings::FromJSON(const SimpleJSON& json) {
 
 void RecordSettings::ToJSON(SimpleJSON& json) {
 
-	json("hotkey")("enable") = m_hotkey_enable;
-	json("hotkey")("key") = EnumToString(m_hotkey_key);
+	json("hotkey")("enable").SetBool(m_hotkey_enable);
+	json("hotkey")("key").SetEnum(m_hotkey_key);
 	json("hotkey")("modifiers").ResetArray();
 	for(auto e : {Qt::ControlModifier, Qt::ShiftModifier, Qt::AltModifier, Qt::MetaModifier}) {
 		if(m_hotkey_modifiers & e)
-			json("hotkey")("modifiers").AddElement() = EnumToString(e);
+			json("hotkey")("modifiers").AddElement().SetEnum(m_preview_frame_rate);
 	}
 
-	json("sound_notifications") = m_sound_notifications;
-	json("preview_frame_rate") = m_preview_frame_rate;
+	json("sound_notifications").SetBool(m_sound_notifications);
+	json("preview_frame_rate").SetNumber(m_preview_frame_rate);
 
-	json("schedule")("timezone") = EnumToString(m_schedule_timezone);
-	json("schedule")("entries").ResetArray();
+	json("schedule")("timezone").SetEnum(m_schedule_timezone);
+	const SimpleJSON &entries = json["schedule"]["entries"];
+	entries.ResetArray();
 	for(ScheduleEntry &entry : m_schedule_entries) {
-		entry.ToJSON(json("schedule")("entries").AddElement());
+		entry.ToJSON(entries.AddElement());
 	}
 
 }

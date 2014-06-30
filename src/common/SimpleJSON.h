@@ -19,11 +19,14 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "EnumTranslator.h"
+
 #include <cstddef>
 #include <cstdio>
 #include <stdint.h>
 
 #include <exception>
+#include <limits>
 #include <map>
 #include <memory>
 #include <streambuf>
@@ -72,28 +75,12 @@ private:
 public:
 	// default and copy constructors
 	inline SimpleJSON() { m_type = JSONTYPE_NULL; }
-	inline SimpleJSON(nullptr_t) { m_type = JSONTYPE_NULL; }
 	inline SimpleJSON(const SimpleJSON&) = default;
 	inline SimpleJSON(SimpleJSON&&) = default;
 
 	// copy assignments
 	inline SimpleJSON& operator=(const SimpleJSON&) = default;
 	inline SimpleJSON& operator=(SimpleJSON&&) = default;
-
-	// other constructors
-	inline SimpleJSON(const std::string& value) { *this = value; }
-	inline SimpleJSON(const char* value) { *this = value; }
-	inline SimpleJSON(int8_t value) { *this = value; }
-	inline SimpleJSON(uint8_t value) { *this = value; }
-	inline SimpleJSON(int16_t value) { *this = value; }
-	inline SimpleJSON(uint16_t value) { *this = value; }
-	inline SimpleJSON(int32_t value) { *this = value; }
-	inline SimpleJSON(uint32_t value) { *this = value; }
-	inline SimpleJSON(int64_t value) { *this = value; }
-	inline SimpleJSON(uint64_t value) { *this = value; }
-	inline SimpleJSON(float value) { *this = value; }
-	inline SimpleJSON(double value) { *this = value; }
-	inline SimpleJSON(bool value) { *this = value; }
 
 	// general
 	void Reset();
@@ -103,49 +90,100 @@ public:
 	// for type object
 	void ResetObject();
 	size_t GetMemberCount() const;
-	std::string GetMemberKey(size_t index) const;
+	void GetMemberKey(size_t index, std::string& key) const;
 	const SimpleJSON& GetMemberValue(size_t index) const;
-	SimpleJSON& operator()(const std::string& key);
 	const SimpleJSON& operator[](const std::string& key) const;
+	SimpleJSON& operator()(const std::string& key);
 
 	// for type array
 	void ResetArray();
 	void ResizeArray(size_t size);
 	size_t GetElementCount() const;
 	SimpleJSON& AddElement();
-	SimpleJSON& operator()(size_t index);
 	const SimpleJSON& operator[](size_t index) const;
+	SimpleJSON& operator()(size_t index);
 
 	// for type string
-	SimpleJSON& operator=(const std::string& value);
-	inline SimpleJSON& operator=(const char* value) { return *this = std::string(value); }
-	std::string ToString(const std::string& fallback) const;
+	inline void GetString(std::string& value) const {
+		if(m_type == JSONTYPE_NULL)
+			return;
+		if(m_type != JSONTYPE_STRING)
+			throw JSONTypeException();
+		value = m_string;
+	}
+	inline void SetString(const std::string& value) {
+		MakeType(JSONTYPE_STRING);
+		m_string = value;
+	}
+	template<typename E> inline void GetEnum(E& value) const {
+		if(m_type == JSONTYPE_NULL)
+			return;
+		if(m_type != JSONTYPE_STRING)
+			throw JSONTypeException();
+		if(!EnumTranslator<E, std::string>::ToFirst(value, m_string))
+			throw JSONParseException();
+	}
+	template<typename E> inline void SetEnum(E value) {
+		MakeType(JSONTYPE_STRING);
+		if(!EnumTranslator<E, std::string>::ToSecond(value, m_string))
+			throw JSONTypeException();
+	}
 
 	// for type number
-	SimpleJSON& operator=(int8_t value);
-	SimpleJSON& operator=(uint8_t value);
-	SimpleJSON& operator=(int16_t value);
-	SimpleJSON& operator=(uint16_t value);
-	SimpleJSON& operator=(int32_t value);
-	SimpleJSON& operator=(uint32_t value);
-	SimpleJSON& operator=(int64_t value);
-	SimpleJSON& operator=(uint64_t value);
-	SimpleJSON& operator=(float value);
-	SimpleJSON& operator=(double value);
-	int8_t ToInt8(int8_t fallback) const;
-	uint8_t ToUint8(uint8_t fallback) const;
-	int16_t ToInt16(int16_t fallback) const;
-	uint16_t ToUint16(uint16_t fallback) const;
-	int32_t ToInt32(int32_t fallback) const;
-	uint32_t ToUint32(uint32_t fallback) const;
-	int64_t ToInt64(int64_t fallback) const;
-	uint64_t ToUint64(uint64_t fallback) const;
-	float ToFloat(float fallback) const;
-	double ToDouble(double fallback) const;
+	template<typename T> inline void GetNumber(T& value) const {
+		static_assert(std::numeric_limits<T>::is_specialized, "Type is not numeric!");
+		if(m_type == JSONTYPE_NULL)
+			return;
+		if(m_type != JSONTYPE_NUMBER)
+			throw JSONTypeException();
+		std::istringstream ss(m_string);
+		ss >> value;
+		if(ss.fail())
+			throw JSONParseException();
+	}
+	template<typename T> inline void SetNumber(T value) {
+		static_assert(std::numeric_limits<T>::is_specialized, "Type is not numeric!");
+		static_assert(std::numeric_limits<T>::is_integer, "Type is not an integer!");
+		MakeType(JSONTYPE_NUMBER);
+		std::ostringstream ss;
+		ss << value;
+		m_string = ss.str();
+	}
+	template<> inline void SetNumber<float>(float value) {
+		if(std::isfinite(value)) {
+			MakeType(JSONTYPE_NUMBER);
+			std::ostringstream ss;
+			ss.precision(9); // ceil(24*log10(2))+1
+			ss << value;
+			m_string = ss.str();
+		} else {
+			Reset();
+		}
+	}
+	template<> inline void SetNumber<double>(double value) {
+		if(std::isfinite(value)) {
+			MakeType(JSONTYPE_NUMBER);
+			std::ostringstream ss;
+			ss.precision(17); // ceil(53*log10(2))+1
+			ss << value;
+			m_string = ss.str();
+		} else {
+			Reset();
+		}
+	}
 
 	// for type bool
-	SimpleJSON& operator=(bool value);
-	bool ToBool(bool fallback) const;
+	inline void GetBool(bool& value) const {
+		if(m_type == JSONTYPE_NULL)
+			return fallback;
+		if(m_type != JSONTYPE_BOOL)
+			throw JSONTypeException();
+		value = m_bool;
+	}
+	inline void SetBool(bool value) {
+		MakeType(JSONTYPE_BOOL);
+		m_bool = value;
+	}
 
 	// serialize/unserialize
 	void ReadFromStream(std::streambuf* stream);
@@ -161,9 +199,5 @@ public:
 
 private:
 	void MakeType(enum_jsontype type);
-
-	// do not use these functions, they are only here to avoid accidental conversions from pointer to bool
-	inline SimpleJSON(const void*) { }
-	inline SimpleJSON& operator=(const void*) { return *this; }
 
 };

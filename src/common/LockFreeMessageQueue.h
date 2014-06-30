@@ -49,7 +49,12 @@ class LockFreeMessageQueue {
 
 private:
 	char *m_buffer;
-	unsigned int m_buffer_size, m_read_pos, m_write_pos, m_read_pos_next, m_write_pos_next;
+	unsigned int m_buffer_size;
+	// align to cache lines to avoid false sharing
+	unsigned int m_read_pos __attribute__((aligned(64)));
+	unsigned int m_read_pos_next __attribute__((aligned(64)));
+	unsigned int m_write_pos __attribute__((aligned(64)));
+	unsigned int m_write_pos_next __attribute__((aligned(64)));
 
 public:
 	inline LockFreeMessageQueue() {
@@ -57,11 +62,14 @@ public:
 		m_buffer_size = 0;
 		m_read_pos = 0;
 		m_write_pos = 0;
+		std::atomic_thread_fence(std::memory_order_release);
 	}
 	inline ~LockFreeMessageQueue() {
+		std::atomic_thread_fence(std::memory_order_acquire);
 		free(m_buffer);
 	}
 	inline void Reset(unsigned int size) {
+		std::atomic_thread_fence(std::memory_order_acquire);
 		free(m_buffer);
 		m_buffer_size = 0;
 		m_read_pos = 0;
@@ -70,6 +78,7 @@ public:
 		if(m_buffer == NULL)
 			throw std::bad_alloc();
 		m_buffer_size = size;
+		std::atomic_thread_fence(std::memory_order_release);
 	}
 
 	inline char* PrepareWriteMessage(unsigned int size) {

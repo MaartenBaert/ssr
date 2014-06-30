@@ -80,12 +80,12 @@ if [ x"$( uname -m )" = x"x86_64" ]; then
 		LIB64DIR="/usr/lib"
 	fi
 	
-	if [ x"$LIB32DIR" == x"$LIB64DIR" ]; then
+	if [ x"$LIB32DIR" = x"$LIB64DIR" ]; then
 		echo "Fatal: Same lib directories found for 32-bit and 64-bit. This should not happen!"
 		exit 1
 	fi
 	PKG_CONFIG_PATH="$LIB64DIR/pkgconfig" \
-		../configure --prefix=/usr --libdir=$LIB64DIR $CONFIGURE_OPTIONS "$@"
+		../configure --prefix=/usr --libdir="$LIB64DIR" $CONFIGURE_OPTIONS "$@"
 else
 	../configure --prefix=/usr $CONFIGURE_OPTIONS "$@"
 fi
@@ -99,7 +99,7 @@ if [ x"$( uname -m )" = x"x86_64" ]; then
 	cd build32
 	echo "Configuring 32-bit GLInject library ..."
 	CC="gcc -m32" CXX="g++ -m32" PKG_CONFIG_PATH="$LIB32DIR/pkgconfig" \
-		../configure --prefix=/usr --libdir=$LIB32DIR --disable-ssrprogram $CONFIGURE_OPTIONS "$@"
+		../configure --prefix=/usr --libdir="$LIB32DIR" --disable-ssrprogram $CONFIGURE_OPTIONS "$@"
 	echo "Compiling 32-bit GLInject library ..."
 	make -j "$( nproc )"
 	cd ..

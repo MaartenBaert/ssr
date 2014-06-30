@@ -20,6 +20,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "InputSettings.h"
+#include "OutputSettings.h"
+#include "RecordSettings.h"
+
 class PageWelcome;
 class PageInput;
 class PageOutput;
@@ -40,9 +44,12 @@ public:
 	static const QString WINDOW_CAPTION;
 
 private:
-	enum_nvidia_disable_flipping m_nvidia_disable_flipping;
-
 	QRect m_old_geometry;
+
+	enum_nvidia_disable_flipping m_nvidia_disable_flipping;
+	InputSettings m_input_settings;
+	OutputSettings m_output_settings;
+	RecordSettings m_record_settings;
 
 	QStackedLayout *m_stacked_layout;
 	PageWelcome *m_page_welcome;
@@ -62,6 +69,10 @@ protected:
 	virtual void closeEvent(QCloseEvent* event) override;
 
 public:
+	inline InputSettings* GetInputSettings() { return &m_input_settings; }
+	inline OutputSettings* GetOutputSettings() { return &m_output_settings; }
+	inline RecordSettings* GetRecordSettings() { return &m_record_settings; }
+
 	inline PageInput* GetPageInput() { return m_page_input; }
 	inline PageOutput* GetPageOutput() { return m_page_output; }
 

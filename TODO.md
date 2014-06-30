@@ -11,6 +11,7 @@ In progress
 Todo
 ----
 
+- Save position of splitters in GUI.
 - Record start/stop scheduling system.
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
 - Command-line options for recording + skipping pages + systray.
