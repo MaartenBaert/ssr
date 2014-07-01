@@ -107,6 +107,7 @@ simplescreenrecorder_SOURCES = \
 	common/DetectCPUFeatures.h \
 	common/Dialogs.cpp \
 	common/Dialogs.h \
+	common/EnumStrings.h \
 	common/LockFreeMessageQueue.h \
 	common/Logger.cpp \
 	common/Logger.h \
@@ -184,6 +185,9 @@ qrc_resources.cpp: $(top_srcdir)/data/resources/resources.qrc \
 		$(top_srcdir)/data/resources/about.htm \
 		$(top_srcdir)/data/resources/header.png
 	$(RCC) -name "resources" -o "qrc_resources.cpp" "$(top_srcdir)/data/resources/resources.qrc"
+
+clean-qrc-extra:
+	rm -f "qrc_resources.cpp"
 
 ########## Qt meta object compiler ##########
 
@@ -285,8 +289,13 @@ simplescreenrecorder_pt_BR.qm: $(srcdir)/translations/simplescreenrecorder_pt_BR
 simplescreenrecorder_zh_CN.qm: $(srcdir)/translations/simplescreenrecorder_zh_CN.ts
 	$(LRELEASE) "$<" -qm "$@"
 
-clean-local: clean-qrc-extra clean-moc-extra
+clean-translations-extra:
+	rm -f simplescreenrecorder_*.qm
 
-.PHONY: clean-qrc-extra clean-moc-extra
+########## Extra targets ##########
+
+clean-local: clean-qrc-extra clean-moc-extra clean-translations-extra
+
+.PHONY: clean-qrc-extra clean-moc-extra clean-translations-extra
 
 endif
