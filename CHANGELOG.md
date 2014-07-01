@@ -4,6 +4,11 @@ SimpleScreenRecorder changes
 Git master
 ----------
 
+- ?
+
+Version 0.3.0
+-------------
+
 - Added profile support.
 - New, more flexible OpenGL recording system (glinject-next branch merged).
 - More robust sound notifications.
