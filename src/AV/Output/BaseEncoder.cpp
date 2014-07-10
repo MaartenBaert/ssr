@@ -24,15 +24,23 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AVWrapper.h"
 #include "Muxer.h"
 
-int ParseCodecOptionInt(const QString& key, const QString& value, int min, int max, int multiply, int fail) {
-	bool parse_int;
-	int value_int = value.toInt(&parse_int);
-	if(parse_int) {
-		return clamp(value_int, min, max) * multiply;
-	} else {
-		Logger::LogWarning("[ParseCodecOptionInt] " + Logger::tr("Error: Option '%1' could not be parsed!").arg(key));
-		return fail;
+int ParseCodecOptionInt(const QString& key, const QString& value, int min, int max, int multiply) {
+	bool parsed;
+	int value_int = value.toInt(&parsed);
+	if(!parsed) {
+		Logger::LogWarning("[ParseCodecOptionInt] " + Logger::tr("Warning: Option '%1' could not be parsed!").arg(key));
+		value_int = 0;
 	}
+	return clamp(value_int, min, max) * multiply;
+}
+double ParseCodecOptionDouble(const QString& key, const QString& value, double min, double max, double multiply) {
+	bool parsed;
+	double value_double = value.toDouble(&parsed);
+	if(!parsed) {
+		Logger::LogWarning("[ParseCodecOptionDouble] " + Logger::tr("Warning: Option '%1' could not be parsed!").arg(key));
+		value_double = 0.0;
+	}
+	return clamp(value_double, min, max) * multiply;
 }
 
 BaseEncoder::BaseEncoder(Muxer* muxer, AVStream* stream, AVCodec* codec, AVDictionary** options) {

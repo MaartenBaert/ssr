@@ -123,7 +123,10 @@ void AudioEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 	for(unsigned int i = 0; i < codec_options.size(); ++i) {
 		const QString &key = codec_options[i].first, &value = codec_options[i].second;
 		if(key == "threads") {
-			stream->codec->thread_count = ParseCodecOptionInt(key, value, 1, INT_MAX);
+			stream->codec->thread_count = ParseCodecOptionInt(key, value, 1, 100);
+		} else if(key == "qscale") {
+			stream->codec->flags |= CODEC_FLAG_QSCALE;
+			stream->codec->global_quality = lrint(ParseCodecOptionDouble(key, value, -1.0e6, 1.0e6, FF_QP2LAMBDA));
 		} else {
 			av_dict_set(options, key.toAscii().constData(), value.toAscii().constData(), 0);
 		}
