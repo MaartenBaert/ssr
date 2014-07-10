@@ -65,14 +65,14 @@ static void ALSARecoverAfterUnderrun(snd_pcm_t* pcm) {
 	}
 }
 
-SimpleSynth::SimpleSynth(const QString& device_name, unsigned int sample_rate) {
+SimpleSynth::SimpleSynth(const QString& sink_name, unsigned int sample_rate) {
 
-	m_device_name = device_name;
+	m_sink_name = sink_name;
 	m_sample_rate = sample_rate;
+	m_period_size = 1024; // number of samples per period
+	m_buffer_size = m_period_size * 2; // number of samples in the buffer
 
 	m_alsa_pcm = NULL;
-	m_alsa_period_size = 1024; // number of samples per period
-	m_alsa_buffer_size = m_alsa_period_size * 2; // number of samples in the buffer
 
 	try {
 		Init();
@@ -119,7 +119,7 @@ void SimpleSynth::Init() {
 		}
 
 		// open PCM device
-		if(snd_pcm_open(&m_alsa_pcm, m_device_name.toAscii().constData(), SND_PCM_STREAM_PLAYBACK, 0) < 0) {
+		if(snd_pcm_open(&m_alsa_pcm, m_sink_name.toAscii().constData(), SND_PCM_STREAM_PLAYBACK, 0) < 0) {
 			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't open PCM device!"));
 			throw ALSAException();
 		}
@@ -141,16 +141,16 @@ void SimpleSynth::Init() {
 		}
 
 		// set sample rate
-		unsigned int rate = m_sample_rate;
-		if(snd_pcm_hw_params_set_rate_near(m_alsa_pcm, alsa_hw_params, &rate, NULL) < 0) {
+		unsigned int sample_rate = m_sample_rate;
+		if(snd_pcm_hw_params_set_rate_near(m_alsa_pcm, alsa_hw_params, &sample_rate, NULL) < 0) {
 			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't set sample rate!"));
 			throw ALSAException();
 		}
-		if(rate != m_sample_rate) {
+		if(sample_rate != m_sample_rate) {
 			Logger::LogWarning("[SimpleSynth::Init] " + Logger::tr("Warning: Sample rate %1 is not supported, using %2 instead. "
 																	"This is not a problem.")
-							   .arg(m_sample_rate).arg(rate));
-			m_sample_rate = rate;
+							   .arg(m_sample_rate).arg(sample_rate));
+			m_sample_rate = sample_rate;
 		}
 
 		// set channel count
@@ -160,29 +160,29 @@ void SimpleSynth::Init() {
 		}
 
 		// set period size
-		snd_pcm_uframes_t period_size = m_alsa_period_size;
+		snd_pcm_uframes_t period_size = m_period_size;
 		if(snd_pcm_hw_params_set_period_size_near(m_alsa_pcm, alsa_hw_params, &period_size, NULL) < 0) {
 			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't set period size!"));
 			throw ALSAException();
 		}
-		if(period_size != m_alsa_period_size) {
+		if(period_size != m_period_size) {
 			Logger::LogWarning("[SimpleSynth::Init] " + Logger::tr("Warning: Period size %1 is not supported, using %2 instead. "
 																	"This is not a problem.")
-							   .arg(m_alsa_period_size).arg(period_size));
-			m_alsa_period_size = period_size;
+							   .arg(m_period_size).arg(period_size));
+			m_period_size = period_size;
 		}
 
 		// set buffer size
-		snd_pcm_uframes_t buffer_size = m_alsa_buffer_size;
+		snd_pcm_uframes_t buffer_size = m_buffer_size;
 		if(snd_pcm_hw_params_set_buffer_size_near(m_alsa_pcm, alsa_hw_params, &buffer_size) < 0) {
 			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't set buffer size!"));
 			throw ALSAException();
 		}
-		if(buffer_size != m_alsa_buffer_size) {
+		if(buffer_size != m_buffer_size) {
 			Logger::LogWarning("[SimpleSynth::Init] " + Logger::tr("Warning: Buffer size %1 is not supported, using %2 instead. "
 																  "This is not a problem.")
-							   .arg(m_alsa_buffer_size).arg(buffer_size));
-			m_alsa_buffer_size = buffer_size;
+							   .arg(m_buffer_size).arg(buffer_size));
+			m_buffer_size = buffer_size;
 		}
 
 		// apply parameters
@@ -224,8 +224,8 @@ void SimpleSynth::SynthThread() {
 
 		MakeThreadHighPriority();
 
-		std::vector<float> buffer_float(m_alsa_period_size);
-		std::vector<int16_t> buffer_int16(m_alsa_period_size);
+		std::vector<float> buffer_float(m_period_size);
+		std::vector<int16_t> buffer_int16(m_period_size);
 
 		while(!m_should_stop) {
 
@@ -233,16 +233,16 @@ void SimpleSynth::SynthThread() {
 			{
 				SharedLock lock(&m_shared_data);
 				if(lock->m_notes.empty()) { // faster version
-					memset(buffer_int16.data(), 0, m_alsa_period_size * sizeof(int16_t));
+					memset(buffer_int16.data(), 0, m_period_size * sizeof(int16_t));
 				} else {
-					memset(buffer_float.data(), 0, m_alsa_period_size * sizeof(float));
+					memset(buffer_float.data(), 0, m_period_size * sizeof(float));
 					for(unsigned int i = 0; i < lock->m_notes.size(); ) {
 						Note &n = lock->m_notes[i];
 						int trel = n.m_time - lock->m_current_time;
-						int t1 = clamp(trel, 0, (int) m_alsa_period_size);
-						int t2 = clamp(trel + (int) n.m_duration_in, 0, (int) m_alsa_period_size);
-						int t3 = clamp(trel + (int) n.m_duration_in + (int) n.m_duration_out, 0, (int) m_alsa_period_size);
-						if(t1 == (int) m_alsa_period_size) { // beep not started yet
+						int t1 = clamp(trel, 0, (int) m_period_size);
+						int t2 = clamp(trel + (int) n.m_duration_in, 0, (int) m_period_size);
+						int t3 = clamp(trel + (int) n.m_duration_in + (int) n.m_duration_out, 0, (int) m_period_size);
+						if(t1 == (int) m_period_size) { // beep not started yet
 							++i;
 							continue;
 						}
@@ -262,13 +262,13 @@ void SimpleSynth::SynthThread() {
 						}
 						++i;
 					}
-					lock->m_current_time += m_alsa_period_size;
-					SampleCopy(m_alsa_period_size, buffer_float.data(), 1, buffer_int16.data(), 1);
+					lock->m_current_time += m_period_size;
+					SampleCopy(m_period_size, buffer_float.data(), 1, buffer_int16.data(), 1);
 				}
 			}
 
 			// write the samples
-			snd_pcm_sframes_t samples_written = snd_pcm_writei(m_alsa_pcm, buffer_int16.data(), m_alsa_period_size);
+			snd_pcm_sframes_t samples_written = snd_pcm_writei(m_alsa_pcm, buffer_int16.data(), m_period_size);
 			if(samples_written < 0) {
 				if(samples_written == -EPIPE) {
 					ALSARecoverAfterUnderrun(m_alsa_pcm);

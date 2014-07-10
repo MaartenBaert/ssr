@@ -282,9 +282,6 @@ AVStream* Muxer::AddStream(AVCodec* codec) {
 	}
 	stream->codec->codec_id = codec->id;
 	stream->codec->codec_type = codec->type;
-#else
-	//assert(stream->codec->codec_id == codec->id);
-	//assert(stream->codec->codec_type == codec->type);
 #endif
 
 	// not sure why this is needed, but it's in the example code and it doesn't work without this

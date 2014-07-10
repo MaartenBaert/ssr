@@ -220,7 +220,7 @@ PulseAudioInput::~PulseAudioInput() {
 static void SourceNamesCallback(pa_context* context, const pa_source_info* info, int eol, void* userdata) {
 	Q_UNUSED(context);
 	if(!eol) {
-		Logger::LogInfo("[SourceNamesCallback] " + Logger::tr("Got %1 = %2.").arg(info->name).arg(info->description));
+		Logger::LogInfo("[SourceNamesCallback] " + Logger::tr("Found source: [%1] %2").arg(info->name).arg(info->description));
 		std::vector<PulseAudioInput::Source> &list = *((std::vector<PulseAudioInput::Source>*) userdata);
 		list.push_back(PulseAudioInput::Source(info->name, info->description));
 	}
