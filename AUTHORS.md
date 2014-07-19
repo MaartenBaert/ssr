@@ -17,6 +17,7 @@ Graphics
 Translations
 ------------
 
+- Bulgarian: Svetoslav Sashkov
 - German: Manuel Schömburg
 - Greek: Nick Thom
 - Spanish: Dani Rodríguez

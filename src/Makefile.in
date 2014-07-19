@@ -634,7 +634,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	moc_ProfileBox.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_VideoPreviewer.cpp
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDADD = $(am__append_13)
-@ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = translations/simplescreenrecorder_de.ts \
+@ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = translations/simplescreenrecorder_bg.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_de.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_el.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_es.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_hu.ts \
@@ -662,6 +663,7 @@ top_srcdir = @top_srcdir@
 ########## Qt translation system ##########
 @ENABLE_SSRPROGRAM_TRUE@translationsdir = $(pkgdatadir)/translations
 @ENABLE_SSRPROGRAM_TRUE@nodist_translations_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_bg.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_de.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_el.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_es.qm \
@@ -2129,6 +2131,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 @ENABLE_SSRPROGRAM_TRUE@clean-moc-extra:
 @ENABLE_SSRPROGRAM_TRUE@	rm -f moc_*.cpp
 
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_bg.qm: $(srcdir)/translations/simplescreenrecorder_bg.ts
+@ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_de.qm: $(srcdir)/translations/simplescreenrecorder_de.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_el.qm: $(srcdir)/translations/simplescreenrecorder_el.ts
