@@ -2130,6 +2130,11 @@ El botón de grabación está arriba ;).</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../GUI/ProfileBox.cpp" line="159"/>
+        <source>Enter a name for the new profile:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
         <translation type="unfinished"></translation>

@@ -156,7 +156,7 @@ void ProfileBox::OnProfileSave() {
 }
 
 void ProfileBox::OnProfileNew() {
-	QString name = InputBox(this, MainWindow::WINDOW_CAPTION, "Enter a name for the new profile:", "");
+	QString name = InputBox(this, MainWindow::WINDOW_CAPTION, tr("Enter a name for the new profile:"), "");
 	if(name.isEmpty())
 		return;
 	name = name.toAscii().toPercentEncoding();

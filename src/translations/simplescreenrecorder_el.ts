@@ -1589,6 +1589,10 @@ The start button is at the top ;).</source>
         <source>Are you sure that you want to delete this profile?</source>
         <translation>Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το προφίλ;</translation>
     </message>
+    <message>
+        <source>Enter a name for the new profile:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QMessageBox</name>
