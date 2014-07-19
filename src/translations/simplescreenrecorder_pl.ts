@@ -252,130 +252,125 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
         <translation type="unfinished">Zatrzymywanie wejsciowego wątku...</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="95"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="96"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="232"/>
         <source>Generating source list ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="114"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="115"/>
         <source>Error: Could not update ALSA configuration!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="121"/>
-        <source>Warning: Could not find PCM plugins.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="163"/>
-        <source>Found plugin %1 = %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="176"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="175"/>
         <source>Warning: Could not open sound card %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="182"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="181"/>
         <source>Warning: Could not get info for sound card %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="186"/>
-        <source>Found card %1 = %2.</source>
+        <location filename="../AV/Input/ALSAInput.cpp" line="162"/>
+        <source>Found plugin: [%1] %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="211"/>
-        <source>Found device %1 = %2.</source>
+        <location filename="../AV/Input/ALSAInput.cpp" line="185"/>
+        <source>Found card: [%1] %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="260"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="210"/>
+        <source>Found device: [%1] %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/ALSAInput.cpp" line="259"/>
         <location filename="../AV/SimpleSynth.cpp" line="123"/>
         <source>Error: Can&apos;t open PCM device!</source>
         <translation type="unfinished">Błąd: nie można otworzyć urządzenia PCM!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="264"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="263"/>
         <location filename="../AV/SimpleSynth.cpp" line="127"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
         <translation type="unfinished">Błąd: nie można otrzymać parametrów urządzenia PCM!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="270"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="269"/>
         <location filename="../AV/SimpleSynth.cpp" line="133"/>
         <source>Error: Can&apos;t set access type!</source>
         <translation type="unfinished">Błąd: nie można ustawić typu dostępu!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="276"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="275"/>
         <location filename="../AV/SimpleSynth.cpp" line="139"/>
         <source>Error: Can&apos;t set sample format!</source>
         <translation type="unfinished">Błąd: nie można ustawić formatu próbkowania!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="283"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="282"/>
         <location filename="../AV/SimpleSynth.cpp" line="146"/>
         <source>Error: Can&apos;t set sample rate!</source>
         <translation type="unfinished">Błąd: nie mozna ustawić częstotliwosci próbkowania!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="287"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="286"/>
         <location filename="../AV/SimpleSynth.cpp" line="150"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="296"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="295"/>
         <location filename="../AV/SimpleSynth.cpp" line="158"/>
         <source>Error: Can&apos;t set channel count!</source>
         <translation type="unfinished">Błąd: Nie można ustawić liczby kanałów! </translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="300"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="299"/>
         <source>Warning: Channel count %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="309"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="308"/>
         <location filename="../AV/SimpleSynth.cpp" line="165"/>
         <source>Error: Can&apos;t set period size!</source>
         <translation type="unfinished">Błąd: Nie można ustawić rozmiaru cyklu!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="313"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="312"/>
         <location filename="../AV/SimpleSynth.cpp" line="169"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished">Uwaga: rozmiar cyklu %1 nie jest wspierany, użyto %2. To nie jest problem lecz wydajność będzie gorsza.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="322"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="321"/>
         <location filename="../AV/SimpleSynth.cpp" line="178"/>
         <source>Error: Can&apos;t set buffer size!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="326"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="325"/>
         <location filename="../AV/SimpleSynth.cpp" line="182"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="334"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="333"/>
         <location filename="../AV/SimpleSynth.cpp" line="190"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
         <translation type="unfinished">Błąd: Nie można ustawić parametrów urządzenia PCM!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="352"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="351"/>
         <source>Error: Can&apos;t start PCM device!</source>
         <translation type="unfinished">Błąd: Nie można uruchomić urządzenia PCM!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="373"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="372"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="180"/>
         <location filename="../AV/Input/JACKInput.cpp" line="238"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="299"/>
@@ -388,12 +383,12 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
         <translation type="obsolete">Błąd: Nie mozna sprawdzić czy próbki są dostępne!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="388"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="387"/>
         <source>Error: Can&apos;t read samples!</source>
         <translation type="unfinished">Błąd: Nie można odczytać próbki!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="414"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="413"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="248"/>
         <location filename="../AV/Input/JACKInput.cpp" line="286"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="387"/>
@@ -402,7 +397,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
         <translation type="unfinished">Zatrzymano wątek wejścia.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="418"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="417"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="252"/>
         <location filename="../AV/Input/JACKInput.cpp" line="290"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="391"/>
@@ -411,7 +406,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
         <translation type="unfinished">Wyjątek &apos;%1&apos; w wątku wejścia.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="421"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="420"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="255"/>
         <location filename="../AV/Input/JACKInput.cpp" line="293"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="394"/>
@@ -561,7 +556,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="223"/>
-        <source>Got %1 = %2.</source>
+        <source>Found source: [%1] %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -664,7 +659,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <translation type="obsolete">Błąd: Częstotliwość próbkowania wynosi zero.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="155"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="163"/>
         <source>Warning: Codec option &apos;%1&apos; was not recognised!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -684,18 +679,13 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <translation type="unfinished">Błąd: Koder wymaga nie wspieranego formatu próbkowania!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="159"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="180"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="162"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="183"/>
         <source>Error: Encoding of audio frame failed!</source>
         <translation type="unfinished">Błąd: Kodowanie audio zawiodło!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="33"/>
-        <source>Error: Option &apos;%1&apos; could not be parsed!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="88"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
         <source>Stopping encoder thread ...</source>
         <translation type="unfinished">Zatrzymywanie wątku kodowania ...</translation>
     </message>
@@ -710,37 +700,43 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <translation type="unfinished">Kodek %1 (%2) został użyty.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="296"/>
+        <location filename="../AV/Output/Muxer.cpp" line="293"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation type="unfinished">Uwaga: Ten kodek jest Uważany za eksperymentalny przez libav/ffmpeg.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="147"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="40"/>
+        <source>Warning: Option &apos;%1&apos; could not be parsed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="155"/>
         <source>Error: Can&apos;t open codec!</source>
         <translation type="unfinished">Błąd: Nie można otworzyć kodeka!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="171"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="179"/>
         <source>Encoder thread started.</source>
         <translation type="unfinished">Rozpoczęto wątek kodowania.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="203"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="211"/>
         <source>Flushing encoder ...</source>
         <translation type="unfinished">Oczyszczanie kodera ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="217"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="225"/>
         <source>Encoder thread stopped.</source>
         <translation type="unfinished">Zatrzymano wątek kodowania.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="221"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="229"/>
         <source>Exception &apos;%1&apos; in encoder thread.</source>
         <translation type="unfinished">Wyjątek &apos;%1&apos; w wątku kodera.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="224"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="232"/>
         <source>Unknown exception in encoder thread.</source>
         <translation type="unfinished">Nieznany wyjątek w wątku kodera.</translation>
     </message>
@@ -802,27 +798,27 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <translation type="unfinished">Błąd: nie można zapisać &apos;trailer&apos;, mimo to kontynuowano.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="306"/>
+        <location filename="../AV/Output/Muxer.cpp" line="303"/>
         <source>Muxer thread started.</source>
         <translation type="unfinished">Uruchomiono wątek multipleksera.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="360"/>
+        <location filename="../AV/Output/Muxer.cpp" line="357"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
         <translation type="unfinished">Błąd: Nie można zapisać klatki do multipleksera!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="388"/>
+        <location filename="../AV/Output/Muxer.cpp" line="385"/>
         <source>Muxer thread stopped.</source>
         <translation type="unfinished">Zatrzymano wątek multipleksera.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="392"/>
+        <location filename="../AV/Output/Muxer.cpp" line="389"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
         <translation type="unfinished">Wyjątek &apos;%1&apos; w wątku multipleksera.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="395"/>
+        <location filename="../AV/Output/Muxer.cpp" line="392"/>
         <source>Unknown exception in muxer thread.</source>
         <translation type="unfinished">Nieznany wyjatek w wątku multipleksera.</translation>
     </message>
@@ -916,8 +912,8 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <translation type="obsolete">Błąd: ilość klatek na sekundę wynosi zero!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="192"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="212"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="195"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="215"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation type="unfinished">Błąd: Kodowanie wideo zawiodło!</translation>
     </message>
@@ -1185,52 +1181,52 @@ Możesz zmienić tę opcję samodzielnie w panelu kontrolnym NVIDIA.</translatio
 <context>
     <name>PageInput</name>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="113"/>
+        <location filename="../GUI/PageInput.cpp" line="112"/>
         <source>Video input</source>
         <translation>Wejście wideo</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="116"/>
+        <location filename="../GUI/PageInput.cpp" line="115"/>
         <source>Record the entire screen</source>
         <translation>Nagrywaj cały ekran</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="117"/>
+        <location filename="../GUI/PageInput.cpp" line="116"/>
         <source>Record a fixed rectangle</source>
         <translation>Nagrywaj wskazany obszar</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="118"/>
+        <location filename="../GUI/PageInput.cpp" line="117"/>
         <source>Follow the cursor</source>
         <translation>Śledź kursor</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="119"/>
+        <location filename="../GUI/PageInput.cpp" line="118"/>
         <source>Record OpenGL (experimental)</source>
         <translation>Nagrywanie OpeGL(eksperymentalne)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="125"/>
+        <location filename="../GUI/PageInput.cpp" line="124"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
         <translation>Wybierz który monitor ma byc nagrywany jeśli posiadasz wiecej niż jeden.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="126"/>
+        <location filename="../GUI/PageInput.cpp" line="125"/>
         <source>Select rectangle...</source>
         <translation>Wyznacz obszar...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="127"/>
+        <location filename="../GUI/PageInput.cpp" line="126"/>
         <source>Use the mouse to select the recorded rectangle.</source>
         <translation>Wyznacz obszar do nagrywania przy pomcy myszki.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="128"/>
+        <location filename="../GUI/PageInput.cpp" line="127"/>
         <source>Select window...</source>
         <translation>Zaznacz okno...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="129"/>
+        <location filename="../GUI/PageInput.cpp" line="128"/>
         <source>Use the mouse to select a window to record.
 Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only
 the client area of the window will be recorded.</source>
@@ -1239,110 +1235,110 @@ Podpowiedź: Jeżeli klikniesz obramowanie okna, wówczas całe okno zostanie za
 W przeciwnym razie jedynie wnętrze okna będzie nagrywane.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="132"/>
+        <location filename="../GUI/PageInput.cpp" line="131"/>
         <source>OpenGL settings...</source>
         <translation>Opcje OpenGL...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="133"/>
+        <location filename="../GUI/PageInput.cpp" line="132"/>
         <source>Change the settings for OpenGL recording.</source>
         <translation>Zmień ustawienia nagrywania OpenGL.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="134"/>
+        <location filename="../GUI/PageInput.cpp" line="133"/>
         <source>Left:</source>
         <translation>Lewo:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="138"/>
+        <location filename="../GUI/PageInput.cpp" line="137"/>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Położenie X górnego-lewego rogu obszaru nagrywania.
 Podpowiedź: Możesz zmienić tę wartość przy pomocy kółka myszy lub strzałek góra/dół.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="140"/>
+        <location filename="../GUI/PageInput.cpp" line="139"/>
         <source>Top:</source>
         <translation>Góra:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="144"/>
+        <location filename="../GUI/PageInput.cpp" line="143"/>
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Położenie Y górnego-lewego rogu obszaru nagrywania.
 Podpowiedź: Możesz zmienić tę wartość przy pomocy kółka myszy lub strzałek góra/dół.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="146"/>
+        <location filename="../GUI/PageInput.cpp" line="145"/>
         <source>Width:</source>
         <translation>Szerokość:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="150"/>
+        <location filename="../GUI/PageInput.cpp" line="149"/>
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Szerokość obszaru nagrywania.
 Podpowiedź: Możesz zmienić tę wartość przy pomocy kółka myszy lub strzałek góra/dół.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="152"/>
+        <location filename="../GUI/PageInput.cpp" line="151"/>
         <source>Height:</source>
         <translation>Wysokość:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="156"/>
+        <location filename="../GUI/PageInput.cpp" line="155"/>
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Wysokość obszaru nagrywania.
 Podpowiedź: Możesz zmienić tę wartość przy pomocy kółka myszy lub strzałek góra/dół.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="158"/>
+        <location filename="../GUI/PageInput.cpp" line="157"/>
         <source>Frame rate:</source>
         <translation>Liczba klatek na sekundę:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="162"/>
+        <location filename="../GUI/PageInput.cpp" line="161"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
         <translation>Liczba klatek na sekundę z jaką będzie nagrywany obraz. Wyrzsze wartości wykorzystują bardziej CPU.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="163"/>
+        <location filename="../GUI/PageInput.cpp" line="162"/>
         <source>Scale video</source>
         <translation>Skaluj wideo</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="164"/>
+        <location filename="../GUI/PageInput.cpp" line="163"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
         <translation>Włącz lub wyłącz skalowanie nagrania. Skalowanie zwiększa wykorzystanie procesora lecz może skrócić czas kodowania jeśli obraz jest mniejszy.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="165"/>
+        <location filename="../GUI/PageInput.cpp" line="164"/>
         <source>Scaled width:</source>
         <translation>Przeskalowana szerokość:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="169"/>
+        <location filename="../GUI/PageInput.cpp" line="168"/>
         <source>Scaled height:</source>
         <translation>Przeskalowana wysokość:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="173"/>
+        <location filename="../GUI/PageInput.cpp" line="172"/>
         <source>Record cursor</source>
         <translation>Nagraj kursor</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="243"/>
+        <location filename="../GUI/PageInput.cpp" line="242"/>
         <source>Audio input</source>
         <translation>Wejście audio</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="245"/>
+        <location filename="../GUI/PageInput.cpp" line="244"/>
         <source>Record audio</source>
         <translation>Nagrywaj audio</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="246"/>
+        <location filename="../GUI/PageInput.cpp" line="245"/>
         <source>Backend:</source>
         <translation>Podsystem:</translation>
     </message>
@@ -1354,7 +1350,7 @@ You can change this to something like plughw:0,0 (which means sound card 0 input
 Możesz zmienić tą wartość na np: plughw:0,0 (co oznacza Karta dźwiękowa 0 oraz wejście 0 z włączonymi wtyczkami).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="268"/>
+        <location filename="../GUI/PageInput.cpp" line="267"/>
         <source>The PulseAudio source that will be used for recording.
 A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
         <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
@@ -1362,29 +1358,29 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
 &apos;monitor&apos; jest źródłem które przechwytuje audio z innych aplikacji.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="275"/>
+        <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="277"/>
+        <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="673"/>
+        <location filename="../GUI/PageInput.cpp" line="672"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Wszystkie ekrany: %1x%2</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="677"/>
+        <location filename="../GUI/PageInput.cpp" line="676"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Ekran %1: %2x%3 poz. %4,%5</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="839"/>
+        <location filename="../GUI/PageInput.cpp" line="838"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
         <translation>Ekran %1</translation>
@@ -1396,7 +1392,7 @@ Click the &apos;OpenGL settings&apos; button and enter a command.</source>
 Kliknij &apos;Opcje OpenGL&apos; w celu wprowadzenia polecenia.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="255"/>
+        <location filename="../GUI/PageInput.cpp" line="254"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
         <translation>Podsystem audio który bedzie wykorzystywany do nagrywania.
@@ -1407,50 +1403,50 @@ Podsystem ALSA bęzie również działał na systemach które korzystaja z Pulse
         <translation type="obsolete">Urządzenie:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="257"/>
-        <location filename="../GUI/PageInput.cpp" line="265"/>
+        <location filename="../GUI/PageInput.cpp" line="256"/>
+        <location filename="../GUI/PageInput.cpp" line="264"/>
         <source>Source:</source>
         <translation>Źródło:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="260"/>
+        <location filename="../GUI/PageInput.cpp" line="259"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="262"/>
-        <location filename="../GUI/PageInput.cpp" line="270"/>
+        <location filename="../GUI/PageInput.cpp" line="261"/>
+        <location filename="../GUI/PageInput.cpp" line="269"/>
         <source>Refresh</source>
         <translation>Odśwież</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="263"/>
+        <location filename="../GUI/PageInput.cpp" line="262"/>
         <source>Refreshes the list of ALSA sources.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="271"/>
+        <location filename="../GUI/PageInput.cpp" line="270"/>
         <source>Refreshes the list of PulseAudio sources.</source>
         <translation>Odśwież listę źródeł PulseAudio.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="274"/>
+        <location filename="../GUI/PageInput.cpp" line="273"/>
         <source>Record system microphone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="276"/>
+        <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>Record system speakers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="312"/>
+        <location filename="../GUI/PageInput.cpp" line="311"/>
         <source>Back</source>
         <translation>Wstecz</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="313"/>
+        <location filename="../GUI/PageInput.cpp" line="312"/>
         <source>Continue</source>
         <translation>Kontynuuj</translation>
     </message>

@@ -180,27 +180,11 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <translation></translation>
     </message>
     <message>
-        <source>Warning: Could not find PCM plugins.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Found plugin %1 = %2.</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Warning: Could not open sound card %1.</source>
         <translation></translation>
     </message>
     <message>
         <source>Warning: Could not get info for sound card %1.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Found card %1 = %2.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Found device %1 = %2.</source>
         <translation></translation>
     </message>
     <message>
@@ -361,10 +345,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <source>Error: Stream connection attempt failed! Reason: %1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Got %1 = %2.</source>
         <translation></translation>
     </message>
     <message>
@@ -551,10 +531,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <source>Error: Encoding of audio frame failed!</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Error: Option &apos;%1&apos; could not be parsed!</source>
         <translation></translation>
     </message>
     <message>
@@ -824,6 +800,26 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <source>Error: Can&apos;t open channel directory!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Found plugin: [%1] %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Found card: [%1] %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Found device: [%1] %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Found source: [%1] %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: Option &apos;%1&apos; could not be parsed!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

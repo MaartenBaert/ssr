@@ -213,130 +213,125 @@ Ez valamilyen szinten csökkenti az erőforrásigényt és olykor folytonosabb k
         <translation>Feldolgozás leállítása...</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="95"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="96"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="232"/>
         <source>Generating source list ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="114"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="115"/>
         <source>Error: Could not update ALSA configuration!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="121"/>
-        <source>Warning: Could not find PCM plugins.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="163"/>
-        <source>Found plugin %1 = %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="176"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="175"/>
         <source>Warning: Could not open sound card %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="182"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="181"/>
         <source>Warning: Could not get info for sound card %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="186"/>
-        <source>Found card %1 = %2.</source>
+        <location filename="../AV/Input/ALSAInput.cpp" line="162"/>
+        <source>Found plugin: [%1] %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="211"/>
-        <source>Found device %1 = %2.</source>
+        <location filename="../AV/Input/ALSAInput.cpp" line="185"/>
+        <source>Found card: [%1] %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="260"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="210"/>
+        <source>Found device: [%1] %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/ALSAInput.cpp" line="259"/>
         <location filename="../AV/SimpleSynth.cpp" line="123"/>
         <source>Error: Can&apos;t open PCM device!</source>
         <translation>Hiba: A PCM jelforrás nem elérhető!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="264"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="263"/>
         <location filename="../AV/SimpleSynth.cpp" line="127"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
         <translation>Hiba: A PCM-eszköz paramétereinek beolvasása nem sikerült!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="270"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="269"/>
         <location filename="../AV/SimpleSynth.cpp" line="133"/>
         <source>Error: Can&apos;t set access type!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="276"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="275"/>
         <location filename="../AV/SimpleSynth.cpp" line="139"/>
         <source>Error: Can&apos;t set sample format!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="283"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="282"/>
         <location filename="../AV/SimpleSynth.cpp" line="146"/>
         <source>Error: Can&apos;t set sample rate!</source>
         <translation>Hiba: A mintavétel nem módosítható!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="287"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="286"/>
         <location filename="../AV/SimpleSynth.cpp" line="150"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation>Figyelem: %1 mintavétel nem támogatott, %2 lesz alkalmazva. Ez nem hiba.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="296"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="295"/>
         <location filename="../AV/SimpleSynth.cpp" line="158"/>
         <source>Error: Can&apos;t set channel count!</source>
         <translation>Hiba: A csatornák száma nem módosítható!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="300"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="299"/>
         <source>Warning: Channel count %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="309"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="308"/>
         <location filename="../AV/SimpleSynth.cpp" line="165"/>
         <source>Error: Can&apos;t set period size!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="313"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="312"/>
         <location filename="../AV/SimpleSynth.cpp" line="169"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="322"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="321"/>
         <location filename="../AV/SimpleSynth.cpp" line="178"/>
         <source>Error: Can&apos;t set buffer size!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="326"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="325"/>
         <location filename="../AV/SimpleSynth.cpp" line="182"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="334"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="333"/>
         <location filename="../AV/SimpleSynth.cpp" line="190"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="352"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="351"/>
         <source>Error: Can&apos;t start PCM device!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="373"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="372"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="180"/>
         <location filename="../AV/Input/JACKInput.cpp" line="238"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="299"/>
@@ -345,12 +340,12 @@ Ez valamilyen szinten csökkenti az erőforrásigényt és olykor folytonosabb k
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="388"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="387"/>
         <source>Error: Can&apos;t read samples!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="414"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="413"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="248"/>
         <location filename="../AV/Input/JACKInput.cpp" line="286"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="387"/>
@@ -359,7 +354,7 @@ Ez valamilyen szinten csökkenti az erőforrásigényt és olykor folytonosabb k
         <translation>Feldolgozás leállítva.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="418"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="417"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="252"/>
         <location filename="../AV/Input/JACKInput.cpp" line="290"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="391"/>
@@ -368,7 +363,7 @@ Ez valamilyen szinten csökkenti az erőforrásigényt és olykor folytonosabb k
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/ALSAInput.cpp" line="421"/>
+        <location filename="../AV/Input/ALSAInput.cpp" line="420"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="255"/>
         <location filename="../AV/Input/JACKInput.cpp" line="293"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="394"/>
@@ -484,7 +479,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="223"/>
-        <source>Got %1 = %2.</source>
+        <source>Found source: [%1] %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -726,53 +721,54 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="159"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="180"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="162"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="183"/>
         <source>Error: Encoding of audio frame failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="33"/>
-        <source>Error: Option &apos;%1&apos; could not be parsed!</source>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="40"/>
+        <source>Warning: Option &apos;%1&apos; could not be parsed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="88"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
         <source>Stopping encoder thread ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="147"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="155"/>
         <source>Error: Can&apos;t open codec!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="155"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="163"/>
         <source>Warning: Codec option &apos;%1&apos; was not recognised!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="171"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="179"/>
         <source>Encoder thread started.</source>
         <translation>Kódolás folyamatban.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="203"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="211"/>
         <source>Flushing encoder ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="217"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="225"/>
         <source>Encoder thread stopped.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="221"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="229"/>
         <source>Exception &apos;%1&apos; in encoder thread.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="224"/>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="232"/>
         <source>Unknown exception in encoder thread.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -844,32 +840,32 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="296"/>
+        <location filename="../AV/Output/Muxer.cpp" line="293"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="306"/>
+        <location filename="../AV/Output/Muxer.cpp" line="303"/>
         <source>Muxer thread started.</source>
         <translation>Lekeverés folyamatban.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="360"/>
+        <location filename="../AV/Output/Muxer.cpp" line="357"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="388"/>
+        <location filename="../AV/Output/Muxer.cpp" line="385"/>
         <source>Muxer thread stopped.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="392"/>
+        <location filename="../AV/Output/Muxer.cpp" line="389"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="395"/>
+        <location filename="../AV/Output/Muxer.cpp" line="392"/>
         <source>Unknown exception in muxer thread.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -959,8 +955,8 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="192"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="212"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="195"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="215"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1098,52 +1094,52 @@ Ezt később bármikor módosíthatod az NVIDIA Vezérlőpultján keresztül.</t
 <context>
     <name>PageInput</name>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="113"/>
+        <location filename="../GUI/PageInput.cpp" line="112"/>
         <source>Video input</source>
         <translation>Képrögzítés</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="116"/>
+        <location filename="../GUI/PageInput.cpp" line="115"/>
         <source>Record the entire screen</source>
         <translation>Kijelző(k) rögzítése</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="117"/>
+        <location filename="../GUI/PageInput.cpp" line="116"/>
         <source>Record a fixed rectangle</source>
         <translation>Kijelölt terület rögzítése</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="118"/>
+        <location filename="../GUI/PageInput.cpp" line="117"/>
         <source>Follow the cursor</source>
         <translation>Egérkurzor követése</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="119"/>
+        <location filename="../GUI/PageInput.cpp" line="118"/>
         <source>Record OpenGL (experimental)</source>
         <translation>OpenGL alapú alkalmazás rögzítése (kísérleti)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="125"/>
+        <location filename="../GUI/PageInput.cpp" line="124"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
         <translation>Rögzíteni kívánt kijelző kiválasztása több megjelenítős konfiguráció esetén.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="126"/>
+        <location filename="../GUI/PageInput.cpp" line="125"/>
         <source>Select rectangle...</source>
         <translation>Terület kijelölése...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="127"/>
+        <location filename="../GUI/PageInput.cpp" line="126"/>
         <source>Use the mouse to select the recorded rectangle.</source>
         <translation>Rögzíteni kívánt terület kijelölése egérrel.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="128"/>
+        <location filename="../GUI/PageInput.cpp" line="127"/>
         <source>Select window...</source>
         <translation>Ablak kiválasztása...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="129"/>
+        <location filename="../GUI/PageInput.cpp" line="128"/>
         <source>Use the mouse to select a window to record.
 Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only
 the client area of the window will be recorded.</source>
@@ -1152,115 +1148,115 @@ Megjegyzés: Az ablak keretére kattintva a keret is rögzítésre kerül.
 Ellenkező esetben kizárólag az ablak tartalma lesz rögzítve.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="132"/>
+        <location filename="../GUI/PageInput.cpp" line="131"/>
         <source>OpenGL settings...</source>
         <translation>OpenGL beállítások...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="133"/>
+        <location filename="../GUI/PageInput.cpp" line="132"/>
         <source>Change the settings for OpenGL recording.</source>
         <translation>Rögzítés beállításainak finomhangolása.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="134"/>
+        <location filename="../GUI/PageInput.cpp" line="133"/>
         <source>Left:</source>
         <translation>Bal:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="138"/>
+        <location filename="../GUI/PageInput.cpp" line="137"/>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation type="unfinished">The x coordinate of the upper-left corner of the recorded rectangle.
 Megjegyzés: Az érték egyszerűen módosítható görgővel, vagy a kurzorbillentyűk segítségével.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="140"/>
+        <location filename="../GUI/PageInput.cpp" line="139"/>
         <source>Top:</source>
         <translation>Fent:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="144"/>
+        <location filename="../GUI/PageInput.cpp" line="143"/>
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation type="unfinished">The y coordinate of the upper-left corner of the recorded rectangle
 Megjegyzés: Az érték egyszerűen módosítható görgővel, vagy a kurzorbillentyűk segítségével.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="146"/>
+        <location filename="../GUI/PageInput.cpp" line="145"/>
         <source>Width:</source>
         <translation>Szélesség:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="150"/>
+        <location filename="../GUI/PageInput.cpp" line="149"/>
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Kijelölt terület szélessége.
 Megjegyzés: Az érték egyszerűen módosítható görgővel, vagy a kurzorbillentyűk segítségével.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="152"/>
+        <location filename="../GUI/PageInput.cpp" line="151"/>
         <source>Height:</source>
         <translation>Magasság:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="156"/>
+        <location filename="../GUI/PageInput.cpp" line="155"/>
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Kijelölt terület magassága.
 Megjegyzés: Az érték egyszerűen módosítható görgővel, vagy a kurzorbillentyűk segítségével.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="158"/>
+        <location filename="../GUI/PageInput.cpp" line="157"/>
         <source>Frame rate:</source>
         <translation>Képsebesség:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="162"/>
+        <location filename="../GUI/PageInput.cpp" line="161"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
         <translation>A másodpercenként rögzített képkockák mennyiségét határozza meg. A magasabb érték több erőforrást igényel.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="163"/>
+        <location filename="../GUI/PageInput.cpp" line="162"/>
         <source>Scale video</source>
         <translation>Kép átméretezése</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="164"/>
+        <location filename="../GUI/PageInput.cpp" line="163"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
         <translation>Kép átméretezése rögzítés közben. Ez további erőforrást igényel. </translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="165"/>
+        <location filename="../GUI/PageInput.cpp" line="164"/>
         <source>Scaled width:</source>
         <translation>Szélesség:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="169"/>
+        <location filename="../GUI/PageInput.cpp" line="168"/>
         <source>Scaled height:</source>
         <translation>Magasság:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="173"/>
+        <location filename="../GUI/PageInput.cpp" line="172"/>
         <source>Record cursor</source>
         <translation>Egérkurzor rögzítése</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="243"/>
+        <location filename="../GUI/PageInput.cpp" line="242"/>
         <source>Audio input</source>
         <translation>Hangrögzítés</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="245"/>
+        <location filename="../GUI/PageInput.cpp" line="244"/>
         <source>Record audio</source>
         <translation>Hang rögzítése</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="246"/>
+        <location filename="../GUI/PageInput.cpp" line="245"/>
         <source>Backend:</source>
         <translation>Kiszolgáló:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="255"/>
+        <location filename="../GUI/PageInput.cpp" line="254"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
         <translation>Rögzíteni kívánt hangforrás kiszolgálója.
@@ -1268,84 +1264,84 @@ A PulseAudio-t használó rendszerek többségén az ALSA is működhet,
 de a PulseAudio ajánlott közvetlen hozzáférése miatt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="257"/>
-        <location filename="../GUI/PageInput.cpp" line="265"/>
+        <location filename="../GUI/PageInput.cpp" line="256"/>
+        <location filename="../GUI/PageInput.cpp" line="264"/>
         <source>Source:</source>
         <translation>Forrás:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="260"/>
+        <location filename="../GUI/PageInput.cpp" line="259"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="262"/>
-        <location filename="../GUI/PageInput.cpp" line="270"/>
+        <location filename="../GUI/PageInput.cpp" line="261"/>
+        <location filename="../GUI/PageInput.cpp" line="269"/>
         <source>Refresh</source>
         <translation>Ellenőrzés</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="263"/>
+        <location filename="../GUI/PageInput.cpp" line="262"/>
         <source>Refreshes the list of ALSA sources.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="268"/>
+        <location filename="../GUI/PageInput.cpp" line="267"/>
         <source>The PulseAudio source that will be used for recording.
 A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
         <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="271"/>
+        <location filename="../GUI/PageInput.cpp" line="270"/>
         <source>Refreshes the list of PulseAudio sources.</source>
         <translation>PulseAudio jelforrásainak újraellenőrzése.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="274"/>
+        <location filename="../GUI/PageInput.cpp" line="273"/>
         <source>Record system microphone</source>
         <translation>Mikrofon hangjának rögzítése</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="275"/>
+        <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
         <translation>Mikrofon hangjának rögzítése, ha csatlakoztatva van.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="276"/>
+        <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>Record system speakers</source>
         <translation>Rendszer hangjának rögzítése</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="277"/>
+        <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
         <translation>Az általad hallható, kimeneti hang rögzítése.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="312"/>
+        <location filename="../GUI/PageInput.cpp" line="311"/>
         <source>Back</source>
         <translation>Vissza</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="313"/>
+        <location filename="../GUI/PageInput.cpp" line="312"/>
         <source>Continue</source>
         <translation>Tovább</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="673"/>
+        <location filename="../GUI/PageInput.cpp" line="672"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Minden kijelző: %1x%2</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="677"/>
+        <location filename="../GUI/PageInput.cpp" line="676"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>%1. kijelző: %2x%3, kezdés: %4,%5</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="839"/>
+        <location filename="../GUI/PageInput.cpp" line="838"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
         <translation>%1. kijelző</translation>
