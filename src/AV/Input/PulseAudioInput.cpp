@@ -117,7 +117,7 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 
 	// connect the stream
 	if(pa_stream_connect_record(*stream, source_name.toAscii().constData(), &buffer_attr,
-								(pa_stream_flags_t) (PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE | PA_STREAM_ADJUST_LATENCY)) < 0) {
+								(pa_stream_flags_t) (/*PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE |*/ PA_STREAM_ADJUST_LATENCY)) < 0) {
 		Logger::LogError("[PulseAudioConnectStream] " + Logger::tr("Error: Could not connect stream! Reason: %1").arg(pa_strerror(pa_context_errno(context))));
 		throw PulseAudioException();
 	}
@@ -343,13 +343,14 @@ void PulseAudioInput::InputThread() {
 						// get the latency
 						// The latency can be negative for monitors, this means that we got the samples before they were actually played.
 						// But for some reason, PulseAudio doesn't like signed integers ...
-						pa_usec_t latency_magnitude;
+						/*pa_usec_t latency_magnitude;
 						int latency_negative;
 						pa_stream_get_latency(m_pa_stream, &latency_magnitude, &latency_negative);
-						int64_t latency = (latency_negative)? -(int64_t) latency_magnitude : latency_magnitude;
+						int64_t latency = (latency_negative)? -(int64_t) latency_magnitude : latency_magnitude;*/
 
 						// push the samples
-						int64_t time = timestamp - latency;
+						/*int64_t time = timestamp - latency;*/
+						int64_t time = timestamp - (int64_t) samples * (int64_t) 1000000 / (int64_t) m_sample_rate;
 						PushAudioSamples(m_channels, m_sample_rate, AV_SAMPLE_FMT_S16, samples, push_data, time);
 
 					}
