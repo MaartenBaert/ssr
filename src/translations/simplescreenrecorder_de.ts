@@ -253,17 +253,17 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="162"/>
         <source>Found plugin: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin gefunden: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="185"/>
         <source>Found card: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Karte gefunden: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="210"/>
         <source>Found device: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerät gefunden: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="259"/>
@@ -498,7 +498,7 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="223"/>
         <source>Found source: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Quelle gefunden: [%1] %2</translation>
     </message>
     <message>
         <source>Got %1 = %2.</source>
@@ -603,7 +603,7 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="127"/>
         <source>Error: Can&apos;t watch channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: kann das Kanal-Verzeichnis nicht überwachen!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t open shared memory directory!</source>
@@ -612,7 +612,7 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="139"/>
         <source>Error: Can&apos;t open channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: kann das Kanal-Verzeichnis nicht öffnen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="157"/>
@@ -766,7 +766,7 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
         <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
         <location filename="../AV/Output/BaseEncoder.cpp" line="40"/>
         <source>Warning: Option &apos;%1&apos; could not be parsed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Warnung: Option &apos;%1&apos; wurde nicht verstanden!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
@@ -1009,7 +1009,7 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
         <location filename="../AV/SimpleSynth.cpp" line="50"/>
         <source>Using nice priority.</source>
         <comment>Don&apos;t translate &apos;nice&apos;, it&apos;s a UNIX parameter that defines the priority of a process.</comment>
-        <translation type="unfinished">Verwende Priorität von &quot;nice&quot;.</translation>
+        <translation>Verwende Priorität von &quot;nice&quot;.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="55"/>
@@ -1644,7 +1644,7 @@ Video-Daten. Und wenn Sie nur Ihre eigene Stimme aufzeichnen (d. h. keine Musik)
 große Rolle.
 - Vorbis (libvorbis) ist großartig, dies ist der empfohlene Codec
 - MP3 (libmp3lame) ist akzeptabel gut
-- AAC ist ein guter Codec, aber die hier verwendete Implementierung (ibvo_aacenc oder der experimentelle ffmpeg aac encoder)
+- AAC ist ein guter Codec, aber die hier verwendete Implementierung (libvo_aacenc oder der experimentelle ffmpeg aac encoder)
    ist ziemlich schlecht. Benutzen Sie dies nur, wenn Sie keine andere Wahl haben.
 - Unkomprimiert speichert die Audio-Daten einfach ohne Komprimierung. Die Datei wird ziemlich groß, aber es ist sehr schnell.</translation>
     </message>
@@ -1825,7 +1825,7 @@ Das aufgenommene Programm wird diesen Tastendruck nicht erhalten.</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="323"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Beenden</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="367"/>
@@ -2050,7 +2050,7 @@ Der Start-Knopf ist oben ;).</translation>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="159"/>
         <source>Enter a name for the new profile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie einen Namen für das neue Profil ein:</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
