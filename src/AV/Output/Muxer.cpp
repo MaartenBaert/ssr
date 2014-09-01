@@ -294,6 +294,10 @@ AVStream* Muxer::AddStream(AVCodec* codec) {
 		stream->codec->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
 	}
 
+#if SSR_USE_SIDE_DATA_ONLY_PACKETS
+	stream->codec->side_data_only_packets = 1;
+#endif
+
 	return stream;
 }
 
@@ -311,7 +315,11 @@ void Muxer::MuxerThread() {
 			for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 				StreamLock lock(&m_stream_data[i]);
 				if(!lock->m_is_done || !lock->m_packet_queue.empty()) {
+#if SSR_USE_AV_STREAM_GET_END_PTS
+					double pts = (double) av_stream_get_end_pts(m_format_context->streams[i]) * ToDouble(m_format_context->streams[i]->time_base);
+#else
 					double pts = ToDouble(m_format_context->streams[i]->pts) * ToDouble(m_format_context->streams[i]->time_base);
+#endif
 					if(pts < oldest_pts) {
 						oldest_stream = i;
 						oldest_pts = pts;
@@ -343,12 +351,16 @@ void Muxer::MuxerThread() {
 			// prepare packet
 			AVStream *st = m_format_context->streams[oldest_stream];
 			packet->GetPacket()->stream_index = oldest_stream;
+#if SSR_USE_AV_PACKET_RESCALE_TS
+			av_packet_rescale_ts(packet->GetPacket(), st->codec->time_base, st->time_base);
+#else
 			if(packet->GetPacket()->pts != (int64_t) AV_NOPTS_VALUE) {
 				packet->GetPacket()->pts = av_rescale_q(packet->GetPacket()->pts, st->codec->time_base, st->time_base);
 			}
 			if(packet->GetPacket()->dts != (int64_t) AV_NOPTS_VALUE) {
 				packet->GetPacket()->dts = av_rescale_q(packet->GetPacket()->dts, st->codec->time_base, st->time_base);
 			}
+#endif
 
 			// write the packet (again, why does libav/ffmpeg call this a frame?)
 			// The packet should already be interleaved now, but containers can have custom interleaving specifications,

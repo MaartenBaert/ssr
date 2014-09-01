@@ -107,6 +107,9 @@ void AudioEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 	stream->codec->sample_rate = sample_rate;
 	stream->codec->time_base.num = 1;
 	stream->codec->time_base.den = sample_rate;
+#if SSR_USE_AVSTREAM_TIME_BASE
+	stream->time_base = stream->codec->time_base;
+#endif
 	stream->codec->sample_fmt = AV_SAMPLE_FMT_NONE;
 	for(unsigned int i = 0; i < SUPPORTED_SAMPLE_FORMATS.size(); ++i) {
 		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i])) {

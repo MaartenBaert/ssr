@@ -122,6 +122,9 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 	stream->codec->height = height;
 	stream->codec->time_base.num = 1;
 	stream->codec->time_base.den = frame_rate;
+#if SSR_USE_AVSTREAM_TIME_BASE
+	stream->time_base = stream->codec->time_base;
+#endif
 	stream->codec->pix_fmt = AV_PIX_FMT_NONE;
 	for(unsigned int i = 0; i < SUPPORTED_PIXEL_FORMATS.size(); ++i) {
 		if(AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i])) {
