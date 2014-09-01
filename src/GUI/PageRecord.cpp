@@ -1114,9 +1114,9 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString str) {
 	QTextCharFormat format;
 	bool should_scroll = (m_textedit_log->verticalScrollBar()->value() >= m_textedit_log->verticalScrollBar()->maximum());
 	switch(type) {
-		case Logger::TYPE_INFO:     format.setForeground(Qt::black);       break;
-		case Logger::TYPE_WARNING:  format.setForeground(Qt::darkYellow);  break;
-		case Logger::TYPE_ERROR:    format.setForeground(Qt::red);         break;
+		case Logger::TYPE_INFO:     format.setForeground(m_textedit_log->palette().foreground());  break;
+		case Logger::TYPE_WARNING:  format.setForeground(Qt::darkYellow);                          break;
+		case Logger::TYPE_ERROR:    format.setForeground(Qt::red);                                 break;
 	}
 	cursor.movePosition(QTextCursor::End);
 	if(cursor.position() != 0)
