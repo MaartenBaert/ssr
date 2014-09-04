@@ -71,51 +71,52 @@
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
-        <source>Channel names are used to identify applications. You only need to change this if you want to record multiple applications at the same time.</source>
+        <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
+If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="72"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="73"/>
         <source>Launch application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="74"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="75"/>
         <source>Command:</source>
         <translation>Comando:</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="76"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="77"/>
         <source>This command will be executed to start the program that should be recorded.</source>
         <translation>Questo comando verrà eseguito per avviare il programma che deve essere registrato.</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="78"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="79"/>
         <source>Working directory:</source>
         <translation>Directory di lavoro:</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="80"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="81"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
         <translation>Il comando verrà eseguito in questa directory. Se si lascia questo vuoto, la directory di lavoro non verrà modificata.</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="82"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="83"/>
         <source>Launch automatically</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="83"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="84"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="85"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="86"/>
         <source>Launch now</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="106"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="107"/>
         <source>Stream settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -134,13 +135,13 @@ you have to start the OpenGL application yourself (the full command, including t
 dovete avviare l&apos;applicazione OpenGL voi stessi (il comando completo, incluse le variabili di ambiente richieste, è indicato nel registro).</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="56"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="57"/>
         <source>Relax shared memory permissions (insecure)</source>
         <translatorcomment>Permessi di memoria condivisa Relax (insicuro)</translatorcomment>
         <translation>Relax shared memory permissions (insecure)</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="57"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="58"/>
         <source>If checked, other users on the same machine will be able to attach to the shared memory that&apos;s used for communication with the OpenGL program.
 This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.
 This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user.</source>
@@ -173,13 +174,13 @@ valori elevati useranno un sacco di memoria!</translation>
 (il nuovo frame). Ciò può essere utile per alcune applicazioni speciali che attingono direttamente sullo schermo.</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="108"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="109"/>
         <source>Limit application frame rate</source>
         <translatorcomment>Limitare Il frame rate dell&apos;applicazione</translatorcomment>
         <translation>Limit application frame rate</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="109"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="110"/>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
@@ -188,7 +189,7 @@ Questo impedisce l&apos;applicazione di sprecare tempo di CPU per i fotogrammi c
 (questo dipende dall&apos;applicazione).</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="118"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="119"/>
         <source>Close</source>
         <translation>Chiudi</translation>
     </message>
@@ -394,7 +395,7 @@ Questo impedisce l&apos;applicazione di sprecare tempo di CPU per i fotogrammi c
         <location filename="../AV/Input/ALSAInput.cpp" line="413"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="248"/>
         <location filename="../AV/Input/JACKInput.cpp" line="286"/>
-        <location filename="../AV/Input/PulseAudioInput.cpp" line="387"/>
+        <location filename="../AV/Input/PulseAudioInput.cpp" line="388"/>
         <location filename="../AV/Input/X11Input.cpp" line="444"/>
         <source>Input thread stopped.</source>
         <translation type="unfinished">Thread d&apos;ingresso fermato.</translation>
@@ -403,7 +404,7 @@ Questo impedisce l&apos;applicazione di sprecare tempo di CPU per i fotogrammi c
         <location filename="../AV/Input/ALSAInput.cpp" line="417"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="252"/>
         <location filename="../AV/Input/JACKInput.cpp" line="290"/>
-        <location filename="../AV/Input/PulseAudioInput.cpp" line="391"/>
+        <location filename="../AV/Input/PulseAudioInput.cpp" line="392"/>
         <location filename="../AV/Input/X11Input.cpp" line="448"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
         <translation type="unfinished">Eccezione &apos;%1&apos; in input thread.</translation>
@@ -412,7 +413,7 @@ Questo impedisce l&apos;applicazione di sprecare tempo di CPU per i fotogrammi c
         <location filename="../AV/Input/ALSAInput.cpp" line="420"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="255"/>
         <location filename="../AV/Input/JACKInput.cpp" line="293"/>
-        <location filename="../AV/Input/PulseAudioInput.cpp" line="394"/>
+        <location filename="../AV/Input/PulseAudioInput.cpp" line="395"/>
         <location filename="../AV/Input/X11Input.cpp" line="451"/>
         <source>Unknown exception in input thread.</source>
         <translation type="unfinished">Eccezione sconosciuta in input thread.</translation>
@@ -574,12 +575,12 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished">Errore: pa_stream_peek non riuscito!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/PulseAudioInput.cpp" line="376"/>
+        <location filename="../AV/Input/PulseAudioInput.cpp" line="377"/>
         <source>Warning: Audio source was suspended. The current segment will be stopped until the source is resumed.</source>
         <translation type="unfinished">Attenzione: sorgente audio è stata sospesa. Il segmento corrente verrà interrotto fino a quando la sorgente viene ripresa.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/PulseAudioInput.cpp" line="381"/>
+        <location filename="../AV/Input/PulseAudioInput.cpp" line="382"/>
         <source>Warning: Stream was moved to a different source.</source>
         <translation type="unfinished">Attenzione: Stream è stato spostato in una fonte diversa.</translation>
     </message>
@@ -677,13 +678,13 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="118"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="121"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
         <translation type="unfinished">Errore: Il codificatore richiede un formato di campione non supportato!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="162"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="183"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="165"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="186"/>
         <source>Error: Encoding of audio frame failed!</source>
         <translation type="unfinished">Errore: Codifica dei frame audio non riuscita!</translation>
     </message>
@@ -801,27 +802,27 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished">Errore: Impossibile scrivere trailer, continua comunque.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="303"/>
+        <location filename="../AV/Output/Muxer.cpp" line="307"/>
         <source>Muxer thread started.</source>
         <translation type="unfinished">Muxer thread avviato.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="357"/>
+        <location filename="../AV/Output/Muxer.cpp" line="369"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
         <translation type="unfinished">Errore: Impossibile scrivere frame per muxer!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="385"/>
+        <location filename="../AV/Output/Muxer.cpp" line="397"/>
         <source>Muxer thread stopped.</source>
         <translation type="unfinished">Muxer thread fermato.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="389"/>
+        <location filename="../AV/Output/Muxer.cpp" line="401"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
         <translation type="unfinished">Eccezione &apos;%1&apos; in muxer thread.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="392"/>
+        <location filename="../AV/Output/Muxer.cpp" line="404"/>
         <source>Unknown exception in muxer thread.</source>
         <translation type="unfinished">Eccezione sconosciuta in muxer thread.</translation>
     </message>
@@ -906,7 +907,7 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="133"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="136"/>
         <source>Error: Encoder requires an unsupported pixel format!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -915,8 +916,8 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="obsolete">Errore: Frequenza fotogrammi Zero!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="195"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="215"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="198"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="218"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation type="unfinished">Errore: Codifica di un fotogramma video non riuscita!</translation>
     </message>
@@ -1143,7 +1144,7 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="158"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="159"/>
         <source>The application could not be launched.</source>
         <translation type="unfinished"></translation>
     </message>

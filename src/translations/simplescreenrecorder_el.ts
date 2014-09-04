@@ -60,7 +60,7 @@
     </message>
     <message>
         <source>Channel names are used to identify applications. You only need to change this if you want to record multiple applications at the same time.</source>
-        <translation>Τα ονόματα καναλιών χρησιμοποιούνται για να αναγνωρίσουν τις εφαρμογές. Χρειάζεται να το αλλάξετε αυτό μόνον αν εγγράφετε πολλαπλές εφαρμογές την ίδια στιγμή.</translation>
+        <translation type="obsolete">Τα ονόματα καναλιών χρησιμοποιούνται για να αναγνωρίσουν τις εφαρμογές. Χρειάζεται να το αλλάξετε αυτό μόνον αν εγγράφετε πολλαπλές εφαρμογές την ίδια στιγμή.</translation>
     </message>
     <message>
         <source>Relax shared memory permissions (insecure)</source>
@@ -122,6 +122,11 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <source>Close</source>
         <translation>Κλείσιμο</translation>
+    </message>
+    <message>
+        <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
+If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

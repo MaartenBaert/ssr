@@ -70,17 +70,22 @@
         <translation>Име на канал:</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to change this if you want to record multiple applications at the same time.</source>
-        <translation>Имената на каналите се използват само за идентифициране на приложенията. Това има нужда да бъде променено, само ако желаете да записвате множество приложения едновременно.</translation>
+        <translation type="obsolete">Имената на каналите се използват само за идентифициране на приложенията. Това има нужда да бъде променено, само ако желаете да записвате множество приложения едновременно.</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="56"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="55"/>
+        <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
+If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/DialogGLInject.cpp" line="57"/>
         <source>Relax shared memory permissions (insecure)</source>
         <translation>Облекчаване правата на споделената памет (несигурно)</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="57"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="58"/>
         <source>If checked, other users on the same machine will be able to attach to the shared memory that&apos;s used for communication with the OpenGL program.
 This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.
 This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user.</source>
@@ -89,57 +94,57 @@ This even applies to users that are logged in remotely (ssh). You should only en
 Това се отнася дори и за отдалечени потребители (вписани чрез ssh). Включете това, само ако трябва да записвате програма, която се изпълнява от името на друг потребител.</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="72"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="73"/>
         <source>Launch application</source>
         <translation>Стартиране на приложение</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="74"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="75"/>
         <source>Command:</source>
         <translation>Команда:</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="76"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="77"/>
         <source>This command will be executed to start the program that should be recorded.</source>
         <translation>Тази команда ще бъде изпълнена за да се пусне приложението, което трябва да се записва.</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="78"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="79"/>
         <source>Working directory:</source>
         <translation>Работна папка:</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="80"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="81"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
         <translation>Командата ще бъде изпълнена в тази папка. Ако оставите това празно, работната папка няма да бъде променена.</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="82"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="83"/>
         <source>Launch automatically</source>
         <translation>Автоматично стартиране</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="83"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="84"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
         <translation>Ако е отметнато, приложението ще бъде стартирано автоматично, веднага щом отидете на страницата за запис. Ако не е отметнато - трябва да го стартирате ръчно.</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="85"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="86"/>
         <source>Launch now</source>
         <translation>Стартиране сега</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="106"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="107"/>
         <source>Stream settings</source>
         <translation>Настройки на излъчване</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="108"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="109"/>
         <source>Limit application frame rate</source>
         <translation>Ограничаване честотата на кадрите</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="109"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="110"/>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
@@ -148,7 +153,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
 (това зависи от приложението).</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="118"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="119"/>
         <source>Close</source>
         <translation>Затваряне</translation>
     </message>
@@ -366,7 +371,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/ALSAInput.cpp" line="413"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="248"/>
         <location filename="../AV/Input/JACKInput.cpp" line="286"/>
-        <location filename="../AV/Input/PulseAudioInput.cpp" line="387"/>
+        <location filename="../AV/Input/PulseAudioInput.cpp" line="388"/>
         <location filename="../AV/Input/X11Input.cpp" line="444"/>
         <source>Input thread stopped.</source>
         <translation>Входящата нишка е спряна.</translation>
@@ -375,7 +380,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/ALSAInput.cpp" line="417"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="252"/>
         <location filename="../AV/Input/JACKInput.cpp" line="290"/>
-        <location filename="../AV/Input/PulseAudioInput.cpp" line="391"/>
+        <location filename="../AV/Input/PulseAudioInput.cpp" line="392"/>
         <location filename="../AV/Input/X11Input.cpp" line="448"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
         <translation>Изключение &apos;%1&apos; във входящата нишка.</translation>
@@ -384,7 +389,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/ALSAInput.cpp" line="420"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="255"/>
         <location filename="../AV/Input/JACKInput.cpp" line="293"/>
-        <location filename="../AV/Input/PulseAudioInput.cpp" line="394"/>
+        <location filename="../AV/Input/PulseAudioInput.cpp" line="395"/>
         <location filename="../AV/Input/X11Input.cpp" line="451"/>
         <source>Unknown exception in input thread.</source>
         <translation>Неизвестно изключение във входящата нишка.</translation>
@@ -517,12 +522,12 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation>Грешка: pa_stream_peek се провали!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/PulseAudioInput.cpp" line="376"/>
+        <location filename="../AV/Input/PulseAudioInput.cpp" line="377"/>
         <source>Warning: Audio source was suspended. The current segment will be stopped until the source is resumed.</source>
         <translation>Внимание: Аудио източникът беше подтиснат. Текущият отрязък ще бъде спестен докато източника е възстановен.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/PulseAudioInput.cpp" line="381"/>
+        <location filename="../AV/Input/PulseAudioInput.cpp" line="382"/>
         <source>Warning: Stream was moved to a different source.</source>
         <translation>Внимание: Потокът е преместен на различен източник.</translation>
     </message>
@@ -741,13 +746,13 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation>Грешка: Честотата на дискретизация е нула.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="118"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="121"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="162"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="183"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="165"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="186"/>
         <source>Error: Encoding of audio frame failed!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -874,27 +879,27 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation>Внимание: Този кодек се счита за експериментален от libav/ffmpeg.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="303"/>
+        <location filename="../AV/Output/Muxer.cpp" line="307"/>
         <source>Muxer thread started.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="357"/>
+        <location filename="../AV/Output/Muxer.cpp" line="369"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="385"/>
+        <location filename="../AV/Output/Muxer.cpp" line="397"/>
         <source>Muxer thread stopped.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="389"/>
+        <location filename="../AV/Output/Muxer.cpp" line="401"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="392"/>
+        <location filename="../AV/Output/Muxer.cpp" line="404"/>
         <source>Unknown exception in muxer thread.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -979,13 +984,13 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation>Грешка: Кадровата честота е нула!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="133"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="136"/>
         <source>Error: Encoder requires an unsupported pixel format!</source>
         <translation>Грешка: Програмата за кодиране изисква неподдържан формат на пикселите!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="195"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="215"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="198"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="218"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1047,7 +1052,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation>Функционалности на процесора</translation>
     </message>
     <message>
-        <location filename="../GUI/DialogGLInject.cpp" line="158"/>
+        <location filename="../GUI/DialogGLInject.cpp" line="159"/>
         <source>The application could not be launched.</source>
         <translation>Приложението не може да бъде стартирано.</translation>
     </message>
