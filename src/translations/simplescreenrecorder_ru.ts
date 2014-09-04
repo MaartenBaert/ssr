@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="uk_UA">
+<TS version="2.0" language="ru_RU">
 <context>
     <name>DialogAbout</name>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="79"/>
         <source>About SimpleScreenRecorder</source>
-        <translation>Про SimpleScreenRecorder</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="88"/>
         <source>For more information:</source>
-        <translation>Більше інформації:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="89"/>
         <source>The source code of this program can be found at:</source>
-        <translation>Сирцевий код цієї програми можна знайти тут:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="90"/>
         <source>This program uses:</source>
-        <translation>Ця програма використовує:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="91"/>
         <source>%1 for the graphical user interface</source>
-        <translation>%1 для графічного інтерфейсу</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="92"/>
         <source>%1 or %2 (depending on your distribution) for video/audio encoding</source>
-        <translation>%1 чи %2 (в залежності від вашого дистрибутиву) для кодування відео/аудіо</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="93"/>
         <source>%1 for hooking system functions for OpenGL recording</source>
-        <translation>%1 для під&apos;єднання системних функцій для запису OpenGL</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -44,7 +44,7 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="34"/>
         <source>OpenGL Settings</source>
-        <translation>Налаштування OpenGL</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="37"/>
@@ -53,25 +53,17 @@
 &lt;p&gt;Another warning: OpenGL recording is experimental, it may not work or even crash the program you are recording. If you are worried about losing program data, make a backup first!&lt;/p&gt;
 
 &lt;p&gt;If you want to record Steam games, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;read this first&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Увага: запис OpenGL працює завдяки інжектуванню бібліотеки в програму, запис якої ведеться. Ця бібліотека перевизначає деякі системні функції для захоплення кадрів перш ніж вони відображаються на екрані. Якщо ви ведете запис гри, що виявляє спроби хакінґу на стороні клієнта, то це (теоретично) може призвести до того, що ви будете забаненні. Переконайтеся в тому, що це не призведе до таких наслідків *до* того, як вести запис. Ви попередженні :).&lt;/p&gt;
-
-&lt;p&gt;Оскільки запис OpenGL на даному етапі є експериментальним, це може не працювати як слід або навіть призвести до падіння програми, запис якої ведеться. Не буде зайвим зробити резервну копію даних програми, запис якої ведеться, якщо ці данні важливі для вас.&lt;/p&gt;
-
-&lt;p&gt;Якщо ви хочете вести запис ігор Steam, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;прочитайте важливу інформацію&lt;/a&gt;.&lt;/p&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
         <source>Choose channel</source>
-        <translation>Оберіть канал</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="53"/>
         <source>Channel name:</source>
-        <translation>Назва каналу:</translation>
-    </message>
-    <message>
-        <source>Channel names are used to identify applications. You only need to change this if you want to record multiple applications at the same time.</source>
-        <translation type="obsolete">Назви каналів використовуються для ідентифікації програм. Єдине, коли варто змінювати назву за замовченням, це у випадку коли ведеться запис одночасно декількох програм.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
@@ -82,80 +74,76 @@ If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will 
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="57"/>
         <source>Relax shared memory permissions (insecure)</source>
-        <translation>Послабити дозвіл на поділювану пам&apos;ять (небезпечно)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="58"/>
         <source>If checked, other users on the same machine will be able to attach to the shared memory that&apos;s used for communication with the OpenGL program.
 This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.
 This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user.</source>
-        <translation>Якщо встановлено, інші користувачі на цій машині зможуть підключитися до поділюваної пам&apos;яті, що використовується для комунікації з OpenGL програмою.
-Це означає, що інші користувачі (теоретично) можуть бачити те, запис чого ведеться, змінювати  та вставляти кадри, або просто перешкоджати запису.
-Це стосується навіть ти користувачів, що підключенні по ssh. Вмикайте цю опцію тільки для запису програми, що працює під іншим користувачем.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="73"/>
         <source>Launch application</source>
-        <translation>Запустити програму</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="75"/>
         <source>Command:</source>
-        <translation>Команда:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="77"/>
         <source>This command will be executed to start the program that should be recorded.</source>
-        <translation>Ця команда буде використана для запуску програми, запис якої ведеться.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="79"/>
         <source>Working directory:</source>
-        <translation>Робоча директорія:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="81"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
-        <translation>Ця команда буде використана для цієї директорії. Якщо залишити порожнім, робоча директорія залишиться незмінною.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
         <source>Launch automatically</source>
-        <translation>Запустити автоматично</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="84"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
-        <translation>Якщо встановлено, програма буде запущена автоматично одразу після переходу до меню запису. Якщо не встановлено, ви повинні запустити його вручну.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="86"/>
         <source>Launch now</source>
-        <translation>Запустити зараз</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="107"/>
         <source>Stream settings</source>
-        <translation>Налаштування стріму</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="109"/>
         <source>Limit application frame rate</source>
-        <translation>Обмежити частоту кадрів</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="110"/>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
-        <translation>Якщо встановлено, інжектована бібліотека сповільнить програму, в результаті частота кадрів не буде перевищувати частоту кадрів запису.
-Це призведе до припинення витрачання процесорного часу для кадрів, що не записуються, та іноді, отримання більш плавного відео
-(залежить від програми).</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="119"/>
         <source>Close</source>
-        <translation>Закрити</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1074,15 +1062,13 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
 
 You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation>SimpleScreenRecorder виявив, що ви використовуєте пропріетарний драйвер NVIDIA з включеним flipping. Це може призвести до збоїв під час запису. Рекомендовано відключити flipping. Ви хочете, щоб SimpleScreenRecorder зробив це для вас?
-
-Ви також можете змінити цю опцію вручну в контрольній панелі NVIDIA.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="90"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation>Я не можу відключити flipping з деякої причини - вибачте! Спробуйте відключити його в контрольній панелі NVIDIA.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1090,12 +1076,12 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageDone.cpp" line="29"/>
         <source>The recording has been saved. You can edit the video now, or re-encode it with better settings to make the file smaller (the default settings are optimized for quality and speed, not file size).</source>
-        <translation>Запис збережено. Ви можете відредагувати відео зараз або перекодувати його з кращим налаштуванням для меншого розміру файла (налаштування за замовчуванням оптимізовані для якості й швидкості, а не розміру файла).</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="32"/>
         <source>Back to the start screen</source>
-        <translation>Повернутися до стартового екрану</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1103,256 +1089,247 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="112"/>
         <source>Video input</source>
-        <translation>Відео вхід</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="115"/>
         <source>Record the entire screen</source>
-        <translation>Запис всього екрану</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="116"/>
         <source>Record a fixed rectangle</source>
-        <translation>Запис фіксованого прямокутника</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="117"/>
         <source>Follow the cursor</source>
-        <translation>Слідувати за курсором</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="118"/>
         <source>Record OpenGL (experimental)</source>
-        <translation>Запис OpenGL (експериментально)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="124"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
-        <translation>Обрати монітор для запису у багато-моніторній конфігурації.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="125"/>
         <source>Select rectangle...</source>
-        <translation>Виділення прямокутника...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="126"/>
         <source>Use the mouse to select the recorded rectangle.</source>
-        <translation>Використовувати мишу для виділення прямокутника для запису.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="127"/>
         <source>Select window...</source>
-        <translation>Обрати вікно...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="128"/>
         <source>Use the mouse to select a window to record.
 Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only
 the client area of the window will be recorded.</source>
-        <translation>Використовувати мишу для обрання вікна для запису.
-Підказка: якщо ви клікнете по декорації (кордону) вікна, запис буде вестися разом з нею.
-В іншому випадку буде вестися запис тільки вмісту вікна.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="131"/>
         <source>OpenGL settings...</source>
-        <translation>Налаштування OpenGL...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="132"/>
         <source>Change the settings for OpenGL recording.</source>
-        <translation>Змінити налаштування запису OpenGL.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="133"/>
         <source>Left:</source>
-        <translation>X:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="137"/>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation>Координата X верхнього лівого кута прямокутника.
-Підказка: ви також можете змінити це значення колесом миші або клавішами верх/низ.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="139"/>
         <source>Top:</source>
-        <translation>Y:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="143"/>
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation>Координата Y верхнього лівого кута прямокутника.
-Підказка: ви також можете змінити це значення колесом миші або клавішами верх/низ.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="145"/>
         <source>Width:</source>
-        <translation>Ширина:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="149"/>
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation>Ширина прямокутника.
-Підказка: ви також можете змінити це значення колесом миші або клавішами верх/низ.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="151"/>
         <source>Height:</source>
-        <translation>Висота:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="155"/>
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation>Висота прямокутника.
-Підказка: ви також можете змінити це значення колесом миші або клавішами верх/низ.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="157"/>
         <source>Frame rate:</source>
-        <translation>Частота кадрів:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="161"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
-        <translation>Число кадрів в секунду фінального відео. Чим більше частота кадрів, тим більше використовується процесорний час.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="162"/>
         <source>Scale video</source>
-        <translation>Масштабування відео</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="163"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
-        <translation>Масштабування відео використовує більше процесорного часу, але якщо масштабованне відео менше, тим менше часу потребується для його кодування.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="164"/>
         <source>Scaled width:</source>
-        <translation>Масштабування ширини:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="168"/>
         <source>Scaled height:</source>
-        <translation>Масштабування висоти:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="172"/>
         <source>Record cursor</source>
-        <translation>Запис курсора</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="242"/>
         <source>Audio input</source>
-        <translation>Аудіо вхід</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="244"/>
         <source>Record audio</source>
-        <translation>Запис аудіо</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="245"/>
         <source>Backend:</source>
-        <translation>Бекенд:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="254"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
-        <translation>Аудіо бекенд, що буде використовуватися для запису.
-ALSA бекенд також працює на системах, що використовують PulseAudio, але краще використовувати на таких системах безпосередньо бекенд PulseAudio.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="256"/>
         <location filename="../GUI/PageInput.cpp" line="264"/>
         <source>Source:</source>
-        <translation>Джерело:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="259"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
-        <translation>Джерело ALSA для запису.
-За замовчуванням звичайно оптимальне джерело. Інші джерела можуть дозволити запис декількох програм в той же час, але це як правило менш надійно.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="261"/>
         <location filename="../GUI/PageInput.cpp" line="269"/>
         <source>Refresh</source>
-        <translation>Оновити</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="262"/>
         <source>Refreshes the list of ALSA sources.</source>
-        <translation>Оновити список джерел ALSA.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="267"/>
         <source>The PulseAudio source that will be used for recording.
 A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
         <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
-        <translation>Джерело PulseAudio, що буде використовуватися для запису.
-&apos;Monitor&apos; це джерело, що використовується для запису аудіо з інших програм.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="270"/>
         <source>Refreshes the list of PulseAudio sources.</source>
-        <translation>Оновити список джерел PulseAudio.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="273"/>
         <source>Record system microphone</source>
-        <translation>Записувати системний мікрофон</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation>Якщо встановлено, порти будуть автоматично підключені до системних портів захоплення.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>Record system speakers</source>
-        <translation>Записувати системні динамікі</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation>Якщо встановлено, порти будуть автоматично підключені до будь-чого, що підключено до системних портів програвання.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="311"/>
         <source>Back</source>
-        <translation>Повернутися</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
         <source>Continue</source>
-        <translation>Продовжити</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="672"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation>Всі екрани: %1x%2</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="676"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation>Екран %1: %2x%3 на %4,%5</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="838"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
-        <translation>Екран %1</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1365,71 +1342,70 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
         <location filename="../GUI/PageOutput.cpp" line="126"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation>%1 файлів</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="93"/>
         <location filename="../GUI/PageOutput.cpp" line="99"/>
         <location filename="../GUI/PageOutput.cpp" line="106"/>
         <source>Other...</source>
-        <translation>Інше...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="105"/>
         <source>Uncompressed</source>
-        <translation>Без стиснення</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="160"/>
         <source>Error: Could not find any suitable container in libavformat!</source>
-        <translation>Помилка: Не вдалося знайти жоден відповідний контейнер в libavformat!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="164"/>
         <source>Error: Could not find any suitable video codec in libavcodec!</source>
-        <translation>Помилка: Не вдалося знайти жоден відповідний відео кодек в libavcodec!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="168"/>
         <source>Error: Could not find any suitable audio codec in libavcodec!</source>
-        <translation>Помилка: Не вдалося знайти жоден відповідний аудіо кодек в libavcodec!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="174"/>
         <source>File</source>
-        <translation>Файл</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="176"/>
         <source>Save as:</source>
-        <translation>Зберегти як:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="178"/>
         <source>The recording will be saved to this location.</source>
-        <translation>Запис буде збережено в це розташування.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="179"/>
         <source>Browse...</source>
-        <translation>Обрати...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="180"/>
         <source>Separate file per segment</source>
-        <translation>Розділити файл на частини</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="181"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation>Якщо встановлено, окремий відео файл буде створено щоразу, коли запис встановлюється на паузу та продовження запису.
-Якщо оригінальна назва файлу є &apos;test.mkv&apos;, то частини будуть збережені як &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="183"/>
         <source>Container:</source>
-        <translation>Контейнер:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="191"/>
@@ -1442,36 +1418,28 @@ Note that not all codecs are supported by all containers, and that not all media
    WebM is supported by default in Firefox, Chrome and Opera, and plugins are available for Internet Explorer and Safari.
    It supports only VP8 and Vorbis.
 - OGG supports only Theora and Vorbis.</source>
-        <translation>Контейнер (формат файлу), що буде використано для збереження запису.
-Майте на увазі, що не всі кодеки підтримуються усіма контейнерами та не всі медіа-програвачі відтворюють всі формати.
-- Matroska (MKV) підтримує всі кодеки, але менш відомий.
-- MP4 є найбільш відомим форматом та буде програватися практично на будь-якому сучасному медіа-програвачі, але підтримує тільки відео в форматі H.264
-   (також більшість медіа-програвачів підтримує тільки AAC аудіо).
-- WebM призначений для інтегрування відео в веб-сайти (з HTML5 &lt;video&gt; тегом). Цей формат був створений Google.
-   WebM підтримується за замовчуванням в Firefox, Chrome та Opera, також існують плагіни до Internet Explorer and Safari.
-   Він підтримує тільки VP8 та Vorbis.
-- OGG підтримує тільки Theora та Vorbis.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="200"/>
         <source>Container name:</source>
-        <translation>Назва контейнеру:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="206"/>
         <source>For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.</source>
-        <translation>Для просунутих користувачів. Ви можете використовувати будь-який libav / FFmpeg відео кодек, але багато з них не є корисними або можуть не працювати.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="222"/>
         <source>Video</source>
-        <translation>Відео</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="224"/>
         <location filename="../GUI/PageOutput.cpp" line="304"/>
         <source>Codec:</source>
-        <translation>Кодек:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="229"/>
@@ -1479,100 +1447,93 @@ Note that not all codecs are supported by all containers, and that not all media
 - H.264 (libx264) is by far the best codec - high quality and very fast.
 - VP8 (libvpx) is quite good but also quite slow.
 - Theora (libtheora) isn&apos;t really recommended because the quality isn&apos;t very good.</source>
-        <translation>Кодек що буде використано для стиснення відео стріму.
-- H.264 (libx264) це безумовно найкращий кодек - висока якість та дуже швидкий.
-- VP8 (libvpx) працює досить добре, але також досить повільно.
-- Theora (libtheora) насправді не рекомендується, з причини не дуже гарної якості.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="233"/>
         <location filename="../GUI/PageOutput.cpp" line="317"/>
         <source>Codec name:</source>
-        <translation>Назва кодеку:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="239"/>
         <source>For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.</source>
-        <translation>Для просунутих користувачів. Ви можете використовувати будь-який libav / FFmpeg відео кодек, але багато з них не є корисними або можуть не працювати.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="240"/>
         <location filename="../GUI/PageOutput.cpp" line="324"/>
         <source>Bit rate (in kbps):</source>
-        <translation>Бітрейт (в kbps):</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="242"/>
         <source>The video bit rate (in kilobit per second). A higher value means a higher quality.
 If you have no idea where to start, try 5000 and change it if needed.</source>
-        <translation>Бітрейт відео (у кілобітах в секунду). Більше значення значить вищу якість.
-Якщо ви не знаєте з якого значення почати, спробуйте 5000 та змінюйте за необхідністю.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="244"/>
         <source>Constant rate factor:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="249"/>
         <source>This setting changes the video quality. A lower value means a higher quality.
 The allowed range is 0-51 (0 means lossless, the default is 23).</source>
-        <translation>Це налаштування змінює якість відео. Менше значення значить вищу якість.
-Допустимий діапазон: 0-51 (0 означає без втрат, значення за замовчуванням - 23).</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="255"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="260"/>
         <source>The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),
 but results in larger files. The quality shouldn&apos;t be affected too much.</source>
-        <translation>Швидкість кодування. При високій швидкості використовується менше ресурсів процесора,
-але призводить до більшого розміру файлів. На якість це майже не впливає.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="262"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="264"/>
         <source>fastest</source>
-        <translation>швидше</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="269"/>
         <source>slowest</source>
-        <translation>повільніше</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="270"/>
         <source>The encoding speed. A higher value uses *less* CPU time. (I didn&apos;t choose the name, this is the name
 used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
-        <translation>Швидкість кодування. Вище значення, використовує *менше * процесорного часу,
-також вище значення призводить до меншої якості відео, якщо ви не збільшите також бітрейт.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="272"/>
         <location filename="../GUI/PageOutput.cpp" line="327"/>
         <source>Custom options:</source>
-        <translation>Додаткові опції:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="274"/>
         <location filename="../GUI/PageOutput.cpp" line="329"/>
         <source>Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)</source>
-        <translation>Додаткові опції кодека розділенні комами (наприклад: опція1=значення1,опція2=значення2,опція3=значення3)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="275"/>
         <source>Allow frame skipping</source>
-        <translation>Дозволити пропускання кадрів</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="276"/>
@@ -1580,15 +1541,12 @@ used by the VP8 encoder). Higher values result in lower quality video, unless yo
 lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.
 This increases the file size and CPU usage, but reduces the latency for live streams in some cases.
 It shouldn&apos;t affect the appearance of the video.</source>
-        <translation>Якщо встановлено, відеокодер буде пропускати кадри якщо вхідна частота кадрів
-менше ніж вихідна частота кадрів. Якщо не встановлено, вхідні кадри будуть продубльовані для заповнення порожнеч.
-Це збільшить розмір файлу та використання процесору, але в деяких випадках зменшує затримку при live-стрімах. 
-Це не повинно вплинути на якість відео.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="302"/>
         <source>Audio</source>
-        <translation>Аудіо</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="309"/>
@@ -1600,60 +1558,54 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
 - AAC is a good codec, but the implementations used here (libvo_aacenc or the experimental ffmpeg aac encoder)
    are pretty bad. Only use it if you have no other choice.
 - Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it&apos;s very fast.</source>
-        <translation>Кодек, який буде використовуватися для стиснення аудіо стріму. Ви не повинні надто турбуватися про
-це, так як розмір звукових даних, як правило, занадто мала порівняно з розміром відеоданих.
-Також, якщо ви записуєте лише ваш власний голос (тобто не музику), якість не матиме великого значення.
-- Vorbis (libvorbis) чудовий, цей кодек є рекомендованим.
-- AAC це добрий кодек, але імплементації, які тут використовуються (libvo_aacenc або експериментальний ffmpeg aac кодер)
-   дещо жахливі. Використовуйте їх лише за відсутності альтернативи.
-- Без стиснення буде просто зберігати звукові дані без їх стиснення. Файл буде досить великим, але це дуже швидко.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="323"/>
         <source>For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work.</source>
-        <translation>Для просунутих користувачів. Ви можете використовувати будь-який libav / FFmpeg відео кодек, але багато з них не є корисними або можуть не працювати.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="326"/>
         <source>The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.</source>
-        <translation>Бітрейт аудіо (у кілобітах в секунду). Більше значення значить вищу якість. Типове значення - 128.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="343"/>
         <source>Back</source>
-        <translation>Повернутися</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="344"/>
         <source>Continue</source>
-        <translation>Продовжити</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="563"/>
         <location filename="../GUI/PageOutput.cpp" line="571"/>
         <source>not installed</source>
-        <translation>не встановлено</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="565"/>
         <location filename="../GUI/PageOutput.cpp" line="573"/>
         <source>not supported by container</source>
-        <translation>не підтримується контейнером</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="616"/>
         <source>Save recording as</source>
-        <translation>Зберегти запис як</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="656"/>
         <source>You did not select an output file!</source>
-        <translation>Ви не обрали вихідний файл!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="661"/>
         <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
-        <translation>Файл %1 вже існує. Ви впевнені в тому, що хочете перезаписати його?</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1661,267 +1613,263 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageRecord.cpp" line="146"/>
         <source>Recording</source>
-        <translation>Запис</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="150"/>
         <source>Enable recording hotkey</source>
-        <translation>Включити хоткей запису</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="151"/>
         <source>Enable sound notifications</source>
-        <translation>Включити звукові повідомлення</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="152"/>
         <source>Hotkey:</source>
-        <translation>Хоткей:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="153"/>
         <source>Ctrl +</source>
-        <translation>Ctrl +</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="154"/>
         <source>Shift +</source>
-        <translation>Shift +</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="155"/>
         <source>Alt +</source>
-        <translation>Alt +</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="156"/>
         <source>Super +</source>
-        <translation>Super +</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="158"/>
         <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
 The program that you are recording will not receive the key press.</source>
-        <translation>Клавіша, яку ви повинні натиснути (в поєднанні з даними модифікаторами), щоб почати або призупинити запис.
-Програма, запис якої ведеться не отримає натискання клавіші.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="198"/>
         <source>Information</source>
-        <translation>Інформація</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="200"/>
         <source>Total time:</source>
-        <translation>Загальний час:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="202"/>
         <source>FPS in:</source>
-        <translation>FPS вхідний:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="204"/>
         <source>FPS out:</source>
-        <translation>FPS вихідний:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="206"/>
         <source>Size in:</source>
-        <translation>Вхідний розмір:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="208"/>
         <source>Size out:</source>
-        <translation>Вихідний розмір:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="210"/>
         <source>File name:</source>
-        <translation>Назва файлу:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="213"/>
         <source>File size:</source>
-        <translation>Розмір файлу:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="215"/>
         <source>Bit rate:</source>
-        <translation>Бітрейт:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="238"/>
         <source>Preview</source>
-        <translation>Передперегляд</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="242"/>
         <source>Preview frame rate:</source>
-        <translation>Частота кадрів передперегляду:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="246"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
-        <translation>Примітка: Передперегляд потребує додатковий процесорний час (особливо при високій частоті кадрів).</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="295"/>
         <source>Log</source>
-        <translation>Лог</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="310"/>
         <location filename="../GUI/PageRecord.cpp" line="318"/>
         <source>Cancel recording</source>
-        <translation>Скасувати запис</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="311"/>
         <location filename="../GUI/PageRecord.cpp" line="320"/>
         <source>Save recording</source>
-        <translation>Зберегти запис</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="323"/>
         <source>Quit</source>
-        <translation>Вихід</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="367"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
-        <translation>Ви ще не зберегли поточний запис, якщо ви вийдете він буде скасований.
-Ви впевнені, що хочете вийти?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="526"/>
         <source>Starting page ...</source>
-        <translation>Сторінка запускається...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="547"/>
         <location filename="../GUI/PageRecord.cpp" line="689"/>
         <location filename="../GUI/PageRecord.cpp" line="774"/>
         <source>Error: Something went wrong during initialization.</source>
-        <translation>Помилка: Щось пішло не так під час ініціалізації.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="554"/>
         <source>Started page.</source>
-        <translation>Сторінка запущена.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="578"/>
         <source>Stopping page ...</source>
-        <translation>Сторінка зупиняється...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="603"/>
         <source>Stopped page.</source>
-        <translation>Сторінка зупинена.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="628"/>
         <source>Starting output ...</source>
-        <translation>Вихід запускається...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="639"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
-        <translation>Помилка: Не вдалося отримати розмір OpenGL програми, тому що GLInject вхід не був створений.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="644"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
-        <translation>Помилка: не вдалося отримати розмір OpenGL програми. Одне з двох, або програма не стартувала коректно, або програма ще не створила OpenGL вікно. Якщо ви хочете почати запис ще до того, як програма почне роботу, ви повинні включити масштабування та ввести розмір відео вручну.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="680"/>
         <source>Started output.</source>
-        <translation>Вихід запущено.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="700"/>
         <source>Stopping output ...</source>
-        <translation>Вихід зупиняється...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="718"/>
         <source>Stopped output.</source>
-        <translation>Вихід зупинено.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="745"/>
         <source>Starting input ...</source>
-        <translation>Вхід запускається...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="750"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
-        <translation>Помилка: Не вдалося запустити вхід GLInject бо він не був створений.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="769"/>
         <source>Started input.</source>
-        <translation>Вхід запущено.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="794"/>
         <source>Stopping input ...</source>
-        <translation>Вхід зупиняється...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="805"/>
         <source>Stopped input.</source>
-        <translation>Вхід зупинено.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="821"/>
         <source>Encoding remaining data ...</source>
-        <translation>Кодування решти даних...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="893"/>
         <location filename="../GUI/PageRecord.cpp" line="908"/>
         <source>Pause recording</source>
-        <translation>Призупинити запис (пауза)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="897"/>
         <location filename="../GUI/PageRecord.cpp" line="901"/>
         <location filename="../GUI/PageRecord.cpp" line="911"/>
         <source>Start recording</source>
-        <translation>Почати запис</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="919"/>
         <source>Stop preview</source>
-        <translation>Зупинити передперегляд</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="922"/>
         <source>Start preview</source>
-        <translation>Почати передперегляд</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="951"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translation>Помилка: Щось пішло не так під час створення synth.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="991"/>
         <source>Are you sure that you want to cancel this recording?</source>
-        <translation>Ви впевнені, що хочете скасувати цей запис?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1006"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
-        <translation>Ви ще нічого не записали, немає чого зберегти.
-
-Кнопка старту зверху ;).</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1934,22 +1882,17 @@ The start button is at the top ;).</source>
 
 &lt;p&gt;For more information:&lt;br&gt;
 %1&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Ласкаво просимо до SimpleScreenRecorder!&lt;/p&gt;
-
-&lt;p&gt;Незважаючи на назву, ця програма насправді має багато опцій. Не хвилюйтесь з цього приводу, насправді є тільки дві речі, які ви повинні знати. По-перше, типові налаштування як правило прийнятні. Якщо ви не знаєте, що робить та чи інша опція, просто залиште типові стандартні налаштування. По-друге, майже всі налаштування мають спливаючі підказки. Просто наведіть курсор на щось та дізнайтеся, що ця опція значить.&lt;/p&gt;
-
-&lt;p&gt;Більше інформації:&lt;br&gt;
-%1&lt;/p&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="45"/>
         <source>About SimpleScreenRecorder</source>
-        <translation>Про SimpleScreenRecorder</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="46"/>
         <source>Continue</source>
-        <translation>Продовжити</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1957,67 +1900,67 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="28"/>
         <source>Profile</source>
-        <translation>Профіль</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="37"/>
         <source>Save</source>
-        <translation>Зберегти</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="38"/>
         <source>Save the current settings to this profile.</source>
-        <translation>Зберегти поточні налаштування для цього профілю.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="39"/>
         <source>New</source>
-        <translation>Новий</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="40"/>
         <source>Create a new profile with the current settings.</source>
-        <translation>Створити новий профіль з поточним налаштуванням.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="41"/>
         <source>Delete</source>
-        <translation>Видалити</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="42"/>
         <source>Delete this profile.</source>
-        <translation>Видалити цей профіль.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation>(немає)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
         <source>Error: Can&apos;t load profile!</source>
-        <translation>Помилка: Не можна завантажити профіль!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="147"/>
         <source>Are you sure that you want to overwrite this profile?</source>
-        <translation>Ви впевнені, що хочете перезаписати цей профіль?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="159"/>
         <source>Enter a name for the new profile:</source>
-        <translation>Введіть назву нового профілю:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
-        <translation>Профіль з такою назвою вже існує. Ви впевнені в тому, що хочете замінити його?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="181"/>
         <source>Are you sure that you want to delete this profile?</source>
-        <translation>Ви впевнені, що хочете видалити цей профіль?</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2026,33 +1969,33 @@ The start button is at the top ;).</source>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;Скасувати</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation>&amp;Так</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation>Так, завжди</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation>&amp;Ні</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation>Ні, ніколи</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2060,27 +2003,27 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../AV/Output/SyncDiagram.cpp" line="49"/>
         <source>Synchronization Diagram</source>
-        <translation>Діаграма Синхронізації</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="199"/>
         <source>Video in</source>
-        <translation>Відео вхід</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="200"/>
         <source>Audio in</source>
-        <translation>Аудіо вхід</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="201"/>
         <source>Video out</source>
-        <translation>Відео вихід</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="202"/>
         <source>Audio out</source>
-        <translation>Аудіо вихід</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
