@@ -30,7 +30,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 SSRVideoStreamReader::SSRVideoStreamReader(const std::string& channel, const SSRVideoStream& stream) {
 
 	m_stream = stream;
-	m_channel_directory = "/dev/shm/ssr-" + channel;
+	m_channel_directory = "/dev/shm/ssr-" + ((channel.empty())? "channel-" + GetUserName() : channel);
 	m_filename_main = m_channel_directory + "/video-" + stream.m_stream_name;
 	m_page_size = sysconf(_SC_PAGE_SIZE);
 

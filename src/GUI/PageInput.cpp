@@ -392,7 +392,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	SetJackConnectSystemCapture(settings->value("input/audio_jack_connect_system_capture", true).toBool());
 	SetJackConnectSystemPlayback(settings->value("input/audio_jack_connect_system_playback", false).toBool());
 #endif
-	SetGLInjectChannel(settings->value("input/glinject_channel", "channel-" + QString::fromStdString(GetUserName())).toString());
+	SetGLInjectChannel(settings->value("input/glinject_channel", QString()).toString());
 	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
 	SetGLInjectCommand(settings->value("input/glinject_command", "").toString());
 	SetGLInjectWorkingDirectory(settings->value("input/glinject_working_directory", "").toString());

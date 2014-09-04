@@ -60,7 +60,7 @@ static bool SSRVideoStreamParse(const std::string& filename, SSRVideoStream* str
 
 SSRVideoStreamWatcher::SSRVideoStreamWatcher(const std::string& channel, bool relax_permissions) {
 
-	m_channel_directory = "/dev/shm/ssr-" + channel;
+	m_channel_directory = "/dev/shm/ssr-" + ((channel.empty())? "channel-" + GetUserName() : channel);
 	m_relax_permissions = relax_permissions;
 
 	m_fd_notify = -1;
