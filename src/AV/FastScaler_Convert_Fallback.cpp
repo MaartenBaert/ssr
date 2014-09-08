@@ -20,6 +20,23 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "FastScaler_Convert.h"
 
+
+/*
+Color space standards are a mess.
+
+==== BT.601 ====
+Y =  16 + round((  66 * R +  129 * G +   25 * B) / 256)
+U = 128 + round(( -38 * R +  -74 * G +  112 * B) / 256)
+V = 128 + round(( 112 * R +  -94 * G +  -18 * B) / 256)
+
+==== BT.709 ====
+Y =  16 + round((  47 * R +  157 * G +   16 * B) / 256)
+U = 128 + round(( -26 * R +  -86 * G +  112 * B) / 256)
+V = 128 + round(( 112 * R + -102 * G +  -10 * B) / 256)
+
+The convertor below is currently hard-coded for BT.709.
+*/
+
 /*
 ==== Fallback BGRA-to-YUV420 Converter ====
 
@@ -44,16 +61,16 @@ void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const uint8_t*
 			int r[4] = {(int) ((c[0] >> 16) & 0xff), (int) ((c[1] >> 16) & 0xff), (int) ((c[2] >> 16) & 0xff), (int) ((c[3] >> 16) & 0xff)};
 			int g[4] = {(int) ((c[0] >>  8) & 0xff), (int) ((c[1] >>  8) & 0xff), (int) ((c[2] >>  8) & 0xff), (int) ((c[3] >>  8) & 0xff)};
 			int b[4] = {(int) ((c[0]      ) & 0xff), (int) ((c[1]      ) & 0xff), (int) ((c[2]      ) & 0xff), (int) ((c[3]      ) & 0xff)};
-			yuv_y1[0] = (66 * r[0] + 129 * g[0] + 25 * b[0] + offset_y) >> 8;
-			yuv_y1[1] = (66 * r[1] + 129 * g[1] + 25 * b[1] + offset_y) >> 8;
-			yuv_y2[0] = (66 * r[2] + 129 * g[2] + 25 * b[2] + offset_y) >> 8;
-			yuv_y2[1] = (66 * r[3] + 129 * g[3] + 25 * b[3] + offset_y) >> 8;
+			yuv_y1[0] = (47 * r[0] + 157 * g[0] + 16 * b[0] + offset_y) >> 8;
+			yuv_y1[1] = (47 * r[1] + 157 * g[1] + 16 * b[1] + offset_y) >> 8;
+			yuv_y2[0] = (47 * r[2] + 157 * g[2] + 16 * b[2] + offset_y) >> 8;
+			yuv_y2[1] = (47 * r[3] + 157 * g[3] + 16 * b[3] + offset_y) >> 8;
 			yuv_y1 += 2; yuv_y2 += 2;
 			int sr = r[0] + r[1] + r[2] + r[3];
 			int sg = g[0] + g[1] + g[2] + g[3];
 			int sb = b[0] + b[1] + b[2] + b[3];
-			*yuv_u = (-38 * sr + -74 * sg + 112 * sb + offset_uv) >> 10;
-			*yuv_v = (112 * sr + -94 * sg + -18 * sb + offset_uv) >> 10;
+			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 10;
+			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 10;
 			++yuv_u; ++yuv_v;
 		}
 	}

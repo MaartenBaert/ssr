@@ -139,6 +139,11 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 	stream->codec->sample_aspect_ratio.num = 1;
 	stream->codec->sample_aspect_ratio.den = 1;
 	stream->sample_aspect_ratio = stream->codec->sample_aspect_ratio;
+	stream->codec->color_primaries = AVCOL_PRI_BT709;
+	stream->codec->color_trc = AVCOL_TRC_BT709;
+	stream->codec->colorspace = AVCOL_SPC_BT709;
+	stream->codec->color_range = AVCOL_RANGE_MPEG;
+	stream->codec->chroma_sample_location = AVCHROMA_LOC_CENTER;
 	stream->codec->thread_count = std::max(1, (int) std::thread::hardware_concurrency());
 
 	for(unsigned int i = 0; i < codec_options.size(); ++i) {

@@ -60,14 +60,14 @@ void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 
 	__m128i v_byte1     = _mm_set1_epi32(0x000000ff);
 	__m128i v_byte3     = _mm_set1_epi32(0x00ff0000);
-	__m128i v_mat_yr    = _mm_set1_epi16(66);
-	__m128i v_mat_yg    = _mm_set1_epi16(129);
-	__m128i v_mat_yb    = _mm_set1_epi16(25);
-	__m128i v_mat_ur    = _mm_set1_epi16(-38);
-	__m128i v_mat_ug    = _mm_set1_epi16(-74);
+	__m128i v_mat_yr    = _mm_set1_epi16(47);
+	__m128i v_mat_yg    = _mm_set1_epi16(157);
+	__m128i v_mat_yb    = _mm_set1_epi16(16);
+	__m128i v_mat_ur    = _mm_set1_epi16(-26);
+	__m128i v_mat_ug    = _mm_set1_epi16(-86);
 	__m128i v_mat_ub_vr = _mm_set1_epi16(112);
-	__m128i v_mat_vg    = _mm_set1_epi16(-94);
-	__m128i v_mat_vb    = _mm_set1_epi16(-18);
+	__m128i v_mat_vg    = _mm_set1_epi16(-102);
+	__m128i v_mat_vb    = _mm_set1_epi16(-10);
 	__m128i v_offset_y  = _mm_set1_epi16(128 + (16 << 8));
 	__m128i v_offset_uv = _mm_set1_epi16(128 + (128 << 8));
 	__m128i v_2         = _mm_set1_epi16(2);
@@ -131,16 +131,16 @@ void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 			int r[4] = {(int) ((c[0] >> 16) & 0xff), (int) ((c[1] >> 16) & 0xff), (int) ((c[2] >> 16) & 0xff), (int) ((c[3] >> 16) & 0xff)};
 			int g[4] = {(int) ((c[0] >>  8) & 0xff), (int) ((c[1] >>  8) & 0xff), (int) ((c[2] >>  8) & 0xff), (int) ((c[3] >>  8) & 0xff)};
 			int b[4] = {(int) ((c[0]      ) & 0xff), (int) ((c[1]      ) & 0xff), (int) ((c[2]      ) & 0xff), (int) ((c[3]      ) & 0xff)};
-			yuv_y1[0] = (66 * r[0] + 129 * g[0] + 25 * b[0] + offset_y) >> 8;
-			yuv_y1[1] = (66 * r[1] + 129 * g[1] + 25 * b[1] + offset_y) >> 8;
-			yuv_y2[0] = (66 * r[2] + 129 * g[2] + 25 * b[2] + offset_y) >> 8;
-			yuv_y2[1] = (66 * r[3] + 129 * g[3] + 25 * b[3] + offset_y) >> 8;
+			yuv_y1[0] = (47 * r[0] + 157 * g[0] + 16 * b[0] + offset_y) >> 8;
+			yuv_y1[1] = (47 * r[1] + 157 * g[1] + 16 * b[1] + offset_y) >> 8;
+			yuv_y2[0] = (47 * r[2] + 157 * g[2] + 16 * b[2] + offset_y) >> 8;
+			yuv_y2[1] = (47 * r[3] + 157 * g[3] + 16 * b[3] + offset_y) >> 8;
 			yuv_y1 += 2; yuv_y2 += 2;
 			int sr = r[0] + r[1] + r[2] + r[3];
 			int sg = g[0] + g[1] + g[2] + g[3];
 			int sb = b[0] + b[1] + b[2] + b[3];
-			*yuv_u = (-38 * sr + -74 * sg + 112 * sb + offset_uv) >> 10;
-			*yuv_v = (112 * sr + -94 * sg + -18 * sb + offset_uv) >> 10;
+			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 10;
+			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 10;
 			++yuv_u; ++yuv_v;
 		}
 	}
