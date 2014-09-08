@@ -1100,7 +1100,7 @@ void PageRecord::OnUpdateInformation() {
 
 }
 
-void PageRecord::OnNewLogLine(Logger::enum_type type, QString str) {
+void PageRecord::OnNewLogLine(Logger::enum_type type, QString string) {
 
 	// play sound for errors
 	int64_t time = hrt_time_micro();
@@ -1121,7 +1121,7 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString str) {
 	cursor.movePosition(QTextCursor::End);
 	if(cursor.position() != 0)
 		cursor.insertBlock();
-	cursor.insertText(str, format);
+	cursor.insertText(string, format);
 	if(should_scroll)
 		m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
 
