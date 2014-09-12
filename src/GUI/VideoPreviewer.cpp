@@ -121,12 +121,12 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	// Some applications (e.g. firefox) generate alpha values that are not 0xff.
 	// I'm not sure whether Qt cares about this, apparently Qt 4.8 with the 'native' back-end doesn't,
 	// but I'm not sure about the other back-ends.
-	for(int y = 0; y < image_size.height(); ++y) {
+	/*for(int y = 0; y < image_size.height(); ++y) {
 		uint8_t *row = image_data + image_stride * y;
 		for(int x = 0; x < image_size.width(); ++x) {
 			row[x * 4 + 3] = 0xff; // third byte is alpha because we're little-endian
 		}
-	}
+	}*/
 
 	// store the image
 	SharedLock lock(&m_shared_data);
