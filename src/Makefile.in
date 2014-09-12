@@ -433,8 +433,8 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
-QT4_CFLAGS = @QT4_CFLAGS@
-QT4_LIBS = @QT4_LIBS@
+QT5_CFLAGS = @QT5_CFLAGS@
+QT5_LIBS = @QT5_LIBS@
 RANLIB = @RANLIB@
 RCC = @RCC@
 SED = @SED@
@@ -497,7 +497,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@noinst_LTLIBRARIES = $(am__append_12)
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS = $(QT4_CFLAGS) \
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS = $(QT5_CFLAGS) \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Output -I$(srcdir)/AV \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/common -I$(srcdir)/GUI \
@@ -508,15 +508,17 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_11) \
 @ENABLE_SSRPROGRAM_TRUE@	-DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = \
-@ENABLE_SSRPROGRAM_TRUE@	-pthread
+@ENABLE_SSRPROGRAM_TRUE@	-pthread \
+@ENABLE_SSRPROGRAM_TRUE@	-fPIC
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = \
 @ENABLE_SSRPROGRAM_TRUE@	-pthread \
+@ENABLE_SSRPROGRAM_TRUE@	-fPIC \
 @ENABLE_SSRPROGRAM_TRUE@	-std=c++0x \
 @ENABLE_SSRPROGRAM_TRUE@	-flax-vector-conversions
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread \
-@ENABLE_SSRPROGRAM_TRUE@	$(QT4_LIBS) -lrt -lavformat -lavcodec \
+@ENABLE_SSRPROGRAM_TRUE@	$(QT5_LIBS) -lrt -lavformat -lavcodec \
 @ENABLE_SSRPROGRAM_TRUE@	-lavutil -lswscale -lX11 -lXext \
 @ENABLE_SSRPROGRAM_TRUE@	-lXfixes -lXi -lasound $(am__append_7) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_10)

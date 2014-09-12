@@ -4,21 +4,23 @@ bin_PROGRAMS = simplescreenrecorder
 noinst_LTLIBRARIES =
 
 simplescreenrecorder_CPPFLAGS = \
-	$(QT4_CFLAGS) \
+	$(QT5_CFLAGS) \
 	-I$(srcdir)/AV/Input \
 	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
 	-I$(srcdir)/common \
 	-I$(srcdir)/GUI
 simplescreenrecorder_CFLAGS = \
-	-pthread
+	-pthread \
+	-fPIC
 simplescreenrecorder_CXXFLAGS = \
 	-pthread \
+	-fPIC \
 	-std=c++0x \
 	-flax-vector-conversions
 simplescreenrecorder_LDFLAGS = \
 	-pthread \
-	$(QT4_LIBS) \
+	$(QT5_LIBS) \
 	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lXi -lasound
 
 if ! ENABLE_ASSERT

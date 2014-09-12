@@ -22,6 +22,42 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QtGui>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+
+#include <QtCore/QProcess>
+#include <QtCore/QTimer>
+
+#include <QtWidgets/QAction>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QDesktopWidget>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QProgressDialog>
+#include <QtWidgets/QSystemTrayIcon>
+
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QScrollBar>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QTextBrowser>
+
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QStackedLayout>
+#include <QtWidgets/QVBoxLayout>
+
+#endif
+
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>

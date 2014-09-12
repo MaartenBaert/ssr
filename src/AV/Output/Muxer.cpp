@@ -184,7 +184,7 @@ unsigned int Muxer::GetQueuedPacketCount(unsigned int stream_index) {
 void Muxer::Init() {
 
 	// get the format we want (this is just a pointer, we don't have to free this)
-	AVOutputFormat *format = av_guess_format(m_container_name.toAscii().constData(), NULL, NULL);
+	AVOutputFormat *format = av_guess_format(m_container_name.toUtf8().constData(), NULL, NULL);
 	if(format == NULL) {
 		Logger::LogError("[Muxer::Init] " + Logger::tr("Error: Can't find chosen output format!"));
 		throw LibavException();
@@ -246,7 +246,7 @@ void Muxer::Free() {
 }
 
 AVCodec* Muxer::FindCodec(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
+	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL) {
 		Logger::LogError("[Muxer::FindCodec] " + Logger::tr("Error: Can't find codec!"));
 		throw LibavException();

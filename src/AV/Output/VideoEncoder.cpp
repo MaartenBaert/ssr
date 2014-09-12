@@ -83,7 +83,7 @@ unsigned int VideoEncoder::GetFrameRate() {
 }
 
 bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
+	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL)
 		return false;
 	if(!av_codec_is_encoder(codec))
@@ -167,10 +167,10 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 #endif
 #if !SSR_USE_AVCODEC_PRIVATE_PRESET
 		} else if(key == "preset") {
-			X264Preset(stream->codec, value.toAscii().constData());
+			X264Preset(stream->codec, value.toUtf8().constData());
 #endif
 		} else {
-			av_dict_set(options, key.toAscii().constData(), value.toAscii().constData(), 0);
+			av_dict_set(options, key.toUtf8().constData(), value.toUtf8().constData(), 0);
 		}
 	}
 

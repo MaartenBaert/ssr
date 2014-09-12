@@ -32,15 +32,15 @@ AM_CONDITIONAL([ENABLE_JACK], [test x"$enable_jack" != x"no"])
 
 AM_COND_IF([ENABLE_SSRPROGRAM], [
 	PKG_PROG_PKG_CONFIG
-	PKG_CHECK_MODULES([QT4], [QtCore QtGui >= 4.7.0], [
-		QT_PATH="$( eval $PKG_CONFIG --variable=exec_prefix QtCore )"
-		AC_PATH_PROGS([MOC], [moc-qt4 moc], [moc], [$QT_PATH/bin])
-		AC_PATH_PROGS([RCC], [rcc-qt4 rcc], [rcc], [$QT_PATH/bin])
-		AC_PATH_PROGS([UIC], [uic-qt4 uic], [uic], [$QT_PATH/bin])
-		AC_PATH_PROGS([LUPDATE], [lupdate-qt4 lupdate], [lupdate], [$QT_PATH/bin])
-		AC_PATH_PROGS([LRELEASE], [lrelease-qt4 lrelease], [lrelease], [$QT_PATH/bin])
+	PKG_CHECK_MODULES([QT5], [Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras], [
+		QT_PATH="$( eval $PKG_CONFIG --variable=exec_prefix Qt5Core )"
+		AC_PATH_PROGS([MOC], [moc-qt5 moc], [moc], [$QT_PATH/bin])
+		AC_PATH_PROGS([RCC], [rcc-qt5 rcc], [rcc], [$QT_PATH/bin])
+		AC_PATH_PROGS([UIC], [uic-qt5 uic], [uic], [$QT_PATH/bin])
+		AC_PATH_PROGS([LUPDATE], [lupdate-qt5 lupdate], [lupdate], [$QT_PATH/bin])
+		AC_PATH_PROGS([LRELEASE], [lrelease-qt5 lrelease], [lrelease], [$QT_PATH/bin])
 	], [
-		AC_MSG_ERROR([Qt 4 not found])
+		AC_MSG_ERROR([Qt 5 not found])
 	])
 ])
 

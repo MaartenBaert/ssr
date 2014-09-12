@@ -76,7 +76,7 @@ unsigned int AudioEncoder::GetSampleRate() {
 }
 
 bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
+	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL)
 		return false;
 	if(!av_codec_is_encoder(codec))
@@ -131,7 +131,7 @@ void AudioEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 			stream->codec->flags |= CODEC_FLAG_QSCALE;
 			stream->codec->global_quality = lrint(ParseCodecOptionDouble(key, value, -1.0e6, 1.0e6, FF_QP2LAMBDA));
 		} else {
-			av_dict_set(options, key.toAscii().constData(), value.toAscii().constData(), 0);
+			av_dict_set(options, key.toUtf8().constData(), value.toUtf8().constData(), 0);
 		}
 	}
 

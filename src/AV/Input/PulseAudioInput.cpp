@@ -116,7 +116,7 @@ static void PulseAudioConnectStream(pa_mainloop* mainloop, pa_context* context, 
 	}
 
 	// connect the stream
-	if(pa_stream_connect_record(*stream, source_name.toAscii().constData(), &buffer_attr,
+	if(pa_stream_connect_record(*stream, source_name.toUtf8().constData(), &buffer_attr,
 								(pa_stream_flags_t) (/*PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE |*/ PA_STREAM_ADJUST_LATENCY)) < 0) {
 		Logger::LogError("[PulseAudioConnectStream] " + Logger::tr("Error: Could not connect stream! Reason: %1").arg(pa_strerror(pa_context_errno(context))));
 		throw PulseAudioException();

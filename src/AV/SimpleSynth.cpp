@@ -119,7 +119,7 @@ void SimpleSynth::Init() {
 		}
 
 		// open PCM device
-		if(snd_pcm_open(&m_alsa_pcm, m_sink_name.toAscii().constData(), SND_PCM_STREAM_PLAYBACK, 0) < 0) {
+		if(snd_pcm_open(&m_alsa_pcm, m_sink_name.toUtf8().constData(), SND_PCM_STREAM_PLAYBACK, 0) < 0) {
 			Logger::LogError("[SimpleSynth::Init] " + Logger::tr("Error: Can't open PCM device!"));
 			throw ALSAException();
 		}
