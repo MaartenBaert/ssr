@@ -46,7 +46,7 @@ Muxer::Muxer(const QString& container_name, const QString& output_file) {
 		SharedLock lock(&m_shared_data);
 		lock->m_total_bytes = 0;
 		lock->m_stats_actual_bit_rate = 0.0;
-		lock->m_stats_previous_dts = NOPTS_DOUBLE;
+		lock->m_stats_previous_time = NOPTS_DOUBLE;
 		lock->m_stats_previous_bytes = 0;
 	}
 
@@ -309,83 +309,62 @@ void Muxer::MuxerThread() {
 
 		Logger::LogInfo("[Muxer::MuxerThread] " + Logger::tr("Muxer thread started."));
 
+		double total_time = 0.0;
+
 		// start muxing
 		for( ; ; ) {
 
-			// find the oldest stream that isn't done yet
-			bool wait_for_more = false;
-			unsigned int oldest_stream = INVALID_STREAM;
-			double oldest_dts = std::numeric_limits<double>::max();
+			// get a packet from a stream that isn't done yet
+			std::unique_ptr<AVPacketWrapper> packet;
+			unsigned int current_stream = 0, streams_done = 0;
 			for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 				StreamLock lock(&m_stream_data[i]);
 				if(lock->m_packet_queue.empty()) {
-					if(lock->m_is_done) {
-						continue;
-					} else {
-						wait_for_more = true;
-						break;
-					}
+					if(lock->m_is_done)
+						++streams_done;
 				} else {
-#if SSR_USE_AVSTREAM_PTS_DEPRECATED
-					double dts;
-					if(lock->m_packet_queue.front()->GetPacket()->dts == AV_NOPTS_VALUE) {
-						Logger::LogWarning("[Muxer::MuxerThread] " + Logger::tr("Warning: Packet DTS not set for stream %1!").arg(i));
-						dts = -1.0e6 - (double) lock->m_packet_queue.size(); // last resort: just encode the longest queue first
-					} else {
-						dts = (double) lock->m_packet_queue.front()->GetPacket()->dts * ToDouble(m_format_context->streams[i]->codec->time_base);
-					}
-#else
-					//double pts = (double) av_stream_get_end_pts(m_format_context->streams[i]) * ToDouble(m_format_context->streams[i]->time_base);
-					double dts = ToDouble(m_format_context->streams[i]->pts) * ToDouble(m_format_context->streams[i]->time_base);
-#endif
-					if(dts < oldest_dts) {
-						oldest_stream = i;
-						oldest_dts = dts;
-					}
+					current_stream = i;
+					packet = std::move(lock->m_packet_queue.front());
+					lock->m_packet_queue.pop_front();
+					break;
 				}
 			}
 
+			// if all streams are done, we can stop
+			if(streams_done == m_format_context->nb_streams) {
+				break;
+			}
+
 			// if there is no packet, wait and try again later
-			if(wait_for_more) {
+			if(packet == NULL) {
 				usleep(20000);
 				continue;
 			}
 
-			// if there are no packets left, we're done
-			if(oldest_stream == INVALID_STREAM) {
-				break;
-			}
-
-			// get the packet
-			std::unique_ptr<AVPacketWrapper> packet;
-			{
-				StreamLock lock(&m_stream_data[oldest_stream]);
-				assert(!lock->m_packet_queue.empty());
-				packet = std::move(lock->m_packet_queue.front());
-				lock->m_packet_queue.pop_front();
-			}
-
-			/*qDebug() << "stream" << oldest_stream << "packet --"
-					 << "pts" << (double) packet->GetPacket()->pts * ToDouble(m_format_context->streams[oldest_stream]->codec->time_base)
-					 << "dts" << (double) packet->GetPacket()->dts * ToDouble(m_format_context->streams[oldest_stream]->codec->time_base);*/
+			// try to figure out the time (the exact value is not critical, it's only used for bitrate statistics)
+			AVStream *stream = m_format_context->streams[current_stream];
+			double packet_time = 0.0;
+			if(packet->GetPacket()->dts != AV_NOPTS_VALUE)
+				packet_time = (double) packet->GetPacket()->dts * ToDouble(stream->codec->time_base);
+			else if(packet->GetPacket()->pts != AV_NOPTS_VALUE)
+				packet_time = (double) packet->GetPacket()->pts * ToDouble(stream->codec->time_base);
+			if(packet_time > total_time)
+				total_time = packet_time;
 
 			// prepare packet
-			AVStream *st = m_format_context->streams[oldest_stream];
-			packet->GetPacket()->stream_index = oldest_stream;
+			packet->GetPacket()->stream_index = current_stream;
 #if SSR_USE_AV_PACKET_RESCALE_TS
-			av_packet_rescale_ts(packet->GetPacket(), st->codec->time_base, st->time_base);
+			av_packet_rescale_ts(packet->GetPacket(), stream->codec->time_base, stream->time_base);
 #else
 			if(packet->GetPacket()->pts != (int64_t) AV_NOPTS_VALUE) {
-				packet->GetPacket()->pts = av_rescale_q(packet->GetPacket()->pts, st->codec->time_base, st->time_base);
+				packet->GetPacket()->pts = av_rescale_q(packet->GetPacket()->pts, stream->codec->time_base, stream->time_base);
 			}
 			if(packet->GetPacket()->dts != (int64_t) AV_NOPTS_VALUE) {
-				packet->GetPacket()->dts = av_rescale_q(packet->GetPacket()->dts, st->codec->time_base, st->time_base);
+				packet->GetPacket()->dts = av_rescale_q(packet->GetPacket()->dts, stream->codec->time_base, stream->time_base);
 			}
 #endif
 
 			// write the packet (again, why does libav/ffmpeg call this a frame?)
-			// The packet should already be interleaved now, but containers can have custom interleaving specifications,
-			// so it's a good idea to call av_interleaved_write_frame anyway.
 			if(av_interleaved_write_frame(m_format_context, packet->GetPacket()) != 0) {
 				Logger::LogError("[Muxer::MuxerThread] " + Logger::tr("Error: Can't write frame to muxer!"));
 				throw LibavException();
@@ -398,14 +377,14 @@ void Muxer::MuxerThread() {
 			{
 				SharedLock lock(&m_shared_data);
 				lock->m_total_bytes = m_format_context->pb->pos + (m_format_context->pb->buf_ptr - m_format_context->pb->buffer);
-				if(lock->m_stats_previous_dts == NOPTS_DOUBLE) {
-					lock->m_stats_previous_dts = oldest_dts;
+				if(lock->m_stats_previous_time == NOPTS_DOUBLE) {
+					lock->m_stats_previous_time = total_time;
 					lock->m_stats_previous_bytes = lock->m_total_bytes;
 				}
-				double timedelta = oldest_dts - lock->m_stats_previous_dts;
+				double timedelta = total_time - lock->m_stats_previous_time;
 				if(timedelta > 0.999999) {
 					lock->m_stats_actual_bit_rate = (double) ((lock->m_total_bytes - lock->m_stats_previous_bytes) * 8) / timedelta;
-					lock->m_stats_previous_dts = oldest_dts;
+					lock->m_stats_previous_time = total_time;
 					lock->m_stats_previous_bytes = lock->m_total_bytes;
 				}
 			}

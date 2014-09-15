@@ -116,8 +116,6 @@ inline void atomic_thread_fence_replacement(memory_order) {
 
 // AVStream::time_base as time base hint: lavf 55.44.100 / 55.20.0
 #define SSR_USE_AVSTREAM_TIME_BASE       TEST_AV_VERSION(LIBAVFORMAT, 55, 44, 55, 20)
-// AVStream::pts is deprecated: lavf 55.38.101 / 55.17.1
-#define SSR_USE_AVSTREAM_PTS_DEPRECATED  TEST_AV_VERSION(LIBAVFORMAT, 55, 38, 55, 17)
 // avformat_network_init: lavf 53.19.0 / 53.13.0
 #define SSR_USE_AVFORMAT_NETWORK_INIT    TEST_AV_VERSION(LIBAVFORMAT, 53, 19, 53, 13)
 // avformat_new_stream: lavf 53.17.0 / 53.10.0

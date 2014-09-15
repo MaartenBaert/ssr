@@ -40,7 +40,7 @@ private:
 	struct SharedData {
 		uint64_t m_total_bytes;
 		double m_stats_actual_bit_rate;
-		double m_stats_previous_dts;
+		double m_stats_previous_time;
 		uint64_t m_stats_previous_bytes;
 	};
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
