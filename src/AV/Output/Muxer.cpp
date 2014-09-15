@@ -26,9 +26,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoEncoder.h"
 #include "AudioEncoder.h"
 
-static const unsigned int INVALID_STREAM = std::numeric_limits<unsigned int>::max();
-static const double NOPTS_DOUBLE = -std::numeric_limits<double>::max();
-
 Muxer::Muxer(const QString& container_name, const QString& output_file) {
 
 	m_container_name = container_name;
@@ -49,7 +46,7 @@ Muxer::Muxer(const QString& container_name, const QString& output_file) {
 		SharedLock lock(&m_shared_data);
 		lock->m_total_bytes = 0;
 		lock->m_stats_actual_bit_rate = 0.0;
-		lock->m_stats_previous_pts = NOPTS_DOUBLE;
+		lock->m_stats_previous_dts = NOPTS_DOUBLE;
 		lock->m_stats_previous_bytes = 0;
 	}
 
@@ -193,6 +190,7 @@ void Muxer::Init() {
 	Logger::LogInfo("[Muxer::Init] " + Logger::tr("Using format %1 (%2).").arg(format->name).arg(format->long_name));
 
 	// allocate format context
+	// ffmpeg probably wants us to use avformat_alloc_output_context2 instead, but libav doesn't have it and I can't figure out why it's needed anyway
 	m_format_context = avformat_alloc_context();
 	if(m_format_context == NULL) {
 		Logger::LogError("[Muxer::Init] " + Logger::tr("Error: Can't allocate format context!"));
@@ -235,12 +233,17 @@ void Muxer::Free() {
 		}
 
 		// free everything
+#if SSR_USE_AVFORMAT_FREE_CONTEXT
+		avformat_free_context(m_format_context);
+		m_format_context = NULL;
+#else
 		for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 			av_freep(&m_format_context->streams[i]->codec);
 			av_freep(&m_format_context->streams[i]);
 		}
 		av_free(m_format_context);
 		m_format_context = NULL;
+#endif
 
 	}
 }
@@ -310,21 +313,42 @@ void Muxer::MuxerThread() {
 		for( ; ; ) {
 
 			// find the oldest stream that isn't done yet
+			bool wait_for_more = false;
 			unsigned int oldest_stream = INVALID_STREAM;
-			double oldest_pts = std::numeric_limits<double>::max();
+			double oldest_dts = std::numeric_limits<double>::max();
 			for(unsigned int i = 0; i < m_format_context->nb_streams; ++i) {
 				StreamLock lock(&m_stream_data[i]);
-				if(!lock->m_is_done || !lock->m_packet_queue.empty()) {
-#if SSR_USE_AV_STREAM_GET_END_PTS
+				if(lock->m_packet_queue.empty()) {
+					if(lock->m_is_done) {
+						continue;
+					} else {
+						wait_for_more = true;
+						break;
+					}
+				} else {
+/*#if SSR_USE_AV_STREAM_GET_END_PTS
 					double pts = (double) av_stream_get_end_pts(m_format_context->streams[i]) * ToDouble(m_format_context->streams[i]->time_base);
 #else
 					double pts = ToDouble(m_format_context->streams[i]->pts) * ToDouble(m_format_context->streams[i]->time_base);
-#endif
-					if(pts < oldest_pts) {
+#endif*/
+					double dts;
+					if(lock->m_packet_queue.front()->GetPacket()->dts == AV_NOPTS_VALUE) {
+						dts = 0.0;
+						Logger::LogWarning("[Muxer::MuxerThread] " + Logger::tr("Warning: Packet DTS not set for stream %1!").arg(i));
+					} else {
+						dts = (double) lock->m_packet_queue.front()->GetPacket()->dts * ToDouble(m_format_context->streams[i]->codec->time_base);
+					}
+					if(dts < oldest_dts) {
 						oldest_stream = i;
-						oldest_pts = pts;
+						oldest_dts = dts;
 					}
 				}
+			}
+
+			// if there is no packet, wait and try again later
+			if(wait_for_more) {
+				usleep(20000);
+				continue;
 			}
 
 			// if there are no packets left, we're done
@@ -336,17 +360,14 @@ void Muxer::MuxerThread() {
 			std::unique_ptr<AVPacketWrapper> packet;
 			{
 				StreamLock lock(&m_stream_data[oldest_stream]);
-				if(!lock->m_packet_queue.empty()) {
-					packet = std::move(lock->m_packet_queue.front());
-					lock->m_packet_queue.pop_front();
-				}
+				assert(!lock->m_packet_queue.empty());
+				packet = std::move(lock->m_packet_queue.front());
+				lock->m_packet_queue.pop_front();
 			}
 
-			// if there is no packet, wait and try again later
-			if(packet == NULL) {
-				usleep(20000);
-				continue;
-			}
+			qDebug() << "stream" << oldest_stream << "packet --"
+					 << "pts" << (double) packet->GetPacket()->pts * ToDouble(m_format_context->streams[oldest_stream]->codec->time_base)
+					 << "dts" << (double) packet->GetPacket()->dts * ToDouble(m_format_context->streams[oldest_stream]->codec->time_base);
 
 			// prepare packet
 			AVStream *st = m_format_context->streams[oldest_stream];
@@ -377,14 +398,14 @@ void Muxer::MuxerThread() {
 			{
 				SharedLock lock(&m_shared_data);
 				lock->m_total_bytes = m_format_context->pb->pos + (m_format_context->pb->buf_ptr - m_format_context->pb->buffer);
-				if(lock->m_stats_previous_pts == NOPTS_DOUBLE) {
-					lock->m_stats_previous_pts = oldest_pts;
+				if(lock->m_stats_previous_dts == NOPTS_DOUBLE) {
+					lock->m_stats_previous_dts = oldest_dts;
 					lock->m_stats_previous_bytes = lock->m_total_bytes;
 				}
-				double timedelta = oldest_pts - lock->m_stats_previous_pts;
+				double timedelta = oldest_dts - lock->m_stats_previous_dts;
 				if(timedelta > 0.999999) {
 					lock->m_stats_actual_bit_rate = (double) ((lock->m_total_bytes - lock->m_stats_previous_bytes) * 8) / timedelta;
-					lock->m_stats_previous_pts = oldest_pts;
+					lock->m_stats_previous_dts = oldest_dts;
 					lock->m_stats_previous_bytes = lock->m_total_bytes;
 				}
 			}

@@ -40,10 +40,13 @@ private:
 	struct SharedData {
 		uint64_t m_total_bytes;
 		double m_stats_actual_bit_rate;
-		double m_stats_previous_pts;
+		double m_stats_previous_dts;
 		uint64_t m_stats_previous_bytes;
 	};
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
+
+	static constexpr unsigned int INVALID_STREAM = std::numeric_limits<unsigned int>::max();
+	static constexpr double NOPTS_DOUBLE = -std::numeric_limits<double>::max();
 
 private:
 	QString m_container_name, m_output_file;
