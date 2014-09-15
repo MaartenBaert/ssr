@@ -326,18 +326,18 @@ void Muxer::MuxerThread() {
 						break;
 					}
 				} else {
-/*#if SSR_USE_AV_STREAM_GET_END_PTS
-					double pts = (double) av_stream_get_end_pts(m_format_context->streams[i]) * ToDouble(m_format_context->streams[i]->time_base);
-#else
-					double pts = ToDouble(m_format_context->streams[i]->pts) * ToDouble(m_format_context->streams[i]->time_base);
-#endif*/
+#if SSR_USE_AVSTREAM_PTS_DEPRECATED
 					double dts;
 					if(lock->m_packet_queue.front()->GetPacket()->dts == AV_NOPTS_VALUE) {
-						dts = 0.0;
 						Logger::LogWarning("[Muxer::MuxerThread] " + Logger::tr("Warning: Packet DTS not set for stream %1!").arg(i));
+						dts = -1.0e6 - (double) lock->m_packet_queue.size(); // last resort: just encode the longest queue first
 					} else {
 						dts = (double) lock->m_packet_queue.front()->GetPacket()->dts * ToDouble(m_format_context->streams[i]->codec->time_base);
 					}
+#else
+					//double pts = (double) av_stream_get_end_pts(m_format_context->streams[i]) * ToDouble(m_format_context->streams[i]->time_base);
+					double dts = ToDouble(m_format_context->streams[i]->pts) * ToDouble(m_format_context->streams[i]->time_base);
+#endif
 					if(dts < oldest_dts) {
 						oldest_stream = i;
 						oldest_dts = dts;
