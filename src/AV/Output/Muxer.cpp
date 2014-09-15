@@ -365,9 +365,9 @@ void Muxer::MuxerThread() {
 				lock->m_packet_queue.pop_front();
 			}
 
-			qDebug() << "stream" << oldest_stream << "packet --"
+			/*qDebug() << "stream" << oldest_stream << "packet --"
 					 << "pts" << (double) packet->GetPacket()->pts * ToDouble(m_format_context->streams[oldest_stream]->codec->time_base)
-					 << "dts" << (double) packet->GetPacket()->dts * ToDouble(m_format_context->streams[oldest_stream]->codec->time_base);
+					 << "dts" << (double) packet->GetPacket()->dts * ToDouble(m_format_context->streams[oldest_stream]->codec->time_base);*/
 
 			// prepare packet
 			AVStream *st = m_format_context->streams[oldest_stream];
