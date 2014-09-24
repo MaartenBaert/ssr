@@ -748,17 +748,17 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
         <translation>Stop encoder thread ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="251"/>
+        <location filename="../AV/Output/Muxer.cpp" line="254"/>
         <source>Error: Can&apos;t find codec!</source>
         <translation>Fout: Kan de codec niet vinden!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="261"/>
+        <location filename="../AV/Output/Muxer.cpp" line="264"/>
         <source>Using codec %1 (%2).</source>
         <translation>Gebruik codec %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="293"/>
+        <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation>Waarschuwing: Deze codec wordt gezien als experimenteel door libav/ffmpeg.</translation>
     </message>
@@ -799,64 +799,64 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
         <translation>Onbekende exceptie in encoder thread.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="74"/>
+        <location filename="../AV/Output/Muxer.cpp" line="71"/>
         <source>Stopping encoders ...</source>
         <translation>Encoders stoppen ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="81"/>
+        <location filename="../AV/Output/Muxer.cpp" line="78"/>
         <source>Waiting for muxer thread to stop ...</source>
         <translation>Wacht tot muxer thread stopt ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="136"/>
+        <location filename="../AV/Output/Muxer.cpp" line="133"/>
         <source>Error: Can&apos;t write header!</source>
         <comment>Don&apos;t translate &apos;header&apos;</comment>
         <translation>Fout: Kan header niet schrijven!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="147"/>
+        <location filename="../AV/Output/Muxer.cpp" line="144"/>
         <source>Finishing encoders ...</source>
         <translation>Encoders afwerken ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="270"/>
+        <location filename="../AV/Output/Muxer.cpp" line="273"/>
         <source>Error: Can&apos;t create new stream!</source>
         <translation>Fout: Kan geen nieuwe stream maken!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="280"/>
+        <location filename="../AV/Output/Muxer.cpp" line="283"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
         <translation>Fout: Kan codec-context standaardwaarden niet krijgen!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="189"/>
+        <location filename="../AV/Output/Muxer.cpp" line="186"/>
         <source>Error: Can&apos;t find chosen output format!</source>
         <translation>Fout: Kan gekozen outputformaat niet vinden!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="193"/>
+        <location filename="../AV/Output/Muxer.cpp" line="190"/>
         <source>Using format %1 (%2).</source>
         <translation>Gebruik formaat %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="198"/>
+        <location filename="../AV/Output/Muxer.cpp" line="196"/>
         <source>Error: Can&apos;t allocate format context!</source>
         <translation>Fout: Kan geen formaat-context maken!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="205"/>
+        <location filename="../AV/Output/Muxer.cpp" line="203"/>
         <source>Error: Can&apos;t open output file!</source>
         <translation>Fout: Kan outputbestand niet openen!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="218"/>
+        <location filename="../AV/Output/Muxer.cpp" line="216"/>
         <source>Error: Can&apos;t write trailer, continuing anyway.</source>
         <comment>Don&apos;t translate &apos;trailer&apos;</comment>
         <translation>Fout: Kan trailer niet schrijven, ga toch verder.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="307"/>
+        <location filename="../AV/Output/Muxer.cpp" line="310"/>
         <source>Muxer thread started.</source>
         <translation>Muxer thread gestart.</translation>
     </message>
@@ -974,8 +974,8 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt. Probeer om de ALSA-back
         <translation type="obsolete">Fout: Beelden per seconde is nul!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="198"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="218"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="203"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="223"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation>Fout: Encoderen van videobeeld mislukt!</translation>
     </message>

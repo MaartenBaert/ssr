@@ -670,17 +670,17 @@ Es posible que tu sistema no use PulseAudio. Intenta usar el sistema de ALSA en 
         <translation type="unfinished">Deteniendo hilo del codificador ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="251"/>
+        <location filename="../AV/Output/Muxer.cpp" line="254"/>
         <source>Error: Can&apos;t find codec!</source>
         <translation type="unfinished">Error: ¡No se puede encontrar el códec!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="261"/>
+        <location filename="../AV/Output/Muxer.cpp" line="264"/>
         <source>Using codec %1 (%2).</source>
         <translation type="unfinished">Usando codec %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="293"/>
+        <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation type="unfinished">Aviso: este codec se considera experimental por libav/ffmpeg.</translation>
     </message>
@@ -721,64 +721,64 @@ Es posible que tu sistema no use PulseAudio. Intenta usar el sistema de ALSA en 
         <translation type="unfinished">Excepción desconocida en el hilo del codificador.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="74"/>
+        <location filename="../AV/Output/Muxer.cpp" line="71"/>
         <source>Stopping encoders ...</source>
         <translation type="unfinished">Deteniendo codificadores ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="81"/>
+        <location filename="../AV/Output/Muxer.cpp" line="78"/>
         <source>Waiting for muxer thread to stop ...</source>
         <translation type="unfinished">Esperando al hilo muxer para detenerse ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="136"/>
+        <location filename="../AV/Output/Muxer.cpp" line="133"/>
         <source>Error: Can&apos;t write header!</source>
         <comment>Don&apos;t translate &apos;header&apos;</comment>
         <translation type="unfinished">Error: ¡No se puede escribir el encabezado!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="147"/>
+        <location filename="../AV/Output/Muxer.cpp" line="144"/>
         <source>Finishing encoders ...</source>
         <translation type="unfinished">Deteniendo codificadores ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="270"/>
+        <location filename="../AV/Output/Muxer.cpp" line="273"/>
         <source>Error: Can&apos;t create new stream!</source>
         <translation type="unfinished">Error: ¡No se puede crear un nuevo flujo!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="280"/>
+        <location filename="../AV/Output/Muxer.cpp" line="283"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
         <translation type="unfinished">Error: ¡No se puede obtener los ajustes por defecto del contexto del códec!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="189"/>
+        <location filename="../AV/Output/Muxer.cpp" line="186"/>
         <source>Error: Can&apos;t find chosen output format!</source>
         <translation type="unfinished">Error: ¡No se puede encontrar el formato de salida elegido!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="193"/>
+        <location filename="../AV/Output/Muxer.cpp" line="190"/>
         <source>Using format %1 (%2).</source>
         <translation type="unfinished">Usando formato %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="198"/>
+        <location filename="../AV/Output/Muxer.cpp" line="196"/>
         <source>Error: Can&apos;t allocate format context!</source>
         <translation type="unfinished">Error: ¡No se puede asignar un contexto de formato!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="205"/>
+        <location filename="../AV/Output/Muxer.cpp" line="203"/>
         <source>Error: Can&apos;t open output file!</source>
         <translation type="unfinished">Error: ¡No se puede abrir el archivo de salida!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="218"/>
+        <location filename="../AV/Output/Muxer.cpp" line="216"/>
         <source>Error: Can&apos;t write trailer, continuing anyway.</source>
         <comment>Don&apos;t translate &apos;trailer&apos;</comment>
         <translation type="unfinished">Error: No se puede escribir el trailer, continuando de todos modos.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="307"/>
+        <location filename="../AV/Output/Muxer.cpp" line="310"/>
         <source>Muxer thread started.</source>
         <translation type="unfinished">Hilo del muxer iniciado.</translation>
     </message>
@@ -892,8 +892,8 @@ Es posible que tu sistema no use PulseAudio. Intenta usar el sistema de ALSA en 
         <translation type="obsolete">Error: ¡La tasa de fotogramas es cero!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="198"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="218"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="203"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="223"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation type="unfinished">Error: ¡La codificación del vídeo falló!</translation>
     </message>

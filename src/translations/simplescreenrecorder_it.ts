@@ -694,17 +694,17 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished">Arresto encoder thread ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="251"/>
+        <location filename="../AV/Output/Muxer.cpp" line="254"/>
         <source>Error: Can&apos;t find codec!</source>
         <translation type="unfinished">Errore: Impossibile trovare il codec!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="261"/>
+        <location filename="../AV/Output/Muxer.cpp" line="264"/>
         <source>Using codec %1 (%2).</source>
         <translation type="unfinished">Utilizzando codec %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="293"/>
+        <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation type="unfinished">Avvertenza: Questo codec è considerato sperimentale per libav/ffmpeg.</translation>
     </message>
@@ -745,64 +745,64 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished">Eccezione sconosciuta in encoder thread.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="74"/>
+        <location filename="../AV/Output/Muxer.cpp" line="71"/>
         <source>Stopping encoders ...</source>
         <translation type="unfinished">Arresto encoders ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="81"/>
+        <location filename="../AV/Output/Muxer.cpp" line="78"/>
         <source>Waiting for muxer thread to stop ...</source>
         <translation type="unfinished">Aspettando muxer thread per l&apos;arresto ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="136"/>
+        <location filename="../AV/Output/Muxer.cpp" line="133"/>
         <source>Error: Can&apos;t write header!</source>
         <comment>Don&apos;t translate &apos;header&apos;</comment>
         <translation type="unfinished">Errore: Impossibile scrivere header!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="147"/>
+        <location filename="../AV/Output/Muxer.cpp" line="144"/>
         <source>Finishing encoders ...</source>
         <translation type="unfinished">Finalizzando encoders ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="270"/>
+        <location filename="../AV/Output/Muxer.cpp" line="273"/>
         <source>Error: Can&apos;t create new stream!</source>
         <translation type="unfinished">Errore: Impossibile creare nuovo stream!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="280"/>
+        <location filename="../AV/Output/Muxer.cpp" line="283"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
         <translation type="unfinished">Errore: Impossibile ottenere le impostazioni predefinite del contesto codec!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="189"/>
+        <location filename="../AV/Output/Muxer.cpp" line="186"/>
         <source>Error: Can&apos;t find chosen output format!</source>
         <translation type="unfinished">Errore: Impossibile trovare il formato di output scelto!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="193"/>
+        <location filename="../AV/Output/Muxer.cpp" line="190"/>
         <source>Using format %1 (%2).</source>
         <translation type="unfinished">utilizzando il formato %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="198"/>
+        <location filename="../AV/Output/Muxer.cpp" line="196"/>
         <source>Error: Can&apos;t allocate format context!</source>
         <translation type="unfinished">Errore: Impossibile assegnare contesto di formato!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="205"/>
+        <location filename="../AV/Output/Muxer.cpp" line="203"/>
         <source>Error: Can&apos;t open output file!</source>
         <translation type="unfinished">Errore: Impossibile aprire il file di output!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="218"/>
+        <location filename="../AV/Output/Muxer.cpp" line="216"/>
         <source>Error: Can&apos;t write trailer, continuing anyway.</source>
         <comment>Don&apos;t translate &apos;trailer&apos;</comment>
         <translation type="unfinished">Errore: Impossibile scrivere trailer, continua comunque.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="307"/>
+        <location filename="../AV/Output/Muxer.cpp" line="310"/>
         <source>Muxer thread started.</source>
         <translation type="unfinished">Muxer thread avviato.</translation>
     </message>
@@ -916,8 +916,8 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="obsolete">Errore: Frequenza fotogrammi Zero!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="198"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="218"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="203"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="223"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation type="unfinished">Errore: Codifica di un fotogramma video non riuscita!</translation>
     </message>
