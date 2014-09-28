@@ -37,7 +37,8 @@ SyncDiagram::SyncDiagram(size_t channels) {
 		for(auto &c : lock->m_time_channels) {
 			c.m_name = "";
 			c.m_current_time = 0.0;
-			c.m_time_shift = nan("");
+			c.m_time_shift = std::numeric_limits<double>::max() * 0.5;
+			c.m_time_shift_v = 0.0;
 		}
 	}
 
@@ -103,10 +104,13 @@ void SyncDiagram::paintEvent(QPaintEvent* event) {
 		double time_min = c.m_current_time - (double) (width() - MARGIN_RIGHT) / PIXELS_PER_SECOND;
 		double time_max = c.m_current_time + (double) MARGIN_RIGHT / PIXELS_PER_SECOND;
 		double ts = lock->m_time_channels[0].m_current_time - c.m_current_time;
-		if(isnan(c.m_time_shift) || fabs(ts - c.m_time_shift) > 0.2)
+		if(fabs(ts - c.m_time_shift) > 2.0) {
 			c.m_time_shift = ts;
-		else
-			c.m_time_shift += 0.05 * (ts - c.m_time_shift);
+			c.m_time_shift_v = 0.0;
+		} else {
+			c.m_time_shift_v += 0.4 * (0.4 * (ts - c.m_time_shift) - 2.0 * c.m_time_shift_v);
+			c.m_time_shift += c.m_time_shift_v;
+		}
 		double pixel_wrap = (double) width();
 
 		// draw blocks

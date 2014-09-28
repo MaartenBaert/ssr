@@ -508,12 +508,14 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_11) \
 @ENABLE_SSRPROGRAM_TRUE@	-DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = \
-@ENABLE_SSRPROGRAM_TRUE@	-pthread
+@ENABLE_SSRPROGRAM_TRUE@	-pthread \
+@ENABLE_SSRPROGRAM_TRUE@	-ffast-math
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = \
 @ENABLE_SSRPROGRAM_TRUE@	-pthread \
 @ENABLE_SSRPROGRAM_TRUE@	-std=c++0x \
-@ENABLE_SSRPROGRAM_TRUE@	-flax-vector-conversions
+@ENABLE_SSRPROGRAM_TRUE@	-flax-vector-conversions \
+@ENABLE_SSRPROGRAM_TRUE@	-ffast-math
 
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread \
 @ENABLE_SSRPROGRAM_TRUE@	$(QT4_LIBS) -lrt -lavformat -lavcodec \
