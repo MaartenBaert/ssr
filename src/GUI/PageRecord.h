@@ -116,9 +116,8 @@ private:
 	QTextEdit *m_textedit_log;
 
 	QSystemTrayIcon *m_systray_icon;
-	QAction *m_systray_action_start_pause;
-	QAction *m_systray_action_cancel;
-	QAction *m_systray_action_save;
+	QAction *m_systray_action_start_pause, *m_systray_action_cancel, *m_systray_action_save;
+	QAction *m_systray_action_show_hide, *m_systray_action_quit;
 
 	QTimer *m_timer_update_info;
 
@@ -129,6 +128,9 @@ public:
 	// Called when the user tries to close the program. If this function returns true, the command will be blocked.
 	// This is used to display a warning if the user is about to close the program during a recording.
 	bool ShouldBlockClose();
+
+	// Called when the main window is shown/hidden (to update the system tray).
+	void UpdateShowHide();
 
 	void LoadSettings(QSettings* settings);
 	void SaveSettings(QSettings* settings);

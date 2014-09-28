@@ -320,8 +320,10 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_systray_action_save = menu->addAction(QIcon::fromTheme("document-save"), tr("Save recording"), this, SLOT(OnSave()));
 		m_systray_action_save->setIconVisibleInMenu(true);
 		menu->addSeparator();
-		QAction *systray_action_quit = menu->addAction(QIcon::fromTheme("application-exit"), tr("Quit"), m_main_window, SLOT(close()));
-		systray_action_quit->setIconVisibleInMenu(true);
+		m_systray_action_show_hide = menu->addAction(QString(), m_main_window, SLOT(OnShowHide()));
+		m_systray_action_show_hide->setIconVisibleInMenu(true);
+		m_systray_action_quit = menu->addAction(QIcon::fromTheme("application-exit"), tr("Quit"), m_main_window, SLOT(close()));
+		m_systray_action_quit->setIconVisibleInMenu(true);
 		m_systray_icon->setContextMenu(menu);
 	} else {
 		m_systray_icon = NULL;
@@ -361,7 +363,6 @@ PageRecord::~PageRecord() {
 }
 
 bool PageRecord::ShouldBlockClose() {
-
 	if(m_output_manager != NULL) {
 		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 					  tr("You have not saved the current recording yet, if you quit now it will be lost.\n"
@@ -369,9 +370,17 @@ bool PageRecord::ShouldBlockClose() {
 			return true;
 		}
 	}
-
 	return false;
+}
 
+void PageRecord::UpdateShowHide() {
+	if(m_systray_icon == NULL)
+		return;
+	if(m_main_window->isVisible()) {
+		m_systray_action_show_hide->setText(tr("Hide window"));
+	} else {
+		m_systray_action_show_hide->setText(tr("Show window"));
+	}
 }
 
 void PageRecord::LoadSettings(QSettings *settings) {
@@ -886,18 +895,13 @@ void PageRecord::UpdateSysTray() {
 	if(m_systray_icon == NULL)
 		return;
 	GroupEnabled({m_systray_action_start_pause, m_systray_action_cancel, m_systray_action_save}, m_page_started);
-	if(m_page_started) {
-		if(m_output_started) {
-			m_systray_icon->setIcon(g_icon_ssr_recording);
-			m_systray_action_start_pause->setIcon(g_icon_pause);
-			m_systray_action_start_pause->setText(tr("Pause recording"));
-		} else {
-			m_systray_icon->setIcon(g_icon_ssr_paused);
-			m_systray_action_start_pause->setIcon(g_icon_record);
-			m_systray_action_start_pause->setText(tr("Start recording"));
-		}
+	if(m_page_started && m_output_started) {
+		m_systray_icon->setIcon(g_icon_ssr_recording);
+		m_systray_action_start_pause->setIcon(g_icon_pause);
+		m_systray_action_start_pause->setText(tr("Pause recording"));
 	} else {
-		m_systray_icon->setIcon(g_icon_ssr);
+		m_systray_icon->setIcon(g_icon_ssr_paused);
+		m_systray_action_start_pause->setIcon(g_icon_record);
 		m_systray_action_start_pause->setText(tr("Start recording"));
 	}
 }
