@@ -11,13 +11,10 @@ simplescreenrecorder_CPPFLAGS = \
 	-I$(srcdir)/common \
 	-I$(srcdir)/GUI
 simplescreenrecorder_CFLAGS = \
-	-pthread \
-	-ffast-math
+	-pthread
 simplescreenrecorder_CXXFLAGS = \
 	-pthread \
-	-std=c++0x \
-	-flax-vector-conversions \
-	-ffast-math
+	-std=c++0x
 simplescreenrecorder_LDFLAGS = \
 	-pthread \
 	$(QT4_LIBS) \
