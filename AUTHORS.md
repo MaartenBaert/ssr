@@ -27,4 +27,6 @@ Translations
 - Dutch: Maarten Baert
 - Polish: Szamanx0
 - Brazilian Portuguese: Paulo Milliet Roque
+- Russian: Dima Koshel
+- Ukrainian: Rom Gyrfalco
 - Simplified Chinese: Weitian Leung
