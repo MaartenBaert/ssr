@@ -21,8 +21,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #if SSR_USE_X86_ASM
 
-#include <xmmintrin.h>
-#include <emmintrin.h>
+#include <xmmintrin.h> // sse
+#include <emmintrin.h> // sse2
 
 void FastResampler_FirFilter2_C1_SSE2(unsigned int channels, unsigned int filter_length, float* coef1, float* coef2, float frac, float* input, float* output) {
 	Q_UNUSED(channels);

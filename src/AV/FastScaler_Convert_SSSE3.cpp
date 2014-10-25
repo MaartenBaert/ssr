@@ -22,10 +22,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #if SSR_USE_X86_ASM
 
-#include <xmmintrin.h>
-#include <emmintrin.h>
-#include <pmmintrin.h>
-#include <tmmintrin.h>
+#include <xmmintrin.h> // sse
+#include <emmintrin.h> // sse2
+#include <pmmintrin.h> // sse3
+#include <tmmintrin.h> // ssse3
 
 /*
 ==== SSSE3 BGRA-to-YUV420 Converter ====
