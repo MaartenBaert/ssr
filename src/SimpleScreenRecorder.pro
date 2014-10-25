@@ -40,7 +40,7 @@ SOURCES += \
 	AV/FastScaler_Scale_SSSE3.cpp \
 	AV/SimpleSynth.cpp \
 	AV/SourceSink.cpp \
-	common/DetectCPUFeatures.cpp \
+	common/CPUFeatures.cpp \
 	common/Dialogs.cpp \
 	common/Logger.cpp \
 	GUI/AudioPreviewer.cpp \
@@ -65,7 +65,7 @@ HEADERS  += \
 	AV/Input/GLInjectInput.h \
 	AV/Input/JACKInput.h \
 	AV/Input/PulseAudioInput.h \
-    AV/Input/SSRVideoStream.h \
+	AV/Input/SSRVideoStream.h \
 	AV/Input/SSRVideoStreamReader.h \
 	AV/Input/SSRVideoStreamWatcher.h \
 	AV/Input/X11Input.h \
@@ -88,8 +88,9 @@ HEADERS  += \
 	AV/SampleCast.h \
 	AV/SimpleSynth.h \
 	AV/SourceSink.h \
-	common/DetectCPUFeatures.h \
+	common/CPUFeatures.h \
 	common/Dialogs.h \
+	common/EnumStrings.h \
 	common/LockFreeMessageQueue.h \
 	common/Logger.h \
 	common/MutexDataPair.h \
@@ -111,8 +112,7 @@ HEADERS  += \
 	Global.h \
 	Main.h \
 	Version.h \
-	NVidia.h \
-    common/EnumStrings.h
+	NVidia.h
 
 RESOURCES += \
 	resources.qrc

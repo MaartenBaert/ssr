@@ -169,8 +169,8 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	AV/FastScaler_Scale_Fallback.cpp \
 	AV/FastScaler_Scale_Generic.cpp AV/FastScaler_Scale_Generic.h \
 	AV/SampleCast.h AV/SimpleSynth.cpp AV/SimpleSynth.h \
-	AV/SourceSink.cpp AV/SourceSink.h common/DetectCPUFeatures.cpp \
-	common/DetectCPUFeatures.h common/Dialogs.cpp common/Dialogs.h \
+	AV/SourceSink.cpp AV/SourceSink.h common/CPUFeatures.cpp \
+	common/CPUFeatures.h common/Dialogs.cpp common/Dialogs.h \
 	common/EnumStrings.h common/LockFreeMessageQueue.h \
 	common/Logger.cpp common/Logger.h common/MutexDataPair.h \
 	common/QueueBuffer.h common/TempBuffer.h \
@@ -209,7 +209,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-FastScaler_Scale_Generic.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-SimpleSynth.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/simplescreenrecorder-SourceSink.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-DetectCPUFeatures.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-CPUFeatures.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-Dialogs.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	common/simplescreenrecorder-Logger.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-AudioPreviewer.$(OBJEXT) \
@@ -571,8 +571,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	AV/SimpleSynth.h \
 @ENABLE_SSRPROGRAM_TRUE@	AV/SourceSink.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/SourceSink.h \
-@ENABLE_SSRPROGRAM_TRUE@	common/DetectCPUFeatures.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	common/DetectCPUFeatures.h \
+@ENABLE_SSRPROGRAM_TRUE@	common/CPUFeatures.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	common/CPUFeatures.h \
 @ENABLE_SSRPROGRAM_TRUE@	common/Dialogs.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	common/Dialogs.h \
 @ENABLE_SSRPROGRAM_TRUE@	common/EnumStrings.h \
@@ -859,7 +859,7 @@ common/$(am__dirstamp):
 common/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) common/$(DEPDIR)
 	@: > common/$(DEPDIR)/$(am__dirstamp)
-common/simplescreenrecorder-DetectCPUFeatures.$(OBJEXT):  \
+common/simplescreenrecorder-CPUFeatures.$(OBJEXT):  \
 	common/$(am__dirstamp) common/$(DEPDIR)/$(am__dirstamp)
 common/simplescreenrecorder-Dialogs.$(OBJEXT): common/$(am__dirstamp) \
 	common/$(DEPDIR)/$(am__dirstamp)
@@ -973,7 +973,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-PageWelcome.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-ProfileBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-VideoPreviewer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-CPUFeatures.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-Dialogs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@common/$(DEPDIR)/simplescreenrecorder-Logger.Po@am__quote@
 
@@ -1358,19 +1358,19 @@ AV/simplescreenrecorder-SourceSink.obj: AV/SourceSink.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o AV/simplescreenrecorder-SourceSink.obj `if test -f 'AV/SourceSink.cpp'; then $(CYGPATH_W) 'AV/SourceSink.cpp'; else $(CYGPATH_W) '$(srcdir)/AV/SourceSink.cpp'; fi`
 
-common/simplescreenrecorder-DetectCPUFeatures.o: common/DetectCPUFeatures.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT common/simplescreenrecorder-DetectCPUFeatures.o -MD -MP -MF common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Tpo -c -o common/simplescreenrecorder-DetectCPUFeatures.o `test -f 'common/DetectCPUFeatures.cpp' || echo '$(srcdir)/'`common/DetectCPUFeatures.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Tpo common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='common/DetectCPUFeatures.cpp' object='common/simplescreenrecorder-DetectCPUFeatures.o' libtool=no @AMDEPBACKSLASH@
+common/simplescreenrecorder-CPUFeatures.o: common/CPUFeatures.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT common/simplescreenrecorder-CPUFeatures.o -MD -MP -MF common/$(DEPDIR)/simplescreenrecorder-CPUFeatures.Tpo -c -o common/simplescreenrecorder-CPUFeatures.o `test -f 'common/CPUFeatures.cpp' || echo '$(srcdir)/'`common/CPUFeatures.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) common/$(DEPDIR)/simplescreenrecorder-CPUFeatures.Tpo common/$(DEPDIR)/simplescreenrecorder-CPUFeatures.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='common/CPUFeatures.cpp' object='common/simplescreenrecorder-CPUFeatures.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o common/simplescreenrecorder-DetectCPUFeatures.o `test -f 'common/DetectCPUFeatures.cpp' || echo '$(srcdir)/'`common/DetectCPUFeatures.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o common/simplescreenrecorder-CPUFeatures.o `test -f 'common/CPUFeatures.cpp' || echo '$(srcdir)/'`common/CPUFeatures.cpp
 
-common/simplescreenrecorder-DetectCPUFeatures.obj: common/DetectCPUFeatures.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT common/simplescreenrecorder-DetectCPUFeatures.obj -MD -MP -MF common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Tpo -c -o common/simplescreenrecorder-DetectCPUFeatures.obj `if test -f 'common/DetectCPUFeatures.cpp'; then $(CYGPATH_W) 'common/DetectCPUFeatures.cpp'; else $(CYGPATH_W) '$(srcdir)/common/DetectCPUFeatures.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Tpo common/$(DEPDIR)/simplescreenrecorder-DetectCPUFeatures.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='common/DetectCPUFeatures.cpp' object='common/simplescreenrecorder-DetectCPUFeatures.obj' libtool=no @AMDEPBACKSLASH@
+common/simplescreenrecorder-CPUFeatures.obj: common/CPUFeatures.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT common/simplescreenrecorder-CPUFeatures.obj -MD -MP -MF common/$(DEPDIR)/simplescreenrecorder-CPUFeatures.Tpo -c -o common/simplescreenrecorder-CPUFeatures.obj `if test -f 'common/CPUFeatures.cpp'; then $(CYGPATH_W) 'common/CPUFeatures.cpp'; else $(CYGPATH_W) '$(srcdir)/common/CPUFeatures.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) common/$(DEPDIR)/simplescreenrecorder-CPUFeatures.Tpo common/$(DEPDIR)/simplescreenrecorder-CPUFeatures.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='common/CPUFeatures.cpp' object='common/simplescreenrecorder-CPUFeatures.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o common/simplescreenrecorder-DetectCPUFeatures.obj `if test -f 'common/DetectCPUFeatures.cpp'; then $(CYGPATH_W) 'common/DetectCPUFeatures.cpp'; else $(CYGPATH_W) '$(srcdir)/common/DetectCPUFeatures.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o common/simplescreenrecorder-CPUFeatures.obj `if test -f 'common/CPUFeatures.cpp'; then $(CYGPATH_W) 'common/CPUFeatures.cpp'; else $(CYGPATH_W) '$(srcdir)/common/CPUFeatures.cpp'; fi`
 
 common/simplescreenrecorder-Dialogs.o: common/Dialogs.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT common/simplescreenrecorder-Dialogs.o -MD -MP -MF common/$(DEPDIR)/simplescreenrecorder-Dialogs.Tpo -c -o common/simplescreenrecorder-Dialogs.o `test -f 'common/Dialogs.cpp' || echo '$(srcdir)/'`common/Dialogs.cpp

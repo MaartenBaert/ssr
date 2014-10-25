@@ -20,9 +20,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "Main.h"
 
+#include "CPUFeatures.h"
+#include "HotkeyListener.h"
 #include "Icons.h"
 #include "Logger.h"
-#include "HotkeyListener.h"
 #include "MainWindow.h"
 
 #include "Version.h"
@@ -190,8 +191,14 @@ int main(int argc, char* argv[]) {
 
 	}
 
+	// start logging
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");
 	Logger::LogInfo(GetVersionInfo());
+
+	// detect CPU features
+	CPUFeatures::Detect();
+
+	// start the GUI
 	int ret;
 	{
 
@@ -208,6 +215,8 @@ int main(int argc, char* argv[]) {
 		ret = application.exec();
 
 	}
+
+	// stop logging
 	Logger::LogInfo("==================== " + Logger::tr("SSR stopped") + " ====================");
 
 	return ret;

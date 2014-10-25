@@ -18,7 +18,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Global.h"
-#include "DetectCPUFeatures.h"
+#include "CPUFeatures.h"
 
 #include "Logger.h"
 
@@ -31,34 +31,46 @@ sse2 = __builtin_cpu_supports("sse2");
 ... but for now I have to use CPUID manually.
 */
 
-void DetectCPUFeatures(CPUFeatures* features) {
+bool CPUFeatures::s_mmx = false;
+bool CPUFeatures::s_sse = false;
+bool CPUFeatures::s_sse2 = false;
+bool CPUFeatures::s_sse3 = false;
+bool CPUFeatures::s_ssse3 = false;
+bool CPUFeatures::s_sse41 = false;
+bool CPUFeatures::s_sse42 = false;
+bool CPUFeatures::s_avx = false;
+bool CPUFeatures::s_avx2 = false;
+bool CPUFeatures::s_bmi1 = false;
+bool CPUFeatures::s_bmi2 = false;
+
+void CPUFeatures::Detect() {
+
+	QString str = "[CPUFeatures::Detect] " + Logger::tr("CPU features") + ":";
+
 	// CPUID exists in i586 ('pentium 1') and higher, older processors are not supported.
 	// The meaning of ecx/edx bits are listed in table 3-20 and 3-21 ('Feature Information Returned in the ECX/EDX Register')
 	// from the Intel reference manual (page 589), or in AMD's CPUID reference (they are compatible).
-	memset(features, 0, sizeof(CPUFeatures));
-	QString str = "[DetectCPUFeatures] " + Logger::tr("CPU features") + ":";
-
 	unsigned int eax, ebx, ecx, edx;
 	__asm__ __volatile__ ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) : "a" (0));
 	unsigned int cpuid_max = eax;
 
 	if(cpuid_max >= 1) {
 		__asm__ __volatile__ ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) : "a" (1));
-		if(edx & (1 << 23)) { features->mmx    = true; str += " mmx"; }
-		if(edx & (1 << 25)) { features->sse    = true; str += " sse"; }
-		if(edx & (1 << 26)) { features->sse2   = true; str += " sse2"; }
-		if(ecx & (1 << 0))  { features->sse3   = true; str += " sse3"; }
-		if(ecx & (1 << 9))  { features->ssse3  = true; str += " ssse3"; }
-		if(ecx & (1 << 19)) { features->sse4_1 = true; str += " sse4_1"; }
-		if(ecx & (1 << 20)) { features->sse4_2 = true; str += " sse4_2"; }
-		if(ecx & (1 << 28)) { features->avx    = true; str += " avx"; }
+		if(edx & (1 << 23)) { s_mmx    = true; str += " mmx"; }
+		if(edx & (1 << 25)) { s_sse    = true; str += " sse"; }
+		if(edx & (1 << 26)) { s_sse2   = true; str += " sse2"; }
+		if(ecx & (1 << 0))  { s_sse3   = true; str += " sse3"; }
+		if(ecx & (1 << 9))  { s_ssse3  = true; str += " ssse3"; }
+		if(ecx & (1 << 19)) { s_sse41 = true; str += " sse4_1"; }
+		if(ecx & (1 << 20)) { s_sse42 = true; str += " sse4_2"; }
+		if(ecx & (1 << 28)) { s_avx    = true; str += " avx"; }
 	}
 
 	if(cpuid_max >= 7) {
 		__asm__ __volatile__ ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) : "a" (7), "c" (0));
-		if(ebx & (1 << 5))  { features->avx2   = true; str += " avx2"; }
-		if(ebx & (1 << 3))  { features->bmi1   = true; str += " bmi1"; }
-		if(ebx & (1 << 8))  { features->bmi2   = true; str += " bmi2"; }
+		if(ebx & (1 << 5))  { s_avx2   = true; str += " avx2"; }
+		if(ebx & (1 << 3))  { s_bmi1   = true; str += " bmi1"; }
+		if(ebx & (1 << 8))  { s_bmi2   = true; str += " bmi2"; }
 	}
 
 	Logger::LogInfo(str);

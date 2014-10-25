@@ -102,8 +102,8 @@ simplescreenrecorder_SOURCES = \
 	AV/SimpleSynth.h \
 	AV/SourceSink.cpp \
 	AV/SourceSink.h \
-	common/DetectCPUFeatures.cpp \
-	common/DetectCPUFeatures.h \
+	common/CPUFeatures.cpp \
+	common/CPUFeatures.h \
 	common/Dialogs.cpp \
 	common/Dialogs.h \
 	common/EnumStrings.h \

@@ -22,7 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.h"
 #include "AVWrapper.h"
-#include "DetectCPUFeatures.h"
+#include "CPUFeatures.h"
 #include "TempBuffer.h"
 
 #include "FastScaler_Convert.h"
@@ -31,9 +31,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 FastScaler::FastScaler() {
 
 #if SSR_USE_X86_ASM
-	CPUFeatures features;
-	DetectCPUFeatures(&features);
-	m_use_ssse3 = (features.mmx && features.sse && features.sse2 && features.sse3 && features.ssse3);
+	m_use_ssse3 = (CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3());
 	m_warn_alignment = true;
 #endif
 
