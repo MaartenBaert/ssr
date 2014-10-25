@@ -26,8 +26,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "MainWindow.h"
 
-#include "Version.h"
-
 bool g_option_logfile;
 QString g_option_statsfile;
 bool g_option_syncdiagram;
@@ -247,7 +245,7 @@ inline QString av_version(unsigned int ver) {
 
 QString GetVersionInfo() {
 	return QString() +
-			"SimpleScreenRecorder " + SSR_VERSION + "\n"
+			"SimpleScreenRecorder " + PACKAGE_VERSION + "\n"
 #ifdef __clang__
 			"Compiled with Clang " + QString::number(__clang_major__) + "." + QString::number(__clang_minor__) + "." + QString::number(__clang_patchlevel__) + "\n"
 #else

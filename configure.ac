@@ -2,6 +2,8 @@ AC_INIT([simplescreenrecorder], [0.3.1], [maarten-baert@hotmail.com])
 AC_CONFIG_SRCDIR([src/Main.cpp])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([Makefile data/Makefile glinject/Makefile scripts/Makefile src/Makefile])
 
 AM_INIT_AUTOMAKE([foreign subdir-objects -Wall -Werror])
 AM_MAINTAINER_MODE
@@ -30,6 +32,23 @@ AM_CONDITIONAL([ENABLE_FFMPEG_VERSIONS], [test x"$enable_ffmpeg_versions" != x"n
 AM_CONDITIONAL([ENABLE_PULSEAUDIO], [test x"$enable_pulseaudio" != x"no"])
 AM_CONDITIONAL([ENABLE_JACK], [test x"$enable_jack" != x"no"])
 
+AC_DEFUN([SSR_CONDITIONAL_DEFINE], [
+	AM_COND_IF([$1], [
+		AC_DEFINE([$2], [1], [$3])
+	], [
+		AC_DEFINE([$2], [0], [$3])
+	])
+])
+
+AM_COND_IF([ENABLE_ASSERT], [], [
+	AC_DEFINE([NDEBUG], [1], [Disable assert().])
+	AC_DEFINE([QT_NO_DEBUG], [1], [Disable Q_ASSERT().])
+])
+SSR_CONDITIONAL_DEFINE([ENABLE_X86_ASM], [SSR_USE_X86_ASM], [Allow x86/x64 assembly or intrinsics.])
+SSR_CONDITIONAL_DEFINE([ENABLE_FFMPEG_VERSIONS], [SSR_USE_FFMPEG_VERSIONS], [Use FFmpeg version numbers (rather than Libav).])
+SSR_CONDITIONAL_DEFINE([ENABLE_PULSEAUDIO], [SSR_USE_PULSEAUDIO], [Use PulseAudio.])
+SSR_CONDITIONAL_DEFINE([ENABLE_JACK], [SSR_USE_JACK], [Use JACK.])
+
 AM_COND_IF([ENABLE_SSRPROGRAM], [
 	PKG_PROG_PKG_CONFIG
 	PKG_CHECK_MODULES([QT4], [QtCore QtGui >= 4.7.0], [
@@ -40,63 +59,61 @@ AM_COND_IF([ENABLE_SSRPROGRAM], [
 		AC_PATH_PROGS([LUPDATE], [lupdate-qt4 lupdate], [lupdate], [$QT_PATH/bin])
 		AC_PATH_PROGS([LRELEASE], [lrelease-qt4 lrelease], [lrelease], [$QT_PATH/bin])
 	], [
-		AC_MSG_ERROR([Qt 4 not found])
+		AC_MSG_ERROR([Qt4 not found])
 	])
 ])
 
-AC_CHECK_LIB([rt], [clock_gettime], [ ], [AC_MSG_ERROR([required library missing])])
+AC_CHECK_LIB([rt], [clock_gettime], [], [AC_MSG_ERROR([required library missing])])
 
 AM_COND_IF([ENABLE_GLINJECTLIB], [
-	AC_CHECK_HEADER([dlfcn.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([dl], [dlsym], [ ], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([dlfcn.h], [], [AC_MSG_ERROR([required header missing])])
+	AC_CHECK_LIB([dl], [dlsym], [], [AC_MSG_ERROR([required library missing])])
 ])
 
 AM_COND_IF([ENABLE_SSRPROGRAM], [
-	AC_CHECK_HEADER([libavformat/avformat.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([avformat], [av_guess_format], [ ], [AC_MSG_ERROR([required library missing])])
-	AC_CHECK_HEADER([libavcodec/avcodec.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([avcodec], [avcodec_find_encoder_by_name], [ ], [AC_MSG_ERROR([required library missing])])
-	AC_CHECK_HEADER([libavutil/avutil.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_HEADER([libavutil/mathematics.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([avutil], [av_rescale_q], [ ], [AC_MSG_ERROR([required library missing])])
-	AC_CHECK_HEADER([libswscale/swscale.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([swscale], [sws_scale], [ ], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([libavformat/avformat.h], [], [AC_MSG_ERROR([required header missing])])
+	AC_CHECK_LIB([avformat], [av_guess_format], [], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([libavcodec/avcodec.h], [], [AC_MSG_ERROR([required header missing])])
+	AC_CHECK_LIB([avcodec], [avcodec_find_encoder_by_name], [], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([libavutil/avutil.h], [], [AC_MSG_ERROR([required header missing])])
+	AC_CHECK_HEADER([libavutil/mathematics.h], [], [AC_MSG_ERROR([required header missing])])
+	AC_CHECK_LIB([avutil], [av_rescale_q], [], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([libswscale/swscale.h], [], [AC_MSG_ERROR([required header missing])])
+	AC_CHECK_LIB([swscale], [sws_scale], [], [AC_MSG_ERROR([required library missing])])
 ])
 
-AC_CHECK_HEADER([X11/Xlib.h], [ ], [AC_MSG_ERROR([required header missing])])
-AC_CHECK_HEADER([X11/Xutil.h], [ ], [AC_MSG_ERROR([required header missing])], [#include <X11/Xlib.h>])
-AC_CHECK_LIB([X11], [XOpenDisplay], [ ], [AC_MSG_ERROR([required library missing])])
-AC_CHECK_HEADER([X11/extensions/Xfixes.h], [ ], [AC_MSG_ERROR([required header missing])], [#include <X11/Xlib.h>])
-AC_CHECK_LIB([Xfixes], [XFixesGetCursorImage], [ ], [AC_MSG_ERROR([required library missing])])
+AC_CHECK_HEADER([X11/Xlib.h], [], [AC_MSG_ERROR([required header missing])])
+AC_CHECK_HEADER([X11/Xutil.h], [], [AC_MSG_ERROR([required header missing])], [#include <X11/Xlib.h>])
+AC_CHECK_LIB([X11], [XOpenDisplay], [], [AC_MSG_ERROR([required library missing])])
+AC_CHECK_HEADER([X11/extensions/Xfixes.h], [], [AC_MSG_ERROR([required header missing])], [#include <X11/Xlib.h>])
+AC_CHECK_LIB([Xfixes], [XFixesGetCursorImage], [], [AC_MSG_ERROR([required library missing])])
 AM_COND_IF([ENABLE_SSRPROGRAM], [
-	AC_CHECK_HEADER([X11/extensions/XShm.h], [ ], [AC_MSG_ERROR([required header missing])], [#include <X11/Xlib.h>])
-	AC_CHECK_LIB([Xext], [XShmCreateImage], [ ], [AC_MSG_ERROR([required library missing])])
-	AC_CHECK_HEADER([X11/extensions/XInput2.h], [ ], [AC_MSG_ERROR([required header missing])], [#include <X11/Xlib.h>])
-	AC_CHECK_LIB([Xi], [XIQueryVersion], [ ], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([X11/extensions/XShm.h], [], [AC_MSG_ERROR([required header missing])], [#include <X11/Xlib.h>])
+	AC_CHECK_LIB([Xext], [XShmCreateImage], [], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([X11/extensions/XInput2.h], [], [AC_MSG_ERROR([required header missing])], [#include <X11/Xlib.h>])
+	AC_CHECK_LIB([Xi], [XIQueryVersion], [], [AC_MSG_ERROR([required library missing])])
 ])
 
 AM_COND_IF([ENABLE_SSRPROGRAM], [
-	AC_CHECK_HEADER([alsa/asoundlib.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([asound], [snd_pcm_open], [ ], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([alsa/asoundlib.h], [], [AC_MSG_ERROR([required header missing])])
+	AC_CHECK_LIB([asound], [snd_pcm_open], [], [AC_MSG_ERROR([required library missing])])
 	AM_COND_IF([ENABLE_PULSEAUDIO], [
-		AC_CHECK_HEADER([pulse/context.h], [ ], [AC_MSG_ERROR([required header missing])])
-		AC_CHECK_LIB([pulse], [pa_context_new], [ ], [AC_MSG_ERROR([required library missing])])
+		AC_CHECK_HEADER([pulse/context.h], [], [AC_MSG_ERROR([required header missing])])
+		AC_CHECK_LIB([pulse], [pa_context_new], [], [AC_MSG_ERROR([required library missing])])
 	])
 	AM_COND_IF([ENABLE_JACK], [
-		AC_CHECK_HEADER([jack/jack.h], [ ], [AC_MSG_ERROR([required header missing])])
-		AC_CHECK_LIB([jack], [jack_client_open], [ ], [AC_MSG_ERROR([required library missing])])
+		AC_CHECK_HEADER([jack/jack.h], [], [AC_MSG_ERROR([required header missing])])
+		AC_CHECK_LIB([jack], [jack_client_open], [], [AC_MSG_ERROR([required library missing])])
 	])
 ])
 
 AM_COND_IF([ENABLE_GLINJECTLIB], [
-	AC_CHECK_HEADER([GL/gl.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_HEADER([GL/glext.h], [ ], [AC_MSG_ERROR([required header missing])], [#include <GL/gl.h>])
-	AC_CHECK_HEADER([GL/glx.h], [ ], [AC_MSG_ERROR([required header missing])], [#include <GL/gl.h>])
-	AC_CHECK_LIB([GL], [glPushAttrib], [ ], [AC_MSG_ERROR([required library missing])])
-	AC_CHECK_HEADER([GL/glu.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([GLU], [gluErrorString], [ ], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([GL/gl.h], [], [AC_MSG_ERROR([required header missing])])
+	AC_CHECK_HEADER([GL/glext.h], [], [AC_MSG_ERROR([required header missing])], [#include <GL/gl.h>])
+	AC_CHECK_HEADER([GL/glx.h], [], [AC_MSG_ERROR([required header missing])], [#include <GL/gl.h>])
+	AC_CHECK_LIB([GL], [glPushAttrib], [], [AC_MSG_ERROR([required library missing])])
+	AC_CHECK_HEADER([GL/glu.h], [], [AC_MSG_ERROR([required header missing])])
+	AC_CHECK_LIB([GLU], [gluErrorString], [], [AC_MSG_ERROR([required library missing])])
 ])
 
-AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile data/Makefile glinject/Makefile scripts/Makefile src/Makefile])
 AC_OUTPUT

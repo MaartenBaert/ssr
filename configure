@@ -2429,6 +2429,10 @@ ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 
 
 
+ac_config_headers="$ac_config_headers config.h"
+
+ac_config_files="$ac_config_files Makefile data/Makefile glinject/Makefile scripts/Makefile src/Makefile"
+
 
 am__api_version='1.14'
 
@@ -16299,6 +16303,80 @@ else
 fi
 
 
+
+
+if test -z "$ENABLE_ASSERT_TRUE"; then :
+  else
+
+
+$as_echo "#define NDEBUG 1" >>confdefs.h
+
+
+$as_echo "#define QT_NO_DEBUG 1" >>confdefs.h
+
+
+fi
+
+	if test -z "$ENABLE_X86_ASM_TRUE"; then :
+
+
+$as_echo "#define SSR_USE_X86_ASM 1" >>confdefs.h
+
+
+else
+
+
+$as_echo "#define SSR_USE_X86_ASM 0" >>confdefs.h
+
+
+fi
+
+
+	if test -z "$ENABLE_FFMPEG_VERSIONS_TRUE"; then :
+
+
+$as_echo "#define SSR_USE_FFMPEG_VERSIONS 1" >>confdefs.h
+
+
+else
+
+
+$as_echo "#define SSR_USE_FFMPEG_VERSIONS 0" >>confdefs.h
+
+
+fi
+
+
+	if test -z "$ENABLE_PULSEAUDIO_TRUE"; then :
+
+
+$as_echo "#define SSR_USE_PULSEAUDIO 1" >>confdefs.h
+
+
+else
+
+
+$as_echo "#define SSR_USE_PULSEAUDIO 0" >>confdefs.h
+
+
+fi
+
+
+	if test -z "$ENABLE_JACK_TRUE"; then :
+
+
+$as_echo "#define SSR_USE_JACK 1" >>confdefs.h
+
+
+else
+
+
+$as_echo "#define SSR_USE_JACK 0" >>confdefs.h
+
+
+fi
+
+
 if test -z "$ENABLE_SSRPROGRAM_TRUE"; then :
 
 
@@ -16481,13 +16559,13 @@ fi
 	echo "$QT4_PKG_ERRORS" >&5
 
 
-		as_fn_error $? "Qt 4 not found" "$LINENO" 5
+		as_fn_error $? "Qt4 not found" "$LINENO" 5
 
 elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
-		as_fn_error $? "Qt 4 not found" "$LINENO" 5
+		as_fn_error $? "Qt4 not found" "$LINENO" 5
 
 else
 	QT4_CFLAGS=$pkg_cv_QT4_CFLAGS
@@ -16768,6 +16846,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_rt_clock_gettime" >&5
 $as_echo "$ac_cv_lib_rt_clock_gettime" >&6; }
 if test "x$ac_cv_lib_rt_clock_gettime" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBRT 1
+_ACEOF
+
+  LIBS="-lrt $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -16821,6 +16904,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dl_dlsym" >&5
 $as_echo "$ac_cv_lib_dl_dlsym" >&6; }
 if test "x$ac_cv_lib_dl_dlsym" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBDL 1
+_ACEOF
+
+  LIBS="-ldl $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -16876,6 +16964,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avformat_av_guess_format" >&5
 $as_echo "$ac_cv_lib_avformat_av_guess_format" >&6; }
 if test "x$ac_cv_lib_avformat_av_guess_format" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBAVFORMAT 1
+_ACEOF
+
+  LIBS="-lavformat $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -16926,6 +17019,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avcodec_avcodec_find_encoder_by_name" >&5
 $as_echo "$ac_cv_lib_avcodec_avcodec_find_encoder_by_name" >&6; }
 if test "x$ac_cv_lib_avcodec_avcodec_find_encoder_by_name" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBAVCODEC 1
+_ACEOF
+
+  LIBS="-lavcodec $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -16984,6 +17082,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avutil_av_rescale_q" >&5
 $as_echo "$ac_cv_lib_avutil_av_rescale_q" >&6; }
 if test "x$ac_cv_lib_avutil_av_rescale_q" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBAVUTIL 1
+_ACEOF
+
+  LIBS="-lavutil $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17034,6 +17137,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_swscale_sws_scale" >&5
 $as_echo "$ac_cv_lib_swscale_sws_scale" >&6; }
 if test "x$ac_cv_lib_swscale_sws_scale" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSWSCALE 1
+_ACEOF
+
+  LIBS="-lswscale $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17096,6 +17204,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_X11_XOpenDisplay" >&5
 $as_echo "$ac_cv_lib_X11_XOpenDisplay" >&6; }
 if test "x$ac_cv_lib_X11_XOpenDisplay" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBX11 1
+_ACEOF
+
+  LIBS="-lX11 $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17147,6 +17260,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xfixes_XFixesGetCursorImage" >&5
 $as_echo "$ac_cv_lib_Xfixes_XFixesGetCursorImage" >&6; }
 if test "x$ac_cv_lib_Xfixes_XFixesGetCursorImage" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBXFIXES 1
+_ACEOF
+
+  LIBS="-lXfixes $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17200,6 +17318,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xext_XShmCreateImage" >&5
 $as_echo "$ac_cv_lib_Xext_XShmCreateImage" >&6; }
 if test "x$ac_cv_lib_Xext_XShmCreateImage" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBXEXT 1
+_ACEOF
+
+  LIBS="-lXext $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17251,6 +17374,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xi_XIQueryVersion" >&5
 $as_echo "$ac_cv_lib_Xi_XIQueryVersion" >&6; }
 if test "x$ac_cv_lib_Xi_XIQueryVersion" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBXI 1
+_ACEOF
+
+  LIBS="-lXi $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17306,6 +17434,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_asound_snd_pcm_open" >&5
 $as_echo "$ac_cv_lib_asound_snd_pcm_open" >&6; }
 if test "x$ac_cv_lib_asound_snd_pcm_open" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBASOUND 1
+_ACEOF
+
+  LIBS="-lasound $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17358,6 +17491,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pulse_pa_context_new" >&5
 $as_echo "$ac_cv_lib_pulse_pa_context_new" >&6; }
 if test "x$ac_cv_lib_pulse_pa_context_new" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPULSE 1
+_ACEOF
+
+  LIBS="-lpulse $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17412,6 +17550,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jack_jack_client_open" >&5
 $as_echo "$ac_cv_lib_jack_jack_client_open" >&6; }
 if test "x$ac_cv_lib_jack_jack_client_open" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBJACK 1
+_ACEOF
+
+  LIBS="-ljack $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17487,6 +17630,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GL_glPushAttrib" >&5
 $as_echo "$ac_cv_lib_GL_glPushAttrib" >&6; }
 if test "x$ac_cv_lib_GL_glPushAttrib" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBGL 1
+_ACEOF
+
+  LIBS="-lGL $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17537,6 +17685,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GLU_gluErrorString" >&5
 $as_echo "$ac_cv_lib_GLU_gluErrorString" >&6; }
 if test "x$ac_cv_lib_GLU_gluErrorString" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBGLU 1
+_ACEOF
+
+  LIBS="-lGLU $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17544,10 +17697,6 @@ fi
 
 
 fi
-
-ac_config_headers="$ac_config_headers config.h"
-
-ac_config_files="$ac_config_files Makefile data/Makefile glinject/Makefile scripts/Makefile src/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -18689,14 +18838,14 @@ cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
-    "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
-    "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "data/Makefile") CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
     "glinject/Makefile") CONFIG_FILES="$CONFIG_FILES glinject/Makefile" ;;
     "scripts/Makefile") CONFIG_FILES="$CONFIG_FILES scripts/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
+    "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

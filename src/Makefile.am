@@ -4,50 +4,23 @@ bin_PROGRAMS = simplescreenrecorder
 noinst_LTLIBRARIES =
 
 simplescreenrecorder_CPPFLAGS = \
-	$(QT4_CFLAGS) \
 	-I$(srcdir)/AV/Input \
 	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
 	-I$(srcdir)/common \
 	-I$(srcdir)/GUI
-simplescreenrecorder_CFLAGS = \
-	-pthread
-simplescreenrecorder_CXXFLAGS = \
-	-pthread \
-	-std=c++0x
-simplescreenrecorder_LDFLAGS = \
-	-pthread \
-	$(QT4_LIBS) \
-	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lXi -lasound
+simplescreenrecorder_CFLAGS = -pthread
+simplescreenrecorder_CXXFLAGS = -pthread -std=c++0x
+simplescreenrecorder_LDFLAGS = -pthread -lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lXi -lasound
 
-if ! ENABLE_ASSERT
-simplescreenrecorder_CPPFLAGS += -DNDEBUG -DQT_NO_DEBUG
-endif
-
-if ENABLE_X86_ASM
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_X86_ASM=1
-else
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_X86_ASM=0
-endif
-
-if ENABLE_FFMPEG_VERSIONS
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_FFMPEG_VERSIONS=1
-else
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_FFMPEG_VERSIONS=0
-endif
+simplescreenrecorder_CPPFLAGS += $(QT4_CFLAGS)
+simplescreenrecorder_LDFLAGS += $(QT4_LIBS)
 
 if ENABLE_PULSEAUDIO
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_PULSEAUDIO=1
 simplescreenrecorder_LDFLAGS += -lpulse
-else
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_PULSEAUDIO=0
 endif
-
 if ENABLE_JACK
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_JACK=1
 simplescreenrecorder_LDFLAGS += -ljack
-else
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_JACK=0
 endif
 
 simplescreenrecorder_SOURCES = \
@@ -143,9 +116,7 @@ simplescreenrecorder_SOURCES = \
 	Main.cpp \
 	Main.h \
 	NVidia.cpp \
-	NVidia.h \
-	Version.cpp \
-	Version.h
+	NVidia.h
 nodist_simplescreenrecorder_SOURCES =
 simplescreenrecorder_LDADD =
 

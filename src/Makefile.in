@@ -81,21 +81,12 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @ENABLE_SSRPROGRAM_TRUE@bin_PROGRAMS = simplescreenrecorder$(EXEEXT)
-@ENABLE_ASSERT_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_1 = -DNDEBUG -DQT_NO_DEBUG
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_2 = -DSSR_USE_X86_ASM=1
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_FALSE@am__append_3 = -DSSR_USE_X86_ASM=0
-@ENABLE_FFMPEG_VERSIONS_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_4 = -DSSR_USE_FFMPEG_VERSIONS=1
-@ENABLE_FFMPEG_VERSIONS_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_5 = -DSSR_USE_FFMPEG_VERSIONS=0
-@ENABLE_PULSEAUDIO_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_6 = -DSSR_USE_PULSEAUDIO=1
-@ENABLE_PULSEAUDIO_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_7 = -lpulse
-@ENABLE_PULSEAUDIO_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_8 = -DSSR_USE_PULSEAUDIO=0
-@ENABLE_JACK_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_9 = -DSSR_USE_JACK=1
-@ENABLE_JACK_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_10 = -ljack
-@ENABLE_JACK_FALSE@@ENABLE_SSRPROGRAM_TRUE@am__append_11 = -DSSR_USE_JACK=0
+@ENABLE_PULSEAUDIO_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_1 = -lpulse
+@ENABLE_JACK_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_2 = -ljack
 
 ########## x86-specific targets ##########
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_12 = libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_13 = libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_3 = libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_4 = libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/build-aux/depcomp
@@ -184,7 +175,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	GUI/PageRecord.h GUI/PageWelcome.cpp GUI/PageWelcome.h \
 	GUI/ProfileBox.cpp GUI/ProfileBox.h GUI/VideoPreviewer.cpp \
 	GUI/VideoPreviewer.h Global.h Main.cpp Main.h NVidia.cpp \
-	NVidia.h Version.cpp Version.h
+	NVidia.h
 @ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-JACKInput.$(OBJEXT) \
@@ -226,8 +217,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-ProfileBox.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-VideoPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Main.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-NVidia.$(OBJEXT) \
-@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Version.$(OBJEXT)
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-NVidia.$(OBJEXT)
 @ENABLE_SSRPROGRAM_TRUE@nodist_simplescreenrecorder_OBJECTS = simplescreenrecorder-qrc_resources.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_X11Input.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_SyncDiagram.$(OBJEXT) \
@@ -247,7 +237,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 simplescreenrecorder_OBJECTS = $(am_simplescreenrecorder_OBJECTS) \
 	$(nodist_simplescreenrecorder_OBJECTS)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_DEPENDENCIES =  \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_13)
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_4)
 simplescreenrecorder_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) \
@@ -496,29 +486,20 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@ENABLE_SSRPROGRAM_TRUE@noinst_LTLIBRARIES = $(am__append_12)
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS = $(QT4_CFLAGS) \
+@ENABLE_SSRPROGRAM_TRUE@noinst_LTLIBRARIES = $(am__append_3)
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS =  \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Output -I$(srcdir)/AV \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/common -I$(srcdir)/GUI \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_1) $(am__append_2) \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_3) $(am__append_4) \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_5) $(am__append_6) \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_8) $(am__append_9) \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_11) \
+@ENABLE_SSRPROGRAM_TRUE@	$(QT4_CFLAGS) \
 @ENABLE_SSRPROGRAM_TRUE@	-DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = \
-@ENABLE_SSRPROGRAM_TRUE@	-pthread
-
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = \
-@ENABLE_SSRPROGRAM_TRUE@	-pthread \
-@ENABLE_SSRPROGRAM_TRUE@	-std=c++0x
-
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread \
-@ENABLE_SSRPROGRAM_TRUE@	$(QT4_LIBS) -lrt -lavformat -lavcodec \
-@ENABLE_SSRPROGRAM_TRUE@	-lavutil -lswscale -lX11 -lXext \
-@ENABLE_SSRPROGRAM_TRUE@	-lXfixes -lXi -lasound $(am__append_7) \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_10)
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = -pthread
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = -pthread -std=c++0x
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread -lrt \
+@ENABLE_SSRPROGRAM_TRUE@	-lavformat -lavcodec -lavutil \
+@ENABLE_SSRPROGRAM_TRUE@	-lswscale -lX11 -lXext -lXfixes -lXi \
+@ENABLE_SSRPROGRAM_TRUE@	-lasound $(QT4_LIBS) $(am__append_1) \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_2)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_SOURCES = \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.h \
@@ -612,9 +593,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	Main.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	Main.h \
 @ENABLE_SSRPROGRAM_TRUE@	NVidia.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	NVidia.h \
-@ENABLE_SSRPROGRAM_TRUE@	Version.cpp \
-@ENABLE_SSRPROGRAM_TRUE@	Version.h
+@ENABLE_SSRPROGRAM_TRUE@	NVidia.h
 
 
 ########## Qt resource system ##########
@@ -632,7 +611,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageRecord.cpp moc_PageWelcome.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_ProfileBox.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_VideoPreviewer.cpp
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDADD = $(am__append_13)
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDADD = $(am__append_4)
 @ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = translations/simplescreenrecorder_ar.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_bg.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_cs.ts \
@@ -916,7 +895,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-NVidia.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Version.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_DialogGLInject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_ElidedLabel.Po@am__quote@
@@ -1609,20 +1587,6 @@ simplescreenrecorder-NVidia.obj: NVidia.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='NVidia.cpp' object='simplescreenrecorder-NVidia.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-NVidia.obj `if test -f 'NVidia.cpp'; then $(CYGPATH_W) 'NVidia.cpp'; else $(CYGPATH_W) '$(srcdir)/NVidia.cpp'; fi`
-
-simplescreenrecorder-Version.o: Version.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-Version.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-Version.Tpo -c -o simplescreenrecorder-Version.o `test -f 'Version.cpp' || echo '$(srcdir)/'`Version.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-Version.Tpo $(DEPDIR)/simplescreenrecorder-Version.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Version.cpp' object='simplescreenrecorder-Version.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-Version.o `test -f 'Version.cpp' || echo '$(srcdir)/'`Version.cpp
-
-simplescreenrecorder-Version.obj: Version.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-Version.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-Version.Tpo -c -o simplescreenrecorder-Version.obj `if test -f 'Version.cpp'; then $(CYGPATH_W) 'Version.cpp'; else $(CYGPATH_W) '$(srcdir)/Version.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-Version.Tpo $(DEPDIR)/simplescreenrecorder-Version.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Version.cpp' object='simplescreenrecorder-Version.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-Version.obj `if test -f 'Version.cpp'; then $(CYGPATH_W) 'Version.cpp'; else $(CYGPATH_W) '$(srcdir)/Version.cpp'; fi`
 
 simplescreenrecorder-qrc_resources.o: qrc_resources.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-qrc_resources.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-qrc_resources.Tpo -c -o simplescreenrecorder-qrc_resources.o `test -f 'qrc_resources.cpp' || echo '$(srcdir)/'`qrc_resources.cpp
