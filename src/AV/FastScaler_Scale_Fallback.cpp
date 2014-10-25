@@ -121,22 +121,24 @@ void MipMap_BGRA_Fallback_Dynamic(unsigned int in_w, unsigned int in_h, const ui
 void MipMap_BGRA_Fallback(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 						  uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) {
 	assert(mx + my <= 8);
-	switch((mx << 8) | my) {
-		case 0x0000: assert(false); break;
-		case 0x0001: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 1); break;
-		case 0x0002: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 2); break;
-		case 0x0100: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 0); break;
-		case 0x0101: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 1); break;
-		case 0x0102: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 2); break;
-		case 0x0103: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 3); break;
-		case 0x0200: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 0); break;
-		case 0x0201: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 1); break;
-		case 0x0202: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 2); break;
-		case 0x0203: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 3); break;
-		case 0x0301: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 1); break;
-		case 0x0302: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 2); break;
-		case 0x0303: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 3); break;
-		default:     MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, mx, my); break;
+	switch((mx << 4) | my) {
+		case 0x00: assert(false); break;
+		case 0x01: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 1); break;
+		case 0x02: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 2); break;
+		case 0x03: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 3); break;
+		case 0x10: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 0); break;
+		case 0x11: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 1); break;
+		case 0x12: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 2); break;
+		case 0x13: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 3); break;
+		case 0x20: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 0); break;
+		case 0x21: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 1); break;
+		case 0x22: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 2); break;
+		case 0x23: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 3); break;
+		case 0x30: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 0); break;
+		case 0x31: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 1); break;
+		case 0x32: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 2); break;
+		case 0x33: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 3); break;
+		default:   MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, mx, my); break;
 	}
 }
 
