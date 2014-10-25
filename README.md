@@ -18,7 +18,7 @@ If you have a 64-bit system, you have to install some 32-bit libraries as well. 
 
 You will need the following packages to compile SimpleScreenRecorder:
 
-- GCC and make
+- GCC (>= 4.6) and make
 - pkg-config
 - Qt 4
 - ffmpeg or libav (libavformat, libavcodec, libavutil, libswscale)
@@ -51,13 +51,15 @@ If the 32-bit version of some library isn't found, but 64-bit works fine, try th
     cd /usr/lib/i386-linux-gnu
     sudo ln -s libGL.so.1 mesa/libGL.so
     sudo ln -s mesa/libGL.so libGL.so
+    sudo ln -s mesa/libGL.so.1 libGL.so.1
     
     # if you are using the proprietary AMD drivers:
     # first figure out where the fglrx directory is located,
     # this can be /usr/lib32 or /usr/lib/i386-linux-gnu
     cd /usr/lib/i386-linux-gnu
-    sudo ln -s libGL.so.1 /usr/lib32/fglrx/libGL.so
-    sudo ln -s fglrx/libGL.so /usr/lib32/libGL.so
+    sudo ln -s libGL.so.1 fglrx/libGL.so
+    sudo ln -s fglrx/libGL.so libGL.so
+    sudo ln -s fglrx/libGL.so.1 libGL.so.1
     
     # if you are using the proprietary NVIDIA drivers:
     # first figure out where the nvidia directory is located,
@@ -65,6 +67,7 @@ If the 32-bit version of some library isn't found, but 64-bit works fine, try th
     cd /usr/lib/i386-linux-gnu
     sudo ln -s libGL.so.1 nvidia*/libGL.so
     sudo ln -s nvidia*/libGL.so libGL.so
+    sudo ln -s nvidia*/libGL.so.1 libGL.so.1
     
     # for all drivers:
     cd /usr/lib/i386-linux-gnu

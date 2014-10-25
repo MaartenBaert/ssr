@@ -6,6 +6,15 @@ Git master
 
 - ?
 
+Version 0.3.1
+-------------
+
+- Small change to ssr-glinject script for improved compatibility with Steam.
+- Added qscale option.
+- Disabled PulseAudio latency estimation (apparently it made things worse).
+- New muxing code for improved compatibility with the latest ffmpeg/libav.
+- Switched to the BT.709 color space.
+
 Version 0.3.0
 -------------
 

@@ -807,79 +807,79 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation>Неизвестно изключение в нишката на кодиране.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="74"/>
+        <location filename="../AV/Output/Muxer.cpp" line="71"/>
         <source>Stopping encoders ...</source>
         <translation>Спиране на кодирането...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="81"/>
+        <location filename="../AV/Output/Muxer.cpp" line="78"/>
         <source>Waiting for muxer thread to stop ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="136"/>
+        <location filename="../AV/Output/Muxer.cpp" line="133"/>
         <source>Error: Can&apos;t write header!</source>
         <comment>Don&apos;t translate &apos;header&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="147"/>
+        <location filename="../AV/Output/Muxer.cpp" line="144"/>
         <source>Finishing encoders ...</source>
         <translation>Приключване на кодирането...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="189"/>
+        <location filename="../AV/Output/Muxer.cpp" line="186"/>
         <source>Error: Can&apos;t find chosen output format!</source>
         <translation>Грешка: Избраният изходен формат не може да бъде намерен!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="193"/>
+        <location filename="../AV/Output/Muxer.cpp" line="190"/>
         <source>Using format %1 (%2).</source>
         <translation>Използва се формат %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="198"/>
+        <location filename="../AV/Output/Muxer.cpp" line="196"/>
         <source>Error: Can&apos;t allocate format context!</source>
         <translation>Грешка: Контекстът на формата не може да бъде определен!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="205"/>
+        <location filename="../AV/Output/Muxer.cpp" line="203"/>
         <source>Error: Can&apos;t open output file!</source>
         <translation>Грешка: Изходният файл не може да бъде отворен!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="218"/>
+        <location filename="../AV/Output/Muxer.cpp" line="216"/>
         <source>Error: Can&apos;t write trailer, continuing anyway.</source>
         <comment>Don&apos;t translate &apos;trailer&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="251"/>
+        <location filename="../AV/Output/Muxer.cpp" line="254"/>
         <source>Error: Can&apos;t find codec!</source>
         <translation>Грешка: Кодекът не може да бъде намерен!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="261"/>
+        <location filename="../AV/Output/Muxer.cpp" line="264"/>
         <source>Using codec %1 (%2).</source>
         <translation>Използва се кодек %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="270"/>
+        <location filename="../AV/Output/Muxer.cpp" line="273"/>
         <source>Error: Can&apos;t create new stream!</source>
         <translation>Грешка: Не може да бъде създаден нов поток!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="280"/>
+        <location filename="../AV/Output/Muxer.cpp" line="283"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="293"/>
+        <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
         <translation>Внимание: Този кодек се счита за експериментален от libav/ffmpeg.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="307"/>
+        <location filename="../AV/Output/Muxer.cpp" line="310"/>
         <source>Muxer thread started.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -989,8 +989,8 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation>Грешка: Програмата за кодиране изисква неподдържан формат на пикселите!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="198"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="218"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="203"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="223"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation type="unfinished"></translation>
     </message>

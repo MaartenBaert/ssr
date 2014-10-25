@@ -22,7 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.h"
 #include "AVWrapper.h"
-#include "DetectCPUFeatures.h"
+#include "CPUFeatures.h"
 #include "TempBuffer.h"
 
 #include "FastScaler_Convert.h"
@@ -31,9 +31,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 FastScaler::FastScaler() {
 
 #if SSR_USE_X86_ASM
-	CPUFeatures features;
-	DetectCPUFeatures(&features);
-	m_use_ssse3 = (features.mmx && features.sse && features.sse2 && features.sse3 && features.ssse3);
 	m_warn_alignment = true;
 #endif
 
@@ -86,6 +83,10 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 		Logger::LogError("[FastScaler::Scale] " + Logger::tr("Error: Can't get swscale context!", "Don't translate 'swscale'"));
 		throw LibavException();
 	}
+	sws_setColorspaceDetails(m_sws_context,
+							 sws_getCoefficients(SWS_CS_ITU709), 0,
+							 sws_getCoefficients(SWS_CS_DEFAULT), 0,
+							 0, 1 << 16, 1 << 16);
 	sws_scale(m_sws_context, in_data, in_stride, 0, in_height, out_data, out_stride);
 
 }
@@ -94,7 +95,7 @@ void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, co
 	assert(width % 2 == 0 && height % 2 == 0);
 
 #if SSR_USE_X86_ASM
-	if(m_use_ssse3) {
+	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
 		if((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0 &&
 		   (uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0 &&
 		   (uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0) {
@@ -119,7 +120,7 @@ void FastScaler::Scale_BGRA(unsigned int in_width, unsigned int in_height, const
 							unsigned int out_width, unsigned int out_height, uint8_t* out_data, int out_stride) {
 
 #if SSR_USE_X86_ASM
-	if(m_use_ssse3) {
+	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
 		if((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0) {
 			Scale_BGRA_SSSE3(in_width, in_height, in_data, in_stride, out_width, out_height, out_data, out_stride);
 		} else {

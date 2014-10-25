@@ -4,53 +4,23 @@ bin_PROGRAMS = simplescreenrecorder
 noinst_LTLIBRARIES =
 
 simplescreenrecorder_CPPFLAGS = \
-	$(QT5_CFLAGS) \
 	-I$(srcdir)/AV/Input \
 	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
 	-I$(srcdir)/common \
 	-I$(srcdir)/GUI
-simplescreenrecorder_CFLAGS = \
-	-pthread \
-	-fPIC
-simplescreenrecorder_CXXFLAGS = \
-	-pthread \
-	-fPIC \
-	-std=c++0x \
-	-flax-vector-conversions
-simplescreenrecorder_LDFLAGS = \
-	-pthread \
-	$(QT5_LIBS) \
-	-lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lXi -lasound
+simplescreenrecorder_CFLAGS = -pthread -fPIC
+simplescreenrecorder_CXXFLAGS = -pthread -fPIC -std=c++0x
+simplescreenrecorder_LDFLAGS = -pthread -fPIC -lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lXi -lasound
 
-if ! ENABLE_ASSERT
-simplescreenrecorder_CPPFLAGS += -DNDEBUG -DQT_NO_DEBUG
-endif
-
-if ENABLE_X86_ASM
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_X86_ASM=1
-else
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_X86_ASM=0
-endif
-
-if ENABLE_FFMPEG_VERSIONS
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_FFMPEG_VERSIONS=1
-else
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_FFMPEG_VERSIONS=0
-endif
+simplescreenrecorder_CPPFLAGS += $(QT5_CFLAGS)
+simplescreenrecorder_LDFLAGS += $(QT5_LIBS)
 
 if ENABLE_PULSEAUDIO
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_PULSEAUDIO=1
 simplescreenrecorder_LDFLAGS += -lpulse
-else
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_PULSEAUDIO=0
 endif
-
 if ENABLE_JACK
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_JACK=1
 simplescreenrecorder_LDFLAGS += -ljack
-else
-simplescreenrecorder_CPPFLAGS += -DSSR_USE_JACK=0
 endif
 
 simplescreenrecorder_SOURCES = \
@@ -105,8 +75,8 @@ simplescreenrecorder_SOURCES = \
 	AV/SimpleSynth.h \
 	AV/SourceSink.cpp \
 	AV/SourceSink.h \
-	common/DetectCPUFeatures.cpp \
-	common/DetectCPUFeatures.h \
+	common/CPUFeatures.cpp \
+	common/CPUFeatures.h \
 	common/Dialogs.cpp \
 	common/Dialogs.h \
 	common/EnumStrings.h \
@@ -146,9 +116,7 @@ simplescreenrecorder_SOURCES = \
 	Main.cpp \
 	Main.h \
 	NVidia.cpp \
-	NVidia.h \
-	Version.cpp \
-	Version.h
+	NVidia.h
 nodist_simplescreenrecorder_SOURCES =
 simplescreenrecorder_LDADD =
 
@@ -251,6 +219,7 @@ translationsdir = $(pkgdatadir)/translations
 simplescreenrecorder_CPPFLAGS += -DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
 
 nodist_translations_DATA = \
+	simplescreenrecorder_ar.qm \
 	simplescreenrecorder_bg.qm \
 	simplescreenrecorder_cs.qm \
 	simplescreenrecorder_de.qm \
@@ -266,6 +235,7 @@ nodist_translations_DATA = \
 	simplescreenrecorder_zh_CN.qm
 
 EXTRA_DIST += \
+	translations/simplescreenrecorder_ar.ts \
 	translations/simplescreenrecorder_bg.ts \
 	translations/simplescreenrecorder_cs.ts \
 	translations/simplescreenrecorder_de.ts \
@@ -280,6 +250,8 @@ EXTRA_DIST += \
 	translations/simplescreenrecorder_uk.ts \
 	translations/simplescreenrecorder_zh_CN.ts
 
+simplescreenrecorder_ar.qm: $(srcdir)/translations/simplescreenrecorder_ar.ts
+	$(LRELEASE) "$<" -qm "$@"
 simplescreenrecorder_bg.qm: $(srcdir)/translations/simplescreenrecorder_bg.ts
 	$(LRELEASE) "$<" -qm "$@"
 simplescreenrecorder_cs.qm: $(srcdir)/translations/simplescreenrecorder_cs.ts

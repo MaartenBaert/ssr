@@ -20,7 +20,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "FastScaler_Convert.h"
 
-
 /*
 Color space standards are a mess.
 

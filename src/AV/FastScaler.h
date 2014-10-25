@@ -24,7 +24,6 @@ class FastScaler {
 
 private:
 #if SSR_USE_X86_ASM
-	bool m_use_ssse3;
 	bool m_warn_alignment;
 #endif
 

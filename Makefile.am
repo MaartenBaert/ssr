@@ -1,6 +1,8 @@
 SUBDIRS = data glinject scripts src
 
 EXTRA_DIST = \
+	AUTHORS.md \
+	CHANGELOG.md \
 	COPYING \
 	notes.txt \
 	postinstall \

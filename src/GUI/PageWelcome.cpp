@@ -22,8 +22,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Main.h"
 #include "MainWindow.h"
 
-#include "Version.h"
-
 PageWelcome::PageWelcome(MainWindow* main_window)
 	: QWidget(main_window->centralWidget()) {
 
@@ -91,7 +89,7 @@ DialogAbout::DialogAbout(PageWelcome* parent)
 	html_about.replace("%USES_QT4%", tr("%1 for the graphical user interface").arg("<a href=\"https://qt-project.org/\">Qt 4</a>"));
 	html_about.replace("%USES_LIBAV_FFMPEG%", tr("%1 or %2 (depending on your distribution) for video/audio encoding").arg("<a href=\"http://libav.org/\">libav</a>").arg("<a href=\"http://ffmpeg.org/\">ffmpeg</a>"));
 	html_about.replace("%USES_ELFHACKS%", tr("%1 for hooking system functions for OpenGL recording").arg("<a href=\"https://github.com/nullkey/elfhacks\">elfhacks</a>"));
-	html_about.replace("%VERSION%", SSR_VERSION);
+	html_about.replace("%VERSION%", PACKAGE_VERSION);
 	html_about.replace("%VERSIONINFO%", GetVersionInfo().replace("\n", "<br>\n"));
 
 	QTextBrowser *textbrowser = new QTextBrowser(this);

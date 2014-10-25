@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include "config.h"
+
 #include <QtGui>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -152,14 +154,14 @@ inline void atomic_thread_fence_replacement(memory_order) {
 
 // AVStream::time_base as time base hint: lavf 55.44.100 / 55.20.0
 #define SSR_USE_AVSTREAM_TIME_BASE       TEST_AV_VERSION(LIBAVFORMAT, 55, 44, 55, 20)
-// av_stream_get_end_pts: lavf 55.38.101 / 55.17.1
-#define SSR_USE_AV_STREAM_GET_END_PTS    TEST_AV_VERSION(LIBAVFORMAT, 55, 38, 55, 17)
 // avformat_network_init: lavf 53.19.0 / 53.13.0
 #define SSR_USE_AVFORMAT_NETWORK_INIT    TEST_AV_VERSION(LIBAVFORMAT, 53, 19, 53, 13)
 // avformat_new_stream: lavf 53.17.0 / 53.10.0
 #define SSR_USE_AVFORMAT_NEW_STREAM      TEST_AV_VERSION(LIBAVFORMAT, 53, 17, 53, 10)
 // avformat_query_codec: lavf 53.11.0 / 53.8.0
 #define SSR_USE_AVFORMAT_QUERY_CODEC     TEST_AV_VERSION(LIBAVFORMAT, 53, 11, 53, 8)
+// avformat_free_context: lavf 52.96.0 / 52.96.0
+#define SSR_USE_AVFORMAT_FREE_CONTEXT    TEST_AV_VERSION(LIBAVFORMAT, 52, 96, 52, 96)
 
 // av_packet_rescale_ts: lavc 55.68.100 / 55.55.0
 #define SSR_USE_AV_PACKET_RESCALE_TS     TEST_AV_VERSION(LIBAVCODEC, 55, 68, 55, 55)
