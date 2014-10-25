@@ -593,7 +593,7 @@ PACKAGE_TARNAME='simplescreenrecorder'
 PACKAGE_VERSION='0.3.1'
 PACKAGE_STRING='simplescreenrecorder 0.3.1'
 PACKAGE_BUGREPORT='maarten-baert@hotmail.com'
-PACKAGE_URL=''
+PACKAGE_URL='http://www.maartenbaert.be/simplescreenrecorder/'
 
 ac_unique_file="src/Main.cpp"
 # Factoring default headers for most tests.
@@ -636,6 +636,8 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+QT4_LIBS
+QT4_CFLAGS
 LRELEASE
 LUPDATE
 UIC
@@ -646,20 +648,22 @@ QT5_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
-ENABLE_JACK_FALSE
-ENABLE_JACK_TRUE
-ENABLE_PULSEAUDIO_FALSE
-ENABLE_PULSEAUDIO_TRUE
+WITH_JACK_FALSE
+WITH_JACK_TRUE
+WITH_PULSEAUDIO_FALSE
+WITH_PULSEAUDIO_TRUE
+WITH_QT5_FALSE
+WITH_QT5_TRUE
 ENABLE_FFMPEG_VERSIONS_FALSE
 ENABLE_FFMPEG_VERSIONS_TRUE
 ENABLE_X86_ASM_FALSE
 ENABLE_X86_ASM_TRUE
 ENABLE_ASSERT_FALSE
 ENABLE_ASSERT_TRUE
-ENABLE_SSRPROGRAM_FALSE
-ENABLE_SSRPROGRAM_TRUE
 ENABLE_GLINJECTLIB_FALSE
 ENABLE_GLINJECTLIB_TRUE
+ENABLE_SSRPROGRAM_FALSE
+ENABLE_SSRPROGRAM_TRUE
 CXXCPP
 am__fastdepCXX_FALSE
 am__fastdepCXX_TRUE
@@ -796,13 +800,14 @@ enable_fast_install
 with_gnu_ld
 with_sysroot
 enable_libtool_lock
-enable_glinjectlib
 enable_ssrprogram
+enable_glinjectlib
 enable_assert
 enable_x86_asm
 enable_ffmpeg_versions
-enable_pulseaudio
-enable_jack
+with_qt5
+with_pulseaudio
+with_jack
 '
       ac_precious_vars='build_alias
 host_alias
@@ -821,7 +826,9 @@ PKG_CONFIG
 PKG_CONFIG_PATH
 PKG_CONFIG_LIBDIR
 QT5_CFLAGS
-QT5_LIBS'
+QT5_LIBS
+QT4_CFLAGS
+QT4_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1455,15 +1462,13 @@ Optional Features:
   --enable-fast-install[=PKGS]
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
-  --disable-glinjectlib   don't build the GLInject library
   --disable-ssrprogram    don't build the SimpleScreenRecorder program
+  --disable-glinjectlib   don't build the GLInject library
   --disable-assert        don't use assertions meant for debugging
   --disable-x86-asm       don't use x86/x64 assembly instructions
   --disable-ffmpeg-versions
                           use Libav version numbers instead of FFmpeg version
                           numbers
-  --disable-pulseaudio    don't use PulseAudio
-  --disable-jack          don't use JACK
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1473,6 +1478,9 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
+  --with-qt5              use Qt5 (instead of Qt4)
+  --without-pulseaudio    don't use PulseAudio
+  --without-jack          don't use JACK
 
 Some influential environment variables:
   CC          C compiler command
@@ -1493,11 +1501,14 @@ Some influential environment variables:
               path overriding pkg-config's built-in search path
   QT5_CFLAGS  C compiler flags for QT5, overriding pkg-config
   QT5_LIBS    linker flags for QT5, overriding pkg-config
+  QT4_CFLAGS  C compiler flags for QT4, overriding pkg-config
+  QT4_LIBS    linker flags for QT4, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
 
 Report bugs to <maarten-baert@hotmail.com>.
+simplescreenrecorder home page: <http://www.maartenbaert.be/simplescreenrecorder/>.
 _ACEOF
 ac_status=$?
 fi
@@ -16211,14 +16222,14 @@ $as_echo "$ac_cv_path_SED" >&6; }
 
 
 
-# Check whether --enable-glinjectlib was given.
-if test "${enable_glinjectlib+set}" = set; then :
-  enableval=$enable_glinjectlib;
-fi
-
 # Check whether --enable-ssrprogram was given.
 if test "${enable_ssrprogram+set}" = set; then :
   enableval=$enable_ssrprogram;
+fi
+
+# Check whether --enable-glinjectlib was given.
+if test "${enable_glinjectlib+set}" = set; then :
+  enableval=$enable_glinjectlib;
 fi
 
 # Check whether --enable-assert was given.
@@ -16236,22 +16247,22 @@ if test "${enable_ffmpeg_versions+set}" = set; then :
   enableval=$enable_ffmpeg_versions;
 fi
 
-# Check whether --enable-pulseaudio was given.
-if test "${enable_pulseaudio+set}" = set; then :
-  enableval=$enable_pulseaudio;
+
+# Check whether --with-qt5 was given.
+if test "${with_qt5+set}" = set; then :
+  withval=$with_qt5;
 fi
 
-# Check whether --enable-jack was given.
-if test "${enable_jack+set}" = set; then :
-  enableval=$enable_jack;
+
+# Check whether --with-pulseaudio was given.
+if test "${with_pulseaudio+set}" = set; then :
+  withval=$with_pulseaudio;
 fi
 
- if test x"$enable_glinjectlib" != x"no"; then
-  ENABLE_GLINJECTLIB_TRUE=
-  ENABLE_GLINJECTLIB_FALSE='#'
-else
-  ENABLE_GLINJECTLIB_TRUE='#'
-  ENABLE_GLINJECTLIB_FALSE=
+
+# Check whether --with-jack was given.
+if test "${with_jack+set}" = set; then :
+  withval=$with_jack;
 fi
 
  if test x"$enable_ssrprogram" != x"no"; then
@@ -16260,6 +16271,14 @@ fi
 else
   ENABLE_SSRPROGRAM_TRUE='#'
   ENABLE_SSRPROGRAM_FALSE=
+fi
+
+ if test x"$enable_glinjectlib" != x"no"; then
+  ENABLE_GLINJECTLIB_TRUE=
+  ENABLE_GLINJECTLIB_FALSE='#'
+else
+  ENABLE_GLINJECTLIB_TRUE='#'
+  ENABLE_GLINJECTLIB_FALSE=
 fi
 
  if test x"$enable_assert" != x"no"; then
@@ -16286,20 +16305,28 @@ else
   ENABLE_FFMPEG_VERSIONS_FALSE=
 fi
 
- if test x"$enable_pulseaudio" != x"no"; then
-  ENABLE_PULSEAUDIO_TRUE=
-  ENABLE_PULSEAUDIO_FALSE='#'
+ if test x"$with_qt5" == x"yes"; then
+  WITH_QT5_TRUE=
+  WITH_QT5_FALSE='#'
 else
-  ENABLE_PULSEAUDIO_TRUE='#'
-  ENABLE_PULSEAUDIO_FALSE=
+  WITH_QT5_TRUE='#'
+  WITH_QT5_FALSE=
 fi
 
- if test x"$enable_jack" != x"no"; then
-  ENABLE_JACK_TRUE=
-  ENABLE_JACK_FALSE='#'
+ if test x"$with_pulseaudio" != x"no"; then
+  WITH_PULSEAUDIO_TRUE=
+  WITH_PULSEAUDIO_FALSE='#'
 else
-  ENABLE_JACK_TRUE='#'
-  ENABLE_JACK_FALSE=
+  WITH_PULSEAUDIO_TRUE='#'
+  WITH_PULSEAUDIO_FALSE=
+fi
+
+ if test x"$with_jack" != x"no"; then
+  WITH_JACK_TRUE=
+  WITH_JACK_FALSE='#'
+else
+  WITH_JACK_TRUE='#'
+  WITH_JACK_FALSE=
 fi
 
 
@@ -16347,7 +16374,7 @@ $as_echo "#define SSR_USE_FFMPEG_VERSIONS 0" >>confdefs.h
 fi
 
 
-	if test -z "$ENABLE_PULSEAUDIO_TRUE"; then :
+	if test -z "$WITH_PULSEAUDIO_TRUE"; then :
 
 
 $as_echo "#define SSR_USE_PULSEAUDIO 1" >>confdefs.h
@@ -16362,7 +16389,7 @@ $as_echo "#define SSR_USE_PULSEAUDIO 0" >>confdefs.h
 fi
 
 
-	if test -z "$ENABLE_JACK_TRUE"; then :
+	if test -z "$WITH_JACK_TRUE"; then :
 
 
 $as_echo "#define SSR_USE_JACK 1" >>confdefs.h
@@ -16378,6 +16405,8 @@ fi
 
 
 if test -z "$ENABLE_SSRPROGRAM_TRUE"; then :
+
+	if test -z "$WITH_QT5_TRUE"; then :
 
 
 
@@ -16508,12 +16537,12 @@ if test -n "$QT5_CFLAGS"; then
     pkg_cv_QT5_CFLAGS="$QT5_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_QT5_CFLAGS=`$PKG_CONFIG --cflags "Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras" 2>/dev/null`
+  pkg_cv_QT5_CFLAGS=`$PKG_CONFIG --cflags "Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -16525,12 +16554,12 @@ if test -n "$QT5_LIBS"; then
     pkg_cv_QT5_LIBS="$QT5_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_QT5_LIBS=`$PKG_CONFIG --libs "Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras" 2>/dev/null`
+  pkg_cv_QT5_LIBS=`$PKG_CONFIG --libs "Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -16551,21 +16580,21 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        QT5_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras" 2>&1`
+	        QT5_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras" 2>&1`
         else
-	        QT5_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras" 2>&1`
+	        QT5_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$QT5_PKG_ERRORS" >&5
 
 
-		as_fn_error $? "Qt5 not found" "$LINENO" 5
+			as_fn_error $? "Qt5 not found" "$LINENO" 5
 
 elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
-		as_fn_error $? "Qt5 not found" "$LINENO" 5
+			as_fn_error $? "Qt5 not found" "$LINENO" 5
 
 else
 	QT5_CFLAGS=$pkg_cv_QT5_CFLAGS
@@ -16573,8 +16602,8 @@ else
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
-		QT_PATH="$( eval $PKG_CONFIG --variable=exec_prefix Qt5Core )"
-		for ac_prog in moc-qt5 moc
+			QT_PATH="$( eval $PKG_CONFIG --variable=exec_prefix Qt5Core )"
+			for ac_prog in moc-qt5 moc
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -16620,7 +16649,7 @@ fi
 done
 test -n "$MOC" || MOC="moc"
 
-		for ac_prog in rcc-qt5 rcc
+			for ac_prog in rcc-qt5 rcc
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -16666,7 +16695,7 @@ fi
 done
 test -n "$RCC" || RCC="rcc"
 
-		for ac_prog in uic-qt5 uic
+			for ac_prog in uic-qt5 uic
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -16712,7 +16741,7 @@ fi
 done
 test -n "$UIC" || UIC="uic"
 
-		for ac_prog in lupdate-qt5 lupdate
+			for ac_prog in lupdate-qt5 lupdate
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -16758,7 +16787,7 @@ fi
 done
 test -n "$LUPDATE" || LUPDATE="lupdate"
 
-		for ac_prog in lrelease-qt5 lrelease
+			for ac_prog in lrelease-qt5 lrelease
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -16804,6 +16833,438 @@ fi
 done
 test -n "$LRELEASE" || LRELEASE="lrelease"
 
+
+fi
+
+else
+
+
+
+
+
+
+
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
+$as_echo "$PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
+$as_echo "$ac_pt_PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.9.0
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
+$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	else
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		PKG_CONFIG=""
+	fi
+fi
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QT4" >&5
+$as_echo_n "checking for QT4... " >&6; }
+
+if test -n "$QT4_CFLAGS"; then
+    pkg_cv_QT4_CFLAGS="$QT4_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"QtCore >= 4.8.0 QtGui\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "QtCore >= 4.8.0 QtGui") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_QT4_CFLAGS=`$PKG_CONFIG --cflags "QtCore >= 4.8.0 QtGui" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$QT4_LIBS"; then
+    pkg_cv_QT4_LIBS="$QT4_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"QtCore >= 4.8.0 QtGui\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "QtCore >= 4.8.0 QtGui") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_QT4_LIBS=`$PKG_CONFIG --libs "QtCore >= 4.8.0 QtGui" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        QT4_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "QtCore >= 4.8.0 QtGui" 2>&1`
+        else
+	        QT4_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "QtCore >= 4.8.0 QtGui" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$QT4_PKG_ERRORS" >&5
+
+
+			as_fn_error $? "Qt4 not found" "$LINENO" 5
+
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+			as_fn_error $? "Qt4 not found" "$LINENO" 5
+
+else
+	QT4_CFLAGS=$pkg_cv_QT4_CFLAGS
+	QT4_LIBS=$pkg_cv_QT4_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+			QT_PATH="$( eval $PKG_CONFIG --variable=exec_prefix QtCore )"
+			for ac_prog in moc-qt4 moc
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_MOC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $MOC in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MOC="$MOC" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $QT_PATH/bin
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_MOC="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+MOC=$ac_cv_path_MOC
+if test -n "$MOC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MOC" >&5
+$as_echo "$MOC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$MOC" && break
+done
+test -n "$MOC" || MOC="moc"
+
+			for ac_prog in rcc-qt4 rcc
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_RCC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $RCC in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_RCC="$RCC" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $QT_PATH/bin
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_RCC="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+RCC=$ac_cv_path_RCC
+if test -n "$RCC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $RCC" >&5
+$as_echo "$RCC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$RCC" && break
+done
+test -n "$RCC" || RCC="rcc"
+
+			for ac_prog in uic-qt4 uic
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_UIC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $UIC in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_UIC="$UIC" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $QT_PATH/bin
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_UIC="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+UIC=$ac_cv_path_UIC
+if test -n "$UIC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $UIC" >&5
+$as_echo "$UIC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$UIC" && break
+done
+test -n "$UIC" || UIC="uic"
+
+			for ac_prog in lupdate-qt4 lupdate
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_LUPDATE+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $LUPDATE in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_LUPDATE="$LUPDATE" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $QT_PATH/bin
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_LUPDATE="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+LUPDATE=$ac_cv_path_LUPDATE
+if test -n "$LUPDATE"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LUPDATE" >&5
+$as_echo "$LUPDATE" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$LUPDATE" && break
+done
+test -n "$LUPDATE" || LUPDATE="lupdate"
+
+			for ac_prog in lrelease-qt4 lrelease
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_LRELEASE+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $LRELEASE in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_LRELEASE="$LRELEASE" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $QT_PATH/bin
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_LRELEASE="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+LRELEASE=$ac_cv_path_LRELEASE
+if test -n "$LRELEASE"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LRELEASE" >&5
+$as_echo "$LRELEASE" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$LRELEASE" && break
+done
+test -n "$LRELEASE" || LRELEASE="lrelease"
+
+
+fi
 
 fi
 
@@ -17444,7 +17905,7 @@ else
   as_fn_error $? "required library missing" "$LINENO" 5
 fi
 
-	if test -z "$ENABLE_PULSEAUDIO_TRUE"; then :
+	if test -z "$WITH_PULSEAUDIO_TRUE"; then :
 
 		ac_fn_c_check_header_mongrel "$LINENO" "pulse/context.h" "ac_cv_header_pulse_context_h" "$ac_includes_default"
 if test "x$ac_cv_header_pulse_context_h" = xyes; then :
@@ -17503,7 +17964,7 @@ fi
 
 
 fi
-	if test -z "$ENABLE_JACK_TRUE"; then :
+	if test -z "$WITH_JACK_TRUE"; then :
 
 		ac_fn_c_check_header_mongrel "$LINENO" "jack/jack.h" "ac_cv_header_jack_jack_h" "$ac_includes_default"
 if test "x$ac_cv_header_jack_jack_h" = xyes; then :
@@ -17843,12 +18304,12 @@ if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${ENABLE_GLINJECTLIB_TRUE}" && test -z "${ENABLE_GLINJECTLIB_FALSE}"; then
-  as_fn_error $? "conditional \"ENABLE_GLINJECTLIB\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
 if test -z "${ENABLE_SSRPROGRAM_TRUE}" && test -z "${ENABLE_SSRPROGRAM_FALSE}"; then
   as_fn_error $? "conditional \"ENABLE_SSRPROGRAM\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_GLINJECTLIB_TRUE}" && test -z "${ENABLE_GLINJECTLIB_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_GLINJECTLIB\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${ENABLE_ASSERT_TRUE}" && test -z "${ENABLE_ASSERT_FALSE}"; then
@@ -17863,12 +18324,16 @@ if test -z "${ENABLE_FFMPEG_VERSIONS_TRUE}" && test -z "${ENABLE_FFMPEG_VERSIONS
   as_fn_error $? "conditional \"ENABLE_FFMPEG_VERSIONS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${ENABLE_PULSEAUDIO_TRUE}" && test -z "${ENABLE_PULSEAUDIO_FALSE}"; then
-  as_fn_error $? "conditional \"ENABLE_PULSEAUDIO\" was never defined.
+if test -z "${WITH_QT5_TRUE}" && test -z "${WITH_QT5_FALSE}"; then
+  as_fn_error $? "conditional \"WITH_QT5\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${ENABLE_JACK_TRUE}" && test -z "${ENABLE_JACK_FALSE}"; then
-  as_fn_error $? "conditional \"ENABLE_JACK\" was never defined.
+if test -z "${WITH_PULSEAUDIO_TRUE}" && test -z "${WITH_PULSEAUDIO_FALSE}"; then
+  as_fn_error $? "conditional \"WITH_PULSEAUDIO\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${WITH_JACK_TRUE}" && test -z "${WITH_JACK_FALSE}"; then
+  as_fn_error $? "conditional \"WITH_JACK\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
@@ -18328,7 +18793,8 @@ $config_headers
 Configuration commands:
 $config_commands
 
-Report bugs to <maarten-baert@hotmail.com>."
+Report bugs to <maarten-baert@hotmail.com>.
+simplescreenrecorder home page: <http://www.maartenbaert.be/simplescreenrecorder/>."
 
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1

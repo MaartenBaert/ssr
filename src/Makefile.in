@@ -81,12 +81,16 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @ENABLE_SSRPROGRAM_TRUE@bin_PROGRAMS = simplescreenrecorder$(EXEEXT)
-@ENABLE_PULSEAUDIO_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_1 = -lpulse
-@ENABLE_JACK_TRUE@@ENABLE_SSRPROGRAM_TRUE@am__append_2 = -ljack
+@ENABLE_SSRPROGRAM_TRUE@@WITH_QT5_TRUE@am__append_1 = $(QT5_CFLAGS)
+@ENABLE_SSRPROGRAM_TRUE@@WITH_QT5_TRUE@am__append_2 = $(QT5_LIBS)
+@ENABLE_SSRPROGRAM_TRUE@@WITH_QT5_FALSE@am__append_3 = $(QT4_CFLAGS)
+@ENABLE_SSRPROGRAM_TRUE@@WITH_QT5_FALSE@am__append_4 = $(QT4_LIBS)
+@ENABLE_SSRPROGRAM_TRUE@@WITH_PULSEAUDIO_TRUE@am__append_5 = -lpulse
+@ENABLE_SSRPROGRAM_TRUE@@WITH_JACK_TRUE@am__append_6 = -ljack
 
 ########## x86-specific targets ##########
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_3 = libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
-@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_4 = libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_7 = libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
+@ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@am__append_8 = libsimplescreenrecorder-target-sse2.la libsimplescreenrecorder-target-ssse3.la
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/build-aux/depcomp
@@ -237,7 +241,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 simplescreenrecorder_OBJECTS = $(am_simplescreenrecorder_OBJECTS) \
 	$(nodist_simplescreenrecorder_OBJECTS)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_DEPENDENCIES =  \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_4)
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_8)
 simplescreenrecorder_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) \
@@ -423,6 +427,8 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+QT4_CFLAGS = @QT4_CFLAGS@
+QT4_LIBS = @QT4_LIBS@
 QT5_CFLAGS = @QT5_CFLAGS@
 QT5_LIBS = @QT5_LIBS@
 RANLIB = @RANLIB@
@@ -486,20 +492,21 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@ENABLE_SSRPROGRAM_TRUE@noinst_LTLIBRARIES = $(am__append_3)
+@ENABLE_SSRPROGRAM_TRUE@noinst_LTLIBRARIES = $(am__append_7)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CPPFLAGS =  \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Output -I$(srcdir)/AV \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/common -I$(srcdir)/GUI \
-@ENABLE_SSRPROGRAM_TRUE@	$(QT5_CFLAGS) \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_1) $(am__append_3) \
 @ENABLE_SSRPROGRAM_TRUE@	-DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = -pthread -fPIC
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = -pthread -fPIC -std=c++0x
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread -fPIC \
 @ENABLE_SSRPROGRAM_TRUE@	-lrt -lavformat -lavcodec -lavutil \
 @ENABLE_SSRPROGRAM_TRUE@	-lswscale -lX11 -lXext -lXfixes -lXi \
-@ENABLE_SSRPROGRAM_TRUE@	-lasound $(QT5_LIBS) $(am__append_1) \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_2)
+@ENABLE_SSRPROGRAM_TRUE@	-lasound $(am__append_2) \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_4) $(am__append_5) \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_6)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_SOURCES = \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/ALSAInput.h \
@@ -611,7 +618,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageRecord.cpp moc_PageWelcome.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_ProfileBox.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_VideoPreviewer.cpp
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDADD = $(am__append_4)
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDADD = $(am__append_8)
 @ENABLE_SSRPROGRAM_TRUE@EXTRA_DIST = translations/simplescreenrecorder_ar.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_bg.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_cs.ts \

@@ -13,13 +13,18 @@ simplescreenrecorder_CFLAGS = -pthread -fPIC
 simplescreenrecorder_CXXFLAGS = -pthread -fPIC -std=c++0x
 simplescreenrecorder_LDFLAGS = -pthread -fPIC -lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lXi -lasound
 
+if WITH_QT5
 simplescreenrecorder_CPPFLAGS += $(QT5_CFLAGS)
 simplescreenrecorder_LDFLAGS += $(QT5_LIBS)
+else
+simplescreenrecorder_CPPFLAGS += $(QT4_CFLAGS)
+simplescreenrecorder_LDFLAGS += $(QT4_LIBS)
+endif
 
-if ENABLE_PULSEAUDIO
+if WITH_PULSEAUDIO
 simplescreenrecorder_LDFLAGS += -lpulse
 endif
-if ENABLE_JACK
+if WITH_JACK
 simplescreenrecorder_LDFLAGS += -ljack
 endif
 
