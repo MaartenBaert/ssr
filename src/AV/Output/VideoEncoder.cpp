@@ -27,8 +27,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 const size_t VideoEncoder::THROTTLE_THRESHOLD_FRAMES = 20;
 const size_t VideoEncoder::THROTTLE_THRESHOLD_PACKETS = 100;
-const std::vector<PixelFormat> VideoEncoder::SUPPORTED_PIXEL_FORMATS = {
-	AV_PIX_FMT_YUV420P,
+const std::vector<VideoEncoder::PixelFormatData> VideoEncoder::SUPPORTED_PIXEL_FORMATS = {
+	{AV_PIX_FMT_YUV444P, true},
+	{AV_PIX_FMT_YUV420P, true},
+	{AV_PIX_FMT_BGRA, false},
+	{AV_PIX_FMT_BGR24, false},
 };
 
 VideoEncoder::VideoEncoder(Muxer* muxer, AVStream* stream, AVCodec* codec, AVDictionary** options)
@@ -52,6 +55,23 @@ VideoEncoder::~VideoEncoder() {
 	StopThread();
 }
 
+PixelFormat VideoEncoder::GetPixelFormat() {
+	return GetStream()->codec->pix_fmt;
+}
+
+unsigned int VideoEncoder::GetWidth() {
+	return GetStream()->codec->width;
+}
+
+unsigned int VideoEncoder::GetHeight() {
+	return GetStream()->codec->height;
+}
+
+unsigned int VideoEncoder::GetFrameRate() {
+	assert(GetStream()->codec->time_base.num == 1);
+	return GetStream()->codec->time_base.den;
+}
+
 int64_t VideoEncoder::GetFrameDelay() {
 	int64_t interval = 0;
 	size_t frames = GetQueuedFrameCount();
@@ -69,19 +89,6 @@ int64_t VideoEncoder::GetFrameDelay() {
 	return interval;
 }
 
-unsigned int VideoEncoder::GetWidth() {
-	return GetStream()->codec->width;
-}
-
-unsigned int VideoEncoder::GetHeight() {
-	return GetStream()->codec->height;
-}
-
-unsigned int VideoEncoder::GetFrameRate() {
-	assert(GetStream()->codec->time_base.num == 1);
-	return GetStream()->codec->time_base.den;
-}
-
 bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
 	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL)
@@ -91,7 +98,7 @@ bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
 	if(codec->type != AVMEDIA_TYPE_VIDEO)
 		return false;
 	for(unsigned int i = 0; i < SUPPORTED_PIXEL_FORMATS.size(); ++i) {
-		if(AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i]))
+		if(AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i].m_format))
 			return true;
 	}
 	return false;
@@ -127,8 +134,17 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 #endif
 	stream->codec->pix_fmt = AV_PIX_FMT_NONE;
 	for(unsigned int i = 0; i < SUPPORTED_PIXEL_FORMATS.size(); ++i) {
-		if(AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i])) {
-			stream->codec->pix_fmt = SUPPORTED_PIXEL_FORMATS[i];
+		if(AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i].m_format)) {
+			stream->codec->pix_fmt = SUPPORTED_PIXEL_FORMATS[i].m_format;
+			if(SUPPORTED_PIXEL_FORMATS[i].m_is_yuv) {
+				stream->codec->color_primaries = AVCOL_PRI_BT709;
+				stream->codec->color_trc = AVCOL_TRC_BT709;
+				stream->codec->colorspace = AVCOL_SPC_BT709;
+				stream->codec->color_range = AVCOL_RANGE_MPEG;
+				stream->codec->chroma_sample_location = AVCHROMA_LOC_CENTER;
+			} else {
+				stream->codec->colorspace = AVCOL_SPC_RGB;
+			}
 			break;
 		}
 	}
@@ -139,11 +155,6 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 	stream->codec->sample_aspect_ratio.num = 1;
 	stream->codec->sample_aspect_ratio.den = 1;
 	stream->sample_aspect_ratio = stream->codec->sample_aspect_ratio;
-	stream->codec->color_primaries = AVCOL_PRI_BT709;
-	stream->codec->color_trc = AVCOL_TRC_BT709;
-	stream->codec->colorspace = AVCOL_SPC_BT709;
-	stream->codec->color_range = AVCOL_RANGE_MPEG;
-	stream->codec->chroma_sample_location = AVCHROMA_LOC_CENTER;
 	stream->codec->thread_count = std::max(1, (int) std::thread::hardware_concurrency());
 
 	for(unsigned int i = 0; i < codec_options.size(); ++i) {

@@ -99,11 +99,12 @@ private:
 
 	unsigned int m_video_width, m_video_height;
 	unsigned int m_video_frame_rate;
+	PixelFormat m_video_pixel_format;
 	int64_t m_video_max_frames_skipped;
 
 	unsigned int m_audio_channels, m_audio_sample_rate;
-	unsigned int m_audio_required_frame_samples;
-	AVSampleFormat m_audio_required_sample_format;
+	unsigned int m_audio_frame_size;
+	AVSampleFormat m_audio_sample_format;
 
 	std::unique_ptr<SyncDiagram> m_sync_diagram;
 

@@ -4,6 +4,7 @@ SimpleScreenRecorder changes
 Git master
 ----------
 
+- Qt5 support (optional, Qt4 is still the default)
 - ?
 
 Version 0.3.1

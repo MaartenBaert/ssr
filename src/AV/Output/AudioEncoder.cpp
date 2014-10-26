@@ -55,7 +55,7 @@ AudioEncoder::~AudioEncoder() {
 	StopThread();
 }
 
-unsigned int AudioEncoder::GetRequiredFrameSamples() {
+unsigned int AudioEncoder::GetFrameSize() {
 #if SSR_USE_AVCODEC_ENCODE_AUDIO2
 	return (GetStream()->codec->codec->capabilities & CODEC_CAP_VARIABLE_FRAME_SIZE)? DEFAULT_FRAME_SAMPLES : GetStream()->codec->frame_size;
 #else
@@ -63,7 +63,7 @@ unsigned int AudioEncoder::GetRequiredFrameSamples() {
 #endif
 }
 
-AVSampleFormat AudioEncoder::GetRequiredSampleFormat() {
+AVSampleFormat AudioEncoder::GetSampleFormat() {
 	return GetStream()->codec->sample_fmt;
 }
 
@@ -141,7 +141,7 @@ bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 
 	if(frame != NULL) {
 #if SSR_USE_AVFRAME_NB_SAMPLES
-		assert((unsigned int) frame->nb_samples == GetRequiredFrameSamples());
+		assert((unsigned int) frame->nb_samples == GetFrameSize());
 #endif
 #if SSR_USE_AVFRAME_CHANNELS
 		assert(frame->channels == GetStream()->codec->channels);
