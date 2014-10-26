@@ -33,20 +33,39 @@ Y =  16 + round((  47 * R +  157 * G +   16 * B) / 256)
 U = 128 + round(( -26 * R +  -86 * G +  112 * B) / 256)
 V = 128 + round(( 112 * R + -102 * G +  -10 * B) / 256)
 
-The convertor below is currently hard-coded for BT.709.
+The converters below are currently hard-coded for BT.709.
 */
 
 /*
-==== Fallback BGRA-to-YUV420 Converter ====
+==== Fallback BGRA-to-YUV*** Converter ====
 
-Nothing special, just plain C code. It processes blocks of 2x2 pixels of the input image and produces 2x2 Y, 1x1 U and 1x1 V values.
+Nothing special, just plain C code.
+- YUV444: one-to-one mapping
+- YUV420: takes blocks of 2x2 pixels, produces 2x2 Y and 1x1 U/V values
 */
+
+void Convert_BGRA_YUV444_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
+	const int offset_y = 128 + (16 << 8), offset_uv = 128 + (128 << 8);
+	for(unsigned int j = 0; j < h; ++j) {
+		const uint32_t *rgb = (const uint32_t*) (in_data + in_stride * (int) j);
+		uint8_t *yuv_y = out_data[0] + out_stride[0] * (int) j;
+		uint8_t *yuv_u = out_data[1] + out_stride[1] * (int) j;
+		uint8_t *yuv_v = out_data[2] + out_stride[2] * (int) j;
+		for(unsigned int i = 0; i < w; ++i) {
+			uint32_t c = *(rgb++);
+			int r = (int) ((c >> 16) & 0xff);
+			int g = (int) ((c >>  8) & 0xff);
+			int b = (int) ((c      ) & 0xff);
+			*(yuv_y++) = ( 47 * r +  157 * g +  16 * b + offset_y) >> 8;
+			*(yuv_u++) = (-26 * r +  -86 * g + 112 * b + offset_uv) >> 8;
+			*(yuv_v++) = (112 * r + -102 * g + -10 * b + offset_uv) >> 8;
+		}
+	}
+}
 
 void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
 	assert(w % 2 == 0 && h % 2 == 0);
-
 	const int offset_y = 128 + (16 << 8), offset_uv = (128 + (128 << 8)) << 2;
-
 	for(unsigned int j = 0; j < h / 2; ++j) {
 		const uint32_t *rgb1 = (const uint32_t*) (in_data + in_stride * (int) j * 2);
 		const uint32_t *rgb2 = (const uint32_t*) (in_data + in_stride * ((int) j * 2 + 1));
@@ -73,5 +92,4 @@ void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const uint8_t*
 			++yuv_u; ++yuv_v;
 		}
 	}
-
 }
