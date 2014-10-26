@@ -28,7 +28,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <tmmintrin.h> // ssse3
 
 /*
-==== SSSE3 BGRA-to-YUV*** Converter ====
+==== SSSE3 BGRA-to-YUV444/YUV420 Converter ====
 
 Uses the same principle as the fallback converter, but uses 16-bit integers so it can do 8 operations at once.
 - YUV444: takes blocks of 16x1 pixels, produces 16x1 Y/U/V values
@@ -217,6 +217,51 @@ void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 10;
 			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 10;
 			++yuv_u; ++yuv_v;
+		}
+	}
+
+	_mm_sfence();
+
+}
+
+/*
+==== SSSE3 BGRA-to-BGR Converter ====
+
+Same as the fallback converter, but with a larger block size and shuffles instead of shifts and bitwise or.
+- BGR: converts blocks of 16x1 pixels
+*/
+
+void Convert_BGRA_BGR_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* out_data, int out_stride) {
+	assert((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0);
+
+	__m128i v_shuffle1  = _mm_setr_epi8(  0,   1,   2,   4,   5,   6,   8,   9,  10,  12,  13,  14, 255, 255, 255, 255);
+	__m128i v_shuffle2  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,   0,   1,   2,   4);
+	__m128i v_shuffle3  = _mm_setr_epi8(  5,   6,   8,   9,  10,  12,  13,  14, 255, 255, 255, 255, 255, 255, 255, 255);
+	__m128i v_shuffle4  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255,   0,   1,   2,   4,   5,   6,   8,   9);
+	__m128i v_shuffle5  = _mm_setr_epi8( 10,  12,  13,  14, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+	__m128i v_shuffle6  = _mm_setr_epi8(255, 255, 255, 255,   0,   1,   2,   4,   5,   6,   8,   9,  10,  12,  13,  14);
+
+	for(unsigned int j = 0; j < h; ++j) {
+		const uint8_t *in = in_data + in_stride * (int) j;
+		uint8_t *out = out_data + out_stride * (int) j;
+		for(unsigned int i = 0; i < w / 16; ++i) {
+			__m128i c0 = _mm_loadu_si128((__m128i*) (in     ));
+			__m128i c1 = _mm_loadu_si128((__m128i*) (in + 16));
+			__m128i c2 = _mm_loadu_si128((__m128i*) (in + 32));
+			__m128i c3 = _mm_loadu_si128((__m128i*) (in + 48));
+			in += 64;
+			_mm_stream_si128((__m128i*) (out     ), _mm_or_si128(_mm_shuffle_epi8(c0, v_shuffle1), _mm_shuffle_epi8(c1, v_shuffle2)));
+			_mm_stream_si128((__m128i*) (out + 16), _mm_or_si128(_mm_shuffle_epi8(c1, v_shuffle3), _mm_shuffle_epi8(c2, v_shuffle4)));
+			_mm_stream_si128((__m128i*) (out + 32), _mm_or_si128(_mm_shuffle_epi8(c2, v_shuffle5), _mm_shuffle_epi8(c3, v_shuffle6)));
+			out += 48;
+		}
+		for(unsigned int i = 0; i < (w & 15); ++i) {
+			uint32_t c = *((uint32_t*) in);
+			in += 4;
+			out[0] = c;
+			out[1] = c >> 8;
+			out[2] = c >> 16;
+			out += 3;
 		}
 	}
 

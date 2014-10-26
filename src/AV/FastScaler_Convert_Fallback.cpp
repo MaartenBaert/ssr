@@ -37,7 +37,7 @@ The converters below are currently hard-coded for BT.709.
 */
 
 /*
-==== Fallback BGRA-to-YUV*** Converter ====
+==== Fallback BGRA-to-YUV444/YUV420 Converter ====
 
 Nothing special, just plain C code.
 - YUV444: one-to-one mapping
@@ -90,6 +90,39 @@ void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const uint8_t*
 			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 10;
 			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 10;
 			++yuv_u; ++yuv_v;
+		}
+	}
+}
+
+/*
+==== Fallback BGRA-to-BGR Converter ====
+
+Nothing special, just plain C code.
+- BGR: converts blocks of 8x1 pixels
+*/
+
+void Convert_BGRA_BGR_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* out_data, int out_stride) {
+	for(unsigned int j = 0; j < h; ++j) {
+		const uint8_t *in = in_data + in_stride * (int) j;
+		uint8_t *out = out_data + out_stride * (int) j;
+		for(unsigned int i = 0; i < w / 8; ++i) {
+			uint64_t c0 = ((uint64_t*) in)[0];
+			uint64_t c1 = ((uint64_t*) in)[1];
+			uint64_t c2 = ((uint64_t*) in)[2];
+			uint64_t c3 = ((uint64_t*) in)[3];
+			in += 32;
+			((uint64_t*) out)[0] = ((c0 & UINT64_C(0x0000000000ffffff))      ) | ((c0 & UINT64_C(0x00ffffff00000000)) >>  8) | ((c1 & UINT64_C(0x000000000000ffff)) << 48);
+			((uint64_t*) out)[1] = ((c1 & UINT64_C(0x0000000000ff0000)) >> 16) | ((c1 & UINT64_C(0x00ffffff00000000)) >> 24) | ((c2 & UINT64_C(0x0000000000ffffff)) << 32) | ((c2 & UINT64_C(0x000000ff00000000)) << 24);
+			((uint64_t*) out)[2] = ((c2 & UINT64_C(0x00ffff0000000000)) >> 40) | ((c3 & UINT64_C(0x0000000000ffffff)) << 16) | ((c3 & UINT64_C(0x00ffffff00000000)) <<  8);
+			out += 24;
+		}
+		for(unsigned int i = 0; i < (w & 7); ++i) {
+			uint32_t c = *((uint32_t*) in);
+			in += 4;
+			out[0] = c;
+			out[1] = c >> 8;
+			out[2] = c >> 16;
+			out += 3;
 		}
 	}
 }

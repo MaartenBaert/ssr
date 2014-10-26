@@ -55,24 +55,26 @@ AM_COND_IF([ENABLE_SSRPROGRAM], [
 	AM_COND_IF([WITH_QT5], [
 		PKG_PROG_PKG_CONFIG
 		PKG_CHECK_MODULES([QT5], [Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras], [
-			QT_PATH="$( eval $PKG_CONFIG --variable=exec_prefix Qt5Core )"
-			AC_PATH_PROGS([MOC], [moc-qt5 moc], [moc], [$QT_PATH/bin])
-			AC_PATH_PROGS([RCC], [rcc-qt5 rcc], [rcc], [$QT_PATH/bin])
-			AC_PATH_PROGS([UIC], [uic-qt5 uic], [uic], [$QT_PATH/bin])
-			AC_PATH_PROGS([LUPDATE], [lupdate-qt5 lupdate], [lupdate], [$QT_PATH/bin])
-			AC_PATH_PROGS([LRELEASE], [lrelease-qt5 lrelease], [lrelease], [$QT_PATH/bin])
+			QT_PATH1="$( eval $PKG_CONFIG --variable=libdir Qt5Core )"
+			QT_PATH2="$( eval $PKG_CONFIG --variable=exec_prefix Qt5Core )"
+			AC_PATH_PROGS([MOC], [moc-qt5 moc], [moc], [$QT_PATH1/bin:$QT_PATH2/bin])
+			AC_PATH_PROGS([RCC], [rcc-qt5 rcc], [rcc], [$QT_PATH1/bin:$QT_PATH2/bin])
+			AC_PATH_PROGS([UIC], [uic-qt5 uic], [uic], [$QT_PATH1/bin:$QT_PATH2/bin])
+			AC_PATH_PROGS([LUPDATE], [lupdate-qt5 lupdate], [lupdate], [$QT_PATH1/bin:$QT_PATH2/bin])
+			AC_PATH_PROGS([LRELEASE], [lrelease-qt5 lrelease], [lrelease], [$QT_PATH1/bin:$QT_PATH2/bin])
 		], [
 			AC_MSG_ERROR([Qt5 not found])
 		])
 	], [
 		PKG_PROG_PKG_CONFIG
 		PKG_CHECK_MODULES([QT4], [QtCore >= 4.8.0 QtGui], [
-			QT_PATH="$( eval $PKG_CONFIG --variable=exec_prefix QtCore )"
-			AC_PATH_PROGS([MOC], [moc-qt4 moc], [moc], [$QT_PATH/bin])
-			AC_PATH_PROGS([RCC], [rcc-qt4 rcc], [rcc], [$QT_PATH/bin])
-			AC_PATH_PROGS([UIC], [uic-qt4 uic], [uic], [$QT_PATH/bin])
-			AC_PATH_PROGS([LUPDATE], [lupdate-qt4 lupdate], [lupdate], [$QT_PATH/bin])
-			AC_PATH_PROGS([LRELEASE], [lrelease-qt4 lrelease], [lrelease], [$QT_PATH/bin])
+			QT_PATH1="$( eval $PKG_CONFIG --variable=libdir QtCore )"
+			QT_PATH2="$( eval $PKG_CONFIG --variable=exec_prefix QtCore )"
+			AC_PATH_PROGS([MOC], [moc-qt4 moc], [moc], [$QT_PATH1/bin:$QT_PATH2/bin])
+			AC_PATH_PROGS([RCC], [rcc-qt4 rcc], [rcc], [$QT_PATH1/bin:$QT_PATH2/bin])
+			AC_PATH_PROGS([UIC], [uic-qt4 uic], [uic], [$QT_PATH1/bin:$QT_PATH2/bin])
+			AC_PATH_PROGS([LUPDATE], [lupdate-qt4 lupdate], [lupdate], [$QT_PATH1/bin:$QT_PATH2/bin])
+			AC_PATH_PROGS([LRELEASE], [lrelease-qt4 lrelease], [lrelease], [$QT_PATH1/bin:$QT_PATH2/bin])
 		], [
 			AC_MSG_ERROR([Qt4 not found])
 		])

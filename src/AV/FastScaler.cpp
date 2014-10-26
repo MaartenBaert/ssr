@@ -83,6 +83,20 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 		return;
 	}
 
+	// faster BGRA to BGR conversion
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_BGR24) {
+		if(in_width == out_width && in_height == out_height) {
+			Convert_BGRA_BGR(in_width, in_height, in_data[0], in_stride[0], out_data[0], out_stride[0]);
+		} else {
+			TempBuffer<uint8_t> scaled;
+			int scaled_stride = grow_align16(out_width * 4);
+			scaled.Alloc(scaled_stride * out_height);
+			Scale_BGRA(in_width, in_height, in_data[0], in_stride[0], out_width, out_height, scaled.GetData(), scaled_stride);
+			Convert_BGRA_BGR(out_width, out_height, scaled.GetData(), scaled_stride, out_data[0], out_stride[0]);
+		}
+		return;
+	}
+
 	if(m_warn_swscale) {
 		m_warn_swscale = false;
 		Logger::LogWarning("[FastScaler::Scale] " + Logger::tr("Warning: Pixel format is not supported (%1 -> %2), using swscale instead. "
@@ -151,6 +165,28 @@ void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, co
 #endif
 
 	Convert_BGRA_YUV420_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+
+}
+
+void FastScaler::Convert_BGRA_BGR(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* out_data, int out_stride) {
+
+#if SSR_USE_X86_ASM
+	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+		if((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0) {
+			Convert_BGRA_BGR_SSSE3(width, height, in_data, in_stride, out_data, out_stride);
+		} else {
+			if(m_warn_alignment) {
+				m_warn_alignment = false;
+				Logger::LogWarning("[FastScaler::Convert_BGRA_BGR] " + Logger::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
+																				  "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
+			}
+			Convert_BGRA_BGR_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+		}
+		return;
+	}
+#endif
+
+	Convert_BGRA_BGR_Fallback(width, height, in_data, in_stride, out_data, out_stride);
 
 }
 

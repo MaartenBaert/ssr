@@ -16602,7 +16602,8 @@ else
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
-			QT_PATH="$( eval $PKG_CONFIG --variable=exec_prefix Qt5Core )"
+			QT_PATH1="$( eval $PKG_CONFIG --variable=libdir Qt5Core )"
+			QT_PATH2="$( eval $PKG_CONFIG --variable=exec_prefix Qt5Core )"
 			for ac_prog in moc-qt5 moc
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -16618,7 +16619,8 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $QT_PATH/bin
+as_dummy="$QT_PATH1/bin:$QT_PATH2/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -16664,7 +16666,8 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $QT_PATH/bin
+as_dummy="$QT_PATH1/bin:$QT_PATH2/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -16710,7 +16713,8 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $QT_PATH/bin
+as_dummy="$QT_PATH1/bin:$QT_PATH2/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -16756,7 +16760,8 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $QT_PATH/bin
+as_dummy="$QT_PATH1/bin:$QT_PATH2/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -16802,7 +16807,8 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $QT_PATH/bin
+as_dummy="$QT_PATH1/bin:$QT_PATH2/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -17032,7 +17038,8 @@ else
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
-			QT_PATH="$( eval $PKG_CONFIG --variable=exec_prefix QtCore )"
+			QT_PATH1="$( eval $PKG_CONFIG --variable=libdir QtCore )"
+			QT_PATH2="$( eval $PKG_CONFIG --variable=exec_prefix QtCore )"
 			for ac_prog in moc-qt4 moc
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -17048,7 +17055,8 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $QT_PATH/bin
+as_dummy="$QT_PATH1/bin:$QT_PATH2/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -17094,7 +17102,8 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $QT_PATH/bin
+as_dummy="$QT_PATH1/bin:$QT_PATH2/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -17140,7 +17149,8 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $QT_PATH/bin
+as_dummy="$QT_PATH1/bin:$QT_PATH2/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -17186,7 +17196,8 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $QT_PATH/bin
+as_dummy="$QT_PATH1/bin:$QT_PATH2/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -17232,7 +17243,8 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $QT_PATH/bin
+as_dummy="$QT_PATH1/bin:$QT_PATH2/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.

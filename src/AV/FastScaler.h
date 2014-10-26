@@ -39,6 +39,7 @@ public:
 private:
 	void Convert_BGRA_YUV444(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]);
 	void Convert_BGRA_YUV420(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]);
+	void Convert_BGRA_BGR(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* out_data, int out_stride);
 	void Scale_BGRA(unsigned int in_width, unsigned int in_height, const uint8_t* in_data, int in_stride,
 					unsigned int out_width, unsigned int out_height, uint8_t* out_data, int out_stride);
 
