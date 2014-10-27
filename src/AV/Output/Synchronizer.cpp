@@ -63,37 +63,35 @@ const int64_t Synchronizer::MAX_FRAME_DELAY = 200000;
 static std::unique_ptr<AVFrameWrapper> CreateVideoFrame(unsigned int width, unsigned int height, PixelFormat pixel_format, const std::shared_ptr<AVFrameData>& reuse_data) {
 
 	// get required planes
-	unsigned int planes;
-	size_t linesize[3], planesize[3];
+	unsigned int planes = 0;
+	size_t linesize[3] = {0}, planesize[3] = {0};
 	switch(pixel_format) {
 		case AV_PIX_FMT_YUV444P: {
 			// Y/U/V = 1 byte per pixel
 			planes = 3;
-			linesize[0]  = grow_align16(width); planesize[0] = grow_align16(linesize[0] * height);
-			linesize[1]  = grow_align16(width); planesize[1] = grow_align16(linesize[1] * height);
-			linesize[2]  = grow_align16(width); planesize[2] = grow_align16(linesize[2] * height);
+			linesize[0]  = grow_align16(width); planesize[0] = linesize[0] * height;
+			linesize[1]  = grow_align16(width); planesize[1] = linesize[1] * height;
+			linesize[2]  = grow_align16(width); planesize[2] = linesize[2] * height;
 			break;
 		}
 		case AV_PIX_FMT_YUV420P: {
 			// Y = 1 byte per pixel, U/V = 1 byte per 2x2 pixels
 			planes = 3;
-			linesize[0]  = grow_align16(width    ); planesize[0] = grow_align16(linesize[0] * height    );
-			linesize[1]  = grow_align16(width / 2); planesize[1] = grow_align16(linesize[1] * height / 2);
-			linesize[2]  = grow_align16(width / 2); planesize[2] = grow_align16(linesize[2] * height / 2);
+			linesize[0]  = grow_align16(width    ); planesize[0] = linesize[0] * height    ;
+			linesize[1]  = grow_align16(width / 2); planesize[1] = linesize[1] * height / 2;
+			linesize[2]  = grow_align16(width / 2); planesize[2] = linesize[2] * height / 2;
 			break;
 		}
 		case AV_PIX_FMT_BGRA: {
 			// BGRA = 4 bytes per pixel
 			planes = 1;
-			linesize[0] = grow_align16(width * 4);
-			planesize[0] = grow_align16(linesize[0] * height);
+			linesize[0] = grow_align16(width * 4); planesize[0] = linesize[0] * height;
 			break;
 		}
 		case AV_PIX_FMT_BGR24: {
 			// BGR = 3 bytes per pixel
 			planes = 1;
-			linesize[0] = grow_align16(width * 3);
-			planesize[0] = grow_align16(linesize[0] * height);
+			linesize[0] = grow_align16(width * 3); planesize[0] = linesize[0] * height;
 			break;
 		}
 		default: assert(false); break;
