@@ -827,6 +827,14 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <source>Warning: Option &apos;%1&apos; could not be parsed!</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Scale %1 to %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starting scaler benchmark ...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -1517,6 +1525,14 @@ The start button is at the top ;).</source>
     </message>
     <message>
         <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show window</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
