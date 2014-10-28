@@ -56,6 +56,7 @@ SOURCES += \
 	GUI/PageWelcome.cpp \
 	GUI/ProfileBox.cpp \
 	GUI/VideoPreviewer.cpp \
+	Benchmark.cpp \
 	Main.cpp \
 	NVidia.cpp
 
@@ -108,6 +109,7 @@ HEADERS  += \
 	GUI/PageWelcome.h \
 	GUI/ProfileBox.h \
 	GUI/VideoPreviewer.h \
+	Benchmark.h \
 	Global.h \
 	Main.h \
 	NVidia.h

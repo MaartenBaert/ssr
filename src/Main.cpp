@@ -20,17 +20,19 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "Main.h"
 
+#include "Benchmark.h"
 #include "CPUFeatures.h"
 #include "HotkeyListener.h"
 #include "Icons.h"
 #include "Logger.h"
 #include "MainWindow.h"
 
-bool g_option_logfile;
-QString g_option_statsfile;
-bool g_option_syncdiagram;
-bool g_option_systray;
-bool g_option_start_hidden;
+bool g_option_logfile = false;
+QString g_option_statsfile = QString();
+bool g_option_syncdiagram = false;
+bool g_option_systray = true;
+bool g_option_start_hidden = false;
+bool g_option_benchmark = false;
 
 void PrintOptionHelp() {
 	Logger::LogInfo(
@@ -65,7 +67,7 @@ int main(int argc, char* argv[]) {
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 #endif
-	
+
 	// set the application name
 	QCoreApplication::setOrganizationName("SimpleScreenRecorder");
 	QCoreApplication::setApplicationName("SimpleScreenRecorder");
@@ -86,13 +88,6 @@ int main(int argc, char* argv[]) {
 
 	// load icons
 	LoadIcons();
-
-	// initialize default command-line options
-	g_option_logfile = false;
-	g_option_statsfile = QString();
-	g_option_syncdiagram = false;
-	g_option_systray = true;
-	g_option_start_hidden = false;
 
 	// read command-line arguments
 	QStringList args = QCoreApplication::arguments();
@@ -141,6 +136,9 @@ int main(int argc, char* argv[]) {
 			} else if(option == "--start-hidden") {
 				NOVALUE
 				g_option_start_hidden = true;
+			} else if(option == "--benchmark") {
+				NOVALUE
+				g_option_benchmark = true;
 			} else {
 				Logger::LogError("[main] " + Logger::tr("Error: Unknown command-line option '%1'!").arg(option));
 				PrintOptionHelp();
@@ -200,7 +198,10 @@ int main(int argc, char* argv[]) {
 
 	// start the GUI
 	int ret;
-	{
+	if(g_option_benchmark) {
+		Benchmark();
+		ret = 0;
+	} else {
 
 		// create hotkey listener
 		HotkeyListener hotkey_listener;

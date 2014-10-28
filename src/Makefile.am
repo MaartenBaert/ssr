@@ -117,6 +117,8 @@ simplescreenrecorder_SOURCES = \
 	GUI/ProfileBox.h \
 	GUI/VideoPreviewer.cpp \
 	GUI/VideoPreviewer.h \
+	Benchmark.cpp \
+	Benchmark.h \
 	Global.h \
 	Main.cpp \
 	Main.h \

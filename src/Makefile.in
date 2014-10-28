@@ -178,8 +178,8 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	GUI/PageOutput.cpp GUI/PageOutput.h GUI/PageRecord.cpp \
 	GUI/PageRecord.h GUI/PageWelcome.cpp GUI/PageWelcome.h \
 	GUI/ProfileBox.cpp GUI/ProfileBox.h GUI/VideoPreviewer.cpp \
-	GUI/VideoPreviewer.h Global.h Main.cpp Main.h NVidia.cpp \
-	NVidia.h
+	GUI/VideoPreviewer.h Benchmark.cpp Benchmark.h Global.h \
+	Main.cpp Main.h NVidia.cpp NVidia.h
 @ENABLE_SSRPROGRAM_TRUE@am_simplescreenrecorder_OBJECTS = AV/Input/simplescreenrecorder-ALSAInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-GLInjectInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	AV/Input/simplescreenrecorder-JACKInput.$(OBJEXT) \
@@ -220,6 +220,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageWelcome.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-ProfileBox.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-VideoPreviewer.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Benchmark.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-Main.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-NVidia.$(OBJEXT)
 @ENABLE_SSRPROGRAM_TRUE@nodist_simplescreenrecorder_OBJECTS = simplescreenrecorder-qrc_resources.$(OBJEXT) \
@@ -596,6 +597,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	GUI/ProfileBox.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/VideoPreviewer.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/VideoPreviewer.h \
+@ENABLE_SSRPROGRAM_TRUE@	Benchmark.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	Benchmark.h \
 @ENABLE_SSRPROGRAM_TRUE@	Global.h \
 @ENABLE_SSRPROGRAM_TRUE@	Main.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	Main.h \
@@ -902,6 +905,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Benchmark.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-Main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-NVidia.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Po@am__quote@
@@ -1568,6 +1572,20 @@ GUI/simplescreenrecorder-VideoPreviewer.obj: GUI/VideoPreviewer.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/VideoPreviewer.cpp' object='GUI/simplescreenrecorder-VideoPreviewer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-VideoPreviewer.obj `if test -f 'GUI/VideoPreviewer.cpp'; then $(CYGPATH_W) 'GUI/VideoPreviewer.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/VideoPreviewer.cpp'; fi`
+
+simplescreenrecorder-Benchmark.o: Benchmark.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-Benchmark.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-Benchmark.Tpo -c -o simplescreenrecorder-Benchmark.o `test -f 'Benchmark.cpp' || echo '$(srcdir)/'`Benchmark.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-Benchmark.Tpo $(DEPDIR)/simplescreenrecorder-Benchmark.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Benchmark.cpp' object='simplescreenrecorder-Benchmark.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-Benchmark.o `test -f 'Benchmark.cpp' || echo '$(srcdir)/'`Benchmark.cpp
+
+simplescreenrecorder-Benchmark.obj: Benchmark.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-Benchmark.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-Benchmark.Tpo -c -o simplescreenrecorder-Benchmark.obj `if test -f 'Benchmark.cpp'; then $(CYGPATH_W) 'Benchmark.cpp'; else $(CYGPATH_W) '$(srcdir)/Benchmark.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-Benchmark.Tpo $(DEPDIR)/simplescreenrecorder-Benchmark.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Benchmark.cpp' object='simplescreenrecorder-Benchmark.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-Benchmark.obj `if test -f 'Benchmark.cpp'; then $(CYGPATH_W) 'Benchmark.cpp'; else $(CYGPATH_W) '$(srcdir)/Benchmark.cpp'; fi`
 
 simplescreenrecorder-Main.o: Main.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-Main.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-Main.Tpo -c -o simplescreenrecorder-Main.o `test -f 'Main.cpp' || echo '$(srcdir)/'`Main.cpp
