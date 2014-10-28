@@ -69,6 +69,20 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 		return;
 	}
 
+	// faster BGRA to YUV422 conversion
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV422P) {
+		if(in_width == out_width && in_height == out_height) {
+			Convert_BGRA_YUV422(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
+		} else {
+			TempBuffer<uint8_t> scaled;
+			int scaled_stride = grow_align16(out_width * 4);
+			scaled.Alloc(scaled_stride * out_height);
+			Scale_BGRA(in_width, in_height, in_data[0], in_stride[0], out_width, out_height, scaled.GetData(), scaled_stride);
+			Convert_BGRA_YUV422(out_width, out_height, scaled.GetData(), scaled_stride, out_data, out_stride);
+		}
+		return;
+	}
+
 	// faster BGRA to YUV420 conversion
 	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV420P) {
 		if(in_width == out_width && in_height == out_height) {
@@ -140,6 +154,31 @@ void FastScaler::Convert_BGRA_YUV444(unsigned int width, unsigned int height, co
 #endif
 
 	Convert_BGRA_YUV444_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+
+}
+
+void FastScaler::Convert_BGRA_YUV422(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
+	assert(width % 2 == 0);
+
+#if SSR_USE_X86_ASM
+	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+		if((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0 &&
+		   (uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0 &&
+		   (uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0) {
+			Convert_BGRA_YUV422_SSSE3(width, height, in_data, in_stride, out_data, out_stride);
+		} else {
+			if(m_warn_alignment) {
+				m_warn_alignment = false;
+				Logger::LogWarning("[FastScaler::Convert_BGRA_YUV422] " + Logger::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
+																					 "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
+			}
+			Convert_BGRA_YUV422_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+		}
+		return;
+	}
+#endif
+
+	Convert_BGRA_YUV422_Fallback(width, height, in_data, in_stride, out_data, out_stride);
 
 }
 

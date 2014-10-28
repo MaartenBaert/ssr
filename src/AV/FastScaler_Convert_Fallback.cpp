@@ -37,10 +37,11 @@ The converters below are currently hard-coded for BT.709.
 */
 
 /*
-==== Fallback BGRA-to-YUV444/YUV420 Converter ====
+==== Fallback BGRA-to-YUV444/YUV422/YUV420 Converter ====
 
 Nothing special, just plain C code.
 - YUV444: one-to-one mapping
+- YUV422: takes blocks of 2x1 pixels, produces 2x1 Y and 1x1 U/V values
 - YUV420: takes blocks of 2x2 pixels, produces 2x2 Y and 1x1 U/V values
 */
 
@@ -59,6 +60,33 @@ void Convert_BGRA_YUV444_Fallback(unsigned int w, unsigned int h, const uint8_t*
 			*(yuv_y++) = ( 47 * r +  157 * g +  16 * b + offset_y) >> 8;
 			*(yuv_u++) = (-26 * r +  -86 * g + 112 * b + offset_uv) >> 8;
 			*(yuv_v++) = (112 * r + -102 * g + -10 * b + offset_uv) >> 8;
+		}
+	}
+}
+
+void Convert_BGRA_YUV422_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
+	assert(w % 2 == 0);
+	const int offset_y = 128 + (16 << 8), offset_uv = (128 + (128 << 8)) << 1;
+	for(unsigned int j = 0; j < h; ++j) {
+		const uint32_t *rgb = (const uint32_t*) (in_data + in_stride * (int) j);
+		uint8_t *yuv_y = out_data[0] + out_stride[0] * (int) j;
+		uint8_t *yuv_u = out_data[1] + out_stride[1] * (int) j;
+		uint8_t *yuv_v = out_data[2] + out_stride[2] * (int) j;
+		for(unsigned int i = 0; i < w / 2; ++i) {
+			uint32_t c[2] = {rgb[0], rgb[1]};
+			rgb += 2;
+			int r[2] = {(int) ((c[0] >> 16) & 0xff), (int) ((c[1] >> 16) & 0xff)};
+			int g[2] = {(int) ((c[0] >>  8) & 0xff), (int) ((c[1] >>  8) & 0xff)};
+			int b[2] = {(int) ((c[0]      ) & 0xff), (int) ((c[1]      ) & 0xff)};
+			yuv_y[0] = (47 * r[0] + 157 * g[0] + 16 * b[0] + offset_y) >> 8;
+			yuv_y[1] = (47 * r[1] + 157 * g[1] + 16 * b[1] + offset_y) >> 8;
+			yuv_y += 2;
+			int sr = r[0] + r[1];
+			int sg = g[0] + g[1];
+			int sb = b[0] + b[1];
+			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 9;
+			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 9;
+			++yuv_u; ++yuv_v;
 		}
 	}
 }

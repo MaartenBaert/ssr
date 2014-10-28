@@ -28,8 +28,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 const size_t VideoEncoder::THROTTLE_THRESHOLD_FRAMES = 20;
 const size_t VideoEncoder::THROTTLE_THRESHOLD_PACKETS = 100;
 const std::vector<VideoEncoder::PixelFormatData> VideoEncoder::SUPPORTED_PIXEL_FORMATS = {
-	{AV_PIX_FMT_YUV444P, true},
 	{AV_PIX_FMT_YUV420P, true},
+	{AV_PIX_FMT_YUV422P, true},
+	{AV_PIX_FMT_YUV444P, true},
 	{AV_PIX_FMT_BGRA, false},
 	{AV_PIX_FMT_BGR24, false},
 };

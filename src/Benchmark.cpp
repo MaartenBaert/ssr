@@ -69,6 +69,9 @@ std::unique_ptr<ImageGeneric> NewImageBGRA(unsigned int w, unsigned int h, std::
 std::unique_ptr<ImageGeneric> NewImageYUV444(unsigned int w, unsigned int h, std::mt19937& rng) {
 	return std::unique_ptr<ImageGeneric>(new ImageGeneric({w, w, w}, {h, h, h}, rng));
 }
+std::unique_ptr<ImageGeneric> NewImageYUV422(unsigned int w, unsigned int h, std::mt19937& rng) {
+	return std::unique_ptr<ImageGeneric>(new ImageGeneric({w, w / 2, w / 2}, {h, h, h}, rng));
+}
 std::unique_ptr<ImageGeneric> NewImageYUV420(unsigned int w, unsigned int h, std::mt19937& rng) {
 	return std::unique_ptr<ImageGeneric>(new ImageGeneric({w, w / 2, w / 2}, {h, h / 2, h / 2}, rng));
 }
@@ -190,6 +193,7 @@ void Benchmark() {
 
 	Logger::LogInfo("[Benchmark] " + Logger::tr("Starting converter benchmark ..."));
 	BenchmarkConvert(1920, 1080, "BGRA", "YUV444", NewImageBGRA, NewImageYUV444, Convert_BGRA_YUV444_Fallback           , Convert_BGRA_YUV444_SSSE3           );
+	BenchmarkConvert(1920, 1080, "BGRA", "YUV422", NewImageBGRA, NewImageYUV422, Convert_BGRA_YUV422_Fallback           , Convert_BGRA_YUV422_SSSE3           );
 	BenchmarkConvert(1920, 1080, "BGRA", "YUV420", NewImageBGRA, NewImageYUV420, Convert_BGRA_YUV420_Fallback           , Convert_BGRA_YUV420_SSSE3           );
 	BenchmarkConvert(1920, 1080, "BGRA", "BGR"   , NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>, PlaneWrapper<Convert_BGRA_BGR_SSSE3>);
 
