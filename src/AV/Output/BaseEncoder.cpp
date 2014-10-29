@@ -28,8 +28,8 @@ int ParseCodecOptionInt(const QString& key, const QString& value, int min, int m
 	bool parsed;
 	int value_int = value.toInt(&parsed);
 	if(!parsed) {
-		Logger::LogWarning("[ParseCodecOptionInt] " + Logger::tr("Warning: Option '%1' could not be parsed!").arg(key));
-		value_int = 0;
+		Logger::LogError("[ParseCodecOptionInt] " + Logger::tr("Error: Option '%1' could not be parsed!").arg(key));
+		throw LibavException();
 	}
 	return clamp(value_int, min, max) * multiply;
 }
@@ -37,8 +37,8 @@ double ParseCodecOptionDouble(const QString& key, const QString& value, double m
 	bool parsed;
 	double value_double = value.toDouble(&parsed);
 	if(!parsed) {
-		Logger::LogWarning("[ParseCodecOptionDouble] " + Logger::tr("Warning: Option '%1' could not be parsed!").arg(key));
-		value_double = 0.0;
+		Logger::LogError("[ParseCodecOptionDouble] " + Logger::tr("Error: Option '%1' could not be parsed!").arg(key));
+		throw LibavException();
 	}
 	return clamp(value_double, min, max) * multiply;
 }

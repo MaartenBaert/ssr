@@ -26,6 +26,7 @@ class VideoEncoder : public BaseEncoder {
 
 private:
 	struct PixelFormatData {
+		QString m_name;
 		PixelFormat m_format;
 		bool m_is_yuv;
 	};

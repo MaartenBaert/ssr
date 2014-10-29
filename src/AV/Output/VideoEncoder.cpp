@@ -28,11 +28,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 const size_t VideoEncoder::THROTTLE_THRESHOLD_FRAMES = 20;
 const size_t VideoEncoder::THROTTLE_THRESHOLD_PACKETS = 100;
 const std::vector<VideoEncoder::PixelFormatData> VideoEncoder::SUPPORTED_PIXEL_FORMATS = {
-	{AV_PIX_FMT_YUV420P, true},
-	{AV_PIX_FMT_YUV422P, true},
-	{AV_PIX_FMT_YUV444P, true},
-	{AV_PIX_FMT_BGRA, false},
-	{AV_PIX_FMT_BGR24, false},
+	{"yuv420", AV_PIX_FMT_YUV420P, true},
+	{"yuv422", AV_PIX_FMT_YUV422P, true},
+	{"yuv444", AV_PIX_FMT_YUV444P, true},
+	{"bgra", AV_PIX_FMT_BGRA, false},
+	{"bgr", AV_PIX_FMT_BGR24, false},
 };
 
 VideoEncoder::VideoEncoder(Muxer* muxer, AVStream* stream, AVCodec* codec, AVDictionary** options)
@@ -125,6 +125,7 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 		throw LibavException();
 	}
 
+	// initialize codec context
 	stream->codec->bit_rate = bit_rate;
 	stream->codec->width = width;
 	stream->codec->height = height;
@@ -133,31 +134,13 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 #if SSR_USE_AVSTREAM_TIME_BASE
 	stream->time_base = stream->codec->time_base;
 #endif
-	stream->codec->pix_fmt = AV_PIX_FMT_NONE;
-	for(unsigned int i = 0; i < SUPPORTED_PIXEL_FORMATS.size(); ++i) {
-		if(AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i].m_format)) {
-			stream->codec->pix_fmt = SUPPORTED_PIXEL_FORMATS[i].m_format;
-			if(SUPPORTED_PIXEL_FORMATS[i].m_is_yuv) {
-				stream->codec->color_primaries = AVCOL_PRI_BT709;
-				stream->codec->color_trc = AVCOL_TRC_BT709;
-				stream->codec->colorspace = AVCOL_SPC_BT709;
-				stream->codec->color_range = AVCOL_RANGE_MPEG;
-				stream->codec->chroma_sample_location = AVCHROMA_LOC_CENTER;
-			} else {
-				stream->codec->colorspace = AVCOL_SPC_RGB;
-			}
-			break;
-		}
-	}
-	if(stream->codec->pix_fmt == AV_PIX_FMT_NONE) {
-		Logger::LogError("[VideoEncoder::PrepareStream] " + Logger::tr("Error: Encoder requires an unsupported pixel format!"));
-		throw LibavException();
-	}
 	stream->codec->sample_aspect_ratio.num = 1;
 	stream->codec->sample_aspect_ratio.den = 1;
 	stream->sample_aspect_ratio = stream->codec->sample_aspect_ratio;
 	stream->codec->thread_count = std::max(1, (int) std::thread::hardware_concurrency());
 
+	// parse options
+	QString pixel_format_name;
 	for(unsigned int i = 0; i < codec_options.size(); ++i) {
 		const QString &key = codec_options[i].first, &value = codec_options[i].second;
 		if(key == "threads") {
@@ -173,6 +156,8 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 			stream->codec->rc_buffer_size = ParseCodecOptionInt(key, value, 1, 1000000, 1024); // kbps
 		} else if(key == "keyint") {
 			stream->codec->gop_size = ParseCodecOptionInt(key, value, 1, 1000000);
+		} else if(key == "pixelformat") {
+			pixel_format_name = value;
 #if !SSR_USE_AVCODEC_PRIVATE_PRESET
 		} else if(key == "crf") {
 			stream->codec->crf = ParseCodecOptionInt(key, value, 0, 51);
@@ -184,6 +169,31 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 		} else {
 			av_dict_set(options, key.toUtf8().constData(), value.toUtf8().constData(), 0);
 		}
+	}
+
+	// choose the pixel format
+	stream->codec->pix_fmt = AV_PIX_FMT_NONE;
+	for(unsigned int i = 0; i < SUPPORTED_PIXEL_FORMATS.size(); ++i) {
+		if(!pixel_format_name.isEmpty() && pixel_format_name != SUPPORTED_PIXEL_FORMATS[i].m_name)
+			continue;
+		if(!AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i].m_format))
+			continue;
+		Logger::LogInfo("[VideoEncoder::PrepareStream] " + Logger::tr("Using pixel format %1.").arg(SUPPORTED_PIXEL_FORMATS[i].m_name));
+		stream->codec->pix_fmt = SUPPORTED_PIXEL_FORMATS[i].m_format;
+		if(SUPPORTED_PIXEL_FORMATS[i].m_is_yuv) {
+			stream->codec->color_primaries = AVCOL_PRI_BT709;
+			stream->codec->color_trc = AVCOL_TRC_BT709;
+			stream->codec->colorspace = AVCOL_SPC_BT709;
+			stream->codec->color_range = AVCOL_RANGE_MPEG;
+			stream->codec->chroma_sample_location = AVCHROMA_LOC_CENTER;
+		} else {
+			stream->codec->colorspace = AVCOL_SPC_RGB;
+		}
+		break;
+	}
+	if(stream->codec->pix_fmt == AV_PIX_FMT_NONE) {
+		Logger::LogError("[VideoEncoder::PrepareStream] " + Logger::tr("Error: The pixel format is not supported by the codec!"));
+		throw LibavException();
 	}
 
 }
