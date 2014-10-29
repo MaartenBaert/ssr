@@ -44,18 +44,18 @@ If the width is not a multiple of 8/16, the remainder (right edge of the image) 
 This converter is about 4 times faster than the fallback converter.
 */
 
-#define Convert444_ReadRGB(ptr1, ptr2, ca, cb, r, g, b) \
+#define ReadBGRAInterleaved(ptr1, ptr2, ca, cb, r, g, b) \
 	__m128i ca = _mm_loadu_si128((__m128i*) (ptr1)), cb = _mm_loadu_si128((__m128i*) (ptr2)); \
 	__m128i r = _mm_or_si128(_mm_and_si128(_mm_srli_si128(ca, 2), v_byte1), _mm_and_si128(               cb    , v_byte3)); \
 	__m128i g = _mm_or_si128(_mm_and_si128(_mm_srli_si128(ca, 1), v_byte1), _mm_and_si128(_mm_slli_si128(cb, 1), v_byte3)); \
 	__m128i b = _mm_or_si128(_mm_and_si128(               ca    , v_byte1), _mm_and_si128(_mm_slli_si128(cb, 2), v_byte3));
-#define Convert444_CalcY(r, g, b, y) \
+#define Convert_RGB_Y(r, g, b, y) \
 	__m128i y = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(r, v_mat_yr), _mm_mullo_epi16(g, v_mat_yg)), _mm_add_epi16(_mm_mullo_epi16(b, v_mat_yb), v_offset_y));
-#define Convert444_CalcU(r, g, b, u) \
+#define Convert_RGB_U(r, g, b, u) \
 	__m128i u = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(r, v_mat_ur), _mm_mullo_epi16(g, v_mat_ug)), _mm_add_epi16(_mm_mullo_epi16(b, v_mat_ub_vr), v_offset_uv));
-#define Convert444_CalcV(r, g, b, v) \
+#define Convert_RGB_V(r, g, b, v) \
 	__m128i v = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(r, v_mat_ub_vr), _mm_mullo_epi16(g, v_mat_vg)), _mm_add_epi16(_mm_mullo_epi16(b, v_mat_vb), v_offset_uv));
-#define Convert444_WriteYUV(ptr, y1, y2) \
+#define WritePlaneInterleaved(ptr, y1, y2) \
 	_mm_stream_si128((__m128i*) (ptr), _mm_or_si128(_mm_shuffle_epi8(y1, v_shuffle1), _mm_shuffle_epi8(y2, v_shuffle2)));
 
 void Convert_BGRA_YUV444_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
@@ -86,22 +86,22 @@ void Convert_BGRA_YUV444_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 		uint8_t *yuv_u = out_data[1] + out_stride[1] * (int) j;
 		uint8_t *yuv_v = out_data[2] + out_stride[2] * (int) j;
 		for(unsigned int i = 0; i < w / 16; ++i) {
-			Convert444_ReadRGB(rgb, rgb + 4, ca0, cb0, r0, g0, b0);
-			Convert444_ReadRGB(rgb + 8, rgb + 12, ca1, cb1, r1, g1, b1);
+			ReadBGRAInterleaved(rgb    , rgb +  4, ca1, cb1, r1, g1, b1);
+			ReadBGRAInterleaved(rgb + 8, rgb + 12, ca2, cb2, r2, g2, b2);
+			_mm_prefetch(rgb + 48, _MM_HINT_T0);
 			rgb += 16;
-			Convert444_CalcY(r0, g0, b0, y0);
-			Convert444_CalcY(r1, g1, b1, y1);
-			Convert444_WriteYUV(yuv_y, y0, y1);
+			Convert_RGB_Y(r1, g1, b1, y1);
+			Convert_RGB_Y(r2, g2, b2, y2);
+			WritePlaneInterleaved(yuv_y, y1, y2);
 			yuv_y += 16;
-			Convert444_CalcU(r0, g0, b0, u0);
-			Convert444_CalcU(r1, g1, b1, u1);
-			Convert444_WriteYUV(yuv_u, u0, u1);
+			Convert_RGB_U(r1, g1, b1, u1);
+			Convert_RGB_U(r2, g2, b2, u2);
+			WritePlaneInterleaved(yuv_u, u1, u2);
 			yuv_u += 16;
-			Convert444_CalcV(r0, g0, b0, v0);
-			Convert444_CalcV(r1, g1, b1, v1);
-			Convert444_WriteYUV(yuv_v, v0, v1);
+			Convert_RGB_V(r1, g1, b1, v1);
+			Convert_RGB_V(r2, g2, b2, v2);
+			WritePlaneInterleaved(yuv_v, v1, v2);
 			yuv_v += 16;
-			//_mm_prefetch(rgb + 32, _MM_HINT_T0);
 		}
 		for(unsigned int i = 0; i < (w & 15); ++i) {
 			uint32_t c = *(rgb++);
@@ -117,16 +117,6 @@ void Convert_BGRA_YUV444_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 	_mm_sfence();
 
 }
-
-#define Convert422_ReadRGB(ptr1, ptr2, ca, cb, r, g, b) \
-	__m128i ca = _mm_loadu_si128((__m128i*) (ptr1)), cb = _mm_loadu_si128((__m128i*) (ptr2)); \
-	__m128i r = _mm_or_si128(_mm_and_si128(_mm_srli_si128(ca, 2), v_byte1), _mm_and_si128(               cb    , v_byte3)); \
-	__m128i g = _mm_or_si128(_mm_and_si128(_mm_srli_si128(ca, 1), v_byte1), _mm_and_si128(_mm_slli_si128(cb, 1), v_byte3)); \
-	__m128i b = _mm_or_si128(_mm_and_si128(               ca    , v_byte1), _mm_and_si128(_mm_slli_si128(cb, 2), v_byte3));
-#define Convert422_CalcY(r, g, b, y) \
-	__m128i y = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(r, v_mat_yr), _mm_mullo_epi16(g, v_mat_yg)), _mm_add_epi16(_mm_mullo_epi16(b, v_mat_yb), v_offset_y));
-#define Convert422_WriteY(ptr, y1, y2) \
-	_mm_stream_si128((__m128i*) (ptr), _mm_or_si128(_mm_shuffle_epi8(y1, v_shuffle1), _mm_shuffle_epi8(y2, v_shuffle2)));
 
 void Convert_BGRA_YUV422_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
 	assert(w % 2 == 0);
@@ -158,44 +148,36 @@ void Convert_BGRA_YUV422_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 		uint8_t *yuv_u = out_data[1] + out_stride[1] * (int) j;
 		uint8_t *yuv_v = out_data[2] + out_stride[2] * (int) j;
 		for(unsigned int i = 0; i < w / 16; ++i) {
-			__m128i ra, ga, ba;
-			{
-				Convert422_ReadRGB(rgb, rgb + 4, ca0, cb0, r0, g0, b0);
-				Convert422_ReadRGB(rgb + 8, rgb + 12, ca1, cb1, r1, g1, b1);
-				rgb += 16;
-				Convert422_CalcY(r0, g0, b0, y0);
-				Convert422_CalcY(r1, g1, b1, y1);
-				Convert422_WriteY(yuv_y, y0, y1);
-				yuv_y += 16;
-				_mm_prefetch(rgb + 16, _MM_HINT_T0);
-				ra = _mm_hadd_epi32(r0, r1);
-				ga = _mm_hadd_epi32(g0, g1);
-				ba = _mm_hadd_epi32(b0, b1);
-			}
-			{
-				ra = _mm_srli_epi16(ra, 1);
-				ga = _mm_srli_epi16(ga, 1);
-				ba = _mm_srli_epi16(ba, 1);
-				__m128i u = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(ra, v_mat_ur), _mm_mullo_epi16(ga, v_mat_ug)), _mm_add_epi16(_mm_mullo_epi16(ba, v_mat_ub_vr), v_offset_uv));
-				_mm_storel_epi64((__m128i*) yuv_u, _mm_shuffle_epi8(u, v_shuffle3));
-				yuv_u += 8;
-				__m128i v = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(ra, v_mat_ub_vr), _mm_mullo_epi16(ga, v_mat_vg)), _mm_add_epi16(_mm_mullo_epi16(ba, v_mat_vb), v_offset_uv));
-				_mm_storel_epi64((__m128i*) yuv_v, _mm_shuffle_epi8(v, v_shuffle3));
-				yuv_v += 8;
-			}
+			ReadBGRAInterleaved(rgb    , rgb +  4, ca1, cb1, r1, g1, b1);
+			ReadBGRAInterleaved(rgb + 8, rgb + 12, ca2, cb2, r2, g2, b2);
+			_mm_prefetch(rgb + 48, _MM_HINT_T0);
+			rgb += 16;
+			Convert_RGB_Y(r1, g1, b1, y1);
+			Convert_RGB_Y(r2, g2, b2, y2);
+			WritePlaneInterleaved(yuv_y, y1, y2);
+			yuv_y += 16;
+			__m128i ra = _mm_srli_epi16(_mm_hadd_epi32(r1, r2), 1);
+			__m128i ga = _mm_srli_epi16(_mm_hadd_epi32(g1, g2), 1);
+			__m128i ba = _mm_srli_epi16(_mm_hadd_epi32(b1, b2), 1);
+			__m128i u = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(ra, v_mat_ur), _mm_mullo_epi16(ga, v_mat_ug)), _mm_add_epi16(_mm_mullo_epi16(ba, v_mat_ub_vr), v_offset_uv));
+			_mm_storel_epi64((__m128i*) yuv_u, _mm_shuffle_epi8(u, v_shuffle3));
+			yuv_u += 8;
+			__m128i v = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(ra, v_mat_ub_vr), _mm_mullo_epi16(ga, v_mat_vg)), _mm_add_epi16(_mm_mullo_epi16(ba, v_mat_vb), v_offset_uv));
+			_mm_storel_epi64((__m128i*) yuv_v, _mm_shuffle_epi8(v, v_shuffle3));
+			yuv_v += 8;
 		}
 		for(unsigned int i = 0; i < (w & 15) / 2; ++i) {
-			uint32_t c[2] = {rgb[0], rgb[1]};
+			uint32_t c1 = rgb[0], c2 = rgb[1];
 			rgb += 2;
-			int r[2] = {(int) ((c[0] >> 16) & 0xff), (int) ((c[1] >> 16) & 0xff)};
-			int g[2] = {(int) ((c[0] >>  8) & 0xff), (int) ((c[1] >>  8) & 0xff)};
-			int b[2] = {(int) ((c[0]      ) & 0xff), (int) ((c[1]      ) & 0xff)};
-			yuv_y[0] = (47 * r[0] + 157 * g[0] + 16 * b[0] + offset_y) >> 8;
-			yuv_y[1] = (47 * r[1] + 157 * g[1] + 16 * b[1] + offset_y) >> 8;
+			int r1 = (int) ((c1 >> 16) & 0xff), r2 = (int) ((c2 >> 16) & 0xff);
+			int g1 = (int) ((c1 >>  8) & 0xff), g2 = (int) ((c2 >>  8) & 0xff);
+			int b1 = (int) ((c1      ) & 0xff), b2 = (int) ((c2      ) & 0xff);
+			yuv_y[0] = (47 * r1 + 157 * g1 + 16 * b1 + offset_y) >> 8;
+			yuv_y[1] = (47 * r2 + 157 * g2 + 16 * b2 + offset_y) >> 8;
 			yuv_y += 2;
-			int sr = r[0] + r[1];
-			int sg = g[0] + g[1];
-			int sb = b[0] + b[1];
+			int sr = r1 + r2;
+			int sg = g1 + g2;
+			int sb = b1 + b2;
 			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 9;
 			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 9;
 			++yuv_u; ++yuv_v;
@@ -205,16 +187,6 @@ void Convert_BGRA_YUV422_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 	_mm_sfence();
 
 }
-
-#define Convert420_ReadRGB(ptr1, ptr2, ca, cb, r, g, b) \
-	__m128i ca = _mm_loadu_si128((__m128i*) (ptr1)), cb = _mm_loadu_si128((__m128i*) (ptr2)); \
-	__m128i r = _mm_or_si128(_mm_and_si128(_mm_srli_si128(ca, 2), v_byte1), _mm_and_si128(               cb    , v_byte3)); \
-	__m128i g = _mm_or_si128(_mm_and_si128(_mm_srli_si128(ca, 1), v_byte1), _mm_and_si128(_mm_slli_si128(cb, 1), v_byte3)); \
-	__m128i b = _mm_or_si128(_mm_and_si128(               ca    , v_byte1), _mm_and_si128(_mm_slli_si128(cb, 2), v_byte3));
-#define Convert420_CalcY(r, g, b, y) \
-	__m128i y = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(r, v_mat_yr), _mm_mullo_epi16(g, v_mat_yg)), _mm_add_epi16(_mm_mullo_epi16(b, v_mat_yb), v_offset_y));
-#define Convert420_WriteY(ptr, y1, y2) \
-	_mm_stream_si128((__m128i*) (ptr), _mm_or_si128(_mm_shuffle_epi8(y1, v_shuffle1), _mm_shuffle_epi8(y2, v_shuffle2)));
 
 void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
 	assert(w % 2 == 0 && h % 2 == 0);
@@ -251,30 +223,30 @@ void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 		for(unsigned int i = 0; i < w / 16; ++i) {
 			__m128i ra, ga, ba;
 			{
-				Convert420_ReadRGB(rgb1, rgb1 + 4, ca0, cb0, r0, g0, b0);
-				Convert420_ReadRGB(rgb1 + 8, rgb1 + 12, ca1, cb1, r1, g1, b1);
+				ReadBGRAInterleaved(rgb1    , rgb1 +  4, ca1, cb1, r1, g1, b1);
+				ReadBGRAInterleaved(rgb1 + 8, rgb1 + 12, ca2, cb2, r2, g2, b2);
 				rgb1 += 16;
-				Convert420_CalcY(r0, g0, b0, y0);
-				Convert420_CalcY(r1, g1, b1, y1);
-				Convert420_WriteY(yuv_y1, y0, y1);
+				Convert_RGB_Y(r1, g1, b1, y1);
+				Convert_RGB_Y(r2, g2, b2, y2);
+				WritePlaneInterleaved(yuv_y1, y1, y2);
 				yuv_y1 += 16;
 				_mm_prefetch(rgb1 + 16, _MM_HINT_T0);
-				ra = _mm_hadd_epi32(r0, r1);
-				ga = _mm_hadd_epi32(g0, g1);
-				ba = _mm_hadd_epi32(b0, b1);
+				ra = _mm_hadd_epi32(r1, r2);
+				ga = _mm_hadd_epi32(g1, g2);
+				ba = _mm_hadd_epi32(b1, b2);
 			}
 			{
-				Convert420_ReadRGB(rgb2, rgb2 + 4, ca0, cb0, r0, g0, b0);
-				Convert420_ReadRGB(rgb2 + 8, rgb2 + 12, ca1, cb1, r1, g1, b1);
+				ReadBGRAInterleaved(rgb2    , rgb2 +  4, ca1, cb1, r1, g1, b1);
+				ReadBGRAInterleaved(rgb2 + 8, rgb2 + 12, ca2, cb2, r2, g2, b2);
 				rgb2 += 16;
-				Convert420_CalcY(r0, g0, b0, y0);
-				Convert420_CalcY(r1, g1, b1, y1);
-				Convert420_WriteY(yuv_y2, y0, y1);
+				Convert_RGB_Y(r1, g1, b1, y1);
+				Convert_RGB_Y(r2, g2, b2, y2);
+				WritePlaneInterleaved(yuv_y2, y1, y2);
 				yuv_y2 += 16;
 				_mm_prefetch(rgb2 + 16, _MM_HINT_T0);
-				ra = _mm_add_epi16(ra, _mm_hadd_epi32(r0, r1));
-				ga = _mm_add_epi16(ga, _mm_hadd_epi32(g0, g1));
-				ba = _mm_add_epi16(ba, _mm_hadd_epi32(b0, b1));
+				ra = _mm_add_epi16(ra, _mm_hadd_epi32(r1, r2));
+				ga = _mm_add_epi16(ga, _mm_hadd_epi32(g1, g2));
+				ba = _mm_add_epi16(ba, _mm_hadd_epi32(b1, b2));
 			}
 			{
 				ra = _mm_srli_epi16(_mm_add_epi16(ra, v_2), 2);
@@ -289,19 +261,19 @@ void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 			}
 		}
 		for(unsigned int i = 0; i < (w & 15) / 2; ++i) {
-			uint32_t c[4] = {rgb1[0], rgb1[1], rgb2[0], rgb2[1]};
+			uint32_t c1 = rgb1[0], c2 = rgb1[1], c3 = rgb2[0], c4 = rgb2[1];
 			rgb1 += 2; rgb2 += 2;
-			int r[4] = {(int) ((c[0] >> 16) & 0xff), (int) ((c[1] >> 16) & 0xff), (int) ((c[2] >> 16) & 0xff), (int) ((c[3] >> 16) & 0xff)};
-			int g[4] = {(int) ((c[0] >>  8) & 0xff), (int) ((c[1] >>  8) & 0xff), (int) ((c[2] >>  8) & 0xff), (int) ((c[3] >>  8) & 0xff)};
-			int b[4] = {(int) ((c[0]      ) & 0xff), (int) ((c[1]      ) & 0xff), (int) ((c[2]      ) & 0xff), (int) ((c[3]      ) & 0xff)};
-			yuv_y1[0] = (47 * r[0] + 157 * g[0] + 16 * b[0] + offset_y) >> 8;
-			yuv_y1[1] = (47 * r[1] + 157 * g[1] + 16 * b[1] + offset_y) >> 8;
-			yuv_y2[0] = (47 * r[2] + 157 * g[2] + 16 * b[2] + offset_y) >> 8;
-			yuv_y2[1] = (47 * r[3] + 157 * g[3] + 16 * b[3] + offset_y) >> 8;
+			int r1 = (int) ((c1 >> 16) & 0xff), r2 = (int) ((c2 >> 16) & 0xff), r3 = (int) ((c3 >> 16) & 0xff), r4 = (int) ((c4 >> 16) & 0xff);
+			int g1 = (int) ((c1 >>  8) & 0xff), g2 = (int) ((c2 >>  8) & 0xff), g3 = (int) ((c3 >>  8) & 0xff), g4 = (int) ((c4 >>  8) & 0xff);
+			int b1 = (int) ((c1      ) & 0xff), b2 = (int) ((c2      ) & 0xff), b3 = (int) ((c3      ) & 0xff), b4 = (int) ((c4      ) & 0xff);
+			yuv_y1[0] = (47 * r1 + 157 * g1 + 16 * b1 + offset_y) >> 8;
+			yuv_y1[1] = (47 * r2 + 157 * g2 + 16 * b2 + offset_y) >> 8;
+			yuv_y2[0] = (47 * r3 + 157 * g3 + 16 * b3 + offset_y) >> 8;
+			yuv_y2[1] = (47 * r4 + 157 * g4 + 16 * b4 + offset_y) >> 8;
 			yuv_y1 += 2; yuv_y2 += 2;
-			int sr = r[0] + r[1] + r[2] + r[3];
-			int sg = g[0] + g[1] + g[2] + g[3];
-			int sb = b[0] + b[1] + b[2] + b[3];
+			int sr = r1 + r2 + r3 + r4;
+			int sg = g1 + g2 + g3 + g4;
+			int sb = b1 + b2 + b3 + b4;
 			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 10;
 			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 10;
 			++yuv_u; ++yuv_v;
@@ -337,6 +309,7 @@ void Convert_BGRA_BGR_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_da
 			__m128i c1 = _mm_loadu_si128((__m128i*) (in + 16));
 			__m128i c2 = _mm_loadu_si128((__m128i*) (in + 32));
 			__m128i c3 = _mm_loadu_si128((__m128i*) (in + 48));
+			//_mm_prefetch(in + 192, _MM_HINT_T0);
 			in += 64;
 			_mm_stream_si128((__m128i*) (out     ), _mm_or_si128(_mm_shuffle_epi8(c0, v_shuffle1), _mm_shuffle_epi8(c1, v_shuffle2)));
 			_mm_stream_si128((__m128i*) (out + 16), _mm_or_si128(_mm_shuffle_epi8(c1, v_shuffle3), _mm_shuffle_epi8(c2, v_shuffle4)));
