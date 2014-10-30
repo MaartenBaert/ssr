@@ -225,10 +225,10 @@ void* SSRVideoStreamReader::GetFrame(int64_t* timestamp, unsigned int* width, un
 		required_size = (required_size + m_page_size - 1) / m_page_size * m_page_size;
 
 		// unmap frame file
-		fd.m_mmap_size_frame = 0;
 		if(fd.m_mmap_ptr_frame != MAP_FAILED) {
 			munmap(fd.m_mmap_ptr_frame, fd.m_mmap_size_frame);
 			fd.m_mmap_ptr_frame = MAP_FAILED;
+			fd.m_mmap_size_frame = 0;
 		}
 
 		// check frame file size
