@@ -145,7 +145,7 @@ static Hook hook_table[] = {
 	{"glXGetProcAddressARB", (void*) &glinject_my_glXGetProcAddressARB},
 	{"XNextEvent"          , (void*) &glinject_my_XNextEvent},
 };
-static const char* child_blacklist[] = {
+static const char* exec_blacklist[] = {
 	"ping",
 	"/bin/ping",
 	"/usr/bin/ping",
@@ -153,8 +153,8 @@ static const char* child_blacklist[] = {
 
 void FilterEnviron(const char* filename, std::vector<char*>* out, char* const* in) {
 	bool filter = false;
-	for(unsigned int i = 0; i < sizeof(child_blacklist) / sizeof(const char*); ++i) {
-		if(strcmp(child_blacklist[i], filename) == 0) {
+	for(unsigned int i = 0; i < sizeof(exec_blacklist) / sizeof(const char*); ++i) {
+		if(strcmp(exec_blacklist[i], filename) == 0) {
 			filter = true;
 			break;
 		}
