@@ -24,12 +24,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #if SSR_USE_X86_ASM
 
-/*
-In GCC 4.8 this should work:
-__builtin_cpu_init();
-sse2 = __builtin_cpu_supports("sse2");
-... but for now I have to use CPUID manually.
-*/
+#include <cpuid.h>
+
+//#define __cpuid(level, eax, ebx, ecx, edx) __asm__ __volatile__ ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) : "a" (level))
+//#define __cpuid_count(level, count, eax, ebx, ecx, edx) __asm__ __volatile__ ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) : "a" (level), "c" (count))
 
 bool CPUFeatures::s_mmx = false;
 bool CPUFeatures::s_sse = false;
@@ -51,11 +49,11 @@ void CPUFeatures::Detect() {
 	// The meaning of ecx/edx bits are listed in table 3-20 and 3-21 ('Feature Information Returned in the ECX/EDX Register')
 	// from the Intel reference manual (page 589), or in AMD's CPUID reference (they are compatible).
 	unsigned int eax, ebx, ecx, edx;
-	__asm__ __volatile__ ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) : "a" (0));
+	__cpuid(0, eax, ebx, ecx, edx);
 	unsigned int cpuid_max = eax;
 
 	if(cpuid_max >= 1) {
-		__asm__ __volatile__ ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) : "a" (1));
+		__cpuid(1, eax, ebx, ecx, edx);
 		if(edx & (1 << 23)) { s_mmx    = true; str += " mmx"; }
 		if(edx & (1 << 25)) { s_sse    = true; str += " sse"; }
 		if(edx & (1 << 26)) { s_sse2   = true; str += " sse2"; }
@@ -67,7 +65,7 @@ void CPUFeatures::Detect() {
 	}
 
 	if(cpuid_max >= 7) {
-		__asm__ __volatile__ ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) : "a" (7), "c" (0));
+		__cpuid_count(7, 0, eax, ebx, ecx, edx);
 		if(ebx & (1 << 5))  { s_avx2   = true; str += " avx2"; }
 		if(ebx & (1 << 3))  { s_bmi1   = true; str += " bmi1"; }
 		if(ebx & (1 << 8))  { s_bmi2   = true; str += " bmi2"; }
