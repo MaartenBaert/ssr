@@ -9,9 +9,9 @@ simplescreenrecorder_CPPFLAGS = \
 	-I$(srcdir)/AV \
 	-I$(srcdir)/common \
 	-I$(srcdir)/GUI
-simplescreenrecorder_CFLAGS = -pthread -fPIC
-simplescreenrecorder_CXXFLAGS = -pthread -fPIC -std=c++0x
-simplescreenrecorder_LDFLAGS = -pthread -fPIC -lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lXi -lasound
+simplescreenrecorder_CFLAGS = -pthread
+simplescreenrecorder_CXXFLAGS = -pthread -std=c++0x
+simplescreenrecorder_LDFLAGS = -pthread -lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lXi -lasound
 
 if WITH_QT5
 simplescreenrecorder_CPPFLAGS += $(QT5_CFLAGS)

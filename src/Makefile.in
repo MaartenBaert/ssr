@@ -500,10 +500,10 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/common -I$(srcdir)/GUI \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_1) $(am__append_3) \
 @ENABLE_SSRPROGRAM_TRUE@	-DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = -pthread -fPIC
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = -pthread -fPIC -std=c++0x
-@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread -fPIC \
-@ENABLE_SSRPROGRAM_TRUE@	-lrt -lavformat -lavcodec -lavutil \
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = -pthread
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = -pthread -std=c++0x
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread -lrt \
+@ENABLE_SSRPROGRAM_TRUE@	-lavformat -lavcodec -lavutil \
 @ENABLE_SSRPROGRAM_TRUE@	-lswscale -lX11 -lXext -lXfixes -lXi \
 @ENABLE_SSRPROGRAM_TRUE@	-lasound $(am__append_2) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_4) $(am__append_5) \
