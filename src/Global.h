@@ -20,7 +20,45 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include "config.h"
+
 #include <QtGui>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+
+#include <QProcess>
+#include <QTimer>
+
+#include <QAction>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMessageBox>
+#include <QProgressDialog>
+#include <QSystemTrayIcon>
+
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QGroupBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QScrollBar>
+#include <QSpinBox>
+#include <QSplitter>
+#include <QTextBrowser>
+
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QStackedLayout>
+#include <QVBoxLayout>
+
+#endif
 
 #include <cassert>
 #include <cstdio>
@@ -106,7 +144,7 @@ inline void atomic_thread_fence_replacement(memory_order) {
 // libav/ffmpeg API changes with version numbers are listed in their repositories in the file 'doc/APIchanges'
 // I recommend using the ffmpeg one:
 // http://git.videolan.org/?p=ffmpeg.git;a=blob;f=doc/APIchanges
-// this one lists version numbers for both ffmpeg and libav whereas libav just ignores ffmpeg.
+// This one lists version numbers for both ffmpeg and libav whereas libav just ignores ffmpeg.
 
 #if SSR_USE_FFMPEG_VERSIONS
 #define TEST_AV_VERSION(prefix, ffmpeg_major, ffmpeg_minor, libav_major, libav_minor) TEST_MAJOR_MINOR(prefix##_VERSION_MAJOR, prefix##_VERSION_MINOR, ffmpeg_major, ffmpeg_minor)
@@ -114,13 +152,21 @@ inline void atomic_thread_fence_replacement(memory_order) {
 #define TEST_AV_VERSION(prefix, ffmpeg_major, ffmpeg_minor, libav_major, libav_minor) TEST_MAJOR_MINOR(prefix##_VERSION_MAJOR, prefix##_VERSION_MINOR, libav_major, libav_minor)
 #endif
 
+// AVStream::time_base as time base hint: lavf 55.44.100 / 55.20.0
+#define SSR_USE_AVSTREAM_TIME_BASE       TEST_AV_VERSION(LIBAVFORMAT, 55, 44, 55, 20)
 // avformat_network_init: lavf 53.19.0 / 53.13.0
 #define SSR_USE_AVFORMAT_NETWORK_INIT    TEST_AV_VERSION(LIBAVFORMAT, 53, 19, 53, 13)
 // avformat_new_stream: lavf 53.17.0 / 53.10.0
 #define SSR_USE_AVFORMAT_NEW_STREAM      TEST_AV_VERSION(LIBAVFORMAT, 53, 17, 53, 10)
 // avformat_query_codec: lavf 53.11.0 / 53.8.0
 #define SSR_USE_AVFORMAT_QUERY_CODEC     TEST_AV_VERSION(LIBAVFORMAT, 53, 11, 53, 8)
+// avformat_free_context: lavf 52.96.0 / 52.96.0
+#define SSR_USE_AVFORMAT_FREE_CONTEXT    TEST_AV_VERSION(LIBAVFORMAT, 52, 96, 52, 96)
 
+// av_packet_rescale_ts: lavc 55.68.100 / 55.55.0
+#define SSR_USE_AV_PACKET_RESCALE_TS     TEST_AV_VERSION(LIBAVCODEC, 55, 68, 55, 55)
+// AVCodecContext::side_data_only_packets: lavc 55.66.100 / 55.54.0
+#define SSR_USE_SIDE_DATA_ONLY_PACKETS   TEST_AV_VERSION(LIBAVCODEC, 55, 66, 55, 54)
 // av_frame_alloc, av_frame_free: lavc 55.45.101 / 55.28.1
 #define SSR_USE_AV_FRAME_ALLOC           TEST_AV_VERSION(LIBAVCODEC, 55, 45, 55, 28)
 #define SSR_USE_AV_FRAME_FREE            SSR_USE_AV_FRAME_ALLOC

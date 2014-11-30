@@ -24,10 +24,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AVWrapper.h"
 #include "Muxer.h"
 
-const std::vector<AVSampleFormat> AudioEncoder::SUPPORTED_SAMPLE_FORMATS = {
-	AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_S16,
+const std::vector<AudioEncoder::SampleFormatData> AudioEncoder::SUPPORTED_SAMPLE_FORMATS = {
+	{"f32i", AV_SAMPLE_FMT_FLT},
+	{"s16i", AV_SAMPLE_FMT_S16},
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
-	AV_SAMPLE_FMT_FLTP, AV_SAMPLE_FMT_S16P,
+	{"f32p", AV_SAMPLE_FMT_FLTP},
+	{"s16p", AV_SAMPLE_FMT_S16P},
 #endif
 };
 
@@ -55,7 +57,7 @@ AudioEncoder::~AudioEncoder() {
 	StopThread();
 }
 
-unsigned int AudioEncoder::GetRequiredFrameSamples() {
+unsigned int AudioEncoder::GetFrameSize() {
 #if SSR_USE_AVCODEC_ENCODE_AUDIO2
 	return (GetStream()->codec->codec->capabilities & CODEC_CAP_VARIABLE_FRAME_SIZE)? DEFAULT_FRAME_SAMPLES : GetStream()->codec->frame_size;
 #else
@@ -63,7 +65,7 @@ unsigned int AudioEncoder::GetRequiredFrameSamples() {
 #endif
 }
 
-AVSampleFormat AudioEncoder::GetRequiredSampleFormat() {
+AVSampleFormat AudioEncoder::GetSampleFormat() {
 	return GetStream()->codec->sample_fmt;
 }
 
@@ -76,7 +78,7 @@ unsigned int AudioEncoder::GetSampleRate() {
 }
 
 bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
+	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL)
 		return false;
 	if(!av_codec_is_encoder(codec))
@@ -84,7 +86,7 @@ bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
 	if(codec->type != AVMEDIA_TYPE_AUDIO)
 		return false;
 	for(unsigned int i = 0; i < SUPPORTED_SAMPLE_FORMATS.size(); ++i) {
-		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i]))
+		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i].m_format))
 			return true;
 	}
 	return false;
@@ -107,26 +109,41 @@ void AudioEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 	stream->codec->sample_rate = sample_rate;
 	stream->codec->time_base.num = 1;
 	stream->codec->time_base.den = sample_rate;
+#if SSR_USE_AVSTREAM_TIME_BASE
+	stream->time_base = stream->codec->time_base;
+#endif
+	stream->codec->thread_count = 1;
+
+	// parse options
+	QString sample_format_name;
+	for(unsigned int i = 0; i < codec_options.size(); ++i) {
+		const QString &key = codec_options[i].first, &value = codec_options[i].second;
+		if(key == "threads") {
+			stream->codec->thread_count = ParseCodecOptionInt(key, value, 1, 100);
+		} else if(key == "qscale") {
+			stream->codec->flags |= CODEC_FLAG_QSCALE;
+			stream->codec->global_quality = lrint(ParseCodecOptionDouble(key, value, -1.0e6, 1.0e6, FF_QP2LAMBDA));
+		} else if(key == "sampleformat") {
+			sample_format_name = value;
+		} else {
+			av_dict_set(options, key.toUtf8().constData(), value.toUtf8().constData(), 0);
+		}
+	}
+
+	// choose the sample format
 	stream->codec->sample_fmt = AV_SAMPLE_FMT_NONE;
 	for(unsigned int i = 0; i < SUPPORTED_SAMPLE_FORMATS.size(); ++i) {
-		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i])) {
-			stream->codec->sample_fmt = SUPPORTED_SAMPLE_FORMATS[i];
-			break;
-		}
+		if(!sample_format_name.isEmpty() && sample_format_name != SUPPORTED_SAMPLE_FORMATS[i].m_name)
+			continue;
+		if(!AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i].m_format))
+			continue;
+		Logger::LogInfo("[AudioEncoder::PrepareStream] " + Logger::tr("Using sample format %1.").arg(SUPPORTED_SAMPLE_FORMATS[i].m_name));
+		stream->codec->sample_fmt = SUPPORTED_SAMPLE_FORMATS[i].m_format;
+		break;
 	}
 	if(stream->codec->sample_fmt == AV_SAMPLE_FMT_NONE) {
 		Logger::LogError("[AudioEncoder::PrepareStream] " + Logger::tr("Error: Encoder requires an unsupported sample format!"));
 		throw LibavException();
-	}
-	stream->codec->thread_count = 1;
-
-	for(unsigned int i = 0; i < codec_options.size(); ++i) {
-		const QString &key = codec_options[i].first, &value = codec_options[i].second;
-		if(key == "threads") {
-			stream->codec->thread_count = ParseCodecOptionInt(key, value, 1, INT_MAX);
-		} else {
-			av_dict_set(options, key.toAscii().constData(), value.toAscii().constData(), 0);
-		}
 	}
 
 }
@@ -135,7 +152,7 @@ bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 
 	if(frame != NULL) {
 #if SSR_USE_AVFRAME_NB_SAMPLES
-		assert((unsigned int) frame->nb_samples == GetRequiredFrameSamples());
+		assert((unsigned int) frame->nb_samples == GetFrameSize());
 #endif
 #if SSR_USE_AVFRAME_CHANNELS
 		assert(frame->channels == GetStream()->codec->channels);

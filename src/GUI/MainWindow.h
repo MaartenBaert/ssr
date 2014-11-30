@@ -83,6 +83,7 @@ public slots:
 	void GoPageRecord();
 	void GoPageDone();
 
+	void OnShowHide();
 	void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
 };

@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "Main.h"
 
+#include "Benchmark.h"
+#include "CPUFeatures.h"
 #include "HotkeyListener.h"
 #include "Icons.h"
 #include "Logger.h"
@@ -32,6 +34,7 @@ QString g_option_statsfile = QString();
 bool g_option_syncdiagram = false;
 bool g_option_systray = true;
 bool g_option_start_hidden = false;
+bool g_option_benchmark = false;
 
 void PrintOptionHelp() {
 	Logger::LogInfo(
@@ -62,8 +65,10 @@ int main(int argc, char* argv[]) {
 	// - Local character encoding: Used for file names and logs. In practice this will almost always be UTF-8 as well.
 	//   Used by QString::fromLocal8Bit and QString::toLocal8Bit.
 	// If it is not clear what encoding an external library uses, I use the local encoding for file names and UTF-8 for everything else.
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+#endif
 
 	// set the application name
 	QCoreApplication::setOrganizationName("SimpleScreenRecorder");
@@ -133,6 +138,9 @@ int main(int argc, char* argv[]) {
 			} else if(option == "--start-hidden") {
 				NOVALUE
 				g_option_start_hidden = true;
+			} else if(option == "--benchmark") {
+				NOVALUE
+				g_option_benchmark = true;
 			} else {
 				Logger::LogError("[main] " + Logger::tr("Error: Unknown command-line option '%1'!").arg(option));
 				PrintOptionHelp();
@@ -188,10 +196,19 @@ int main(int argc, char* argv[]) {
 
 	}
 
+	// start logging
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");
 	Logger::LogInfo(GetVersionInfo());
+
+	// detect CPU features
+	CPUFeatures::Detect();
+
+	// start the GUI
 	int ret;
-	{
+	if(g_option_benchmark) {
+		Benchmark();
+		ret = 0;
+	} else {
 
 		// create hotkey listener
 		HotkeyListener hotkey_listener;
@@ -206,6 +223,8 @@ int main(int argc, char* argv[]) {
 		ret = application.exec();
 
 	}
+
+	// stop logging
 	Logger::LogInfo("==================== " + Logger::tr("SSR stopped") + " ====================");
 
 	return ret;
@@ -236,7 +255,7 @@ inline QString av_version(unsigned int ver) {
 
 QString GetVersionInfo() {
 	return QString() +
-			"SimpleScreenRecorder " + SSR_VERSION + "\n"
+			"SimpleScreenRecorder " + PACKAGE_VERSION + "\n"
 #ifdef __clang__
 			"Compiled with Clang " + QString::number(__clang_major__) + "." + QString::number(__clang_minor__) + "." + QString::number(__clang_patchlevel__) + "\n"
 #else

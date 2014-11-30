@@ -22,7 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.h"
 #include "AVWrapper.h"
-#include "DetectCPUFeatures.h"
+#include "CPUFeatures.h"
 #include "TempBuffer.h"
 
 #include "FastScaler_Convert.h"
@@ -31,9 +31,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 FastScaler::FastScaler() {
 
 #if SSR_USE_X86_ASM
-	CPUFeatures features;
-	DetectCPUFeatures(&features);
-	m_use_ssse3 = (features.mmx && features.sse && features.sse2 && features.sse3 && features.ssse3);
 	m_warn_alignment = true;
 #endif
 
@@ -58,7 +55,35 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 		return;
 	}
 
-	// faster BGRA to YUV conversion
+	// faster BGRA to YUV444 conversion
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV444P) {
+		if(in_width == out_width && in_height == out_height) {
+			Convert_BGRA_YUV444(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
+		} else {
+			TempBuffer<uint8_t> scaled;
+			int scaled_stride = grow_align16(out_width * 4);
+			scaled.Alloc(scaled_stride * out_height);
+			Scale_BGRA(in_width, in_height, in_data[0], in_stride[0], out_width, out_height, scaled.GetData(), scaled_stride);
+			Convert_BGRA_YUV444(out_width, out_height, scaled.GetData(), scaled_stride, out_data, out_stride);
+		}
+		return;
+	}
+
+	// faster BGRA to YUV422 conversion
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV422P) {
+		if(in_width == out_width && in_height == out_height) {
+			Convert_BGRA_YUV422(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
+		} else {
+			TempBuffer<uint8_t> scaled;
+			int scaled_stride = grow_align16(out_width * 4);
+			scaled.Alloc(scaled_stride * out_height);
+			Scale_BGRA(in_width, in_height, in_data[0], in_stride[0], out_width, out_height, scaled.GetData(), scaled_stride);
+			Convert_BGRA_YUV422(out_width, out_height, scaled.GetData(), scaled_stride, out_data, out_stride);
+		}
+		return;
+	}
+
+	// faster BGRA to YUV420 conversion
 	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV420P) {
 		if(in_width == out_width && in_height == out_height) {
 			Convert_BGRA_YUV420(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
@@ -72,10 +97,24 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 		return;
 	}
 
+	// faster BGRA to BGR conversion
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_BGR24) {
+		if(in_width == out_width && in_height == out_height) {
+			Convert_BGRA_BGR(in_width, in_height, in_data[0], in_stride[0], out_data[0], out_stride[0]);
+		} else {
+			TempBuffer<uint8_t> scaled;
+			int scaled_stride = grow_align16(out_width * 4);
+			scaled.Alloc(scaled_stride * out_height);
+			Scale_BGRA(in_width, in_height, in_data[0], in_stride[0], out_width, out_height, scaled.GetData(), scaled_stride);
+			Convert_BGRA_BGR(out_width, out_height, scaled.GetData(), scaled_stride, out_data[0], out_stride[0]);
+		}
+		return;
+	}
+
 	if(m_warn_swscale) {
 		m_warn_swscale = false;
 		Logger::LogWarning("[FastScaler::Scale] " + Logger::tr("Warning: Pixel format is not supported (%1 -> %2), using swscale instead. "
-																"This is not a problem, but performance will be worse.").arg(in_format).arg(out_format));
+															   "This is not a problem, but performance will be worse.").arg(in_format).arg(out_format));
 	}
 
 	m_sws_context = sws_getCachedContext(m_sws_context,
@@ -86,7 +125,60 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 		Logger::LogError("[FastScaler::Scale] " + Logger::tr("Error: Can't get swscale context!", "Don't translate 'swscale'"));
 		throw LibavException();
 	}
+	sws_setColorspaceDetails(m_sws_context,
+							 sws_getCoefficients(SWS_CS_ITU709), 0,
+							 sws_getCoefficients(SWS_CS_DEFAULT), 0,
+							 0, 1 << 16, 1 << 16);
 	sws_scale(m_sws_context, in_data, in_stride, 0, in_height, out_data, out_stride);
+
+}
+
+void FastScaler::Convert_BGRA_YUV444(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
+
+#if SSR_USE_X86_ASM
+	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+		if((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0 &&
+		   (uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0 &&
+		   (uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0) {
+			Convert_BGRA_YUV444_SSSE3(width, height, in_data, in_stride, out_data, out_stride);
+		} else {
+			if(m_warn_alignment) {
+				m_warn_alignment = false;
+				Logger::LogWarning("[FastScaler::Convert_BGRA_YUV444] " + Logger::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
+																					 "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
+			}
+			Convert_BGRA_YUV444_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+		}
+		return;
+	}
+#endif
+
+	Convert_BGRA_YUV444_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+
+}
+
+void FastScaler::Convert_BGRA_YUV422(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
+	assert(width % 2 == 0);
+
+#if SSR_USE_X86_ASM
+	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+		if((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0 &&
+		   (uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0 &&
+		   (uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0) {
+			Convert_BGRA_YUV422_SSSE3(width, height, in_data, in_stride, out_data, out_stride);
+		} else {
+			if(m_warn_alignment) {
+				m_warn_alignment = false;
+				Logger::LogWarning("[FastScaler::Convert_BGRA_YUV422] " + Logger::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
+																					 "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
+			}
+			Convert_BGRA_YUV422_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+		}
+		return;
+	}
+#endif
+
+	Convert_BGRA_YUV422_Fallback(width, height, in_data, in_stride, out_data, out_stride);
 
 }
 
@@ -94,7 +186,7 @@ void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, co
 	assert(width % 2 == 0 && height % 2 == 0);
 
 #if SSR_USE_X86_ASM
-	if(m_use_ssse3) {
+	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
 		if((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0 &&
 		   (uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0 &&
 		   (uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0) {
@@ -103,7 +195,7 @@ void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, co
 			if(m_warn_alignment) {
 				m_warn_alignment = false;
 				Logger::LogWarning("[FastScaler::Convert_BGRA_YUV420] " + Logger::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
-																					  "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
+																					 "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
 			}
 			Convert_BGRA_YUV420_Fallback(width, height, in_data, in_stride, out_data, out_stride);
 		}
@@ -115,11 +207,33 @@ void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, co
 
 }
 
+void FastScaler::Convert_BGRA_BGR(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* out_data, int out_stride) {
+
+#if SSR_USE_X86_ASM
+	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+		if((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0) {
+			Convert_BGRA_BGR_SSSE3(width, height, in_data, in_stride, out_data, out_stride);
+		} else {
+			if(m_warn_alignment) {
+				m_warn_alignment = false;
+				Logger::LogWarning("[FastScaler::Convert_BGRA_BGR] " + Logger::tr("Warning: Memory is not properly aligned for SSE, using fallback converter instead. "
+																				  "This is not a problem, but performance will be worse.", "Don't translate 'fallback'"));
+			}
+			Convert_BGRA_BGR_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+		}
+		return;
+	}
+#endif
+
+	Convert_BGRA_BGR_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+
+}
+
 void FastScaler::Scale_BGRA(unsigned int in_width, unsigned int in_height, const uint8_t* in_data, int in_stride,
 							unsigned int out_width, unsigned int out_height, uint8_t* out_data, int out_stride) {
 
 #if SSR_USE_X86_ASM
-	if(m_use_ssse3) {
+	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
 		if((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0) {
 			Scale_BGRA_SSSE3(in_width, in_height, in_data, in_stride, out_width, out_height, out_data, out_stride);
 		} else {

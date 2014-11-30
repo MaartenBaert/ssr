@@ -50,7 +50,8 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 	{
 		QLabel *label_channel = new QLabel(tr("Channel name:"), groupbox_channel);
 		m_lineedit_channel = new QLineEdit(m_parent->GetGLInjectChannel(), groupbox_channel);
-		m_lineedit_channel->setToolTip(tr("Channel names are used to identify applications. You only need to change this if you want to record multiple applications at the same time."));
+		m_lineedit_channel->setToolTip(tr("Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.\n"
+										  "If you leave this empty, the default name 'channel-YOURUSERNAME' will be used."));
 		m_checkbox_relax_permissions = new QCheckBox(tr("Relax shared memory permissions (insecure)"), groupbox_channel);
 		m_checkbox_relax_permissions->setToolTip(tr("If checked, other users on the same machine will be able to attach to the shared memory that's used for communication with the OpenGL program.\n"
 													"This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.\n"

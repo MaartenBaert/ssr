@@ -25,8 +25,15 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class VideoEncoder : public BaseEncoder {
 
 private:
+	struct PixelFormatData {
+		QString m_name;
+		PixelFormat m_format;
+		bool m_is_yuv;
+	};
+
+private:
 	static const size_t THROTTLE_THRESHOLD_FRAMES, THROTTLE_THRESHOLD_PACKETS;
-	static const std::vector<PixelFormat> SUPPORTED_PIXEL_FORMATS;
+	static const std::vector<PixelFormatData> SUPPORTED_PIXEL_FORMATS;
 
 private:
 #if !SSR_USE_AVCODEC_ENCODE_VIDEO2
@@ -37,14 +44,17 @@ public:
 	VideoEncoder(Muxer* muxer, AVStream* stream, AVCodec* codec, AVDictionary** options);
 	~VideoEncoder();
 
-	// Returns an additional delay (in us) between frames, based on the queue size, to avoid memory problems.
-	// As long as the queues are relatively small, this function will just return 0.
-	// This function is thread-safe.
-	int64_t GetFrameDelay();
+	// Returns the required pixel format.
+	PixelFormat GetPixelFormat();
 
 	unsigned int GetWidth();
 	unsigned int GetHeight();
 	unsigned int GetFrameRate();
+
+	// Returns an additional delay (in us) between frames, based on the queue size, to avoid memory problems.
+	// As long as the queues are relatively small, this function will just return 0.
+	// This function is thread-safe.
+	int64_t GetFrameDelay();
 
 public:
 	static bool AVCodecIsSupported(const QString& codec_name);

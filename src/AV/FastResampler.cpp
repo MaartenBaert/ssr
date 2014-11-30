@@ -20,7 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "FastResampler.h"
 
 #include "Logger.h"
-#include "DetectCPUFeatures.h"
+#include "CPUFeatures.h"
 
 /*
 This resampler is based on the resampling algorithm described here:
@@ -98,9 +98,7 @@ FastResampler::FastResampler(unsigned int channels, float gain) {
 
 	// CPU feature detection
 #if SSR_USE_X86_ASM
-	CPUFeatures features;
-	DetectCPUFeatures(&features);
-	if(features.mmx && features.sse && features.sse2) {
+	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2()) {
 		switch(m_channels) {
 			case 1:  m_firfilter2_ptr = &FastResampler_FirFilter2_C1_SSE2; break;
 			case 2:  m_firfilter2_ptr = &FastResampler_FirFilter2_C2_SSE2; break;

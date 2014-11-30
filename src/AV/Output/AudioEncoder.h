@@ -25,7 +25,13 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class AudioEncoder : public BaseEncoder {
 
 private:
-	static const std::vector<AVSampleFormat> SUPPORTED_SAMPLE_FORMATS;
+	struct SampleFormatData {
+		QString m_name;
+		AVSampleFormat m_format;
+	};
+
+private:
+	static const std::vector<SampleFormatData> SUPPORTED_SAMPLE_FORMATS;
 	static const unsigned int DEFAULT_FRAME_SAMPLES;
 
 private:
@@ -38,10 +44,10 @@ public:
 	~AudioEncoder();
 
 	// Returns the required frame size, i.e. the number of samples (for each channel).
-	unsigned int GetRequiredFrameSamples();
+	unsigned int GetFrameSize();
 
 	// Returns the required sample format.
-	AVSampleFormat GetRequiredSampleFormat();
+	AVSampleFormat GetSampleFormat();
 
 	// Returns the number of audio channels.
 	unsigned int GetChannels();

@@ -1,6 +1,6 @@
 if ENABLE_SSRPROGRAM
 
-bin_SCRIPTS = \
+dist_bin_SCRIPTS = \
 	ssr-glinject
 
 endif

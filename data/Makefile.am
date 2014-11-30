@@ -8,6 +8,9 @@ icon32dir = $(datadir)/icons/hicolor/32x32/apps
 icon48dir = $(datadir)/icons/hicolor/48x48/apps
 icon64dir = $(datadir)/icons/hicolor/64x64/apps
 icon96dir = $(datadir)/icons/hicolor/96x96/apps
+icon128dir = $(datadir)/icons/hicolor/128x128/apps
+icon192dir = $(datadir)/icons/hicolor/192x192/apps
+icon256dir = $(datadir)/icons/hicolor/256x256/apps
 iconscalabledir = $(datadir)/icons/hicolor/scalable/apps
 
 dist_desktop_DATA = \
@@ -41,6 +44,18 @@ dist_icon96_DATA = \
 	icons/96/simplescreenrecorder.png \
 	icons/96/simplescreenrecorder-paused.png \
 	icons/96/simplescreenrecorder-recording.png
+dist_icon128_DATA = \
+	icons/128/simplescreenrecorder.png \
+	icons/128/simplescreenrecorder-paused.png \
+	icons/128/simplescreenrecorder-recording.png
+dist_icon192_DATA = \
+	icons/192/simplescreenrecorder.png \
+	icons/192/simplescreenrecorder-paused.png \
+	icons/192/simplescreenrecorder-recording.png
+dist_icon256_DATA = \
+	icons/256/simplescreenrecorder.png \
+	icons/256/simplescreenrecorder-paused.png \
+	icons/256/simplescreenrecorder-recording.png
 dist_iconscalable_DATA = \
 	icons/scalable/simplescreenrecorder.svg \
 	icons/scalable/simplescreenrecorder-paused.svg \

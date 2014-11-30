@@ -60,7 +60,7 @@
     </message>
     <message>
         <source>Channel names are used to identify applications. You only need to change this if you want to record multiple applications at the same time.</source>
-        <translation>Τα ονόματα καναλιών χρησιμοποιούνται για να αναγνωρίσουν τις εφαρμογές. Χρειάζεται να το αλλάξετε αυτό μόνον αν εγγράφετε πολλαπλές εφαρμογές την ίδια στιγμή.</translation>
+        <translation type="obsolete">Τα ονόματα καναλιών χρησιμοποιούνται για να αναγνωρίσουν τις εφαρμογές. Χρειάζεται να το αλλάξετε αυτό μόνον αν εγγράφετε πολλαπλές εφαρμογές την ίδια στιγμή.</translation>
     </message>
     <message>
         <source>Relax shared memory permissions (insecure)</source>
@@ -123,6 +123,11 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <source>Close</source>
         <translation>Κλείσιμο</translation>
     </message>
+    <message>
+        <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
+If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Logger</name>
@@ -180,27 +185,11 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <translation></translation>
     </message>
     <message>
-        <source>Warning: Could not find PCM plugins.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Found plugin %1 = %2.</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Warning: Could not open sound card %1.</source>
         <translation></translation>
     </message>
     <message>
         <source>Warning: Could not get info for sound card %1.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Found card %1 = %2.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Found device %1 = %2.</source>
         <translation></translation>
     </message>
     <message>
@@ -364,10 +353,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <source>Got %1 = %2.</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Error: Could not get names of sources! Reason: %1</source>
         <translation></translation>
     </message>
@@ -439,14 +424,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <source>Error: Can&apos;t initialize inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Error: Can&apos;t watch shared memory directory!</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Error: Can&apos;t open shared memory directory!</source>
         <translation></translation>
     </message>
     <message>
@@ -559,10 +536,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <source>Error: Encoding of audio frame failed!</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Error: Option &apos;%1&apos; could not be parsed!</source>
         <translation></translation>
     </message>
     <message>
@@ -752,10 +725,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <source>Using nice priority.</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Warning: Can&apos;t increase the thread priority.</source>
         <translation></translation>
     </message>
@@ -824,6 +793,47 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t watch channel directory!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Using nice priority.</source>
+        <comment>Don&apos;t translate &apos;nice&apos;, it&apos;s a UNIX parameter that defines the priority of a process.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t open channel directory!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Found plugin: [%1] %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Found card: [%1] %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Found device: [%1] %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Found source: [%1] %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: Option &apos;%1&apos; could not be parsed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale %1 to %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starting scaler benchmark ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1513,6 +1523,18 @@ The start button is at the top ;).</source>
 
 Το πλήκτρο έναρξης είναι στην κορυφή ;).</translation>
     </message>
+    <message>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show window</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PageWelcome</name>
@@ -1587,6 +1609,10 @@ The start button is at the top ;).</source>
     <message>
         <source>Are you sure that you want to delete this profile?</source>
         <translation>Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το προφίλ;</translation>
+    </message>
+    <message>
+        <source>Enter a name for the new profile:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

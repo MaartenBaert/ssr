@@ -25,10 +25,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #if SSR_USE_X86_ASM
 
-#include <xmmintrin.h>
-#include <emmintrin.h>
-#include <pmmintrin.h>
-#include <tmmintrin.h>
+#include <xmmintrin.h> // sse
+#include <emmintrin.h> // sse2
+#include <pmmintrin.h> // sse3
+#include <tmmintrin.h> // ssse3
 
 /*
 ==== SSSE3 MipMapper ====
@@ -205,22 +205,24 @@ void MipMap_BGRA_SSSE3_Dynamic(unsigned int in_w, unsigned int in_h, const uint8
 void MipMap_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 				  uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) {
 	assert(mx + my <= 8);
-	switch((mx << 8) | my) {
-		case 0x0000: assert(false); break;
-		case 0x0001: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 1); break;
-		case 0x0002: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 2); break;
-		case 0x0100: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 0); break;
-		case 0x0101: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 1); break;
-		case 0x0102: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 2); break;
-		case 0x0103: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 3); break;
-		case 0x0200: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 0); break;
-		case 0x0201: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 1); break;
-		case 0x0202: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 2); break;
-		case 0x0203: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 3); break;
-		case 0x0301: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 1); break;
-		case 0x0302: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 2); break;
-		case 0x0303: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 3); break;
-		default:     MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, mx, my); break;
+	switch((mx << 4) | my) {
+		case 0x00: assert(false); break;
+		case 0x01: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 1); break;
+		case 0x02: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 2); break;
+		case 0x03: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 3); break;
+		case 0x10: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 0); break;
+		case 0x11: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 1); break;
+		case 0x12: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 2); break;
+		case 0x13: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 3); break;
+		case 0x20: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 0); break;
+		case 0x21: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 1); break;
+		case 0x22: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 2); break;
+		case 0x23: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 3); break;
+		case 0x30: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 0); break;
+		case 0x31: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 1); break;
+		case 0x32: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 2); break;
+		case 0x33: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 3); break;
+		default:   MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, mx, my); break;
 	}
 }
 
@@ -252,13 +254,13 @@ void Bilinear_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in
 	}
 
 	// constants
-	__m128i v_128       = _mm_set1_epi16(128);
-	__m128i v_256       = _mm_set1_epi16(256);
-	__m128i v_shuffle1  = _mm_setr_epi8(0, 255, 1, 255, 2, 255, 3, 255, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle2  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 0, 255, 1, 255, 2, 255, 3, 255);
-	__m128i v_shuffle3  = _mm_setr_epi8(4, 255, 5, 255, 6, 255, 7, 255, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle4  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 4, 255, 5, 255, 6, 255, 7, 255);
-	__m128i v_shuffle5  = _mm_setr_epi8(1, 3, 5, 7, 9, 11, 13, 15, 255, 255, 255, 255, 255, 255, 255, 255);
+	__m128i v_128      = _mm_set1_epi16(128);
+	__m128i v_256      = _mm_set1_epi16(256);
+	__m128i v_shuffle1 = _mm_setr_epi8(0, 255, 1, 255, 2, 255, 3, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+	__m128i v_shuffle2 = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 0, 255, 1, 255, 2, 255, 3, 255);
+	__m128i v_shuffle3 = _mm_setr_epi8(4, 255, 5, 255, 6, 255, 7, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+	__m128i v_shuffle4 = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 4, 255, 5, 255, 6, 255, 7, 255);
+	__m128i v_shuffle5 = _mm_setr_epi8(1, 3, 5, 7, 9, 11, 13, 15, 255, 255, 255, 255, 255, 255, 255, 255);
 
 	// scale
 	for(unsigned int out_j = 0; out_j < out_h; ++out_j) {

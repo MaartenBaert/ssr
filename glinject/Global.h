@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #define GL_GLEXT_PROTOTYPES
 
+#include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>

@@ -39,9 +39,9 @@ private:
 private:
 	QString m_source_name;
 	unsigned int m_sample_rate, m_channels;
+	unsigned int m_period_size, m_buffer_size;
 
 	snd_pcm_t *m_alsa_pcm;
-	unsigned int m_alsa_period_size, m_alsa_buffer_size;
 
 	std::thread m_thread;
 	std::atomic<bool> m_should_stop, m_error_occurred;

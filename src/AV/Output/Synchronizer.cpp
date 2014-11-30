@@ -60,37 +60,84 @@ const size_t Synchronizer::MAX_AUDIO_SAMPLES_BUFFERED = 1000000;
 // This is needed because some video codecs/players can't handle long delays.
 const int64_t Synchronizer::MAX_FRAME_DELAY = 200000;
 
-static std::unique_ptr<AVFrameWrapper> CreateVideoFrameYUV(unsigned int width, unsigned int height, std::shared_ptr<AVFrameData>* reuse_data = NULL) {
-	// allocate a YUV frame, with proper alignment
-	// Y = 1 byte per pixel, U or V = 1 byte per 2x2 pixels
-	int l1 = grow_align16(width);
-	int l2 = grow_align16(width / 2);
-	int s1 = grow_align16(l1 * height);
-	int s2 = grow_align16(l2 * height / 2);
-	std::shared_ptr<AVFrameData> frame_data = (reuse_data == NULL)? std::make_shared<AVFrameData>(s1 + s2 * 2) : *reuse_data;
+static std::unique_ptr<AVFrameWrapper> CreateVideoFrame(unsigned int width, unsigned int height, PixelFormat pixel_format, const std::shared_ptr<AVFrameData>& reuse_data) {
+
+	// get required planes
+	unsigned int planes = 0;
+	size_t linesize[3] = {0}, planesize[3] = {0};
+	switch(pixel_format) {
+		case AV_PIX_FMT_YUV444P: {
+			// Y/U/V = 1 byte per pixel
+			planes = 3;
+			linesize[0]  = grow_align16(width); planesize[0] = linesize[0] * height;
+			linesize[1]  = grow_align16(width); planesize[1] = linesize[1] * height;
+			linesize[2]  = grow_align16(width); planesize[2] = linesize[2] * height;
+			break;
+		}
+		case AV_PIX_FMT_YUV422P: {
+			// Y = 1 byte per pixel, U/V = 1 byte per 2x1 pixels
+			planes = 3;
+			linesize[0]  = grow_align16(width    ); planesize[0] = linesize[0] * height;
+			linesize[1]  = grow_align16(width / 2); planesize[1] = linesize[1] * height;
+			linesize[2]  = grow_align16(width / 2); planesize[2] = linesize[2] * height;
+			break;
+		}
+		case AV_PIX_FMT_YUV420P: {
+			// Y = 1 byte per pixel, U/V = 1 byte per 2x2 pixels
+			planes = 3;
+			linesize[0]  = grow_align16(width    ); planesize[0] = linesize[0] * height    ;
+			linesize[1]  = grow_align16(width / 2); planesize[1] = linesize[1] * height / 2;
+			linesize[2]  = grow_align16(width / 2); planesize[2] = linesize[2] * height / 2;
+			break;
+		}
+		case AV_PIX_FMT_BGRA: {
+			// BGRA = 4 bytes per pixel
+			planes = 1;
+			linesize[0] = grow_align16(width * 4); planesize[0] = linesize[0] * height;
+			break;
+		}
+		case AV_PIX_FMT_BGR24: {
+			// BGR = 3 bytes per pixel
+			planes = 1;
+			linesize[0] = grow_align16(width * 3); planesize[0] = linesize[0] * height;
+			break;
+		}
+		default: assert(false); break;
+	}
+
+	// create the frame
+	size_t totalsize = 0;
+	for(unsigned int p = 0; p < planes; ++p) {
+		totalsize += planesize[p];
+	}
+	std::shared_ptr<AVFrameData> frame_data = (reuse_data == NULL)? std::make_shared<AVFrameData>(totalsize) : reuse_data;
 	std::unique_ptr<AVFrameWrapper> frame(new AVFrameWrapper(frame_data));
-	frame->GetFrame()->data[0] = frame->GetRawData();
-	frame->GetFrame()->data[1] = frame->GetRawData() + s1;
-	frame->GetFrame()->data[2] = frame->GetRawData() + s1 + s2;
-	frame->GetFrame()->linesize[0] = l1;
-	frame->GetFrame()->linesize[1] = l2;
-	frame->GetFrame()->linesize[2] = l2;
+	uint8_t *data = frame->GetRawData();
+	for(unsigned int p = 0; p < planes; ++p) {
+		frame->GetFrame()->data[p] = data;
+		frame->GetFrame()->linesize[p] = linesize[p];
+		data += planesize[p];
+	}
 #if SSR_USE_AVFRAME_WIDTH_HEIGHT
 	frame->GetFrame()->width = width;
 	frame->GetFrame()->height = height;
 #endif
 #if SSR_USE_AVFRAME_FORMAT
-	frame->GetFrame()->format = AV_PIX_FMT_YUV420P;
+	frame->GetFrame()->format = pixel_format;
 #endif
 #if SSR_USE_AVFRAME_SAR
 	frame->GetFrame()->sample_aspect_ratio.num = 1;
 	frame->GetFrame()->sample_aspect_ratio.den = 1;
 #endif
+
 	return frame;
+
 }
 
-// note: sample_size = sizeof(sampletype) * channels
 static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int channels, unsigned int sample_rate, unsigned int samples, unsigned int planes, AVSampleFormat sample_format) {
+
+	// get required sample size
+	// note: sample_size = sizeof(sampletype) * channels
 	unsigned int sample_size = 0; // to keep GCC happy
 	switch(sample_format) {
 		case AV_SAMPLE_FMT_S16:
@@ -105,12 +152,14 @@ static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int channels, u
 			sample_size = channels * sizeof(float); break;
 		default: assert(false); break;
 	}
+
+	// create the frame
 	size_t plane_size = grow_align16(samples * sample_size / planes);
 	std::shared_ptr<AVFrameData> frame_data = std::make_shared<AVFrameData>(plane_size * planes);
 	std::unique_ptr<AVFrameWrapper> frame(new AVFrameWrapper(frame_data));
-	for(unsigned int i = 0; i < planes; ++i) {
-		frame->GetFrame()->data[i] = frame->GetRawData() + plane_size * i;
-		frame->GetFrame()->linesize[i] = samples * sample_size / planes;
+	for(unsigned int p = 0; p < planes; ++p) {
+		frame->GetFrame()->data[p] = frame->GetRawData() + plane_size * p;
+		frame->GetFrame()->linesize[p] = samples * sample_size / planes;
 	}
 #if SSR_USE_AVFRAME_NB_SAMPLES
 	frame->GetFrame()->nb_samples = samples;
@@ -124,7 +173,9 @@ static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int channels, u
 #if SSR_USE_AVFRAME_FORMAT
 	frame->GetFrame()->format = sample_format;
 #endif
+
 	return frame;
+
 }
 
 Synchronizer::Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder, bool allow_frame_skipping) {
@@ -174,6 +225,7 @@ void Synchronizer::Init() {
 		m_video_width = m_video_encoder->GetWidth();
 		m_video_height = m_video_encoder->GetHeight();
 		m_video_frame_rate = m_video_encoder->GetFrameRate();
+		m_video_pixel_format = m_video_encoder->GetPixelFormat();
 		m_video_max_frames_skipped = (m_allow_frame_skipping)? (MAX_FRAME_DELAY * m_video_frame_rate + 500000) / 1000000 : 0;
 		VideoLock videolock(&m_video_data);
 		videolock->m_last_timestamp = std::numeric_limits<int64_t>::min();
@@ -185,8 +237,8 @@ void Synchronizer::Init() {
 		m_audio_channels = m_audio_encoder->GetChannels(); //TODO// never larger than AV_NUM_DATA_POINTERS
 		assert(m_audio_channels <= AV_NUM_DATA_POINTERS);
 		m_audio_sample_rate = m_audio_encoder->GetSampleRate();
-		m_audio_required_frame_samples = m_audio_encoder->GetRequiredFrameSamples();
-		m_audio_required_sample_format = m_audio_encoder->GetRequiredSampleFormat();
+		m_audio_frame_size = m_audio_encoder->GetFrameSize();
+		m_audio_sample_format = m_audio_encoder->GetSampleFormat();
 		AudioLock audiolock(&m_audio_data);
 		audiolock->m_fast_resampler.reset(new FastResampler(m_audio_channels, 0.9f));
 		InitAudioSegment(audiolock.get());
@@ -208,7 +260,7 @@ void Synchronizer::Init() {
 		SharedLock lock(&m_shared_data);
 
 		if(m_audio_encoder != NULL) {
-			lock->m_partial_audio_frame.Alloc(m_audio_required_frame_samples * m_audio_channels);
+			lock->m_partial_audio_frame.Alloc(m_audio_frame_size * m_audio_channels);
 			lock->m_partial_audio_frame_samples = 0;
 		}
 		lock->m_video_pts = 0;
@@ -280,11 +332,11 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	videolock->m_next_timestamp = std::max(videolock->m_next_timestamp + (int64_t) (1000000 / m_video_frame_rate), timestamp);
 
 	// create the converted frame
-	std::unique_ptr<AVFrameWrapper> converted_frame = CreateVideoFrameYUV(m_video_width, m_video_height);
+	std::unique_ptr<AVFrameWrapper> converted_frame = CreateVideoFrame(m_video_width, m_video_height, m_video_pixel_format, NULL);
 
-	// scale and convert the frame to YUV420P
+	// scale and convert the frame to the right format
 	videolock->m_fast_scaler.Scale(width, height, format, &data, &stride,
-			m_video_width, m_video_height, AV_PIX_FMT_YUV420P, converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
+			m_video_width, m_video_height, m_video_pixel_format, converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
 
 	SharedLock lock(&m_shared_data);
 
@@ -648,7 +700,7 @@ void Synchronizer::FlushVideoBuffer(Synchronizer::SharedData* lock, int64_t segm
 			while(lock->m_video_pts + m_video_max_frames_skipped < std::min(next_pts, segment_stop_video_pts)) {
 
 				// create duplicate frame
-				std::unique_ptr<AVFrameWrapper> duplicate_frame = CreateVideoFrameYUV(m_video_width, m_video_height, &lock->m_last_video_frame_data);
+				std::unique_ptr<AVFrameWrapper> duplicate_frame = CreateVideoFrame(m_video_width, m_video_height, m_video_pixel_format, lock->m_last_video_frame_data);
 				duplicate_frame->GetFrame()->pts = lock->m_video_pts + m_video_max_frames_skipped;
 
 				// add new block to sync diagram
@@ -750,7 +802,7 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 
 			// copy samples until either the partial frame is full or there are no samples left
 			//TODO// do direct copy/conversion to new audio frame?
-			int64_t n = std::min((int64_t) (m_audio_required_frame_samples - lock->m_partial_audio_frame_samples), samples_left);
+			int64_t n = std::min((int64_t) (m_audio_frame_size - lock->m_partial_audio_frame_samples), samples_left);
 			lock->m_audio_buffer.Pop(lock->m_partial_audio_frame.GetData() + lock->m_partial_audio_frame_samples * m_audio_channels, n * m_audio_channels);
 			lock->m_segment_audio_samples_read += n;
 			lock->m_partial_audio_frame_samples += n;
@@ -758,30 +810,30 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 			samples_left -= n;
 
 			// is the partial frame full?
-			if(lock->m_partial_audio_frame_samples == m_audio_required_frame_samples) {
+			if(lock->m_partial_audio_frame_samples == m_audio_frame_size) {
 
 				// allocate a frame
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
-				unsigned int planes = (m_audio_required_sample_format == AV_SAMPLE_FMT_S16P ||
-									   m_audio_required_sample_format == AV_SAMPLE_FMT_FLTP)? m_audio_channels : 1;
+				unsigned int planes = (m_audio_sample_format == AV_SAMPLE_FMT_S16P ||
+									   m_audio_sample_format == AV_SAMPLE_FMT_FLTP)? m_audio_channels : 1;
 #else
 				unsigned int planes = 1;
 #endif
-				std::unique_ptr<AVFrameWrapper> audio_frame = CreateAudioFrame(m_audio_channels, m_audio_sample_rate, m_audio_required_frame_samples, planes, m_audio_required_sample_format);
+				std::unique_ptr<AVFrameWrapper> audio_frame = CreateAudioFrame(m_audio_channels, m_audio_sample_rate, m_audio_frame_size, planes, m_audio_sample_format);
 				audio_frame->GetFrame()->pts = lock->m_audio_samples;
 
 				// copy/convert the samples
-				switch(m_audio_required_sample_format) {
+				switch(m_audio_sample_format) {
 					case AV_SAMPLE_FMT_S16: {
 						float *data_in = (float*) lock->m_partial_audio_frame.GetData();
 						int16_t *data_out = (int16_t*) audio_frame->GetFrame()->data[0];
-						SampleCopy(m_audio_required_frame_samples * m_audio_channels, data_in, 1, data_out, 1);
+						SampleCopy(m_audio_frame_size * m_audio_channels, data_in, 1, data_out, 1);
 						break;
 					}
 					case AV_SAMPLE_FMT_FLT: {
 						float *data_in = (float*) lock->m_partial_audio_frame.GetData();
 						float *data_out = (float*) audio_frame->GetFrame()->data[0];
-						memcpy(data_out, data_in, m_audio_required_frame_samples * m_audio_channels * sizeof(float));
+						memcpy(data_out, data_in, m_audio_frame_size * m_audio_channels * sizeof(float));
 						break;
 					}
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
@@ -789,7 +841,7 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 						for(unsigned int p = 0; p < planes; ++p) {
 							float *data_in = (float*) lock->m_partial_audio_frame.GetData() + p;
 							int16_t *data_out = (int16_t*) audio_frame->GetFrame()->data[p];
-							SampleCopy(m_audio_required_frame_samples, data_in, planes, data_out, 1);
+							SampleCopy(m_audio_frame_size, data_in, planes, data_out, 1);
 						}
 						break;
 					}
@@ -797,7 +849,7 @@ void Synchronizer::FlushAudioBuffer(Synchronizer::SharedData* lock, int64_t segm
 						for(unsigned int p = 0; p < planes; ++p) {
 							float *data_in = (float*) lock->m_partial_audio_frame.GetData() + p;
 							float *data_out = (float*) audio_frame->GetFrame()->data[p];
-							SampleCopy(m_audio_required_frame_samples, data_in, planes, data_out, 1);
+							SampleCopy(m_audio_frame_size, data_in, planes, data_out, 1);
 						}
 						break;
 					}

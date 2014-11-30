@@ -24,7 +24,6 @@ class FastScaler {
 
 private:
 #if SSR_USE_X86_ASM
-	bool m_use_ssse3;
 	bool m_warn_alignment;
 #endif
 
@@ -38,7 +37,10 @@ public:
 			   unsigned int out_width, unsigned int out_height, PixelFormat out_format, uint8_t* const* out_data, const int* out_stride);
 
 private:
+	void Convert_BGRA_YUV444(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]);
+	void Convert_BGRA_YUV422(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]);
 	void Convert_BGRA_YUV420(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]);
+	void Convert_BGRA_BGR(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* out_data, int out_stride);
 	void Scale_BGRA(unsigned int in_width, unsigned int in_height, const uint8_t* in_data, int in_stride,
 					unsigned int out_width, unsigned int out_height, uint8_t* out_data, int out_stride);
 

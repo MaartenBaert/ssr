@@ -4,6 +4,22 @@ SimpleScreenRecorder changes
 Git master
 ----------
 
+- Qt5 support (optional, Qt4 is still the default)
+- ?
+
+Version 0.3.1
+-------------
+
+- Small change to ssr-glinject script for improved compatibility with Steam.
+- Added qscale option.
+- Disabled PulseAudio latency estimation (apparently it made things worse).
+- New muxing code for improved compatibility with the latest ffmpeg/libav.
+- Switched to the BT.709 color space.
+
+Version 0.3.0
+-------------
+
+- Added profile support.
 - New, more flexible OpenGL recording system (glinject-next branch merged).
 - More robust sound notifications.
 - Show progress dialog while flushing the encoders.
@@ -12,6 +28,8 @@ Git master
 - Native support for mono microphones (plughw no longer needed).
 - Added source detection for ALSA.
 - Partially rewritten output backend.
+- Improved mouse following algorithm.
+- New icon.
 - Bugfixes.
 
 Version 0.2.2

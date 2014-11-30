@@ -32,7 +32,7 @@ private:
 	};
 	struct TimeChannel {
 		QString m_name;
-		double m_current_time, m_time_shift;
+		double m_current_time, m_time_shift, m_time_shift_v;
 		std::deque<TimeBlock> m_time_blocks;
 	};
 	struct SharedData {

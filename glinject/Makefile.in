@@ -293,6 +293,8 @@ PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 QT4_CFLAGS = @QT4_CFLAGS@
 QT4_LIBS = @QT4_LIBS@
+QT5_CFLAGS = @QT5_CFLAGS@
+QT5_LIBS = @QT5_LIBS@
 RANLIB = @RANLIB@
 RCC = @RCC@
 SED = @SED@
@@ -357,18 +359,9 @@ top_srcdir = @top_srcdir@
 @ENABLE_GLINJECTLIB_TRUE@lib_LTLIBRARIES = libssr-glinject.la
 @ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_CPPFLAGS =  \
 @ENABLE_GLINJECTLIB_TRUE@	$(am__append_1)
-@ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_CFLAGS = \
-@ENABLE_GLINJECTLIB_TRUE@	-pthread
-
-@ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_CXXFLAGS = \
-@ENABLE_GLINJECTLIB_TRUE@	-pthread \
-@ENABLE_GLINJECTLIB_TRUE@	-std=c++0x
-
-@ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_LDFLAGS = \
-@ENABLE_GLINJECTLIB_TRUE@	-pthread \
-@ENABLE_GLINJECTLIB_TRUE@	-avoid-version -shared \
-@ENABLE_GLINJECTLIB_TRUE@	 -lrt -ldl -lGL -lGLU -lX11 -lXfixes
-
+@ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_CFLAGS = -pthread -fPIC
+@ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_CXXFLAGS = -pthread -fPIC -std=c++0x
+@ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_LDFLAGS = -pthread -fPIC -avoid-version -shared -lrt -ldl -lGL -lGLU -lX11 -lXfixes
 @ENABLE_GLINJECTLIB_TRUE@libssr_glinject_la_SOURCES = \
 @ENABLE_GLINJECTLIB_TRUE@	elfhacks.c \
 @ENABLE_GLINJECTLIB_TRUE@	elfhacks.h \

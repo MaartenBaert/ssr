@@ -103,7 +103,7 @@ void ProfileBox::LoadProfiles() {
 	m_combobox_profiles->clear();
 	m_combobox_profiles->addItem(tr("(none)"));
 	for(unsigned int i = 0; i < m_profiles.size(); ++i) {
-		m_combobox_profiles->addItem(QByteArray::fromPercentEncoding(m_profiles[i].m_name.toAscii()));
+		m_combobox_profiles->addItem(QByteArray::fromPercentEncoding(m_profiles[i].m_name.toUtf8()));
 	}
 
 }
@@ -163,10 +163,10 @@ void ProfileBox::OnProfileSave() {
 }
 
 void ProfileBox::OnProfileNew() {
-	QString name = InputBox(this, MainWindow::WINDOW_CAPTION, "Enter a name for the new profile:", "");
+	QString name = InputBox(this, MainWindow::WINDOW_CAPTION, tr("Enter a name for the new profile:"), "");
 	if(name.isEmpty())
 		return;
-	name = name.toAscii().toPercentEncoding();
+	name = name.toUtf8().toPercentEncoding();
 	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".json";
 	if(!QFileInfo(filename).exists() || MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 			tr("A profile with the same name already exists. Are you sure that you want to replace it?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {

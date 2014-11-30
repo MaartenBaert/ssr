@@ -40,7 +40,7 @@ SOURCES += \
 	AV/FastScaler_Scale_SSSE3.cpp \
 	AV/SimpleSynth.cpp \
 	AV/SourceSink.cpp \
-	common/DetectCPUFeatures.cpp \
+	common/CPUFeatures.cpp \
 	common/Dialogs.cpp \
 	common/Logger.cpp \
 	common/SimpleJSON.cpp \
@@ -60,12 +60,12 @@ SOURCES += \
 	GUI/ProfileBox.cpp \
 	GUI/VideoPreviewer.cpp \
 	GUI/WidgetRack.cpp \
+	settings/InputSettings.cpp \
 	settings/OutputSettings.cpp \
 	settings/RecordSettings.cpp \
+	Benchmark.cpp \
 	Main.cpp \
-	NVidia.cpp \
-	Version.cpp \
-    settings/InputSettings.cpp
+	NVidia.cpp
 
 HEADERS  += \
 	AV/Input/ALSAInput.h \
@@ -94,7 +94,7 @@ HEADERS  += \
 	AV/SampleCast.h \
 	AV/SimpleSynth.h \
 	AV/SourceSink.h \
-	common/DetectCPUFeatures.h \
+	common/CPUFeatures.h \
 	common/Dialogs.h \
 	common/EnumTranslator.h \
 	common/LockFreeMessageQueue.h \
@@ -118,13 +118,13 @@ HEADERS  += \
 	GUI/ProfileBox.h \
 	GUI/VideoPreviewer.h \
 	GUI/WidgetRack.h \
+	settings/InputSettings.h \
 	settings/OutputSettings.h \
 	settings/RecordSettings.h \
+	Benchmark.h \
 	Global.h \
 	Main.h \
-	NVidia.h \
-	Version.h \
-    settings/InputSettings.h
+	NVidia.h
 
 RESOURCES += \
 	resources.qrc

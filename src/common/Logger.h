@@ -20,8 +20,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#include "MutexDataPair.h"
-
 class Logger : public QObject {
 	Q_OBJECT
 
@@ -41,13 +39,10 @@ public:
 	Logger();
 	~Logger();
 
-	// This function is thread-safe.
-	static void Log(enum_type type, const QString& str);
-
-	// Some convenience functions.
-	inline static void LogInfo(const QString& str) { Log(TYPE_INFO, str); }
-	inline static void LogWarning(const QString& str) { Log(TYPE_WARNING, str); }
-	inline static void LogError(const QString& str) { Log(TYPE_ERROR, str); }
+	// These functions are thread-safe.
+	static void LogInfo(const QString& str);
+	static void LogWarning(const QString& str);
+	static void LogError(const QString& str);
 
 	inline static Logger* GetInstance() { assert(s_instance != NULL); return s_instance; }
 

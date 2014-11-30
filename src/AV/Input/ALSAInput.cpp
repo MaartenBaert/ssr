@@ -45,10 +45,10 @@ ALSAInput::ALSAInput(const QString& source_name, unsigned int sample_rate) {
 	m_source_name = source_name;
 	m_sample_rate = sample_rate;
 	m_channels = 2; // always 2 channels because the synchronizer and encoder don't support anything else at this point
+	m_period_size = 1024; // number of samples per period
+	m_buffer_size = m_period_size * 8; // number of samples in the buffer
 
 	m_alsa_pcm = NULL;
-	m_alsa_period_size = 1024; // number of samples per period
-	m_alsa_buffer_size = m_alsa_period_size * 8; // number of samples in the buffer
 
 	try {
 		Init();
@@ -82,10 +82,11 @@ std::vector<ALSAInput::Source> ALSAInput::GetSourceList() {
 	*/
 
 	// these ALSA plugins are blacklisted because they are always defined but rarely useful
+	// 'pulse' is also blacklisted because the native PulseAudio backend is more reliable
 	std::vector<std::string> plugin_blacklist = {
 		"cards", "default", "sysdefault", "hw", "plughw", "plug", "dmix", "dsnoop", "shm", "tee", "file", "null",
 		"front", "rear", "center_lfe", "side", "surround40", "surround41", "surround50", "surround51", "surround71",
-		"iec958", "spdif", "hdmi", "modem", "phoneline",
+		"iec958", "spdif", "hdmi", "modem", "phoneline", "pulse",
 	};
 	std::sort(plugin_blacklist.begin(), plugin_blacklist.end());
 
@@ -117,9 +118,7 @@ std::vector<ALSAInput::Source> ALSAInput::GetSourceList() {
 
 		// find all PCM plugins (by parsing the config file)
 		snd_config_t *alsa_config_pcms = NULL;
-		if(snd_config_search(snd_config, "pcm", &alsa_config_pcms) < 0) {
-			Logger::LogWarning("[ALSAInput::GetSourceList] " + Logger::tr("Warning: Could not find PCM plugins."));
-		} else {
+		if(snd_config_search(snd_config, "pcm", &alsa_config_pcms) == 0) {
 			snd_config_iterator_t i, next;
 			snd_config_for_each(i, next, alsa_config_pcms) {
 				snd_config_t *alsa_config_pcm = snd_config_iterator_entry(i);
@@ -137,7 +136,7 @@ std::vector<ALSAInput::Source> ALSAInput::GetSourceList() {
 				// try to get the description
 				std::string plugin_description;
 				snd_config_t *alsa_config_description = NULL;
-				if(snd_config_search(alsa_config_pcm, "hint.description", &alsa_config_description) >= 0) {
+				if(snd_config_search(alsa_config_pcm, "hint.description", &alsa_config_description) == 0) {
 					const char *str = NULL;
 					if(snd_config_get_string(alsa_config_description, &str) >= 0 && str != NULL) {
 						plugin_description = str;
@@ -160,7 +159,7 @@ std::vector<ALSAInput::Source> ALSAInput::GetSourceList() {
 				}*/
 
 				// add to list
-				Logger::LogInfo("[ALSAInput::GetSourceList] " + Logger::tr("Found plugin %1 = %2.").arg(QString::fromStdString(plugin_name)).arg(QString::fromStdString(plugin_description)));
+				Logger::LogInfo("[ALSAInput::GetSourceList] " + Logger::tr("Found plugin: [%1] %2").arg(QString::fromStdString(plugin_name)).arg(QString::fromStdString(plugin_description)));
 				list.push_back(Source(plugin_name, plugin_description));
 
 			}
@@ -183,7 +182,7 @@ std::vector<ALSAInput::Source> ALSAInput::GetSourceList() {
 				continue;
 			}
 			std::string card_description = snd_ctl_card_info_get_name(alsa_card_info);
-			Logger::LogInfo("[ALSAInput::GetSourceList] " + Logger::tr("Found card %1 = %2.").arg(QString::fromStdString(card_name)).arg(QString::fromStdString(card_description)));
+			Logger::LogInfo("[ALSAInput::GetSourceList] " + Logger::tr("Found card: [%1] %2").arg(QString::fromStdString(card_name)).arg(QString::fromStdString(card_description)));
 
 			// find all devices for this card
 			int device = -1;
@@ -205,11 +204,11 @@ std::vector<ALSAInput::Source> ALSAInput::GetSourceList() {
 
 				// get device description
 				std::string device_name = "hw:" + NumToString(card) + "," + NumToString(device);
-				std::string device_description = snd_pcm_info_get_name(alsa_pcm_info);
+				std::string device_description = card_description + ": " + snd_pcm_info_get_name(alsa_pcm_info);
 
 				// add to list
-				Logger::LogInfo("[ALSAInput::GetSourceList] " + Logger::tr("Found device %1 = %2.").arg(QString::fromStdString(device_name)).arg(QString::fromStdString(device_description)));
-				list.push_back(Source(device_name, card_description + ": " + device_description));
+				Logger::LogInfo("[ALSAInput::GetSourceList] " + Logger::tr("Found device: [%1] %2").arg(QString::fromStdString(device_name)).arg(QString::fromStdString(device_description)));
+				list.push_back(Source(device_name, device_description));
 
 			}
 
@@ -256,7 +255,7 @@ void ALSAInput::Init() {
 		}
 
 		// open PCM device
-		if(snd_pcm_open(&m_alsa_pcm, m_source_name.toAscii().constData(), SND_PCM_STREAM_CAPTURE, 0) < 0) {
+		if(snd_pcm_open(&m_alsa_pcm, m_source_name.toUtf8().constData(), SND_PCM_STREAM_CAPTURE, 0) < 0) {
 			Logger::LogError("[ALSAInput::Init] " + Logger::tr("Error: Can't open PCM device!"));
 			throw ALSAException();
 		}
@@ -304,29 +303,29 @@ void ALSAInput::Init() {
 		}
 
 		// set period size
-		snd_pcm_uframes_t period_size = m_alsa_period_size;
+		snd_pcm_uframes_t period_size = m_period_size;
 		if(snd_pcm_hw_params_set_period_size_near(m_alsa_pcm, alsa_hw_params, &period_size, NULL) < 0) {
 			Logger::LogError("[ALSAInput::Init] " + Logger::tr("Error: Can't set period size!"));
 			throw ALSAException();
 		}
-		if(period_size != m_alsa_period_size) {
+		if(period_size != m_period_size) {
 			Logger::LogWarning("[ALSAInput::Init] " + Logger::tr("Warning: Period size %1 is not supported, using %2 instead. "
 																 "This is not a problem.")
-							   .arg(m_alsa_period_size).arg(period_size));
-			m_alsa_period_size = period_size;
+							   .arg(m_period_size).arg(period_size));
+			m_period_size = period_size;
 		}
 
 		// set buffer size
-		snd_pcm_uframes_t buffer_size = m_alsa_buffer_size;
+		snd_pcm_uframes_t buffer_size = m_buffer_size;
 		if(snd_pcm_hw_params_set_buffer_size_near(m_alsa_pcm, alsa_hw_params, &buffer_size) < 0) {
 			Logger::LogError("[ALSAInput::Init] " + Logger::tr("Error: Can't set buffer size!"));
 			throw ALSAException();
 		}
-		if(buffer_size != m_alsa_buffer_size) {
+		if(buffer_size != m_buffer_size) {
 			Logger::LogWarning("[ALSAInput::Init] " + Logger::tr("Warning: Buffer size %1 is not supported, using %2 instead. "
 																 "This is not a problem.")
-							   .arg(m_alsa_buffer_size).arg(buffer_size));
-			m_alsa_buffer_size = buffer_size;
+							   .arg(m_buffer_size).arg(buffer_size));
+			m_buffer_size = buffer_size;
 		}
 
 		// apply parameters
@@ -372,14 +371,14 @@ void ALSAInput::InputThread() {
 
 		Logger::LogInfo("[ALSAInput::InputThread] " + Logger::tr("Input thread started."));
 
-		std::vector<uint16_t> buffer(m_alsa_period_size * m_channels);
+		std::vector<uint16_t> buffer(m_period_size * m_channels);
 		bool has_first_samples = false;
 		int64_t first_timestamp = 0; // value won't be used, but GCC gives a warning otherwise
 
 		while(!m_should_stop) {
 
 			// read the samples
-			snd_pcm_sframes_t samples_read = snd_pcm_readi(m_alsa_pcm, buffer.data(), m_alsa_period_size);
+			snd_pcm_sframes_t samples_read = snd_pcm_readi(m_alsa_pcm, buffer.data(), m_period_size);
 			if(samples_read < 0) {
 				if(samples_read == -EPIPE) {
 					ALSARecoverAfterOverrun(m_alsa_pcm);

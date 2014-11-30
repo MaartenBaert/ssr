@@ -20,15 +20,4 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-#if SSR_USE_X86_ASM
-
-struct CPUFeatures {
-	bool mmx;
-	bool sse, sse2, sse3, ssse3, sse4_1, sse4_2;
-	bool avx, avx2;
-	bool bmi1, bmi2;
-};
-
-void DetectCPUFeatures(CPUFeatures* features);
-
-#endif // SSR_USE_X86_ASM
+void Benchmark();

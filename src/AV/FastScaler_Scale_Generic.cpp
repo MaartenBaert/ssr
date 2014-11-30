@@ -28,10 +28,14 @@ void Scale_BGRA_Generic(unsigned int in_w, unsigned int in_h, const uint8_t* in_
 
 	// no scaling?
 	if(in_w == out_w && in_h == out_h) {
-		for(unsigned int out_j = 0; out_j < out_h; ++out_j) {
-			memcpy(out_data, in_data, in_w * 4);
-			in_data += in_stride;
-			out_data += out_stride;
+		if(in_stride == out_stride) {
+			memcpy(out_data, in_data, in_stride * in_h);
+		} else {
+			for(unsigned int out_j = 0; out_j < out_h; ++out_j) {
+				memcpy(out_data, in_data, in_w * 4);
+				in_data += in_stride;
+				out_data += out_stride;
+			}
 		}
 		return;
 	}

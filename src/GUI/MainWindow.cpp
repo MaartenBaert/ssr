@@ -155,17 +155,22 @@ void MainWindow::GoPageDone() {
 	m_stacked_layout->setCurrentWidget(m_page_done);
 }
 
+void MainWindow::OnShowHide() {
+	if(isVisible()) {
+		m_old_geometry = geometry();
+		hide();
+	} else {
+		show();
+		if(!m_old_geometry.isNull()) {
+			setGeometry(m_old_geometry);
+			m_old_geometry = QRect();
+		}
+	}
+	m_page_record->UpdateShowHide();
+}
+
 void MainWindow::OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason) {
 	if(reason == QSystemTrayIcon::Trigger || reason == QSystemTrayIcon::DoubleClick) {
-		if(isVisible()) {
-			m_old_geometry = geometry();
-			hide();
-		} else {
-			show();
-			if(!m_old_geometry.isNull()) {
-				setGeometry(m_old_geometry);
-				m_old_geometry = QRect();
-			}
-		}
+		OnShowHide();
 	}
 }
