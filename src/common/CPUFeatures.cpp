@@ -59,8 +59,8 @@ void CPUFeatures::Detect() {
 		if(edx & (1 << 26)) { s_sse2   = true; str += " sse2"; }
 		if(ecx & (1 << 0))  { s_sse3   = true; str += " sse3"; }
 		if(ecx & (1 << 9))  { s_ssse3  = true; str += " ssse3"; }
-		if(ecx & (1 << 19)) { s_sse41 = true; str += " sse4_1"; }
-		if(ecx & (1 << 20)) { s_sse42 = true; str += " sse4_2"; }
+		if(ecx & (1 << 19)) { s_sse41  = true; str += " sse4_1"; }
+		if(ecx & (1 << 20)) { s_sse42  = true; str += " sse4_2"; }
 		if(ecx & (1 << 28)) { s_avx    = true; str += " avx"; }
 	}
 
