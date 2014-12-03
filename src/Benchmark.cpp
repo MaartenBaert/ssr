@@ -82,7 +82,7 @@ std::unique_ptr<ImageGeneric> NewImageBGR(unsigned int w, unsigned int h, std::m
 typedef std::unique_ptr<ImageGeneric> (*NewImageFunc)(unsigned int, unsigned int, std::mt19937&);
 typedef void (*ConvertFunc)(unsigned int, unsigned int, const uint8_t*, int, uint8_t* const*, const int*);
 
-template<void (*T)(unsigned int, unsigned int, const uint8_t*, int, uint8_t* , int)>
+template<void (*T)(unsigned int, unsigned int, const uint8_t*, int, uint8_t*, int)>
 void PlaneWrapper(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const* out_data, const int* out_stride) {
 	T(w, h, in_data, in_stride, out_data[0], out_stride[0]);
 }
@@ -106,7 +106,28 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 	}
 
 	// run test
-	unsigned int time_fallback = 0, time_ssse3 = 0;
+	unsigned int time_swscale = 0, time_fallback = 0, time_ssse3 = 0;
+	{
+		SwsContext *sws = sws_getCachedContext(NULL,
+											   in_w, in_h, AV_PIX_FMT_BGRA,
+											   out_w, out_h, AV_PIX_FMT_BGRA,
+											   SWS_BILINEAR, NULL, NULL, NULL);
+		if(sws == NULL) {
+			Logger::LogError("[BenchmarkScale] " + Logger::tr("Error: Can't get swscale context!", "Don't translate 'swscale'"));
+			throw LibavException();
+		}
+		sws_setColorspaceDetails(sws,
+								 sws_getCoefficients(SWS_CS_ITU709), 0,
+								 sws_getCoefficients(SWS_CS_DEFAULT), 0,
+								 0, 1 << 16, 1 << 16);
+		int64_t t1 = hrt_time_micro();
+		for(unsigned int i = 0; i < run_size / 2; ++i) {
+			unsigned int ii = i % queue_size;
+			sws_scale(sws, queue_in[ii]->m_data.data(), queue_in[ii]->m_stride.data(), 0, in_h, queue_out[ii]->m_data.data(), queue_out[ii]->m_stride.data());
+		}
+		int64_t t2 = hrt_time_micro();
+		time_swscale = (t2 - t1) / (run_size / 2);
+	}
 	{
 		int64_t t1 = hrt_time_micro();
 		for(unsigned int i = 0; i < run_size; ++i) {
@@ -131,12 +152,15 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 	// print result
 	QString in_size = QString("%1x%2").arg(in_w).arg(in_h);
 	QString out_size = QString("%1x%2").arg(out_w).arg(out_h);
-	Logger::LogInfo("[BenchmarkScale] " + Logger::tr("BGRA %1 to BGRA %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%")
-					.arg(in_size, 9).arg(out_size, 9).arg(time_fallback, 6).arg(time_ssse3, 6).arg(100 * time_ssse3 / time_fallback, 3));
+	Logger::LogInfo("[BenchmarkScale] " + Logger::tr("BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)")
+					.arg(in_size, 9).arg(out_size, 9)
+					.arg(time_swscale, 6)
+					.arg(time_fallback, 6).arg(100 * time_fallback / time_swscale, 3)
+					.arg(time_ssse3, 6).arg(100 * time_ssse3 / time_fallback, 3));
 
 }
 
-void BenchmarkConvert(unsigned int w, unsigned int h, const QString& in_format, const QString& out_format, NewImageFunc in_image, NewImageFunc out_image, ConvertFunc fallback, ConvertFunc ssse3) {
+void BenchmarkConvert(unsigned int w, unsigned int h, PixelFormat in_format, PixelFormat out_format, const QString& in_format_name, const QString& out_format_name, NewImageFunc in_image, NewImageFunc out_image, ConvertFunc fallback, ConvertFunc ssse3) {
 
 	std::mt19937 rng(12345);
 	bool use_ssse3 = (CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3());
@@ -155,7 +179,28 @@ void BenchmarkConvert(unsigned int w, unsigned int h, const QString& in_format, 
 	}
 
 	// run test
-	unsigned int time_fallback = 0, time_ssse3 = 0;
+	unsigned int time_swscale = 0, time_fallback = 0, time_ssse3 = 0;
+	{
+		SwsContext *sws = sws_getCachedContext(NULL,
+											   w, h, in_format,
+											   w, h, out_format,
+											   SWS_BILINEAR, NULL, NULL, NULL);
+		if(sws == NULL) {
+			Logger::LogError("[BenchmarkScale] " + Logger::tr("Error: Can't get swscale context!", "Don't translate 'swscale'"));
+			throw LibavException();
+		}
+		sws_setColorspaceDetails(sws,
+								 sws_getCoefficients(SWS_CS_ITU709), 0,
+								 sws_getCoefficients(SWS_CS_DEFAULT), 0,
+								 0, 1 << 16, 1 << 16);
+		int64_t t1 = hrt_time_micro();
+		for(unsigned int i = 0; i < run_size / 2; ++i) {
+			unsigned int ii = i % queue_size;
+			sws_scale(sws, queue_in[ii]->m_data.data(), queue_in[ii]->m_stride.data(), 0, h, queue_out[ii]->m_data.data(), queue_out[ii]->m_stride.data());
+		}
+		int64_t t2 = hrt_time_micro();
+		time_swscale = (t2 - t1) / (run_size / 2);
+	}
 	{
 		int64_t t1 = hrt_time_micro();
 		for(unsigned int i = 0; i < run_size; ++i) {
@@ -177,8 +222,11 @@ void BenchmarkConvert(unsigned int w, unsigned int h, const QString& in_format, 
 
 	// print result
 	QString size = QString("%1x%2").arg(w).arg(h);
-	Logger::LogInfo("[BenchmarkConvert] " + Logger::tr("%1 %2 to %3 %4  |  Fallback %5 ms  |  SSSE3 %6 ms  |  %7%")
-					.arg(in_format, 6).arg(size, 9).arg(out_format, 6).arg(size, 9).arg(time_fallback, 6).arg(time_ssse3, 6).arg(100 * time_ssse3 / time_fallback, 3));
+	Logger::LogInfo("[BenchmarkConvert] " + Logger::tr("%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)")
+					.arg(in_format_name, 6).arg(size, 9).arg(out_format_name, 6).arg(size, 9)
+					.arg(time_swscale, 6)
+					.arg(time_fallback, 6).arg(100 * time_fallback / time_swscale, 3)
+					.arg(time_ssse3, 6).arg(100 * time_ssse3 / time_fallback, 3));
 
 }
 
@@ -188,13 +236,13 @@ void Benchmark() {
 	BenchmarkScale(1920, 1080, 1920, 1080); // direct copy
 	BenchmarkScale(1280, 720, 1920, 1080); // upscaling
 	BenchmarkScale(1920, 1080, 1280, 720); // downscaling
-	BenchmarkScale(1920, 1080, 960, 540);
-	BenchmarkScale(1920, 1080, 640, 360);
+	BenchmarkScale(1920, 1080, 960, 540); // pure mipmap
+	BenchmarkScale(1920, 1080, 640, 360); // mipmap + downscaling
 
 	Logger::LogInfo("[Benchmark] " + Logger::tr("Starting converter benchmark ..."));
-	BenchmarkConvert(1920, 1080, "BGRA", "YUV444", NewImageBGRA, NewImageYUV444, Convert_BGRA_YUV444_Fallback           , Convert_BGRA_YUV444_SSSE3           );
-	BenchmarkConvert(1920, 1080, "BGRA", "YUV422", NewImageBGRA, NewImageYUV422, Convert_BGRA_YUV422_Fallback           , Convert_BGRA_YUV422_SSSE3           );
-	BenchmarkConvert(1920, 1080, "BGRA", "YUV420", NewImageBGRA, NewImageYUV420, Convert_BGRA_YUV420_Fallback           , Convert_BGRA_YUV420_SSSE3           );
-	BenchmarkConvert(1920, 1080, "BGRA", "BGR"   , NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>, PlaneWrapper<Convert_BGRA_BGR_SSSE3>);
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV444P, "BGRA", "YUV444", NewImageBGRA, NewImageYUV444, Convert_BGRA_YUV444_Fallback           , Convert_BGRA_YUV444_SSSE3           );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV422P, "BGRA", "YUV422", NewImageBGRA, NewImageYUV422, Convert_BGRA_YUV422_Fallback           , Convert_BGRA_YUV422_SSSE3           );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV420P, "BGRA", "YUV420", NewImageBGRA, NewImageYUV420, Convert_BGRA_YUV420_Fallback           , Convert_BGRA_YUV420_SSSE3           );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGR24  , "BGRA", "BGR"   , NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>, PlaneWrapper<Convert_BGRA_BGR_SSSE3>);
 
 }
