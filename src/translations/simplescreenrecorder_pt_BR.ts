@@ -63,17 +63,17 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
         <source>Choose channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Escolha o canal</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="53"/>
         <source>Channel name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome do canal:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="73"/>
         <source>Launch application</source>
-        <translation type="unfinished">Inicie o aplicativo</translation>
+        <translation>Inicie o aplicativo</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="75"/>
@@ -98,7 +98,7 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="107"/>
         <source>Stream settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configurações do fluxo</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="57"/>
@@ -109,7 +109,8 @@
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
 If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomes de canais são usados para identificar aplicativos. Você só precisa usar isso se você deseja gravar múltiplos aplicativos ao mesmo tempo.
+Se você deixar esse campo vazio, o nome padrão &quot;channel-USUÁRIO&quot; será usado.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="58"/>
@@ -123,17 +124,17 @@ Isto se aplica até aos usuários que estão conectados remotamente (ssh). Você
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
         <source>Launch automatically</source>
-        <translation type="unfinished">Iniciar automaticamente</translation>
+        <translation>Iniciar automaticamente</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="84"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
-        <translation type="unfinished">Se estiver marcado, o aplicativo será iniciado automaticamente quando você for para a página de gravação. Se não estiver marcado, você tem que iniciá-lo manualmente.</translation>
+        <translation>Se estiver marcado, o aplicativo será iniciado automaticamente quando você for para a página de gravação. Se não estiver marcado, você tem que iniciá-lo manualmente.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="86"/>
         <source>Launch now</source>
-        <translation type="unfinished">Iniciar agora</translation>
+        <translation>Iniciar agora</translation>
     </message>
     <message>
         <source>Select stream</source>
@@ -187,55 +188,56 @@ Isso evita que o aplicativo desperdiçe tempo de CPU para os quadros que não se
     <message>
         <location filename="../AV/FastResampler.cpp" line="124"/>
         <source>Error: Resample ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Taxa de nova amostragem está fora do intervalo!</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="128"/>
         <source>Error: Drift ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: taxa de diferença está fora do intervalo!</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="158"/>
         <source>Resample ratio is %1 (was %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Taxa de nova amostragem é %1 (era %2).</translation>
     </message>
     <message>
-        <location filename="../AV/FastScaler.cpp" line="102"/>
+        <location filename="../AV/FastScaler.cpp" line="116"/>
         <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation type="unfinished">Aviso: formato de pixel não é suportado (%1 -&gt;%2), usando swscale em vez disso. Isto não é um problema, mas o desempenho será pior.</translation>
+        <translation>Aviso: formato de pixel não é suportado (%1 -&gt;%2), usando swscale em vez disso. Isto não é um problema, mas o desempenho será pior.</translation>
     </message>
     <message>
-        <location filename="../AV/FastScaler.cpp" line="111"/>
+        <location filename="../AV/FastScaler.cpp" line="125"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
-        <translation type="unfinished">Erro: Não é possível obter o contexto swscale!</translation>
+        <translation>Erro: Não é possível obter o contexto swscale!</translation>
     </message>
     <message>
-        <location filename="../AV/FastScaler.cpp" line="133"/>
-        <location filename="../AV/FastScaler.cpp" line="158"/>
-        <location filename="../AV/FastScaler.cpp" line="180"/>
-        <location filename="../AV/FastScaler.cpp" line="203"/>
+        <location filename="../AV/FastScaler.cpp" line="147"/>
+        <location filename="../AV/FastScaler.cpp" line="172"/>
+        <location filename="../AV/FastScaler.cpp" line="197"/>
+        <location filename="../AV/FastScaler.cpp" line="219"/>
+        <location filename="../AV/FastScaler.cpp" line="242"/>
         <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
         <comment>Don&apos;t translate &apos;fallback&apos;</comment>
-        <translation type="unfinished">Aviso: A memória não está alinhada corretamente para SSE, usando conversor fallback em vez disso. Isto não é um problema, mas o desempenho será pior.</translation>
+        <translation>Aviso: A memória não está alinhada corretamente para SSE, usando conversor fallback em vez disso. Isto não é um problema, mas o desempenho será pior.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="32"/>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Aviso: Um overrun ocorreu, algumas amostras foram perdidas.</translation>
+        <translation>Aviso: Um overrun ocorreu, algumas amostras foram perdidas.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="34"/>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Erro: Não é possível recuperar o dispositivo depois do sobrecarga de dados!</translation>
+        <translation>Erro: Não é possível recuperar o dispositivo após o overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="38"/>
         <source>Error: Can&apos;t start PCM device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Erro: Não foi possível iniciar o dispositivo PCM após o overrun!</translation>
+        <translation>Erro: Não foi possível iniciar o dispositivo PCM após o overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="66"/>
@@ -243,125 +245,125 @@ Isso evita que o aplicativo desperdiçe tempo de CPU para os quadros que não se
         <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="207"/>
         <source>Stopping input thread ...</source>
-        <translation type="unfinished">Parando segmento de entrada ...</translation>
+        <translation>Parando segmento de entrada ...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="96"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="232"/>
         <source>Generating source list ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerando lista de fontes ...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="115"/>
         <source>Error: Could not update ALSA configuration!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível atualizar configuração do ALSA!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="175"/>
         <source>Warning: Could not open sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aviso: Não foi possível abrir a placa de som %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="181"/>
         <source>Warning: Could not get info for sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aviso: Não foi possível obter info para a placa de som %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="162"/>
         <source>Found plugin: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Encontrado plugin: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="185"/>
         <source>Found card: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Encontrada placa: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="210"/>
         <source>Found device: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Encontrado dispositivo: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="259"/>
         <location filename="../AV/SimpleSynth.cpp" line="123"/>
         <source>Error: Can&apos;t open PCM device!</source>
-        <translation type="unfinished">Erro: Não foi possível abrir o dispositivo de PCM!</translation>
+        <translation>Erro: Não foi possível abrir o dispositivo de PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="263"/>
         <location filename="../AV/SimpleSynth.cpp" line="127"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
-        <translation type="unfinished">Erro: Não foi possível obter parâmetros de hardware PCM!</translation>
+        <translation>Erro: Não foi possível obter parâmetros de hardware PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="269"/>
         <location filename="../AV/SimpleSynth.cpp" line="133"/>
         <source>Error: Can&apos;t set access type!</source>
-        <translation type="unfinished">Erro: Não foi possível definir o tipo de acesso!</translation>
+        <translation>Erro: Não foi possível definir o tipo de acesso!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="275"/>
         <location filename="../AV/SimpleSynth.cpp" line="139"/>
         <source>Error: Can&apos;t set sample format!</source>
-        <translation type="unfinished">Erro: Não foi possível definir o formato da amostra!</translation>
+        <translation>Erro: Não foi possível definir o formato da amostra!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="282"/>
         <location filename="../AV/SimpleSynth.cpp" line="146"/>
         <source>Error: Can&apos;t set sample rate!</source>
-        <translation type="unfinished">Erro: Não foi possível definir a taxa de amostragem!</translation>
+        <translation>Erro: Não foi possível definir a taxa de amostragem!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="286"/>
         <location filename="../AV/SimpleSynth.cpp" line="150"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished">Aviso: Taxa de amostragem %1 não é suportada, usando %2 no lugar. Isto não é um problema.</translation>
+        <translation>Aviso: Taxa de amostragem %1 não é suportada, usando %2 no lugar. Isto não é um problema.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="295"/>
         <location filename="../AV/SimpleSynth.cpp" line="158"/>
         <source>Error: Can&apos;t set channel count!</source>
-        <translation type="unfinished">Erro: Não foi possível definir o número de canais!</translation>
+        <translation>Erro: Não foi possível definir o número de canais!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="299"/>
         <source>Warning: Channel count %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aviso: Número de canais %1 não é suportado, usando %2 no lugar. Isto não é um problema.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="308"/>
         <location filename="../AV/SimpleSynth.cpp" line="165"/>
         <source>Error: Can&apos;t set period size!</source>
-        <translation type="unfinished">Erro: Não foi possível definir o tamanho do período!</translation>
+        <translation>Erro: Não foi possível definir o tamanho do período!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="312"/>
         <location filename="../AV/SimpleSynth.cpp" line="169"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished">Aviso: tamanho do período %1 não é suportado, usando %2 no lugar. Isto não é um problema.</translation>
+        <translation>Aviso: Tamanho do período %1 não é suportado, usando %2 no lugar. Isto não é um problema.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="321"/>
         <location filename="../AV/SimpleSynth.cpp" line="178"/>
         <source>Error: Can&apos;t set buffer size!</source>
-        <translation type="unfinished">Erro: Não foi possível definir o tamanho do buffer!</translation>
+        <translation>Erro: Não foi possível definir o tamanho do buffer!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="325"/>
         <location filename="../AV/SimpleSynth.cpp" line="182"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished">Atenção: O tamanho do buffer%1 não é suportado, usando %2 no lugar. Isto não é um problema.</translation>
+        <translation>Atenção: Tamanho do buffer %1 não é suportado, usando %2 no lugar. Isto não é um problema.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="333"/>
         <location filename="../AV/SimpleSynth.cpp" line="190"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
-        <translation type="unfinished">Erro: Não foi possível aplicar parâmetros de hardware PCM!</translation>
+        <translation>Erro: Não foi possível aplicar parâmetros de hardware PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="351"/>
         <source>Error: Can&apos;t start PCM device!</source>
-        <translation type="unfinished">Erro: Não foi possível iniciar o dispositivo PCM!</translation>
+        <translation>Erro: Não foi possível iniciar o dispositivo PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="372"/>
@@ -370,7 +372,7 @@ Isso evita que o aplicativo desperdiçe tempo de CPU para os quadros que não se
         <location filename="../AV/Input/PulseAudioInput.cpp" line="299"/>
         <location filename="../AV/Input/X11Input.cpp" line="345"/>
         <source>Input thread started.</source>
-        <translation type="unfinished">Segmento de entrada iniciado.</translation>
+        <translation>Segmento de entrada iniciado.</translation>
     </message>
     <message>
         <source>Error: Can&apos;t check whether samples are available!</source>
@@ -379,7 +381,7 @@ Isso evita que o aplicativo desperdiçe tempo de CPU para os quadros que não se
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="387"/>
         <source>Error: Can&apos;t read samples!</source>
-        <translation type="unfinished">Erro: Não foi possível ler as amostras!</translation>
+        <translation>Erro: Não foi possível ler as amostras!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="413"/>
@@ -388,7 +390,7 @@ Isso evita que o aplicativo desperdiçe tempo de CPU para os quadros que não se
         <location filename="../AV/Input/PulseAudioInput.cpp" line="388"/>
         <location filename="../AV/Input/X11Input.cpp" line="444"/>
         <source>Input thread stopped.</source>
-        <translation type="unfinished">Segmento de entrada parado.</translation>
+        <translation>Segmento de entrada parado.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="417"/>
@@ -397,7 +399,7 @@ Isso evita que o aplicativo desperdiçe tempo de CPU para os quadros que não se
         <location filename="../AV/Input/PulseAudioInput.cpp" line="392"/>
         <location filename="../AV/Input/X11Input.cpp" line="448"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
-        <translation type="unfinished">Exceção &apos;%1&apos; no segmento de entrada.</translation>
+        <translation>Exceção &apos;%1&apos; no segmento de entrada.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="420"/>
@@ -406,190 +408,190 @@ Isso evita que o aplicativo desperdiçe tempo de CPU para os quadros que não se
         <location filename="../AV/Input/PulseAudioInput.cpp" line="395"/>
         <location filename="../AV/Input/X11Input.cpp" line="451"/>
         <source>Unknown exception in input thread.</source>
-        <translation type="unfinished">Exceção desconhecida no segmento de entrada.</translation>
+        <translation>Exceção desconhecida no segmento de entrada.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="253"/>
         <source>Error: Can&apos;t get shared memory!</source>
-        <translation type="unfinished">Erro: Não foi possível obter memória compartilhada!</translation>
+        <translation>Erro: Não foi possível obter memória compartilhada!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="258"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation type="unfinished">Erro: Não foi possível  anexar à memória compartilhada!</translation>
+        <translation>Erro: Não foi possível anexar à memória compartilhada!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="72"/>
         <source>Error: Could not connect to JACK!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível conectar ao JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="81"/>
         <source>Error: Could not create JACK port!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível conectar à porta JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="87"/>
         <source>Error: Could not set JACK process callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível configurar chamada de processo JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="91"/>
         <source>Error: Could not set JACK sample rate callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível definir a chamada de taxa de amostragem JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="95"/>
         <source>Error: Could not set JACK xrun callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível definir chamada de xrun JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="99"/>
         <source>Error: Could not set JACK port connect callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível definir chamada de conexão na porta JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="104"/>
         <source>Error: Could not activate JACK client!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível ativar o cliente JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="112"/>
         <location filename="../AV/Input/JACKInput.cpp" line="123"/>
         <location filename="../AV/Input/JACKInput.cpp" line="247"/>
         <source>Connecting port %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Conectando a porta %1 à %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="251"/>
         <source>Disconnecting port %1 from %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Descontando a porta %1 de %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="35"/>
         <source>Error: pa_mainloop_prepare failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_prepare&apos;</comment>
-        <translation type="unfinished">Erro: pa_mainloop_prepare falhou!</translation>
+        <translation>Erro: pa_mainloop_prepare falhou!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="39"/>
         <source>Error: pa_mainloop_poll failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_poll&apos;</comment>
-        <translation type="unfinished">Erro: pa_mainloop_poll falhou!</translation>
+        <translation>Erro: pa_mainloop_poll falhou!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="43"/>
         <source>Error: pa_mainloop_dispatch failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_dispatch&apos;</comment>
-        <translation type="unfinished">Erro: pa_mainloop_dispatch falhou!</translation>
+        <translation>Erro: pa_mainloop_dispatch falhou!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="53"/>
         <source>Error: Could not create main loop!</source>
-        <translation type="unfinished">Erro: Não foi possível criar o loop principal!</translation>
+        <translation>Erro: Não foi possível criar o loop principal!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="60"/>
         <source>Error: Could not create context!</source>
-        <translation type="unfinished">Erro: Não foi possível criar o contexto!</translation>
+        <translation>Erro: Não foi possível criar o contexto!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="64"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA backend instead.</source>
-        <translation type="unfinished">Erro: Não foi possível conectar! Motivo:%1
+        <translation>Erro: Não foi possível conectar! Motivo:%1
 É possível que o seu sistema não use o PulseAudio. Tente usar o backend ALSA em vez disso.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="77"/>
         <source>Error: Connection attempt failed! Reason: %1</source>
-        <translation type="unfinished">Erro: Tentativa de conexão falhou! Motivo: %1</translation>
+        <translation>Erro: Tentativa de conexão falhou! Motivo: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="114"/>
         <source>Error: Could not create stream! Reason: %1</source>
-        <translation type="unfinished">Erro: Não foi possível criar o fluxo! Motivo: %1</translation>
+        <translation>Erro: Não foi possível criar o fluxo! Motivo: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="121"/>
         <source>Error: Could not connect stream! Reason: %1</source>
-        <translation type="unfinished">Erro: Não foi possível criar o fluxo! Motivo: %1</translation>
+        <translation>Erro: Não foi possível conectar o fluxo! Motivo: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="132"/>
         <source>Error: Stream connection attempt failed! Reason: %1</source>
-        <translation type="unfinished">Erro: Tentativa de conexão do fluxo falhou! Motivo: %1</translation>
+        <translation>Erro: Tentativa de conexão do fluxo falhou! Motivo: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="223"/>
         <source>Found source: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonte encontrada: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="244"/>
         <source>Error: Could not get names of sources! Reason: %1</source>
-        <translation type="unfinished">Erro: Não foi possível obter os nomes das fontes! Motivo: %1</translation>
+        <translation>Erro: Não foi possível obter os nomes das fontes! Motivo: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="313"/>
         <source>Error: pa_stream_peek failed!</source>
         <comment>Don&apos;t translate &apos;pa_stream_peek&apos;</comment>
-        <translation type="unfinished">Erro: pa_stream_peek falhou!</translation>
+        <translation>Erro: pa_stream_peek falhou!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="377"/>
         <source>Warning: Audio source was suspended. The current segment will be stopped until the source is resumed.</source>
-        <translation type="unfinished">Aviso: a fonte de áudio foi suspensa. O segmento atual será interrompido até que a fonte seja retomada.</translation>
+        <translation>Aviso: a fonte de áudio foi suspensa. O segmento atual será interrompido até que a fonte seja retomada.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="382"/>
         <source>Warning: Stream was moved to a different source.</source>
-        <translation type="unfinished">Aviso: o fluxo foi transferido para uma fonte diferente.</translation>
+        <translation>Aviso: O fluxo foi transferido para uma fonte diferente.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="74"/>
         <source>Error: Unsupported X11 image pixel format!</source>
-        <translation type="unfinished">Erro: Formato X11 de imagem em pixels não suportado!</translation>
+        <translation>Erro: Formato X11 de imagem em pixels não suportado!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="186"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="111"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="112"/>
         <source>Error: Width or height is zero!</source>
-        <translation type="unfinished">Erro: Largura ou altura é zero!</translation>
+        <translation>Erro: Largura ou altura é zero!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="190"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="115"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="116"/>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
-        <translation type="unfinished">Erro: Largura ou altura é muito grande, a largura máxima e altura é de %1!</translation>
+        <translation>Erro: Largura ou altura é muito grande, a largura máxima e altura é de %1!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="236"/>
         <location filename="../GUI/HotkeyListener.cpp" line="118"/>
         <source>Error: Can&apos;t open X display!</source>
         <comment>Don&apos;t translate &apos;display&apos;</comment>
-        <translation type="unfinished">Erro: Não foi possível abrir o display X!</translation>
+        <translation>Erro: Não foi possível abrir o display X!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="245"/>
         <source>Using X11 shared memory.</source>
-        <translation type="unfinished">Usando memória compartilhada X11.</translation>
+        <translation>Usando memória compartilhada X11.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="248"/>
         <source>Error: Can&apos;t create shared image!</source>
-        <translation type="unfinished">Erro: Não foi possível  criar uma imagem compartilhada!</translation>
+        <translation>Erro: Não foi possível criar uma imagem compartilhada!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="264"/>
         <source>Not using X11 shared memory.</source>
-        <translation type="unfinished">Não usando a memória compartilhada X11.</translation>
+        <translation>Não usando a memória compartilhada X11.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="271"/>
         <source>Warning: XFixes is not supported by X server, the cursor has been hidden.</source>
         <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Aviso: XFixes não é suportado por servidor X, o cursor foi ocultado.</translation>
     </message>
     <message>
         <source>Warning: XFixes is not supported by server, the cursor has been hidden.</source>
@@ -599,25 +601,25 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="329"/>
         <source>Error: Invalid screen bounding box!</source>
-        <translation type="unfinished">Erro: Caixa delimitadora de tela inválida!</translation>
+        <translation>Erro: Caixa delimitadora de tela inválida!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="393"/>
         <source>Error: Can&apos;t attach server to shared memory!</source>
-        <translation type="unfinished">Erro: Não é possível anexar o servidor na memória compartilhada!</translation>
+        <translation>Erro: Não é possível anexar o servidor na memória compartilhada!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="399"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation type="unfinished">Erro: Não foi possível  obter uma imagem (usando memória compartilhada)!
+        <translation>Erro: Não foi possível obter uma imagem (usando memória compartilhada)!
      Normalmente isto significa que a área de gravação não está completamente no interior da de tela. Ou você mudou a resolução da tela?</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="410"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation type="unfinished">Erro: Não foi possível  obter uma imagem (não usando memória compartilhada)!
+        <translation>Erro: Não foi possível obter uma imagem (não usando memória compartilhada)!
      Normalmente isto significa que a área de gravação não está completamente no interior da de tela. Ou você mudou a resolução da tela?</translation>
     </message>
     <message>
@@ -627,442 +629,457 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="163"/>
         <source>Warning: Codec option &apos;%1&apos; was not recognised!</source>
-        <translation type="unfinished">Aviso: opção codec &apos;%1&apos; não foi reconhecida!</translation>
+        <translation>Aviso: Opção de codec &apos;%1&apos; não foi reconhecida!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="97"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="99"/>
         <source>Error: Channel count is zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Número de canal é zero.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="101"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="103"/>
         <source>Error: Sample rate is zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Taxa de amostragem é zero.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="121"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="140"/>
+        <source>Using sample format %1.</source>
+        <translation>Usando formato de amostra %1.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="145"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
-        <translation type="unfinished">Erro: Codificador requer um formato de amostragem não suportado!</translation>
+        <translation>Erro: Codificador requer um formato de amostra não suportado!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="165"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="186"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Encoding of audio frame failed!</source>
-        <translation type="unfinished">Erro: Codificação do quadro de áudio falhou!</translation>
-    </message>
-    <message>
-        <source>Error: Option &apos;%1&apos; could not be parsed!</source>
-        <translation type="obsolete">Erro: Opção &apos;%1&apos; não pôde ser analisada!</translation>
-    </message>
-    <message>
-        <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
-        <source>Stopping encoder thread ...</source>
-        <translation type="unfinished">Parando segmento do codificador ...</translation>
-    </message>
-    <message>
-        <location filename="../AV/Output/Muxer.cpp" line="254"/>
-        <source>Error: Can&apos;t find codec!</source>
-        <translation type="unfinished">Erro: Não foi possível encontrar o codec!</translation>
-    </message>
-    <message>
-        <location filename="../AV/Output/Muxer.cpp" line="264"/>
-        <source>Using codec %1 (%2).</source>
-        <translation type="unfinished">Usando o codec %1 (%2).</translation>
-    </message>
-    <message>
-        <location filename="../AV/Output/Muxer.cpp" line="296"/>
-        <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
-        <translation type="unfinished">Aviso: Este o codec é considerado experimental pelo libav/ffmpeg.</translation>
+        <translation>Erro: Codificação do quadro de áudio falhou!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
         <location filename="../AV/Output/BaseEncoder.cpp" line="40"/>
+        <source>Error: Option &apos;%1&apos; could not be parsed!</source>
+        <translation>Erro: Opção &apos;%1&apos; não pôde ser analisada!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
+        <source>Stopping encoder thread ...</source>
+        <translation>Parando segmento do codificador ...</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Muxer.cpp" line="254"/>
+        <source>Error: Can&apos;t find codec!</source>
+        <translation>Erro: Não foi possível encontrar o codec!</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Muxer.cpp" line="264"/>
+        <source>Using codec %1 (%2).</source>
+        <translation>Usando o codec %1 (%2).</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Muxer.cpp" line="296"/>
+        <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
+        <translation>Aviso: Este o codec é considerado experimental pelo libav/ffmpeg.</translation>
+    </message>
+    <message>
         <source>Warning: Option &apos;%1&apos; could not be parsed!</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Aviso: A opção &apos;%1&apos; não pôde ser analisada!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="155"/>
         <source>Error: Can&apos;t open codec!</source>
-        <translation type="unfinished">Erro: Não foi possível abrir o o codec!</translation>
+        <translation>Erro: Não foi possível abrir o o codec!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="179"/>
         <source>Encoder thread started.</source>
-        <translation type="unfinished">Segmento do codificador iniciado.</translation>
+        <translation>Segmento do codificador iniciado.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="211"/>
         <source>Flushing encoder ...</source>
-        <translation type="unfinished">Esvaziando o codificador ...</translation>
+        <translation>Esvaziando o codificador ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="225"/>
         <source>Encoder thread stopped.</source>
-        <translation type="unfinished">Segmento do codificador parado.</translation>
+        <translation>Segmento do codificador parado.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="229"/>
         <source>Exception &apos;%1&apos; in encoder thread.</source>
-        <translation type="unfinished">Exceção &apos;%1&apos; no segmento do codificador.</translation>
+        <translation>Exceção &apos;%1&apos; no segmento do codificador.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="232"/>
         <source>Unknown exception in encoder thread.</source>
-        <translation type="unfinished">Exceção desconhecida no segmento do codificador.</translation>
+        <translation>Exceção desconhecida no segmento do codificador.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="71"/>
         <source>Stopping encoders ...</source>
-        <translation type="unfinished">Parando codificadores ...</translation>
+        <translation>Parando codificadores ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="78"/>
         <source>Waiting for muxer thread to stop ...</source>
-        <translation type="unfinished">Aguardando o segmento muxer parar ...</translation>
+        <translation>Aguardando o segmento muxer parar ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="133"/>
         <source>Error: Can&apos;t write header!</source>
         <comment>Don&apos;t translate &apos;header&apos;</comment>
-        <translation type="unfinished">Erro: Não foi possível gravar o header!</translation>
+        <translation>Erro: Não foi possível gravar o header!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="144"/>
         <source>Finishing encoders ...</source>
-        <translation type="unfinished">Finalizando os codificadores ...</translation>
+        <translation>Finalizando os codificadores ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="273"/>
         <source>Error: Can&apos;t create new stream!</source>
-        <translation type="unfinished">Erro: Não foi possível criar um novo fluxo!</translation>
+        <translation>Erro: Não foi possível criar um novo fluxo!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="283"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
-        <translation type="unfinished">Erro: Não foi possível obter padrões de contexto do codec!</translation>
+        <translation>Erro: Não foi possível obter padrões de contexto do codec!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="186"/>
         <source>Error: Can&apos;t find chosen output format!</source>
-        <translation type="unfinished">Erro: Não foi possível encontrar o formato de saída escolhido!</translation>
+        <translation>Erro: Não foi possível encontrar o formato de saída escolhido!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="190"/>
         <source>Using format %1 (%2).</source>
-        <translation type="unfinished">Usando o formato %1 (%2).</translation>
+        <translation>Usando o formato %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="196"/>
         <source>Error: Can&apos;t allocate format context!</source>
-        <translation type="unfinished">Erro: Não foi possível alocar contexto de formato!</translation>
+        <translation>Erro: Não foi possível alocar contexto de formato!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="203"/>
         <source>Error: Can&apos;t open output file!</source>
-        <translation type="unfinished">Erro: Não foi possível abrir o arquivo de saída!</translation>
+        <translation>Erro: Não foi possível abrir o arquivo de saída!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="216"/>
         <source>Error: Can&apos;t write trailer, continuing anyway.</source>
         <comment>Don&apos;t translate &apos;trailer&apos;</comment>
-        <translation type="unfinished">Erro: Não foi possível gravar o trailer, continuando mesmo assim.</translation>
+        <translation>Erro: Não foi possível gravar o trailer, continuando mesmo assim.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="310"/>
         <source>Muxer thread started.</source>
-        <translation type="unfinished">Fluxo do segmento do muxer começado.</translation>
+        <translation>Fluxo do segmento do muxer iniciado.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="369"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
-        <translation type="unfinished">Erro: Não foi possível gravar quadro para o muxer!</translation>
+        <translation>Erro: Não foi possível gravar quadro para o muxer!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="397"/>
         <source>Muxer thread stopped.</source>
-        <translation type="unfinished">Fluxo do segmento muxer parado.</translation>
+        <translation>Fluxo do segmento muxer parado.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="401"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
-        <translation type="unfinished">Exceção &apos;%1&apos; no segmento muxer.</translation>
+        <translation>Exceção &apos;%1&apos; no segmento muxer.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="404"/>
         <source>Unknown exception in muxer thread.</source>
-        <translation type="unfinished">Exceção desconhecida no segmento muxer.</translation>
+        <translation>Exceção desconhecida no segmento muxer.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="199"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="205"/>
         <source>Stopping synchronizer thread ...</source>
-        <translation type="unfinished">Parando fluxo sincronizador ...</translation>
+        <translation>Parando fluxo sincronizador ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="316"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="322"/>
         <source>Warning: Received video frame with non-monotonic timestamp.</source>
-        <translation type="unfinished">Aviso: Quadro de vídeo recebido com carimbo do tempo não-monotônico.</translation>
+        <translation>Aviso: Quadro de vídeo recebido com carimbo do tempo não-monotônico.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="342"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="348"/>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
-        <translation type="unfinished">Aviso: Sobrecarga no buffer de video, alguns quadros serão perdidos. A entrada de áudio parece ser muito lenta.</translation>
+        <translation>Aviso: Sobrecarga no buffer de vídeo, alguns quadros serão perdidos. A entrada de áudio parece ser muito lenta.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="399"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="405"/>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
-        <translation type="unfinished">Aviso: amostras de áudio recebidas com carimbo do tempo não-monotônico.</translation>
-    </message>
-    <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="424"/>
-        <source>Warning: Too many audio samples, dropping samples to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aviso: amostras de áudio recebidas com carimbo do tempo não-monotônico.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="430"/>
+        <source>Warning: Too many audio samples, dropping samples to keep the audio in sync with the video.</source>
+        <translation>
+Aviso: Número excessivo de amostras de áudio, descartando amostras para manter o áudio em sincronia com o vídeo.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/Synchronizer.cpp" line="436"/>
         <source>Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aviso: Número insuficiente de amostras de áudio, inserindo silêncio para manter o áudio em sincronia com o vídeo.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="496"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="502"/>
         <source>Warning: Audio input is more than 2% too slow!</source>
-        <translation type="unfinished">Atenção: A entrada de áudio é mais do que 5% muito lenta! {2%?}</translation>
+        <translation>Atenção: A entrada de áudio é mais do que 2% muito lenta!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="500"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="506"/>
         <source>Warning: Audio input is more than 2% too fast!</source>
-        <translation type="unfinished">Atenção: A entrada de áudio é mais do que 5% muito rápida! {2%?}</translation>
+        <translation>Atenção: A entrada de áudio é mais do que 2% muito rápida!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="535"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="541"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
-        <translation type="unfinished">Aviso: Sobrecarga no buffer de áudio, começando novo segmento para manter o áudio em sincronia com o vídeo (algum vídeo e/ou áudio podem ser perdidos). A entrada de vídeo parece ser muito lenta.</translation>
+        <translation>Aviso: Sobrecarga no buffer de áudio, começando novo segmento para manter o áudio em sincronia com o vídeo (algum vídeo e/ou áudio podem ser perdidos). A entrada de vídeo parece ser muito lenta.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="571"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="577"/>
         <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aviso: Buraco recebido no fluxo de áudio, inserindo silêncio para manter o áudio em sincronia com o vídeo.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="871"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="877"/>
         <source>Synchronizer thread started.</source>
-        <translation type="unfinished">Fluxo sincronizador iniciado.</translation>
+        <translation>Fluxo sincronizador iniciado.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="893"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="899"/>
         <source>Synchronizer thread stopped.</source>
-        <translation type="unfinished">Fluxo sincronizador parado.</translation>
+        <translation>Fluxo sincronizador parado.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="897"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="903"/>
         <source>Exception &apos;%1&apos; in synchronizer thread.</source>
-        <translation type="unfinished">Exceção &apos;%1&apos; no fluxo sincronizador.</translation>
+        <translation>Exceção &apos;%1&apos; no fluxo sincronizador.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="900"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="906"/>
         <source>Unknown exception in synchronizer thread.</source>
-        <translation type="unfinished">Exceção desconhecida no fluxo do sincronizador.</translation>
+        <translation>Exceção desconhecida no fluxo do sincronizador.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="119"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="120"/>
         <source>Error: Width or height is not an even number!</source>
-        <translation type="unfinished">Erro: Largura ou altura não é um número inteiro!</translation>
+        <translation>Erro: Largura ou altura não é um número inteiro!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="123"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="124"/>
         <source>Error: Frame rate is zero!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Taxa de quadros é zero!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="152"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="181"/>
+        <source>Using pixel format %1.</source>
+        <translation>Usando formato de pixel %1.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="195"/>
+        <source>Error: The pixel format is not supported by the codec!</source>
+        <translation>Erro: O formato de pixel não é suportado pelo codec!</translation>
+    </message>
+    <message>
         <source>Error: Encoder requires an unsupported pixel format!</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Erro: Codificador requer um formato de pixel não suportado!</translation>
     </message>
     <message>
         <source>Error: Frame rate it zero!</source>
         <translation type="obsolete">Erro: Taxa de quadros é zero!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="214"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="234"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="225"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="245"/>
         <source>Error: Encoding of video frame failed!</source>
-        <translation type="unfinished">Erro: Codificação do quadro de vídeo falhou!</translation>
+        <translation>Erro: Codificação do quadro de vídeo falhou!</translation>
     </message>
     <message>
         <source>Warning: An underrun has occurred, some samples were too late.</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation type="obsolete">Aviso: Uma falta de dados ocorreu, algumas amostras chegaram muito tarde.</translation>
+        <translation type="obsolete">Aviso: Um underrun ocorreu, algumas amostras chegaram muito tarde.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="40"/>
         <source>Using real-time priority.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usando prioridade de tempo real.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="50"/>
         <source>Using nice priority.</source>
         <comment>Don&apos;t translate &apos;nice&apos;, it&apos;s a UNIX parameter that defines the priority of a process.</comment>
-        <translation type="unfinished"></translation>
+        <translation>Usando prioridade de nice.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="55"/>
         <source>Warning: Can&apos;t increase the thread priority.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aviso: Não foi possível aumentar a prioridade do segmento.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="63"/>
         <source>Error: Can&apos;t recover device after underrun!</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation type="unfinished">Erro: Não foi possível recuperar o dispositivo depois da falta de dados!</translation>
+        <translation>Erro: Não foi possível recuperar o dispositivo após o underrun!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="90"/>
         <source>Stopping synth thread ...</source>
-        <translation type="unfinished">Parando o fluxo do sintetizador ...</translation>
+        <translation>Parando o fluxo do sintetizador ...</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="223"/>
         <source>Synth thread started.</source>
-        <translation type="unfinished">Fluxo do sintetizador iniciado.</translation>
+        <translation>Fluxo do sintetizador iniciado.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="276"/>
         <source>Error: Can&apos;t write samples!</source>
-        <translation type="unfinished">Erro: Não foi possível gravar as amostras!</translation>
+        <translation>Erro: Não foi possível gravar as amostras!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="284"/>
         <source>Synth thread stopped.</source>
-        <translation type="unfinished">Fluxo do sintetizador parado.</translation>
+        <translation>Fluxo do sintetizador parado.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="288"/>
         <source>Exception &apos;%1&apos; in synth thread.</source>
-        <translation type="unfinished">Exceção &apos;%1&apos; no fluxo do sintetizador.</translation>
+        <translation>Exceção &apos;%1&apos; no fluxo do sintetizador.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="291"/>
         <source>Unknown exception in synth thread.</source>
-        <translation type="unfinished">Exceção desconhecida no fluxo do sintetizador.</translation>
+        <translation>Exceção desconhecida no fluxo do sintetizador.</translation>
     </message>
     <message>
-        <location filename="../common/CPUFeatures.cpp" line="48"/>
+        <location filename="../common/CPUFeatures.cpp" line="46"/>
         <source>CPU features</source>
-        <translation type="unfinished">Recursos da CPU</translation>
+        <translation>Recursos da CPU</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="117"/>
+        <location filename="../Main.cpp" line="112"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
-        <translation type="unfinished">Erro: opção da linha de comando &apos;%1&apos; não tem um valor!</translation>
+        <translation>Erro: Opção da linha de comando &apos;%1&apos; não leva um valor!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="145"/>
+        <location filename="../Main.cpp" line="143"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
-        <translation type="unfinished">Erro: Opção desconhecida na linha de comando &apos;%1&apos;!</translation>
+        <translation>Erro: Opção desconhecida na linha de comando &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="155"/>
+        <location filename="../Main.cpp" line="153"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
-        <translation type="unfinished">Erro: Argumento desconhecido na linha de comando &apos;%1&apos;!</translation>
+        <translation>Erro: Argumento desconhecido na linha de comando &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="195"/>
+        <location filename="../Main.cpp" line="193"/>
         <source>SSR started</source>
-        <translation type="unfinished">SSR iniciado</translation>
+        <translation>SSR iniciado</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="220"/>
+        <location filename="../Main.cpp" line="221"/>
         <source>SSR stopped</source>
-        <translation type="unfinished">SSR parado</translation>
+        <translation>SSR parado</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="237"/>
+        <location filename="../Main.cpp" line="238"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
-        <translation type="unfinished">Erro: Não foi possível criar o o diretório de .ssr!</translation>
+        <translation>Erro: Não foi possível criar o o diretório de .ssr!</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="149"/>
         <source>Error: Could not read stream, this usually means that the stream was already gone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível ler o fluxo, isso normalmente significa que o fluxo já se perdeu.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="64"/>
         <source>Created video stream reader.</source>
-        <translation type="unfinished"></translation>
+        <translation>Criado leitor de fluxo de vídeo.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="69"/>
         <source>Error: Can&apos;t open video stream file!</source>
-        <translation type="unfinished">Erro: Não foi possível abrir o arquivo de fluxo de vídeo!</translation>
+        <translation>Erro: Não foi possível abrir o arquivo de fluxo de vídeo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="76"/>
         <source>Error: Can&apos;t resize video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível redimensionar o arquivo de fluxo de vídeo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="83"/>
         <source>Error: Can&apos;t memory-map video stream file!</source>
-        <translation type="unfinished">Erro: Não foi possível mapear a memória do arquivo de fluxo de vídeo!</translation>
+        <translation>Erro: Não foi possível mapear a memória do arquivo de fluxo de vídeo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="92"/>
         <source>Error: Can&apos;t open video frame file!</source>
-        <translation type="unfinished">Erro: Não foi possível  abrir o arquivo de quadros de vídeo!</translation>
+        <translation>Erro: Não foi possível abrir o arquivo de quadros de vídeo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="142"/>
         <source>Destroyed video stream reader.</source>
-        <translation type="unfinished"></translation>
+        <translation>Destruído o leitor de fluxo de vídeo.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="238"/>
         <source>Error: Size of video frame file is incorrect!</source>
-        <translation type="unfinished">Erro: O tamanho do arquivo de quadros de vídeo está incorreto!</translation>
+        <translation>Erro: O tamanho do arquivo de quadros de vídeo está incorreto!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="247"/>
         <source>Error: Can&apos;t memory-map video frame file!</source>
-        <translation type="unfinished">Erro: Não foi possível mapear a memória do arquivo de quadros de vídeo!</translation>
+        <translation>Erro: Não foi possível mapear a memória do arquivo de quadros de vídeo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="88"/>
         <source>Error: Can&apos;t create channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível criar o diretório de canais!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="95"/>
         <source>Error: Can&apos;t stat channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível obter estado do diretório de canais!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="99"/>
         <source>Error: Channel directory is not a regular directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Diretório de canais não é um diretório comum!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="104"/>
         <source>Error: Can&apos;t set channel directory mode!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível definir modo de diretório de canais!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="109"/>
         <source>Error: Channel directory is owned by a different user! Choose a different channel name, or enable relaxed file permissions to use it anyway.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Diretório de canais é propriedade de um usuário diferente! Escolha um nome de canal diferente, ou habilite permissões de arquivos flexíveis para usá-lo mesmo assim.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="121"/>
         <source>Error: Can&apos;t initialize inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished">Erro: Não foi possível inicializar o inotify!</translation>
+        <translation>Erro: Não foi possível inicializar o inotify!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t watch shared memory directory!</source>
-        <translation type="obsolete">Erro: Não foi possível  observar o diretório de memória compartilhada!</translation>
+        <translation type="obsolete">Erro: Não foi possível observar o diretório de memória compartilhada!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="127"/>
         <source>Error: Can&apos;t watch channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível observar o diretório de canais!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t open shared memory directory!</source>
@@ -1071,72 +1088,86 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="139"/>
         <source>Error: Can&apos;t open channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível abrir o diretório de canais!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="157"/>
         <source>Added pre-existing stream %1.</source>
-        <translation type="unfinished">Adicionado fluxo pré-existente %1.</translation>
+        <translation>Adicionado fluxo pré-existente %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="192"/>
         <source>Error: Can&apos;t get read length from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished">Erro: Não foi possível  ler o comprimento do inotify!</translation>
+        <translation>Erro: Não foi possível ler o comprimento do inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="200"/>
         <source>Error: Can&apos;t read from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished">Erro: Não foi possível ler do inotify!</translation>
+        <translation>Erro: Não foi possível ler do inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="210"/>
         <source>Error: Received partial event from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished">Erro: Recebido evento parcial do inotify!</translation>
+        <translation>Erro: Recebido evento parcial do inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="222"/>
         <source>Error: Received partial name from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished">Erro: Recebido nome parcial do inotify!</translation>
+        <translation>Erro: Recebido nome parcial do inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="236"/>
         <source>Added stream %1.</source>
-        <translation type="unfinished">Adicionado fluxo %1.</translation>
+        <translation>Adicionado fluxo %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="244"/>
         <source>Removed stream %1.</source>
-        <translation type="unfinished">Fluxo %1 removido.</translation>
+        <translation>Removido fluxo %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="270"/>
         <source>Deleted abandoned stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Excluído fluxo abandonado %1.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="159"/>
         <source>The application could not be launched.</source>
-        <translation type="unfinished">O aplicativo não pode iniciar.</translation>
+        <translation>O aplicativo não pôde ser iniciado.</translation>
     </message>
     <message>
         <location filename="../GUI/HotkeyListener.cpp" line="164"/>
         <source>Warning: XInput2 is not supported by X server, hotkeys may not work in some applications.</source>
         <comment>Don&apos;t translate &apos;XInput2&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Aviso: XInput2 não é suportado pelo servidor X, hotkeys podem não funcionar em alguns aplicativos.</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="107"/>
         <source>Scale %1 to %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Escala %1 para %2  | Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="114"/>
+        <location filename="../Benchmark.cpp" line="134"/>
+        <source>BGRA %1 to BGRA %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</source>
+        <translation>BGRA %1 para BGRA %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</translation>
+    </message>
+    <message>
+        <location filename="../Benchmark.cpp" line="180"/>
+        <source>%1 %2 to %3 %4  |  Fallback %5 ms  |  SSSE3 %6 ms  |  %7%</source>
+        <translation>%1 %2 para %3 %4  |  Fallback %5 ms  |  SSSE3 %6 ms  |  %7%</translation>
+    </message>
+    <message>
+        <location filename="../Benchmark.cpp" line="187"/>
         <source>Starting scaler benchmark ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Iniciando análise de desempenho de escalador ...</translation>
+    </message>
+    <message>
+        <location filename="../Benchmark.cpp" line="194"/>
+        <source>Starting converter benchmark ...</source>
+        <translation>Iniciando análise de desempenho de conversor ...</translation>
     </message>
 </context>
 <context>
@@ -1147,7 +1178,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
 
 You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished">SimpleScreenRecorder detectou que você está usando o driver proprietário da NVIDIA com a inversão (flipping) habilitada. Isso é conhecido por causar falhas durante a gravação. É recomendável desativar a inversão. Você quer que eu faça isso para você?
+        <translation>SimpleScreenRecorder detectou que você está usando o driver proprietário da NVIDIA com a inversão (flipping) habilitada. Isso é conhecido por causar falhas durante a gravação. É recomendável desativar a inversão. Você quer que eu faça isso para você?
 
 Você também pode alterar essa opção manualmente no painel de controle da NVIDIA.</translation>
     </message>
@@ -1155,7 +1186,7 @@ Você também pode alterar essa opção manualmente no painel de controle da NVI
         <location filename="../GUI/MainWindow.cpp" line="90"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished">Não pude desativar a inversão (flipping) por algum motivo - desculpe! Tente desabilitá-la no painel de controle da NVIDIA.</translation>
+        <translation>Não consegui desativar a inversão (flipping) por algum motivo - desculpe! Tente desabilitá-la no painel de controle da NVIDIA.</translation>
     </message>
 </context>
 <context>
@@ -1377,12 +1408,13 @@ O &apos;monitor&apos; é uma fonte que grava o áudio reproduzido por outros apl
         <location filename="../GUI/PageInput.cpp" line="259"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fonte ALSA que será usada para gravação.
+O padrão normalmente serve bem. As fontes &apos;compartilhadas&apos; permitem que múltiplos programas gravem ao mesmo tempo, mas eles pode ser menos confiáveis.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="262"/>
         <source>Refreshes the list of ALSA sources.</source>
-        <translation type="unfinished"></translation>
+        <translation>Renova a lista de fontes ALSA.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="270"/>
@@ -1392,22 +1424,22 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageInput.cpp" line="273"/>
         <source>Record system microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar o microfone do sistema</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se marcado, as portas serão conectadas automaticamente às portas de captura do sistema.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>Record system speakers</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar alto-falantes do sistema</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se marcado, as portas serão conectadas automaticamente a qualquer coisa que se conectar às portas de reprodução do sistema.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="311"/>
@@ -1459,7 +1491,7 @@ Clique no botão ‘Configurações do OpenGL’ e digite um comando.</translati
         <location filename="../GUI/PageOutput.cpp" line="126"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>arquivos %1</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="93"/>
@@ -1525,7 +1557,8 @@ Os nomes de arquivos que já existem serão pulados.</translation>
         <location filename="../GUI/PageOutput.cpp" line="181"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ser marcado, um arquivo de vídeo separado será criado toda vez que você interromper e retomar a gravação.
+Se o nome de arquivo original for &apos;test.mkv&apos;, os segmentos serão salvos como &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="183"/>
@@ -1883,7 +1916,7 @@ O programa que você está gravando não receberá a tecla pressionada.</transla
     <message>
         <location filename="../GUI/PageRecord.cpp" line="325"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Sair</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="368"/>
@@ -1895,12 +1928,12 @@ Você tem certeza que quer sair?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="380"/>
         <source>Hide window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocultar janela</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="382"/>
         <source>Show window</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar janela</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="535"/>
@@ -1927,7 +1960,7 @@ Você tem certeza que quer sair?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="830"/>
         <source>Encoding remaining data ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Codificando dados remanescentes ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="612"/>
@@ -1942,12 +1975,12 @@ Você tem certeza que quer sair?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="648"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
-        <translation type="unfinished">Erro: Não foi possível obter o tamanho do aplicativo OpenGL porque a entrada GLInject não foi criada.</translation>
+        <translation>Erro: Não foi possível obter o tamanho do aplicativo OpenGL porque a entrada GLInject não foi criada.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="653"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível obter o tamanho do aplicativo OpenGL. O aplicativo não foi iniciado corretamente ou ainda não foi criada uma janela OpenGL. Se você quiser iniciar a gravação antes de iniciar o aplicativo, você terá que habilitar escala e informar o tamanho do vídeo manualmente.</translation>
     </message>
     <message>
         <source>Error: Could not get the size of the OpenGL application.</source>
@@ -1976,7 +2009,7 @@ Você tem certeza que quer sair?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="759"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
-        <translation type="unfinished">Erro: Não foi possível iniciar a entrada GLInject porque ela não foi criada.</translation>
+        <translation>Erro: Não foi possível iniciar a entrada GLInject porque ela não foi criada.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="778"/>
@@ -2068,67 +2101,67 @@ O botão de iniciar está no topo;).</translation>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="28"/>
         <source>Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Perfil</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="37"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="38"/>
         <source>Save the current settings to this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva as configurações atuais para este perfil.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="39"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Novo</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="40"/>
         <source>Create a new profile with the current settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cria um novo perfil com as configurações atuais.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="41"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Excluir</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="42"/>
         <source>Delete this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exclui este perfil.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(nenhum)</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
         <source>Error: Can&apos;t load profile!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: Não foi possível carregar o perfil!</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="147"/>
         <source>Are you sure that you want to overwrite this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Você tem certeza que deseja sobrescrever este perfil?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="159"/>
         <source>Enter a name for the new profile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Insira um nome para o novo perfil:</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Um perfil com o mesmo nome já existe. Você tem certeza que deseja substituí-lo?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="181"/>
         <source>Are you sure that you want to delete this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Você tem certeza que você deseja excluir este perfil?</translation>
     </message>
 </context>
 <context>
@@ -2137,33 +2170,33 @@ O botão de iniciar está no topo;).</translation>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sim</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished"></translation>
+        <translation>Sim, sempre</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Não</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished"></translation>
+        <translation>Não, nunca</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cancelar</translation>
     </message>
 </context>
 <context>
@@ -2190,7 +2223,7 @@ O botão de iniciar está no topo;).</translation>
     <message>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="obsolete">Erro: Não é possível recuperar o dispositivo depois do sobrecarga de dados!</translation>
+        <translation type="obsolete">Erro: Não é possível recuperar o dispositivo após o overrun!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t start PCM device after overrun!</source>
@@ -2361,7 +2394,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <source>Error: Can&apos;t open video frame file!</source>
-        <translation type="obsolete">Erro: Não foi possível  abrir o arquivo de quadros de vídeo!</translation>
+        <translation type="obsolete">Erro: Não foi possível abrir o arquivo de quadros de vídeo!</translation>
     </message>
     <message>
         <source>Error: Size of video frame file is incorrect!</source>
@@ -2378,7 +2411,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <source>Error: Can&apos;t watch shared memory directory!</source>
-        <translation type="obsolete">Erro: Não foi possível  observar o diretório de memória compartilhada!</translation>
+        <translation type="obsolete">Erro: Não foi possível observar o diretório de memória compartilhada!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t open shared memory directory!</source>
@@ -2386,12 +2419,12 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <source>Added pre-existing stream %1.</source>
-        <translation type="obsolete">Adicionado fluxo pré-existente %1.</translation>
+        <translation type="obsolete">Adicionado fluxo preexistente %1.</translation>
     </message>
     <message>
         <source>Error: Can&apos;t get read length from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="obsolete">Erro: Não foi possível  ler o comprimento do inotify!</translation>
+        <translation type="obsolete">Erro: Não foi possível ler o comprimento do inotify!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t read from inotify!</source>
@@ -2447,7 +2480,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <source>Error: Can&apos;t create shared image!</source>
-        <translation type="obsolete">Erro: Não foi possível  criar uma imagem compartilhada!</translation>
+        <translation type="obsolete">Erro: Não foi possível criar uma imagem compartilhada!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t get shared memory!</source>
@@ -2455,7 +2488,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation type="obsolete">Erro: Não foi possível  anexar à memória compartilhada!</translation>
+        <translation type="obsolete">Erro: Não foi possível anexar à memória compartilhada!</translation>
     </message>
     <message>
         <source>Not using X11 shared memory.</source>
@@ -2477,13 +2510,13 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation type="obsolete">Erro: Não foi possível  obter uma imagem (usando memória compartilhada)!
+        <translation type="obsolete">Erro: Não foi possível obter uma imagem (usando memória compartilhada)!
      Normalmente isto significa que a área de gravação não está completamente no interior da de tela. Ou você mudou a resolução da tela?</translation>
     </message>
     <message>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation type="obsolete">Erro: Não foi possível  obter uma imagem (não usando memória compartilhada)!
+        <translation type="obsolete">Erro: Não foi possível obter uma imagem (não usando memória compartilhada)!
      Normalmente isto significa que a área de gravação não está completamente no interior da de tela. Ou você mudou a resolução da tela?</translation>
     </message>
     <message>
@@ -2622,7 +2655,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
-        <translation type="obsolete">Aviso: Sobrecarga no buffer de video, alguns quadros serão perdidos. A entrada de áudio parece ser muito lenta.</translation>
+        <translation type="obsolete">Aviso: Sobrecarga no buffer de vídeo, alguns quadros serão perdidos. A entrada de áudio parece ser muito lenta.</translation>
     </message>
     <message>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
@@ -2707,12 +2740,12 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <source>Warning: An underrun has occurred, some samples were too late.</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation type="obsolete">Aviso: Uma falta de dados ocorreu, algumas amostras chegaram muito tarde.</translation>
+        <translation type="obsolete">Aviso: Um underrun ocorreu, algumas amostras chegaram muito tarde.</translation>
     </message>
     <message>
         <source>Error: Can&apos;t recover device after underrun!</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation type="obsolete">Erro: Não foi possível recuperar o dispositivo depois da falta de dados!</translation>
+        <translation type="obsolete">Erro: Não foi possível recuperar o dispositivo após o underrun!</translation>
     </message>
     <message>
         <source>Stopping synth thread ...</source>
@@ -2793,22 +2826,22 @@ Você também pode alterar essa opção manualmente no painel de controle da NVI
         <translation>Diagrama de Sincronização</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="245"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="251"/>
         <source>Video in</source>
         <translation>Entrada de vídeo</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="246"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="252"/>
         <source>Audio in</source>
         <translation>Entrada de áudio</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="247"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="253"/>
         <source>Video out</source>
         <translation>Saída de vídeo</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="248"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="254"/>
         <source>Audio out</source>
         <translation>Saída de áudio</translation>
     </message>
