@@ -26,7 +26,7 @@ Translations
 - Italian: Bersil
 - Dutch: Maarten Baert
 - Polish: Szamanx0
-- Brazilian Portuguese: Paulo Milliet Roque
+- Brazilian Portuguese: Paulo Milliet Roque, Rafael Ferreira
 - Russian: Dima Koshel
 - Ukrainian: Rom Gyrfalco
 - Simplified Chinese: Weitian Leung
