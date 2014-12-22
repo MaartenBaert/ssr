@@ -298,6 +298,8 @@ AVStream* Muxer::AddStream(AVCodec* codec) {
 	}
 
 #if SSR_USE_SIDE_DATA_ONLY_PACKETS
+	// this option was added with the intent to deprecate it again in the next version,
+	// because the ffmpeg/libav devs like deprecating things :)
 	stream->codec->side_data_only_packets = 1;
 #endif
 
