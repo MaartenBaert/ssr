@@ -19,10 +19,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageInput.h"
 
+#include "DialogGLInject.h"
 #include "Dialogs.h"
 #include "EnumStrings.h"
+#include "Icons.h"
 #include "MainWindow.h"
-#include "DialogGLInject.h"
 
 #include <QX11Info>
 #include <X11/Xlib.h>
@@ -308,8 +309,8 @@ PageInput::PageInput(MainWindow* main_window)
 		}
 #endif
 	}
-	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), tr("Back"), this);
-	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), tr("Continue"), this);
+	QPushButton *button_back = new QPushButton(g_icon_go_previous, tr("Back"), this);
+	QPushButton *button_continue = new QPushButton(g_icon_go_next, tr("Continue"), this);
 
 	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageWelcome()));
 	connect(button_continue, SIGNAL(clicked()), this, SLOT(OnContinue()));

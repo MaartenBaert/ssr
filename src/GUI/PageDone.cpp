@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageDone.h"
 
+#include "Icons.h"
 #include "MainWindow.h"
 
 PageDone::PageDone(MainWindow* main_window)
@@ -29,7 +30,7 @@ PageDone::PageDone(MainWindow* main_window)
 	QLabel *label_done = new QLabel(tr("The recording has been saved. You can edit the video now, or re-encode it with better settings to "
 									   "make the file smaller (the default settings are optimized for quality and speed, not file size)."), this);
 	label_done->setWordWrap(true);
-	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-home"), tr("Back to the start screen"), this);
+	QPushButton *button_back = new QPushButton(g_icon_go_home, tr("Back to the start screen"), this);
 
 	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageWelcome()));
 

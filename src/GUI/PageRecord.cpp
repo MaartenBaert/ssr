@@ -258,7 +258,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 				{
 					m_video_previewer = new VideoPreviewer(m_preview_page2);
 					m_label_mic_icon = new QLabel(m_preview_page2);
-					m_label_mic_icon->setPixmap(QIcon::fromTheme("audio-input-microphone").pixmap(24, 24));
+					m_label_mic_icon->setPixmap(g_icon_microphone.pixmap(24, 24));
 					m_audio_previewer = new AudioPreviewer(m_preview_page2);
 
 					QVBoxLayout *layout = new QVBoxLayout(m_preview_page2);
@@ -307,22 +307,22 @@ PageRecord::PageRecord(MainWindow* main_window)
 		splitter_vertical->setStretchFactor(1, 1);
 	}
 
-	QPushButton *button_cancel = new QPushButton(QIcon::fromTheme("process-stop"), tr("Cancel recording"), this);
-	QPushButton *button_save = new QPushButton(QIcon::fromTheme("document-save"), tr("Save recording"), this);
+	QPushButton *button_cancel = new QPushButton(g_icon_cancel, tr("Cancel recording"), this);
+	QPushButton *button_save = new QPushButton(g_icon_save, tr("Save recording"), this);
 
 	if(g_option_systray) {
 		m_systray_icon = new QSystemTrayIcon(g_icon_ssr, m_main_window);
 		QMenu *menu = new QMenu(m_main_window);
 		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
 		m_systray_action_start_pause->setIconVisibleInMenu(true);
-		m_systray_action_cancel = menu->addAction(QIcon::fromTheme("process-stop"), tr("Cancel recording"), this, SLOT(OnCancel()));
+		m_systray_action_cancel = menu->addAction(g_icon_cancel, tr("Cancel recording"), this, SLOT(OnCancel()));
 		m_systray_action_cancel->setIconVisibleInMenu(true);
-		m_systray_action_save = menu->addAction(QIcon::fromTheme("document-save"), tr("Save recording"), this, SLOT(OnSave()));
+		m_systray_action_save = menu->addAction(g_icon_save, tr("Save recording"), this, SLOT(OnSave()));
 		m_systray_action_save->setIconVisibleInMenu(true);
 		menu->addSeparator();
 		m_systray_action_show_hide = menu->addAction(QString(), m_main_window, SLOT(OnShowHide()));
 		m_systray_action_show_hide->setIconVisibleInMenu(true);
-		m_systray_action_quit = menu->addAction(QIcon::fromTheme("application-exit"), tr("Quit"), m_main_window, SLOT(close()));
+		m_systray_action_quit = menu->addAction(g_icon_quit, tr("Quit"), m_main_window, SLOT(close()));
 		m_systray_action_quit->setIconVisibleInMenu(true);
 		m_systray_icon->setContextMenu(menu);
 	} else {

@@ -19,10 +19,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageOutput.h"
 
-#include "Main.h"
-#include "Logger.h"
 #include "Dialogs.h"
 #include "EnumStrings.h"
+#include "Icons.h"
+#include "Logger.h"
+#include "Main.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 
@@ -340,8 +341,8 @@ PageOutput::PageOutput(MainWindow* main_window)
 		layout->addWidget(m_label_audio_options, 3, 0);
 		layout->addWidget(m_lineedit_audio_options, 3, 1);
 	}
-	QPushButton *button_back = new QPushButton(QIcon::fromTheme("go-previous"), tr("Back"), this);
-	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), tr("Continue"), this);
+	QPushButton *button_back = new QPushButton(g_icon_go_previous, tr("Back"), this);
+	QPushButton *button_continue = new QPushButton(g_icon_go_next, tr("Continue"), this);
 
 	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageInput()));
 	connect(button_continue, SIGNAL(clicked()), this, SLOT(OnContinue()));

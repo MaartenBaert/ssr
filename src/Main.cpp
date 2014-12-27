@@ -216,8 +216,6 @@ int main(int argc, char* argv[]) {
 
 		// create main window
 		MainWindow mainwindow;
-		if(!g_option_start_hidden)
-			mainwindow.show();
 
 		// run application
 		ret = application.exec();

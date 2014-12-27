@@ -20,7 +20,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Icons.h"
 
 QIcon g_icon_ssr, g_icon_ssr_paused, g_icon_ssr_recording;
+QIcon g_icon_go_home, g_icon_go_previous, g_icon_go_next;
 QIcon g_icon_pause, g_icon_record;
+QIcon g_icon_cancel, g_icon_save, g_icon_quit;
+QIcon g_icon_microphone;
 
 void LoadIcons() {
 
@@ -28,7 +31,22 @@ void LoadIcons() {
 	g_icon_ssr_paused = QIcon::fromTheme("simplescreenrecorder-paused");
 	g_icon_ssr_recording = QIcon::fromTheme("simplescreenrecorder-recording");
 
+	g_icon_go_home = QIcon::fromTheme("go-home");
+	if(QApplication::layoutDirection() == Qt::RightToLeft) {
+		g_icon_go_previous = QIcon::fromTheme("go-next");
+		g_icon_go_next = QIcon::fromTheme("go-previous");
+	} else {
+		g_icon_go_previous = QIcon::fromTheme("go-previous");
+		g_icon_go_next = QIcon::fromTheme("go-next");
+	}
+
 	g_icon_pause = QIcon::fromTheme("media-playback-pause");
 	g_icon_record = QIcon::fromTheme("media-record");
+
+	g_icon_cancel = QIcon::fromTheme("process-stop");
+	g_icon_save = QIcon::fromTheme("document-save");
+	g_icon_quit = QIcon::fromTheme("application-exit");
+
+	g_icon_microphone = QIcon::fromTheme("audio-input-microphone");
 
 }

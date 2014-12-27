@@ -95,6 +95,11 @@ MainWindow::MainWindow()
 		}
 	}
 
+	// maybe show the window
+	if(!g_option_start_hidden)
+		show();
+	m_page_record->UpdateShowHide();
+
 }
 
 MainWindow::~MainWindow() {

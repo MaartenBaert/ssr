@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageWelcome.h"
 
+#include "Icons.h"
 #include "Main.h"
 #include "MainWindow.h"
 
@@ -41,7 +42,7 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 	label_welcome->setTextInteractionFlags(Qt::TextBrowserInteraction);
 	label_welcome->setOpenExternalLinks(true);
 	QPushButton *button_about = new QPushButton(tr("About SimpleScreenRecorder"), this);
-	QPushButton *button_continue = new QPushButton(QIcon::fromTheme("go-next"), tr("Continue"), this);
+	QPushButton *button_continue = new QPushButton(g_icon_go_next, tr("Continue"), this);
 
 	connect(button_about, SIGNAL(clicked()), this, SLOT(AboutDialog()));
 	connect(button_continue, SIGNAL(clicked()), m_main_window, SLOT(GoPageInput()));
