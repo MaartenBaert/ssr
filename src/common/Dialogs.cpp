@@ -32,12 +32,12 @@ enum_button MessageBox(QMessageBox::Icon icon, QWidget* parent, const QString& t
 		QPushButton *ptr;
 	};
 	ButtonData buttondata[] = {
-		{BUTTON_OK        , QMessageBox::tr("&OK")        , QMessageBox::AcceptRole, NULL},
-		{BUTTON_CANCEL    , QMessageBox::tr("&Cancel")    , QMessageBox::RejectRole, NULL},
-		{BUTTON_YES       , QMessageBox::tr("&Yes")       , QMessageBox::YesRole   , NULL},
-		{BUTTON_YES_ALWAYS, QMessageBox::tr("Yes, always"), QMessageBox::YesRole   , NULL},
-		{BUTTON_NO        , QMessageBox::tr("&No")        , QMessageBox::NoRole    , NULL},
-		{BUTTON_NO_NEVER  , QMessageBox::tr("No, never")  , QMessageBox::NoRole    , NULL},
+		{BUTTON_OK        , QDialogButtonBox::tr("&OK")        , QMessageBox::AcceptRole, NULL},
+		{BUTTON_CANCEL    , QDialogButtonBox::tr("&Cancel")    , QMessageBox::RejectRole, NULL},
+		{BUTTON_YES       , QDialogButtonBox::tr("&Yes")       , QMessageBox::YesRole   , NULL},
+		{BUTTON_YES_ALWAYS, QDialogButtonBox::tr("Yes, always"), QMessageBox::YesRole   , NULL},
+		{BUTTON_NO        , QDialogButtonBox::tr("&No")        , QMessageBox::NoRole    , NULL},
+		{BUTTON_NO_NEVER  , QDialogButtonBox::tr("No, never")  , QMessageBox::NoRole    , NULL},
 	};
 
 	// add buttons
@@ -69,8 +69,8 @@ QString InputBox(QWidget* parent, const QString& title, const QString& text, con
 
 	QInputDialog dialog(parent);
 	dialog.setInputMode(QInputDialog::TextInput);
-	dialog.setOkButtonText(QMessageBox::tr("&OK"));
-	dialog.setCancelButtonText(QMessageBox::tr("&Cancel"));
+	dialog.setOkButtonText(QDialogButtonBox::tr("&OK"));
+	dialog.setCancelButtonText(QDialogButtonBox::tr("&Cancel"));
 
 	dialog.setWindowTitle(title);
 	dialog.setLabelText(text);
