@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Benchmark.h"
 
+#include "AVWrapper.h"
 #include "CPUFeatures.h"
 #include "FastScaler_Convert.h"
 #include "FastScaler_Scale.h"
