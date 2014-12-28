@@ -688,8 +688,8 @@ void PageInput::LoadALSASources() {
 	}
 	m_combobox_alsa_source->clear();
 	for(unsigned int i = 0; i < m_alsa_sources.size(); ++i) {
-		QString elided = m_combobox_alsa_source->fontMetrics().elidedText("[" + QString::fromStdString(m_alsa_sources[i].m_name) + "] "
-																		  + QString::fromStdString(m_alsa_sources[i].m_description), Qt::ElideMiddle, 400);
+		QString elided = m_combobox_alsa_source->fontMetrics().elidedText("\u200e[" + QString::fromStdString(m_alsa_sources[i].m_name) + "] "
+																		  + QString::fromStdString(m_alsa_sources[i].m_description), Qt::ElideMiddle, 400) + "\u200e";
 		m_combobox_alsa_source->addItem(elided);
 	}
 }
@@ -706,7 +706,7 @@ void PageInput::LoadPulseAudioSources() {
 	m_combobox_pulseaudio_source->clear();
 	for(unsigned int i = 0; i < m_pulseaudio_sources.size(); ++i) {
 		QString elided = m_combobox_pulseaudio_source->fontMetrics().elidedText(QString::fromStdString(m_pulseaudio_sources[i].m_description), Qt::ElideMiddle, 400);
-		m_combobox_pulseaudio_source->addItem(elided);
+		m_combobox_pulseaudio_source->addItem("\u200e" + elided + "\u200e");
 	}
 }
 #endif

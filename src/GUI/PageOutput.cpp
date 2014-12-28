@@ -79,7 +79,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 	// main codecs
 	// (initializer lists should use explicit types for Clang)
 	m_containers = {
-		ContainerData({"Matroska (MKV)", "matroska", QStringList({"mkv"}), tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("Matroska") + " (*.mkv)",
+		ContainerData({"Matroska (MKV)\u200e", "matroska", QStringList({"mkv"}), tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("Matroska") + " (*.mkv)",
 			{VIDEO_CODEC_H264, VIDEO_CODEC_VP8, VIDEO_CODEC_THEORA},
 			{AUDIO_CODEC_VORBIS, AUDIO_CODEC_MP3, AUDIO_CODEC_AAC, AUDIO_CODEC_UNCOMPRESSED}}),
 		ContainerData({"MP4", "mp4", QStringList({"mp4"}), tr("%1 files", "This appears in the file dialog, e.g. 'MP4 files'").arg("MP4") + " (*.mp4)",
