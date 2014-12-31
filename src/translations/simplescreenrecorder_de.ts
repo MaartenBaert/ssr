@@ -77,7 +77,8 @@ Wenn Sie Steam-Spiele aufnehmen möchten,&lt;a href=&quot;http://www.maartenbaer
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
 If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanal Namen werden für die Identifikation von Anwendungen benutzt. Sie müssen nur geändert werden wenn Sie mehrere Anwendungen zur gleichen Zeit aufnehmen wollen.
+Wenn leer gelassen wird der Standard Kanal &apos;channel-DEINBENUTZERNAME&apos; verwendet.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="57"/>
@@ -1108,12 +1109,12 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
     <message>
         <location filename="../Benchmark.cpp" line="107"/>
         <source>Scale %1 to %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalierung %1 zu %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</translation>
     </message>
     <message>
         <location filename="../Benchmark.cpp" line="114"/>
         <source>Starting scaler benchmark ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Starte Skalierungs Benchmark</translation>
     </message>
 </context>
 <context>
@@ -1854,12 +1855,12 @@ Sind Sie sicher, dass Sie beenden wollen?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="380"/>
         <source>Hide window</source>
-        <translation type="unfinished"></translation>
+        <translation>Verstecke Fenster</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="382"/>
         <source>Show window</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige Fenster</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="535"/>
