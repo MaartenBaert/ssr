@@ -22,6 +22,7 @@ Translations
 - German: Manuel Schömburg
 - Greek: Nick Thom
 - Spanish: Dani Rodríguez
+- Hebrew: GreenLunar
 - Hungarian: ViBE
 - Italian: Bersil
 - Dutch: Maarten Baert
