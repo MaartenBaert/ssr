@@ -130,7 +130,7 @@ void HotkeyListener::Init() {
 			// initialize variables
 			m_has_xinput2 = true;
 			m_xinput2_raw_modifiers = 0;
-			m_xinput2_raw_serial = (unsigned long) -1;
+			m_xinput2_ignore_serial = (unsigned long) -1;
 
 			// choose the events that we want to listen to
 			unsigned char mask[(XI_LASTEVENT + 7) / 8] = {0};
@@ -276,11 +276,13 @@ void HotkeyListener::ProcessEvents() {
 							XFree(keysym);
 
 						// process hotkey
-						Hotkey hotkey;
-						hotkey.m_keycode = xide->detail;
-						hotkey.m_modifiers = m_xinput2_raw_modifiers;
-						ProcessHotkey(hotkey);
-						m_xinput2_raw_serial = event.xcookie.serial;
+						if(event.xcookie.serial != m_xinput2_ignore_serial) {
+							Hotkey hotkey;
+							hotkey.m_keycode = xide->detail;
+							hotkey.m_modifiers = m_xinput2_raw_modifiers;
+							ProcessHotkey(hotkey);
+							m_xinput2_ignore_serial = event.xcookie.serial;
+						}
 
 					}
 				}
@@ -304,15 +306,18 @@ void HotkeyListener::ProcessEvents() {
 
 					}
 				}
-				if(event.xcookie.evtype == XI_KeyPress && event.xcookie.serial != m_xinput2_raw_serial) {
+				if(event.xcookie.evtype == XI_KeyPress) {
 					XIDeviceEvent *xide = (XIDeviceEvent*) event.xcookie.data;
 					if(!(xide->flags & XIKeyRepeat)) {
 
 						// process hotkey
-						Hotkey hotkey;
-						hotkey.m_keycode = xide->detail;
-						hotkey.m_modifiers = xide->mods.effective & ~LockMask & ~Mod2Mask;
-						ProcessHotkey(hotkey);
+						if(event.xcookie.serial != m_xinput2_ignore_serial) {
+							Hotkey hotkey;
+							hotkey.m_keycode = xide->detail;
+							hotkey.m_modifiers = xide->mods.effective & ~LockMask & ~Mod2Mask;
+							ProcessHotkey(hotkey);
+							m_xinput2_ignore_serial = event.xcookie.serial;
+						}
 
 					}
 				}

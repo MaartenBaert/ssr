@@ -69,7 +69,7 @@ private:
 	bool m_has_xinput2;
 	int m_xinput2_opcode;
 	unsigned int m_xinput2_raw_modifiers;
-	unsigned long m_xinput2_raw_serial;
+	unsigned long m_xinput2_ignore_serial;
 	std::set<int> m_xinput2_master_keyboards;
 
 	static HotkeyListener *s_instance;
