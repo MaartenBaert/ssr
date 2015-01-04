@@ -4,12 +4,17 @@ SimpleScreenRecorder changes
 Git master
 ----------
 
+- ?
+
+Version 0.3.2
+-------------
+
 - Added Qt5 support (optional, Qt4 is still the default)
 - Added YUV422, YUV444 and RGB support (YUV420 is still the default)
 - Added pixelformat and sampleformat codec options.
 - Added benchmark.
+- Improved RTL support.
 - Bugfixes
-- ?
 
 Version 0.3.1
 -------------
