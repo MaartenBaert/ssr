@@ -4,37 +4,37 @@
 <context>
     <name>DialogAbout</name>
     <message>
-        <location filename="../GUI/PageWelcome.cpp" line="77"/>
+        <location filename="../GUI/PageWelcome.cpp" line="78"/>
         <source>About SimpleScreenRecorder</source>
         <translation>אודות SimpleScreenRecorder</translation>
     </message>
     <message>
-        <location filename="../GUI/PageWelcome.cpp" line="86"/>
+        <location filename="../GUI/PageWelcome.cpp" line="87"/>
         <source>For more information:</source>
         <translation>למידע נוסף:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageWelcome.cpp" line="87"/>
+        <location filename="../GUI/PageWelcome.cpp" line="88"/>
         <source>The source code of this program can be found at:</source>
         <translation>קוד מקור של תוכנית זו ניתן למציאה בכתובת:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageWelcome.cpp" line="88"/>
+        <location filename="../GUI/PageWelcome.cpp" line="89"/>
         <source>This program uses:</source>
         <translation>תוכנית זו משתמשת באלו:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageWelcome.cpp" line="89"/>
+        <location filename="../GUI/PageWelcome.cpp" line="90"/>
         <source>%1 for the graphical user interface</source>
         <translation>%1 עבור ממשק משתמש גרפי</translation>
     </message>
     <message>
-        <location filename="../GUI/PageWelcome.cpp" line="90"/>
+        <location filename="../GUI/PageWelcome.cpp" line="91"/>
         <source>%1 or %2 (depending on your distribution) for video/audio encoding</source>
         <translation>%1 או %2 (תלוי הפצה) לשם קידוד וידאו/אודיו</translation>
     </message>
     <message>
-        <location filename="../GUI/PageWelcome.cpp" line="91"/>
+        <location filename="../GUI/PageWelcome.cpp" line="92"/>
         <source>%1 for hooking system functions for OpenGL recording</source>
         <translation>%1 עבור לכידת פונקציות עבור הקלטת OpenGL</translation>
     </message>
@@ -173,21 +173,24 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/FastScaler.cpp" line="102"/>
+        <location filename="../AV/FastScaler.cpp" line="116"/>
         <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/FastScaler.cpp" line="111"/>
+        <location filename="../AV/FastScaler.cpp" line="125"/>
+        <location filename="../Benchmark.cpp" line="117"/>
+        <location filename="../Benchmark.cpp" line="190"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/FastScaler.cpp" line="133"/>
-        <location filename="../AV/FastScaler.cpp" line="158"/>
-        <location filename="../AV/FastScaler.cpp" line="180"/>
-        <location filename="../AV/FastScaler.cpp" line="203"/>
+        <location filename="../AV/FastScaler.cpp" line="147"/>
+        <location filename="../AV/FastScaler.cpp" line="172"/>
+        <location filename="../AV/FastScaler.cpp" line="197"/>
+        <location filename="../AV/FastScaler.cpp" line="219"/>
+        <location filename="../AV/FastScaler.cpp" line="242"/>
         <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
         <comment>Don&apos;t translate &apos;fallback&apos;</comment>
         <translation></translation>
@@ -641,13 +644,13 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="186"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="111"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="112"/>
         <source>Error: Width or height is zero!</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="190"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="115"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="116"/>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
         <translation></translation>
     </message>
@@ -712,31 +715,36 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="97"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="99"/>
         <source>Error: Channel count is zero.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="101"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="103"/>
         <source>Error: Sample rate is zero.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="121"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="140"/>
+        <source>Using sample format %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="145"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="165"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="186"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Encoding of audio frame failed!</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
         <location filename="../AV/Output/BaseEncoder.cpp" line="40"/>
-        <source>Warning: Option &apos;%1&apos; could not be parsed!</source>
-        <translation></translation>
+        <source>Error: Option &apos;%1&apos; could not be parsed!</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
@@ -851,118 +859,123 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="310"/>
+        <location filename="../AV/Output/Muxer.cpp" line="312"/>
         <source>Muxer thread started.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="369"/>
+        <location filename="../AV/Output/Muxer.cpp" line="371"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="397"/>
+        <location filename="../AV/Output/Muxer.cpp" line="399"/>
         <source>Muxer thread stopped.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="401"/>
+        <location filename="../AV/Output/Muxer.cpp" line="403"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Muxer.cpp" line="404"/>
+        <location filename="../AV/Output/Muxer.cpp" line="406"/>
         <source>Unknown exception in muxer thread.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="199"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="205"/>
         <source>Stopping synchronizer thread ...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="316"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="322"/>
         <source>Warning: Received video frame with non-monotonic timestamp.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="342"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="348"/>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="399"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="405"/>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="424"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="430"/>
         <source>Warning: Too many audio samples, dropping samples to keep the audio in sync with the video.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="430"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="436"/>
         <source>Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="496"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="502"/>
         <source>Warning: Audio input is more than 2% too slow!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="500"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="506"/>
         <source>Warning: Audio input is more than 2% too fast!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="535"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="541"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="571"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="577"/>
         <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="871"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="877"/>
         <source>Synchronizer thread started.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="893"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="899"/>
         <source>Synchronizer thread stopped.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="897"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="903"/>
         <source>Exception &apos;%1&apos; in synchronizer thread.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="900"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="906"/>
         <source>Unknown exception in synchronizer thread.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="119"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="120"/>
         <source>Error: Width or height is not an even number!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="123"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="124"/>
         <source>Error: Frame rate is zero!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="152"/>
-        <source>Error: Encoder requires an unsupported pixel format!</source>
-        <translation></translation>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="181"/>
+        <source>Using pixel format %1.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="214"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="234"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="195"/>
+        <source>Error: The pixel format is not supported by the codec!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="225"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="245"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation></translation>
     </message>
@@ -1019,7 +1032,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <location filename="../common/CPUFeatures.cpp" line="48"/>
+        <location filename="../common/CPUFeatures.cpp" line="46"/>
         <source>CPU features</source>
         <translation></translation>
     </message>
@@ -1035,44 +1048,54 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="117"/>
+        <location filename="../Main.cpp" line="119"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="145"/>
+        <location filename="../Main.cpp" line="150"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="155"/>
+        <location filename="../Main.cpp" line="160"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="195"/>
+        <location filename="../Main.cpp" line="200"/>
         <source>SSR started</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="220"/>
+        <location filename="../Main.cpp" line="226"/>
         <source>SSR stopped</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="237"/>
+        <location filename="../Main.cpp" line="243"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="107"/>
-        <source>Scale %1 to %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</source>
+        <location filename="../Benchmark.cpp" line="156"/>
+        <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Benchmark.cpp" line="226"/>
+        <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Benchmark.cpp" line="236"/>
+        <source>Starting scaler benchmark ...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="114"/>
-        <source>Starting scaler benchmark ...</source>
-        <translation></translation>
+        <location filename="../Benchmark.cpp" line="243"/>
+        <source>Starting converter benchmark ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1097,12 +1120,12 @@ You can also change this option manually in the NVIDIA control panel.</source>
 <context>
     <name>PageDone</name>
     <message>
-        <location filename="../GUI/PageDone.cpp" line="29"/>
+        <location filename="../GUI/PageDone.cpp" line="30"/>
         <source>The recording has been saved. You can edit the video now, or re-encode it with better settings to make the file smaller (the default settings are optimized for quality and speed, not file size).</source>
         <translation>ההקלטה נשמרה. כעת אפשר לערוך את הוידאו, או לקודד אותו בשנית עם הגדרות טובות יותר כדי להפוך את הקובץ לקטן יותר (ההגדרות השגרתיות מיועלות בשביל איכות ומהירות, לא גודל קובץ).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageDone.cpp" line="32"/>
+        <location filename="../GUI/PageDone.cpp" line="33"/>
         <source>Back to the start screen</source>
         <translation>חזור למסך התחלה</translation>
     </message>
@@ -1110,52 +1133,52 @@ You can also change this option manually in the NVIDIA control panel.</source>
 <context>
     <name>PageInput</name>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="112"/>
+        <location filename="../GUI/PageInput.cpp" line="113"/>
         <source>Video input</source>
         <translation>קלט וידאו</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="115"/>
+        <location filename="../GUI/PageInput.cpp" line="116"/>
         <source>Record the entire screen</source>
         <translation>הקלט את כל המרקע</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="116"/>
+        <location filename="../GUI/PageInput.cpp" line="117"/>
         <source>Record a fixed rectangle</source>
         <translation>הקלט מלבן מקובע</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="117"/>
+        <location filename="../GUI/PageInput.cpp" line="118"/>
         <source>Follow the cursor</source>
         <translation>עקוב אחר הסמן</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="118"/>
+        <location filename="../GUI/PageInput.cpp" line="119"/>
         <source>Record OpenGL (experimental)</source>
         <translation>הקלט OpenGL (ניסיוני)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="124"/>
+        <location filename="../GUI/PageInput.cpp" line="125"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
         <translation>בחר על איזה צג להיות מוקלט בתצורה מרובת צגים.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="125"/>
+        <location filename="../GUI/PageInput.cpp" line="126"/>
         <source>Select rectangle...</source>
         <translation>בחר מלבן...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="126"/>
+        <location filename="../GUI/PageInput.cpp" line="127"/>
         <source>Use the mouse to select the recorded rectangle.</source>
         <translation>השתמש בעכבר כדי לבחור את המלבן המוקלט.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="127"/>
+        <location filename="../GUI/PageInput.cpp" line="128"/>
         <source>Select window...</source>
         <translation>בחר חלון...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="128"/>
+        <location filename="../GUI/PageInput.cpp" line="129"/>
         <source>Use the mouse to select a window to record.
 Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only
 the client area of the window will be recorded.</source>
@@ -1164,146 +1187,146 @@ the client area of the window will be recorded.</source>
 אחרת רק האזור לקוח של החלון יוקלט.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="131"/>
+        <location filename="../GUI/PageInput.cpp" line="132"/>
         <source>OpenGL settings...</source>
         <translation>הגדרות OpenGL...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="132"/>
+        <location filename="../GUI/PageInput.cpp" line="133"/>
         <source>Change the settings for OpenGL recording.</source>
         <translation>שנה את ההגדרות של הקלטת OpenGL.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="133"/>
+        <location filename="../GUI/PageInput.cpp" line="134"/>
         <source>Left:</source>
         <translation>שמאל:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="137"/>
+        <location filename="../GUI/PageInput.cpp" line="138"/>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>קואורדינטת x של פינת שמאל-עליונה של המלבן המוקלט.
 רמז: באפשרותך לשנות את ערך זה גם בעזרת גולל הגלגל או חיצי מעלה/מטה.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="139"/>
+        <location filename="../GUI/PageInput.cpp" line="140"/>
         <source>Top:</source>
         <translation>שיא:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="143"/>
+        <location filename="../GUI/PageInput.cpp" line="144"/>
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>קואורדינטת y של פינת שמאל-עליונה של המלבן המוקלט.
 רמז: באפשרותך לשנות את ערך זה גם בעזרת גולל הגלגל או חיצי מעלה/מטה.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="145"/>
+        <location filename="../GUI/PageInput.cpp" line="146"/>
         <source>Width:</source>
         <translation>רוחב:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="149"/>
+        <location filename="../GUI/PageInput.cpp" line="150"/>
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>הרוחב של המלבן המוקלט.
 רמז: באפשרותך לשנות את ערך זה גם בעזרת גולל הגלגל או חיצי מעלה/מטה.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="151"/>
+        <location filename="../GUI/PageInput.cpp" line="152"/>
         <source>Height:</source>
         <translation>גובה:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="155"/>
+        <location filename="../GUI/PageInput.cpp" line="156"/>
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>הגובה של המלבן המוקלט.
 רמז: באפשרותך לשנות את ערך זה גם בעזרת גולל הגלגל או חיצי מעלה/מטה.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="157"/>
+        <location filename="../GUI/PageInput.cpp" line="158"/>
         <source>Frame rate:</source>
         <translation>שיעור מסגרת:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="161"/>
+        <location filename="../GUI/PageInput.cpp" line="162"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
         <translation>המספר של מסגרות לכל שנייה בוידאו הסופי. שיעורי מסגרת גבוהים יותר ינצלו יותר זמן CPU.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="162"/>
+        <location filename="../GUI/PageInput.cpp" line="163"/>
         <source>Scale video</source>
         <translation>מתח וידאו</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="163"/>
+        <location filename="../GUI/PageInput.cpp" line="164"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
         <translation>אפשר או נטרל מתיחה. מתיחה משתמשת ביותר זמן CPU, אך אם הוידאו המתוח הוא קטן יותר, זה עשוי להפוך את הקידוד למהיר יותר.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="164"/>
+        <location filename="../GUI/PageInput.cpp" line="165"/>
         <source>Scaled width:</source>
         <translation>רוחב מתוח:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="168"/>
+        <location filename="../GUI/PageInput.cpp" line="169"/>
         <source>Scaled height:</source>
         <translation>גובה מתוח:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="172"/>
+        <location filename="../GUI/PageInput.cpp" line="173"/>
         <source>Record cursor</source>
         <translation>הקלט סמן</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="242"/>
+        <location filename="../GUI/PageInput.cpp" line="243"/>
         <source>Audio input</source>
         <translation>קלט שמע</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="244"/>
+        <location filename="../GUI/PageInput.cpp" line="245"/>
         <source>Record audio</source>
         <translation>הקלט שמע</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="245"/>
+        <location filename="../GUI/PageInput.cpp" line="246"/>
         <source>Backend:</source>
         <translation>מגשר עורפי:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="254"/>
+        <location filename="../GUI/PageInput.cpp" line="255"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
         <translation>המגשר עורפי של שמע אשר יהיה בשימוש עבור הקלטה.
 המגשר עורפי ALSA יעבוד גם על מערכות אשר מנצלות את PulseAudio, אך זה טוב יותר להשתמש במגשר עורפי PulseAudio ישירות.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="256"/>
-        <location filename="../GUI/PageInput.cpp" line="264"/>
+        <location filename="../GUI/PageInput.cpp" line="257"/>
+        <location filename="../GUI/PageInput.cpp" line="265"/>
         <source>Source:</source>
         <translation>מקור:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="259"/>
+        <location filename="../GUI/PageInput.cpp" line="260"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
         <translation>מקור ALSA אשר ינוצל לשם הקלטה.
 המקור השגרתי הוא טוב בדרך כלל. המקור &apos;shared&apos; מתיר למספר מרובה של תוכניות להקליט באותו זמן, אך לו עשויים להיות פחות אמינים.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="261"/>
-        <location filename="../GUI/PageInput.cpp" line="269"/>
+        <location filename="../GUI/PageInput.cpp" line="262"/>
+        <location filename="../GUI/PageInput.cpp" line="270"/>
         <source>Refresh</source>
         <translation>רענן</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="262"/>
+        <location filename="../GUI/PageInput.cpp" line="263"/>
         <source>Refreshes the list of ALSA sources.</source>
         <translation>מרענן את הרשימה של מקורות ALSA.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="267"/>
+        <location filename="../GUI/PageInput.cpp" line="268"/>
         <source>The PulseAudio source that will be used for recording.
 A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
         <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
@@ -1311,54 +1334,54 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
 מקור &apos;monitor&apos; הינו מקור אשר מקליט את השמע אשר מתנגן על ידי יישומים אחרים.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="270"/>
+        <location filename="../GUI/PageInput.cpp" line="271"/>
         <source>Refreshes the list of PulseAudio sources.</source>
         <translation>מרענן את הרשימה של מקורות PulseAudio.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="273"/>
+        <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>Record system microphone</source>
         <translation>הקלט מיקרופון מערכת</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="274"/>
+        <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
         <translation type="unfinished">אם מסומנת, הפורטים יחוברו אוטומטית אל פורטים לוכדים של מערכת.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="275"/>
+        <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>Record system speakers</source>
         <translation>הקלט רמקולי מערכת</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="276"/>
+        <location filename="../GUI/PageInput.cpp" line="277"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
         <translation type="unfinished">אם מסומנת, הפורטים יחוברו אוטומטית לכל דבר אשר מתחבר אל פורטים מנגנים של מערכת.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="311"/>
+        <location filename="../GUI/PageInput.cpp" line="312"/>
         <source>Back</source>
         <translation>חזור</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="312"/>
+        <location filename="../GUI/PageInput.cpp" line="313"/>
         <source>Continue</source>
         <translation>המשך</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="672"/>
+        <location filename="../GUI/PageInput.cpp" line="673"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>כל המרקעים: %1x%2</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="676"/>
+        <location filename="../GUI/PageInput.cpp" line="677"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>מרקע %1: %2x%3 של %4,%5</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="838"/>
+        <location filename="../GUI/PageInput.cpp" line="839"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
         <translation>מרקע %1</translation>
@@ -1367,81 +1390,81 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
 <context>
     <name>PageOutput</name>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="81"/>
-        <location filename="../GUI/PageOutput.cpp" line="84"/>
-        <location filename="../GUI/PageOutput.cpp" line="87"/>
-        <location filename="../GUI/PageOutput.cpp" line="90"/>
-        <location filename="../GUI/PageOutput.cpp" line="126"/>
+        <location filename="../GUI/PageOutput.cpp" line="82"/>
+        <location filename="../GUI/PageOutput.cpp" line="85"/>
+        <location filename="../GUI/PageOutput.cpp" line="88"/>
+        <location filename="../GUI/PageOutput.cpp" line="91"/>
+        <location filename="../GUI/PageOutput.cpp" line="127"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
         <translation>קבצי %1</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="93"/>
-        <location filename="../GUI/PageOutput.cpp" line="99"/>
-        <location filename="../GUI/PageOutput.cpp" line="106"/>
+        <location filename="../GUI/PageOutput.cpp" line="94"/>
+        <location filename="../GUI/PageOutput.cpp" line="100"/>
+        <location filename="../GUI/PageOutput.cpp" line="107"/>
         <source>Other...</source>
         <translation>אחר...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="105"/>
+        <location filename="../GUI/PageOutput.cpp" line="106"/>
         <source>Uncompressed</source>
         <translation>לא דחוס</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="160"/>
+        <location filename="../GUI/PageOutput.cpp" line="161"/>
         <source>Error: Could not find any suitable container in libavformat!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="164"/>
+        <location filename="../GUI/PageOutput.cpp" line="165"/>
         <source>Error: Could not find any suitable video codec in libavcodec!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="168"/>
+        <location filename="../GUI/PageOutput.cpp" line="169"/>
         <source>Error: Could not find any suitable audio codec in libavcodec!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="174"/>
+        <location filename="../GUI/PageOutput.cpp" line="175"/>
         <source>File</source>
         <translation>קובץ</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="176"/>
+        <location filename="../GUI/PageOutput.cpp" line="177"/>
         <source>Save as:</source>
         <translation>שמור בתור:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="178"/>
+        <location filename="../GUI/PageOutput.cpp" line="179"/>
         <source>The recording will be saved to this location.</source>
         <translation>ההקלטה תישמר אל מיקום זה.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="179"/>
+        <location filename="../GUI/PageOutput.cpp" line="180"/>
         <source>Browse...</source>
         <translation>עיין...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="180"/>
+        <location filename="../GUI/PageOutput.cpp" line="181"/>
         <source>Separate file per segment</source>
         <translation type="unfinished">הפרד קובץ כל מקטע</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="181"/>
+        <location filename="../GUI/PageOutput.cpp" line="182"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
         <translation>אם מסומנת, קובץ וידאו נפרד יווצר כל פעם בה אתם תפסיקו ותמשיכו את ההקלטה.
 אם השם המקורי של קובץ הוא &apos;test.mkv&apos;, המקטעים יישמרו בתור &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="183"/>
+        <location filename="../GUI/PageOutput.cpp" line="184"/>
         <source>Container:</source>
         <translation>מכיל:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="191"/>
+        <location filename="../GUI/PageOutput.cpp" line="192"/>
         <source>The container (file format) that will be used to save the recording.
 Note that not all codecs are supported by all containers, and that not all media players can read all file formats.
 - Matroska (MKV) supports all the codecs, but is less well-known.
@@ -1462,28 +1485,28 @@ Note that not all codecs are supported by all containers, and that not all media
 - ‏OGG תומך רק בקודקים Theora וגם Vorbis.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="200"/>
+        <location filename="../GUI/PageOutput.cpp" line="201"/>
         <source>Container name:</source>
         <translation>שם מכיל:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="206"/>
+        <location filename="../GUI/PageOutput.cpp" line="207"/>
         <source>For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.</source>
         <translation>למשתמשים מתקדמים. אתם יכולים להשתמש בכל פורמט libav/ffmpeg, אך רבים מהם אינם שמישים או עשויים שלא לעבוד.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="222"/>
+        <location filename="../GUI/PageOutput.cpp" line="223"/>
         <source>Video</source>
         <translation>וידאו</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="224"/>
-        <location filename="../GUI/PageOutput.cpp" line="304"/>
+        <location filename="../GUI/PageOutput.cpp" line="225"/>
+        <location filename="../GUI/PageOutput.cpp" line="305"/>
         <source>Codec:</source>
         <translation>קודק:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="229"/>
+        <location filename="../GUI/PageOutput.cpp" line="230"/>
         <source>The codec that will be used to compress the video stream.
 - H.264 (libx264) is by far the best codec - high quality and very fast.
 - VP8 (libvpx) is quite good but also quite slow.
@@ -1494,97 +1517,97 @@ Note that not all codecs are supported by all containers, and that not all media
 - ‏Theora ‏(libtheora) אינו באמת מומלץ שכן האיכות אינה טובה מאוד.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="233"/>
-        <location filename="../GUI/PageOutput.cpp" line="317"/>
+        <location filename="../GUI/PageOutput.cpp" line="234"/>
+        <location filename="../GUI/PageOutput.cpp" line="318"/>
         <source>Codec name:</source>
         <translation>שם קודק:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="239"/>
+        <location filename="../GUI/PageOutput.cpp" line="240"/>
         <source>For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.</source>
         <translation>למשתמשים מתקדמים. אתם יכולים להשתמש בכל קודק וידאו libav/ffmpeg, אך רבים מהם אינם שמישים או עשויים שלא לעבוד.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="240"/>
-        <location filename="../GUI/PageOutput.cpp" line="324"/>
+        <location filename="../GUI/PageOutput.cpp" line="241"/>
+        <location filename="../GUI/PageOutput.cpp" line="325"/>
         <source>Bit rate (in kbps):</source>
         <translation>שיעור סיביות (ביחידות kbps):</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="242"/>
+        <location filename="../GUI/PageOutput.cpp" line="243"/>
         <source>The video bit rate (in kilobit per second). A higher value means a higher quality.
 If you have no idea where to start, try 5000 and change it if needed.</source>
         <translation>שיעור סיביות של וידאו (ביחידות של kilobit לשנייה). ערך גבוהה יותר פירושו איכות גבוהה יותר.
 אם אין לכם מושג היכן להתחיל, נסו 5000 ושנו זאת במידת צורך.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="244"/>
+        <location filename="../GUI/PageOutput.cpp" line="245"/>
         <source>Constant rate factor:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
         <translation type="unfinished">‏Constant rate factor:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="249"/>
+        <location filename="../GUI/PageOutput.cpp" line="250"/>
         <source>This setting changes the video quality. A lower value means a higher quality.
 The allowed range is 0-51 (0 means lossless, the default is 23).</source>
         <translation>ההגדרה משנה את האיכות וידאו. ערך נמוך יותר משמעו איכות גבוהה יותר.
 הטווח המותר הוא 0-51 (0 משמעו ללא אובדן, השגרתי הוא 23).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="255"/>
+        <location filename="../GUI/PageOutput.cpp" line="256"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
         <translation type="unfinished">‏Preset:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="260"/>
+        <location filename="../GUI/PageOutput.cpp" line="261"/>
         <source>The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),
 but results in larger files. The quality shouldn&apos;t be affected too much.</source>
         <translation>המהירות קידוד. מהירות גבוהה יותר מנצלת פחות CPU (הפיכת שיעורי מסגרת הקלטה לאפשרית),
 אך התוצאה תהא קבצים גדולים יותר. האיכות לא אמורה להיות מושפעת יותר מדי.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="262"/>
+        <location filename="../GUI/PageOutput.cpp" line="263"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
         <translation>‏CPU בשימוש:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="264"/>
+        <location filename="../GUI/PageOutput.cpp" line="265"/>
         <source>fastest</source>
         <translation>מהיר ביותר</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="269"/>
+        <location filename="../GUI/PageOutput.cpp" line="270"/>
         <source>slowest</source>
         <translation>איטי ביותר</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="270"/>
+        <location filename="../GUI/PageOutput.cpp" line="271"/>
         <source>The encoding speed. A higher value uses *less* CPU time. (I didn&apos;t choose the name, this is the name
 used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
         <translation>מהירות קידוד. ערך גבוה יותר משתמש *בפחות* זמן CPU. (אני לא בחרתי את השם, זהו השם שבשימוש על ידי
 מקודד VP8). ערכים גבוהים יותר נובעים באיכות וידאו נמוכה יותר, אלא אם כן אתם מגבירים שיעור סיביות גם כן.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="272"/>
-        <location filename="../GUI/PageOutput.cpp" line="327"/>
+        <location filename="../GUI/PageOutput.cpp" line="273"/>
+        <location filename="../GUI/PageOutput.cpp" line="328"/>
         <source>Custom options:</source>
         <translation>אפשרויות מותאמות:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="274"/>
-        <location filename="../GUI/PageOutput.cpp" line="329"/>
+        <location filename="../GUI/PageOutput.cpp" line="275"/>
+        <location filename="../GUI/PageOutput.cpp" line="330"/>
         <source>Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)</source>
         <translation>אפשרויות קודק מותאמות מופרדות על ידי פסיקים (למשל option1=value1,option2=value2,option3=value3)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="275"/>
+        <location filename="../GUI/PageOutput.cpp" line="276"/>
         <source>Allow frame skipping</source>
         <translation>התר דילוג מסגרת</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="276"/>
+        <location filename="../GUI/PageOutput.cpp" line="277"/>
         <source>If checked, the video encoder will be allowed to skip frames if the input frame rate is
 lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.
 This increases the file size and CPU usage, but reduces the latency for live streams in some cases.
@@ -1595,12 +1618,12 @@ It shouldn&apos;t affect the appearance of the video.</source>
 זו לא אמורה להשפיעה על ההופעה של הוידאו.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="302"/>
+        <location filename="../GUI/PageOutput.cpp" line="303"/>
         <source>Audio</source>
         <translation>שמע</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="309"/>
+        <location filename="../GUI/PageOutput.cpp" line="310"/>
         <source>The codec that will be used to compress the audio stream. You shouldn&apos;t worry too much about
 this, because the size of the audio data is usually negligible compared to the size of the video data.
 And if you&apos;re only recording your own voice (i.e. no music), the quality won&apos;t matter that much anyway.
@@ -1619,49 +1642,49 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
 - לא דחוס פשוט יאחסן את נתוני הקול בלי לדחוס אותם. הקובץ יהיה די גדול, אך זה מאוד מהיר.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="323"/>
+        <location filename="../GUI/PageOutput.cpp" line="324"/>
         <source>For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work.</source>
         <translation>למשתמשים מתקדמים. אתם יכולים להשתמש בכל קודק שמע libav/ffmpeg, אך רבים מהם אינם שמישים או עשויים שלא לעבוד.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="326"/>
+        <location filename="../GUI/PageOutput.cpp" line="327"/>
         <source>The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.</source>
         <translation>שיעור סיביות שמע (ביחידות kilobit לשנייה). ערך גבוה יותר משמעו איכות גבוהה יותר. הערך הטיפוסי הוא 128.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="343"/>
+        <location filename="../GUI/PageOutput.cpp" line="344"/>
         <source>Back</source>
         <translation>חזור</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="344"/>
+        <location filename="../GUI/PageOutput.cpp" line="345"/>
         <source>Continue</source>
         <translation>המשך</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="563"/>
-        <location filename="../GUI/PageOutput.cpp" line="571"/>
+        <location filename="../GUI/PageOutput.cpp" line="564"/>
+        <location filename="../GUI/PageOutput.cpp" line="572"/>
         <source>not installed</source>
         <translation>לא מותקן</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="565"/>
-        <location filename="../GUI/PageOutput.cpp" line="573"/>
+        <location filename="../GUI/PageOutput.cpp" line="566"/>
+        <location filename="../GUI/PageOutput.cpp" line="574"/>
         <source>not supported by container</source>
         <translation>לא נתמך על ידי מכיל</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="616"/>
+        <location filename="../GUI/PageOutput.cpp" line="617"/>
         <source>Save recording as</source>
         <translation>שמירת הקלטה בשם</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="656"/>
+        <location filename="../GUI/PageOutput.cpp" line="657"/>
         <source>You did not select an output file!</source>
         <translation>לא בחרת קובץ פלט!</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="661"/>
+        <location filename="../GUI/PageOutput.cpp" line="662"/>
         <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
         <translation>הקובץ &apos;%1&apos; כבר קיים. האם אתה בטוח כי ברצונך לכתוב עליו?</translation>
     </message>
@@ -1946,7 +1969,7 @@ The start button is at the top ;).</source>
 <context>
     <name>PageWelcome</name>
     <message>
-        <location filename="../GUI/PageWelcome.cpp" line="33"/>
+        <location filename="../GUI/PageWelcome.cpp" line="34"/>
         <source>&lt;p&gt;Welcome to SimpleScreenRecorder!&lt;/p&gt;
 
 &lt;p&gt;Despite the name, this program actually has a lot of options. Don&apos;t worry though, there are really just two things that you need to know. One, the default settings are usually fine. If you don&apos;t know what something does, just use the default. Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.&lt;/p&gt;
@@ -1961,12 +1984,12 @@ The start button is at the top ;).</source>
 %1&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../GUI/PageWelcome.cpp" line="43"/>
+        <location filename="../GUI/PageWelcome.cpp" line="44"/>
         <source>About SimpleScreenRecorder</source>
         <translation>אודות SimpleScreenRecorder</translation>
     </message>
     <message>
-        <location filename="../GUI/PageWelcome.cpp" line="44"/>
+        <location filename="../GUI/PageWelcome.cpp" line="45"/>
         <source>Continue</source>
         <translation>המשך</translation>
     </message>
@@ -2040,38 +2063,65 @@ The start button is at the top ;).</source>
     </message>
 </context>
 <context>
-    <name>QMessageBox</name>
+    <name>QDialogButtonBox</name>
     <message>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation>&amp;אישור</translation>
+        <translation type="unfinished">&amp;אישור</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;ביטול</translation>
+        <translation type="unfinished">&amp;ביטול</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation>&amp;כן</translation>
+        <translation type="unfinished">&amp;כן</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation>כן, תמיד</translation>
+        <translation type="unfinished">כן, תמיד</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation>&amp;לא</translation>
+        <translation type="unfinished">&amp;לא</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation>לא, אף פעם</translation>
+        <translation type="unfinished">לא, אף פעם</translation>
+    </message>
+</context>
+<context>
+    <name>QMessageBox</name>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="obsolete">&amp;אישור</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="obsolete">&amp;ביטול</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation type="obsolete">&amp;כן</translation>
+    </message>
+    <message>
+        <source>Yes, always</source>
+        <translation type="obsolete">כן, תמיד</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation type="obsolete">&amp;לא</translation>
+    </message>
+    <message>
+        <source>No, never</source>
+        <translation type="obsolete">לא, אף פעם</translation>
     </message>
 </context>
 <context>
@@ -2082,22 +2132,22 @@ The start button is at the top ;).</source>
         <translation>תרשים סינכרוניזציה</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="245"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="251"/>
         <source>Video in</source>
         <translation>וידאו קלט</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="246"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="252"/>
         <source>Audio in</source>
         <translation>שמע קלט</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="247"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="253"/>
         <source>Video out</source>
         <translation>וידאו פלט</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="248"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="254"/>
         <source>Audio out</source>
         <translation>שמע פלט</translation>
     </message>

@@ -29,5 +29,6 @@ Translations
 - Polish: Szamanx0
 - Brazilian Portuguese: Paulo Milliet Roque, Rafael Ferreira
 - Russian: Dima Koshel
+- Swedish: Åke Engelbrektson
 - Ukrainian: Rom Gyrfalco
 - Simplified Chinese: Weitian Leung

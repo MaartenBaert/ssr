@@ -713,10 +713,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <source>Error: Encoder requires an unsupported pixel format!</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Error: Encoding of video frame failed!</source>
         <translation></translation>
     </message>
@@ -824,15 +820,35 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Warning: Option &apos;%1&apos; could not be parsed!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scale %1 to %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Starting scaler benchmark ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Using sample format %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Option &apos;%1&apos; could not be parsed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Using pixel format %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: The pixel format is not supported by the codec!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starting converter benchmark ...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1616,30 +1632,57 @@ The start button is at the top ;).</source>
     </message>
 </context>
 <context>
-    <name>QMessageBox</name>
+    <name>QDialogButtonBox</name>
     <message>
         <source>&amp;OK</source>
-        <translation>&amp;Εντάξει</translation>
+        <translation type="unfinished">&amp;Εντάξει</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Ακύρωση</translation>
+        <translation type="unfinished">&amp;Ακύρωση</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation>&amp;Ναι</translation>
+        <translation type="unfinished">&amp;Ναι</translation>
     </message>
     <message>
         <source>Yes, always</source>
-        <translation>Ναί, πάντα</translation>
+        <translation type="unfinished">Ναί, πάντα</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation>&amp;Όχι</translation>
+        <translation type="unfinished">&amp;Όχι</translation>
     </message>
     <message>
         <source>No, never</source>
-        <translation>Όχι πάντα</translation>
+        <translation type="unfinished">Όχι πάντα</translation>
+    </message>
+</context>
+<context>
+    <name>QMessageBox</name>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="obsolete">&amp;Εντάξει</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="obsolete">&amp;Ακύρωση</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation type="obsolete">&amp;Ναι</translation>
+    </message>
+    <message>
+        <source>Yes, always</source>
+        <translation type="obsolete">Ναί, πάντα</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation type="obsolete">&amp;Όχι</translation>
+    </message>
+    <message>
+        <source>No, never</source>
+        <translation type="obsolete">Όχι πάντα</translation>
     </message>
 </context>
 <context>

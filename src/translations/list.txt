@@ -3,8 +3,8 @@ simplescreenrecorder_bg.ts
 simplescreenrecorder_cs.ts
 simplescreenrecorder_de.ts
 simplescreenrecorder_el.ts
-simplescreenrecorder_eo.ts
 simplescreenrecorder_es.ts
+simplescreenrecorder_he.ts
 simplescreenrecorder_hu.ts
 simplescreenrecorder_it.ts
 simplescreenrecorder_nl.ts
