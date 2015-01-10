@@ -178,7 +178,7 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
     <message>
         <location filename="../AV/FastScaler.cpp" line="116"/>
         <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation>Warnung: Pixel format wird nicht unterstützt (%1 -&gt; %2), es wird swscale anstelle verwendet. Das ist kein Problem, aber die Performance wird schlechter sein.</translation>
+        <translation>Warnung: Pixel-Format wird nicht unterstützt (%1 -&gt; %2), es wird swscale anstelle verwendet. Das ist kein Problem, aber die Performance wird schlechter sein.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="125"/>
@@ -761,7 +761,7 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="140"/>
         <source>Using sample format %1.</source>
-        <translation>Verwende sample format %1</translation>
+        <translation>Verwende Sample-Format %1</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="145"/>
@@ -1004,12 +1004,12 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="181"/>
         <source>Using pixel format %1.</source>
-        <translation>Verwende Pixel format %1</translation>
+        <translation>Verwende Pixel-Format %1</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="195"/>
         <source>Error: The pixel format is not supported by the codec!</source>
-        <translation>Fehler: das Pixel Format wird vom Codec nicht unterstützt!</translation>
+        <translation>Fehler: das Pixel-Format wird vom Codec nicht unterstützt!</translation>
     </message>
     <message>
         <source>Error: Encoder requires an unsupported pixel format!</source>
