@@ -17,6 +17,17 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 class GLXFrameGrabber {
 
 private:
+	static constexpr unsigned int PBO_COUNT = 2;
+
+private:
+	struct ContextResources {
+		unsigned int m_pbos[PBO_COUNT];
+		unsigned int m_current;
+		bool m_ready;
+		ContextResources(nullptr_t) {}
+	};
+
+private:
 	unsigned int m_id;
 	Display *m_x11_display;
 	Window m_x11_window;
@@ -27,6 +38,8 @@ private:
 	bool m_warn_too_small, m_warn_too_large;
 
 	SSRVideoStreamWriter *m_stream_writer;
+
+	std::map<GLXContext, ContextResources> m_context_resources;
 
 public:
 	GLXFrameGrabber(Display* display, Window window, GLXDrawable drawable);

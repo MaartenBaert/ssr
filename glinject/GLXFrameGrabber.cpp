@@ -15,9 +15,10 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include <GL/glext.h>
 #include <X11/extensions/Xfixes.h>
 
-#define CGLE(code) \
+#define CGLE(code) { \
 	code; \
-	if(m_debug) CheckGLError(#code);
+	if(m_debug) CheckGLError(#code); \
+}
 
 static unsigned int g_glx_frame_grabber_counter = 0;
 
@@ -171,6 +172,24 @@ void GLXFrameGrabber::Init() {
 
 void GLXFrameGrabber::Free() {
 
+	// save OpenGL state
+	Display *old_display = glXGetCurrentDisplay();
+	GLXDrawable old_draw = glXGetCurrentDrawable();
+	GLXDrawable old_read = glXGetCurrentReadDrawable();
+	GLXContext old_context = glXGetCurrentContext();
+
+	// delete context resources
+	for(auto p : m_context_resources) {
+		CGLE(glXMakeContextCurrent(m_x11_display, m_glx_drawable, m_glx_drawable, p.first));
+		ContextResources *resources = &p.second;
+		CGLE(glDeleteBuffers(PBO_COUNT, resources->m_pbos));
+	}
+
+	// restore OpenGL state
+	if(old_display != NULL) {
+		CGLE(glXMakeContextCurrent(old_display, old_draw, old_read, old_context));
+	}
+
 	// destroy stream writer
 	if(m_stream_writer != NULL) {
 		delete m_stream_writer;
@@ -183,7 +202,7 @@ void GLXFrameGrabber::Free() {
 
 void GLXFrameGrabber::GrabFrame() {
 
-	// get the OpenGL version
+	// get the OpenGL version if necessary
 	if(m_gl_version == (unsigned int) -1)
 		m_gl_version = GetGLVersion();
 
@@ -231,8 +250,20 @@ void GLXFrameGrabber::GrabFrame() {
 	CGLE(glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &old_fbo_draw));
 	CGLE(glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &old_fbo_read));
 
+	// create context resources if necessary
+	ContextResources *resources;
+	{
+		GLXContext context = glXGetCurrentContext();
+		auto p = m_context_resources.emplace(context, nullptr);
+		resources = &p.first->second;
+		if(p.second) {
+			CGLE(glGenBuffers(PBO_COUNT, resources->m_pbos));
+			resources->m_current = 0;
+			resources->m_ready = false;
+		}
+	}
+
 	// change settings
-	CGLE(glBindBuffer(GL_PIXEL_PACK_BUFFER, 0));
 	CGLE(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 	CGLE(glPixelStorei(GL_PACK_SWAP_BYTES, 0));
 	CGLE(glPixelStorei(GL_PACK_ROW_LENGTH, stride / 4));
@@ -240,11 +271,33 @@ void GLXFrameGrabber::GrabFrame() {
 	CGLE(glPixelStorei(GL_PACK_SKIP_PIXELS, 0));
 	CGLE(glPixelStorei(GL_PACK_SKIP_ROWS, 0));
 	CGLE(glPixelStorei(GL_PACK_SKIP_IMAGES, 0));
-	CGLE(glPixelStorei(GL_PACK_ALIGNMENT, 8));
+	CGLE(glPixelStorei(GL_PACK_ALIGNMENT, 8)); //TODO// try 4 instead
 	CGLE(glReadBuffer(GL_BACK));
 
 	// capture the frame
-	CGLE(glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image_data));
+	CGLE(glBindBuffer(GL_PIXEL_PACK_BUFFER, resources->m_pbos[resources->m_current]));
+	CGLE(glBufferData(GL_PIXEL_PACK_BUFFER, stride * height, NULL, GL_STREAM_READ));
+	CGLE(glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL));
+
+	// switch to the next PBO
+	resources->m_current = (resources->m_current + 1) % PBO_COUNT;
+	if(resources->m_current == 0)
+		resources->m_ready = true;
+
+	// read the frame that was captured previously
+	//TODO// width/height is completely wrong (resizing results in crashes)
+	//TODO// timestamp is completely wrong
+	if(resources->m_ready) {
+		CGLE(glBindBuffer(GL_PIXEL_PACK_BUFFER, resources->m_pbos[resources->m_current]));
+		uint8_t *data;
+		CGLE(data = (uint8_t*) glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
+		if(data == NULL) {
+			GLINJECT_PRINT("[GLXFrameGrabber " << m_id << "] Error: Mapping PBO failed! !");
+		} else {
+			memcpy(image_data, data, stride * height);
+			CGLE(glUnmapBuffer(GL_PIXEL_PACK_BUFFER));
+		}
+	}
 
 	// draw the cursor
 	if((flags & GLINJECT_FLAG_RECORD_CURSOR) && m_has_xfixes) {
