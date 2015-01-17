@@ -17853,6 +17853,7 @@ fi
 
 fi
 
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for clock_gettime in -lrt" >&5
 $as_echo_n "checking for clock_gettime in -lrt... " >&6; }
 if ${ac_cv_lib_rt_clock_gettime+:} false; then :
@@ -17890,11 +17891,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_rt_clock_gettime" >&5
 $as_echo "$ac_cv_lib_rt_clock_gettime" >&6; }
 if test "x$ac_cv_lib_rt_clock_gettime" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBRT 1
-_ACEOF
-
-  LIBS="-lrt $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -17948,11 +17944,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dl_dlsym" >&5
 $as_echo "$ac_cv_lib_dl_dlsym" >&6; }
 if test "x$ac_cv_lib_dl_dlsym" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBDL 1
-_ACEOF
-
-  LIBS="-ldl $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18008,11 +17999,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avformat_av_guess_format" >&5
 $as_echo "$ac_cv_lib_avformat_av_guess_format" >&6; }
 if test "x$ac_cv_lib_avformat_av_guess_format" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBAVFORMAT 1
-_ACEOF
-
-  LIBS="-lavformat $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18063,11 +18049,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avcodec_avcodec_find_encoder_by_name" >&5
 $as_echo "$ac_cv_lib_avcodec_avcodec_find_encoder_by_name" >&6; }
 if test "x$ac_cv_lib_avcodec_avcodec_find_encoder_by_name" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBAVCODEC 1
-_ACEOF
-
-  LIBS="-lavcodec $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18126,11 +18107,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avutil_av_rescale_q" >&5
 $as_echo "$ac_cv_lib_avutil_av_rescale_q" >&6; }
 if test "x$ac_cv_lib_avutil_av_rescale_q" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBAVUTIL 1
-_ACEOF
-
-  LIBS="-lavutil $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18181,11 +18157,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_swscale_sws_scale" >&5
 $as_echo "$ac_cv_lib_swscale_sws_scale" >&6; }
 if test "x$ac_cv_lib_swscale_sws_scale" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBSWSCALE 1
-_ACEOF
-
-  LIBS="-lswscale $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18248,11 +18219,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_X11_XOpenDisplay" >&5
 $as_echo "$ac_cv_lib_X11_XOpenDisplay" >&6; }
 if test "x$ac_cv_lib_X11_XOpenDisplay" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBX11 1
-_ACEOF
-
-  LIBS="-lX11 $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18304,11 +18270,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xfixes_XFixesGetCursorImage" >&5
 $as_echo "$ac_cv_lib_Xfixes_XFixesGetCursorImage" >&6; }
 if test "x$ac_cv_lib_Xfixes_XFixesGetCursorImage" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBXFIXES 1
-_ACEOF
-
-  LIBS="-lXfixes $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18362,11 +18323,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xext_XShmCreateImage" >&5
 $as_echo "$ac_cv_lib_Xext_XShmCreateImage" >&6; }
 if test "x$ac_cv_lib_Xext_XShmCreateImage" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBXEXT 1
-_ACEOF
-
-  LIBS="-lXext $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18418,11 +18374,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xi_XIQueryVersion" >&5
 $as_echo "$ac_cv_lib_Xi_XIQueryVersion" >&6; }
 if test "x$ac_cv_lib_Xi_XIQueryVersion" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBXI 1
-_ACEOF
-
-  LIBS="-lXi $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18478,11 +18429,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_asound_snd_pcm_open" >&5
 $as_echo "$ac_cv_lib_asound_snd_pcm_open" >&6; }
 if test "x$ac_cv_lib_asound_snd_pcm_open" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBASOUND 1
-_ACEOF
-
-  LIBS="-lasound $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18535,11 +18481,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pulse_pa_context_new" >&5
 $as_echo "$ac_cv_lib_pulse_pa_context_new" >&6; }
 if test "x$ac_cv_lib_pulse_pa_context_new" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPULSE 1
-_ACEOF
-
-  LIBS="-lpulse $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18594,11 +18535,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jack_jack_client_open" >&5
 $as_echo "$ac_cv_lib_jack_jack_client_open" >&6; }
 if test "x$ac_cv_lib_jack_jack_client_open" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBJACK 1
-_ACEOF
-
-  LIBS="-ljack $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18674,11 +18610,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GL_glPushAttrib" >&5
 $as_echo "$ac_cv_lib_GL_glPushAttrib" >&6; }
 if test "x$ac_cv_lib_GL_glPushAttrib" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBGL 1
-_ACEOF
-
-  LIBS="-lGL $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5
@@ -18729,11 +18660,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GLU_gluErrorString" >&5
 $as_echo "$ac_cv_lib_GLU_gluErrorString" >&6; }
 if test "x$ac_cv_lib_GLU_gluErrorString" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBGLU 1
-_ACEOF
-
-  LIBS="-lGLU $LIBS"
 
 else
   as_fn_error $? "required library missing" "$LINENO" 5

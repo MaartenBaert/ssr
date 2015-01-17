@@ -6,51 +6,6 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the `asound' library (-lasound). */
-#undef HAVE_LIBASOUND
-
-/* Define to 1 if you have the `avcodec' library (-lavcodec). */
-#undef HAVE_LIBAVCODEC
-
-/* Define to 1 if you have the `avformat' library (-lavformat). */
-#undef HAVE_LIBAVFORMAT
-
-/* Define to 1 if you have the `avutil' library (-lavutil). */
-#undef HAVE_LIBAVUTIL
-
-/* Define to 1 if you have the `dl' library (-ldl). */
-#undef HAVE_LIBDL
-
-/* Define to 1 if you have the `GL' library (-lGL). */
-#undef HAVE_LIBGL
-
-/* Define to 1 if you have the `GLU' library (-lGLU). */
-#undef HAVE_LIBGLU
-
-/* Define to 1 if you have the `jack' library (-ljack). */
-#undef HAVE_LIBJACK
-
-/* Define to 1 if you have the `pulse' library (-lpulse). */
-#undef HAVE_LIBPULSE
-
-/* Define to 1 if you have the `rt' library (-lrt). */
-#undef HAVE_LIBRT
-
-/* Define to 1 if you have the `swscale' library (-lswscale). */
-#undef HAVE_LIBSWSCALE
-
-/* Define to 1 if you have the `X11' library (-lX11). */
-#undef HAVE_LIBX11
-
-/* Define to 1 if you have the `Xext' library (-lXext). */
-#undef HAVE_LIBXEXT
-
-/* Define to 1 if you have the `Xfixes' library (-lXfixes). */
-#undef HAVE_LIBXFIXES
-
-/* Define to 1 if you have the `Xi' library (-lXi). */
-#undef HAVE_LIBXI
-
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
