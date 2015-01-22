@@ -57,7 +57,7 @@
 
 &lt;p&gt;En varning till! OpenGL-inspelning är experimentell så det kanske inte fungerar, eller t.o.m. kraschar programmet du spelar in. Gör först en säkerhetskopia om du är orolig för att förlora data!&lt;/p&gt;
 
-&lt;p&gt;Vill du spela in Steam-spel, bör du läsa &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;det härförst&lt;/a&gt;!&lt;/p&gt;</translation>
+&lt;p&gt;Vill du spela in Steam-spel, bör du läsa &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;det här först&lt;/a&gt;!&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
@@ -138,14 +138,14 @@ Det här gäller även användare som är fjärranslutna (ssh). Du bör endast a
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="109"/>
         <source>Limit application frame rate</source>
-        <translation>Begränsa programmets bildhastighet</translation>
+        <translation>Begränsa programmets bildfrekvens</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="110"/>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
-        <translation>Vid aktivering kommer det injicerade biblioteket att sakta ner programmet så att bildhastigheten inte blir högre än inspelningshastigheten.
+        <translation>Vid aktivering kommer det injicerade biblioteket att sakta ner programmet så att bildfrekvensen inte blir högre än inspelningshastigheten.
 Det hindrar programmet från att ta CPU-tid i anspråk, för bildrutor som inte kommer att spelas in, och ibland resultera i en jämnare film
 (beror på programmet).</translation>
     </message>
@@ -179,8 +179,8 @@ Det hindrar programmet från att ta CPU-tid i anspråk, för bildrutor som inte 
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="125"/>
-        <location filename="../Benchmark.cpp" line="117"/>
-        <location filename="../Benchmark.cpp" line="190"/>
+        <location filename="../Benchmark.cpp" line="119"/>
+        <location filename="../Benchmark.cpp" line="200"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
         <translation>Fel: Kan inte hämta swscale-kontext!</translation>
@@ -1035,22 +1035,22 @@ Det är möjligt att ditt system inte använder PulseAudio. Försök med ALSA is
         <translation>Okänt undantag i synth-tråd.</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="156"/>
+        <location filename="../Benchmark.cpp" line="160"/>
         <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
         <translation>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="226"/>
+        <location filename="../Benchmark.cpp" line="238"/>
         <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
         <translation>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="236"/>
+        <location filename="../Benchmark.cpp" line="248"/>
         <source>Starting scaler benchmark ...</source>
         <translation>Startar skalningstest...</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="243"/>
+        <location filename="../Benchmark.cpp" line="255"/>
         <source>Starting converter benchmark ...</source>
         <translation>Startar konverteringstest...</translation>
     </message>
@@ -1091,12 +1091,12 @@ Det är möjligt att ditt system inte använder PulseAudio. Försök med ALSA is
         <translation>SSR startad</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="226"/>
+        <location filename="../Main.cpp" line="228"/>
         <source>SSR stopped</source>
         <translation>SSR stoppad</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="243"/>
+        <location filename="../Main.cpp" line="245"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Fel: Kan inte skapa .ssr-mapp</translation>
     </message>

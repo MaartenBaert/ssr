@@ -182,8 +182,8 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="125"/>
-        <location filename="../Benchmark.cpp" line="117"/>
-        <location filename="../Benchmark.cpp" line="190"/>
+        <location filename="../Benchmark.cpp" line="119"/>
+        <location filename="../Benchmark.cpp" line="200"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
         <translation>Fehler: Konnte den swscale Kontext nicht erhalten!</translation>
@@ -1114,12 +1114,12 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
         <translation>SSR gestartet</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="226"/>
+        <location filename="../Main.cpp" line="228"/>
         <source>SSR stopped</source>
         <translation>SSR angehalten</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="243"/>
+        <location filename="../Main.cpp" line="245"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Fehler: konnte Verzeichnis .ssr nicht anlegen!</translation>
     </message>
@@ -1128,24 +1128,24 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
         <translation type="obsolete">Skalierung %1 zu %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="156"/>
+        <location filename="../Benchmark.cpp" line="160"/>
         <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
         <translatorcomment>What does &quot;us&quot; in this Context mean?</translatorcomment>
         <translation>BGRA %1 zu BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="226"/>
+        <location filename="../Benchmark.cpp" line="238"/>
         <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
         <translatorcomment>What does &quot;us&quot; in this Context mean?</translatorcomment>
         <translation>%1 %2 zu %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="236"/>
+        <location filename="../Benchmark.cpp" line="248"/>
         <source>Starting scaler benchmark ...</source>
         <translation>Starte Skalierungs Benchmark</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="243"/>
+        <location filename="../Benchmark.cpp" line="255"/>
         <source>Starting converter benchmark ...</source>
         <translation>Starte Konvertierer Benchmark ...</translation>
     </message>
