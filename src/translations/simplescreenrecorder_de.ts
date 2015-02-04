@@ -178,12 +178,12 @@ Dies hält die Applikation davon ab, CPU-Zeit für Bilder zu verschwenden, die n
     <message>
         <location filename="../AV/FastScaler.cpp" line="116"/>
         <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation>Warnung: Pixel format wird nicht unterstützt (%1 -&gt; %2), es wird swscale anstelle verwendet. Das ist kein Problem, aber die Performance wird schlechter sein.</translation>
+        <translation>Warnung: Pixel-Format wird nicht unterstützt (%1 -&gt; %2), es wird swscale anstelle verwendet. Das ist kein Problem, aber die Performance wird schlechter sein.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="125"/>
-        <location filename="../Benchmark.cpp" line="117"/>
-        <location filename="../Benchmark.cpp" line="190"/>
+        <location filename="../Benchmark.cpp" line="119"/>
+        <location filename="../Benchmark.cpp" line="200"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
         <translation>Fehler: Konnte den swscale Kontext nicht erhalten!</translation>
@@ -761,7 +761,7 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="140"/>
         <source>Using sample format %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwende Sample-Format %1</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="145"/>
@@ -778,7 +778,7 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
         <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
         <location filename="../AV/Output/BaseEncoder.cpp" line="40"/>
         <source>Error: Option &apos;%1&apos; could not be parsed!</source>
-        <translation type="unfinished">Fehler: Option &apos;%1&apos; wurde nicht erkannt!</translation>
+        <translation>Fehler: Option &apos;%1&apos; wurde nicht erkannt!</translation>
     </message>
     <message>
         <source>Warning: Option &apos;%1&apos; could not be parsed!</source>
@@ -1004,12 +1004,12 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="181"/>
         <source>Using pixel format %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwende Pixel-Format %1</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="195"/>
         <source>Error: The pixel format is not supported by the codec!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: das Pixel-Format wird vom Codec nicht unterstützt!</translation>
     </message>
     <message>
         <source>Error: Encoder requires an unsupported pixel format!</source>
@@ -1114,12 +1114,12 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
         <translation>SSR gestartet</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="226"/>
+        <location filename="../Main.cpp" line="228"/>
         <source>SSR stopped</source>
         <translation>SSR angehalten</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="243"/>
+        <location filename="../Main.cpp" line="245"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Fehler: konnte Verzeichnis .ssr nicht anlegen!</translation>
     </message>
@@ -1128,24 +1128,26 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
         <translation type="obsolete">Skalierung %1 zu %2  |  Fallback %3 ms  |  SSSE3 %4 ms  |  %5%</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="156"/>
+        <location filename="../Benchmark.cpp" line="160"/>
         <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>What does &quot;us&quot; in this Context mean?</translatorcomment>
+        <translation>BGRA %1 zu BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="226"/>
+        <location filename="../Benchmark.cpp" line="238"/>
         <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>What does &quot;us&quot; in this Context mean?</translatorcomment>
+        <translation>%1 %2 zu %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="236"/>
+        <location filename="../Benchmark.cpp" line="248"/>
         <source>Starting scaler benchmark ...</source>
         <translation>Starte Skalierungs Benchmark</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="243"/>
+        <location filename="../Benchmark.cpp" line="255"/>
         <source>Starting converter benchmark ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Starte Konvertierer Benchmark ...</translation>
     </message>
 </context>
 <context>
@@ -2127,33 +2129,33 @@ Der Start-Knopf ist oben ;).</translation>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Abbruch</translation>
+        <translation>&amp;Abbruch</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Ja</translation>
+        <translation>&amp;Ja</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished">Ja, immer</translation>
+        <translation>Ja, immer</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Nein</translation>
+        <translation>&amp;Nein</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished">Nein, niemals</translation>
+        <translation>Nein, niemals</translation>
     </message>
 </context>
 <context>

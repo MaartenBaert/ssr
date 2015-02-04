@@ -207,8 +207,8 @@ Isso evita que o aplicativo desperdiçe tempo de CPU para os quadros que não se
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="125"/>
-        <location filename="../Benchmark.cpp" line="117"/>
-        <location filename="../Benchmark.cpp" line="190"/>
+        <location filename="../Benchmark.cpp" line="119"/>
+        <location filename="../Benchmark.cpp" line="200"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
         <translation>Erro: Não é possível obter o contexto swscale!</translation>
@@ -989,12 +989,12 @@ Aviso: Número excessivo de amostras de áudio, descartando amostras para manter
         <translation>SSR iniciado</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="226"/>
+        <location filename="../Main.cpp" line="228"/>
         <source>SSR stopped</source>
         <translation>SSR parado</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="243"/>
+        <location filename="../Main.cpp" line="245"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Erro: Não foi possível criar o o diretório de .ssr!</translation>
     </message>
@@ -1160,22 +1160,22 @@ Aviso: Número excessivo de amostras de áudio, descartando amostras para manter
         <translation type="obsolete">%1 %2 para %3 %4  |  Fallback %5 ms  |  SSSE3 %6 ms  |  %7%</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="156"/>
+        <location filename="../Benchmark.cpp" line="160"/>
         <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="226"/>
+        <location filename="../Benchmark.cpp" line="238"/>
         <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="236"/>
+        <location filename="../Benchmark.cpp" line="248"/>
         <source>Starting scaler benchmark ...</source>
         <translation>Iniciando análise de desempenho de escalador ...</translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="243"/>
+        <location filename="../Benchmark.cpp" line="255"/>
         <source>Starting converter benchmark ...</source>
         <translation>Iniciando análise de desempenho de conversor ...</translation>
     </message>

@@ -6,6 +6,11 @@ Git master
 
 - ?
 
+Version 0.3.3
+-------------
+
+- Fixed mistake in configure.ac that was causing libssr-glinject.so to be linked with unwanted libraries.
+
 Version 0.3.2
 -------------
 

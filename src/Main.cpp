@@ -200,8 +200,10 @@ int main(int argc, char* argv[]) {
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");
 	Logger::LogInfo(GetVersionInfo());
 
+#if SSR_USE_X86_ASM
 	// detect CPU features
 	CPUFeatures::Detect();
+#endif
 
 	// start the GUI
 	int ret;

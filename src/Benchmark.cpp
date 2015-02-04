@@ -91,7 +91,9 @@ void PlaneWrapper(unsigned int w, unsigned int h, const uint8_t* in_data, int in
 void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, unsigned int out_h) {
 
 	std::mt19937 rng(12345);
+#if SSR_USE_X86_ASM
 	bool use_ssse3 = (CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3());
+#endif
 
 	// the queue needs to use enough memory to make sure that the CPU cache is flushed
 	unsigned int pixels = std::max(in_w * in_h, out_w * out_h);
@@ -139,6 +141,7 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 		int64_t t2 = hrt_time_micro();
 		time_fallback = (t2 - t1) / run_size;
 	}
+#if SSR_USE_X86_ASM
 	if(use_ssse3) {
 		int64_t t1 = hrt_time_micro();
 		for(unsigned int i = 0; i < run_size; ++i) {
@@ -149,6 +152,7 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 		int64_t t2 = hrt_time_micro();
 		time_ssse3 = (t2 - t1) / run_size;
 	}
+#endif
 
 	// print result
 	QString in_size = QString("%1x%2").arg(in_w).arg(in_h);
@@ -161,10 +165,16 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 
 }
 
-void BenchmarkConvert(unsigned int w, unsigned int h, PixelFormat in_format, PixelFormat out_format, const QString& in_format_name, const QString& out_format_name, NewImageFunc in_image, NewImageFunc out_image, ConvertFunc fallback, ConvertFunc ssse3) {
+void BenchmarkConvert(unsigned int w, unsigned int h, PixelFormat in_format, PixelFormat out_format, const QString& in_format_name, const QString& out_format_name, NewImageFunc in_image, NewImageFunc out_image, ConvertFunc fallback
+#if SSR_USE_X86_ASM
+, ConvertFunc ssse3
+#endif
+) {
 
 	std::mt19937 rng(12345);
+#if SSR_USE_X86_ASM
 	bool use_ssse3 = (CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3());
+#endif
 
 	// the queue needs to use enough memory to make sure that the CPU cache is flushed
 	unsigned int pixels = w * h;
@@ -211,6 +221,7 @@ void BenchmarkConvert(unsigned int w, unsigned int h, PixelFormat in_format, Pix
 		int64_t t2 = hrt_time_micro();
 		time_fallback = (t2 - t1) / run_size;
 	}
+#if SSR_USE_X86_ASM
 	if(use_ssse3) {
 		int64_t t1 = hrt_time_micro();
 		for(unsigned int i = 0; i < run_size; ++i) {
@@ -220,6 +231,7 @@ void BenchmarkConvert(unsigned int w, unsigned int h, PixelFormat in_format, Pix
 		int64_t t2 = hrt_time_micro();
 		time_ssse3 = (t2 - t1) / run_size;
 	}
+#endif
 
 	// print result
 	QString size = QString("%1x%2").arg(w).arg(h);
@@ -241,9 +253,16 @@ void Benchmark() {
 	BenchmarkScale(1920, 1080, 640, 360); // mipmap + downscaling
 
 	Logger::LogInfo("[Benchmark] " + Logger::tr("Starting converter benchmark ..."));
+#if SSR_USE_X86_ASM
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV444P, "BGRA", "YUV444", NewImageBGRA, NewImageYUV444, Convert_BGRA_YUV444_Fallback           , Convert_BGRA_YUV444_SSSE3           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV422P, "BGRA", "YUV422", NewImageBGRA, NewImageYUV422, Convert_BGRA_YUV422_Fallback           , Convert_BGRA_YUV422_SSSE3           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV420P, "BGRA", "YUV420", NewImageBGRA, NewImageYUV420, Convert_BGRA_YUV420_Fallback           , Convert_BGRA_YUV420_SSSE3           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGR24  , "BGRA", "BGR"   , NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>, PlaneWrapper<Convert_BGRA_BGR_SSSE3>);
+#else
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV444P, "BGRA", "YUV444", NewImageBGRA, NewImageYUV444, Convert_BGRA_YUV444_Fallback           );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV422P, "BGRA", "YUV422", NewImageBGRA, NewImageYUV422, Convert_BGRA_YUV422_Fallback           );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV420P, "BGRA", "YUV420", NewImageBGRA, NewImageYUV420, Convert_BGRA_YUV420_Fallback           );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGR24  , "BGRA", "BGR"   , NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>);
+#endif
 
 }
