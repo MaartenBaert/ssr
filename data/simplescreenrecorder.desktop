@@ -6,3 +6,4 @@ Icon=simplescreenrecorder
 Exec=simplescreenrecorder --logfile
 Terminal=false
 Categories=AudioVideo;Video;Recorder;Qt;
+Keywords=screen recorder;screencast;live streaming;
