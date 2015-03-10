@@ -1,5 +1,7 @@
 if ENABLE_SSRPROGRAM
 
+########## Icons ##########
+
 desktopdir = $(datadir)/applications
 icon16dir = $(datadir)/icons/hicolor/16x16/apps
 icon22dir = $(datadir)/icons/hicolor/22x22/apps
@@ -60,6 +62,12 @@ dist_iconscalable_DATA = \
 	icons/scalable/simplescreenrecorder.svg \
 	icons/scalable/simplescreenrecorder-paused.svg \
 	icons/scalable/simplescreenrecorder-recording.svg
+
+########## Man pages ##########
+
+man1_MANS = \
+	man/simplescreenrecorder.man \
+	man/ssr-glinject.man
 
 ########## Output profiles ##########
 
