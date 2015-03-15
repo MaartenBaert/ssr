@@ -16,10 +16,10 @@ are supported.
 Show help message.
 .TP
 \fB\-\-logfile\fR
-Write log to ~/.ssr/log\-DATE_TIME.txt instead of stdout.
+Write log to \fI\,~/.ssr/log\-DATE_TIME.txt\/\fP instead of stdout.
 .TP
 \fB\-\-statsfile\fR[=\fI\,FILE\/\fR]
-Write recording statistics to FILE. If FILE is omitted,
+Write recording statistics to \fI\,FILE\/\fR. If \fI\,FILE\/\fR is omitted,
 \fI\,/dev/shm/simplescreenrecorder\-stats\-PID\/\fP is used. It will
 be updated continuously and deleted when the recording
 page is closed.
