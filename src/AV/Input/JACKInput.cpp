@@ -208,7 +208,6 @@ void JACKInput::PortConnectCallback(jack_port_id_t a, jack_port_id_t b, int conn
 	// This callback is called from the notification thread (not the realtime processing thread), so sadly the timing can never be fully accurate.
 	// To make things worse, we're not allowed to connect/disconnect ports from this thread, so we have to send a command to the input thread instead.
 	JACKInput *input = (JACKInput*) arg;
-	SharedLock lock(&input->m_shared_data);
 	if(input->m_connect_system_playback) {
 		jack_port_t *port_a = jack_port_by_id(input->m_jack_client, a);
 		if(port_a == NULL)
@@ -222,6 +221,7 @@ void JACKInput::PortConnectCallback(jack_port_id_t a, jack_port_id_t b, int conn
 			std::string playback_name = "system:playback_" + NumToString(i + 1);
 			if(port_b_name == playback_name) {
 				std::string port_name_full = std::string(jack_get_client_name(input->m_jack_client)) + ":in_" + NumToString(i + 1);
+				SharedLock lock(&input->m_shared_data);
 				ConnectCommand cmd;
 				cmd.m_connect = connect;
 				cmd.m_source = port_a_name;
@@ -240,20 +240,23 @@ void JACKInput::InputThread() {
 		while(!m_should_stop) {
 
 			// process connect commands
+			// JACK will send notifications when we connect/disconnect ports, so holding the lock while doing this is a bad idea.
+			// It seems that JACK is designed in such a way that a single misbehaving application can lock up the entire server, so let's avoid that.
+			std::vector<ConnectCommand> connect_commands;
 			{
 				SharedLock lock(&m_shared_data);
-				for(ConnectCommand &cmd : lock->m_connect_commands) {
-					if(cmd.m_connect) {
-						Logger::LogInfo("[JACKInput::InputThread] " + Logger::tr("Connecting port %1 to %2.")
-										.arg(QString::fromStdString(cmd.m_source)).arg(QString::fromStdString(cmd.m_destination)));
-						jack_connect(m_jack_client, cmd.m_source.c_str(), cmd.m_destination.c_str());
-					} else {
-						Logger::LogInfo("[JACKInput::InputThread] " + Logger::tr("Disconnecting port %1 from %2.")
-										.arg(QString::fromStdString(cmd.m_source)).arg(QString::fromStdString(cmd.m_destination)));
-						jack_disconnect(m_jack_client, cmd.m_source.c_str(), cmd.m_destination.c_str());
-					}
+				connect_commands.swap(lock->m_connect_commands);
+			}
+			for(ConnectCommand &cmd : connect_commands) {
+				if(cmd.m_connect) {
+					Logger::LogInfo("[JACKInput::InputThread] " + Logger::tr("Connecting port %1 to %2.")
+									.arg(QString::fromStdString(cmd.m_source)).arg(QString::fromStdString(cmd.m_destination)));
+					jack_connect(m_jack_client, cmd.m_source.c_str(), cmd.m_destination.c_str());
+				} else {
+					Logger::LogInfo("[JACKInput::InputThread] " + Logger::tr("Disconnecting port %1 from %2.")
+									.arg(QString::fromStdString(cmd.m_source)).arg(QString::fromStdString(cmd.m_destination)));
+					jack_disconnect(m_jack_client, cmd.m_source.c_str(), cmd.m_destination.c_str());
 				}
-				lock->m_connect_commands.clear();
 			}
 
 			// is there a new message?
