@@ -14,3 +14,4 @@ simplescreenrecorder_ru.ts
 simplescreenrecorder_sv.ts
 simplescreenrecorder_uk.ts
 simplescreenrecorder_zh_CN.ts
+simplescreenrecorder_zh_TW.ts

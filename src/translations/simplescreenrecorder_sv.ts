@@ -356,7 +356,7 @@ Det hindrar programmet från att ta CPU-tid i anspråk, för bildrutor som inte 
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="413"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="248"/>
-        <location filename="../AV/Input/JACKInput.cpp" line="286"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="289"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="388"/>
         <location filename="../AV/Input/X11Input.cpp" line="444"/>
         <source>Input thread stopped.</source>
@@ -365,7 +365,7 @@ Det hindrar programmet från att ta CPU-tid i anspråk, för bildrutor som inte 
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="417"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="252"/>
-        <location filename="../AV/Input/JACKInput.cpp" line="290"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="293"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="392"/>
         <location filename="../AV/Input/X11Input.cpp" line="448"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
@@ -374,7 +374,7 @@ Det hindrar programmet från att ta CPU-tid i anspråk, för bildrutor som inte 
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="420"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="255"/>
-        <location filename="../AV/Input/JACKInput.cpp" line="293"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="296"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="395"/>
         <location filename="../AV/Input/X11Input.cpp" line="451"/>
         <source>Unknown exception in input thread.</source>
@@ -423,12 +423,12 @@ Det hindrar programmet från att ta CPU-tid i anspråk, för bildrutor som inte 
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="112"/>
         <location filename="../AV/Input/JACKInput.cpp" line="123"/>
-        <location filename="../AV/Input/JACKInput.cpp" line="247"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="252"/>
         <source>Connecting port %1 to %2.</source>
         <translation>Ansluter port %1 till %2.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/JACKInput.cpp" line="251"/>
+        <location filename="../AV/Input/JACKInput.cpp" line="256"/>
         <source>Disconnecting port %1 from %2.</source>
         <translation>Kopplar ifrån port %1 från %2.</translation>
     </message>

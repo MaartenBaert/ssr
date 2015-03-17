@@ -649,7 +649,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_ru.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_sv.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_uk.ts \
-@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_zh_CN.ts
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_zh_CN.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_zh_TW.ts
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_CPPFLAGS = $(simplescreenrecorder_CPPFLAGS)
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_CFLAGS = $(simplescreenrecorder_CFLAGS) -msse2
 @ENABLE_SSRPROGRAM_TRUE@@ENABLE_X86_ASM_TRUE@libsimplescreenrecorder_target_sse2_la_CXXFLAGS = $(simplescreenrecorder_CXXFLAGS) -msse2
@@ -684,7 +685,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_ru.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_sv.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_uk.qm \
-@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_zh_CN.qm
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_zh_CN.qm \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_zh_TW.qm
 
 all: all-am
 
@@ -2175,6 +2177,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_uk.qm: $(srcdir)/translations/simplescreenrecorder_uk.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_zh_CN.qm: $(srcdir)/translations/simplescreenrecorder_zh_CN.ts
+@ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_zh_TW.qm: $(srcdir)/translations/simplescreenrecorder_zh_TW.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 
 @ENABLE_SSRPROGRAM_TRUE@clean-translations-extra:
