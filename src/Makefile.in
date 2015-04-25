@@ -399,6 +399,8 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FFMPEG_CFLAGS = @FFMPEG_CFLAGS@
+FFMPEG_LIBS = @FFMPEG_LIBS@
 FGREP = @FGREP@
 GREP = @GREP@
 INSTALL = @INSTALL@
@@ -510,14 +512,14 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Input \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/AV/Output -I$(srcdir)/AV \
 @ENABLE_SSRPROGRAM_TRUE@	-I$(srcdir)/common -I$(srcdir)/GUI \
-@ENABLE_SSRPROGRAM_TRUE@	$(am__append_1) $(am__append_3) \
+@ENABLE_SSRPROGRAM_TRUE@	$(FFMPEG_CFLAGS) $(am__append_1) \
+@ENABLE_SSRPROGRAM_TRUE@	$(am__append_3) \
 @ENABLE_SSRPROGRAM_TRUE@	-DSSR_SYSTEM_DIR=\"$(pkgdatadir)\"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CFLAGS = -pthread
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_CXXFLAGS = -pthread -std=c++0x
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDFLAGS = -pthread -lrt \
-@ENABLE_SSRPROGRAM_TRUE@	-lavformat -lavcodec -lavutil \
-@ENABLE_SSRPROGRAM_TRUE@	-lswscale -lX11 -lXext -lXfixes -lXi \
-@ENABLE_SSRPROGRAM_TRUE@	-lasound $(am__append_2) \
+@ENABLE_SSRPROGRAM_TRUE@	-lX11 -lXext -lXfixes -lXi -lasound \
+@ENABLE_SSRPROGRAM_TRUE@	$(FFMPEG_LIBS) $(am__append_2) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_4) $(am__append_5) \
 @ENABLE_SSRPROGRAM_TRUE@	$(am__append_6)
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_SOURCES = \

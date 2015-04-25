@@ -54,8 +54,9 @@ export CFLAGS="-Wall -O2 -pipe"
 export CXXFLAGS="-Wall -O2 -pipe"
 export LDFLAGS=""
 
-export CPPFLAGS="$CPPFLAGS `pkg-config --cflags-only-I libavformat libavcodec libavutil libswscale`"
-export LDFLAGS="$LDFLAGS `pkg-config --libs-only-L libavformat libavcodec libavutil libswscale`"
+# This shouldn't be needed anymore now that configure uses pkg-config for FFmpeg.
+#export CPPFLAGS="$CPPFLAGS `pkg-config --cflags-only-I libavformat libavcodec libavutil libswscale`"
+#export LDFLAGS="$LDFLAGS `pkg-config --libs-only-L libavformat libavcodec libavutil libswscale`"
 
 mkdir -p build
 cd build

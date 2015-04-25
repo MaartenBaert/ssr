@@ -8,10 +8,13 @@ simplescreenrecorder_CPPFLAGS = \
 	-I$(srcdir)/AV/Output \
 	-I$(srcdir)/AV \
 	-I$(srcdir)/common \
-	-I$(srcdir)/GUI
+	-I$(srcdir)/GUI \
+	$(FFMPEG_CFLAGS)
 simplescreenrecorder_CFLAGS = -pthread
 simplescreenrecorder_CXXFLAGS = -pthread -std=c++0x
-simplescreenrecorder_LDFLAGS = -pthread -lrt -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lXi -lasound
+simplescreenrecorder_LDFLAGS = -pthread \
+	-lrt -lX11 -lXext -lXfixes -lXi -lasound \
+	$(FFMPEG_LIBS)
 
 if WITH_QT5
 simplescreenrecorder_CPPFLAGS += $(QT5_CFLAGS)

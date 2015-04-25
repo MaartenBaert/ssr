@@ -16,6 +16,7 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_SED
 AC_PROG_INSTALL
+PKG_PROG_PKG_CONFIG
 
 AC_ARG_ENABLE([ssrprogram], AS_HELP_STRING([--disable-ssrprogram], [don't build the SimpleScreenRecorder program]))
 AC_ARG_ENABLE([glinjectlib], AS_HELP_STRING([--disable-glinjectlib], [don't build the GLInject library]))
@@ -53,7 +54,6 @@ SSR_CONDITIONAL_DEFINE([WITH_JACK], [SSR_USE_JACK], [Use JACK.])
 
 AM_COND_IF([ENABLE_SSRPROGRAM], [
 	AM_COND_IF([WITH_QT5], [
-		PKG_PROG_PKG_CONFIG
 		PKG_CHECK_MODULES([QT5], [Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras], [
 			QT_PATH1="$( eval $PKG_CONFIG --variable=libdir Qt5Core )/qt5/bin"
 			QT_PATH2="$( eval $PKG_CONFIG --variable=exec_prefix Qt5Core )/bin"
@@ -66,7 +66,6 @@ AM_COND_IF([ENABLE_SSRPROGRAM], [
 			AC_MSG_ERROR([Qt5 not found])
 		])
 	], [
-		PKG_PROG_PKG_CONFIG
 		PKG_CHECK_MODULES([QT4], [QtCore >= 4.8.0 QtGui], [
 			QT_PATH1="$( eval $PKG_CONFIG --variable=libdir QtCore )/qt4/bin"
 			QT_PATH2="$( eval $PKG_CONFIG --variable=exec_prefix QtCore )/bin"
@@ -91,15 +90,7 @@ AM_COND_IF([ENABLE_GLINJECTLIB], [
 ])
 
 AM_COND_IF([ENABLE_SSRPROGRAM], [
-	AC_CHECK_HEADER([libavformat/avformat.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([avformat], [av_guess_format], [ ], [AC_MSG_ERROR([required library missing])])
-	AC_CHECK_HEADER([libavcodec/avcodec.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([avcodec], [avcodec_find_encoder_by_name], [ ], [AC_MSG_ERROR([required library missing])])
-	AC_CHECK_HEADER([libavutil/avutil.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_HEADER([libavutil/mathematics.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([avutil], [av_rescale_q], [ ], [AC_MSG_ERROR([required library missing])])
-	AC_CHECK_HEADER([libswscale/swscale.h], [ ], [AC_MSG_ERROR([required header missing])])
-	AC_CHECK_LIB([swscale], [sws_scale], [ ], [AC_MSG_ERROR([required library missing])])
+	PKG_CHECK_MODULES([FFMPEG], [libavformat >= 53 libavcodec >= 53 libavutil >= 51 libswscale >= 2])
 ])
 
 AC_CHECK_HEADER([X11/Xlib.h], [ ], [AC_MSG_ERROR([required header missing])])
