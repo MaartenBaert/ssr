@@ -23,8 +23,8 @@ You will need the following packages to compile SimpleScreenRecorder:
 - Qt 4
 - ffmpeg or libav (libavformat, libavcodec, libavutil, libswscale)
 - ALSA library
-- PulseAudio library (optional, disable with --disable-pulseaudio)
-- JACK library (optional, disable with --disable-jack)
+- PulseAudio library (optional, disable with --without-pulseaudio)
+- JACK library (optional, disable with --without-jack)
 - libGL (32 and 64 bit)
 - libGLU (32 and 64 bit)
 - libX11 (32 and 64 bit)
