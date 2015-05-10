@@ -2,6 +2,7 @@
 Type=Application
 Name=SimpleScreenRecorder
 Comment=A feature-rich screen recorder that supports X11 and OpenGL
+Comment[fr]=Un captureur d'écran complet qui supporte X11 et OpenGL
 Icon=simplescreenrecorder
 Exec=simplescreenrecorder --logfile
 Terminal=false
