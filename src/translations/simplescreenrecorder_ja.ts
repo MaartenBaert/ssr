@@ -252,7 +252,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/ALSAInput.cpp" line="259"/>
         <location filename="../AV/SimpleSynth.cpp" line="123"/>
         <source>Error: Can&apos;t open PCM device!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: PCM デバイスを開けません！</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="263"/>
@@ -328,7 +328,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="351"/>
         <source>Error: Can&apos;t start PCM device!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: PCM デバイスを開始できません！</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="372"/>
