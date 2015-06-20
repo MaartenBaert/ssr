@@ -894,7 +894,8 @@ void PageRecord::UpdateInput() {
 void PageRecord::UpdateSysTray() {
 	if(m_systray_icon == NULL)
 		return;
-	GroupEnabled({m_systray_action_start_pause, m_systray_action_cancel, m_systray_action_save}, m_page_started);
+	GroupEnabled({m_systray_action_start_pause}, true);
+	GroupEnabled({m_systray_action_cancel, m_systray_action_save}, m_page_started);
 	if(m_page_started && m_output_started) {
 		m_systray_icon->setIcon(g_icon_ssr_recording);
 		m_systray_action_start_pause->setIcon(g_icon_pause);
@@ -961,13 +962,13 @@ void PageRecord::OnUpdateSoundNotifications() {
 }
 
 void PageRecord::OnRecordStartPause() {
-	if(!m_page_started)
-		return;
 	if(m_wait_saving)
 		return;
 	if(m_output_started) {
 		StopOutput(false);
 	} else {
+		if(!m_page_started)
+			StartPage();
 		StartOutput();
 	}
 }
