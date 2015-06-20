@@ -935,7 +935,7 @@ void PageRecord::OnUpdateHotkeyFields() {
 }
 
 void PageRecord::OnUpdateHotkey() {
-	if(m_page_started && IsHotkeyEnabled()) {
+	if(IsHotkeyEnabled()) {
 		unsigned int modifiers = 0;
 		if(IsHotkeyCtrlEnabled()) modifiers |= ControlMask;
 		if(IsHotkeyShiftEnabled()) modifiers |= ShiftMask;

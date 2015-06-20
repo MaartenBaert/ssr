@@ -99,6 +99,7 @@ MainWindow::MainWindow()
 	if(!g_option_start_hidden)
 		show();
 	m_page_record->UpdateShowHide();
+	m_page_record->OnUpdateHotkey();
 
 }
 
