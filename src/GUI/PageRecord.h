@@ -181,5 +181,6 @@ private slots:
 
 	void OnUpdateInformation();
 	void OnNewLogLine(Logger::enum_type type, QString string);
+	void OnSysTrayActivated(QSystemTrayIcon::ActivationReason);
 
 };

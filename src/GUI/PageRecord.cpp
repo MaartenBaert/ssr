@@ -332,7 +332,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	connect(button_cancel, SIGNAL(clicked()), this, SLOT(OnCancel()));
 	connect(button_save, SIGNAL(clicked()), this, SLOT(OnSave()));
 	if(m_systray_icon != NULL)
-		connect(m_systray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), m_main_window, SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
+		connect(m_systray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(groupbox_recording);
@@ -1130,4 +1130,10 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString string) {
 	if(should_scroll)
 		m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
 
+}
+
+void PageRecord::OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason) {
+	if(reason == QSystemTrayIcon::Trigger || reason == QSystemTrayIcon::DoubleClick) {
+		this->OnRecordStartPause();
+	}
 }
