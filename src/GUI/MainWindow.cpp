@@ -132,6 +132,15 @@ void MainWindow::SaveSettings() {
 
 }
 
+bool MainWindow::Validate() {
+	if(!m_page_output->Validate()) {
+		return false;
+	}
+
+	return true;
+
+}
+
 void MainWindow::closeEvent(QCloseEvent* event) {
 	if (g_option_systray) {
 		OnShowHide();

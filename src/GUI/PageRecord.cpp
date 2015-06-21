@@ -967,8 +967,12 @@ void PageRecord::OnRecordStartPause() {
 	if(m_output_started) {
 		StopOutput(false);
 	} else {
-		if(!m_page_started)
+		if(!m_page_started) {
+			if(!m_main_window->Validate()) {
+				return;
+			}
 			m_main_window->GoPageRecord();
+		}
 		StartOutput();
 	}
 }

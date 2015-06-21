@@ -652,17 +652,27 @@ void PageOutput::OnBrowse() {
 }
 
 void PageOutput::OnContinue() {
+	if(!Validate()) {
+		return;
+	}
+
+	m_main_window->GoPageRecord();
+}
+
+bool PageOutput::Validate() {
 	QString file = GetFile();
 	if(file.isEmpty()) {
 		MessageBox(QMessageBox::Critical, this, MainWindow::WINDOW_CAPTION, tr("You did not select an output file!"), BUTTON_OK, BUTTON_OK);
-		return;
+		return false;
 	}
 	if(GetFileProtocol().isNull() && !GetSeparateFiles() && QFileInfo(file).exists()) {
 		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 					  tr("The file '%1' already exists. Are you sure that you want to overwrite it?").arg(QFileInfo(file).fileName()),
 					  BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
-			return;
+			return false;
 		}
 	}
-	m_main_window->GoPageRecord();
+
+	return true;
+
 }

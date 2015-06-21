@@ -59,6 +59,8 @@ public:
 	void LoadSettings();
 	void SaveSettings();
 
+	bool Validate();
+
 protected:
 	virtual void closeEvent(QCloseEvent* event) override;
 

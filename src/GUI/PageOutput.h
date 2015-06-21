@@ -149,6 +149,8 @@ public:
 	QString GetVideoCodecAVName();
 	QString GetAudioCodecAVName();
 
+	bool Validate();
+
 private:
 	unsigned int FindContainerAV(const QString& name);
 	unsigned int FindVideoCodecAV(const QString& name);
