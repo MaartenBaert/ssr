@@ -133,13 +133,20 @@ void MainWindow::SaveSettings() {
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
+	if (g_option_systray) {
+		OnShowHide();
+		event->ignore();
+    	return;
+	}
+
 	if(m_page_record->ShouldBlockClose()) {
 		event->ignore();
 		return;
 	}
-	SaveSettings();
+
 	event->accept();
-	QApplication::quit();
+	Quit();
+
 }
 
 void MainWindow::GoPageWelcome() {
@@ -178,4 +185,9 @@ void MainWindow::OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason) {
 	if(reason == QSystemTrayIcon::Trigger || reason == QSystemTrayIcon::DoubleClick) {
 		OnShowHide();
 	}
+}
+
+void MainWindow::Quit() {
+	SaveSettings();
+	QApplication::quit();
 }

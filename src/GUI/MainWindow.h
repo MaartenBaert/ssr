@@ -80,4 +80,6 @@ public slots:
 	void OnShowHide();
 	void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
+	void Quit();
+
 };
