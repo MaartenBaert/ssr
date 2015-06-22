@@ -1142,12 +1142,12 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
     <message>
         <location filename="../Benchmark.cpp" line="248"/>
         <source>Starting scaler benchmark ...</source>
-        <translation>Starte Skalierungs Benchmark</translation>
+        <translation>Starte Skalierungs-Benchmark...</translation>
     </message>
     <message>
         <location filename="../Benchmark.cpp" line="255"/>
         <source>Starting converter benchmark ...</source>
-        <translation>Starte Konvertierer Benchmark ...</translation>
+        <translation>Starte Konvertierungs-Benchmark...</translation>
     </message>
 </context>
 <context>
