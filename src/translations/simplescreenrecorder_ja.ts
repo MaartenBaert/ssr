@@ -86,7 +86,7 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="73"/>
         <source>Launch application</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーションを起動</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="75"/>
@@ -101,7 +101,7 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="79"/>
         <source>Working directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>作業ディレクトリ:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="81"/>
@@ -111,7 +111,7 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
         <source>Launch automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>自動的に起動</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="84"/>
@@ -121,7 +121,7 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="86"/>
         <source>Launch now</source>
-        <translation type="unfinished"></translation>
+        <translation>今すぐ起動</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="107"/>
@@ -210,7 +210,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="207"/>
         <source>Stopping input thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>入力スレッドを停止しています...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="96"/>
@@ -221,22 +221,22 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="115"/>
         <source>Error: Could not update ALSA configuration!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: ALSA 構成を更新できませんでした！</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="162"/>
         <source>Found plugin: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインが見つかりました: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="175"/>
         <source>Warning: Could not open sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>警告: サウンドカード %1 を開けませんでした。</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="181"/>
         <source>Warning: Could not get info for sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>警告: サウンドカード %1 の情報を取得できませんでした。</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="185"/>
@@ -246,7 +246,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="210"/>
         <source>Found device: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>デバイスが見つかりました: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="259"/>
@@ -276,7 +276,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/ALSAInput.cpp" line="282"/>
         <location filename="../AV/SimpleSynth.cpp" line="146"/>
         <source>Error: Can&apos;t set sample rate!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: サンプルレートを設定できません！</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="286"/>
@@ -311,7 +311,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/ALSAInput.cpp" line="321"/>
         <location filename="../AV/SimpleSynth.cpp" line="178"/>
         <source>Error: Can&apos;t set buffer size!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: バッファサイズを設定できません！</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="325"/>
@@ -337,7 +337,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/PulseAudioInput.cpp" line="299"/>
         <location filename="../AV/Input/X11Input.cpp" line="345"/>
         <source>Input thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>入力スレッドが開始されました。</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="387"/>
@@ -351,7 +351,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/PulseAudioInput.cpp" line="388"/>
         <location filename="../AV/Input/X11Input.cpp" line="444"/>
         <source>Input thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>入力スレッドが停止しました。</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="417"/>
@@ -360,7 +360,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/PulseAudioInput.cpp" line="392"/>
         <location filename="../AV/Input/X11Input.cpp" line="448"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>入力スレッドで例外 &apos;%1&apos; が発生しました。</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="420"/>
@@ -369,7 +369,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/PulseAudioInput.cpp" line="395"/>
         <location filename="../AV/Input/X11Input.cpp" line="451"/>
         <source>Unknown exception in input thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>入力スレッドで不明な例外が発生しました。</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="149"/>
@@ -379,12 +379,12 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="72"/>
         <source>Error: Could not connect to JACK!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: JACK に接続できませんでした！</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="81"/>
         <source>Error: Could not create JACK port!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: JACK ポートを作成できませんでした！</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="87"/>
@@ -409,7 +409,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="104"/>
         <source>Error: Could not activate JACK client!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: JACK クライアントを有効化できませんでした！</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="112"/>
@@ -587,7 +587,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="157"/>
         <source>Added pre-existing stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>既存のストリーム %1 を追加しました。</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="192"/>
@@ -616,12 +616,12 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="236"/>
         <source>Added stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>ストリーム %1 を追加しました。</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="244"/>
         <source>Removed stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>ストリーム %1 を削除しました。</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="270"/>
@@ -637,13 +637,13 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <location filename="../AV/Input/X11Input.cpp" line="186"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="112"/>
         <source>Error: Width or height is zero!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: 幅または高さがゼロです！</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="190"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="116"/>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: 幅または高さが大きすぎます！使用可能な最大値は %1 です。</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="236"/>
@@ -713,7 +713,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="103"/>
         <source>Error: Sample rate is zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: サンプルレートがゼロです。</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="140"/>
@@ -729,7 +729,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
         <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Encoding of audio frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: 音声フレームのエンコードに失敗しました！</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
@@ -740,12 +740,12 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
         <source>Stopping encoder thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>エンコーダスレッドを停止しています...</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="155"/>
         <source>Error: Can&apos;t open codec!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: コーデックを開けません！</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="163"/>
@@ -755,7 +755,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="179"/>
         <source>Encoder thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>エンコーダスレッドが開始されました。</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="211"/>
@@ -765,22 +765,22 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="225"/>
         <source>Encoder thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>エンコーダスレッドが停止しました。</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="229"/>
         <source>Exception &apos;%1&apos; in encoder thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>エンコーダスレッドで例外 &apos;%1&apos; が発生しました。</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="232"/>
         <source>Unknown exception in encoder thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>エンコーダスレッドで不明な例外が発生しました。</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="71"/>
         <source>Stopping encoders ...</source>
-        <translation type="unfinished"></translation>
+        <translation>エンコーダを停止しています...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="78"/>
@@ -796,7 +796,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="144"/>
         <source>Finishing encoders ...</source>
-        <translation type="unfinished"></translation>
+        <translation>エンコーダを終了しています...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="186"/>
@@ -806,7 +806,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="190"/>
         <source>Using format %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>フォーマット %1 (%2) を使用しています。</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="196"/>
@@ -816,7 +816,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="203"/>
         <source>Error: Can&apos;t open output file!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: 出力ファイルを開けません！</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="216"/>
@@ -827,17 +827,17 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="254"/>
         <source>Error: Can&apos;t find codec!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: コーデックが見つかりません！</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="264"/>
         <source>Using codec %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>コーデック %1 (%2) を使用しています。</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="273"/>
         <source>Error: Can&apos;t create new stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: 新規ストリームを作成できません！</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="283"/>
@@ -922,7 +922,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="577"/>
         <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation>警告: 音声ストリームにデータの欠落がありました。動画と同期させるため、音声に無音部分を挿入します。</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="877"/>
@@ -957,18 +957,18 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="181"/>
         <source>Using pixel format %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>ピクセルフォーマット %1 を使用しています。</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="195"/>
         <source>Error: The pixel format is not supported by the codec!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: コーデックがこのピクセルフォーマットをサポートしていません！</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="225"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="245"/>
         <source>Error: Encoding of video frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: 動画フレームのエンコードに失敗しました！</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="40"/>
@@ -984,7 +984,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="55"/>
         <source>Warning: Can&apos;t increase the thread priority.</source>
-        <translation type="unfinished"></translation>
+        <translation>警告: スレッド優先度を上げられません。</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="63"/>
@@ -1045,23 +1045,23 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../common/CPUFeatures.cpp" line="46"/>
         <source>CPU features</source>
-        <translation type="unfinished"></translation>
+        <translation>CPU 機能</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="159"/>
         <source>The application could not be launched.</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーションを起動できませんでした。</translation>
     </message>
     <message>
         <location filename="../GUI/HotkeyListener.cpp" line="164"/>
         <source>Warning: XInput2 is not supported by X server, hotkeys may not work in some applications.</source>
         <comment>Don&apos;t translate &apos;XInput2&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>警告: X サーバが XInput2 をサポートしていないため、一部のアプリケーションでホットキーが機能しない場合があります。</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="119"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: コマンドラインオプション &apos;%1&apos; は値を取りません！</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="150"/>
@@ -1086,7 +1086,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../Main.cpp" line="245"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
-        <translation type="unfinished">エラー: .ssr ディレクトリを作成できません！</translation>
+        <translation>エラー: .ssr ディレクトリを作成できません！</translation>
     </message>
 </context>
 <context>
@@ -1097,13 +1097,15 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
 
 You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished"></translation>
+        <translation>SimpleScreenRecorder は、Flipping が有効化されたプロプライエタリ NVIDIA ドライバの使用を検出しました。このドライバは録画中に画質が乱れることが知られているため、Flipping の無効化を推奨します。Flipping を無効化しますか？
+
+この設定は NVIDIA コントロールパネルで手動で変更することもできます。</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="90"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished"></translation>
+        <translation>申し訳ありません！Flipping を無効化できませんでした。NVIDIA コントロールパネルで手動での無効化を試してください。</translation>
     </message>
 </context>
 <context>
@@ -1111,7 +1113,7 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageDone.cpp" line="30"/>
         <source>The recording has been saved. You can edit the video now, or re-encode it with better settings to make the file smaller (the default settings are optimized for quality and speed, not file size).</source>
-        <translation type="unfinished"></translation>
+        <translation>録画内容が保存されました。編集を加えたり、ファイルサイズを縮小するために再エンコードすることができます (初期設定はファイルサイズではなく品質と速度に最適化されています) 。</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="33"/>
@@ -1149,7 +1151,7 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="125"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
-        <translation type="unfinished"></translation>
+        <translation>マルチモニタ構成において、内容を録画するモニタを選択します。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="126"/>
@@ -1194,7 +1196,8 @@ the client area of the window will be recorded.</source>
         <location filename="../GUI/PageInput.cpp" line="138"/>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation>録画する矩形範囲の左上隅の X 座標です。
+ヒント: マウスホイールまたは上下矢印キーでこの値を変更できます。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="140"/>
@@ -1205,7 +1208,8 @@ Hint: You can also change this value with the scroll wheel or the up/down arrows
         <location filename="../GUI/PageInput.cpp" line="144"/>
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation>録画する矩形範囲の左上隅の Y 座標です。
+ヒント: マウスホイールまたは上下矢印キーでこの値を変更できます。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="146"/>
@@ -1216,7 +1220,8 @@ Hint: You can also change this value with the scroll wheel or the up/down arrows
         <location filename="../GUI/PageInput.cpp" line="150"/>
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation>録画する矩形範囲の横方向の大きさです。
+ヒント: マウスホイールまたは上下矢印キーでこの値を変更できます。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="152"/>
@@ -1227,7 +1232,8 @@ Hint: You can also change this value with the scroll wheel or the up/down arrows
         <location filename="../GUI/PageInput.cpp" line="156"/>
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation>録画する矩形範囲の縦方向の大きさです。
+ヒント: マウスホイールまたは上下矢印キーでこの値を変更できます。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="158"/>
@@ -1237,7 +1243,7 @@ Hint: You can also change this value with the scroll wheel or the up/down arrows
     <message>
         <location filename="../GUI/PageInput.cpp" line="162"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
-        <translation type="unfinished"></translation>
+        <translation>出力時のフレームレート (フレーム毎秒) です。高フレームレートでの出力には CPU 処理時間が必要になります。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="163"/>
@@ -1247,7 +1253,7 @@ Hint: You can also change this value with the scroll wheel or the up/down arrows
     <message>
         <location filename="../GUI/PageInput.cpp" line="164"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
-        <translation type="unfinished"></translation>
+        <translation>サイズ変更の有効化を切り替えます。サイズの変更には CPU 処理時間が余分に必要になりますが、サイズを小さくするとエンコードを高速化できます。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="165"/>
@@ -1283,7 +1289,8 @@ Hint: You can also change this value with the scroll wheel or the up/down arrows
         <location filename="../GUI/PageInput.cpp" line="255"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
-        <translation type="unfinished"></translation>
+        <translation>録音に使用する音声バックエンドです。
+PulseAudio が動作しているシステムでも ALSA バックエンドを使用できますが、PulseAudio バックエンドの直接使用を推奨します。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="257"/>
@@ -1416,12 +1423,12 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageOutput.cpp" line="177"/>
         <source>Save as:</source>
-        <translation type="unfinished"></translation>
+        <translation>保存場所:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="179"/>
         <source>The recording will be saved to this location.</source>
-        <translation type="unfinished"></translation>
+        <translation>録画内容がこの場所に保存されます。</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="180"/>
@@ -1456,7 +1463,15 @@ Note that not all codecs are supported by all containers, and that not all media
    WebM is supported by default in Firefox, Chrome and Opera, and plugins are available for Internet Explorer and Safari.
    It supports only VP8 and Vorbis.
 - OGG supports only Theora and Vorbis.</source>
-        <translation type="unfinished"></translation>
+        <translation>録画内容の保存に使用するコンテナ (ファイル形式) です。
+コンテナによっては、サポートしていないコーデックがあります。また、メディアプレーヤーによっては一部の形式のファイルを開けないものがあります。
+- Matroska (MKV) はすべてのコーデックをサポートしていますが、知名度が高くありません。
+- MP4 は知名度があり、最近のほとんどのメディアプレーヤーで再生できますが、H.264 形式の動画しかサポートしていません
+   (また、多くのメディアプレーヤーは AAC 形式の音声しかサポートしていません) 。
+- WebM は HTML5 の &lt;video&gt; タグによる Web ページヘの埋め込みを想定した形式です。Google 社により開発されました。
+   Firefox、Chrome および Opera がデフォルトで対応しており、Internet Explorer と Safari ではプラグインにより対応しています。
+   WebM は VP8 と Vorbis のみサポートしています。
+- OGG は Theora と Vorbis のみサポートしています。</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="201"/>
@@ -1485,7 +1500,10 @@ Note that not all codecs are supported by all containers, and that not all media
 - H.264 (libx264) is by far the best codec - high quality and very fast.
 - VP8 (libvpx) is quite good but also quite slow.
 - Theora (libtheora) isn&apos;t really recommended because the quality isn&apos;t very good.</source>
-        <translation type="unfinished"></translation>
+        <translation>動画ストリームの圧縮に使用するコーデックです。
+- H.264 (libx264) は高品質かつ高速な最良のコーデックです。
+- VP8 (libvpx) は高品質ですが、低速です。
+- Theora (libtheora) は品質があまり良くないため推奨しません。</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="234"/>
@@ -1508,7 +1526,8 @@ Note that not all codecs are supported by all containers, and that not all media
         <location filename="../GUI/PageOutput.cpp" line="243"/>
         <source>The video bit rate (in kilobit per second). A higher value means a higher quality.
 If you have no idea where to start, try 5000 and change it if needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>動画のビットレート (キロビット毎秒) です。値を高くすると品質が向上します。
+適切な値が分からない場合は 5000 を選択し、必要に応じて調整してみてください。</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="245"/>
@@ -1520,7 +1539,8 @@ If you have no idea where to start, try 5000 and change it if needed.</source>
         <location filename="../GUI/PageOutput.cpp" line="250"/>
         <source>This setting changes the video quality. A lower value means a higher quality.
 The allowed range is 0-51 (0 means lossless, the default is 23).</source>
-        <translation type="unfinished"></translation>
+        <translation>動画の品質を変更します。値が小さいほど高画質になります。
+使用可能な値の範囲は 0 から 51 です (0 は無圧縮。初期値は 23) 。</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="256"/>
@@ -1538,17 +1558,17 @@ but results in larger files. The quality shouldn&apos;t be affected too much.</s
         <location filename="../GUI/PageOutput.cpp" line="263"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished"></translation>
+        <translation>CPU 使用率:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="265"/>
         <source>fastest</source>
-        <translation type="unfinished"></translation>
+        <translation>最も高速</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="270"/>
         <source>slowest</source>
-        <translation type="unfinished"></translation>
+        <translation>最も低速</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="271"/>
@@ -1560,7 +1580,7 @@ used by the VP8 encoder). Higher values result in lower quality video, unless yo
         <location filename="../GUI/PageOutput.cpp" line="273"/>
         <location filename="../GUI/PageOutput.cpp" line="328"/>
         <source>Custom options:</source>
-        <translation type="unfinished"></translation>
+        <translation>カスタムオプション:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="275"/>
@@ -1606,7 +1626,7 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageOutput.cpp" line="327"/>
         <source>The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.</source>
-        <translation type="unfinished"></translation>
+        <translation>音声のビットレート (キロビット毎秒) です。値を高くすると品質が向上します。一般的な値は 128 です。</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="344"/>
@@ -1638,12 +1658,12 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageOutput.cpp" line="657"/>
         <source>You did not select an output file!</source>
-        <translation type="unfinished"></translation>
+        <translation>出力ファイルが指定されませんでした！</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="662"/>
         <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル &apos;%1&apos; は既に存在します。本当に上書きしますか？</translation>
     </message>
 </context>
 <context>
@@ -1692,7 +1712,8 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
         <location filename="../GUI/PageRecord.cpp" line="158"/>
         <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
 The program that you are recording will not receive the key press.</source>
-        <translation type="unfinished"></translation>
+        <translation>録画の開始・停止に使用するショートカットです。
+ここで設定したショートカットは他のアプリケーションで使用できません。</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="198"/>
@@ -1752,7 +1773,7 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="246"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
-        <translation type="unfinished"></translation>
+        <translation>注: プレビューの表示には CPU 処理時間が余分に必要になります (特に、高フレームレート時) 。</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="295"/>
@@ -1803,7 +1824,7 @@ Are you sure that you want to quit?</source>
         <location filename="../GUI/PageRecord.cpp" line="698"/>
         <location filename="../GUI/PageRecord.cpp" line="783"/>
         <source>Error: Something went wrong during initialization.</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: 初期化中に問題が発生しました。</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="563"/>
@@ -1930,7 +1951,12 @@ The start button is at the top ;).</source>
 
 &lt;p&gt;For more information:&lt;br&gt;
 %1&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;SimpleScreenRecorder へようこそ！&lt;/p&gt;
+
+&lt;p&gt;その名前とは裏腹に、このアプリケーションはたくさんのオプションを提供しています。でも、心配は要りません。本当に覚えておいていただきたいことは次の 2 点だけです。まず、通常の使用であれば初期設定のままで問題ありません。役割のよく分からない項目は、初期設定をそのままお使いください。次に、ほとんどの設定項目にはツールチップがあります。動作を詳しく知りたい項目にマウスカーソルを合わせてみてください。&lt;/p&gt;
+
+&lt;p&gt;詳しくは:&lt;br&gt;
+%1&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="44"/>
@@ -1983,7 +2009,7 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(なし)</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
