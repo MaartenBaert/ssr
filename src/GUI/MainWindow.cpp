@@ -131,6 +131,10 @@ void MainWindow::SaveSettings() {
 
 }
 
+bool MainWindow::Validate() {
+	return m_page_output->Validate();
+}
+
 void MainWindow::closeEvent(QCloseEvent* event) {
 	if(m_page_record->ShouldBlockClose()) {
 		event->ignore();

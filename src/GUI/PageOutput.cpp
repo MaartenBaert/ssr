@@ -468,6 +468,22 @@ void PageOutput::PageStart() {
 
 }
 
+bool PageOutput::Validate() {
+	QString file = GetFile();
+	if(file.isEmpty()) {
+		MessageBox(QMessageBox::Critical, this, MainWindow::WINDOW_CAPTION, tr("You did not select an output file!"), BUTTON_OK, BUTTON_OK);
+		return false;
+	}
+	if(GetFileProtocol().isNull() && !GetSeparateFiles() && QFileInfo(file).exists()) {
+		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
+					  tr("The file '%1' already exists. Are you sure that you want to overwrite it?").arg(QFileInfo(file).fileName()),
+					  BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
+			return false;
+		}
+	}
+	return true;
+}
+
 QString PageOutput::GetFileProtocol() {
 	QRegExp protocol_regex("^([a-z0-9]+)://", Qt::CaseInsensitive, QRegExp::RegExp);
 	if(protocol_regex.indexIn(GetFile()) < 0) {
@@ -652,17 +668,7 @@ void PageOutput::OnBrowse() {
 }
 
 void PageOutput::OnContinue() {
-	QString file = GetFile();
-	if(file.isEmpty()) {
-		MessageBox(QMessageBox::Critical, this, MainWindow::WINDOW_CAPTION, tr("You did not select an output file!"), BUTTON_OK, BUTTON_OK);
+	if(!Validate())
 		return;
-	}
-	if(GetFileProtocol().isNull() && !GetSeparateFiles() && QFileInfo(file).exists()) {
-		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
-					  tr("The file '%1' already exists. Are you sure that you want to overwrite it?").arg(QFileInfo(file).fileName()),
-					  BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
-			return;
-		}
-	}
 	m_main_window->GoPageRecord();
 }

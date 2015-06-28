@@ -194,6 +194,7 @@ public slots:
 	void OnUpdateAudioFields();
 
 private slots:
+	void OnFocusChange(QWidget* old, QWidget* now);
 	void OnUpdateScreenConfiguration();
 	void OnUpdateALSASources();
 	void OnUpdatePulseAudioSources(); // conditional compilation of slots is hard, so we keep the slot even if PulseAudio is not used

@@ -135,6 +135,7 @@ public:
 	void LoadSettings(QSettings* settings);
 	void SaveSettings(QSettings* settings);
 
+	bool TryStartPage();
 	void StartPage();
 	void StopPage(bool save);
 	void StartOutput();

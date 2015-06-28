@@ -350,7 +350,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 	m_timer_update_info = new QTimer(this);
 	connect(m_timer_update_info, SIGNAL(timeout()), this, SLOT(OnUpdateInformation()));
-	connect(&m_hotkey_start_pause, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()));
+	connect(&m_hotkey_start_pause, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()), Qt::QueuedConnection);
 	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(OnNewLogLine(Logger::enum_type,QString)), Qt::QueuedConnection);
 
 	if(m_systray_icon != NULL)
@@ -405,6 +405,16 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	settings->setValue("record/hotkey_key", GetHotkeyKey());
 	settings->setValue("record/sound_notifications_enable", AreSoundNotificationsEnabled());
 	settings->setValue("record/preview_frame_rate", GetPreviewFrameRate());
+}
+
+bool PageRecord::TryStartPage() {
+	if(m_page_started)
+		return true;
+	if(!m_main_window->Validate())
+		return false;
+	m_main_window->GoPageRecord();
+	assert(m_page_started);
+	return true;
 }
 
 void PageRecord::StartPage() {
@@ -566,7 +576,6 @@ void PageRecord::StartPage() {
 	m_recorded_something = false;
 	m_wait_saving = false;
 	UpdateSysTray();
-	OnUpdateHotkey();
 	OnUpdateSoundNotifications();
 
 	UpdateInput();
@@ -613,7 +622,6 @@ void PageRecord::StopPage(bool save) {
 
 	m_page_started = false;
 	UpdateSysTray();
-	OnUpdateHotkey();
 	OnUpdateSoundNotifications();
 
 	m_timer_update_info->stop();
@@ -894,7 +902,7 @@ void PageRecord::UpdateInput() {
 void PageRecord::UpdateSysTray() {
 	if(m_systray_icon == NULL)
 		return;
-	GroupEnabled({m_systray_action_start_pause, m_systray_action_cancel, m_systray_action_save}, m_page_started);
+	GroupEnabled({m_systray_action_cancel, m_systray_action_save}, m_page_started);
 	if(m_page_started && m_output_started) {
 		m_systray_icon->setIcon(g_icon_ssr_recording);
 		m_systray_action_start_pause->setIcon(g_icon_pause);
@@ -934,7 +942,7 @@ void PageRecord::OnUpdateHotkeyFields() {
 }
 
 void PageRecord::OnUpdateHotkey() {
-	if(m_page_started && IsHotkeyEnabled()) {
+	if(IsHotkeyEnabled()) {
 		unsigned int modifiers = 0;
 		if(IsHotkeyCtrlEnabled()) modifiers |= ControlMask;
 		if(IsHotkeyShiftEnabled()) modifiers |= ShiftMask;
@@ -961,7 +969,9 @@ void PageRecord::OnUpdateSoundNotifications() {
 }
 
 void PageRecord::OnRecordStartPause() {
-	if(!m_page_started)
+	if(QApplication::activeModalWidget() != NULL || QApplication::activePopupWidget() != NULL)
+		return;
+	if(!TryStartPage())
 		return;
 	if(m_wait_saving)
 		return;

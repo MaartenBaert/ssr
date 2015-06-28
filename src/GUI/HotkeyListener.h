@@ -52,7 +52,7 @@ public: // internal
 	void Trigger();
 
 signals:
-	void Triggered();
+	void Triggered(); // important: always use a queued connection for consistent results
 
 };
 

@@ -143,6 +143,7 @@ private:
 
 public:
 	void PageStart();
+	bool Validate();
 
 	QString GetFileProtocol();
 	QString GetContainerAVName();

@@ -327,6 +327,7 @@ PageInput::PageInput(MainWindow* main_window)
 		layout2->addWidget(button_continue);
 	}
 
+	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(OnFocusChange(QWidget*, QWidget*)));
 	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(OnUpdateScreenConfiguration()));
 	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(OnUpdateScreenConfiguration()));
 
@@ -575,11 +576,11 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 				m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
 				m_rubber_band->show();
 			}
-			return;
 		} else {
 			StopGrabbing();
-			return;
 		}
+		event->accept();
+		return;
 	}
 	event->ignore();
 }
@@ -592,6 +593,7 @@ void PageInput::mouseReleaseEvent(QMouseEvent* event) {
 			}
 		}
 		StopGrabbing();
+		event->accept();
 		return;
 	}
 	event->ignore();
@@ -608,14 +610,19 @@ void PageInput::mouseMoveEvent(QMouseEvent* event) {
 			}
 			m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
 		}
+		event->accept();
 		return;
 	}
 	event->ignore();
 }
 
 void PageInput::keyPressEvent(QKeyEvent* event) {
-	if(event->key() == Qt::Key_Escape) {
-		StopGrabbing();
+	if(m_grabbing) {
+		if(event->key() == Qt::Key_Escape) {
+			StopGrabbing();
+			return;
+		}
+		event->accept();
 		return;
 	}
 	event->ignore();
@@ -810,6 +817,15 @@ void PageInput::OnUpdateAudioFields() {
 		{{m_checkbox_jack_connect_system_capture, m_checkbox_jack_connect_system_playback}, (backend == AUDIO_BACKEND_JACK)},
 #endif
 	});
+}
+
+void PageInput::OnFocusChange(QWidget* old, QWidget* now) {
+	Q_UNUSED(old);
+	qDebug() << "FocusChange" << old << now << m_grabbing;
+	if(m_grabbing && now != NULL) {
+		// workaround to avoid a deadlock situation when a modal dialog appears
+		StopGrabbing();
+	}
 }
 
 void PageInput::OnUpdateScreenConfiguration() {
