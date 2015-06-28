@@ -12,6 +12,7 @@ Todo:
 - X11Input should track resolution changes.
 - Show recorded area while recording.
 - Check disk space (Muxer).
+- Record active monitor [https://github.com/MaartenBaert/ssr/issues/337]
 
 Wishlist:
 - Improve interface for small screens.
