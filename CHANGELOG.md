@@ -4,6 +4,8 @@ SimpleScreenRecorder changes
 Git master
 ----------
 
+- Allow user to start recording with hotkey or systray even when not on the recording page.
+- Fixed JACK input bug that could cause deadlocks in rare cases.
 - ?
 
 Version 0.3.3
