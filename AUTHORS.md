@@ -26,6 +26,7 @@ Translations
 - Hebrew: GreenLunar
 - Hungarian: ViBE
 - Italian: Bersil
+- Japanese: Tou Omiya
 - Dutch: Maarten Baert
 - Polish: Szamanx0
 - Brazilian Portuguese: Paulo Milliet Roque, Rafael Ferreira
