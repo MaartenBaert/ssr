@@ -19,6 +19,7 @@ Translations
 
 - Bulgarian: Svetoslav Sashkov
 - Czech: Radek Steiger
+- French: Mario Roger
 - German: Manuel Schömburg
 - Greek: Nick Thom
 - Spanish: Dani Rodríguez
