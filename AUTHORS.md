@@ -34,3 +34,4 @@ Translations
 - Swedish: Åke Engelbrektson
 - Ukrainian: Rom Gyrfalco
 - Simplified Chinese: Weitian Leung
+- Traditional Chinese: Estea Chen
