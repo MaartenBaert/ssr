@@ -1,9 +1,9 @@
 AC_INIT([simplescreenrecorder], [0.3.3], [maarten-baert@hotmail.com], [simplescreenrecorder], [http://www.maartenbaert.be/simplescreenrecorder/])
-AC_CONFIG_SRCDIR([src/Main.cpp])
+AC_CONFIG_SRCDIR([src/simplescreenrecorder/Main.cpp])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile data/Makefile glinject/Makefile scripts/Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile data/Makefile scripts/Makefile src/Makefile src/libelfhacks/Makefile src/libssr-stream/Makefile src/libssr-glinject/Makefile src/simplescreenrecorder/Makefile translations/Makefile])
 
 AM_INIT_AUTOMAKE([foreign subdir-objects -Wall -Werror])
 AM_MAINTAINER_MODE

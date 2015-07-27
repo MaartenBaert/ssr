@@ -1,4 +1,4 @@
-SUBDIRS = data glinject scripts src
+SUBDIRS = data scripts src translations
 
 EXTRA_DIST = \
 	AUTHORS.md \

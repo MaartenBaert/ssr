@@ -1,6 +1,6 @@
 # libtool.m4 - Configure libtool for the host system. -*-Autoconf-*-
 #
-#   Copyright (C) 1996-2001, 2003-2014 Free Software Foundation, Inc.
+#   Copyright (C) 1996-2001, 2003-2015 Free Software Foundation, Inc.
 #   Written by Gordon Matzigkeit, 1996
 #
 # This file is free software; the Free Software Foundation gives
@@ -103,19 +103,36 @@ dnl AC_DEFUN([AC_PROG_LIBTOOL], [])
 dnl AC_DEFUN([AM_PROG_LIBTOOL], [])
 
 
+# _LT_PREPARE_CC_BASENAME
+# -----------------------
+m4_defun([_LT_PREPARE_CC_BASENAME], [
+# Calculate cc_basename.  Skip known compiler wrappers and cross-prefix.
+func_cc_basename ()
+{
+    for cc_temp in @S|@*""; do
+      case $cc_temp in
+        compile | *[[\\/]]compile | ccache | *[[\\/]]ccache ) ;;
+        distcc | *[[\\/]]distcc | purify | *[[\\/]]purify ) ;;
+        \-*) ;;
+        *) break;;
+      esac
+    done
+    func_cc_basename_result=`$ECHO "$cc_temp" | $SED "s%.*/%%; s%^$host_alias-%%"`
+}
+])# _LT_PREPARE_CC_BASENAME
+
+
 # _LT_CC_BASENAME(CC)
 # -------------------
-# Calculate cc_basename.  Skip known compiler wrappers and cross-prefix.
+# It would be clearer to call AC_REQUIREs from _LT_PREPARE_CC_BASENAME,
+# but that macro is also expanded into generated libtool script, which
+# arranges for $SED and $ECHO to be set by different means.
 m4_defun([_LT_CC_BASENAME],
-[for cc_temp in $1""; do
-  case $cc_temp in
-    compile | *[[\\/]]compile | ccache | *[[\\/]]ccache ) ;;
-    distcc | *[[\\/]]distcc | purify | *[[\\/]]purify ) ;;
-    \-*) ;;
-    *) break;;
-  esac
-done
-cc_basename=`$ECHO "$cc_temp" | $SED "s%.*/%%; s%^$host_alias-%%"`
+[m4_require([_LT_PREPARE_CC_BASENAME])dnl
+AC_REQUIRE([_LT_DECL_SED])dnl
+AC_REQUIRE([_LT_PROG_ECHO_BACKSLASH])dnl
+func_cc_basename $1
+cc_basename=$func_cc_basename_result
 ])
 
 
@@ -720,10 +737,24 @@ _LT_CONFIG_SAVE_COMMANDS([
 _LT_COPYING
 _LT_LIBTOOL_TAGS
 
+# Configured defaults for sys_lib_dlsearch_path munging.
+: \${LT_SYS_LIBRARY_PATH="$configure_time_lt_sys_library_path"}
+
 # ### BEGIN LIBTOOL CONFIG
 _LT_LIBTOOL_CONFIG_VARS
 _LT_LIBTOOL_TAG_VARS
 # ### END LIBTOOL CONFIG
+
+_LT_EOF
+
+    cat <<'_LT_EOF' >> "$cfgfile"
+
+# ### BEGIN FUNCTIONS SHARED WITH CONFIGURE
+
+_LT_PREPARE_MUNGE_PATH_LIST
+_LT_PREPARE_CC_BASENAME
+
+# ### END FUNCTIONS SHARED WITH CONFIGURE
 
 _LT_EOF
 
@@ -2202,6 +2233,47 @@ _LT_DECL([], [striplib], [1])
 ])# _LT_CMD_STRIPLIB
 
 
+# _LT_PREPARE_MUNGE_PATH_LIST
+# ---------------------------
+# Make sure func_munge_path_list() is defined correctly.
+m4_defun([_LT_PREPARE_MUNGE_PATH_LIST],
+[[# func_munge_path_list VARIABLE PATH
+# -----------------------------------
+# VARIABLE is name of variable containing _space_ separated list of
+# directories to be munged by the contents of PATH, which is string
+# having a format:
+# "DIR[:DIR]:"
+#       string "DIR[ DIR]" will be prepended to VARIABLE
+# ":DIR[:DIR]"
+#       string "DIR[ DIR]" will be appended to VARIABLE
+# "DIRP[:DIRP]::[DIRA:]DIRA"
+#       string "DIRP[ DIRP]" will be prepended to VARIABLE and string
+#       "DIRA[ DIRA]" will be appended to VARIABLE
+# "DIR[:DIR]"
+#       VARIABLE will be replaced by "DIR[ DIR]"
+func_munge_path_list ()
+{
+    case x@S|@2 in
+    x)
+        ;;
+    *:)
+        eval @S|@1=\"`$ECHO @S|@2 | $SED 's/:/ /g'` \@S|@@S|@1\"
+        ;;
+    x:*)
+        eval @S|@1=\"\@S|@@S|@1 `$ECHO @S|@2 | $SED 's/:/ /g'`\"
+        ;;
+    *::*)
+        eval @S|@1=\"\@S|@@S|@1\ `$ECHO @S|@2 | $SED -e 's/.*:://' -e 's/:/ /g'`\"
+        eval @S|@1=\"`$ECHO @S|@2 | $SED -e 's/::.*//' -e 's/:/ /g'`\ \@S|@@S|@1\"
+        ;;
+    *)
+        eval @S|@1=\"`$ECHO @S|@2 | $SED 's/:/ /g'`\"
+        ;;
+    esac
+}
+]])# _LT_PREPARE_PATH_LIST
+
+
 # _LT_SYS_DYNAMIC_LINKER([TAG])
 # -----------------------------
 # PORTME Fill in your ld.so characteristics
@@ -2212,6 +2284,7 @@ m4_require([_LT_FILEUTILS_DEFAULTS])dnl
 m4_require([_LT_DECL_OBJDUMP])dnl
 m4_require([_LT_DECL_SED])dnl
 m4_require([_LT_CHECK_SHELL_FEATURES])dnl
+m4_require([_LT_PREPARE_MUNGE_PATH_LIST])dnl
 AC_MSG_CHECKING([dynamic linker characteristics])
 m4_if([$1],
 	[], [
@@ -2305,6 +2378,9 @@ hardcode_into_libs=no
 # when you set need_version to no, make sure it does not cause -set_version
 # flags to be left without arguments
 need_version=unknown
+
+AC_ARG_VAR([LT_SYS_LIBRARY_PATH],
+[User-defined run-time library search path.])
 
 case $host_os in
 aix3*)
@@ -2594,6 +2670,7 @@ freebsd* | dragonfly*)
   case $version_type in
     freebsd-elf*)
       library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
+      soname_spec='$libname$release$shared_ext$major'
       need_version=no
       need_lib_prefix=no
       ;;
@@ -2653,10 +2730,11 @@ hpux9* | hpux10* | hpux11*)
     soname_spec='$libname$release$shared_ext$major'
     if test 32 = "$HPUX_IA64_MODE"; then
       sys_lib_search_path_spec="/usr/lib/hpux32 /usr/local/lib/hpux32 /usr/local/lib"
+      sys_lib_dlsearch_path_spec=/usr/lib/hpux32
     else
       sys_lib_search_path_spec="/usr/lib/hpux64 /usr/local/lib/hpux64"
+      sys_lib_dlsearch_path_spec=/usr/lib/hpux64
     fi
-    sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
     ;;
   hppa*64*)
     shrext_cmds='.sl'
@@ -2789,7 +2867,12 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu | gnu*)
   # before this can be enabled.
   hardcode_into_libs=yes
 
-  # Append ld.so.conf contents to the search path
+  # Ideally, we could use ldconfig to report *all* directores which are
+  # searched for libraries, however this is still not possible.  Aside from not
+  # being certain /sbin/ldconfig is available, command
+  # 'ldconfig -N -X -v | grep ^/' on 64bit Fedora does not report /usr/lib64,
+  # even though it is searched at run-time.  Try to do the best guess by
+  # appending ld.so.conf contents (and includes) to the search path.
   if test -f /etc/ld.so.conf; then
     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \[$]2)); skip = 1; } { if (!skip) print \[$]0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;s/"//g;/^$/d' | tr '\n' ' '`
     sys_lib_dlsearch_path_spec="/lib /usr/lib $lt_ld_extra"
@@ -3013,9 +3096,19 @@ fi
 if test set = "${lt_cv_sys_lib_search_path_spec+set}"; then
   sys_lib_search_path_spec=$lt_cv_sys_lib_search_path_spec
 fi
+
 if test set = "${lt_cv_sys_lib_dlsearch_path_spec+set}"; then
   sys_lib_dlsearch_path_spec=$lt_cv_sys_lib_dlsearch_path_spec
 fi
+
+# remember unaugmented sys_lib_dlsearch_path content for libtool script decls...
+configure_time_dlsearch_path=$sys_lib_dlsearch_path_spec
+
+# ... but it needs LT_SYS_LIBRARY_PATH munging for other configure-time code
+func_munge_path_list sys_lib_dlsearch_path_spec "$LT_SYS_LIBRARY_PATH"
+
+# to be used as default LT_SYS_LIBRARY_PATH value in generated libtool
+configure_time_lt_sys_library_path=$LT_SYS_LIBRARY_PATH
 
 _LT_DECL([], [variables_saved_for_relink], [1],
     [Variables whose values should be saved in libtool wrapper scripts and
@@ -3049,8 +3142,10 @@ _LT_DECL([], [hardcode_into_libs], [0],
     [Whether we should hardcode library paths into libraries])
 _LT_DECL([], [sys_lib_search_path_spec], [2],
     [Compile-time system search path for libraries])
-_LT_DECL([], [sys_lib_dlsearch_path_spec], [2],
-    [Run-time system search path for libraries])
+_LT_DECL([sys_lib_dlsearch_path_spec], [configure_time_dlsearch_path], [2],
+    [Detected run-time system search path for libraries])
+_LT_DECL([], [configure_time_lt_sys_library_path], [2],
+    [Explicit LT_SYS_LIBRARY_PATH set during ./configure time])
 ])# _LT_SYS_DYNAMIC_LINKER
 
 
@@ -7350,6 +7445,7 @@ func_stripname_cnf ()
 } # func_stripname_cnf
 ])# _LT_FUNC_STRIPNAME_CNF
 
+
 # _LT_SYS_HIDDEN_LIBDEPS([TAGNAME])
 # ---------------------------------
 # Figure out "hidden" library dependencies from verbose
@@ -7527,51 +7623,6 @@ interix[[3-9]]*)
   _LT_TAGVAR(predep_objects,$1)=
   _LT_TAGVAR(postdep_objects,$1)=
   _LT_TAGVAR(postdeps,$1)=
-  ;;
-
-linux*)
-  case `$CC -V 2>&1 | sed 5q` in
-  *Sun\ C*)
-    # Sun C++ 5.9
-
-    # The more standards-conforming stlport4 library is
-    # incompatible with the Cstd library. Avoid specifying
-    # it if it's in CXXFLAGS. Ignore libCrun as
-    # -library=stlport4 depends on it.
-    case " $CXX $CXXFLAGS " in
-    *" -library=stlport4 "*)
-      solaris_use_stlport4=yes
-      ;;
-    esac
-
-    if test yes != "$solaris_use_stlport4"; then
-      _LT_TAGVAR(postdeps,$1)='-library=Cstd -library=Crun'
-    fi
-    ;;
-  esac
-  ;;
-
-solaris*)
-  case $cc_basename in
-  CC* | sunCC*)
-    # The more standards-conforming stlport4 library is
-    # incompatible with the Cstd library. Avoid specifying
-    # it if it's in CXXFLAGS. Ignore libCrun as
-    # -library=stlport4 depends on it.
-    case " $CXX $CXXFLAGS " in
-    *" -library=stlport4 "*)
-      solaris_use_stlport4=yes
-      ;;
-    esac
-
-    # Adding this requires a known-good setup of shared libraries for
-    # Sun compiler versions before 5.6, else PIC objects from an old
-    # archive will be linked into the output, leading to subtle bugs.
-    if test yes != "$solaris_use_stlport4"; then
-      _LT_TAGVAR(postdeps,$1)='-library=Cstd -library=Crun'
-    fi
-    ;;
-  esac
   ;;
 esac
 ])

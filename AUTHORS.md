@@ -7,6 +7,7 @@ Programming
 - Maarten Baert
 - Boran Car (GLInject hotkey workaround)
 - Dubslow (profiles)
+- Pyry Haulos (libelfhacks)
 
 Graphics
 --------
