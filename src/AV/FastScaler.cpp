@@ -126,8 +126,8 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelForma
 		throw LibavException();
 	}
 	sws_setColorspaceDetails(m_sws_context,
+							 sws_getCoefficients(SWS_CS_DEFAULT), 0, //TODO// need to change this for actual YUV inputs (e.g. webcam)
 							 sws_getCoefficients(SWS_CS_ITU709), 0,
-							 sws_getCoefficients(SWS_CS_DEFAULT), 0,
 							 0, 1 << 16, 1 << 16);
 	sws_scale(m_sws_context, in_data, in_stride, 0, in_height, out_data, out_stride);
 
