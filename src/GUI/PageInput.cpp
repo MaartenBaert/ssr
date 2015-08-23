@@ -821,7 +821,6 @@ void PageInput::OnUpdateAudioFields() {
 
 void PageInput::OnFocusChange(QWidget* old, QWidget* now) {
 	Q_UNUSED(old);
-	qDebug() << "FocusChange" << old << now << m_grabbing;
 	if(m_grabbing && now != NULL) {
 		// workaround to avoid a deadlock situation when a modal dialog appears
 		StopGrabbing();

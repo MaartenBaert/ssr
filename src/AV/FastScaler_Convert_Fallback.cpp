@@ -37,12 +37,13 @@ The converters below are currently hard-coded for BT.709.
 */
 
 /*
-==== Fallback BGRA-to-YUV444/YUV422/YUV420 Converter ====
+==== Fallback BGRA-to-YUV444/YUV422/YUV420/NV12 Converter ====
 
 Nothing special, just plain C code.
 - YUV444: one-to-one mapping
 - YUV422: takes blocks of 2x1 pixels, produces 2x1 Y and 1x1 U/V values
 - YUV420: takes blocks of 2x2 pixels, produces 2x2 Y and 1x1 U/V values
+- NV12: like YUV420, but U/V are in the same plane
 */
 
 void Convert_BGRA_YUV444_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
@@ -84,9 +85,8 @@ void Convert_BGRA_YUV422_Fallback(unsigned int w, unsigned int h, const uint8_t*
 			int sr = r1 + r2;
 			int sg = g1 + g2;
 			int sb = b1 + b2;
-			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 9;
-			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 9;
-			++yuv_u; ++yuv_v;
+			*(yuv_u++) = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 9;
+			*(yuv_v++) = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 9;
 		}
 	}
 }
@@ -115,9 +115,38 @@ void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const uint8_t*
 			int sr = r1 + r2 + r3 + r4;
 			int sg = g1 + g2 + g3 + g4;
 			int sb = b1 + b2 + b3 + b4;
-			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 10;
-			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 10;
-			++yuv_u; ++yuv_v;
+			*(yuv_u++) = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 9;
+			*(yuv_v++) = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 9;
+		}
+	}
+}
+
+void Convert_BGRA_NV12_Fallback(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[2], const int out_stride[2]) {
+	assert(w % 2 == 0 && h % 2 == 0);
+	const int offset_y = 128 + (16 << 8), offset_uv = (128 + (128 << 8)) << 2;
+	for(unsigned int j = 0; j < h / 2; ++j) {
+		const uint32_t *rgb1 = (const uint32_t*) (in_data + in_stride * (int) j * 2);
+		const uint32_t *rgb2 = (const uint32_t*) (in_data + in_stride * ((int) j * 2 + 1));
+		uint8_t *yuv_y1 = out_data[0] + out_stride[0] * (int) j * 2;
+		uint8_t *yuv_y2 = out_data[0] + out_stride[0] * ((int) j * 2 + 1);
+		uint8_t *yuv_uv = out_data[1] + out_stride[1] * (int) j;
+		for(unsigned int i = 0; i < w / 2; ++i) {
+			uint32_t c1 = rgb1[0], c2 = rgb1[1], c3 = rgb2[0], c4 = rgb2[1];
+			rgb1 += 2; rgb2 += 2;
+			int r1 = (int) ((c1 >> 16) & 0xff), r2 = (int) ((c2 >> 16) & 0xff), r3 = (int) ((c3 >> 16) & 0xff), r4 = (int) ((c4 >> 16) & 0xff);
+			int g1 = (int) ((c1 >>  8) & 0xff), g2 = (int) ((c2 >>  8) & 0xff), g3 = (int) ((c3 >>  8) & 0xff), g4 = (int) ((c4 >>  8) & 0xff);
+			int b1 = (int) ((c1      ) & 0xff), b2 = (int) ((c2      ) & 0xff), b3 = (int) ((c3      ) & 0xff), b4 = (int) ((c4      ) & 0xff);
+			yuv_y1[0] = (47 * r1 + 157 * g1 + 16 * b1 + offset_y) >> 8;
+			yuv_y1[1] = (47 * r2 + 157 * g2 + 16 * b2 + offset_y) >> 8;
+			yuv_y2[0] = (47 * r3 + 157 * g3 + 16 * b3 + offset_y) >> 8;
+			yuv_y2[1] = (47 * r4 + 157 * g4 + 16 * b4 + offset_y) >> 8;
+			yuv_y1 += 2; yuv_y2 += 2;
+			int sr = r1 + r2 + r3 + r4;
+			int sg = g1 + g2 + g3 + g4;
+			int sb = b1 + b2 + b3 + b4;
+			yuv_uv[0] = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 10;
+			yuv_uv[1] = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 10;
+			yuv_uv += 2;
 		}
 	}
 }

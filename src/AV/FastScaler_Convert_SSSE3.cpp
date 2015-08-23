@@ -55,8 +55,8 @@ This converter is about 4 times faster than the fallback converter.
 	__m128i u = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(r, v_mat_ur), _mm_mullo_epi16(g, v_mat_ug)), _mm_add_epi16(_mm_mullo_epi16(b, v_mat_ub_vr), v_offset_uv));
 #define Convert_RGB_V(r, g, b, v) \
 	__m128i v = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(r, v_mat_ub_vr), _mm_mullo_epi16(g, v_mat_vg)), _mm_add_epi16(_mm_mullo_epi16(b, v_mat_vb), v_offset_uv));
-#define WritePlaneInterleaved(ptr, y1, y2) \
-	_mm_stream_si128((__m128i*) (ptr), _mm_or_si128(_mm_shuffle_epi8(y1, v_shuffle1), _mm_shuffle_epi8(y2, v_shuffle2)));
+#define WritePlaneInterleaved(ptr, y1, y2, sh1, sh2) \
+	_mm_stream_si128((__m128i*) (ptr), _mm_or_si128(_mm_shuffle_epi8(y1, sh1), _mm_shuffle_epi8(y2, sh2)));
 
 void Convert_BGRA_YUV444_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
 	assert((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0);
@@ -92,15 +92,15 @@ void Convert_BGRA_YUV444_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 			rgb += 16;
 			Convert_RGB_Y(r1, g1, b1, y1);
 			Convert_RGB_Y(r2, g2, b2, y2);
-			WritePlaneInterleaved(yuv_y, y1, y2);
+			WritePlaneInterleaved(yuv_y, y1, y2, v_shuffle1, v_shuffle2);
 			yuv_y += 16;
 			Convert_RGB_U(r1, g1, b1, u1);
 			Convert_RGB_U(r2, g2, b2, u2);
-			WritePlaneInterleaved(yuv_u, u1, u2);
+			WritePlaneInterleaved(yuv_u, u1, u2, v_shuffle1, v_shuffle2);
 			yuv_u += 16;
 			Convert_RGB_V(r1, g1, b1, v1);
 			Convert_RGB_V(r2, g2, b2, v2);
-			WritePlaneInterleaved(yuv_v, v1, v2);
+			WritePlaneInterleaved(yuv_v, v1, v2, v_shuffle1, v_shuffle2);
 			yuv_v += 16;
 		}
 		for(unsigned int i = 0; i < (w & 15); ++i) {
@@ -154,7 +154,7 @@ void Convert_BGRA_YUV422_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 			rgb += 16;
 			Convert_RGB_Y(r1, g1, b1, y1);
 			Convert_RGB_Y(r2, g2, b2, y2);
-			WritePlaneInterleaved(yuv_y, y1, y2);
+			WritePlaneInterleaved(yuv_y, y1, y2, v_shuffle1, v_shuffle2);
 			yuv_y += 16;
 			__m128i ra = _mm_srli_epi16(_mm_hadd_epi32(r1, r2), 1);
 			__m128i ga = _mm_srli_epi16(_mm_hadd_epi32(g1, g2), 1);
@@ -178,9 +178,8 @@ void Convert_BGRA_YUV422_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 			int sr = r1 + r2;
 			int sg = g1 + g2;
 			int sb = b1 + b2;
-			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 9;
-			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 9;
-			++yuv_u; ++yuv_v;
+			*(yuv_u++) = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 9;
+			*(yuv_v++) = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 9;
 		}
 	}
 
@@ -228,7 +227,7 @@ void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 				rgb1 += 16;
 				Convert_RGB_Y(r1, g1, b1, y1);
 				Convert_RGB_Y(r2, g2, b2, y2);
-				WritePlaneInterleaved(yuv_y1, y1, y2);
+				WritePlaneInterleaved(yuv_y1, y1, y2, v_shuffle1, v_shuffle2);
 				yuv_y1 += 16;
 				_mm_prefetch(rgb1 + 16, _MM_HINT_T0);
 				ra = _mm_hadd_epi32(r1, r2);
@@ -241,7 +240,7 @@ void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 				rgb2 += 16;
 				Convert_RGB_Y(r1, g1, b1, y1);
 				Convert_RGB_Y(r2, g2, b2, y2);
-				WritePlaneInterleaved(yuv_y2, y1, y2);
+				WritePlaneInterleaved(yuv_y2, y1, y2, v_shuffle1, v_shuffle2);
 				yuv_y2 += 16;
 				_mm_prefetch(rgb2 + 16, _MM_HINT_T0);
 				ra = _mm_add_epi16(ra, _mm_hadd_epi32(r1, r2));
@@ -274,9 +273,101 @@ void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 			int sr = r1 + r2 + r3 + r4;
 			int sg = g1 + g2 + g3 + g4;
 			int sb = b1 + b2 + b3 + b4;
-			*yuv_u = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 10;
-			*yuv_v = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 10;
-			++yuv_u; ++yuv_v;
+			*(yuv_u++) = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 9;
+			*(yuv_v++) = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 9;
+		}
+	}
+
+	_mm_sfence();
+
+}
+
+void Convert_BGRA_NV12_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* const out_data[2], const int out_stride[2]) {
+	assert(w % 2 == 0 && h % 2 == 0);
+	assert((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0);
+	assert((uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0);
+
+	__m128i v_byte1     = _mm_set1_epi32(0x000000ff);
+	__m128i v_byte3     = _mm_set1_epi32(0x00ff0000);
+	__m128i v_mat_yr    = _mm_set1_epi16(47);
+	__m128i v_mat_yg    = _mm_set1_epi16(157);
+	__m128i v_mat_yb    = _mm_set1_epi16(16);
+	__m128i v_mat_ur    = _mm_set1_epi16(-26);
+	__m128i v_mat_ug    = _mm_set1_epi16(-86);
+	__m128i v_mat_ub_vr = _mm_set1_epi16(112);
+	__m128i v_mat_vg    = _mm_set1_epi16(-102);
+	__m128i v_mat_vb    = _mm_set1_epi16(-10);
+	__m128i v_offset_y  = _mm_set1_epi16(128 + (16 << 8));
+	__m128i v_offset_uv = _mm_set1_epi16(128 + (128 << 8));
+	__m128i v_2         = _mm_set1_epi16(2);
+	__m128i v_shuffle1  = _mm_setr_epi8(1, 5, 9, 13, 3, 7, 11, 15, 255, 255, 255, 255, 255, 255, 255, 255);
+	__m128i v_shuffle2  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 1, 5, 9, 13, 3, 7, 11, 15);
+	__m128i v_shuffle3  = _mm_setr_epi8(1, 255, 5, 255, 3, 255, 7, 255, 9, 255, 13, 255, 11, 255, 15, 255);
+	__m128i v_shuffle4  = _mm_setr_epi8(255, 1, 255, 5, 255, 3, 255, 7, 255, 9, 255, 13, 255, 11, 255, 15);
+
+	const int offset_y = 128 + (16 << 8), offset_uv = (128 + (128 << 8)) << 2;
+
+	for(unsigned int j = 0; j < h / 2; ++j) {
+		const uint32_t *rgb1 = (const uint32_t*) (in_data + in_stride * (int) (j * 2));
+		const uint32_t *rgb2 = (const uint32_t*) (in_data + in_stride * (int) (j * 2 + 1));
+		uint8_t *yuv_y1 = out_data[0] + out_stride[0] * (int) (j * 2);
+		uint8_t *yuv_y2 = out_data[0] + out_stride[0] * (int) (j * 2 + 1);
+		uint8_t *yuv_uv = out_data[1] + out_stride[1] * (int) j;
+		for(unsigned int i = 0; i < w / 16; ++i) {
+			__m128i ra, ga, ba;
+			{
+				ReadBGRAInterleaved(rgb1    , rgb1 +  4, ca1, cb1, r1, g1, b1);
+				ReadBGRAInterleaved(rgb1 + 8, rgb1 + 12, ca2, cb2, r2, g2, b2);
+				rgb1 += 16;
+				Convert_RGB_Y(r1, g1, b1, y1);
+				Convert_RGB_Y(r2, g2, b2, y2);
+				WritePlaneInterleaved(yuv_y1, y1, y2, v_shuffle1, v_shuffle2);
+				yuv_y1 += 16;
+				_mm_prefetch(rgb1 + 16, _MM_HINT_T0);
+				ra = _mm_hadd_epi32(r1, r2);
+				ga = _mm_hadd_epi32(g1, g2);
+				ba = _mm_hadd_epi32(b1, b2);
+			}
+			{
+				ReadBGRAInterleaved(rgb2    , rgb2 +  4, ca1, cb1, r1, g1, b1);
+				ReadBGRAInterleaved(rgb2 + 8, rgb2 + 12, ca2, cb2, r2, g2, b2);
+				rgb2 += 16;
+				Convert_RGB_Y(r1, g1, b1, y1);
+				Convert_RGB_Y(r2, g2, b2, y2);
+				WritePlaneInterleaved(yuv_y2, y1, y2, v_shuffle1, v_shuffle2);
+				yuv_y2 += 16;
+				_mm_prefetch(rgb2 + 16, _MM_HINT_T0);
+				ra = _mm_add_epi16(ra, _mm_hadd_epi32(r1, r2));
+				ga = _mm_add_epi16(ga, _mm_hadd_epi32(g1, g2));
+				ba = _mm_add_epi16(ba, _mm_hadd_epi32(b1, b2));
+			}
+			{
+				ra = _mm_srli_epi16(_mm_add_epi16(ra, v_2), 2);
+				ga = _mm_srli_epi16(_mm_add_epi16(ga, v_2), 2);
+				ba = _mm_srli_epi16(_mm_add_epi16(ba, v_2), 2);
+				__m128i u = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(ra, v_mat_ur), _mm_mullo_epi16(ga, v_mat_ug)), _mm_add_epi16(_mm_mullo_epi16(ba, v_mat_ub_vr), v_offset_uv));
+				__m128i v = _mm_add_epi16(_mm_add_epi16(_mm_mullo_epi16(ra, v_mat_ub_vr), _mm_mullo_epi16(ga, v_mat_vg)), _mm_add_epi16(_mm_mullo_epi16(ba, v_mat_vb), v_offset_uv));
+				WritePlaneInterleaved(yuv_uv, u, v, v_shuffle3, v_shuffle4);
+				yuv_uv += 16;
+			}
+		}
+		for(unsigned int i = 0; i < (w & 15) / 2; ++i) {
+			uint32_t c1 = rgb1[0], c2 = rgb1[1], c3 = rgb2[0], c4 = rgb2[1];
+			rgb1 += 2; rgb2 += 2;
+			int r1 = (int) ((c1 >> 16) & 0xff), r2 = (int) ((c2 >> 16) & 0xff), r3 = (int) ((c3 >> 16) & 0xff), r4 = (int) ((c4 >> 16) & 0xff);
+			int g1 = (int) ((c1 >>  8) & 0xff), g2 = (int) ((c2 >>  8) & 0xff), g3 = (int) ((c3 >>  8) & 0xff), g4 = (int) ((c4 >>  8) & 0xff);
+			int b1 = (int) ((c1      ) & 0xff), b2 = (int) ((c2      ) & 0xff), b3 = (int) ((c3      ) & 0xff), b4 = (int) ((c4      ) & 0xff);
+			yuv_y1[0] = (47 * r1 + 157 * g1 + 16 * b1 + offset_y) >> 8;
+			yuv_y1[1] = (47 * r2 + 157 * g2 + 16 * b2 + offset_y) >> 8;
+			yuv_y2[0] = (47 * r3 + 157 * g3 + 16 * b3 + offset_y) >> 8;
+			yuv_y2[1] = (47 * r4 + 157 * g4 + 16 * b4 + offset_y) >> 8;
+			yuv_y1 += 2; yuv_y2 += 2;
+			int sr = r1 + r2 + r3 + r4;
+			int sg = g1 + g2 + g3 + g4;
+			int sb = b1 + b2 + b3 + b4;
+			yuv_uv[0] = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 10;
+			yuv_uv[1] = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 10;
+			yuv_uv += 2;
 		}
 	}
 

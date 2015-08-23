@@ -76,6 +76,9 @@ std::unique_ptr<ImageGeneric> NewImageYUV422(unsigned int w, unsigned int h, std
 std::unique_ptr<ImageGeneric> NewImageYUV420(unsigned int w, unsigned int h, std::mt19937& rng) {
 	return std::unique_ptr<ImageGeneric>(new ImageGeneric({w, w / 2, w / 2}, {h, h / 2, h / 2}, rng));
 }
+std::unique_ptr<ImageGeneric> NewImageNV12(unsigned int w, unsigned int h, std::mt19937& rng) {
+	return std::unique_ptr<ImageGeneric>(new ImageGeneric({w, w}, {h, h / 2}, rng));
+}
 std::unique_ptr<ImageGeneric> NewImageBGR(unsigned int w, unsigned int h, std::mt19937& rng) {
 	return std::unique_ptr<ImageGeneric>(new ImageGeneric({w * 3}, {h}, rng));
 }
@@ -236,7 +239,7 @@ void BenchmarkConvert(unsigned int w, unsigned int h, PixelFormat in_format, Pix
 	// print result
 	QString size = QString("%1x%2").arg(w).arg(h);
 	Logger::LogInfo("[BenchmarkConvert] " + Logger::tr("%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)")
-					.arg(in_format_name, 6).arg(size, 9).arg(out_format_name, 6).arg(size, 9)
+					.arg(in_format_name).arg(size, 9).arg(out_format_name).arg(size, 9)
 					.arg(time_swscale, 6)
 					.arg(time_fallback, 6).arg(100 * time_fallback / time_swscale, 3)
 					.arg(time_ssse3, 6).arg(100 * time_ssse3 / time_fallback, 3));
@@ -257,12 +260,14 @@ void Benchmark() {
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV444P, "BGRA", "YUV444", NewImageBGRA, NewImageYUV444, Convert_BGRA_YUV444_Fallback           , Convert_BGRA_YUV444_SSSE3           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV422P, "BGRA", "YUV422", NewImageBGRA, NewImageYUV422, Convert_BGRA_YUV422_Fallback           , Convert_BGRA_YUV422_SSSE3           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV420P, "BGRA", "YUV420", NewImageBGRA, NewImageYUV420, Convert_BGRA_YUV420_Fallback           , Convert_BGRA_YUV420_SSSE3           );
-	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGR24  , "BGRA", "BGR"   , NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>, PlaneWrapper<Convert_BGRA_BGR_SSSE3>);
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_NV12   , "BGRA", "NV12  ", NewImageBGRA, NewImageNV12  , Convert_BGRA_NV12_Fallback             , Convert_BGRA_NV12_SSSE3             );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGR24  , "BGRA", "BGR   ", NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>, PlaneWrapper<Convert_BGRA_BGR_SSSE3>);
 #else
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV444P, "BGRA", "YUV444", NewImageBGRA, NewImageYUV444, Convert_BGRA_YUV444_Fallback           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV422P, "BGRA", "YUV422", NewImageBGRA, NewImageYUV422, Convert_BGRA_YUV422_Fallback           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV420P, "BGRA", "YUV420", NewImageBGRA, NewImageYUV420, Convert_BGRA_YUV420_Fallback           );
-	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGR24  , "BGRA", "BGR"   , NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>);
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_NV12   , "BGRA", "NV12  ", NewImageBGRA, NewImageNV12  , Convert_BGRA_NV12_Fallback             );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGR24  , "BGRA", "BGR   ", NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>);
 #endif
 
 }
