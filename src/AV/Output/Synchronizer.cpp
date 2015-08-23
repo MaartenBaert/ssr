@@ -76,6 +76,7 @@ static std::unique_ptr<AVFrameWrapper> CreateVideoFrame(unsigned int width, unsi
 		}
 		case AV_PIX_FMT_YUV422P: {
 			// Y = 1 byte per pixel, U/V = 1 byte per 2x1 pixels
+			assert(width % 2 == 0);
 			planes = 3;
 			linesize[0]  = grow_align16(width    ); planesize[0] = linesize[0] * height;
 			linesize[1]  = grow_align16(width / 2); planesize[1] = linesize[1] * height;
@@ -84,10 +85,22 @@ static std::unique_ptr<AVFrameWrapper> CreateVideoFrame(unsigned int width, unsi
 		}
 		case AV_PIX_FMT_YUV420P: {
 			// Y = 1 byte per pixel, U/V = 1 byte per 2x2 pixels
+			assert(width % 2 == 0);
+			assert(height % 2 == 0);
 			planes = 3;
 			linesize[0]  = grow_align16(width    ); planesize[0] = linesize[0] * height    ;
 			linesize[1]  = grow_align16(width / 2); planesize[1] = linesize[1] * height / 2;
 			linesize[2]  = grow_align16(width / 2); planesize[2] = linesize[2] * height / 2;
+			break;
+		}
+		case AV_PIX_FMT_NV12: {
+			assert(width % 2 == 0);
+			assert(height % 2 == 0);
+			// planar YUV 4:2:0, 12bpp, 1 plane for Y and 1 plane for the UV components, which are interleaved
+			// Y = 1 byte per pixel, U/V = 1 byte per 2x2 pixels
+			planes = 2;
+			linesize[0]  = grow_align16(width); planesize[0] = linesize[0] * height    ;
+			linesize[1]  = grow_align16(width); planesize[1] = linesize[1] * height / 2;
 			break;
 		}
 		case AV_PIX_FMT_BGRA: {

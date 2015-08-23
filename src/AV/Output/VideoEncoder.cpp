@@ -31,6 +31,7 @@ const std::vector<VideoEncoder::PixelFormatData> VideoEncoder::SUPPORTED_PIXEL_F
 	{"yuv420", AV_PIX_FMT_YUV420P, true},
 	{"yuv422", AV_PIX_FMT_YUV422P, true},
 	{"yuv444", AV_PIX_FMT_YUV444P, true},
+	{"nv12", AV_PIX_FMT_NV12, true},
 	{"bgra", AV_PIX_FMT_BGRA, false},
 	{"bgr", AV_PIX_FMT_BGR24, false},
 };
