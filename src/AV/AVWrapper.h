@@ -38,6 +38,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #define AV_PIX_FMT_YUV420P PIX_FMT_YUV420P
 #define AV_PIX_FMT_YUV422P PIX_FMT_YUV422P
 #define AV_PIX_FMT_YUV444P PIX_FMT_YUV444P
+#define AV_PIX_FMT_NV12 PIX_FMT_NV12
 #endif
 
 // A trivial class that holds (aligned) frame data. This makes it easy to implement reference counting through std::shared_ptr.
