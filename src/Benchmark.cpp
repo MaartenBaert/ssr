@@ -168,7 +168,7 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 
 }
 
-void BenchmarkConvert(unsigned int w, unsigned int h, PixelFormat in_format, PixelFormat out_format, const QString& in_format_name, const QString& out_format_name, NewImageFunc in_image, NewImageFunc out_image, ConvertFunc fallback
+void BenchmarkConvert(unsigned int w, unsigned int h, AVPixelFormat in_format, AVPixelFormat out_format, const QString& in_format_name, const QString& out_format_name, NewImageFunc in_image, NewImageFunc out_image, ConvertFunc fallback
 #if SSR_USE_X86_ASM
 , ConvertFunc ssse3
 #endif

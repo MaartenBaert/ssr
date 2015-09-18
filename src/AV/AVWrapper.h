@@ -104,7 +104,7 @@ public:
 
 bool AVFormatIsInstalled(const QString& format_name);
 bool AVCodecIsInstalled(const QString& codec_name);
-bool AVCodecSupportsPixelFormat(const AVCodec* codec, PixelFormat pixel_fmt);
+bool AVCodecSupportsPixelFormat(const AVCodec* codec, AVPixelFormat pixel_fmt);
 bool AVCodecSupportsSampleFormat(const AVCodec* codec, AVSampleFormat sample_fmt);
 
 #if !SSR_USE_AV_CODEC_IS_ENCODER

@@ -50,7 +50,7 @@ I am doing the recording myself instead of just using x11grab (as I originally p
 */
 
 // Converts a X11 image format to a format that libav/ffmpeg understands.
-static PixelFormat X11ImageGetPixelFormat(XImage* image) {
+static AVPixelFormat X11ImageGetPixelFormat(XImage* image) {
 	switch(image->bits_per_pixel) {
 		case 8: return AV_PIX_FMT_PAL8;
 		case 16: {
@@ -435,7 +435,7 @@ void X11Input::InputThread() {
 			// push the frame
 			uint8_t *image_data = (uint8_t*) m_x11_image->data;
 			int image_stride = m_x11_image->bytes_per_line;
-			PixelFormat x11_image_format = X11ImageGetPixelFormat(m_x11_image);
+			AVPixelFormat x11_image_format = X11ImageGetPixelFormat(m_x11_image);
 			PushVideoFrame(m_width, m_height, image_data, image_stride, x11_image_format, timestamp);
 			last_timestamp = timestamp;
 

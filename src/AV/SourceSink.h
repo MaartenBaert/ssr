@@ -18,6 +18,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
+
+#include <libavutil/pixfmt.h>
 #include "Global.h"
 
 #include "MutexDataPair.h"
@@ -70,7 +72,7 @@ class VideoSource : private BaseSource {
 protected:
 	VideoSource() {}
 	int64_t CalculateNextVideoTimestamp();
-	void PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp);
+	void PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp);
 	void PushVideoPing(int64_t timestamp);
 };
 
@@ -82,7 +84,7 @@ public:
 	inline void ConnectVideoSource(VideoSource* source, int priority = 0) { ConnectBaseSource(source, priority); }
 public:
 	virtual int64_t GetNextVideoTimestamp() { return SINK_TIMESTAMP_NONE; }
-	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) = 0;
+	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp) = 0;
 	virtual void ReadVideoPing(int64_t timestamp) {}
 };
 

@@ -46,8 +46,8 @@ FastScaler::~FastScaler() {
 	}
 }
 
-void FastScaler::Scale(unsigned int in_width, unsigned int in_height, PixelFormat in_format, const uint8_t* const* in_data, const int* in_stride,
-					   unsigned int out_width, unsigned int out_height, PixelFormat out_format, uint8_t* const* out_data, const int* out_stride) {
+void FastScaler::Scale(unsigned int in_width, unsigned int in_height, AVPixelFormat in_format, const uint8_t* const* in_data, const int* in_stride,
+					   unsigned int out_width, unsigned int out_height, AVPixelFormat out_format, uint8_t* const* out_data, const int* out_stride) {
 
 	// faster BGRA scaling
 	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_BGRA) {

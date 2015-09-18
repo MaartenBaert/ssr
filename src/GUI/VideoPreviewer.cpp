@@ -77,7 +77,7 @@ int64_t VideoPreviewer::GetNextVideoTimestamp() {
 	return lock->m_next_frame_time;
 }
 
-void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
+void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp) {
 	Q_UNUSED(timestamp);
 
 	QSize image_size;
