@@ -69,7 +69,7 @@ int64_t VideoSource::CalculateNextVideoTimestamp() {
 	return SINK_TIMESTAMP_NONE;
 }
 
-void VideoSource::PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
+void VideoSource::PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp) {
 	SharedLock lock(&m_shared_data);
 	for(SinkData &s : lock->m_sinks) {
 		static_cast<VideoSink*>(s.sink)->ReadVideoFrame(width, height, data, stride, format, timestamp);

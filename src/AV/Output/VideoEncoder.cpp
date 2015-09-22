@@ -57,7 +57,7 @@ VideoEncoder::~VideoEncoder() {
 	StopThread();
 }
 
-PixelFormat VideoEncoder::GetPixelFormat() {
+AVPixelFormat VideoEncoder::GetPixelFormat() {
 	return GetStream()->codec->pix_fmt;
 }
 

@@ -99,7 +99,7 @@ private:
 
 	unsigned int m_video_width, m_video_height;
 	unsigned int m_video_frame_rate;
-	PixelFormat m_video_pixel_format;
+	AVPixelFormat m_video_pixel_format;
 	int64_t m_video_max_frames_skipped;
 
 	unsigned int m_audio_channels, m_audio_sample_rate;
@@ -145,7 +145,7 @@ public:
 
 public: // internal
 	virtual int64_t GetNextVideoTimestamp() override;
-	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) override;
+	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp) override;
 	virtual void ReadVideoPing(int64_t timestamp) override;
 	virtual void ReadAudioSamples(unsigned int channels, unsigned int sample_rate, AVSampleFormat format, unsigned int sample_count, const uint8_t* data, int64_t timestamp) override;
 	virtual void ReadAudioHole() override;

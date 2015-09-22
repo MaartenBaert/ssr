@@ -93,8 +93,8 @@ bool AVCodecIsInstalled(const QString& codec_name) {
 	return (avcodec_find_encoder_by_name(codec_name.toUtf8().constData()) != NULL);
 }
 
-bool AVCodecSupportsPixelFormat(const AVCodec* codec, PixelFormat pixel_fmt) {
-	const PixelFormat *p = codec->pix_fmts;
+bool AVCodecSupportsPixelFormat(const AVCodec* codec, AVPixelFormat pixel_fmt) {
+	const AVPixelFormat *p = codec->pix_fmts;
 	if(p == NULL)
 		return true; // NULL means 'unknown' or 'any', assume it is supported
 	while(*p != AV_PIX_FMT_NONE) {

@@ -60,7 +60,7 @@ const size_t Synchronizer::MAX_AUDIO_SAMPLES_BUFFERED = 1000000;
 // This is needed because some video codecs/players can't handle long delays.
 const int64_t Synchronizer::MAX_FRAME_DELAY = 200000;
 
-static std::unique_ptr<AVFrameWrapper> CreateVideoFrame(unsigned int width, unsigned int height, PixelFormat pixel_format, const std::shared_ptr<AVFrameData>& reuse_data) {
+static std::unique_ptr<AVFrameWrapper> CreateVideoFrame(unsigned int width, unsigned int height, AVPixelFormat pixel_format, const std::shared_ptr<AVFrameData>& reuse_data) {
 
 	// get required planes
 	unsigned int planes = 0;
@@ -320,7 +320,7 @@ int64_t Synchronizer::GetNextVideoTimestamp() {
 	return videolock->m_next_timestamp;
 }
 
-void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
+void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp) {
 	assert(m_video_encoder != NULL);
 
 	// add new block to sync diagram
