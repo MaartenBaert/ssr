@@ -19,7 +19,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include <libavutil/pixfmt.h>
 #include "Global.h"
 
 #include "MutexDataPair.h"

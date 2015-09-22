@@ -92,6 +92,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavutil/avutil.h>
 #include <libavutil/mathematics.h>
+#include <libavutil/pixfmt.h>
 #include <libswscale/swscale.h>
 }
 
