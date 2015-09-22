@@ -25,6 +25,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #if !SSR_USE_AV_PIX_FMT
+#define AVPixelFormat PixelFormat
 #define AV_PIX_FMT_NONE PIX_FMT_NONE
 #define AV_PIX_FMT_PAL8 PIX_FMT_PAL8
 #define AV_PIX_FMT_RGB565 PIX_FMT_RGB565
