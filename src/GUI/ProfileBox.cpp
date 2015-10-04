@@ -93,9 +93,9 @@ void ProfileBox::LoadProfiles() {
 
 	// add profiles to combobox
 	m_combobox_profiles->clear();
-	m_combobox_profiles->addItem(tr("(none)"));
+	m_combobox_profiles->addItem("\u200e" + tr("(none)") + "\u200e");
 	for(unsigned int i = 0; i < m_profiles.size(); ++i) {
-		m_combobox_profiles->addItem(QByteArray::fromPercentEncoding(m_profiles[i].m_name.toUtf8()));
+		m_combobox_profiles->addItem("\u200e" + QByteArray::fromPercentEncoding(m_profiles[i].m_name.toUtf8()) + "\u200e");
 	}
 
 }
