@@ -60,7 +60,7 @@ ClientConnection::~ClientConnection() {
 
 void ClientConnection::Init() {
 
-	// accept incoming connection
+	// create socket
 	m_socket = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
 	if(m_socket == -1)
 		throw std::runtime_error("Can't create socket! Reason: " + ErrorString());
