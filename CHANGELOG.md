@@ -4,9 +4,14 @@ SimpleScreenRecorder changes
 Git master
 ----------
 
+- ?
+
+Version 0.3.4
+-------------
+
 - Allow user to start recording with hotkey or systray even when not on the recording page.
 - Fixed JACK input bug that could cause deadlocks in rare cases.
-- ?
+- Added full support for NV12. If FFmpeg is compiled with NVENC support, this will allow you to use it.
 
 Version 0.3.3
 -------------
