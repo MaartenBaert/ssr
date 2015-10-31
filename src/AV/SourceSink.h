@@ -21,6 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Global.h"
 
+#include "AVWrapper.h"
 #include "MutexDataPair.h"
 
 // The video source/sink system keeps track of connections between video inputs and outputs.

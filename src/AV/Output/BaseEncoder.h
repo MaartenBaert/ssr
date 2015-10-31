@@ -20,13 +20,13 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "AVWrapper.h"
 #include "MutexDataPair.h"
 
 int ParseCodecOptionInt(const QString& key, const QString& value, int min, int max, int multiply = 1);
 double ParseCodecOptionDouble(const QString& key, const QString& value, double min, double max, double multiply = 1.0);
 
 class Muxer;
-class AVFrameWrapper;
 
 class BaseEncoder {
 

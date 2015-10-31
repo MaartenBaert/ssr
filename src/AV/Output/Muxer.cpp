@@ -346,9 +346,9 @@ void Muxer::MuxerThread() {
 			// try to figure out the time (the exact value is not critical, it's only used for bitrate statistics)
 			AVStream *stream = m_format_context->streams[current_stream];
 			double packet_time = 0.0;
-			if(packet->GetPacket()->dts != AV_NOPTS_VALUE)
+			if(packet->GetPacket()->dts != (int64_t) AV_NOPTS_VALUE)
 				packet_time = (double) packet->GetPacket()->dts * ToDouble(stream->codec->time_base);
-			else if(packet->GetPacket()->pts != AV_NOPTS_VALUE)
+			else if(packet->GetPacket()->pts != (int64_t) AV_NOPTS_VALUE)
 				packet_time = (double) packet->GetPacket()->pts * ToDouble(stream->codec->time_base);
 			if(packet_time > total_time)
 				total_time = packet_time;
