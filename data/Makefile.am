@@ -65,7 +65,7 @@ dist_iconscalable_DATA = \
 
 ########## Man pages ##########
 
-man1_MANS = \
+dist_man1_MANS = \
 	man/simplescreenrecorder.man \
 	man/ssr-glinject.man
 

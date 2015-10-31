@@ -164,7 +164,7 @@ am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(desktopdir)" \
 	"$(DESTDIR)$(iconscalabledir)" \
 	"$(DESTDIR)$(outputprofilesdir)"
 NROFF = nroff
-MANS = $(man1_MANS)
+MANS = $(dist_man1_MANS)
 am__dist_desktop_DATA_DIST = simplescreenrecorder.desktop
 am__dist_icon128_DATA_DIST = icons/128/simplescreenrecorder.png \
 	icons/128/simplescreenrecorder-paused.png \
@@ -212,7 +212,7 @@ DATA = $(dist_desktop_DATA) $(dist_icon128_DATA) $(dist_icon16_DATA) \
 	$(dist_icon64_DATA) $(dist_icon96_DATA) \
 	$(dist_iconscalable_DATA) $(dist_outputprofiles_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
-am__DIST_COMMON = $(srcdir)/Makefile.in
+am__DIST_COMMON = $(dist_man1_MANS) $(srcdir)/Makefile.in
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -424,7 +424,7 @@ top_srcdir = @top_srcdir@
 
 
 ########## Man pages ##########
-@ENABLE_SSRPROGRAM_TRUE@man1_MANS = \
+@ENABLE_SSRPROGRAM_TRUE@dist_man1_MANS = \
 @ENABLE_SSRPROGRAM_TRUE@	man/simplescreenrecorder.man \
 @ENABLE_SSRPROGRAM_TRUE@	man/ssr-glinject.man
 
@@ -483,9 +483,9 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-man1: $(man1_MANS)
+install-man1: $(dist_man1_MANS)
 	@$(NORMAL_INSTALL)
-	@list1='$(man1_MANS)'; \
+	@list1='$(dist_man1_MANS)'; \
 	list2=''; \
 	test -n "$(man1dir)" \
 	  && test -n "`echo $$list1$$list2`" \
@@ -519,7 +519,7 @@ install-man1: $(man1_MANS)
 
 uninstall-man1:
 	@$(NORMAL_UNINSTALL)
-	@list='$(man1_MANS)'; test -n "$(man1dir)" || exit 0; \
+	@list='$(dist_man1_MANS)'; test -n "$(man1dir)" || exit 0; \
 	files=`{ for i in $$list; do echo "$$i"; done; \
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^1][0-9a-z]*$$,1,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
