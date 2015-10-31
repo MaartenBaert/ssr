@@ -38,7 +38,7 @@ For Ubuntu 12.04 - 13.04:
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev g++-multilib ia32-libs
 
-For Ubuntu 13.10 - 14.04:
+For Ubuntu 13.10 - 15.10:
 
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
