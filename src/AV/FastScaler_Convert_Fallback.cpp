@@ -115,8 +115,8 @@ void Convert_BGRA_YUV420_Fallback(unsigned int w, unsigned int h, const uint8_t*
 			int sr = r1 + r2 + r3 + r4;
 			int sg = g1 + g2 + g3 + g4;
 			int sb = b1 + b2 + b3 + b4;
-			*(yuv_u++) = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 9;
-			*(yuv_v++) = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 9;
+			*(yuv_u++) = (-26 * sr +  -86 * sg + 112 * sb + offset_uv) >> 10;
+			*(yuv_v++) = (112 * sr + -102 * sg + -10 * sb + offset_uv) >> 10;
 		}
 	}
 }
