@@ -6,6 +6,11 @@ Git master
 
 - ?
 
+Version 0.3.5
+-------------
+
+- Fix bug in YUV420 fallback converter introduced by refactoring.
+
 Version 0.3.4
 -------------
 
