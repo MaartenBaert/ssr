@@ -174,11 +174,11 @@ public slots:
 	void OnUpdateHotkey();
 	void OnUpdateSoundNotifications();
 
-private slots:
 	void OnRecordStartPause();
-	void OnPreviewStartStop();
 	void OnCancel();
 	void OnSave();
+private slots:
+	void OnPreviewStartStop();
 
 	void OnUpdateInformation();
 	void OnNewLogLine(Logger::enum_type type, QString string);
