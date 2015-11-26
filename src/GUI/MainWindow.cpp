@@ -28,6 +28,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "PageInput.h"
 #include "PageOutput.h"
 #include "PageRecord.h"
+#include "PageRecordAdaptor.h"
 #include "PageDone.h"
 
 ENUMSTRINGS(MainWindow::enum_nvidia_disable_flipping) = {
@@ -53,6 +54,12 @@ MainWindow::MainWindow()
 	m_page_input = new PageInput(this);
 	m_page_output = new PageOutput(this);
 	m_page_record = new PageRecord(this);
+	m_page_record_adaptor = new PageRecordAdaptor(m_page_record);
+	QDBusConnection connection = QDBusConnection::sessionBus();
+	bool rel = connection.registerService("be.maartenbaert.ssr");
+	rel = connection.registerObject("/",m_page_record);
+
+
 	m_page_done = new PageDone(this);
 
 	m_stacked_layout = new QStackedLayout(centralwidget);
