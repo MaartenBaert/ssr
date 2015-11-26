@@ -57,7 +57,7 @@ private:
 	MainWindow *m_main_window;
 
 	bool m_page_started, m_input_started, m_output_started, m_previewing;
-	bool m_recorded_something, m_wait_saving;
+	bool m_recorded_something, m_wait_saving, m_error_occurred;
 
 	PageInput::enum_video_area m_video_area;
 	unsigned int m_video_x, m_video_y, m_video_in_width, m_video_in_height;

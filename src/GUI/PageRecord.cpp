@@ -575,6 +575,7 @@ void PageRecord::StartPage() {
 	m_page_started = true;
 	m_recorded_something = false;
 	m_wait_saving = false;
+	m_error_occurred = false;
 	UpdateSysTray();
 	OnUpdateSoundNotifications();
 
@@ -903,12 +904,21 @@ void PageRecord::UpdateSysTray() {
 	if(m_systray_icon == NULL)
 		return;
 	GroupEnabled({m_systray_action_cancel, m_systray_action_save}, m_page_started);
+	if(m_page_started) {
+		if(m_error_occurred) {
+			m_systray_icon->setIcon(g_icon_ssr_error);
+		} else if(m_output_started) {
+			m_systray_icon->setIcon(g_icon_ssr_recording);
+		} else {
+			m_systray_icon->setIcon(g_icon_ssr_paused);
+		}
+	} else {
+		m_systray_icon->setIcon(g_icon_ssr);
+	}
 	if(m_page_started && m_output_started) {
-		m_systray_icon->setIcon(g_icon_ssr_recording);
 		m_systray_action_start_pause->setIcon(g_icon_pause);
 		m_systray_action_start_pause->setText(tr("Pause recording"));
 	} else {
-		m_systray_icon->setIcon(g_icon_ssr_paused);
 		m_systray_action_start_pause->setIcon(g_icon_record);
 		m_systray_action_start_pause->setText(tr("Start recording"));
 	}
@@ -1117,10 +1127,15 @@ void PageRecord::OnUpdateInformation() {
 void PageRecord::OnNewLogLine(Logger::enum_type type, QString string) {
 
 	// play sound for errors
+	//TODO// this is an ugly way to detect errors, this should be improved at some point
 	int64_t time = hrt_time_micro();
 	if(m_simple_synth != NULL && type == Logger::TYPE_ERROR && time > m_last_error_sound + 1000000) {
 		m_simple_synth->PlaySequence(SEQUENCE_RECORD_ERROR.data(), SEQUENCE_RECORD_ERROR.size());
 		m_last_error_sound = time;
+	}
+	if(m_page_started && type == Logger::TYPE_ERROR) {
+		m_error_occurred = true;
+		UpdateSysTray();
 	}
 
 	// add line to log
