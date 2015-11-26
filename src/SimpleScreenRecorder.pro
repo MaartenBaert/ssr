@@ -1,6 +1,6 @@
 # Don't try to compile this with qmake! This file is only meant for Qt Creator, not for actual compilation.
 
-QT += core gui
+QT += core gui dbus
 
 TARGET = SimpleScreenRecorder
 TEMPLATE = app
@@ -53,6 +53,7 @@ SOURCES += \
 	GUI/PageInput.cpp \
 	GUI/PageOutput.cpp \
 	GUI/PageRecord.cpp \
+	GUI/PageRecordAdaptor.cpp \
 	GUI/PageWelcome.cpp \
 	GUI/ProfileBox.cpp \
 	GUI/VideoPreviewer.cpp \
@@ -106,6 +107,7 @@ HEADERS  += \
 	GUI/PageInput.h \
 	GUI/PageOutput.h \
 	GUI/PageRecord.h \
+	GUI/PageRecordAdaptor.h \
 	GUI/PageWelcome.h \
 	GUI/ProfileBox.h \
 	GUI/VideoPreviewer.h \

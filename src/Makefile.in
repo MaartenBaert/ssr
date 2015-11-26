@@ -184,7 +184,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	GUI/HotkeyListener.h GUI/Icons.cpp GUI/Icons.h \
 	GUI/MainWindow.cpp GUI/MainWindow.h GUI/PageDone.cpp \
 	GUI/PageDone.h GUI/PageInput.cpp GUI/PageInput.h \
-	GUI/PageOutput.cpp GUI/PageOutput.h GUI/PageRecord.cpp \
+	GUI/PageOutput.cpp GUI/PageOutput.h GUI/PageRecord.cpp GUI/PageRecordAdaptor.cpp \
 	GUI/PageRecord.h GUI/PageWelcome.cpp GUI/PageWelcome.h \
 	GUI/ProfileBox.cpp GUI/ProfileBox.h GUI/VideoPreviewer.cpp \
 	GUI/VideoPreviewer.h Benchmark.cpp Benchmark.h Global.h \
@@ -226,6 +226,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageOutput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageRecord.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageRecordAdaptor.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-PageWelcome.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-ProfileBox.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-VideoPreviewer.$(OBJEXT) \
@@ -245,6 +246,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageInput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageOutput.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageRecord.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageRecordAdaptor.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageWelcome.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_ProfileBox.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_VideoPreviewer.$(OBJEXT)
@@ -603,6 +605,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageInput.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageOutput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageOutput.h \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/PageRecordAdaptor.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/PageRecordAdaptor.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageRecord.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageRecord.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/PageWelcome.cpp \
@@ -633,6 +637,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	moc_MainWindow.cpp moc_PageDone.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageInput.cpp moc_PageOutput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageRecord.cpp moc_PageWelcome.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	moc_PageRecordAdaptor.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_ProfileBox.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_VideoPreviewer.cpp
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_LDADD = $(am__append_8)
@@ -939,6 +944,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageOutput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageRecord.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageRecordAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_PageWelcome.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_ProfileBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_SyncDiagram.Po@am__quote@
@@ -1538,6 +1544,20 @@ GUI/simplescreenrecorder-PageOutput.obj: GUI/PageOutput.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-PageOutput.obj `if test -f 'GUI/PageOutput.cpp'; then $(CYGPATH_W) 'GUI/PageOutput.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/PageOutput.cpp'; fi`
 
+GUI/simplescreenrecorder-PageRecordAdaptor.o: GUI/PageRecordAdaptor.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-PageRecordAdaptor.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-PageRecordAdaptor.Tpo -c -o GUI/simplescreenrecorder-PageRecordAdaptor.o `test -f 'GUI/PageRecordAdaptor.cpp' || echo '$(srcdir)/'`GUI/PageRecordAdaptor.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-PageRecordAdaptor.Tpo GUI/$(DEPDIR)/simplescreenrecorder-PageRecordAdaptor.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/PageRecordAdaptor.cpp' object='GUI/simplescreenrecorder-PageRecordAdaptor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-PageRecordAdaptor.o `test -f 'GUI/PageRecordAdaptor.cpp' || echo '$(srcdir)/'`GUI/PageRecordAdaptor.cpp
+
+GUI/simplescreenrecorder-PageRecordAdaptor.obj: GUI/PageRecordAdaptor.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-PageRecordAdaptor.obj -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-PageRecordAdaptor.Tpo -c -o GUI/simplescreenrecorder-PageRecordAdaptor.obj `if test -f 'GUI/PageRecordAdaptor.cpp'; then $(CYGPATH_W) 'GUI/PageRecordAdaptor.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/PageRecordAdaptor.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-PageRecordAdaptor.Tpo GUI/$(DEPDIR)/simplescreenrecorder-PageRecordAdaptor.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/PageRecordAdaptor.cpp' object='GUI/simplescreenrecorder-PageRecordAdaptor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-PageRecordAdaptor.obj `if test -f 'GUI/PageRecordAdaptor.cpp'; then $(CYGPATH_W) 'GUI/PageRecordAdaptor.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/PageRecordAdaptor.cpp'; fi`
+
 GUI/simplescreenrecorder-PageRecord.o: GUI/PageRecord.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-PageRecord.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-PageRecord.Tpo -c -o GUI/simplescreenrecorder-PageRecord.o `test -f 'GUI/PageRecord.cpp' || echo '$(srcdir)/'`GUI/PageRecord.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-PageRecord.Tpo GUI/$(DEPDIR)/simplescreenrecorder-PageRecord.Po
@@ -1803,6 +1823,20 @@ simplescreenrecorder-moc_PageOutput.obj: moc_PageOutput.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_PageOutput.cpp' object='simplescreenrecorder-moc_PageOutput.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_PageOutput.obj `if test -f 'moc_PageOutput.cpp'; then $(CYGPATH_W) 'moc_PageOutput.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_PageOutput.cpp'; fi`
+
+simplescreenrecorder-moc_PageRecordAdaptor.o: moc_PageRecordAdaptor.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_PageRecordAdaptor.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_PageRecordAdaptor.Tpo -c -o simplescreenrecorder-moc_PageRecordAdaptor.o `test -f 'moc_PageRecordAdaptor.cpp' || echo '$(srcdir)/'`moc_PageRecordAdaptor.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_PageRecordAdaptor.Tpo $(DEPDIR)/simplescreenrecorder-moc_PageRecordAdaptor.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_PageRecordAdaptor.cpp' object='simplescreenrecorder-moc_PageRecordAdaptor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_PageRecordAdaptor.o `test -f 'moc_PageRecordAdaptor.cpp' || echo '$(srcdir)/'`moc_PageRecordAdaptor.cpp
+
+simplescreenrecorder-moc_PageRecordAdaptor.obj: moc_PageRecordAdaptor.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_PageRecordAdaptor.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_PageRecordAdaptor.Tpo -c -o simplescreenrecorder-moc_PageRecordAdaptor.obj `if test -f 'moc_PageRecordAdaptor.cpp'; then $(CYGPATH_W) 'moc_PageRecordAdaptor.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_PageRecordAdaptor.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_PageRecord.Tpo $(DEPDIR)/simplescreenrecorder-moc_PageRecordAdaptor.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_PageRecordAdaptor.cpp' object='simplescreenrecorder-moc_PageRecordAdaptor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_PageRecordAdaptor.obj `if test -f 'moc_PageRecordAdaptor.cpp'; then $(CYGPATH_W) 'moc_PageRecordAdaptor.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_PageRecordAdaptor.cpp'; fi`
 
 simplescreenrecorder-moc_PageRecord.o: moc_PageRecord.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_PageRecord.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_PageRecord.Tpo -c -o simplescreenrecorder-moc_PageRecord.o `test -f 'moc_PageRecord.cpp' || echo '$(srcdir)/'`moc_PageRecord.cpp
@@ -2141,6 +2175,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 @ENABLE_SSRPROGRAM_TRUE@moc_PageOutput.cpp: $(srcdir)/GUI/PageOutput.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_PageRecord.cpp: $(srcdir)/GUI/PageRecord.h
+@ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
+@ENABLE_SSRPROGRAM_TRUE@moc_PageRecordAdaptor.cpp: $(srcdir)/GUI/PageRecordAdaptor.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_PageWelcome.cpp: $(srcdir)/GUI/PageWelcome.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"

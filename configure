@@ -17473,11 +17473,11 @@ if test -n "$QT4_CFLAGS"; then
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"QtCore >= 4.8.0 QtGui\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "QtCore >= 4.8.0 QtGui") 2>&5
+  ($PKG_CONFIG --exists --print-errors "QtCore >= 4.8.0 QtGui QtDBus") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_QT4_CFLAGS=`$PKG_CONFIG --cflags "QtCore >= 4.8.0 QtGui" 2>/dev/null`
+  pkg_cv_QT4_CFLAGS=`$PKG_CONFIG --cflags "QtCore >= 4.8.0 QtGui QtDBus" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -17490,11 +17490,11 @@ if test -n "$QT4_LIBS"; then
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"QtCore >= 4.8.0 QtGui\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "QtCore >= 4.8.0 QtGui") 2>&5
+  ($PKG_CONFIG --exists --print-errors "QtCore >= 4.8.0 QtGui QtDBus") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_QT4_LIBS=`$PKG_CONFIG --libs "QtCore >= 4.8.0 QtGui" 2>/dev/null`
+  pkg_cv_QT4_LIBS=`$PKG_CONFIG --libs "QtCore >= 4.8.0 QtGui QtDBus" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
