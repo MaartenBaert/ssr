@@ -6,15 +6,20 @@ Git master
 
 - ?
 
+Version 0.3.6
+-------------
+
+- Fixed another bug in YUV420 converter related to the previous one.
+
 Version 0.3.5
 -------------
 
-- Fix bug in YUV420 fallback converter introduced by refactoring.
+- Fixed bug in YUV420 fallback converter introduced by refactoring.
 
 Version 0.3.4
 -------------
 
-- Allow user to start recording with hotkey or systray even when not on the recording page.
+- Allowed user to start recording with hotkey or systray even when not on the recording page.
 - Fixed JACK input bug that could cause deadlocks in rare cases.
 - Added full support for NV12. If FFmpeg is compiled with NVENC support, this will allow you to use it.
 
