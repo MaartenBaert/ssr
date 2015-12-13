@@ -647,6 +647,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_hu.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_it.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_ja.ts \
+@ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_lt.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_nl.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_pl.ts \
 @ENABLE_SSRPROGRAM_TRUE@	translations/simplescreenrecorder_pt_BR.ts \
@@ -685,6 +686,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_hu.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_it.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_ja.qm \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_lt.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_nl.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_pl.qm \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder_pt_BR.qm \
@@ -2173,6 +2175,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_it.qm: $(srcdir)/translations/simplescreenrecorder_it.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_ja.qm: $(srcdir)/translations/simplescreenrecorder_ja.ts
+@ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
+@ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_lt.qm: $(srcdir)/translations/simplescreenrecorder_lt.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"
 @ENABLE_SSRPROGRAM_TRUE@simplescreenrecorder_nl.qm: $(srcdir)/translations/simplescreenrecorder_nl.ts
 @ENABLE_SSRPROGRAM_TRUE@	$(LRELEASE) "$<" -qm "$@"

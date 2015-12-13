@@ -212,24 +212,25 @@ Questo impedisce l&apos;applicazione di sprecare tempo di CPU per i fotogrammi c
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/FastScaler.cpp" line="116"/>
+        <location filename="../AV/FastScaler.cpp" line="130"/>
         <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
         <translation type="unfinished">Attenzione: il formato pixel non è supportato (%1 -&gt; %2), utilizzando swscale. Questo non è un problema, ma le prestazioni caleranno.</translation>
     </message>
     <message>
-        <location filename="../AV/FastScaler.cpp" line="125"/>
-        <location filename="../Benchmark.cpp" line="119"/>
-        <location filename="../Benchmark.cpp" line="200"/>
+        <location filename="../AV/FastScaler.cpp" line="139"/>
+        <location filename="../Benchmark.cpp" line="122"/>
+        <location filename="../Benchmark.cpp" line="203"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
         <translation type="unfinished">Errore: Impossibile ottenere contesto di swscale!</translation>
     </message>
     <message>
-        <location filename="../AV/FastScaler.cpp" line="147"/>
-        <location filename="../AV/FastScaler.cpp" line="172"/>
-        <location filename="../AV/FastScaler.cpp" line="197"/>
-        <location filename="../AV/FastScaler.cpp" line="219"/>
-        <location filename="../AV/FastScaler.cpp" line="242"/>
+        <location filename="../AV/FastScaler.cpp" line="161"/>
+        <location filename="../AV/FastScaler.cpp" line="186"/>
+        <location filename="../AV/FastScaler.cpp" line="211"/>
+        <location filename="../AV/FastScaler.cpp" line="235"/>
+        <location filename="../AV/FastScaler.cpp" line="257"/>
+        <location filename="../AV/FastScaler.cpp" line="280"/>
         <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
         <comment>Don&apos;t translate &apos;fallback&apos;</comment>
         <translation type="unfinished">Attenzione: La memoria non è correttamente allineata per SSE, utilizzando fallback converter. Questo non è un problema, ma le prestazioni caleranno.</translation>
@@ -596,13 +597,13 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="186"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="112"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="113"/>
         <source>Error: Width or height is zero!</source>
         <translation type="unfinished">Errore: larghezza o l&apos;altezza è pari a zero!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="190"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="116"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="117"/>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
         <translation type="unfinished">Errore: larghezza o l&apos;altezza è troppo grande, la massima larghezza e l&apos;altezza è %1!</translation>
     </message>
@@ -837,92 +838,92 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished">Eccezione sconosciuta in muxer thread.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="205"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="218"/>
         <source>Stopping synchronizer thread ...</source>
         <translation type="unfinished">Arresto sincronizzazione thread ...</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="322"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="335"/>
         <source>Warning: Received video frame with non-monotonic timestamp.</source>
         <translation type="unfinished">Attenzione: video frame ricevuti con data e ora non monotonica.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="348"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="361"/>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
         <translation type="unfinished">Attenzione: sovraccarico del buffer Video, andranno persi alcuni fotogrammi. L&apos;ingresso audio sembra essere troppo lento.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="405"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="418"/>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
         <translation type="unfinished">Attenzione: campioni audio ricevuti con timestamp non monotonica.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="430"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="443"/>
         <source>Warning: Too many audio samples, dropping samples to keep the audio in sync with the video.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="436"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="449"/>
         <source>Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="502"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="515"/>
         <source>Warning: Audio input is more than 2% too slow!</source>
         <translation type="unfinished">Attenzione: ingresso audio è più di 5% più lento! {2%?}</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="506"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="519"/>
         <source>Warning: Audio input is more than 2% too fast!</source>
         <translation type="unfinished">Attenzione: ingresso audio è più di 5% più veloce! {2%?}</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="541"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="554"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
         <translation type="unfinished">Attenzione: sovraccarico del buffer audio, iniziando nuovo segmento per mantenere l&apos;audio in sincronia con il video (alcuni video e/o audio potrebbero andare persi). L&apos;ingresso video sembra essere troppo lento.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="577"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="590"/>
         <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="877"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="890"/>
         <source>Synchronizer thread started.</source>
         <translation type="unfinished">Sincronizzatore thread avviato.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="899"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="912"/>
         <source>Synchronizer thread stopped.</source>
         <translation type="unfinished">Sincronizzatore thread fermato.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="903"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="916"/>
         <source>Exception &apos;%1&apos; in synchronizer thread.</source>
         <translation type="unfinished">Eccezione &apos;%1&apos; in Sincronizzatore thread.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="906"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="919"/>
         <source>Unknown exception in synchronizer thread.</source>
         <translation type="unfinished">Eccezione sconosciuta in sincronizzazione thread.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="120"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="121"/>
         <source>Error: Width or height is not an even number!</source>
         <translation type="unfinished">Errore: larghezza o l&apos;altezza non è un numero pari!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="124"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="125"/>
         <source>Error: Frame rate is zero!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="181"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="182"/>
         <source>Using pixel format %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="195"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="196"/>
         <source>Error: The pixel format is not supported by the codec!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -931,8 +932,8 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="obsolete">Errore: Frequenza fotogrammi Zero!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="225"/>
-        <location filename="../AV/Output/VideoEncoder.cpp" line="245"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="226"/>
+        <location filename="../AV/Output/VideoEncoder.cpp" line="246"/>
         <source>Error: Encoding of video frame failed!</source>
         <translation type="unfinished">Errore: Codifica di un fotogramma video non riuscita!</translation>
     </message>
@@ -1170,22 +1171,22 @@ Solitamente ciò significa che l&apos;area di registrazione non è completamente
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="160"/>
+        <location filename="../Benchmark.cpp" line="163"/>
         <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="238"/>
+        <location filename="../Benchmark.cpp" line="241"/>
         <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="248"/>
+        <location filename="../Benchmark.cpp" line="251"/>
         <source>Starting scaler benchmark ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Benchmark.cpp" line="255"/>
+        <location filename="../Benchmark.cpp" line="258"/>
         <source>Starting converter benchmark ...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1471,19 +1472,19 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
         <translation>Continuare</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="673"/>
+        <location filename="../GUI/PageInput.cpp" line="680"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Tutti gli schermi: %1x%2</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="677"/>
+        <location filename="../GUI/PageInput.cpp" line="684"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Schermo %1: %2x%3 at %4,%5</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="839"/>
+        <location filename="../GUI/PageInput.cpp" line="854"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
         <translation>Schermo %1</translation>
@@ -1582,6 +1583,11 @@ If the original file name is &apos;test.mkv&apos;, the segments will be saved as
         <location filename="../GUI/PageOutput.cpp" line="184"/>
         <source>Container:</source>
         <translation>Contenitore:</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="189"/>
+        <source>(not installed)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="192"/>
@@ -1782,29 +1788,29 @@ sono piuttosto scadenti. Usarlo solo se non avete altra scelta.
         <translation>Continuare</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="564"/>
-        <location filename="../GUI/PageOutput.cpp" line="572"/>
+        <location filename="../GUI/PageOutput.cpp" line="580"/>
+        <location filename="../GUI/PageOutput.cpp" line="588"/>
         <source>not installed</source>
         <translation>non installato</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="566"/>
-        <location filename="../GUI/PageOutput.cpp" line="574"/>
+        <location filename="../GUI/PageOutput.cpp" line="582"/>
+        <location filename="../GUI/PageOutput.cpp" line="590"/>
         <source>not supported by container</source>
         <translation>non supportato dal contenitore</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="617"/>
+        <location filename="../GUI/PageOutput.cpp" line="633"/>
         <source>Save recording as</source>
         <translation>Salva registrazione come</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="657"/>
+        <location filename="../GUI/PageOutput.cpp" line="474"/>
         <source>You did not select an output file!</source>
         <translation>Non hai selezionato un file di output!</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="662"/>
+        <location filename="../GUI/PageOutput.cpp" line="479"/>
         <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
         <translation>Il file &apos;%1&apos; esiste già. Sei sicuro di voler sovrascrivere?</translation>
     </message>
@@ -1958,50 +1964,50 @@ Sei sicuro di voler uscire?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="535"/>
+        <location filename="../GUI/PageRecord.cpp" line="545"/>
         <source>Starting page ...</source>
         <translation>Avvio pagina ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="556"/>
-        <location filename="../GUI/PageRecord.cpp" line="698"/>
-        <location filename="../GUI/PageRecord.cpp" line="783"/>
+        <location filename="../GUI/PageRecord.cpp" line="566"/>
+        <location filename="../GUI/PageRecord.cpp" line="707"/>
+        <location filename="../GUI/PageRecord.cpp" line="792"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation>Errore: Qualcosa è andato storto durante l&apos;inizializzazione.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="563"/>
+        <location filename="../GUI/PageRecord.cpp" line="573"/>
         <source>Started page.</source>
         <translatorcomment>Pagina avviata.</translatorcomment>
         <translation>Started page.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="587"/>
+        <location filename="../GUI/PageRecord.cpp" line="597"/>
         <source>Stopping page ...</source>
         <translation>Arresto pagina ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="830"/>
+        <location filename="../GUI/PageRecord.cpp" line="839"/>
         <source>Encoding remaining data ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="612"/>
+        <location filename="../GUI/PageRecord.cpp" line="622"/>
         <source>Stopped page.</source>
         <translation>Pagina fermata.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="637"/>
+        <location filename="../GUI/PageRecord.cpp" line="646"/>
         <source>Starting output ...</source>
         <translation>Avvio output ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="648"/>
+        <location filename="../GUI/PageRecord.cpp" line="657"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="759"/>
+        <location filename="../GUI/PageRecord.cpp" line="768"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2010,27 +2016,27 @@ Sei sicuro di voler uscire?</translation>
         <translation type="obsolete">Errore: Impossibile ottenere la dimensione dell&apos;applicazione OpenGL perché GLInject non è stato avviato.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="653"/>
+        <location filename="../GUI/PageRecord.cpp" line="662"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation>Errore: Impossibile ottenere la dimensione dell&apos;applicazione OpenGL. In entrambi i casi l&apos;applicazione non è stata avviata correttamente, o l&apos;applicazione non ha ancora creato una finestra OpenGL. Se si desidera avviare la registrazione prima di avviare l&apos;applicazione, è necessario abilitare il ridimensionamento e inserire le dimensioni del video manualmente.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="689"/>
+        <location filename="../GUI/PageRecord.cpp" line="698"/>
         <source>Started output.</source>
         <translation>Output avviato.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="709"/>
+        <location filename="../GUI/PageRecord.cpp" line="718"/>
         <source>Stopping output ...</source>
         <translation>Arresto output ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="727"/>
+        <location filename="../GUI/PageRecord.cpp" line="736"/>
         <source>Stopped output.</source>
         <translation>Output fermato.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="754"/>
+        <location filename="../GUI/PageRecord.cpp" line="763"/>
         <source>Starting input ...</source>
         <translation>Avvio input ...</translation>
     </message>
@@ -2039,54 +2045,54 @@ Sei sicuro di voler uscire?</translation>
         <translation type="obsolete">Errore: Impossibile creare un ingresso GLInject perché GLInject non è stato avviato.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="778"/>
+        <location filename="../GUI/PageRecord.cpp" line="787"/>
         <source>Started input.</source>
         <translation>Input avviato.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="803"/>
+        <location filename="../GUI/PageRecord.cpp" line="812"/>
         <source>Stopping input ...</source>
         <translation>Arresto input ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="814"/>
+        <location filename="../GUI/PageRecord.cpp" line="823"/>
         <source>Stopped input.</source>
         <translation>Input fermato.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="901"/>
-        <location filename="../GUI/PageRecord.cpp" line="912"/>
+        <location filename="../GUI/PageRecord.cpp" line="920"/>
+        <location filename="../GUI/PageRecord.cpp" line="930"/>
         <source>Pause recording</source>
         <translation>Pausa registrazione</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="905"/>
-        <location filename="../GUI/PageRecord.cpp" line="915"/>
+        <location filename="../GUI/PageRecord.cpp" line="923"/>
+        <location filename="../GUI/PageRecord.cpp" line="933"/>
         <source>Start recording</source>
         <translation>Avvia registrazione</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="923"/>
+        <location filename="../GUI/PageRecord.cpp" line="941"/>
         <source>Stop preview</source>
         <translation>Ferma anteprima</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="926"/>
+        <location filename="../GUI/PageRecord.cpp" line="944"/>
         <source>Start preview</source>
         <translation>Avvia anteprima</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="955"/>
+        <location filename="../GUI/PageRecord.cpp" line="973"/>
         <source>Error: Something went wrong while creating the synth.</source>
         <translation>Errore: Qualcosa è andato storto durante la creazione del synth.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="995"/>
+        <location filename="../GUI/PageRecord.cpp" line="1015"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>Sei sicuro di voler cancellare questa registrazione?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1010"/>
+        <location filename="../GUI/PageRecord.cpp" line="1030"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
@@ -2784,22 +2790,22 @@ You can also change this option manually in the NVIDIA control panel.</source>
         <translation>Diagramma di sincronizzazione</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="251"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="264"/>
         <source>Video in</source>
         <translation>Video in</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="252"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="265"/>
         <source>Audio in</source>
         <translation>Audio in</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="253"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="266"/>
         <source>Video out</source>
         <translation>Video out</translation>
     </message>
     <message>
-        <location filename="../AV/Output/Synchronizer.cpp" line="254"/>
+        <location filename="../AV/Output/Synchronizer.cpp" line="267"/>
         <source>Audio out</source>
         <translation>Audio out</translation>
     </message>

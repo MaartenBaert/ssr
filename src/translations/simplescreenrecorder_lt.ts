@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.0" language="lt_LT">
 <context>
     <name>DialogAbout</name>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="78"/>
         <source>About SimpleScreenRecorder</source>
-        <translation>О SimpleScreenRecorder</translation>
+        <translation>Apie SimpleScreenRecorder</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="87"/>
         <source>For more information:</source>
-        <translation>Более подробная информация на моем сайте:</translation>
+        <translation>Išsamesnei informacijai žiūrėkite:</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="88"/>
         <source>The source code of this program can be found at:</source>
-        <translation>Исходный код программы можно найти здесь:</translation>
+        <translation>Pirminį programos kodą galite rasti adresu:</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="89"/>
         <source>This program uses:</source>
-        <translation>Эта программа использует:</translation>
+        <translation>Ši programa naudoja:</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="90"/>
         <source>%1 for the graphical user interface</source>
-        <translation>%1 - графический интерфейс</translation>
+        <translation>%1 grafinei naudotojo sąsajai</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="91"/>
         <source>%1 or %2 (depending on your distribution) for video/audio encoding</source>
-        <translation>%1 или %2 - кодирование аудио/видео (зависит от вашего дистрибутива)</translation>
+        <translation>%1 ar %2 (priklausomai nuo jūsų distribucijos) vaizdo/garso įrašų kodavimui</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="92"/>
         <source>%1 for hooking system functions for OpenGL recording</source>
-        <translation>%1 - для подключения системных функций при записи OpenGL</translation>
+        <translation>%1 sistemos funkcijų gaudymui, OpenGL įrašymams</translation>
     </message>
 </context>
 <context>
@@ -44,7 +44,7 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="34"/>
         <source>OpenGL Settings</source>
-        <translation>Настройки OpenGL</translation>
+        <translation>OpenGL Nustatymai</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="37"/>
@@ -53,107 +53,108 @@
 &lt;p&gt;Another warning: OpenGL recording is experimental, it may not work or even crash the program you are recording. If you are worried about losing program data, make a backup first!&lt;/p&gt;
 
 &lt;p&gt;If you want to record Steam games, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;read this first&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Предупреждение: Для записи OpenGL потребуется ввести в записываемую программу дополнительную библиотеку. Эта библиотека перераспределит некоторые системные функции так, чтобы записывать кадры прежде чем они отобразятся на экране. Если вы попытаетесь записать игру, которая умеет распознавать взлом со стороны клиента, то (теоретически) это может быть расценено как попытка взлома. Ваш аккаунт может быть заблокирован, так что перед тем, как начинать запись, учтите возможные последствия. Я вас предупредил :).&lt;/p&gt;
+        <translation>&lt;p&gt;Įspėjimas: OpenGL įrašinėjimas veikia, įskiepyjant į įrašinėjamą programą biblioteką. Ši biblioteka nustelbs kai kurias funkcijas tam, kad galėtų užvaldyti kadrus dar prieš tai, kai jie bus rodomi ekrane. Jeigu bandote įrašinėti žaidimą, kuris kliento pusėje bando aptikti įsilaužimų bandymus, tuomet (teoriškai) gali būti, kad žaidimas tai laikys įsilaužimu. Tai netgi gali sąlygoti, kad jums bus uždrausta žaisti, taigi, *prieš* bandant įrašinėti, yra gerai įsitikinti, kad programa, kurią įrašinėsite, jusų neuždraus. Jūs buvote įspėti :).&lt;/p&gt;
 
-&lt;p&gt;Еще одно предупреждение: Запись через OpenGL это эксперементальная функция, которая может привести к вылетам из или же не сработать вообще. Если вы беспокоитесь за сохранность ваших данных, то обязательно сделайте резервную копию!&lt;/p&gt;
+&lt;p&gt;Kitas įspėjimas: OpenGL įrašinėjimas yra eksperimentinis, jis gali neveikti arba netgi priversti įrašinėjamą programą užstrigti. Jeigu bijote prarasti programos duomenis, iš pradžių, susikurkite atsarginę duomenų kopiją!&lt;/p&gt;
 
-&lt;p&gt;Если вы хотите записывать игры из Steam &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;для начала прочтите вот это&lt;/a&gt;.&lt;/p&gt;</translation>
+&lt;p&gt;Jeigu norite įrašinėti Steam žaidimus, tuomet &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;iš pradžių, skaitykite čia&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
         <source>Choose channel</source>
-        <translation>Выбрать канал</translation>
+        <translation>Kanalo pasirinkimas</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="53"/>
         <source>Channel name:</source>
-        <translation>Имя канала:</translation>
+        <translation>Kanalo pavadinimas:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
 If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
-        <translation>Имена каналов используются для идентификации приложений. Используйте имена только в случае записи нескольких приложений одновременно.
-Если оставить поле пустым, то по-умолчанию приложению присвоится имя &quot;канал-ВАШЕИМЯ&quot;.</translation>
+        <translation>Kanalo pavadinimai yra naudojami, siekiant atpažinti programas. Tai yra reikalinga tik tuo atveju, jeigu norite tuo pačiu metu įrašinėti kelias programas.
+Jeigu paliksite šį lauką tuščią, bus naudojamas numatytasis kanalo pavadinimas &quot;channel-JŪSŲNAUDOTOJOVARDAS&quot;.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="57"/>
         <source>Relax shared memory permissions (insecure)</source>
-        <translation>Упростить доступ к совместной памяти (небезопасно)</translation>
+        <translation>Susilpninti bendrosios atminties leidimus (nesaugu)</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="58"/>
         <source>If checked, other users on the same machine will be able to attach to the shared memory that&apos;s used for communication with the OpenGL program.
 This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.
 This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user.</source>
-        <translation>Если включить эту функцию то у пользователей вашего компьютера появится возможность подключаться к совместной памяти которая используется программой для записи через OpenGL. 
-Это означает что другие пользователи (теоретически) могут видеть то, что вы записываете, модифицировать запись, вставлять свои кадры или просто прерывать соединение. 
-Это также применимо и к удаленным пользователям, подключенным через SSH. Используйте эту опцию только тогда, когда нужно записать программу, запущенную от имени другого пользователя.</translation>
+        <translation>Jei pažymėta, kiti, to pačio kompiuterio naudotojai, galės prisitvirtinti prie, susisiekimui su OpenGL programa naudojamos, bendrosios atminties.
+Tai reiškia, kad kiti naudotojai gali (teoriškai) matyti ką jūs įrašinėjate, keisti kadrus, įskiepyti savo pačių kadrus arba, tiesiog, sugriauti susisiekimą.
+Tai netgi taikoma naudotojams, kurie yra prisijungę nuotoliniu būdu (ssh). Jūs turėtumėte tai įjungti tik tuo atveju, jeigu norite įrašinėti programą,
+kuri yra vykdoma kaip kitas naudotojas.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="73"/>
         <source>Launch application</source>
-        <translation>Запустить приложение</translation>
+        <translation>Programos paleidimas</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="75"/>
         <source>Command:</source>
-        <translation>Команда:</translation>
+        <translation>Komanda:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="77"/>
         <source>This command will be executed to start the program that should be recorded.</source>
-        <translation>Команда запуска программы, которая будет записываться. </translation>
+        <translation>Ši komanda bus įvykdyta, kad paleistų, norimą įrašinėti, programą.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="79"/>
         <source>Working directory:</source>
-        <translation>Рабочая директория:</translation>
+        <translation>Darbinis katalogas:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="81"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
-        <translation>Директория в которой будет выполнена команда. Если оставить поле пустым рабочая директория не изменится.</translation>
+        <translation>Komanda bus įvykdyta šiame kataloge. Jeigu tai paliksite tuščią, tuomet darbinis katalogas pakeistas nebus.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
         <source>Launch automatically</source>
-        <translation>Запускать автоматически</translation>
+        <translation>Paleisti automatiškai</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="84"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
-        <translation>Если флажок установлен, то записываемая программа запустится сразу же после перехода к окну записи. 
-Если оставить функцию выключенной, то нужно будет запустить программу самостоятельно.</translation>
+        <translation>Jei pažymėta, programa bus automatiškai paleista, kai tik pereisite į įrašymo puslapį. Jei nepažymėta, tuomet turėsite paleisti programą rankiniu būdu.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="86"/>
         <source>Launch now</source>
-        <translation>Запустить сейчас</translation>
+        <translation>Paleisti dabar</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="107"/>
         <source>Stream settings</source>
-        <translation>Настройка потокового видео</translation>
+        <translation>Srauto nustatymai</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="109"/>
         <source>Limit application frame rate</source>
-        <translation>Ограничить частоту кадров приложения</translation>
+        <translation>Riboti programos kadrų dažnį</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="110"/>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
-        <translation>Если включить эту функцию, то подключенная библиотека будет замедлять приложение таким образом, чтобы частота кадров приложения не превышала частоту кадров записи.
-Это предотвратит дополнительную нагрузку на процессор для тех кадров, которые не попадут в конечную запись. и, как результат, вы получите более качественную запись 
-(зависит от приложения).</translation>
+        <translation>Jei pažymėta, įskiepyta biblioteka sulėtins programas tam, kad kadrų dažnis netaptų didesnis nei įrašinėjimo kadrų dažnis.
+Tai neleidžia programai eikvoti procesoriaus laiko kadrams, kurie nebus įrašinėjami ir kaip pasekmė, kartais, yra gaunamas glotnesnis
+vaizdo įrašas (tai priklauso nuo programos).
+</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="119"/>
         <source>Close</source>
-        <translation>Закрыть</translation>
+        <translation>Užverti</translation>
     </message>
 </context>
 <context>
@@ -161,22 +162,22 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/FastResampler.cpp" line="124"/>
         <source>Error: Resample ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Skaitmeninimo dažnio keitimo santykis yra už ribų!</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="128"/>
         <source>Error: Drift ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Dreifo santykis yra už ribų!</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="158"/>
         <source>Resample ratio is %1 (was %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Skaitmeninimo dažnio keitimo santykis yra %1 (buvo %2).</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="130"/>
         <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Pikselių formatas nepalaikomas (%1 -&gt; %2), vietoj to, naudojama swscale. Tai nėra problema, tačiau našumas bus prastesnis.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="139"/>
@@ -184,7 +185,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../Benchmark.cpp" line="203"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta gauti swscale konteksto!</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="161"/>
@@ -195,25 +196,25 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/FastScaler.cpp" line="280"/>
         <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
         <comment>Don&apos;t translate &apos;fallback&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Atmintis SSE nėra deramai išlygiuota, vietoj to, naudojamas fallback keitiklis. Tai nėra problema, tačiau našumas bus prastesnis.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="32"/>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Предупреждение: Произошла перегрузка, некоторые сэмплы потеряны.</translation>
+        <translation>Įspėjimas: Įvyko overrun, kai kurie mėginiai buvo prarasti.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="34"/>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Ошибка: Не удалось восстановить устройство после перегрузки!</translation>
+        <translation>Klaida: Nepavyko atkurti įrenginio po overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="38"/>
         <source>Error: Can&apos;t start PCM device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Ошибка: Не удалось запустить PCM устройство после перегрузки!</translation>
+        <translation>Klaida: Nepavyko pradėti PCM įrenginio po overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="66"/>
@@ -221,125 +222,125 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="207"/>
         <source>Stopping input thread ...</source>
-        <translation type="unfinished">Останавливаю процесс ввода...</translation>
+        <translation>Sustabdoma įvesties gija ...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="96"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="232"/>
         <source>Generating source list ...</source>
-        <translation type="unfinished">Генерирую список источников...</translation>
+        <translation>Kuriamas šaltinio sąrašas ...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="115"/>
         <source>Error: Could not update ALSA configuration!</source>
-        <translation type="unfinished">Ошибка: Не удается обновить конфигурацию ALSA!</translation>
+        <translation>Klaida: Nepavyko atnaujinti ALSA konfigūracijos!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="162"/>
         <source>Found plugin: [%1] %2</source>
-        <translation type="unfinished">Найден плагин: [%1] %2</translation>
+        <translation>Rastas papildinys: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="175"/>
         <source>Warning: Could not open sound card %1.</source>
-        <translation type="unfinished">Предупреждение: Не удается подключиться к звуковой карте %1.</translation>
+        <translation>Įspėjimas: Nepavyko atverti garso plokštės %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="181"/>
         <source>Warning: Could not get info for sound card %1.</source>
-        <translation type="unfinished">Предупреждение: Не удается получить информацию о звуковой карте %1.</translation>
+        <translation>Įspėjimas: Nepavyko gauti %1 garso plokštės informacijos.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="185"/>
         <source>Found card: [%1] %2</source>
-        <translation type="unfinished">Найдена карта: [%1] %2</translation>
+        <translation>Rasta plokštė: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="210"/>
         <source>Found device: [%1] %2</source>
-        <translation type="unfinished">Найдено устройство: [%1] %2</translation>
+        <translation>Rastas įrenginys: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="259"/>
         <location filename="../AV/SimpleSynth.cpp" line="123"/>
         <source>Error: Can&apos;t open PCM device!</source>
-        <translation type="unfinished">Ошибка: Не удалось подключиться к PCM устройству!</translation>
+        <translation>Klaida: Nepavyksta atverti PCM įrenginio!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="263"/>
         <location filename="../AV/SimpleSynth.cpp" line="127"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
-        <translation type="unfinished">Ошибка: Не удалось получить параметры PCM устройства!</translation>
+        <translation>Klaida: Nepavyksta gauti PCM aparatinės įrangos parametrų!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="269"/>
         <location filename="../AV/SimpleSynth.cpp" line="133"/>
         <source>Error: Can&apos;t set access type!</source>
-        <translation type="unfinished">Ошибка: Не удалось установить тип доступа!</translation>
+        <translation>Klaida: Nepavyksta nustatyti prieigos tipo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="275"/>
         <location filename="../AV/SimpleSynth.cpp" line="139"/>
         <source>Error: Can&apos;t set sample format!</source>
-        <translation type="unfinished">Ошибка: Не удалось установить формат сэмпла!</translation>
+        <translation>Klaida: Nepavyksta nustatyti mėginio formato!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="282"/>
         <location filename="../AV/SimpleSynth.cpp" line="146"/>
         <source>Error: Can&apos;t set sample rate!</source>
-        <translation type="unfinished">Ошибка: Не удалось установить частоту сэмпла!</translation>
+        <translation>Klaida: Nepavyksta nustatyti skaitmeninimo dažnio!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="286"/>
         <location filename="../AV/SimpleSynth.cpp" line="150"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished">Предупреждение: Частота сэмпла %1 не поддерживается, используйте вместо него %2. Ничего страшного.</translation>
+        <translation>Įspėjimas: Skaitmeninimo dažnis %1 yra nepalaikomas, vietoj to, naudojamas %2. Tai nėra problema.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="295"/>
         <location filename="../AV/SimpleSynth.cpp" line="158"/>
         <source>Error: Can&apos;t set channel count!</source>
-        <translation type="unfinished">Ошибка: Не удалось установить глубину канала!</translation>
+        <translation>Klaida: Nepavyksta nustatyti kanalų skaičiaus!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="299"/>
         <source>Warning: Channel count %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished">Предупреждение: Глубина канала %1 не поддерживается, используйте вместо него %2. Ничего страшного.</translation>
+        <translation>Įspėjimas: Kanalų skaičius %1 yra nepalaikomas, vietoj to, naudojama %2. Tai nėra problema.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="308"/>
         <location filename="../AV/SimpleSynth.cpp" line="165"/>
         <source>Error: Can&apos;t set period size!</source>
-        <translation type="unfinished">Ошибка: Не удалось установить размер промежутка!</translation>
+        <translation>Klaida: Nepavyksta nustatyti periodo dydį!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="312"/>
         <location filename="../AV/SimpleSynth.cpp" line="169"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished">Предупреждение: Размер промежутка %1 не поддерживается, используйте вместо него %2. Ничего страшного.</translation>
+        <translation>Įspėjimas: Periodo dydis %1 nėra palaikomas, vietoj to, naudojamas %2. Tai nėra problema.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="321"/>
         <location filename="../AV/SimpleSynth.cpp" line="178"/>
         <source>Error: Can&apos;t set buffer size!</source>
-        <translation type="unfinished">Ошибка: Не могу установить размер буффера!</translation>
+        <translation>Klaida: Nepavyksta nustatyti buferio dydžio!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="325"/>
         <location filename="../AV/SimpleSynth.cpp" line="182"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished">Предупреждение: Размер буффера %1 не поддерживается, используйте вместо него %2. Ничего страшного.</translation>
+        <translation>Įspėjimas: Buferio dydis %1 yra nepalaikomas, vietoj to, naudojamas %2. Tai nėra problema.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="333"/>
         <location filename="../AV/SimpleSynth.cpp" line="190"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
-        <translation type="unfinished">Ошибка: Не удалось применить параметры устройства PCM!</translation>
+        <translation>Klaida: Nepavyksta pritaikyti PCM aparatinės įrangos parametrų!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="351"/>
         <source>Error: Can&apos;t start PCM device!</source>
-        <translation type="unfinished">Ошибка: Не удалось запустить устройство PCM!</translation>
+        <translation>Klaida: Nepavyksta paleisti PCM įrenginio!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="372"/>
@@ -348,12 +349,12 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/PulseAudioInput.cpp" line="299"/>
         <location filename="../AV/Input/X11Input.cpp" line="345"/>
         <source>Input thread started.</source>
-        <translation type="unfinished">Процесс ввода начат.</translation>
+        <translation>Įvesties gija pradėta.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="387"/>
         <source>Error: Can&apos;t read samples!</source>
-        <translation type="unfinished">ОШибка: Не удалось прочесть сэмплы!</translation>
+        <translation>Klaida: Nepavyksta skaityti mėginius!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="413"/>
@@ -362,7 +363,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/PulseAudioInput.cpp" line="388"/>
         <location filename="../AV/Input/X11Input.cpp" line="444"/>
         <source>Input thread stopped.</source>
-        <translation type="unfinished">Процесс ввода остановлен.</translation>
+        <translation>Įvesties gija sustabdyta.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="417"/>
@@ -371,7 +372,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/PulseAudioInput.cpp" line="392"/>
         <location filename="../AV/Input/X11Input.cpp" line="448"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
-        <translation type="unfinished">В процессе ввода появилось исключение &quot;%1&quot;.</translation>
+        <translation>Išimtis &apos;%1&apos; įvesties gijoje.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="420"/>
@@ -380,724 +381,727 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/PulseAudioInput.cpp" line="395"/>
         <location filename="../AV/Input/X11Input.cpp" line="451"/>
         <source>Unknown exception in input thread.</source>
-        <translation type="unfinished">Неизвестное исключение  в процессе ввода.</translation>
+        <translation>Nežinoma išimtis įvesties gijoje.</translation>
     </message>
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="149"/>
         <source>Error: Could not read stream, this usually means that the stream was already gone.</source>
-        <translation type="unfinished">Ошибка: Не удалось прочесть поток, что обычно означает </translation>
+        <translation>Klaida: Nepavyko skaityti srauto. tai, dažniausiai, reiškia, kad srautas jau buvo dingęs.</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="72"/>
         <source>Error: Could not connect to JACK!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko prisijungti prie JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="81"/>
         <source>Error: Could not create JACK port!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko sukurti JACK prievado!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="87"/>
         <source>Error: Could not set JACK process callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko nustatyti JACK proceso atgalinio skambinimo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="91"/>
         <source>Error: Could not set JACK sample rate callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko nustatyti JACK skaitmeninimo dažnio atgalinio skambinimo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="95"/>
         <source>Error: Could not set JACK xrun callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko nustatyti JACK xrun atgalinio skambinimo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="99"/>
         <source>Error: Could not set JACK port connect callback!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko nustatyti JACK prievado prijungimo atgalinio skambinimo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="104"/>
         <source>Error: Could not activate JACK client!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko aktyvuoti JACK kliento!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="112"/>
         <location filename="../AV/Input/JACKInput.cpp" line="123"/>
         <location filename="../AV/Input/JACKInput.cpp" line="252"/>
         <source>Connecting port %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jungiamas prievadas %1 prie %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="256"/>
         <source>Disconnecting port %1 from %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Atjungiamas prievadas %1 nuo %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="35"/>
         <source>Error: pa_mainloop_prepare failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_prepare&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: pa_mainloop_prepare nepavyko!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="39"/>
         <source>Error: pa_mainloop_poll failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_poll&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: pa_mainloop_poll nepavyko!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="43"/>
         <source>Error: pa_mainloop_dispatch failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_dispatch&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: pa_mainloop_dispatch nepavyko!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="53"/>
         <source>Error: Could not create main loop!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko sukurti pagrindinio ciklo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="60"/>
         <source>Error: Could not create context!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko sukurti konteksto!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="64"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA backend instead.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko prisijungti! Priežastis: %1
+Gali būti, kad jūsų sistema nenaudoja PulseAudio. Vietoj to, pabandykite ALSA vidinę pusę.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="77"/>
         <source>Error: Connection attempt failed! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Prisijungimo bandymas nepavyko! Priežastis: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="114"/>
         <source>Error: Could not create stream! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko sukurti srauto! Priežastis: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="121"/>
         <source>Error: Could not connect stream! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko prijungti srauto! Priežastis: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="132"/>
         <source>Error: Stream connection attempt failed! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Srauto prisijungimo bandymas nepavyko! Priežastis: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="223"/>
         <source>Found source: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Rastas šaltinis: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="244"/>
         <source>Error: Could not get names of sources! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko gauti šaltinių pavadinimų! Priežastis: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="313"/>
         <source>Error: pa_stream_peek failed!</source>
         <comment>Don&apos;t translate &apos;pa_stream_peek&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: pa_stream_peek nepavyko!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="377"/>
         <source>Warning: Audio source was suspended. The current segment will be stopped until the source is resumed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Garso šaltinis buvo pristabdytas. Esamas segmentas bus sustabdytas, kol šaltinis nebus pratęstas.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="382"/>
         <source>Warning: Stream was moved to a different source.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Srautas buvo perkeltas į kitą šaltinį.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="64"/>
         <source>Created video stream reader.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sukurtas vaizdo srauto skaitlys.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="69"/>
         <source>Error: Can&apos;t open video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta atverti vaizdo srauto failo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="76"/>
         <source>Error: Can&apos;t resize video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta pakeisti vaizdo srauto failo dydį!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="83"/>
         <source>Error: Can&apos;t memory-map video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta paskirstyti atminties vaizdo srauto failui!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="92"/>
         <source>Error: Can&apos;t open video frame file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta atverti vaizdo kadro failą!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="142"/>
         <source>Destroyed video stream reader.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunaikintas vaizdo srauto skaitlys.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="238"/>
         <source>Error: Size of video frame file is incorrect!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Neteisingas vaizdo kadro failo dydis!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="247"/>
         <source>Error: Can&apos;t memory-map video frame file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta paskirstyti atminties vaizdo kadro failui!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="88"/>
         <source>Error: Can&apos;t create channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta sukurti kanalo katalogo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="95"/>
         <source>Error: Can&apos;t stat channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta padaryti sisteminę iškvietą kanalo katalogui!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="99"/>
         <source>Error: Channel directory is not a regular directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Kanalo katalogas nėra normalus katalogas!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="104"/>
         <source>Error: Can&apos;t set channel directory mode!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta nustatyti kanalo katalogo veiksenos!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="109"/>
         <source>Error: Channel directory is owned by a different user! Choose a different channel name, or enable relaxed file permissions to use it anyway.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Kanalo katalogo savininkas yra kitas naudotojas! Pasirinkite kitą kanalo pavadinimą arba, norėdami vis tiek jį naudoti, įjunkite susilpnintus failų leidimus.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="121"/>
         <source>Error: Can&apos;t initialize inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta inicijuoti inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="127"/>
         <source>Error: Can&apos;t watch channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta stebėti kanalo katalogo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="139"/>
         <source>Error: Can&apos;t open channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta atverti kanalo katalogo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="157"/>
         <source>Added pre-existing stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridėtas prieš tai buvęs srautas %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="192"/>
         <source>Error: Can&apos;t get read length from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta gauti skaitymo ilgio iš inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="200"/>
         <source>Error: Can&apos;t read from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta skaityti iš inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="210"/>
         <source>Error: Received partial event from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Gautas dalinis įvykis iš inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="222"/>
         <source>Error: Received partial name from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Gautas dalinis pavadinimas iš inotify!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="236"/>
         <source>Added stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridėtas srautas %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="244"/>
         <source>Removed stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pašalintas srautas %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="270"/>
         <source>Deleted abandoned stream %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ištrintas pamestas srautas %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="74"/>
         <source>Error: Unsupported X11 image pixel format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepalaikomas X11 paveikslo pikselių formatas!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="186"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="113"/>
         <source>Error: Width or height is zero!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Plotis ar aukštis lygus nuliui!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="190"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="117"/>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Plotis ar aukštis yra per dideli, didžiausias plotis ir aukštis yra %1!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="236"/>
         <location filename="../GUI/HotkeyListener.cpp" line="118"/>
         <source>Error: Can&apos;t open X display!</source>
         <comment>Don&apos;t translate &apos;display&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta atverti X display!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="245"/>
         <source>Using X11 shared memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naudojama X11 bendroji atmintis.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="248"/>
         <source>Error: Can&apos;t create shared image!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta sukurti bendrojo paveikslo!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="253"/>
         <source>Error: Can&apos;t get shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta gauti bendrosios atminties!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="258"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta prisitvirtinti prie bendrosios atminties!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="264"/>
         <source>Not using X11 shared memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenaudojama X11 bendrosios atminties.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="271"/>
         <source>Warning: XFixes is not supported by X server, the cursor has been hidden.</source>
         <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: X serveris nepalaiko XFixes, žymeklis yra paslėptas.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="329"/>
         <source>Error: Invalid screen bounding box!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Neteisingas ekraną ribojantis langas!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="393"/>
         <source>Error: Can&apos;t attach server to shared memory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta pritvirtinti serverio prie bendrosios atminties!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="399"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta gauti paveikslo (naudojant bendrąją atmintį)!
+    Dažniausiai, tai reiškia, kad įrašinėjimo sritis nėra pilnai ekrano vidinėse ribose. Arba gal jūs keitėte ekrano raišką?</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="410"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta gauti paveikslo (nenaudojant bendrąją atmintį)!
+    Dažniausiai, tai reiškia, kad įrašinėjimo sritis nėra pilnai ekrano vidinėse ribose. Arba gal jūs keitėte ekrano raišką?</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="99"/>
         <source>Error: Channel count is zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Kanalų skaičius lygus nuliui.</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="103"/>
         <source>Error: Sample rate is zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Skaitmeninimo dažnis lygus nuliui.</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="140"/>
         <source>Using sample format %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naudojamas %1 mėginių formatas.</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="145"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Koduotuvas reikalauja nepalaikomo mėginių formato!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
         <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Encoding of audio frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Garso kadro kodavimas nepavyko!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
         <location filename="../AV/Output/BaseEncoder.cpp" line="40"/>
         <source>Error: Option &apos;%1&apos; could not be parsed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Parinktis &quot;%1&quot; negali būti išanalizuota!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
         <source>Stopping encoder thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sustabdoma koduotuvo gija ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="155"/>
         <source>Error: Can&apos;t open codec!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta atverti kodeko!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="163"/>
         <source>Warning: Codec option &apos;%1&apos; was not recognised!</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Kodeko parinktis &quot;%1&quot; buvo neatpažinta!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="179"/>
         <source>Encoder thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koduotuvo gija pradėta.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="211"/>
         <source>Flushing encoder ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Išvalomas koduotuvas ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="225"/>
         <source>Encoder thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koduotuvo gija sustabdyta.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="229"/>
         <source>Exception &apos;%1&apos; in encoder thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Išimtis &apos;%1&apos; koduotuvo gijoje.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="232"/>
         <source>Unknown exception in encoder thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nežinoma išimtis koduotuvo gijoje.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="71"/>
         <source>Stopping encoders ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stabdomi koduotuvai ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="78"/>
         <source>Waiting for muxer thread to stop ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Laukiama, kol bus sustabdyta tankintuvo gija ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="133"/>
         <source>Error: Can&apos;t write header!</source>
         <comment>Don&apos;t translate &apos;header&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta įrašyti header!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="144"/>
         <source>Finishing encoders ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Užbaigiami koduotuvai ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="186"/>
         <source>Error: Can&apos;t find chosen output format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta rasti pasirinkto išvesties formato!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="190"/>
         <source>Using format %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Naudojamas formatas %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="196"/>
         <source>Error: Can&apos;t allocate format context!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta paskirstyti formato konteksto!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="203"/>
         <source>Error: Can&apos;t open output file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta atverti išvesties failo!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="216"/>
         <source>Error: Can&apos;t write trailer, continuing anyway.</source>
         <comment>Don&apos;t translate &apos;trailer&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta įrašyti trailer, vis tiek tęsiama.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="254"/>
         <source>Error: Can&apos;t find codec!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta rasti kodeko!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="264"/>
         <source>Using codec %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Naudojamas kodekas %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="273"/>
         <source>Error: Can&apos;t create new stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta sukurti naujo srauto!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="283"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta gauti kodeko konteksto numatytųjų reikšmių!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: libav/ffmpeg šį kodeką laiko eksperimentiniu.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="312"/>
         <source>Muxer thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tankintuvo gija pradėta.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="371"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta įrašyti kadro į tankintuvą!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="399"/>
         <source>Muxer thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tankintuvo gija sustabdyta.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="403"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Išimtis &apos;%1&apos; tankintuvo gijoje.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="406"/>
         <source>Unknown exception in muxer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nežinoma išimtis tankintuvo gijoje.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="218"/>
         <source>Stopping synchronizer thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stabdoma sinchronizatoriaus gija ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="335"/>
         <source>Warning: Received video frame with non-monotonic timestamp.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Gautas vaizdo kadras su nemonotonine laiko žyma.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="361"/>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Vaizdo buferio perpildymas, kai kurie kadrai bus prarasti. Garso įvestis atrodo pernelyg lėta.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="418"/>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Gauti garso mėginiai su nemonotonine laiko žyma.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="443"/>
         <source>Warning: Too many audio samples, dropping samples to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Pernelyg daug garso mėginių, šalinami mėginiai, kad būtų išlaikytas garso ir vaizdo suderinimas.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="449"/>
         <source>Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Nepakanka garso mėginių, įterpiama tyla, kad būtų išlaikytas garso ir vaizdo suderinimas.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="515"/>
         <source>Warning: Audio input is more than 2% too slow!</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Garso įvestis yra daugiau nei 2% per lėta!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="519"/>
         <source>Warning: Audio input is more than 2% too fast!</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Garso įvestis yra daugiau nei 2% per greita!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="554"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Garso buferio perpildymas, pradedamas naujas segmentas, kad būtų išlaikytas garso ir vaizdo suderinimas (kai kurie vaizdai ir/ar garsai gali būti prarasti). Atrodo, kad vaizdo įvestis yra pernelyg lėta.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="590"/>
         <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Garso sraute yra gautas tarpas, įterpiama tyla, kad būtų išlaikytas garso ir vaizdo suderinimas.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="890"/>
         <source>Synchronizer thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinchronizatoriaus gija pradėta.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="912"/>
         <source>Synchronizer thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinchronizatoriaus gija sustabdyta.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="916"/>
         <source>Exception &apos;%1&apos; in synchronizer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Išimtis &quot;%1&quot; sinchronizatoriaus gijoje.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="919"/>
         <source>Unknown exception in synchronizer thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nežinoma išimtis sinchronizatoriaus gijoje.</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="121"/>
         <source>Error: Width or height is not an even number!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Plotis ar aukštis nėra lyginis skaičius!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="125"/>
         <source>Error: Frame rate is zero!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Kadrų dažnis lygus nuliui!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="182"/>
         <source>Using pixel format %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naudojamas %1 pikselių formatas.</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="196"/>
         <source>Error: The pixel format is not supported by the codec!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Kodekas nepalaiko pikselių formato!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="226"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="246"/>
         <source>Error: Encoding of video frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Vaizdo kadro kodavimas nepavyko!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="40"/>
         <source>Using real-time priority.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naudojama tikralaikė pirmenybė.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="50"/>
         <source>Using nice priority.</source>
         <comment>Don&apos;t translate &apos;nice&apos;, it&apos;s a UNIX parameter that defines the priority of a process.</comment>
-        <translation type="unfinished"></translation>
+        <translation>Naudojama nice pirmenybė.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="55"/>
         <source>Warning: Can&apos;t increase the thread priority.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: Nepavyksta padidinti gijos pirmenybės.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="63"/>
         <source>Error: Can&apos;t recover device after underrun!</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta atkurti įrenginio po underrun!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="90"/>
         <source>Stopping synth thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stabdoma sintezatoriaus gija ...</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="223"/>
         <source>Synth thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sintezatoriaus gija pradėta.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="276"/>
         <source>Error: Can&apos;t write samples!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta įrašyti mėginių!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="284"/>
         <source>Synth thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sintezatoriaus gija sustabdyta.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="288"/>
         <source>Exception &apos;%1&apos; in synth thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Išimtis &apos;%1&apos; sintezatoriaus gijoje.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="291"/>
         <source>Unknown exception in synth thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nežinoma išimtis sintezatoriaus gijoje.</translation>
+    </message>
+    <message>
+        <location filename="../Benchmark.cpp" line="163"/>
+        <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
+        <translation>BGRA %1 iki BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</translation>
+    </message>
+    <message>
+        <location filename="../Benchmark.cpp" line="241"/>
+        <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
+        <translation>%1 %2 iki %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</translation>
+    </message>
+    <message>
+        <location filename="../Benchmark.cpp" line="251"/>
+        <source>Starting scaler benchmark ...</source>
+        <translation>Pradedamas perskaičiavimo įrenginio našumo testas ...</translation>
+    </message>
+    <message>
+        <location filename="../Benchmark.cpp" line="258"/>
+        <source>Starting converter benchmark ...</source>
+        <translation>Pradedamas keitiklio našumo testas ...</translation>
     </message>
     <message>
         <location filename="../common/CPUFeatures.cpp" line="46"/>
         <source>CPU features</source>
-        <translation type="unfinished"></translation>
+        <translation>Procesoriaus ypatybės</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="159"/>
         <source>The application could not be launched.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko paleisti programos.</translation>
     </message>
     <message>
         <location filename="../GUI/HotkeyListener.cpp" line="164"/>
         <source>Warning: XInput2 is not supported by X server, hotkeys may not work in some applications.</source>
         <comment>Don&apos;t translate &apos;XInput2&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Įspėjimas: X serveris nepalaiko XInput2, kai kuriose programose gali neveikti spartieji klavišai.</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="119"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Komandų eilutės parinktis &quot;%1&quot; nepriima reikšmės!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="150"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nežinoma komandų eilutės parinktis &apos;%1&apos;!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="160"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nežinomas komandų eilutės argumentas &apos;%1&apos;!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="200"/>
         <source>SSR started</source>
-        <translation type="unfinished"></translation>
+        <translation>SSR paleista</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="228"/>
         <source>SSR stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>SSR sustabdyta</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="245"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../Benchmark.cpp" line="163"/>
-        <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../Benchmark.cpp" line="241"/>
-        <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../Benchmark.cpp" line="251"/>
-        <source>Starting scaler benchmark ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../Benchmark.cpp" line="258"/>
-        <source>Starting converter benchmark ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta sukurti ssr katalogo!</translation>
     </message>
 </context>
 <context>
@@ -1108,15 +1112,15 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
 
 You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation>SimpleScreenRecorder обнаружил что вы используете проприетарный драйвер NVIDIA с включенной опцией &quot;flipping&quot;. Эта опция может создавать помехи при записи.  Я настоятельно рекомендую ее отключить. Хотите чтобы я сделал это за вас?
+        <translation>SimpleScreenRecorder aptiko, kad jūs naudojate nuosavybinę NVIDIA tvarkyklę su įjungtu &quot;flipping&quot;. Yra žinoma, kad tai, įrašymo metu, sukelia triktis. Rekomenduojama išjungti &quot;flipping&quot;. Ar norite, kad tai padaryčiau vietoj jūsų?
 
-Вы также можете самомтоятельно отключить ее через контрольную панель NVIDIA.</translation>
+Jūs taip pat galite rankiniu būdu keisti šią parinktį NVIDIA valdymo skydelyje.</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="90"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation>Мне не удалось отключить &quot;flipping&quot;... Попробуйте отключить его через кнонтрольную панель NVIDIA.</translation>
+        <translation>Atsiprašau, bet dėl kažkokios priežasties man nepavyko išjungti &quot;flipping&quot;! Pabandykite išjungti šią parinktį NVIDIA valdymo skydelyje.</translation>
     </message>
 </context>
 <context>
@@ -1124,12 +1128,12 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageDone.cpp" line="30"/>
         <source>The recording has been saved. You can edit the video now, or re-encode it with better settings to make the file smaller (the default settings are optimized for quality and speed, not file size).</source>
-        <translation>Ваша запись сохранена. Теперь вы можете начать редактирование либо перекодировать запись для достижения меньшего размера файла (настройки по-умолчанию оптимизированы на скорость и качество, но не на размер).</translation>
+        <translation>Įrašas yra išsaugotas. Dabar, kad padarytumėte failą mažesniu, galite redaguoti arba perkoduoti vaizdo įrašą, naudodami geresnius nustatymus, (numatytieji nustatymai yra optimizuoti kokybei ir greičiui, o ne failo dydžiui).</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="33"/>
         <source>Back to the start screen</source>
-        <translation>Вернуться к главному экрану</translation>
+        <translation>Atgal į pradžios puslapį</translation>
     </message>
 </context>
 <context>
@@ -1137,269 +1141,257 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="113"/>
         <source>Video input</source>
-        <translation>Настройки видео</translation>
+        <translation>Vaizdo įvestis</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="116"/>
         <source>Record the entire screen</source>
-        <translation>Записать весь экран</translation>
+        <translation>Įrašinėti visą ekraną</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="117"/>
         <source>Record a fixed rectangle</source>
-        <translation>Записать выделенную область</translation>
+        <translation>Įrašinėti fiksuotą stačiakampį</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="118"/>
         <source>Follow the cursor</source>
-        <translation>Следовать за курсором</translation>
+        <translation>Sekti paskui žymeklį</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="119"/>
         <source>Record OpenGL (experimental)</source>
-        <translation>Записать OpenGL (эксперементально)</translation>
+        <translation>Įrašinėti OpenGL (eksperimentinis)</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="125"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
-        <translation>Выберите монитор, который будет использоватся для записи.</translation>
+        <translation>Pasirinkite kuris ekranas turėtų būti įrašinėjamas kelių ekranų konfigūracijoje.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="126"/>
         <source>Select rectangle...</source>
-        <translation>Выбрать область...</translation>
+        <translation>Pasirinkti stačiakampį...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="127"/>
         <source>Use the mouse to select the recorded rectangle.</source>
-        <translation>Используйте мышку чтобы выделить область для записи.</translation>
+        <translation>Naudokite pelę, kad pasirinktumėte norimą įrašinėti stačiakampį.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="128"/>
         <source>Select window...</source>
-        <translation>Выбрать окно...</translation>
+        <translation>Pasirinkti langą...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="129"/>
         <source>Use the mouse to select a window to record.
 Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only
 the client area of the window will be recorded.</source>
-        <translation>Используйте мышку чтобы выбрать окно для записи.
-Совет: Если вы кликните по границам окна - будет записано окно целиком, 
-в противном случае запишется только рабочая часть окна.</translation>
+        <translation>Naudokite pelę, kad pasirinktumėte norimą įrašinėti langą.
+Patarimas: Jei spustelėsite ant lango krašto, bus įrašinėjamas visas langas (kartu su kraštais). Kitu atveju,
+bus įrašinėjama tik lango kliento sritis.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="132"/>
         <source>OpenGL settings...</source>
-        <translation>Настройки OpenGL...</translation>
+        <translation>OpenGL nustatymai...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="133"/>
         <source>Change the settings for OpenGL recording.</source>
-        <translation>Изменить настройки записи OpenGL.</translation>
+        <translation>Keisti OpenGL įrašymo nustatymus.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="134"/>
         <source>Left:</source>
-        <translation>Слева:</translation>
+        <translation>Kairė:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="138"/>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation>Х координата верхнего левого угла записываемой области.
-Совет: Вы можете также изменять это значение с помощью 
-колесика мыши или стрелок вверх/вниз.</translation>
+        <translation>Įrašinėjamo stačiakampio viršutinio kairiojo kampo x koordinatė.
+Patarimas: Šią reikšmę taip pat galite keisti pelės ratuko arba aukštyn/žemyn rodyklių pagalba.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="140"/>
         <source>Top:</source>
-        <translation>Сверху:</translation>
+        <translation>Viršus:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="144"/>
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation>Y координата верхнего левого угла записываемой области.
-Совет: Вы можете также изменять это значение с помощью 
-колесика мыши или стрелок вверх/вниз.</translation>
+        <translation>Įrašinėjamo stačiakampio viršutinio kairiojo kampo y koordinatė.
+Patarimas: Šią reikšmę taip pat galite keisti pelės ratuko arba aukštyn/žemyn rodyklių pagalba.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="146"/>
         <source>Width:</source>
-        <translation>Ширина:</translation>
+        <translation>Plotis:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="150"/>
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation>Ширина записываемой области.
-Совет: Вы можете также изменять это значение
-с помощью колесика мыши или стрелок вверх/вниз.</translation>
+        <translation>Įrašinėjamo stačiakampio plotis.
+Patarimas: Šią reikšmę taip pat galite keisti pelės ratuko arba aukštyn/žemyn rodyklių pagalba.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="152"/>
         <source>Height:</source>
-        <translation>Высота:</translation>
+        <translation>Aukštis:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="156"/>
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation>Высота записываемой области.
-Совет: Вы можете также изменять это значение 
-с помощью колесика мыши или стрелок вверх/вниз.</translation>
+        <translation>Įrašinėjamo stačiakampio aukštis.
+Patarimas: Šią reikšmę taip pat galite keisti pelės ratuko arba aukštyn/žemyn rodyklių pagalba.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="158"/>
         <source>Frame rate:</source>
-        <translation>Частота кадров:</translation>
+        <translation>Kadrų dažnis:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="162"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
-        <translation>Количество кадров в секунду у финального видео. 
-Более высокая частота кадров потребует больше 
-вычислительной мощности процессора.</translation>
+        <translation>Galutinio vaizdo įrašo kadrų dažnis per sekundę. Didesni kadrų dažniai naudoja daugiau procesoriaus laiko.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="163"/>
         <source>Scale video</source>
-        <translation>Растянуть видео</translation>
+        <translation>Keisti vaizdo įrašo mastelį</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="164"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
-        <translation>Включает или отключает растяжение. 
-Растяжение требует больше мощности процессора, 
-однако видео получаются меньше размером и кодируются быстрее.</translation>
+        <translation>Įjungti ar išjungti mastelio keitimą. Mastelio keitimas naudoja daugiau procesoriaus laiko, tačiau, jeigu pakeistas mastelis yra mažesnis, 
+tuomet jis gali pagreitinti kodavimą.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="165"/>
         <source>Scaled width:</source>
-        <translation>Ширина:</translation>
+        <translation>Mastelio plotis:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="169"/>
         <source>Scaled height:</source>
-        <translation>Высота:</translation>
+        <translation>Mastelio aukštis:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="173"/>
         <source>Record cursor</source>
-        <translation>Записывать курсор</translation>
+        <translation>Įrašinėti žymeklį</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="243"/>
         <source>Audio input</source>
-        <translation>Настройки звука</translation>
+        <translation>Garso įvestis</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="245"/>
         <source>Record audio</source>
-        <translation>Записывать звук</translation>
+        <translation>Įrašinėti garsą</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="246"/>
         <source>Backend:</source>
-        <translation>Сервер:</translation>
+        <translation>Vidinė pusė:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="255"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
-        <translation>Звуковой сервер, который будет использован при записи.
-Сервер ALSA также будет работать на системах с предустановленным 
-PulseAudio, однако лучше всего использовать именно PulseAudio. </translation>
+        <translation>Įrašymui naudojama garso vidinė pusė.
+ALSA vidinė pusė veiks sistemose, kurios naudoja PulseAudio, tačiau geriau naudoti PulseAudio vidinę pusę tiesiogiai.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="257"/>
         <location filename="../GUI/PageInput.cpp" line="265"/>
         <source>Source:</source>
-        <translation>Источник:</translation>
+        <translation>Šaltinis:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="260"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
-        <translation>Источник сервера ALSA, который будет использован при записи. 
-Настройки по-умолчанию обычно работают лучше всего.
-&quot;Общие&quot; источники позволяют разным программам записываться 
-одновременно, однако это может быть ненадежно.</translation>
+        <translation>Įrašinėjimui naudojamas ALSA šaltinis.
+Įprastai, tinka numatytasis šaltinis. &quot;Bendrinami&quot; šaltiniai leidžia tuo pačiu metu įrašinėti kelioms programoms, tačiau jie gali būti ne tokie patikimi.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="262"/>
         <location filename="../GUI/PageInput.cpp" line="270"/>
         <source>Refresh</source>
-        <translation>Обновить</translation>
+        <translation>Įkelti iš naujo</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="263"/>
         <source>Refreshes the list of ALSA sources.</source>
-        <translation>Обновляет список источников ALSA.</translation>
+        <translation>Iš naujo įkelia ALSA šaltinių sąrašą.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="268"/>
         <source>The PulseAudio source that will be used for recording.
 A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
         <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
-        <translation>Источник сервера PulseAudio, который будет использован при записи.
-&quot;Monitor&quot; это источник, записывающий звук других приложений.</translation>
+        <translation>PulseAudio šaltinis, kuris bus naudojamas įrašinėjimui.
+&quot;Monitor&quot; yra šaltinis, kuris įrašinėja kitų programų grojamus garsus.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="271"/>
         <source>Refreshes the list of PulseAudio sources.</source>
-        <translation>Обновляет список источников PulseAudio.</translation>
+        <translation>Iš naujo įkelia PulseAudio šaltinių sąrašą.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>Record system microphone</source>
-        <translation>Записывать звук с микрофона</translation>
+        <translation>Įrašinėti sistemos mikrofoną</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation>Если флажок установлен, то программа автоматически 
-подключится к портам записи вашего компьютера.</translation>
+        <translation>Jei pažymėta,prievadai bus automatiškai prijungti prie sistemos užvaldymo prievadų.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>Record system speakers</source>
-        <translation>Записывать звук с колонок</translation>
+        <translation>Įrašinėti sistemos garsiakalbius</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="277"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation>Если флажок установлен, то программа автоматически 
-подключится к любым портам вывода звука вашего компьютера.</translation>
+        <translation>Jei pažymėta, prievadai bus automatiškai prijungti prie bet ko, kas jungiasi prie sistemos atkūrimo prievadų.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
         <source>Back</source>
-        <translation>Назад</translation>
+        <translation>Atgal</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="313"/>
         <source>Continue</source>
-        <translation>Далее</translation>
+        <translation>Tęsti</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="680"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation>Все экраны: %1x%2</translation>
+        <translation>Visi ekranai: %1x%2</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="684"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation>Экран %1: %2x%3 в %4,%5</translation>
+        <translation>Ekranas %1: %2x%3 ties %4,%5</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="854"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
-        <translation>Экран %1</translation>
+        <translation>Ekranas %1</translation>
     </message>
 </context>
 <context>
@@ -1412,73 +1404,71 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
         <location filename="../GUI/PageOutput.cpp" line="127"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation>Файлы %1</translation>
+        <translation>%1 failai</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="94"/>
         <location filename="../GUI/PageOutput.cpp" line="100"/>
         <location filename="../GUI/PageOutput.cpp" line="107"/>
         <source>Other...</source>
-        <translation>Другой...</translation>
+        <translation>Kita...</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="106"/>
         <source>Uncompressed</source>
-        <translation>Без сжатия</translation>
+        <translation>Nesuglaudintas</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="161"/>
         <source>Error: Could not find any suitable container in libavformat!</source>
-        <translation>Ошибка: Не могу найти подходящий контейнер в libavformat!</translation>
+        <translation>Klaida:  Libavformat bibliotekoje nepavyko rasti jokio tinkamo konteinerio!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="165"/>
         <source>Error: Could not find any suitable video codec in libavcodec!</source>
-        <translation>Ошибка: Не могу найти подходящий видеокодек в libavcodec!</translation>
+        <translation>Klaida: Libavcodec bibliotekoje nepavyko rasti jokio tinkamo vaizdo kodeko!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="169"/>
         <source>Error: Could not find any suitable audio codec in libavcodec!</source>
-        <translation>Ошибка: Не могу найти подходящий аудиокодек в libavcodec!</translation>
+        <translation>Klaida: Libavcodec bibliotekoje nepavyko rasti jokio tinkamo garso kodeko!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="175"/>
         <source>File</source>
-        <translation>Файл</translation>
+        <translation>Failas</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="177"/>
         <source>Save as:</source>
-        <translation>Сохранить как:</translation>
+        <translation>Išsaugoti kaip:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="179"/>
         <source>The recording will be saved to this location.</source>
-        <translation>Запись будет сохранена в эту папку.</translation>
+        <translation>Įrašas bus išsaugotas į šią vietą.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="180"/>
         <source>Browse...</source>
-        <translation>Обзор...</translation>
+        <translation>Naršyti...</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="181"/>
         <source>Separate file per segment</source>
-        <translation>Разбить файл на сегменты</translation>
+        <translation>Atskirti failus segmentais</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="182"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation>Если установить флажок, то программа будет создавать 
-новый видеофайл при каждой паузе и возврате к записи.
-Если имя оригинального файла &quot;test.mkv&quot;, то имена сегментов 
-будут иметь имя &apos;test-ГГГГ-MM-ДД_ЧЧ.MM.СС.mkv&apos;.</translation>
+        <translation>Jei pažymėta, kas kartą jums pristabdžius ir pratęsus įrašinėjimą, bus sukuriamas atskiras vaizdo failas.
+Jei pradinio failo pavadinimas yra &quot;testas.mkv&quot;, tai segmentai bus išsaugomi kaip &quot;testas-MMMM-mm-dd_VV.MM.SS.mkv&quot;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="184"/>
         <source>Container:</source>
-        <translation>Контейнер:</translation>
+        <translation>Konteineris:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
@@ -1496,41 +1486,36 @@ Note that not all codecs are supported by all containers, and that not all media
    WebM is supported by default in Firefox, Chrome and Opera, and plugins are available for Internet Explorer and Safari.
    It supports only VP8 and Vorbis.
 - OGG supports only Theora and Vorbis.</source>
-        <translation>Контейнер (формат файла) который будет использован для записи.
-Имейте ввиду что контейнер может не поддерживать все типы кодеков 
-и не все медиаплееры поддерживают все типы файлов.
-- Матрешка (MKV) поддерживает все типы кодеков, но он мало распространен.
-- MP4 более популярный формат и его могут проигрывать 
-   практически все современные медиаплееры, однако он поддерживает только кодек H.264
-   (при этом большинство медиаплееров поддерживает звук лишь в формате AAC).
-- WebM предназначен для встраивания видео в вебсайты (при помощи тэга &lt;video&gt; в HTML). 
-   Формат создан Google. WebM по-умолчанию поддерживается в Firefox, Chrome и Opera 
-   (также существуют плагины для Internet Explorer и Safari)
-   WebM поддерживает только VP8 и Vorbis.
-- OGG поддерживает только Theora и Vorbis.</translation>
+        <translation>Konteineris (failo formatas), kuris bus naudojamas įrašo išsaugojimui.
+Turėkite omenyje, kad ne visi konteineriai palaiko visus kodekus ir, kad ne visi medijos grotuvai gali skaityti visus failų formatus.
+- Matroska (MKV) palaiko visus kodekus, tačiau nėra plačiai žinomas.
+- MP4 yra labiausiai žinomas formatas ir, greičiausiai, galės būti grojamas beveik bet kuriame šiuolaikiniame medijos grotuve, tačiau palaiko tik H.264 vaizdą
+   (ir daugelis medijos grotuvų palaiko tik AAC garsą).
+- WebM yra skirtas vaizdo įtaisymui į internetines svetaines (su HTML5 &lt;video&gt; žyme). Formatą sukūrė Google.
+   WebM formatą pagal numatymą palaiko Firefox, Chrome ir Opera, o naršyklėms Internet Explorer ir Safari yra prieinamas papildinys.
+   Šis formatas palaiko tik VP8 ir Vorbis.
+- OGG palaiko tik Theora ir Vorbis.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="201"/>
         <source>Container name:</source>
-        <translation>Имя контейнера:</translation>
+        <translation>Konteinerio pavadinimas:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="207"/>
         <source>For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.</source>
-        <translation>Для продвинутых пользователей. 
-Вы можете использовать любой формат libav/ffmpeg, 
-однако многие из них попросту бесполезны и могут не работать.</translation>
+        <translation>Pažengusiems naudotojams. Galite naudoti bet kurį libav/ffmpeg formatą, tačiau daugelis iš jų nėra naudingi arba gali neveikti.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="223"/>
         <source>Video</source>
-        <translation>Видео</translation>
+        <translation>Vaizdo įrašas</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="225"/>
         <location filename="../GUI/PageOutput.cpp" line="305"/>
         <source>Codec:</source>
-        <translation>Кодек:</translation>
+        <translation>Kodekas:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="230"/>
@@ -1538,39 +1523,34 @@ Note that not all codecs are supported by all containers, and that not all media
 - H.264 (libx264) is by far the best codec - high quality and very fast.
 - VP8 (libvpx) is quite good but also quite slow.
 - Theora (libtheora) isn&apos;t really recommended because the quality isn&apos;t very good.</source>
-        <translation>Кодек, который будет использован для сжатия видеопотока вашего видео.
-- H.264 (libx264) пока что лучший кодек - высокое качество и отличная скорость.
-- VP8 (libvpx) весьма хороший, но при этом весьма медленный кодек.
-- Theora (libtheora) настоятельно не рекомендую использовать, 
-   качество у него очень посредственное.</translation>
+        <translation>Kodekas, kuris bus naudojamas vaizdo srauto glaudinimui.
+- H.264 (libx264) yra geriausias kodekas - aukštos kokybės ir labai greitas.
+- VP8 (libvpx) yra ganėtinai geras, tačiau ir ganėtinai lėtas.
+- Theora (libtheora) nėra rekomenduojamas, kadangi jo kokybė nėra pati geriausia.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="234"/>
         <location filename="../GUI/PageOutput.cpp" line="318"/>
         <source>Codec name:</source>
-        <translation>Имя кодека:</translation>
+        <translation>Kodeko pavadinimas:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="240"/>
         <source>For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.</source>
-        <translation>Для продвинутых пользователей. 
-Вы можете использовать любой libav/ffmpeg видео кодек, 
-однако многие из них попросту бесполезны и могут не работать.</translation>
+        <translation>Pažengusiems naudotojams. Galite naudoti bet kurį libav/ffmpeg vaizdo kodeką, tačiau daugelis iš jų nėra naudingi arba gali neveikti.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="241"/>
         <location filename="../GUI/PageOutput.cpp" line="325"/>
         <source>Bit rate (in kbps):</source>
-        <translation>Битрейт (в kbps):</translation>
+        <translation>Pralaidumas (kbps):</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="243"/>
         <source>The video bit rate (in kilobit per second). A higher value means a higher quality.
 If you have no idea where to start, try 5000 and change it if needed.</source>
-        <translation>Битрейт вашего видео (в килобитах в секунду). 
-Более высокое значение даст более высокое качество.
-Если вы понятия не имеете какое значение выставить - 
-попробуйте начать с 5000 и изменяйте при необходимости.</translation>
+        <translation>Vaizdo pralaidumas (kilobitais per sekundę). Didesnė reikšmė reiškia geresnę kokybę.
+Jeigu nežinote kur pradėti, pabandykite 5000 ir, jei reikia, keiskite.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="245"/>
@@ -1582,65 +1562,62 @@ If you have no idea where to start, try 5000 and change it if needed.</source>
         <location filename="../GUI/PageOutput.cpp" line="250"/>
         <source>This setting changes the video quality. A lower value means a higher quality.
 The allowed range is 0-51 (0 means lossless, the default is 23).</source>
-        <translation>Эта настройка изменяет качество видео. Чем меньше значение тем выше качество.
-Допустимое значение: 0-51 (0 означает &quot;без потерь&quot;, 23 - значение по-умолчанию).</translation>
+        <translation>Šis nustatymas keičia vaizdo kokybę. Mažesnė reikšmė reiškia aukštesnę kokybę.
+Leidžiamas rėžis yra 0-51 (0 reiškia nenuostolingąją kokybę, numatytoji reikšmė yra 23).</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="256"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation>Preset:</translation>
+        <translation>Išankstinė parinktis:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="261"/>
         <source>The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),
 but results in larger files. The quality shouldn&apos;t be affected too much.</source>
-        <translation>Скорость кодирования вашего видео. 
-Более высокая скорость будет меньше нагружать процессор 
-(что делает возможным записывать при высокой частоте кадров), 
-но в результате вы получите файл большего размера. 
-На качестве конечного видео это сказаться не должно. </translation>
+        <translation>Kodavimo greitis. Didesnis greitis naudoja daugiau procesoriaus išteklių (taip padarydamas įmanomą didesnio kadrų skaičiaus įrašymą),
+tačiau kaip pasekmė, gaunami didesni failai. Kokybė neturėtų būti labai stipriai paveikta.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="263"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation>Нагрузка на CPU:</translation>
+        <translation>CPU used:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="265"/>
         <source>fastest</source>
-        <translation>наибыстрейший</translation>
+        <translation>greičiausiai</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="270"/>
         <source>slowest</source>
-        <translation>очень медленный</translation>
+        <translation>lėčiausiai</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="271"/>
         <source>The encoding speed. A higher value uses *less* CPU time. (I didn&apos;t choose the name, this is the name
 used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
-        <translation>Скорость кодирования.
-</translation>
+        <translation>Kodavimo greitis. Didesnė reikšmė naudoja *mažiau* procesoriaus laiko. (Ne aš parinkau pavadinimą, tai
+pavadinimas, kurį naudoja VP8 koduotuvas). Didesnės reikšmės sąlygos žemesnės kokybės vaizdo įrašą,
+nebent padidinsite taip pat ir pralaidumą.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="273"/>
         <location filename="../GUI/PageOutput.cpp" line="328"/>
         <source>Custom options:</source>
-        <translation>Пользовательские настройки:</translation>
+        <translation>Tinkintos parinktys:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="275"/>
         <location filename="../GUI/PageOutput.cpp" line="330"/>
         <source>Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)</source>
-        <translation>Пользовательские настройки для кодека, разделенные запятыми 
-Пример: настройка1=значение1,настройка2=значение2, настройка3=значение3</translation>
+        <translation>Tinkintos kodeko parinktys, atskirtos kableliais (pvz.: parinktis1=reikšmė1, parinktis2=reikšmė2, parinktis3=reikšmė3)</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="276"/>
         <source>Allow frame skipping</source>
-        <translation>Разрешить пропуск кадров</translation>
+        <translation>Leisti kadrų praleidimą</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="277"/>
@@ -1648,18 +1625,15 @@ used by the VP8 encoder). Higher values result in lower quality video, unless yo
 lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.
 This increases the file size and CPU usage, but reduces the latency for live streams in some cases.
 It shouldn&apos;t affect the appearance of the video.</source>
-        <translation>Если установить флажок, то программа разрешит кодировщику видео 
-пропускать кадры в том случае если входная частота кадров ниже выходной.
- Если флажок снят, то программа будет дублировать входящие кадры 
-чтобы заполнить пробелы. Это повысит размер конечного файла и нагрузку 
-на процессор, однако (в ряде случаев) это уменьшит задержку при потоковой 
-трансляции через интернет. На качество на качество получаемого видео опция 
-не влияет.</translation>
+        <translation>Jei pažymėta, vaizdo koduotuvui bus leidžiama praleisti kadrus tuo atveju, jei įvesties kadrų dažnis
+bus žemesnis nei išvesties kadrų dažnis. Jei nepažymėta, tuomet įvesties kadrai bus dubliuojami,
+kad būtų užpildyti tarpai. Tai padidina failo dydį ir procesoriaus naudojimą, tačiau kai kuriais atvejais
+sumažina tiesioginių srautų delsą. Tai neturėtų paveikti vaizdo išvaizdos.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="303"/>
         <source>Audio</source>
-        <translation>Звук</translation>
+        <translation>Garso įrašas</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="310"/>
@@ -1671,66 +1645,61 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
 - AAC is a good codec, but the implementations used here (libvo_aacenc or the experimental ffmpeg aac encoder)
    are pretty bad. Only use it if you have no other choice.
 - Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it&apos;s very fast.</source>
-        <translation>Кодек, который будет использован для кодирования вашего аудиопотока. Можете особо не волноваться по его поводу,
-потому как размер аудиоданных не в пример меньше, чем размер видеоданных. И если вы записываете только свой голос 
-(без музыки) - можете выставлять любые настройки качества.
-- Vorbis (libvorbis) превосходный кодек, рекомендую использовать именно его.
--MP3 (libmp3lame) довольно хороший кодек.
-- AAC хороший кодек, но в данной программе он реализован плохо (libvo_aacenc или экспериментальный энкодер FFMPEG AAC)
-   Используйте только когда у вас нет другого выбора.
-- Если  выбрать &quot;без сжатия&quot; то звук будет просто помещен в файл без компрессии. Файл получится довольно большой, 
-   зато кодирование пройдет очень быстро. </translation>
+        <translation>Kodekas, kuris bus naudojamas garso srauto glaudinimui. Jūs neturėtumėte tuo pernelyg rūpintis,
+kadangi garso duomenų dydis, palyginus su vaizdo duomenų dydžiu, dažniausiai, yra nedidelis.
+Ir jeigu įrašinėjate tik savo balsą (t.y. jokios muzikos), tuomet kokybė vis tiek neturės didelės reikšmės.
+- Vorbis (libvorbis) yra puikus, tai yra rekomenduojamas kodekas.
+- MP3 (libmp3lame) yra ganėtinai geras.
+- AAC yra geras kodekas, tačiau čia naudojami įgyvendinimai (libvo_aacenc ar eksperimentinis ffmpeg aac koduotuvas)
+   yra gan blogi. Jį naudokite tik tuomet, jei neturite kito pasirinkimo.
+- Nesuglaudintas, tiesiog talpins garso duomenis, jų neglaudindamas. Failas bus gan didelis, tačiau tai yra labai greita.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="324"/>
         <source>For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work.</source>
-        <translation>Для продвинутых пользователей. 
-Вы можете использовать любой libav/ffmpeg кодек, 
-однако многие из них попросту бесполезны и могут не работать.</translation>
+        <translation>Pažengusiems naudotojams. Galite naudoti bet kurį libav/ffmpeg garso kodeką, tačiau daugelis iš jų nėra naudingi arba gali neveikti.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="327"/>
         <source>The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.</source>
-        <translation>Битрейт звука (в килобитах в секунду). 
-Более высокое значение даст более высокое качество. 
-Обычно используют значение 128.</translation>
+        <translation>Garso pralaidumas (kilobitais per sekundę). Didesnė reikšmė reiškia geresnę kokybę. Numatyta reikšmė yra 128.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="344"/>
         <source>Back</source>
-        <translation>Назад</translation>
+        <translation>Atgal</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="345"/>
         <source>Continue</source>
-        <translation>Далее</translation>
+        <translation>Tęsti</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="474"/>
+        <source>You did not select an output file!</source>
+        <translation>Jūs nepasirinkote išvesties failo!</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="479"/>
+        <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
+        <translation>Failas &apos;%1&apos; jau yra. Ar tikrai norite jį perrašyti?</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="580"/>
         <location filename="../GUI/PageOutput.cpp" line="588"/>
         <source>not installed</source>
-        <translation>не установлена</translation>
+        <translation>neįdiegta</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="582"/>
         <location filename="../GUI/PageOutput.cpp" line="590"/>
         <source>not supported by container</source>
-        <translation>не поддерживается контейнером</translation>
+        <translation>nepalaikoma konteinerio</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="633"/>
         <source>Save recording as</source>
-        <translation>Сохранить запись как</translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="474"/>
-        <source>You did not select an output file!</source>
-        <translation>Вы не выбрали выходной файл!</translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageOutput.cpp" line="479"/>
-        <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
-        <translation>Запись &quot;%1&quot; уже существует. Вы уверены что хотите перезаписать ее?</translation>
+        <translation>Išsaugoti įrašą kaip</translation>
     </message>
 </context>
 <context>
@@ -1738,22 +1707,22 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageRecord.cpp" line="146"/>
         <source>Recording</source>
-        <translation>Запись</translation>
+        <translation>Įrašymas</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="150"/>
         <source>Enable recording hotkey</source>
-        <translation>Включить горячие клавиши</translation>
+        <translation>Įjungti įrašymo spartųjį klavišą</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="151"/>
         <source>Enable sound notifications</source>
-        <translation>Включить звуковое оповещение</translation>
+        <translation>Įjungti garso pranešimus</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="152"/>
         <source>Hotkey:</source>
-        <translation>Горячая клавиша:</translation>
+        <translation>Spartusis klavišas:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="153"/>
@@ -1779,234 +1748,234 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
         <location filename="../GUI/PageRecord.cpp" line="158"/>
         <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
 The program that you are recording will not receive the key press.</source>
-        <translation>Клавиша, которую потребуется нажать (в сочетании с кнопкой-модификатором) для начала или приостановки записи. </translation>
+        <translation>Klavišas, kuri turite nuspausti (kartu su nurodytais modifikatoriais), kad pradėtumėte ar pristabdytumėte įrašinėjimą.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="198"/>
         <source>Information</source>
-        <translation>Информация</translation>
+        <translation>Informacija</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="200"/>
         <source>Total time:</source>
-        <translation>Всего прошло:</translation>
+        <translation>Bendras laikas:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="202"/>
         <source>FPS in:</source>
-        <translation>FPS (вход):</translation>
+        <translation>Kadr./s įeina:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="204"/>
         <source>FPS out:</source>
-        <translation>FPS (выход):</translation>
+        <translation>Kadr./s išeina:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="206"/>
         <source>Size in:</source>
-        <translation>Размер (вход):</translation>
+        <translation>Dydis įeina:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="208"/>
         <source>Size out:</source>
-        <translation>Размер (выход):</translation>
+        <translation>Dydis išeina:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="210"/>
         <source>File name:</source>
-        <translation>Имя файла:</translation>
+        <translation>Failo pavadinimas:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="213"/>
         <source>File size:</source>
-        <translation>Размер файла:</translation>
+        <translation>Failo dydis:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="215"/>
         <source>Bit rate:</source>
-        <translation>Битрейт:</translation>
+        <translation>Pralaidumas:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="238"/>
         <source>Preview</source>
-        <translation>Предпросмотр</translation>
+        <translation>Peržiūra</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="242"/>
         <source>Preview frame rate:</source>
-        <translation>Битрейт предпросмотра:</translation>
+        <translation>Peržiūros kadrų dažnis:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="246"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
-        <translation>Примечание: Предпросмотр создаст дополнительную нагрузку на процессор (особенно при высоком битрейте).</translation>
+        <translation>Pastaba: Peržiūra reikalauja papildomo procesoriaus laiko (ypač esant dideliems kadrų dažniams).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="295"/>
         <source>Log</source>
-        <translation>Журнал</translation>
+        <translation>Žurnalas</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="310"/>
         <location filename="../GUI/PageRecord.cpp" line="318"/>
         <source>Cancel recording</source>
-        <translation>Отменить запись</translation>
+        <translation>Atsisakyti įrašo</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="311"/>
         <location filename="../GUI/PageRecord.cpp" line="320"/>
         <source>Save recording</source>
-        <translation>Сохранить запись</translation>
+        <translation>Išsaugoti įrašą</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="325"/>
         <source>Quit</source>
-        <translation>Выход</translation>
+        <translation>Baigti</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="368"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
-        <translation>Текущая запись не была сохранена и если вы выйдите она будет потеряна.
-Вы действительно хотите выйти?</translation>
+        <translation>Jūs dar nesate išsaugoję esamo įrašo, jeigu baigsite dabar, jis bus prarastas.
+Ar tikrai norite baigti programos darbą?</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="380"/>
         <source>Hide window</source>
-        <translation type="unfinished"></translation>
+        <translation>Slėpti langą</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="382"/>
         <source>Show window</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodyti langą</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="545"/>
         <source>Starting page ...</source>
-        <translation>Запускаю...</translation>
+        <translation>Pradedamas puslapis ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="566"/>
         <location filename="../GUI/PageRecord.cpp" line="707"/>
         <location filename="../GUI/PageRecord.cpp" line="792"/>
         <source>Error: Something went wrong during initialization.</source>
-        <translation>Ошибка: Во время инициализации что-то пошло не так.</translation>
+        <translation>Klaida: Kažkas įvyko inicijavimo metu.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="573"/>
         <source>Started page.</source>
-        <translation>Запущено.</translation>
+        <translation>Pradėtas puslapis.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="597"/>
         <source>Stopping page ...</source>
-        <translation>Останавливаю...</translation>
+        <translation>Stabdomas puslapis ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="622"/>
         <source>Stopped page.</source>
-        <translation>Остановлено.</translation>
+        <translation>Sustabdytas puslapis.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="646"/>
         <source>Starting output ...</source>
-        <translation>Начинаю вывод...</translation>
+        <translation>Pradedama išvestis ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="657"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
-        <translation>Ошибка: Не могу получить размер приложения OpenGL из-за отсутствия файла ввода GLInject.</translation>
+        <translation>Klaida: Nepavyko gauti OpenGL programos dydžio, nes GLInject įvestis nebuvo sukurta.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="662"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
-        <translation>Ошибка: Не могу получить размер приложения OpenGL. Тут могут быть две проблемы: либо приложение запущено неправильно, либо оно еще не успело создать окно OpenGL. Если вы хотите начать запись до запуска приложения - включите растяжение и введите размер видео вручную.</translation>
+        <translation>Klaida: Nepavyko gauti OpenGL programos dydžio. Arba programa nebuvo paleista teisingai, arba programa dar nesukūrė OpenGL lango. Jeigu jūs norite pradėti įrašinėti programą prieš ją paleidžiant, tuomet turite įjungti mastelio keitimą ir rankiniu būdu įvesti vaizdo dydį.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="698"/>
         <source>Started output.</source>
-        <translation>Вывод начат.</translation>
+        <translation>Pradėta išvestis.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="718"/>
         <source>Stopping output ...</source>
-        <translation>Прекращаю вывод...</translation>
+        <translation>Stabdoma išvestis ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="736"/>
         <source>Stopped output.</source>
-        <translation>Вывод прекращен.</translation>
+        <translation>Sustabdyta išvestis.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="763"/>
         <source>Starting input ...</source>
-        <translation>Начинаю ввод...</translation>
+        <translation>Pradedama įvestis ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="768"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
-        <translation>Ошибка: Не могу запустить ввод GLInject так как он не был создан.</translation>
+        <translation>Klaida: Nepavyko pradėti GLInject įvesties, nes ji nebuvo sukurta.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="787"/>
         <source>Started input.</source>
-        <translation>Ввод начат.</translation>
+        <translation>Pradėta įvestis.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="812"/>
         <source>Stopping input ...</source>
-        <translation>Прекращаю ввод...</translation>
+        <translation>Stabdoma įvestis ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="823"/>
         <source>Stopped input.</source>
-        <translation>Ввод прекращен.</translation>
+        <translation>Sustabdyta įvestis.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="839"/>
         <source>Encoding remaining data ...</source>
-        <translation>Кодирую оставшиеся данные...</translation>
+        <translation>Koduojami likę duomenys...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="920"/>
         <location filename="../GUI/PageRecord.cpp" line="930"/>
         <source>Pause recording</source>
-        <translation>Приостановить запись</translation>
+        <translation>Pristabdyti įrašymą</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="923"/>
         <location filename="../GUI/PageRecord.cpp" line="933"/>
         <source>Start recording</source>
-        <translation>Начать запись</translation>
+        <translation>Pradėti įrašymą</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="941"/>
         <source>Stop preview</source>
-        <translation>Остановить предпросмотр</translation>
+        <translation>Stabdyti peržiūrą</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="944"/>
         <source>Start preview</source>
-        <translation>Начать предпросмотр</translation>
+        <translation>Pradėti peržiūrą</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="973"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translation></translation>
+        <translation>Klaida: Kuriant sintezatorių, kažkas įvyko.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1015"/>
         <source>Are you sure that you want to cancel this recording?</source>
-        <translation>Вы уверены что хотите отменить запись?</translation>
+        <translation>Ar tikrai norite atsisakyti šio įrašo?</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1030"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
-        <translation>Вы ничего не записали. Сохранять нечего.
+        <translation>Jūs dar neįrašėte jokio vaizdo įrašo, taigi, nėra ko išsaugoti.
 
-Кнопка записи находится сверху, если что ;).</translation>
+Įrašo pradžios mygtukas yra viršuje ;).</translation>
     </message>
 </context>
 <context>
@@ -2019,22 +1988,22 @@ The start button is at the top ;).</source>
 
 &lt;p&gt;For more information:&lt;br&gt;
 %1&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Добро пожаловать в SimpleScreenRecorder!&lt;/p&gt;
+        <translation>&lt;p&gt;Sveiki atvykę į SimpleScreenRecorder!&lt;/p&gt;
 
-&lt;p&gt;Несмотря на название, у моей программы есть множество настроек. Но не волнуйтесь, на самом деле вам нужно знать всего две вещи. Во-первых, настройки по-умолчанию обычно работают лучше всего. Если вы не знаете как работает та или иная настройка - просто оставьте все как есть. Во-вторых, практически каждая настройка имеет всплывающую подсказку. Просто наведите мышку на интересующую вас настройку чтобы узнать что она делает.&lt;/p&gt;
+&lt;p&gt;Nepaisant pavadinimo, šioje programoje yra daug parinkčių. Bet nesirūpinkite, yra tik keli dalykai, kuriuos turite žinoti. Pirmas, numatytieji nustatymai, dažniausiai, yra tinkami. Jeigu jūs nežinote ką kas nors daro, tiesiog naudokite numatytąją reikšmę. Antras, beveik visi nustatymai turi paaiškinimus. Tiesiog, užveskite ant ko nors pelę, kad sužinotumėte ką tai daro.&lt;/p&gt;
 
-&lt;p&gt;За подробной информацией заходите на мой сайт:&lt;br&gt;
+&lt;p&gt;Išsamesnei informacijai, žiūrėkite:&lt;br&gt;
 %1&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="44"/>
         <source>About SimpleScreenRecorder</source>
-        <translation>О SimpleScreenRecorder</translation>
+        <translation>Apie SimpleScreenRecorder</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="45"/>
         <source>Continue</source>
-        <translation>Продолжить</translation>
+        <translation>Tęsti</translation>
     </message>
 </context>
 <context>
@@ -2042,67 +2011,67 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="28"/>
         <source>Profile</source>
-        <translation>Профиль</translation>
+        <translation>Profilis</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="37"/>
         <source>Save</source>
-        <translation>Сохранить</translation>
+        <translation>Išsaugoti</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="38"/>
         <source>Save the current settings to this profile.</source>
-        <translation>Сохранить текущие настройки в этот профиль.</translation>
+        <translation>Išsaugoti esamus nustatymus į šį profilį.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="39"/>
         <source>New</source>
-        <translation>Новый</translation>
+        <translation>Naujas</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="40"/>
         <source>Create a new profile with the current settings.</source>
-        <translation>Создать новый профиль с текущими настройками.</translation>
+        <translation>Sukurti naują profilį su esamais nustatymais.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="41"/>
         <source>Delete</source>
-        <translation>Удалить</translation>
+        <translation>Ištrinti</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="42"/>
         <source>Delete this profile.</source>
-        <translation>Удалить этот профиль.</translation>
+        <translation>Ištrinti šį profilį.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation>(пусто)</translation>
+        <translation>(nėra)</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
         <source>Error: Can&apos;t load profile!</source>
-        <translation>Ошибка: Не могу загрузить профиль!</translation>
+        <translation>Klaida: Nepavyksta įkelti profilio!</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="147"/>
         <source>Are you sure that you want to overwrite this profile?</source>
-        <translation>Вы уверены что хотите перезаписать этот профиль?</translation>
+        <translation>Ar tikrai norite perrašyti šį profilį?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="159"/>
         <source>Enter a name for the new profile:</source>
-        <translation>Введите имя для профиля:</translation>
+        <translation>Įveskite naujo profilio pavadinimą:</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
-        <translation>Профиль с таким именем уже существует. Вы уверены что хотите заменить его?</translation>
+        <translation>Profilis tokiu pačiu pavadinimu jau yra. Ar tikrai norite jį pakeisti?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="181"/>
         <source>Are you sure that you want to delete this profile?</source>
-        <translation>Вы уверены что хотите удалить этот профиль?</translation>
+        <translation>Ar tikrai norite ištrinti šį profilį?</translation>
     </message>
 </context>
 <context>
@@ -2111,60 +2080,33 @@ The start button is at the top ;).</source>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;Gerai</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Отмена</translation>
+        <translation>&amp;Atsisakyti</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Да</translation>
+        <translation>&amp;Taip</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished">Да, всегда</translation>
+        <translation>Taip, visada</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Нет</translation>
+        <translation>&amp;Ne</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished">Нет, никогда</translation>
-    </message>
-</context>
-<context>
-    <name>QMessageBox</name>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Отмена</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Да</translation>
-    </message>
-    <message>
-        <source>Yes, always</source>
-        <translation type="obsolete">Да, всегда</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Нет</translation>
-    </message>
-    <message>
-        <source>No, never</source>
-        <translation type="obsolete">Нет, никогда</translation>
+        <translation>Ne, niekada</translation>
     </message>
 </context>
 <context>
@@ -2172,27 +2114,27 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../AV/Output/SyncDiagram.cpp" line="50"/>
         <source>Synchronization Diagram</source>
-        <translation>Диаграмма Синхронизации</translation>
+        <translation>Sinchronizacijos Grafikas</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="264"/>
         <source>Video in</source>
-        <translation>Видео (вход)</translation>
+        <translation>Vaizdo įvestis</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="265"/>
         <source>Audio in</source>
-        <translation>Аудио (вход)</translation>
+        <translation>Garso įvestis</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="266"/>
         <source>Video out</source>
-        <translation>Видео (выход)</translation>
+        <translation>Vaizdo išvestis</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="267"/>
         <source>Audio out</source>
-        <translation>Аудио (выход)</translation>
+        <translation>Garso išvestis</translation>
     </message>
 </context>
 </TS>

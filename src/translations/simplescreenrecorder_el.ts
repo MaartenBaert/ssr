@@ -1332,6 +1332,10 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
         <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
         <translation>Το αρχείο &apos;%1&apos; υπάρχει ήδη. Είστε σίγουροι πως θέλετε να το αντικαταστήσετε;</translation>
     </message>
+    <message>
+        <source>(not installed)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PageRecord</name>
