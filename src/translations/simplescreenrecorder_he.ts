@@ -53,9 +53,9 @@
 &lt;p&gt;Another warning: OpenGL recording is experimental, it may not work or even crash the program you are recording. If you are worried about losing program data, make a backup first!&lt;/p&gt;
 
 &lt;p&gt;If you want to record Steam games, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;read this first&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;אזהרה: הקלטת OpenGL עובדת על ידי הזרקת ספרייה לתוך התוכנית אשר תוקלט. ספרייה זו תעקוף פונקציות מערכת מסוימות על מנת ללכוד את המסגרות בטרם אלו מוצגות על המרקע. אם אתם מנסים להקליט משחק אשר מנסה לאתר ניסיונות hacking בצידו של הלקוח (client side), זה (באופן תיאורתי) אפשרי כי המשחק יחשיב זאת בתור hack. זה עלול אפילו לאסור אתכם, כך שזה יהיה רעיון טוב לוודא כי התוכנית שאתם מקליטים לא תאסור אתכם, &lt;b&gt;לפני&lt;/b&gt; שאתם מנסים להקליטה. ראו הוזהרתם :).&lt;/p&gt;
+        <translation>&lt;p&gt;אזהרה: הקלטת OpenGL עובדת על ידי הזרקת ספרייה לתוך התוכנית אשר תוקלט. ספרייה זו תעקוף פונקציות מערכת מסוימות על מנת ללכוד את המסגרות בטרם אלו מוצגות על המסך. אם אתם מנסים להקליט משחק אשר מנסה לאתר ניסיונות hacking בצידו של הלקוח (client side), זה (באופן תיאורתי) אפשרי כי המשחק יחשיב זאת בתור hack. זה עלול אפילו לאסור אתכם, כך שזה יהיה רעיון טוב לוודא כי התוכנית שאתם מקליטים לא תאסור אתכם, &lt;b&gt;לפני&lt;/b&gt; שאתם מנסים להקליטה. ראו הוזהרתם :).&lt;/p&gt;
 
-&lt;p&gt;אזהרה אחרת: הקלטת OpenGL הינה ניסיונית, זו עשויה לא לעבוד או אפילו לגרום לקריסת התוכנית אותה אתם מקליטים. אם אתם מודאגים לגבי איבוד נתוני תוכנית, הכינו גיבוי תחילה!&lt;/p&gt;
+&lt;p&gt;אזהרה אחרת: הקלטת OpenGL הינה ניסיונית, זו עלולה שלא לעבוד או אפילו לגרום לקריסת התוכנית אותה אתם מקליטים. אם אתם מודאגים לגבי איבוד נתוני תוכנית, הכינו גיבוי תחילה!&lt;/p&gt;
 
 &lt;p&gt;אם ברצונכם להקליט משחקי Steam, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;קראו זאת תחילה&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
@@ -728,7 +728,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="140"/>
         <source>Using sample format %1.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="145"/>
@@ -745,7 +745,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
         <location filename="../AV/Output/BaseEncoder.cpp" line="40"/>
         <source>Error: Option &apos;%1&apos; could not be parsed!</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
@@ -967,12 +967,12 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="182"/>
         <source>Using pixel format %1.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="196"/>
         <source>Error: The pixel format is not supported by the codec!</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="226"/>
@@ -1081,12 +1081,12 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../Benchmark.cpp" line="163"/>
         <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../Benchmark.cpp" line="241"/>
         <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../Benchmark.cpp" line="251"/>
@@ -1096,7 +1096,7 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
     <message>
         <location filename="../Benchmark.cpp" line="258"/>
         <source>Starting converter benchmark ...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1141,7 +1141,7 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="116"/>
         <source>Record the entire screen</source>
-        <translation>הקלט את כל המרקע</translation>
+        <translation>הקלט את כל המסך</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="117"/>
@@ -1347,7 +1347,7 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation type="unfinished">אם מסומנת, הפורטים יחוברו אוטומטית אל פורטים לוכדים של מערכת.</translation>
+        <translation type="unfinished">אם מסומנת, הפורטים יחוברו אוטומטית לפורטים לוכדים של מערכת.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="276"/>
@@ -1357,7 +1357,7 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageInput.cpp" line="277"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation type="unfinished">אם מסומנת, הפורטים יחוברו אוטומטית לכל דבר אשר מתחבר אל פורטים מנגנים של מערכת.</translation>
+        <translation type="unfinished">אם מסומנת, הפורטים יחוברו אוטומטית לכל דבר אשר מתחבר לפורטים מנגנים של מערכת.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
@@ -1373,19 +1373,19 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
         <location filename="../GUI/PageInput.cpp" line="680"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation>כל המרקעים: %1x%2</translation>
+        <translation>כל המסכים: %1x%2</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="684"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation>מרקע %1: %2x%3 של %4,%5</translation>
+        <translation>מסך %1: %2x%3 של %4,%5</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="854"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
-        <translation>מרקע %1</translation>
+        <translation>מסך %1</translation>
     </message>
 </context>
 <context>
@@ -2074,33 +2074,33 @@ The start button is at the top ;).</source>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;אישור</translation>
+        <translation>&amp;אישור</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;ביטול</translation>
+        <translation>&amp;ביטול</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;כן</translation>
+        <translation>&amp;כן</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished">כן, תמיד</translation>
+        <translation>כן, תמיד</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;לא</translation>
+        <translation>&amp;לא</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished">לא, אף פעם</translation>
+        <translation>לא, אף פעם</translation>
     </message>
 </context>
 <context>

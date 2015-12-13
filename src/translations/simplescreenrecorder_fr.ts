@@ -935,7 +935,7 @@ Habituellement, cela signifie que la zone d&apos;enregistrement n&apos;est pas c
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="590"/>
         <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
-        <translation type="unfinished">Attention: Réception d&apos;un trou dans une flux audio, insertion de silence pour conserver les données audio en synchronisation avec la vidéo.</translation>
+        <translation type="unfinished">Attention : réception d&apos;un trou dans un flux audio, insertion de silence pour conserver les données audio en synchronisation avec la vidéo.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="890"/>
