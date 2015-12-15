@@ -6,37 +6,42 @@
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="78"/>
         <source>About SimpleScreenRecorder</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>عن البرنامج</translatorcomment>
+        <translation>عن برنامج (SimpleScreenRecorder)</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="87"/>
         <source>For more information:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>لمعلومات أكثر</translatorcomment>
+        <translation>لمعلومات أكثر:</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="88"/>
         <source>The source code of this program can be found at:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>أين توجد الشيفرة المصدية</translatorcomment>
+        <translation>الشيفرة المصدرية لهذا البرنامج يمكن أن تجدها في:</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="89"/>
         <source>This program uses:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>هذا البرنامج يستعمل</translatorcomment>
+        <translation>هذا البرنامج يستعمل:</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="90"/>
         <source>%1 for the graphical user interface</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>للواجهة الرسومية</translatorcomment>
+        <translation>%1 للواجهة الرسومية</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="91"/>
         <source>%1 or %2 (depending on your distribution) for video/audio encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 أو %2 (اعتمادًا على توزيعتك) </translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="92"/>
         <source>%1 for hooking system functions for OpenGL recording</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 لربط وظائف النظام للتسجيل بـ(OpenGL)</translation>
     </message>
 </context>
 <context>
@@ -44,7 +49,7 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="34"/>
         <source>OpenGL Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>إعدادات (OpenGl)</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="37"/>
@@ -53,97 +58,106 @@
 &lt;p&gt;Another warning: OpenGL recording is experimental, it may not work or even crash the program you are recording. If you are worried about losing program data, make a backup first!&lt;/p&gt;
 
 &lt;p&gt;If you want to record Steam games, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;read this first&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;تحذير: تسجيلات أوبن جل(OpenGl) تعمل بحقن مكتبة إلى البرنامج الذي سوف يسجل. هذه المكتبة سوف تتجاهل بعض الأوامر أو الوظائف في سبيل تصوير والتقاط إطارات ومشاهد قبل أن تظهر على الشاشة. إذا كنت تحاول تسجيل لعبة وتلك الللعبة تحاول كشف محاولات الاختراق، هذا يجعل من الممكن (نظريًا) أن تعتبر اللعبة أن هذا اختراق. وهذا ربما أيضًا يسبب لك الحظر، لذا من الجيد أن تتأكد ان البرنامج الذي تريد أن تسجله لن يحظرك قبل أن تحاول تسجيله. وقد أعذر من أنذر :). &lt;/p&gt;
+
+&lt;p&gt;تحذير آخر: أوبن جل(OpenGl) ما زال  تجريبيًا حتى الآن لذا من الممكن ألا يعمل أو ان يسبب انهيار للبرنامج الذي تستعمله. إذا كنت قلقًا بشأن خسارة بيانات البرنامج إذًا فاعمل نسخة احتياطية منه!&lt;/p&gt;
+
+&lt;p&gt;إذا كنت تريد تسجيل ألعاب منصة ستيم (steam)&lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;فاقرأ هذا أولًا&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
         <source>Choose channel</source>
-        <translation type="unfinished"></translation>
+        <translation>اختر قناة</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="53"/>
         <source>Channel name:</source>
-        <translation type="unfinished"></translation>
+        <translation>اسم القناة:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
 If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>أسماء القنوات تستعمل لتعريف التطبيقات. أنت تحتاج لهذا فقط إذا كنت ستسجل في أكثر من برنامج في نفس الوقت.
+إذا تركت هذا المكان فارغًا فإن الاسم الافتراضي سيكون &quot;قناة-اسم المستخدم الخاص بك&quot;.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="57"/>
         <source>Relax shared memory permissions (insecure)</source>
-        <translation type="unfinished"></translation>
+        <translation>استرح بالذاكرة المشتركة (غير آمن)</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="58"/>
         <source>If checked, other users on the same machine will be able to attach to the shared memory that&apos;s used for communication with the OpenGL program.
 This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.
 This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user.</source>
-        <translation type="unfinished"></translation>
+        <translation>إذا اخترت هذا الخيار المستخدمين الآخرين على نفس الجهاز سيستطيعون الاطلع على الذاكرة المخصصة للاتصال ببرنامج أوبن جل (OpenGl).
+
+هذا يعني أن المستخدمين الآخرين (نظريًا) يستطيعون رؤية ما تسجله، التعديل على الإطارات،حقن الإطارات التي يريدونها، أو ببساطة تعطيل الاتصال بالبرنامج.
+
+وهذا أيضًا يسمح للمستخدمين الذين يسجلون الدخول عن طريق ما يعرف بالـ(Remote desktop) باوسطة بروتوكول (ssh) عليك أن تفعل هذا الخيار فقط في حالة تسجيل برنامج يعمل من مستخدم آخر.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="73"/>
         <source>Launch application</source>
-        <translation type="unfinished"></translation>
+        <translation>ابدأ البرنامج</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="75"/>
         <source>Command:</source>
-        <translation type="unfinished"></translation>
+        <translation>الأمر:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="77"/>
         <source>This command will be executed to start the program that should be recorded.</source>
-        <translation type="unfinished"></translation>
+        <translation>هذا الأمر سوف ينفذ لبداية البرنامج الذي من المفترض أن يسجل.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="79"/>
         <source>Working directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>المسار المعمول به:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="81"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>هذا الأمر سوف ينفذ في هذا المسار. إذا تركت هذا المسار فارغًا، المسار المعمول به لن يتغير.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
         <source>Launch automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>ابدأ تلقائيًا</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="84"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>غذا اخترت هذا الخيار، فإن التطبيق سوف يبدأ وحده آليًا عندما تذهب لصفحة التسجيل. إذا لم تختره فإنك سوف تضطر لبدء التسجيل يدويًا.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="86"/>
         <source>Launch now</source>
-        <translation type="unfinished"></translation>
+        <translation>ابدأ الآن</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="107"/>
         <source>Stream settings</source>
-        <translation type="unfinished"></translation>
+        <translation>إعدادات التدفق</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="109"/>
         <source>Limit application frame rate</source>
-        <translation type="unfinished"></translation>
+        <translation>حدد معدل الإطارات للتطبيق</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="110"/>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
-        <translation type="unfinished"></translation>
+        <translation>إذا تم اختياره، ستبطئ المكتبة المحقونة التطبيق كي لا يصبح معدل الإطارات في الثانية أعلى من معدل إطارات التسجيل. هذا يوقف التطبيق عن إضاعة وقت وحدة المعالجة المركزية (CPU) للإطارات التي لن يتم تسجيلها، وأحيانا يؤدي إلى سلاسة الفيديو (يعتمد على التطبيق).</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="119"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>إغلاق</translation>
     </message>
 </context>
 <context>
@@ -1098,13 +1112,15 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
 
 You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished"></translation>
+        <translation>برنامج (SimpleScreenRecorder) اكتشف أنك تستخدم بطاقة شاشة من نوع نفيدا(NVIDIA) مع إمكانية تدوير الشاشة. وهذا قد يسبب خلل أثناء التسجيل. منالمفضل أن تلغي خاصية التدوير.هل تريد من البرنامج فعل ذلك ؟
+
+أنت تستطيع تغيير هذا أيضًا في إعدادات بطاقة عرض نفيديا(NIVIDIA).</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="90"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished"></translation>
+        <translation>لم يستطع البرنامج تعطيل تدوير الشاشة لسبب ما - عذرًا! حاول تغييرها في لوحة إعدادات نفيديا(NVIDIA).</translation>
     </message>
 </context>
 <context>
@@ -1112,12 +1128,12 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageDone.cpp" line="30"/>
         <source>The recording has been saved. You can edit the video now, or re-encode it with better settings to make the file smaller (the default settings are optimized for quality and speed, not file size).</source>
-        <translation type="unfinished"></translation>
+        <translation>التسجيل تم حفظه.يمكنك الآن أن تحرر الفيديو أو تعيد تحريره وترميزه وتعديل إعداداته لجعل الملف أصغر(الإعدادات الافتراضية معدة لجودة وسرعة أفضل لا مساحة ملف أقل).</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="33"/>
         <source>Back to the start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>ارجع إلى صفحة البداية</translation>
     </message>
 </context>
 <context>
@@ -1125,247 +1141,255 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="113"/>
         <source>Video input</source>
-        <translation type="unfinished"></translation>
+        <translation>الفيديو المدخل</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="116"/>
         <source>Record the entire screen</source>
-        <translation type="unfinished"></translation>
+        <translation>سجل الشاشة بأكملها</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="117"/>
         <source>Record a fixed rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>سجل منطقة محددة فقط</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="118"/>
         <source>Follow the cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>اتبع المؤشر</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="119"/>
         <source>Record OpenGL (experimental)</source>
-        <translation type="unfinished"></translation>
+        <translation>تسجيل عبر (OpenGL) (تحت التجربة)</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="125"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
-        <translation type="unfinished"></translation>
+        <translation>اختر الشاشة التي يفترض أن تسجل في تعدد الشاشات بالترتيب.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="126"/>
         <source>Select rectangle...</source>
-        <translation type="unfinished"></translation>
+        <translation>اختر مساحة مستطيلة...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="127"/>
         <source>Use the mouse to select the recorded rectangle.</source>
-        <translation type="unfinished"></translation>
+        <translation>استعمل مؤشر الفأرة لاختيار مساحة مستطيلة للتسجيل.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="128"/>
         <source>Select window...</source>
-        <translation type="unfinished"></translation>
+        <translation>اختر نافذة...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="129"/>
         <source>Use the mouse to select a window to record.
 Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only
 the client area of the window will be recorded.</source>
-        <translation type="unfinished"></translation>
+        <translation>استعمل مؤشر الفأرة لتختار نافذة ليتم تسجيلها.
+تلميح:إذا ضغطت على حواف النافذة، كل النافذة الحالية سوف تسجل (بحدودها وإطارها).غير ذلك فقط نافذة العميل هي التي ستسجل.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="132"/>
         <source>OpenGL settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>إعدادات OpenGL...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="133"/>
         <source>Change the settings for OpenGL recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>غير إعدادات OpenGL.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="134"/>
         <source>Left:</source>
-        <translation type="unfinished"></translation>
+        <translation>اليسار:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="138"/>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation>هذا هو المعامل س هو تنسيق الجزء الأعلى الأيسر للمساحة التسجيل.
+تلميح: يمكنك أيضًا تغيير هذا المعامل عن طريق بكرة الفأرة أو الأسهم لأعلى وأسفل.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="140"/>
         <source>Top:</source>
-        <translation type="unfinished"></translation>
+        <translation>أعلى:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="144"/>
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation>هذا هو المعامل ص هو تنسيق الجزء الأعلى الأيسر لمساحة التسجيل.
+تلميح: يمكنك أيضًا تغيير هذا المعامل عن طريق بكرة الفأرة أو الأسهم لأعلى وأسفل.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="146"/>
         <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>العرض:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="150"/>
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation>عرض مساحة التسجيل.
+تلميح: يمكنك أيضًا تغيير هذا المعامل عن طريق بكرة الفأرة أو الأسهم لأعلى وأسفل.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="152"/>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>الطول:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="156"/>
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
-        <translation type="unfinished"></translation>
+        <translation>طول مساحة التسجيل.
+تلميح: يمكنك أيضًا تغيير هذا المعامل عن طريق بكرة الفأرة أو الأسهم لأعلى وأسفل.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="158"/>
         <source>Frame rate:</source>
-        <translation type="unfinished"></translation>
+        <translation>عدد الإطارات:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="162"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
-        <translation type="unfinished"></translation>
+        <translation>عدد الإطارات في لثانية في الفيديو النهائي.معدل إطارات أعلى يعني استهلاكًا أكثر للمعالج.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="163"/>
         <source>Scale video</source>
-        <translation type="unfinished"></translation>
+        <translation>حرشفة الفيديو</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="164"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
-        <translation type="unfinished"></translation>
+        <translation>تمكين أو عدم تكمكين حرشفة الفيديو.حرشفة الفيديو تحتاج وقت معالج أكثر، ولكن إذا كان الفيديو أصغر فإنها يمكن أن تجعل عملية الترميز أسرع.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="165"/>
         <source>Scaled width:</source>
-        <translation type="unfinished"></translation>
+        <translation>عرض الحرشفة:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="169"/>
         <source>Scaled height:</source>
-        <translation type="unfinished"></translation>
+        <translation>طول الحرشفة:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="173"/>
         <source>Record cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>تسجيل مؤشر الفأرة</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="243"/>
         <source>Audio input</source>
-        <translation type="unfinished"></translation>
+        <translation>مدخل الصوت</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="245"/>
         <source>Record audio</source>
-        <translation type="unfinished"></translation>
+        <translation>سجل الصوت</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="246"/>
         <source>Backend:</source>
-        <translation type="unfinished"></translation>
+        <translation>الواجهة الخلفية:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="255"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
-        <translation type="unfinished"></translation>
+        <translation>الواجهة الخلفية للصوت الذي سوف يستعمل في التسجيل.
+الواجهة الخلفية(AlSA) يمكن أن تعمل على الأنمة التي تستعمل (PulseAudio)ولكن من  الأفضل استعمال (PulseAudio) مباشرة.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="257"/>
         <location filename="../GUI/PageInput.cpp" line="265"/>
         <source>Source:</source>
-        <translation type="unfinished"></translation>
+        <translation>المصدر:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="260"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
-        <translation type="unfinished"></translation>
+        <translation>مصدر الواجهة الخلفية النهائية ألسا(ALSA) الذي سوف يستعمل أثناء التسجيل.
+الإعدادات الافتراضية في العادة جيدة(لا يستحسن تغييرها). المصادر &quot;المُشاركة-shared&quot; تسمح بعدة برامج لتسجل في نفس الوقت ولكنها قد تكون ليست ذات فعالية كبيرة.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="262"/>
         <location filename="../GUI/PageInput.cpp" line="270"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>إعادة تحميل</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="263"/>
         <source>Refreshes the list of ALSA sources.</source>
-        <translation type="unfinished"></translation>
+        <translation>تعيد تحميل قاءمة مصادر الألسا (ALSA)&gt;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="268"/>
         <source>The PulseAudio source that will be used for recording.
 A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
         <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
-        <translation type="unfinished"></translation>
+        <translation>مصدر الواجهة الخلفية النهائية البالص أوديو(PulseAudio) الذي سوف يستعمل أثناء التسجيل.
+المونيتور (monitor)هي المصدر الذي يسجل الصوت المشغل عن طريق التطبيقات الأخرى.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="271"/>
         <source>Refreshes the list of PulseAudio sources.</source>
-        <translation type="unfinished"></translation>
+        <translation>تعيد تحميل قائمة مصادر البالص أوديو (PulseAudio).</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>Record system microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>تسجيل صوت اللاقط</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>إذا اخترت هذا الخيار فإن النظام يتصل آليًا بمنافذ الالتقاط.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>Record system speakers</source>
-        <translation type="unfinished"></translation>
+        <translation>تسجيل صوت السماعات</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="277"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>إذا اخترت هذا الخيار فإن النظام سيتصل آليًا بالمنافذ التي تعمل في الخلفية.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>رجوع</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="313"/>
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>استمرار</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="680"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation type="unfinished"></translation>
+        <translation>جميع الشاشات: %1×%2</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="684"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation type="unfinished"></translation>
+        <translation>شاشة %1: %2x%3 في %4,%5</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="854"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
-        <translation type="unfinished"></translation>
+        <translation>شاشة %1</translation>
     </message>
 </context>
 <context>
@@ -1378,70 +1402,71 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
         <location filename="../GUI/PageOutput.cpp" line="127"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>%1 ملف</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="94"/>
         <location filename="../GUI/PageOutput.cpp" line="100"/>
         <location filename="../GUI/PageOutput.cpp" line="107"/>
         <source>Other...</source>
-        <translation type="unfinished"></translation>
+        <translation>آخر...</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="106"/>
         <source>Uncompressed</source>
-        <translation type="unfinished"></translation>
+        <translation>غير مضغوط</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="161"/>
         <source>Error: Could not find any suitable container in libavformat!</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ: لا يستطيع إيجاد أي حاوية مناسبة في (libavformat)!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="165"/>
         <source>Error: Could not find any suitable video codec in libavcodec!</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ: لا يستطيع إيجاد أي ترميز فيديو مناسب في (libavcodec)!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="169"/>
         <source>Error: Could not find any suitable audio codec in libavcodec!</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ: لا يستطيع إيجاد أي ترميز صوت مناسب في (libavcodec)!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="175"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>ملف</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="177"/>
         <source>Save as:</source>
-        <translation type="unfinished"></translation>
+        <translation>حفظ كـ:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="179"/>
         <source>The recording will be saved to this location.</source>
-        <translation type="unfinished"></translation>
+        <translation>الملف سيحفظ في هذا المسار.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="180"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>تصفح...</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="181"/>
         <source>Separate file per segment</source>
-        <translation type="unfinished"></translation>
+        <translation>فصل الملف لكل دورة</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="182"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>إذا اخترت هذا الخيار سوف يتم إنشاء ملف فيديو منفصل لكل مرة توقف التسجيل ثم تبدؤه.
+إذا كان اسم الملف الافتراضي &quot;تجربة.mkv&quot; ستسمى الملفات المنفصلة كالتالي &quot;تجربة-السنة-الشهر-اليوم_الساعة- الدقيقة-الثانية&quot;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="184"/>
         <source>Container:</source>
-        <translation type="unfinished"></translation>
+        <translation>الحاوية:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
@@ -1464,23 +1489,23 @@ Note that not all codecs are supported by all containers, and that not all media
     <message>
         <location filename="../GUI/PageOutput.cpp" line="201"/>
         <source>Container name:</source>
-        <translation type="unfinished"></translation>
+        <translation>اسم الحاوية:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="207"/>
         <source>For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.</source>
-        <translation type="unfinished"></translation>
+        <translation>للمستخدمين المتقدمين. تستطيع استعمال أي ترميز libav/ffmpeg ولكن العديد منهم لن يكون مفيدًا أو لن يعمل.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="223"/>
         <source>Video</source>
-        <translation type="unfinished"></translation>
+        <translation>الفيديو</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="225"/>
         <location filename="../GUI/PageOutput.cpp" line="305"/>
         <source>Codec:</source>
-        <translation type="unfinished"></translation>
+        <translation>الترميز:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="230"/>
@@ -1494,18 +1519,18 @@ Note that not all codecs are supported by all containers, and that not all media
         <location filename="../GUI/PageOutput.cpp" line="234"/>
         <location filename="../GUI/PageOutput.cpp" line="318"/>
         <source>Codec name:</source>
-        <translation type="unfinished"></translation>
+        <translation>اسم الترميز:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="240"/>
         <source>For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.</source>
-        <translation type="unfinished"></translation>
+        <translation>للمستخدمين المتقدمين. تستطيع استعمال أي ترميز libav/ffmpeg ولكن العديد منهم لن يكون مفيدًا أو لن يعمل.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="241"/>
         <location filename="../GUI/PageOutput.cpp" line="325"/>
         <source>Bit rate (in kbps):</source>
-        <translation type="unfinished"></translation>
+        <translation>معدل البتات (لكل كيلو بت للثانية):</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="243"/>
@@ -1529,7 +1554,7 @@ The allowed range is 0-51 (0 means lossless, the default is 23).</source>
         <location filename="../GUI/PageOutput.cpp" line="256"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished"></translation>
+        <translation>الإعدادات المسبقة:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="261"/>
@@ -1541,17 +1566,17 @@ but results in larger files. The quality shouldn&apos;t be affected too much.</s
         <location filename="../GUI/PageOutput.cpp" line="263"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation type="unfinished"></translation>
+        <translation>استعمال المعالج:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="265"/>
         <source>fastest</source>
-        <translation type="unfinished"></translation>
+        <translation>أسرع</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="270"/>
         <source>slowest</source>
-        <translation type="unfinished"></translation>
+        <translation>أبطأ</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="271"/>
@@ -1563,7 +1588,7 @@ used by the VP8 encoder). Higher values result in lower quality video, unless yo
         <location filename="../GUI/PageOutput.cpp" line="273"/>
         <location filename="../GUI/PageOutput.cpp" line="328"/>
         <source>Custom options:</source>
-        <translation type="unfinished"></translation>
+        <translation>خيارات خاصة:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="275"/>
@@ -1574,7 +1599,7 @@ used by the VP8 encoder). Higher values result in lower quality video, unless yo
     <message>
         <location filename="../GUI/PageOutput.cpp" line="276"/>
         <source>Allow frame skipping</source>
-        <translation type="unfinished"></translation>
+        <translation>السماح بتجاوز الإطارات</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="277"/>
@@ -1587,7 +1612,7 @@ It shouldn&apos;t affect the appearance of the video.</source>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="303"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>الصوت</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="310"/>
@@ -1614,39 +1639,39 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageOutput.cpp" line="344"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>رجوع</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="345"/>
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>استمرار</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="580"/>
         <location filename="../GUI/PageOutput.cpp" line="588"/>
         <source>not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>لم يُثبت</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="582"/>
         <location filename="../GUI/PageOutput.cpp" line="590"/>
         <source>not supported by container</source>
-        <translation type="unfinished"></translation>
+        <translation>غير مدعوم من الحاوية</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="633"/>
         <source>Save recording as</source>
-        <translation type="unfinished"></translation>
+        <translation>حفظ التسجيل باسم</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="474"/>
         <source>You did not select an output file!</source>
-        <translation type="unfinished"></translation>
+        <translation>لم تختر ملفًا للحفظ!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="479"/>
         <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>الملف &apos;%1&apos; موجود بالفعل هل أنت متأكد من أنك تريد الكتابة عليه؟</translation>
     </message>
 </context>
 <context>
@@ -1654,136 +1679,137 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageRecord.cpp" line="146"/>
         <source>Recording</source>
-        <translation type="unfinished"></translation>
+        <translation>التسجيل</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="150"/>
         <source>Enable recording hotkey</source>
-        <translation type="unfinished"></translation>
+        <translation>السماح باختصار للتسجيل</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="151"/>
         <source>Enable sound notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>السماح بالتنبيهات الصوتية</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="152"/>
         <source>Hotkey:</source>
-        <translation type="unfinished"></translation>
+        <translation>الاختصار:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="153"/>
         <source>Ctrl +</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl +</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="154"/>
         <source>Shift +</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift+</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="155"/>
         <source>Alt +</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="156"/>
         <source>Super +</source>
-        <translation type="unfinished"></translation>
+        <translation>Super+</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="158"/>
         <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
 The program that you are recording will not receive the key press.</source>
-        <translation type="unfinished"></translation>
+        <translation>الزر الذي يجب ان تضغطه(جنبًا إلى جنب مع الالأزرار المعطاة) لبدء أو إيقاف التسجيل. البرنامج الذي تسجله لن يستقبل أو يسمح بالمفتاح الذي ضغطت.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="198"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>معلومات</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="200"/>
         <source>Total time:</source>
-        <translation type="unfinished"></translation>
+        <translation>إجمالي الوقت:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="202"/>
         <source>FPS in:</source>
-        <translation type="unfinished"></translation>
+        <translation>كم إطار مدخل في كل ثانية:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="204"/>
         <source>FPS out:</source>
-        <translation type="unfinished"></translation>
+        <translation>كم إطار مخرج في كل ثانية:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="206"/>
         <source>Size in:</source>
-        <translation type="unfinished"></translation>
+        <translation>الحجم المدخل:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="208"/>
         <source>Size out:</source>
-        <translation type="unfinished"></translation>
+        <translation>الحجم المخرج:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="210"/>
         <source>File name:</source>
-        <translation type="unfinished"></translation>
+        <translation>اسم الملف:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="213"/>
         <source>File size:</source>
-        <translation type="unfinished"></translation>
+        <translation>حجم الملف:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="215"/>
         <source>Bit rate:</source>
-        <translation type="unfinished"></translation>
+        <translation>معدل البت في كل ثانية:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="238"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>معاينة</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="242"/>
         <source>Preview frame rate:</source>
-        <translation type="unfinished"></translation>
+        <translation>عدد الإطارات للثانية في المعاينة:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="246"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
-        <translation type="unfinished"></translation>
+        <translation>لاحظ الآتي: المعاينة تحتاج إمكانيات معالج أكثر (خصوصًا إذا كان عدد اللقطات أو الإطارات في الثانيةكبيرًا).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="295"/>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="310"/>
         <location filename="../GUI/PageRecord.cpp" line="318"/>
         <source>Cancel recording</source>
-        <translation type="unfinished"></translation>
+        <translation>إلغاء التسجيل</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="311"/>
         <location filename="../GUI/PageRecord.cpp" line="320"/>
         <source>Save recording</source>
-        <translation type="unfinished"></translation>
+        <translation>حفظ التسجيل</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="325"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>إغلاق</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="368"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
-        <translation type="unfinished"></translation>
+        <translation>أنت لم تحفظ هذا التسجيل بعد إذاأغلقت الآن فإن التسجيل سوف يضيع .
+هل أنت متأكد بأنك تريد الإغلاق؟</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="380"/>
@@ -1798,128 +1824,130 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="545"/>
         <source>Starting page ...</source>
-        <translation type="unfinished"></translation>
+        <translation>يبدأ الصفحة...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="566"/>
         <location filename="../GUI/PageRecord.cpp" line="707"/>
         <location filename="../GUI/PageRecord.cpp" line="792"/>
         <source>Error: Something went wrong during initialization.</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ: حدث خطأ ما أثناء التهيئة.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="573"/>
         <source>Started page.</source>
-        <translation type="unfinished"></translation>
+        <translation>تم بدء الصفحة.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="597"/>
         <source>Stopping page ...</source>
-        <translation type="unfinished"></translation>
+        <translation>صفحة الإيقاف...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="622"/>
         <source>Stopped page.</source>
-        <translation type="unfinished"></translation>
+        <translation>صفحة متوقفة.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="646"/>
         <source>Starting output ...</source>
-        <translation type="unfinished"></translation>
+        <translation>يبدأ الإخراج...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="657"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ: لا يستطيع البرنامج أن يحدد حجم برنامج (OpenGL) لأن إدخاله(GLInjection) لم يتم إنشاؤه.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="662"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ: لم يتمكن من الإتيان بحجم تطبيق OpenGl. إما أن التطبيق لم يبدأ بشكل صحيح أو أن التطبيق لم يفتح نافذة لـOpenG. إذا أردت أن تبدأ بالتسجيل قبل بدأ التطبيق ستحتاج إلى أن تحدد مقياس النافذة يدويًا.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="698"/>
         <source>Started output.</source>
-        <translation type="unfinished"></translation>
+        <translation>بدأ الإخراج.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="718"/>
         <source>Stopping output ...</source>
-        <translation type="unfinished"></translation>
+        <translation>يوقف الإخراج...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="736"/>
         <source>Stopped output.</source>
-        <translation type="unfinished"></translation>
+        <translation>توقف الإخراج.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="763"/>
         <source>Starting input ...</source>
-        <translation type="unfinished"></translation>
+        <translation>يبدأ الإدخال...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="768"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ: لا يمكن بدأ مدخل GLInject لأن لم يتم إنشاؤه.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="787"/>
         <source>Started input.</source>
-        <translation type="unfinished"></translation>
+        <translation>بدأ الإدخال.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="812"/>
         <source>Stopping input ...</source>
-        <translation type="unfinished"></translation>
+        <translation>يوقف الإدخال...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="823"/>
         <source>Stopped input.</source>
-        <translation type="unfinished"></translation>
+        <translation>توقف الإدخال.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="839"/>
         <source>Encoding remaining data ...</source>
-        <translation type="unfinished"></translation>
+        <translation>ترميز البيانات المتبقية...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="920"/>
         <location filename="../GUI/PageRecord.cpp" line="930"/>
         <source>Pause recording</source>
-        <translation type="unfinished"></translation>
+        <translation>إيقاف التسجيل</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="923"/>
         <location filename="../GUI/PageRecord.cpp" line="933"/>
         <source>Start recording</source>
-        <translation type="unfinished"></translation>
+        <translation>بدأ التسجيل</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="941"/>
         <source>Stop preview</source>
-        <translation type="unfinished"></translation>
+        <translation>إيقاف العرض</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="944"/>
         <source>Start preview</source>
-        <translation type="unfinished"></translation>
+        <translation>بدأ العرض</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="973"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ: شيء ما عمل بطريقة خاطئة أثناء إدراج المزامنة.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1015"/>
         <source>Are you sure that you want to cancel this recording?</source>
-        <translation type="unfinished"></translation>
+        <translation>هل أنت متأكد أنك تريد إلغاء هذا التسجيل؟</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1030"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
-        <translation type="unfinished"></translation>
+        <translation>أنت لم تسجل أي شيءليس هناك شيء ليتم حفظه.
+
+زر البداية في الأعلى ؛).</translation>
     </message>
 </context>
 <context>
@@ -1932,17 +1960,21 @@ The start button is at the top ;).</source>
 
 &lt;p&gt;For more information:&lt;br&gt;
 %1&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;أهلًا بك في برنامج (SimpleScreenRecorder)!&lt;/p&gt;
+&lt;p&gt;بالرغم من اسم هذا البرنامج فإنه يملك خيارات متعددة. ولكن لا تقلق بشأن ذلك لأنه في الحقيقة يوجد شيئين يجب أن تعلمهما. أولًا:أن الإعدادات الفتراضية غالبًا ما تكون كافية. إذا لم تكن تعلم ماذا يفعل شيء ما فقط استعمل الإعدادات الفتراضية. ثانيًا تقريبًا جميع الإعدادات تملك إرشادات. فقط ستحتاج أن تمرر المؤشر على ذلك الشيء لتعلم ماذا يعمل.&lt;/p&gt;
+
+&lt;p&gt;لمزيد من المعلومات:&lt;br&gt;
+%1&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="44"/>
         <source>About SimpleScreenRecorder</source>
-        <translation type="unfinished"></translation>
+        <translation>عن برنامج (SimpleScreenRecorder)</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="45"/>
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>استمر</translation>
     </message>
 </context>
 <context>
@@ -1950,67 +1982,67 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="28"/>
         <source>Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>البيانات الشخصية(الحساب)</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="37"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>حفظ</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="38"/>
         <source>Save the current settings to this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>احفظ الإعدادات الحالية إلى هذا الحساب.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="39"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>جديد</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="40"/>
         <source>Create a new profile with the current settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>أنشئ حسابًا جديدًا بالإعدادات الحالية.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="41"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="42"/>
         <source>Delete this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف هذا الحساب.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(لا شيء)</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
         <source>Error: Can&apos;t load profile!</source>
-        <translation type="unfinished"></translation>
+        <translation>خطأ: لا يستطيع تحميل الحساب!</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="147"/>
         <source>Are you sure that you want to overwrite this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>هل أنت متأكد من أنك تريد استبدال هذا الحساب؟</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="159"/>
         <source>Enter a name for the new profile:</source>
-        <translation type="unfinished"></translation>
+        <translation>أدخل اسمًا للحساب الجديد:</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>يوجد حساب بنفس الاسم.هل أنت متأكد بأنك تريد استبداله؟</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="181"/>
         <source>Are you sure that you want to delete this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>هل أنت متأكد من أنك تريد حذف هذا الحساب؟</translation>
     </message>
 </context>
 <context>
@@ -2019,33 +2051,60 @@ The start button is at the top ;).</source>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;حسنًا</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;إلغاء</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;نعم</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نعم، دائمًا</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;لا</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ﻻ، أبدًا</translation>
+    </message>
+</context>
+<context>
+    <name>QMessageBox</name>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="obsolete">&amp;حسنًا</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="obsolete">&amp;إلغاء</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation type="obsolete">&amp;نعم</translation>
+    </message>
+    <message>
+        <source>Yes, always</source>
+        <translation type="obsolete">نعم، دائمًا</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation type="obsolete">&amp;لا</translation>
+    </message>
+    <message>
+        <source>No, never</source>
+        <translation type="obsolete">ﻻ، أبدًا</translation>
     </message>
 </context>
 <context>
@@ -2053,27 +2112,27 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../AV/Output/SyncDiagram.cpp" line="50"/>
         <source>Synchronization Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>تزامن الرسم البياني</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="264"/>
         <source>Video in</source>
-        <translation type="unfinished"></translation>
+        <translation>الفيديو</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="265"/>
         <source>Audio in</source>
-        <translation type="unfinished"></translation>
+        <translation>الصوت</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="266"/>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>مخرج الفيديو</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="267"/>
         <source>Audio out</source>
-        <translation type="unfinished"></translation>
+        <translation>مخرج الصوت</translation>
     </message>
 </context>
 </TS>
