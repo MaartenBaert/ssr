@@ -18,12 +18,13 @@ Graphics
 Translations
 ------------
 
+- Arabic: Abdulla
 - Bulgarian: Svetoslav Sashkov
 - Czech: Radek Steiger
-- French: Mario Roger
 - German: Manuel Schömburg
 - Greek: Nick Thom
 - Spanish: Dani Rodríguez
+- French: Mario Roger
 - Hebrew: GreenLunar
 - Hungarian: ViBE
 - Italian: Bersil
