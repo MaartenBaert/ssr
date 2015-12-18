@@ -118,7 +118,7 @@ For Fedora:
     sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel \
     gcc make gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel libX11-devel.i686 libXext-devel libXext-devel.i686 \
     libXfixes-devel libXfixes-devel.i686 mesa-libGL-devel mesa-libGL-devel.i686 mesa-libGLU-devel mesa-libGLU-devel.i686 \
-    mesa-libGLU-devel.x86_64
+    mesa-libGLU-devel.x86_64 qt4
 
 Some packages (e.g. ffmpeg) are not in the official repository, but can be installed from the [RPM Fusion](http://rpmfusion.org/) repository.  You can add the RPM Fusion repository with this command:
 
