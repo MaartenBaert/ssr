@@ -86,8 +86,10 @@ For Debian:
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev g++-multilib \
-    libx11-6 libxext6 libxfixes3 libxfixes3:i386 libglu1-mesa:i386
-    
+    libx11-6 libxext6 libxfixes3 \
+    libglu1-mesa-dev:i386 libx11-dev:i386 libxfixes-dev:i386 libgl1-mesa-dev:i386 \
+    desktop-file-utils
+
     cd /usr/lib/i386-linux-gnu
     sudo ln -s libGL.so.1 libGL.so
     sudo ln -s libGLU.so.1 libGLU.so
@@ -117,8 +119,14 @@ For Fedora:
 
     sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel \
     gcc make gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel libX11-devel.i686 libXext-devel libXext-devel.i686 \
-    libXfixes-devel libXfixes-devel.i686 mesa-libGL-devel mesa-libGL-devel.i686 mesa-libGLU-devel mesa-libGLU-devel.i686
+    libXfixes-devel libXfixes-devel.i686 mesa-libGL-devel mesa-libGL-devel.i686 mesa-libGLU-devel mesa-libGLU-devel.i686 \
+    mesa-libGLU-devel.x86_64 qt4
 
+Some packages (e.g. ffmpeg) are not in the official repository, but can be installed from the [RPM Fusion](http://rpmfusion.org/) repository.  You can add the RPM Fusion repository with this command:
+
+    rpm -Uvh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm \
+    http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-stable.noarch.rpm
+    
 Compiling and installing
 ------------------------
 
