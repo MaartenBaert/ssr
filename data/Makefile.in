@@ -96,12 +96,13 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-DIST_COMMON = $(srcdir)/Makefile.am $(am__dist_desktop_DATA_DIST) \
-	$(am__dist_icon128_DATA_DIST) $(am__dist_icon16_DATA_DIST) \
-	$(am__dist_icon192_DATA_DIST) $(am__dist_icon22_DATA_DIST) \
-	$(am__dist_icon24_DATA_DIST) $(am__dist_icon256_DATA_DIST) \
-	$(am__dist_icon32_DATA_DIST) $(am__dist_icon48_DATA_DIST) \
-	$(am__dist_icon64_DATA_DIST) $(am__dist_icon96_DATA_DIST) \
+DIST_COMMON = $(srcdir)/Makefile.am $(am__dist_appdata_DATA_DIST) \
+	$(am__dist_desktop_DATA_DIST) $(am__dist_icon128_DATA_DIST) \
+	$(am__dist_icon16_DATA_DIST) $(am__dist_icon192_DATA_DIST) \
+	$(am__dist_icon22_DATA_DIST) $(am__dist_icon24_DATA_DIST) \
+	$(am__dist_icon256_DATA_DIST) $(am__dist_icon32_DATA_DIST) \
+	$(am__dist_icon48_DATA_DIST) $(am__dist_icon64_DATA_DIST) \
+	$(am__dist_icon96_DATA_DIST) \
 	$(am__dist_iconscalable_DATA_DIST) \
 	$(am__dist_outputprofiles_DATA_DIST) $(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
@@ -155,16 +156,17 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 man1dir = $(mandir)/man1
-am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(desktopdir)" \
-	"$(DESTDIR)$(icon128dir)" "$(DESTDIR)$(icon16dir)" \
-	"$(DESTDIR)$(icon192dir)" "$(DESTDIR)$(icon22dir)" \
-	"$(DESTDIR)$(icon24dir)" "$(DESTDIR)$(icon256dir)" \
-	"$(DESTDIR)$(icon32dir)" "$(DESTDIR)$(icon48dir)" \
-	"$(DESTDIR)$(icon64dir)" "$(DESTDIR)$(icon96dir)" \
-	"$(DESTDIR)$(iconscalabledir)" \
+am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(appdatadir)" \
+	"$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icon128dir)" \
+	"$(DESTDIR)$(icon16dir)" "$(DESTDIR)$(icon192dir)" \
+	"$(DESTDIR)$(icon22dir)" "$(DESTDIR)$(icon24dir)" \
+	"$(DESTDIR)$(icon256dir)" "$(DESTDIR)$(icon32dir)" \
+	"$(DESTDIR)$(icon48dir)" "$(DESTDIR)$(icon64dir)" \
+	"$(DESTDIR)$(icon96dir)" "$(DESTDIR)$(iconscalabledir)" \
 	"$(DESTDIR)$(outputprofilesdir)"
 NROFF = nroff
 MANS = $(dist_man1_MANS)
+am__dist_appdata_DATA_DIST = simplescreenrecorder.appdata.xml
 am__dist_desktop_DATA_DIST = simplescreenrecorder.desktop
 am__dist_icon128_DATA_DIST = icons/128/simplescreenrecorder.png \
 	icons/128/simplescreenrecorder-error.png \
@@ -217,10 +219,10 @@ am__dist_outputprofiles_DATA_DIST =  \
 	output-profiles/Live%20Stream%20%283000kbps%29.conf \
 	output-profiles/Live%20Stream%20%282000kbps%29.conf \
 	output-profiles/YouTube.conf
-DATA = $(dist_desktop_DATA) $(dist_icon128_DATA) $(dist_icon16_DATA) \
-	$(dist_icon192_DATA) $(dist_icon22_DATA) $(dist_icon24_DATA) \
-	$(dist_icon256_DATA) $(dist_icon32_DATA) $(dist_icon48_DATA) \
-	$(dist_icon64_DATA) $(dist_icon96_DATA) \
+DATA = $(dist_appdata_DATA) $(dist_desktop_DATA) $(dist_icon128_DATA) \
+	$(dist_icon16_DATA) $(dist_icon192_DATA) $(dist_icon22_DATA) \
+	$(dist_icon24_DATA) $(dist_icon256_DATA) $(dist_icon32_DATA) \
+	$(dist_icon48_DATA) $(dist_icon64_DATA) $(dist_icon96_DATA) \
 	$(dist_iconscalable_DATA) $(dist_outputprofiles_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 am__DIST_COMMON = $(dist_man1_MANS) $(srcdir)/Makefile.in
@@ -361,9 +363,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-
-########## Icons ##########
 @ENABLE_SSRPROGRAM_TRUE@desktopdir = $(datadir)/applications
+@ENABLE_SSRPROGRAM_TRUE@appdatadir = $(datadir)/appdata
 @ENABLE_SSRPROGRAM_TRUE@icon16dir = $(datadir)/icons/hicolor/16x16/apps
 @ENABLE_SSRPROGRAM_TRUE@icon22dir = $(datadir)/icons/hicolor/22x22/apps
 @ENABLE_SSRPROGRAM_TRUE@icon24dir = $(datadir)/icons/hicolor/24x24/apps
@@ -375,9 +376,16 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@icon192dir = $(datadir)/icons/hicolor/192x192/apps
 @ENABLE_SSRPROGRAM_TRUE@icon256dir = $(datadir)/icons/hicolor/256x256/apps
 @ENABLE_SSRPROGRAM_TRUE@iconscalabledir = $(datadir)/icons/hicolor/scalable/apps
+
+########## Desktop and appdata files ##########
 @ENABLE_SSRPROGRAM_TRUE@dist_desktop_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder.desktop
 
+@ENABLE_SSRPROGRAM_TRUE@dist_appdata_DATA = \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder.appdata.xml
+
+
+########## Icons ##########
 @ENABLE_SSRPROGRAM_TRUE@dist_icon16_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/16/simplescreenrecorder.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/16/simplescreenrecorder-error.png \
@@ -546,6 +554,27 @@ uninstall-man1:
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^1][0-9a-z]*$$,1,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man1dir)'; $(am__uninstall_files_from_dir)
+install-dist_appdataDATA: $(dist_appdata_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dist_appdata_DATA)'; test -n "$(appdatadir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(appdatadir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(appdatadir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(appdatadir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(appdatadir)" || exit $$?; \
+	done
+
+uninstall-dist_appdataDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_appdata_DATA)'; test -n "$(appdatadir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(appdatadir)'; $(am__uninstall_files_from_dir)
 install-dist_desktopDATA: $(dist_desktop_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(dist_desktop_DATA)'; test -n "$(desktopdir)" || list=; \
@@ -860,7 +889,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icon128dir)" "$(DESTDIR)$(icon16dir)" "$(DESTDIR)$(icon192dir)" "$(DESTDIR)$(icon22dir)" "$(DESTDIR)$(icon24dir)" "$(DESTDIR)$(icon256dir)" "$(DESTDIR)$(icon32dir)" "$(DESTDIR)$(icon48dir)" "$(DESTDIR)$(icon64dir)" "$(DESTDIR)$(icon96dir)" "$(DESTDIR)$(iconscalabledir)" "$(DESTDIR)$(outputprofilesdir)"; do \
+	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(appdatadir)" "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icon128dir)" "$(DESTDIR)$(icon16dir)" "$(DESTDIR)$(icon192dir)" "$(DESTDIR)$(icon22dir)" "$(DESTDIR)$(icon24dir)" "$(DESTDIR)$(icon256dir)" "$(DESTDIR)$(icon32dir)" "$(DESTDIR)$(icon48dir)" "$(DESTDIR)$(icon64dir)" "$(DESTDIR)$(icon96dir)" "$(DESTDIR)$(iconscalabledir)" "$(DESTDIR)$(outputprofilesdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -913,13 +942,14 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_desktopDATA install-dist_icon128DATA \
-	install-dist_icon16DATA install-dist_icon192DATA \
-	install-dist_icon22DATA install-dist_icon24DATA \
-	install-dist_icon256DATA install-dist_icon32DATA \
-	install-dist_icon48DATA install-dist_icon64DATA \
-	install-dist_icon96DATA install-dist_iconscalableDATA \
-	install-dist_outputprofilesDATA install-man
+install-data-am: install-dist_appdataDATA install-dist_desktopDATA \
+	install-dist_icon128DATA install-dist_icon16DATA \
+	install-dist_icon192DATA install-dist_icon22DATA \
+	install-dist_icon24DATA install-dist_icon256DATA \
+	install-dist_icon32DATA install-dist_icon48DATA \
+	install-dist_icon64DATA install-dist_icon96DATA \
+	install-dist_iconscalableDATA install-dist_outputprofilesDATA \
+	install-man
 
 install-dvi: install-dvi-am
 
@@ -963,12 +993,13 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_desktopDATA uninstall-dist_icon128DATA \
-	uninstall-dist_icon16DATA uninstall-dist_icon192DATA \
-	uninstall-dist_icon22DATA uninstall-dist_icon24DATA \
-	uninstall-dist_icon256DATA uninstall-dist_icon32DATA \
-	uninstall-dist_icon48DATA uninstall-dist_icon64DATA \
-	uninstall-dist_icon96DATA uninstall-dist_iconscalableDATA \
+uninstall-am: uninstall-dist_appdataDATA uninstall-dist_desktopDATA \
+	uninstall-dist_icon128DATA uninstall-dist_icon16DATA \
+	uninstall-dist_icon192DATA uninstall-dist_icon22DATA \
+	uninstall-dist_icon24DATA uninstall-dist_icon256DATA \
+	uninstall-dist_icon32DATA uninstall-dist_icon48DATA \
+	uninstall-dist_icon64DATA uninstall-dist_icon96DATA \
+	uninstall-dist_iconscalableDATA \
 	uninstall-dist_outputprofilesDATA uninstall-man
 
 uninstall-man: uninstall-man1
@@ -979,20 +1010,21 @@ uninstall-man: uninstall-man1
 	cscopelist-am ctags-am distclean distclean-generic \
 	distclean-libtool distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am \
-	install-dist_desktopDATA install-dist_icon128DATA \
-	install-dist_icon16DATA install-dist_icon192DATA \
-	install-dist_icon22DATA install-dist_icon24DATA \
-	install-dist_icon256DATA install-dist_icon32DATA \
-	install-dist_icon48DATA install-dist_icon64DATA \
-	install-dist_icon96DATA install-dist_iconscalableDATA \
-	install-dist_outputprofilesDATA install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-man1 \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags-am uninstall uninstall-am uninstall-dist_desktopDATA \
+	install-dist_appdataDATA install-dist_desktopDATA \
+	install-dist_icon128DATA install-dist_icon16DATA \
+	install-dist_icon192DATA install-dist_icon22DATA \
+	install-dist_icon24DATA install-dist_icon256DATA \
+	install-dist_icon32DATA install-dist_icon48DATA \
+	install-dist_icon64DATA install-dist_icon96DATA \
+	install-dist_iconscalableDATA install-dist_outputprofilesDATA \
+	install-dvi install-dvi-am install-exec install-exec-am \
+	install-html install-html-am install-info install-info-am \
+	install-man install-man1 install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am tags-am uninstall uninstall-am \
+	uninstall-dist_appdataDATA uninstall-dist_desktopDATA \
 	uninstall-dist_icon128DATA uninstall-dist_icon16DATA \
 	uninstall-dist_icon192DATA uninstall-dist_icon22DATA \
 	uninstall-dist_icon24DATA uninstall-dist_icon256DATA \

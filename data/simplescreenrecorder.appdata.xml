@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+	<id>simplescreenrecorder.desktop</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-3.0+</project_license>
+	<name>SimpleScreenRecorder</name>
+	<summary>A feature-rich screen recorder that supports X11 and OpenGL</summary>
+	<description>
+		<p>SimpleScreenRecorder is a feature-rich screen recorder that supports X11 and OpenGL. It has a Qt-based graphical user interface. It can record the entire screen or part of it, or record OpenGL applications directly. The recording can be paused and resumed at any time. Many different file formats and codecs are supported.</p>
+		<p>Key features:</p>
+		<ul>
+			<li>Synchronizes audio and video properly.</li>
+			<li>Reduces the video frame rate if your computer is too slow.</li>
+			<li>Fully multithreaded: small delays in any of the components will never block the other components, resulting is smoother video and better performance on computers with multiple processors.</li>
+			<li>Can also do live streaming (experimental).</li>
+		</ul>
+	</description>
+	<screenshots>
+		<screenshot type="default">
+			<image>http://files.maartenbaert.be/simplescreenrecorder/screenshot01.png</image>
+			<caption>The input settings page</caption>
+		</screenshot>
+		<screenshot type="default">
+			<image>http://files.maartenbaert.be/simplescreenrecorder/screenshot02.png</image>
+			<caption>The output settings page</caption>
+		</screenshot>
+		<screenshot type="default">
+			<image>http://files.maartenbaert.be/simplescreenrecorder/screenshot03.png</image>
+			<caption>The recording page</caption>
+		</screenshot>
+	</screenshots>
+	<url type="homepage">http://www.maartenbaert.be/simplescreenrecorder/</url>
+</component>

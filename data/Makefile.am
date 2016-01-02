@@ -1,8 +1,7 @@
 if ENABLE_SSRPROGRAM
 
-########## Icons ##########
-
 desktopdir = $(datadir)/applications
+appdatadir = $(datadir)/appdata
 icon16dir = $(datadir)/icons/hicolor/16x16/apps
 icon22dir = $(datadir)/icons/hicolor/22x22/apps
 icon24dir = $(datadir)/icons/hicolor/24x24/apps
@@ -15,8 +14,15 @@ icon192dir = $(datadir)/icons/hicolor/192x192/apps
 icon256dir = $(datadir)/icons/hicolor/256x256/apps
 iconscalabledir = $(datadir)/icons/hicolor/scalable/apps
 
+########## Desktop and appdata files ##########
+
 dist_desktop_DATA = \
 	simplescreenrecorder.desktop
+
+dist_appdata_DATA = \
+	simplescreenrecorder.appdata.xml
+
+########## Icons ##########
 
 dist_icon16_DATA = \
 	icons/16/simplescreenrecorder.png \
