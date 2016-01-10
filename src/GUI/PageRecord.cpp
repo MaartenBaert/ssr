@@ -460,7 +460,7 @@ void PageRecord::StartPage() {
 	// get the audio input settings
 	m_audio_enabled = page_input->GetAudioEnabled();
 	m_audio_channels = 2;
-	m_audio_sample_rate = 44100;
+	m_audio_sample_rate = 48000;
 	m_audio_backend = page_input->GetAudioBackend();
 	m_alsa_source = page_input->GetALSASourceName();
 #if SSR_USE_PULSEAUDIO
@@ -968,7 +968,7 @@ void PageRecord::OnUpdateSoundNotifications() {
 	if(m_page_started && AreSoundNotificationsEnabled()) {
 		if(m_simple_synth == NULL) {
 			try {
-				m_simple_synth.reset(new SimpleSynth("default", 44100));
+				m_simple_synth.reset(new SimpleSynth("default", 48000));
 			} catch(...) {
 				Logger::LogError("[PageRecord::OnUpdateSoundNotifications] " + tr("Error: Something went wrong while creating the synth."));
 			}
