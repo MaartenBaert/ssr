@@ -60,23 +60,24 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
         <source>Choose channel</source>
-        <translation type="unfinished"></translation>
+        <translation>选择通道</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="53"/>
         <source>Channel name:</source>
-        <translation type="unfinished"></translation>
+        <translation>通道名称：</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
 If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>通道名称是用来区分不同的应用程序。在您需要同时录制不同的应用程序时才需要设置。
+如果留空，则使用默认的名称”通道-您的用户名“。</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="73"/>
         <source>Launch application</source>
-        <translation type="unfinished"></translation>
+        <translation>启动应用程序</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="75"/>
@@ -101,22 +102,22 @@ If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will 
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
         <source>Launch automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>自动启动</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="84"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>如果勾选，目标应用程序将在您切换到录制页面时自动启动；否则您需要手动启动。</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="86"/>
         <source>Launch now</source>
-        <translation type="unfinished"></translation>
+        <translation>立即启动</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="107"/>
         <source>Stream settings</source>
-        <translation type="unfinished"></translation>
+        <translation>流设置</translation>
     </message>
     <message>
         <source>Source:</source>
@@ -1133,14 +1134,14 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
 
 You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished">SimpleScreenRecorder检测到您正在使用NVIDIA闭源驱动且开启了flipping功能，这会导致录制不稳定，建议您禁用它。您想要禁用吗？
+        <translation>SimpleScreenRecorder检测到您正在使用NVIDIA闭源驱动且开启了flipping功能，这会导致录制不稳定，建议您禁用它。您想要禁用吗？
 您也可以在NVIDIA控制面板手动更改它。</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="90"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished">非常抱歉，无法禁用flipping功能，请您尝试在NVIDIA面板禁用。</translation>
+        <translation>非常抱歉，无法禁用flipping功能，请您尝试在NVIDIA面板禁用。</translation>
     </message>
 </context>
 <context>
@@ -1365,33 +1366,34 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>Record system microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>录制系统麦克风</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>Record system speakers</source>
-        <translation type="unfinished"></translation>
+        <translation>录制系统扬声器</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">如果勾选，将会自动连接到系统捕获端口。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="260"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">将会使用ALSA源来录制。
+默认的设置通常比较好的，”共享“源允许多个应用程序同时录制，但不是稳定的。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="263"/>
         <source>Refreshes the list of ALSA sources.</source>
-        <translation type="unfinished"></translation>
+        <translation>刷新ALSA源列表。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="277"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">如果勾选，将会自动连接到任何一个连接到系统回放的端口。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
@@ -1443,7 +1445,7 @@ Click the &apos;OpenGL settings&apos; button and enter a command.</source>
         <location filename="../GUI/PageOutput.cpp" line="127"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>%1 文件</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="94"/>
@@ -1509,7 +1511,8 @@ File names that exist already will be skipped.</source>
         <location filename="../GUI/PageOutput.cpp" line="182"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>如果勾选，将会在您每次暂停和继续录制时创建一个分段的视频。
+比如原来的文件名是”test.mkv“，分段视频名称将会是”test-YYYY-MM-DD_HH.MM.SS.mkv“。</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="184"/>
@@ -1519,7 +1522,7 @@ If the original file name is &apos;test.mkv&apos;, the segments will be saved as
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
         <source>(not installed)</source>
-        <translation type="unfinished"></translation>
+        <translation>（未安装）</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="192"/>
@@ -1759,7 +1762,7 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageRecord.cpp" line="151"/>
         <source>Enable sound notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>启用声音通知</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="152"/>
@@ -1873,7 +1876,7 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="325"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>退出</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="368"/>
@@ -1885,12 +1888,12 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="380"/>
         <source>Hide window</source>
-        <translation type="unfinished"></translation>
+        <translation>隐藏窗口</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="382"/>
         <source>Show window</source>
-        <translation type="unfinished"></translation>
+        <translation>显示窗口</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="545"/>
@@ -2051,42 +2054,42 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="28"/>
         <source>Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>配置文件</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="37"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>保存</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="38"/>
         <source>Save the current settings to this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>保存当前设置到此配置文件。</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="39"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>新建</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="40"/>
         <source>Create a new profile with the current settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>使用当前设置创建一个新的配置文件。</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="41"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>删除</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="42"/>
         <source>Delete this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>删除此配置文件。</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>（无）</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
@@ -2096,22 +2099,22 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="147"/>
         <source>Are you sure that you want to overwrite this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>您确定要覆盖此配置文件吗？</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="159"/>
         <source>Enter a name for the new profile:</source>
-        <translation type="unfinished"></translation>
+        <translation>请给新配置文件输入一个名称：</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>已经存在同名的配置文件，您确定要替换它吗？</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="181"/>
         <source>Are you sure that you want to delete this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>您确定要删除此配置文件吗？</translation>
     </message>
 </context>
 <context>
@@ -2120,33 +2123,33 @@ The start button is at the top ;).</source>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>确定(&amp;O)</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>取消(&amp;C)</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>是(&amp;Y)</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished"></translation>
+        <translation>总是</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>否(&amp;N)</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished"></translation>
+        <translation>从不</translation>
     </message>
 </context>
 <context>
