@@ -68,21 +68,44 @@ AVFrameWrapper::~AVFrameWrapper() {
 }
 
 AVPacketWrapper::AVPacketWrapper() {
+#if SSR_USE_AV_PACKET_ALLOC
+	m_packet = av_packet_alloc();
+	if(m_packet == NULL)
+		std::bad_alloc();
+#else
+	m_packet = new AVPacket;
 	m_free_on_destruct = true;
-	av_init_packet(&m_packet);
+	av_init_packet(m_packet);
 	m_packet.data = NULL;
 	m_packet.size = 0;
+#endif
 }
 
 AVPacketWrapper::AVPacketWrapper(size_t size) {
+#if SSR_USE_AV_PACKET_ALLOC
+	m_packet = av_packet_alloc();
+	if(m_packet == NULL)
+		std::bad_alloc();
+#else
+	m_packet = new AVPacket;
 	m_free_on_destruct = true;
-	if(av_new_packet(&m_packet, size) != 0)
+#endif
+	if(av_new_packet(m_packet, size) != 0)
 		throw std::bad_alloc();
 }
 
 AVPacketWrapper::~AVPacketWrapper() {
+#if SSR_USE_AV_PACKET_ALLOC
+	// This isn't documented anywhere (as usual) and the FFmpeg examples haven't been updated to their latest API yet,
+	// but my guess is that it is safe to call this function even if the data has also been sent to the muxer,
+	// because the internal reference counting in FFmpeg should ensure that the data is not deleted when it is still needed.
+	// This wasn't the case with their old API which didn't do reference counting yet.
+	av_packet_free(&m_packet);
+#else
 	if(m_free_on_destruct)
 		av_free_packet(&m_packet);
+	delete m_packet;
+#endif
 }
 
 bool AVFormatIsInstalled(const QString& format_name) {

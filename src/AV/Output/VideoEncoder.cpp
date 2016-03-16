@@ -25,8 +25,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Muxer.h"
 #include "X264Presets.h"
 
-const size_t VideoEncoder::THROTTLE_THRESHOLD_FRAMES = 20;
-const size_t VideoEncoder::THROTTLE_THRESHOLD_PACKETS = 100;
 const std::vector<VideoEncoder::PixelFormatData> VideoEncoder::SUPPORTED_PIXEL_FORMATS = {
 	{"nv12", AV_PIX_FMT_NV12, true},
 	{"yuv420", AV_PIX_FMT_YUV420P, true},
@@ -72,23 +70,6 @@ unsigned int VideoEncoder::GetHeight() {
 unsigned int VideoEncoder::GetFrameRate() {
 	assert(GetStream()->codec->time_base.num == 1);
 	return GetStream()->codec->time_base.den;
-}
-
-int64_t VideoEncoder::GetFrameDelay() {
-	int64_t interval = 0;
-	size_t frames = GetQueuedFrameCount();
-	if(frames > THROTTLE_THRESHOLD_FRAMES) {
-		int64_t n = (frames - THROTTLE_THRESHOLD_FRAMES) * 200 / THROTTLE_THRESHOLD_FRAMES;
-		interval += n * n;
-	}
-	size_t packets = GetMuxer()->GetQueuedPacketCount(GetStream()->index);
-	if(packets > THROTTLE_THRESHOLD_PACKETS) {
-		int64_t n = (packets - THROTTLE_THRESHOLD_PACKETS) * 200 / THROTTLE_THRESHOLD_PACKETS;
-		interval += n * n;
-	}
-	if(interval > 1000000)
-		interval = 1000000;
-	return interval;
 }
 
 bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {

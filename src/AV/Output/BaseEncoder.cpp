@@ -115,12 +115,16 @@ uint64_t BaseEncoder::GetTotalFrames() {
 
 unsigned int BaseEncoder::GetFrameLatency() {
 	SharedLock lock(&m_shared_data);
-	return lock->m_total_frames - lock->m_total_packets;
+	return (lock->m_total_frames > lock->m_total_packets)? lock->m_total_frames - lock->m_total_packets : 0;
 }
 
 unsigned int BaseEncoder::GetQueuedFrameCount() {
 	SharedLock lock(&m_shared_data);
 	return lock->m_frame_queue.size();
+}
+
+unsigned int BaseEncoder::GetQueuedPacketCount() {
+	return GetMuxer()->GetQueuedPacketCount(GetStream()->index);
 }
 
 void BaseEncoder::AddFrame(std::unique_ptr<AVFrameWrapper> frame) {

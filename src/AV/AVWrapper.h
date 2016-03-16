@@ -86,8 +86,10 @@ public:
 class AVPacketWrapper {
 
 private:
-	AVPacket m_packet;
+	AVPacket *m_packet;
+#if !SSR_USE_AV_PACKET_ALLOC
 	bool m_free_on_destruct;
+#endif
 
 public:
 	AVPacketWrapper();
@@ -98,8 +100,12 @@ public:
 	AVPacketWrapper& operator=(const AVPacketWrapper&) = delete;
 
 public:
-	inline AVPacket* GetPacket() { return &m_packet; }
-	inline void SetFreeOnDestruct(bool free_on_destruct) { m_free_on_destruct = free_on_destruct; }
+	inline AVPacket* GetPacket() { return m_packet; }
+	inline void SetFreeOnDestruct(bool free_on_destruct) {
+#if !SSR_USE_AV_PACKET_ALLOC
+		m_free_on_destruct = free_on_destruct;
+#endif
+	}
 
 };
 

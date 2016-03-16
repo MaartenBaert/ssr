@@ -828,22 +828,28 @@ void PageRecord::StopInput() {
 
 void PageRecord::FinishOutput() {
 	assert(m_output_manager != NULL);
-	assert(m_output_manager->GetVideoEncoder() != NULL);
 
 	// tell the output manager to finish
 	m_output_manager->Finish();
 
 	// wait until it has actually finished
 	m_wait_saving = true;
-	unsigned int frames_left = m_output_manager->GetVideoEncoder()->GetFrameLatency();
-	QProgressDialog dialog(tr("Encoding remaining data ..."), QString(), 0, frames_left, this);
+	//unsigned int frames_left = m_output_manager->GetVideoEncoder()->GetFrameLatency();
+	unsigned int frames_done = 0, frames_total = 0;
+	QProgressDialog dialog(tr("Encoding remaining data ..."), QString(), 0, frames_total, this);
 	dialog.setWindowTitle(MainWindow::WINDOW_CAPTION);
 	dialog.setWindowModality(Qt::WindowModal);
 	dialog.setCancelButton(NULL);
 	dialog.setMinimumDuration(500);
 	while(!m_output_manager->IsFinished()) {
-		//qDebug() << "frames left" << frames_left << "current" << m_output_manager->GetVideoEncoder()->GetFrameLatency();
-		dialog.setValue(frames_left - clamp(m_output_manager->GetVideoEncoder()->GetFrameLatency(), 0u, frames_left));
+		unsigned int frames = m_output_manager->GetTotalQueuedFrameCount();
+		if(frames > frames_total)
+			frames_total = frames;
+		if(frames_total - frames > frames_done)
+			frames_done = frames_total - frames;
+		//qDebug() << "frames_done" << frames_done << "frames_total" << frames_total << "frames" << frames;
+		dialog.setMaximum(frames_total);
+		dialog.setValue(frames_done);
 		usleep(20000);
 	}
 	m_wait_saving = false;
@@ -1052,9 +1058,9 @@ void PageRecord::OnUpdateInformation() {
 
 		if(m_output_manager != NULL) {
 			total_time = (m_output_manager->GetSynchronizer() == NULL)? 0 : m_output_manager->GetSynchronizer()->GetTotalTime();
-			fps_out = m_output_manager->GetVideoEncoder()->GetActualFrameRate();
-			bit_rate = (uint64_t) (m_output_manager->GetMuxer()->GetActualBitRate() + 0.5);
-			total_bytes = m_output_manager->GetMuxer()->GetTotalBytes();
+			fps_out = m_output_manager->GetActualFrameRate();
+			bit_rate = (uint64_t) (m_output_manager->GetActualBitRate() + 0.5);
+			total_bytes = m_output_manager->GetTotalBytes();
 		}
 
 		QString file_name;

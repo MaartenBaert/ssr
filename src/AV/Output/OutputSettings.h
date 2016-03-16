@@ -38,3 +38,17 @@ struct OutputSettings {
 	unsigned int audio_channels, audio_sample_rate;
 
 };
+
+struct OutputFormat {
+
+	bool m_video_enabled;
+	unsigned int m_video_width, m_video_height;
+	unsigned int m_video_frame_rate;
+	AVPixelFormat m_video_pixel_format;
+
+	bool m_audio_enabled;
+	unsigned int m_audio_channels, m_audio_sample_rate;
+	unsigned int m_audio_frame_size;
+	AVSampleFormat m_audio_sample_format;
+
+};

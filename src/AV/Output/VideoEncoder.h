@@ -32,7 +32,6 @@ private:
 	};
 
 private:
-	static const size_t THROTTLE_THRESHOLD_FRAMES, THROTTLE_THRESHOLD_PACKETS;
 	static const std::vector<PixelFormatData> SUPPORTED_PIXEL_FORMATS;
 
 private:
@@ -50,11 +49,6 @@ public:
 	unsigned int GetWidth();
 	unsigned int GetHeight();
 	unsigned int GetFrameRate();
-
-	// Returns an additional delay (in us) between frames, based on the queue size, to avoid memory problems.
-	// As long as the queues are relatively small, this function will just return 0.
-	// This function is thread-safe.
-	int64_t GetFrameDelay();
 
 public:
 	static bool AVCodecIsSupported(const QString& codec_name);

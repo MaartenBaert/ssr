@@ -28,8 +28,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "TempBuffer.h"
 #include "AVWrapper.h"
 
-class VideoEncoder;
-class AudioEncoder;
+class OutputManager;
+class OutputSettings;
+class OutputFormat;
 class SyncDiagram;
 
 class Synchronizer : public VideoSink, public AudioSink {
@@ -93,18 +94,11 @@ private:
 	static const int64_t MAX_FRAME_DELAY;
 
 private:
-	VideoEncoder *m_video_encoder;
-	AudioEncoder *m_audio_encoder;
-	bool m_allow_frame_skipping;
+	OutputManager *m_output_manager;
+	const OutputSettings *m_output_settings;
+	const OutputFormat *m_output_format;
 
-	unsigned int m_video_width, m_video_height;
-	unsigned int m_video_frame_rate;
-	AVPixelFormat m_video_pixel_format;
-	int64_t m_video_max_frames_skipped;
-
-	unsigned int m_audio_channels, m_audio_sample_rate;
-	unsigned int m_audio_frame_size;
-	AVSampleFormat m_audio_sample_format;
+	int64_t m_max_frames_skipped;
 
 	std::unique_ptr<SyncDiagram> m_sync_diagram;
 
@@ -116,7 +110,7 @@ private:
 
 public:
 	// The arguments 'video_encoder' and 'audio_encoder' can be NULL to disable video or audio.
-	Synchronizer(VideoEncoder* video_encoder, AudioEncoder* audio_encoder, bool allow_frame_skipping);
+	Synchronizer(OutputManager* output_manager);
 	~Synchronizer();
 
 private:
@@ -140,8 +134,8 @@ public:
 	// This function is thread-safe.
 	inline bool HasErrorOccurred() { return m_error_occurred; }
 
-	inline VideoEncoder* GetVideoEncoder() { return m_video_encoder; }
-	inline AudioEncoder* GetAudioEncoder() { return m_audio_encoder; }
+	//inline VideoEncoder* GetVideoEncoder() { return m_video_encoder; }
+	//inline AudioEncoder* GetAudioEncoder() { return m_audio_encoder; }
 
 public: // internal
 	virtual int64_t GetNextVideoTimestamp() override;

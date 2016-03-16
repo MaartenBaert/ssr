@@ -13,6 +13,7 @@ Todo:
 - Show recorded area while recording.
 - Check disk space (Muxer).
 - Record active monitor [https://github.com/MaartenBaert/ssr/issues/337]
+- Add shadowplay-like functionality
 
 Wishlist:
 - Improve interface for small screens.

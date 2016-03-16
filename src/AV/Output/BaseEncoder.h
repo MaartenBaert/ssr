@@ -76,6 +76,8 @@ public:
 	// This function is thread-safe.
 	unsigned int GetQueuedFrameCount();
 
+	unsigned int GetQueuedPacketCount();
+
 public: // internal
 
 	// Adds a frame to the frame queue. Called by the synchronizer.
