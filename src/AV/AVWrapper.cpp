@@ -76,8 +76,8 @@ AVPacketWrapper::AVPacketWrapper() {
 	m_packet = new AVPacket;
 	m_free_on_destruct = true;
 	av_init_packet(m_packet);
-	m_packet.data = NULL;
-	m_packet.size = 0;
+	m_packet->data = NULL;
+	m_packet->size = 0;
 #endif
 }
 
@@ -103,7 +103,7 @@ AVPacketWrapper::~AVPacketWrapper() {
 	av_packet_free(&m_packet);
 #else
 	if(m_free_on_destruct)
-		av_free_packet(&m_packet);
+		av_free_packet(m_packet);
 	delete m_packet;
 #endif
 }
