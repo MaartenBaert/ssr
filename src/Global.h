@@ -68,6 +68,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdint.h>
 
 #include <pwd.h>
+#include <random>
 #include <sys/shm.h>
 #include <sys/types.h>
 #include <unistd.h>
