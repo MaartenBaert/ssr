@@ -26,6 +26,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "TempBuffer.h"
 
+#include <random>
+
 struct ImageGeneric {
 
 	TempBuffer<uint8_t> m_buffer;

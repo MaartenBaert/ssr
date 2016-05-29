@@ -22,6 +22,7 @@ Wishlist:
 - clean up Global.h
 - Easier GLInject application selection (as an alternative to entering the command).
 - Timelapse recording, i.e. recording at a slow speed but playing it back faster (without sound obviously).
+- Cursor highlighting.
 
 Not sure yet:
 - Fixed cursor position when using 'follow cursor'?
