@@ -30,6 +30,14 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/stat.h>
 #include <sys/types.h>
 
+static bool ProcessExists(pid_t pid) {
+	if(kill(pid, 0) == 0)
+		return true; // no errors, process exists
+	if(errno == ESRCH)
+		return false; // process does not exist
+	return true; // process exists, but isn't owned by us
+}
+
 static bool SSRVideoStreamParse(const std::string& filename, SSRVideoStream* stream) {
 
 	// check the prefix
@@ -80,38 +88,35 @@ SSRVideoStreamWatcher::~SSRVideoStreamWatcher() {
 
 void SSRVideoStreamWatcher::Init() {
 
-	// create channel directory
+	// create channel directory (permissions may be wrong because of umask, fix this later)
 	if(mkdir(m_channel_directory.c_str(), (m_relax_permissions)? 0777 : 0700) == -1) {
-
-		// does the directory exist?
-		if(errno != EEXIST) {
+		if(errno != EEXIST) { // does the directory already exist?
 			Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Can't create channel directory!"));
 			throw SSRStreamException();
 		}
+	}
 
-		// directory already exists, check ownership and permissions
-		struct stat statinfo;
-		if(lstat(m_channel_directory.c_str(), &statinfo) == -1) {
-			Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Can't stat channel directory!"));
+	// directory already exists, check ownership and permissions
+	struct stat statinfo;
+	if(lstat(m_channel_directory.c_str(), &statinfo) == -1) {
+		Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Can't stat channel directory!"));
+		throw SSRStreamException();
+	}
+	if(!S_ISDIR(statinfo.st_mode) || S_ISLNK(statinfo.st_mode)) {
+		Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Channel directory is not a regular directory!"));
+		throw SSRStreamException();
+	}
+	if(statinfo.st_uid == geteuid()) {
+		if(chmod(m_channel_directory.c_str(), (m_relax_permissions)? 0777 : 0700) == -1) {
+			Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Can't set channel directory mode!"));
 			throw SSRStreamException();
 		}
-		if(!S_ISDIR(statinfo.st_mode) || S_ISLNK(statinfo.st_mode)) {
-			Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Channel directory is not a regular directory!"));
+	} else {
+		if(!m_relax_permissions) {
+			Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Channel directory is owned by a different user! "
+																			"Choose a different channel name, or enable relaxed file permissions to use it anyway."));
 			throw SSRStreamException();
 		}
-		if(statinfo.st_uid == geteuid()) {
-			if(chmod(m_channel_directory.c_str(), (m_relax_permissions)? 0777 : 0700) == -1) {
-				Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Can't set channel directory mode!"));
-				throw SSRStreamException();
-			}
-		} else {
-			if(!m_relax_permissions) {
-				Logger::LogError("[SSRVideoStreamWatcher::Init] " + Logger::tr("Error: Channel directory is owned by a different user! "
-																				"Choose a different channel name, or enable relaxed file permissions to use it anyway."));
-				throw SSRStreamException();
-			}
-		}
-
 	}
 
 #ifdef __linux__
@@ -257,7 +262,7 @@ void SSRVideoStreamWatcher::HandleChanges(AddCallback add_callback, RemoveCallba
 		--j;
 
 		// does the process still exist?
-		if(kill(m_streams[j].m_process_id, 0) == 0)
+		if(ProcessExists(m_streams[j].m_process_id))
 			continue;
 
 		// if the process is dead, delete the files

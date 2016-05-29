@@ -77,38 +77,35 @@ void SSRVideoStreamWriter::Init() {
 		}
 	}
 
-	// create channel directory
+	// create channel directory (permissions may be wrong because of umask, fix this later)
 	if(mkdir(m_channel_directory.c_str(), (relax_permissions)? 0777 : 0700) == -1) {
-
-		// does the directory exist?
-		if(errno != EEXIST) {
+		if(errno != EEXIST) { // does the directory already exist?
 			GLINJECT_PRINT("Error: Can't create channel directory!");
 			throw SSRStreamException();
 		}
+	}
 
-		// directory already exists, check ownership and permissions
-		struct stat statinfo;
-		if(lstat(m_channel_directory.c_str(), &statinfo) == -1) {
-			GLINJECT_PRINT("Error: Can't stat channel directory!");
+	// check ownership and permissions
+	struct stat statinfo;
+	if(lstat(m_channel_directory.c_str(), &statinfo) == -1) {
+		GLINJECT_PRINT("Error: Can't stat channel directory!");
+		throw SSRStreamException();
+	}
+	if(!S_ISDIR(statinfo.st_mode) || S_ISLNK(statinfo.st_mode)) {
+		GLINJECT_PRINT("Error: Channel directory is not a regular directory!");
+		throw SSRStreamException();
+	}
+	if(statinfo.st_uid == geteuid()) {
+		if(chmod(m_channel_directory.c_str(), (relax_permissions)? 0777 : 0700) == -1) {
+			GLINJECT_PRINT("Error: Can't set channel directory mode!");
 			throw SSRStreamException();
 		}
-		if(!S_ISDIR(statinfo.st_mode) || S_ISLNK(statinfo.st_mode)) {
-			GLINJECT_PRINT("Error: Channel directory is not a regular directory!");
+	} else {
+		if(!relax_permissions) {
+			GLINJECT_PRINT("Error: Channel directory is owned by a different user! "
+							"Choose a different channel name, or enable relaxed file permissions to use it anyway.");
 			throw SSRStreamException();
 		}
-		if(statinfo.st_uid == geteuid()) {
-			if(chmod(m_channel_directory.c_str(), (relax_permissions)? 0777 : 0700) == -1) {
-				GLINJECT_PRINT("Error: Can't set channel directory mode!");
-				throw SSRStreamException();
-			}
-		} else {
-			if(!relax_permissions) {
-				GLINJECT_PRINT("Error: Channel directory is owned by a different user! "
-							   "Choose a different channel name, or enable relaxed file permissions to use it anyway.");
-				throw SSRStreamException();
-			}
-		}
-
 	}
 
 	// open frame files
@@ -119,12 +116,20 @@ void SSRVideoStreamWriter::Init() {
 			GLINJECT_PRINT("Error: Can't open video frame file!");
 			throw SSRStreamException();
 		}
+		if(fchmod(fd.m_fd_frame, (relax_permissions)? 0666 : 0600) == -1) {
+			GLINJECT_PRINT("Error: Can't set video frame file mode!");
+			throw SSRStreamException();
+		}
 	}
 
 	// open main file
 	m_fd_main = open(m_filename_main.c_str(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, (relax_permissions)? 0666 : 0600);
 	if(m_fd_main == -1) {
 		GLINJECT_PRINT("Error: Can't open video stream file!");
+		throw SSRStreamException();
+	}
+	if(fchmod(m_fd_main, (relax_permissions)? 0666 : 0600) == -1) {
+			GLINJECT_PRINT("Error: Can't set video stream file mode!");
 		throw SSRStreamException();
 	}
 
