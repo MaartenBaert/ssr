@@ -87,7 +87,7 @@ For Debian:
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev g++-multilib \
     libx11-6 libxext6 libxfixes3 \
-    libglu1-mesa-dev:i386 libx11-dev:i386 libxfixes-dev:i386 libgl1-mesa-dev:i386 \
+    libglu1-mesa-dev:i386 libx11-dev:i386 libxfixes-dev:i386 libgl1-mesa-dev:i386 libglu1-mesa-dev:i386 \
     desktop-file-utils
 
     cd /usr/lib/i386-linux-gnu
@@ -138,7 +138,7 @@ The simplest way to compile and install everything is to run:
 
 This will compile the 64-bit main program and library, and then the 32-bit library. If the 32-bit build fails because libraries are missing, but 64-bit works fine, read the instructions above again :).
 
-If you want to compile step-by-step, just run configure followed by make. It's a good idea to build in a separate directory, because you will need to build the library twice (32-bit and 64-bit). Look at the 'simple-build-and-install' script to see how this is done.
+If you want to compile step-by-step, just run configure followed by make. Configure with --disable-ffmpeg-versions if your distribution uses libav instead of ffmpeg. It's a good idea to build in a separate directory, because you will need to build the library twice (32-bit and 64-bit). Look at the 'simple-build-and-install' script to see how this is done.
 
 You don't need to install the program to use it, but installing will give you a desktop entry and an icon. Also, if you don't install the program, you will need to specify where the GLInject libraries are located with LD_LIBRARY_PATH when using OpenGL recording.
 
