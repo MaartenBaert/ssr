@@ -48,15 +48,19 @@ extern "C" {
 #if defined(__elf64)
 # define ELFW_R_SYM ELF64_R_SYM
 # define ElfW_Sword Elf64_Sxword
-# ifdef BSD
+# ifndef ElfW
 #  define ElfW(v) Elf64_##v
+# endif
+# ifndef __ELF_NATIVE_CLASS
 #  define __ELF_NATIVE_CLASS 64
 # endif
 #elif defined(__elf32)
 # define ELFW_R_SYM ELF32_R_SYM
 # define ElfW_Sword Elf32_Sword
-# ifdef BSD
+# ifndef ElfW
 #  define ElfW(v) Elf32_##v
+# endif
+# ifndef __ELF_NATIVE_CLASS
 #  define __ELF_NATIVE_CLASS 32
 # endif
 #else
