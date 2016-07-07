@@ -55,9 +55,9 @@
 &lt;p&gt;If you want to record Steam games, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;read this first&lt;/a&gt;.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Uwaga: nagrywanie OpenGL działa przez wstrzykniecie biblioteki do nagrywanego programu. Ta biblioteka nadpisze niektóre funkcje systemowe w celu przechwycenia klatek zanim zostaną wyświetlone na ekranie. Jeśli usiłujesz nagrać grę, która wykrywa próby hakowania po stronie klienta, jest (teoretycznie) możliwe że gra uzna to za próbę hakowania. Może to doprowadzić do zbanowania twojego konta, dlatego dobrym pomysłem jest sprawdzenie czy aplikacja, którą planujesz nagrać nie zbanuje cię, zanim zaczniesz nagrywać. Zostałeś ostrzeżony :)&lt;/p&gt;
 
-&lt;p&gt;Uwaga 2: nagrywanie OpenGL jest eksperymentalne i może nie działać a nawet doprowadzić do zatrzymania programu. Jesli obawiasz sie o utratę danych zrób kopie zapasową.&lt;/p&gt;
+&lt;p&gt;Uwaga 2: nagrywanie OpenGL jest eksperymentalne i może nie działać a nawet doprowadzić do zatrzymania programu. Jeśli obawiasz się o utratę danych zrób kopie zapasową.&lt;/p&gt;
 
-&lt;p&gt;Jeśli chcesz nagrywać gry z platformy Steam zapoznaj sie z tym: &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;&lt;/a&gt;.&lt;/p&gt;</translation>
+&lt;p&gt;Jeśli chcesz nagrywać gry z platformy Steam zapoznaj się z tym: &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
@@ -131,13 +131,13 @@ If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will 
     <message>
         <source>If checked, the above command will be executed automatically (combined with some environment variables). If not checked,
 you have to start the OpenGL application yourself (the full command, including the required environment variables, is shown in the log).</source>
-        <translation type="obsolete">Po zaznaczeniu powyrzsze polecenie(wraz z kilkoma zmiennymi środowiskowymi) zostanie automatycznie uruchomione.
-Jeśli nie zaznaczone, aplikacja OpenGL będzie musiała byc uruchomiona oddzielnie(kompletne polecenie wraz z zmiennymi środowiskowymi można znaleźć w logu).</translation>
+        <translation type="obsolete">Po zaznaczeniu powyższe polecenie (wraz z kilkoma zmiennymi środowiskowymi) zostanie automatycznie uruchomione.
+Jeśli nie zaznaczone, aplikacja OpenGL będzie musiała być uruchomiona oddzielnie(kompletne polecenie wraz z zmiennymi środowiskowymi można znaleźć w logu).</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="57"/>
         <source>Relax shared memory permissions (insecure)</source>
-        <translation>Złagodź uprawnienia do pamięci współdzielonej(potencjalnie ryzykowne)</translation>
+        <translation>Złagodź uprawnienia do pamięci współdzielonej (potencjalnie ryzykowne)</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="58"/>
@@ -182,8 +182,8 @@ Durze wartości będą zajmowały większa ilości pamięci!</translation>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
-        <translation>Po zaznaczeniu wstrzyknięta biblioteka spowolni aplikację do prędkości nagrywania. Dzieki czemu aplikacja nie będzie marnowała
-zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie bedze płynniejsze(zależy od aplikacji).</translation>
+        <translation>Po zaznaczeniu wstrzyknięta biblioteka spowolni aplikację do prędkości nagrywania. Dzięki czemu aplikacja nie będzie marnowała
+zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie będzie płynniejsze (zależy od aplikacji).</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="119"/>
@@ -236,13 +236,13 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
         <location filename="../AV/Input/ALSAInput.cpp" line="32"/>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Uwaga: Nastąpiło zdarzenie(overrun), część próbek została utracona.</translation>
+        <translation type="unfinished">Uwaga: Nastąpiło zdarzenie (overrun), część próbek została utracona.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="34"/>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Błąd: Nie można odzyskać urządzenia po zdarzeniu(overrun)!</translation>
+        <translation type="unfinished">Błąd: Nie można odzyskać urządzenia po zdarzeniu (overrun)!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="38"/>
@@ -256,7 +256,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
         <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="207"/>
         <source>Stopping input thread ...</source>
-        <translation type="unfinished">Zatrzymywanie wejsciowego wątku...</translation>
+        <translation type="unfinished">Zatrzymywanie wejściowego wątku...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="96"/>
@@ -322,7 +322,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
         <location filename="../AV/Input/ALSAInput.cpp" line="282"/>
         <location filename="../AV/SimpleSynth.cpp" line="146"/>
         <source>Error: Can&apos;t set sample rate!</source>
-        <translation type="unfinished">Błąd: nie mozna ustawić częstotliwosci próbkowania!</translation>
+        <translation type="unfinished">Błąd: nie mozna ustawić częstotliwości próbkowania!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="286"/>
@@ -387,7 +387,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
     </message>
     <message>
         <source>Error: Can&apos;t check whether samples are available!</source>
-        <translation type="obsolete">Błąd: Nie mozna sprawdzić czy próbki są dostępne!</translation>
+        <translation type="obsolete">Błąd: Nie można sprawdzić czy próbki są dostępne!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="387"/>
@@ -427,7 +427,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
     </message>
     <message>
         <source>Error: Image is too large!</source>
-        <translation type="obsolete">Błąd: Obraz jest zbyt durzy!</translation>
+        <translation type="obsolete">Błąd: Obraz jest zbyt duży!</translation>
     </message>
     <message>
         <source>Error: Image doesn&apos;t fit in memory!</source>
@@ -436,20 +436,20 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="253"/>
         <source>Error: Can&apos;t get shared memory!</source>
-        <translation type="unfinished">Blad: pamięć współdzielona jest nie osiągalna!</translation>
+        <translation type="unfinished">Błąd: Pamięć współdzielona jest nie osiągalna!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="258"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation type="unfinished">Błąd: Nie można nawiązac połączenia z pamięcia współdzieloną!</translation>
+        <translation type="unfinished">Błąd: Nie można nawiązać połączenia z pamięcią współdzieloną!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t get frame shared memory!</source>
-        <translation type="obsolete">Błąd: Nie ma dostępu do pamieci wspułdzielonej klatki!</translation>
+        <translation type="obsolete">Błąd: Nie ma dostępu do pamięci współdzielonej klatki!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t attach to frame shared memory!</source>
-        <translation type="obsolete">Błąd: Nie można połączyć się z pamiecią wspułdzieloną klatki!</translation>
+        <translation type="obsolete">Błąd: Nie można połączyć się z pamięcią współdzieloną klatki!</translation>
     </message>
     <message>
         <source>Full command</source>
@@ -527,12 +527,12 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie be
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="53"/>
         <source>Error: Could not create main loop!</source>
-        <translation type="unfinished">Błąd:Nie można utworzyć głównej pętli!</translation>
+        <translation type="unfinished">Błąd: Nie można utworzyć głównej pętli!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="60"/>
         <source>Error: Could not create context!</source>
-        <translation type="unfinished">Błąd: nie można utworzyć kontekstu!</translation>
+        <translation type="unfinished">Błąd: Nie można utworzyć kontekstu!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="64"/>
@@ -554,7 +554,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="121"/>
         <source>Error: Could not connect stream! Reason: %1</source>
-        <translation type="unfinished">Błąd: Nie mozna połączyć strumienia! Powód: %1</translation>
+        <translation type="unfinished">Błąd: Nie można połączyć strumienia! Powód: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="132"/>
@@ -569,7 +569,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="244"/>
         <source>Error: Could not get names of sources! Reason: %1</source>
-        <translation type="unfinished">Błąd: Nie udało się odczytac nazw źródeł! Powód: %1</translation>
+        <translation type="unfinished">Błąd: Nie udało się odczytać nazw źródeł! Powód: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="313"/>
@@ -602,14 +602,14 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <location filename="../AV/Input/X11Input.cpp" line="190"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="117"/>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
-        <translation type="unfinished">Błąd: Szerokość lub wysokość jest zbyt durza, maksymalna wysokość i szerokość wynosi %1!</translation>
+        <translation type="unfinished">Błąd: Szerokość lub wysokość jest zbyt duża, maksymalna wysokość i szerokość wynosi %1!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="236"/>
         <location filename="../GUI/HotkeyListener.cpp" line="118"/>
         <source>Error: Can&apos;t open X display!</source>
         <comment>Don&apos;t translate &apos;display&apos;</comment>
-        <translation type="unfinished">Błąd:Nie można otworzyć X display!</translation>
+        <translation type="unfinished">Błąd: Nie można otworzyć X display!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="245"/>
@@ -635,7 +635,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <source>Warning: XFixes is not supported by server, the cursor has been hidden.</source>
         <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
-        <translation type="obsolete">Uwaga: XFixes nie jest wspierane przez serwer, kursor został showany.</translation>
+        <translation type="obsolete">Uwaga: XFixes nie jest wspierane przez serwer, kursor został schowany.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="329"/>
@@ -645,21 +645,21 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="393"/>
         <source>Error: Can&apos;t attach server to shared memory!</source>
-        <translation type="unfinished">Błąd: Nie można połączyć serwera z pamięcia współdzieloną!</translation>
+        <translation type="unfinished">Błąd: Nie można połączyć serwera z pamięcią współdzieloną!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="399"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation type="unfinished">Błąd: Nie otrzymano obrazu (wykorzystując pamięć współdzieloną)!
-    Zazwyczaj oznacza to że nagrywany obszar wkracza poza ekran.Czy zmieniono rozdzielczość ekranu?</translation>
+    Zazwyczaj oznacza to że nagrywany obszar wkracza poza ekran. Czy zmieniono rozdzielczość ekranu?</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="410"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation type="unfinished">Błąd: Nie otrzymano obrazu (bez wykorzystywania pamięci współdzielonej)!
-    Zazwyczaj oznacza to że nagrywany obszar wkracza poza ekran.Czy zmieniono rozdzielczość ekranu?</translation>
+    Zazwyczaj oznacza to że nagrywany obszar wkracza poza ekran. Czy zmieniono rozdzielczość ekranu?</translation>
     </message>
     <message>
         <source>Error: Sample rate it zero.</source>
@@ -714,7 +714,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="296"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
-        <translation type="unfinished">Uwaga: Ten kodek jest Uważany za eksperymentalny przez libav/ffmpeg.</translation>
+        <translation type="unfinished">Uwaga: Ten kodek jest uważany za eksperymentalny przez libav/ffmpeg.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
@@ -766,7 +766,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
         <location filename="../AV/Output/Muxer.cpp" line="133"/>
         <source>Error: Can&apos;t write header!</source>
         <comment>Don&apos;t translate &apos;header&apos;</comment>
-        <translation type="unfinished">Błąd nie można zapisać nagłówka (&apos;header&apos;)!</translation>
+        <translation type="unfinished">Błąd: Nie można zapisać nagłówka (&apos;header&apos;)!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="144"/>
@@ -832,7 +832,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="406"/>
         <source>Unknown exception in muxer thread.</source>
-        <translation type="unfinished">Nieznany wyjatek w wątku multipleksera.</translation>
+        <translation type="unfinished">Nieznany wyjątek w wątku multipleksera.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="218"/>
@@ -847,12 +847,12 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="361"/>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
-        <translation type="unfinished">Uwaga: Przepełniono bufor wideo, niektóre klatki zostaną utracone. Wejscie audio wygląda na zbyt wolne.</translation>
+        <translation type="unfinished">Uwaga: Przepełniono bufor wideo, niektóre klatki zostaną utracone. Wejście audio wygląda na zbyt wolne.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="418"/>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
-        <translation type="unfinished">Uwaga: .Otrzymano audio z nie monotonicznym znacznikiem czasu.</translation>
+        <translation type="unfinished">Uwaga: Otrzymano audio z nie monotonicznym znacznikiem czasu.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="443"/>
@@ -877,7 +877,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="554"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
-        <translation type="unfinished">Uwaga: Przepełniono bufor audio, rozpoczęto kolejny segment by utrzymać audio w synchronizacji z wideo (część wideo i/lub audio może zostać utracone). Wejscie wideo wygląda na zbyt wolne.</translation>
+        <translation type="unfinished">Uwaga: Przepełniono bufor audio, rozpoczęto kolejny segment by utrzymać audio w synchronizacji z wideo (część wideo i/lub audio może zostać utracone). Wejście wideo wygląda na zbyt wolne.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="590"/>
@@ -897,7 +897,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="916"/>
         <source>Exception &apos;%1&apos; in synchronizer thread.</source>
-        <translation type="unfinished">Wyjątek &apos;%1&apos; w watku synchronizacji.</translation>
+        <translation type="unfinished">Wyjątek &apos;%1&apos; w wątku synchronizacji.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="919"/>
@@ -926,7 +926,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <source>Error: Frame rate it zero!</source>
-        <translation type="obsolete">Błąd: ilość klatek na sekundę wynosi zero!</translation>
+        <translation type="obsolete">Błąd: Ilość klatek na sekundę wynosi zero!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="226"/>
@@ -1207,7 +1207,7 @@ Możesz zmienić tę opcję samodzielnie w panelu kontrolnym NVIDIA.</translatio
     <message>
         <location filename="../GUI/PageDone.cpp" line="30"/>
         <source>The recording has been saved. You can edit the video now, or re-encode it with better settings to make the file smaller (the default settings are optimized for quality and speed, not file size).</source>
-        <translation>Nagranie zostało zapisane. Możesz juz je edytować lub ponownie zakodować z lepszymi ustawieniami w celu zmniejszenia rozmiaru pliku (domyślne ustawienia są zoptymalizowane pod katem jakości oraz szybkości nie rozmiaru pliku).</translation>
+        <translation>Nagranie zostało zapisane. Możesz już je edytować lub ponownie zakodować z lepszymi ustawieniami w celu zmniejszenia rozmiaru pliku (domyślne ustawienia są zoptymalizowane pod katem jakości oraz szybkości nie rozmiaru pliku).</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="33"/>
@@ -1240,12 +1240,12 @@ Możesz zmienić tę opcję samodzielnie w panelu kontrolnym NVIDIA.</translatio
     <message>
         <location filename="../GUI/PageInput.cpp" line="119"/>
         <source>Record OpenGL (experimental)</source>
-        <translation>Nagrywanie OpeGL(eksperymentalne)</translation>
+        <translation>Nagrywanie OpenGL (eksperymentalne)</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="125"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
-        <translation>Wybierz który monitor ma byc nagrywany jeśli posiadasz wiecej niż jeden.</translation>
+        <translation>Wybierz który monitor ma być nagrywany jeśli posiadasz więcej niż jeden.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="126"/>
@@ -1255,7 +1255,7 @@ Możesz zmienić tę opcję samodzielnie w panelu kontrolnym NVIDIA.</translatio
     <message>
         <location filename="../GUI/PageInput.cpp" line="127"/>
         <source>Use the mouse to select the recorded rectangle.</source>
-        <translation>Wyznacz obszar do nagrywania przy pomcy myszki.</translation>
+        <translation>Wyznacz obszar do nagrywania przy pomocy myszki.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="128"/>
@@ -1337,7 +1337,7 @@ Podpowiedź: Możesz zmienić tę wartość przy pomocy kółka myszy lub strza�
     <message>
         <location filename="../GUI/PageInput.cpp" line="162"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
-        <translation>Liczba klatek na sekundę z jaką będzie nagrywany obraz. Wyrzsze wartości wykorzystują bardziej CPU.</translation>
+        <translation>Liczba klatek na sekundę z jaką będzie nagrywany obraz. Wyższe wartości wykorzystują bardziej CPU.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="163"/>
@@ -1433,7 +1433,7 @@ Kliknij &apos;Opcje OpenGL&apos; w celu wprowadzenia polecenia.</translation>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
         <translation>Podsystem audio który bedzie wykorzystywany do nagrywania.
-Podsystem ALSA bęzie również działał na systemach które korzystaja z PulseAudio, aczkolwiek sugerowane jest korzystanie z PulseAudio.</translation>
+Podsystem ALSA bęzie również działał na systemach które korzystają z PulseAudio, aczkolwiek sugerowane jest korzystanie z PulseAudio.</translation>
     </message>
     <message>
         <source>Device:</source>
@@ -1500,7 +1500,7 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageOutput.cpp" line="106"/>
         <source>Uncompressed</source>
-        <translation>Nie skompresowany</translation>
+        <translation>Nieskompresowany</translation>
     </message>
     <message>
         <source>files</source>
@@ -1582,7 +1582,7 @@ Miej na uwadze że nie wszystkie kodeki są wspierane przez wszystkie kontenery 
 - MP4 jest najbardziej znanym formatem i może być odtwarzany na prawie wszystkich współczesnych odtwarzaczach multimedialnych lecz wspiera wyłącznie
 kodowanie H.264 (oraz wiele odtwarzaczy wspiera wyłącznie kodowanie audio AAC).
 - WebM jest przeznaczone do filmów wbudowanych w strony internetowe(przy wykorzystaniu tagu HTML5 &lt;video&gt;). format został stworzony przez Google.
-WebM jest domyślnie wspierany przez Firefox, Chrome oraz Operę, są również dostępne wtyczki do Internet Eksplorer oraz Safari.
+WebM jest domyślnie wspierany przez Firefox, Chrome oraz Operę, są również dostępne wtyczki do Internet Explorer oraz Safari.
 Wspiera wyłącznie VP8 i Vorbis.
 - OGG wspiera wyłącznie Theorę i Vorbis.</translation>
     </message>
@@ -1674,7 +1674,7 @@ Jeżeli nie wiesz od jakiej wartości zacząć, spróbuj 5000 i zmieniaj w miar�
         <location filename="../GUI/PageOutput.cpp" line="271"/>
         <source>The encoding speed. A higher value uses *less* CPU time. (I didn&apos;t choose the name, this is the name
 used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
-        <translation>Szybkość kodowania.Wyższa wartość oznacza *mniejsze* użycie procesora (nazwa nie jest moim pomysłem
+        <translation>Szybkość kodowania. Wyższa wartość oznacza *mniejsze* użycie procesora (nazwa nie jest moim pomysłem
 i jest wykorzystywana przez VP8). Wyższe wartości skutkują gorszą jakością chyba że zwiększysz Szybkość transmisji.</translation>
     </message>
     <message>
@@ -1730,10 +1730,10 @@ z większą ilością klatek na sekundę) lecz powoduje że plik końcowy będzi
 lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.
 This increases the file size and CPU usage, but reduces the latency for live streams in some cases.
 It shouldn&apos;t affect the appearance of the video.</source>
-        <translation>Po zaznaczeniu koder będzie pomijał klatki jeżeli ilość klatek na wejsciu będzie niższa niz na wyjściu.
-W prypadku nie zaznaczenia klatki będą dublowane by wypełnić luki. Zwiększy to rozmiar pliku
+        <translation>Po zaznaczeniu koder będzie pomijał klatki jeżeli ilość klatek na wejściu będzie niższa niż na wyjściu.
+W przypadku nie zaznaczenia klatki będą dublowane by wypełnić luki. Zwiększy to rozmiar pliku
 oraz wykorzystanie procesora lecz zmniejsza opuźnienie w trakcie stremowania na żywo w niektórych przypadkach.
-Nie powinno mieć wpływu na wyglad wideo.</translation>
+Nie powinno mieć wpływu na wygląd wideo.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="303"/>
@@ -1909,7 +1909,7 @@ Aplikacja którą nagrywasz nie przechwyci tych klawiszy.</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="242"/>
         <source>Preview frame rate:</source>
-        <translation>Klatki na sekundę podgladu:</translation>
+        <translation>Klatki na sekundę podglądu:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="246"/>
@@ -1942,7 +1942,7 @@ Aplikacja którą nagrywasz nie przechwyci tych klawiszy.</translation>
         <location filename="../GUI/PageRecord.cpp" line="368"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
-        <translation>Nie zapisano aktualnego nagrania. Jezeli teraz wyjdziesz zostanie ono utracone.
+        <translation>Nie zapisano aktualnego nagrania. Jeżeli teraz wyjdziesz zostanie ono utracone.
 Czy na pewno chcesz wyjść?</translation>
     </message>
     <message>
@@ -2287,12 +2287,12 @@ Przycisk start jest na górze ;).</translation>
     <message>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="obsolete">Uwaga: Nastąpiło zdarzenie(overrun), część próbek została utracona.</translation>
+        <translation type="obsolete">Uwaga: Nastąpiło zdarzenie (overrun), część próbek została utracona.</translation>
     </message>
     <message>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="obsolete">Błąd: Nie można odzyskać urządzenia po zdarzeniu(overrun)!</translation>
+        <translation type="obsolete">Błąd: Nie można odzyskać urządzenia po zdarzeniu (overrun)!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t start PCM device after overrun!</source>
@@ -2301,7 +2301,7 @@ Przycisk start jest na górze ;).</translation>
     </message>
     <message>
         <source>Stopping input thread ...</source>
-        <translation type="obsolete">Zatrzymywanie wejsciowego wątku...</translation>
+        <translation type="obsolete">Zatrzymywanie wejściowego wątku...</translation>
     </message>
     <message>
         <source>Error: Can&apos;t set channel count!</source>
@@ -2337,7 +2337,7 @@ Przycisk start jest na górze ;).</translation>
     </message>
     <message>
         <source>Error: Can&apos;t check whether samples are available!</source>
-        <translation type="obsolete">Błąd: Nie mozna sprawdzić czy próbki są dostępne!</translation>
+        <translation type="obsolete">Błąd: Nie można sprawdzić czy próbki są dostępne!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t read samples!</source>
@@ -2361,7 +2361,7 @@ Przycisk start jest na górze ;).</translation>
     </message>
     <message>
         <source>Error: Image is too large!</source>
-        <translation type="obsolete">Błąd: Obraz jest zbyt durzy!</translation>
+        <translation type="obsolete">Błąd: Obraz jest zbyt duży!</translation>
     </message>
     <message>
         <source>Error: Image doesn&apos;t fit in memory!</source>
@@ -2369,11 +2369,11 @@ Przycisk start jest na górze ;).</translation>
     </message>
     <message>
         <source>Error: Can&apos;t get frame shared memory!</source>
-        <translation type="obsolete">Błąd: Nie ma dostępu do pamieci wspułdzielonej klatki!</translation>
+        <translation type="obsolete">Błąd: Nie ma dostępu do pamięci współdzielonej klatki!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t attach to frame shared memory!</source>
-        <translation type="obsolete">Błąd: Nie można połączyć się z pamiecią wspułdzieloną klatki!</translation>
+        <translation type="obsolete">Błąd: Nie można połączyć się z pamięcią współdzieloną klatki!</translation>
     </message>
     <message>
         <source>Full command</source>
@@ -2381,7 +2381,7 @@ Przycisk start jest na górze ;).</translation>
     </message>
     <message>
         <source>Error: Can&apos;t run command!</source>
-        <translation type="obsolete">Błąd: nie można wykonać polecenia!</translation>
+        <translation type="obsolete">Błąd: Nie można wykonać polecenia!</translation>
     </message>
     <message>
         <source>Error: pa_mainloop_prepare failed!</source>
@@ -2400,16 +2400,16 @@ Przycisk start jest na górze ;).</translation>
     </message>
     <message>
         <source>Error: Could not create main loop!</source>
-        <translation type="obsolete">Błąd:Nie można utworzyć głównej pętli!</translation>
+        <translation type="obsolete">Błąd: Nie można utworzyć głównej pętli!</translation>
     </message>
     <message>
         <source>Error: Could not create context!</source>
-        <translation type="obsolete">Błąd: nie można utworzyć kontekstu!</translation>
+        <translation type="obsolete">Błąd: Nie można utworzyć kontekstu!</translation>
     </message>
     <message>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA backend instead.</source>
-        <translation type="obsolete">Błąd nie można się połączyć! Powód: %1
+        <translation type="obsolete">Błąd: Nie można się połączyć! Powód: %1
 Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu ALSA.</translation>
     </message>
     <message>
@@ -2430,7 +2430,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <source>Error: Could not get names of sources! Reason: %1</source>
-        <translation type="obsolete">Błąd: Nie udało się odczytac nazw źródeł! Powód: %1</translation>
+        <translation type="obsolete">Błąd: Nie udało się odczytać nazw źródeł! Powód: %1</translation>
     </message>
     <message>
         <source>Error: pa_stream_peek failed!</source>
@@ -2452,7 +2452,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <source>Error: Can&apos;t open X display!</source>
         <comment>Don&apos;t translate &apos;display&apos;</comment>
-        <translation type="obsolete">Błąd:Nie można otworzyć X display!</translation>
+        <translation type="obsolete">Błąd: Nie można otworzyć X display!</translation>
     </message>
     <message>
         <source>Using X11 shared memory.</source>
@@ -2468,7 +2468,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation type="obsolete">Błąd: Nie można nawiązac połączenia z pamięcia współdzieloną!</translation>
+        <translation type="obsolete">Błąd: Nie można nawiązać połączenia z pamięcią współdzieloną!</translation>
     </message>
     <message>
         <source>Not using X11 shared memory.</source>
@@ -2480,12 +2480,12 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
-        <translation type="obsolete">Błąd: Szerokość lub wysokość jest zbyt durza, maksymalna wysokość i szerokość wynosi %1!</translation>
+        <translation type="obsolete">Błąd: Szerokość lub wysokość jest zbyt duża, maksymalna wysokość i szerokość wynosi %1!</translation>
     </message>
     <message>
         <source>Warning: XFixes is not supported by server, the cursor has been hidden.</source>
         <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
-        <translation type="obsolete">Uwaga: XFixes nie jest wspierane przez serwer, kursor został showany.</translation>
+        <translation type="obsolete">Uwaga: XFixes nie jest wspierane przez serwer, kursor został schowany.</translation>
     </message>
     <message>
         <source>Error: Invalid screen bounding box!</source>
@@ -2493,19 +2493,19 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <source>Error: Can&apos;t attach server to shared memory!</source>
-        <translation type="obsolete">Błąd: Nie można połączyć serwera z pamięcia współdzieloną!</translation>
+        <translation type="obsolete">Błąd: Nie można połączyć serwera z pamięcią współdzieloną!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation type="obsolete">Błąd: Nie otrzymano obrazu (wykorzystując pamięć współdzieloną)!
-    Zazwyczaj oznacza to że nagrywany obszar wkracza poza ekran.Czy zmieniono rozdzielczość ekranu?</translation>
+    Zazwyczaj oznacza to że nagrywany obszar wkracza poza ekran. Czy zmieniono rozdzielczość ekranu?</translation>
     </message>
     <message>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation type="obsolete">Błąd: Nie otrzymano obrazu (bez wykorzystywania pamięci współdzielonej)!
-    Zazwyczaj oznacza to że nagrywany obszar wkracza poza ekran.Czy zmieniono rozdzielczość ekranu?</translation>
+    Zazwyczaj oznacza to że nagrywany obszar wkracza poza ekran. Czy zmieniono rozdzielczość ekranu?</translation>
     </message>
     <message>
         <source>Error: Sample rate it zero.</source>
@@ -2533,7 +2533,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
-        <translation type="obsolete">Uwaga: Ten kodek jest Uważany za eksperymentalny przez libav/ffmpeg.</translation>
+        <translation type="obsolete">Uwaga: Ten kodek jest uważany za eksperymentalny przez libav/ffmpeg.</translation>
     </message>
     <message>
         <source>Error: Can&apos;t open codec!</source>
@@ -2623,7 +2623,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <source>Unknown exception in muxer thread.</source>
-        <translation type="obsolete">Nieznany wyjatek w wątku multipleksera.</translation>
+        <translation type="obsolete">Nieznany wyjątek w wątku multipleksera.</translation>
     </message>
     <message>
         <source>Stopping synchronizer thread ...</source>
@@ -2635,11 +2635,11 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
-        <translation type="obsolete">Uwaga: Przepełniono bufor wideo, niektóre klatki zostaną utracone. Wejscie audio wygląda na zbyt wolne.</translation>
+        <translation type="obsolete">Uwaga: Przepełniono bufor wideo, niektóre klatki zostaną utracone. Wejście audio wygląda na zbyt wolne.</translation>
     </message>
     <message>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
-        <translation type="obsolete">Uwaga: .Otrzymano audio z nie monotonicznym znacznikiem czasu.</translation>
+        <translation type="obsolete">Uwaga: Otrzymano audio z nie monotonicznym znacznikiem czasu.</translation>
     </message>
     <message>
         <source>Warning: Audio input is more than 2% too fast!</source>
@@ -2651,7 +2651,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     </message>
     <message>
         <source>Warning: Desynchronization is too high, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost).</source>
-        <translation type="obsolete">Uwaga: desynchronizacja jest zbyt durza, rozpoczęto kolejny segment by utrzymać audio w synchronizacji z wideo (część wideo i/lub audio może zostać utracone).</translation>
+        <translation type="obsolete">Uwaga: Desynchronizacja jest zbyt duża, rozpoczęto kolejny segment by utrzymać audio w synchronizacji z wideo (część wideo i/lub audio może zostać utracone).</translation>
     </message>
     <message>
         <source> Warning: Audio input is more than 5% too slow!</source>
