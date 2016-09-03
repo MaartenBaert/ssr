@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="pl_PL">
+<TS version="2.0" language="pl_PL">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -109,7 +109,7 @@ Jeśli pozostawisz to pole pustym, domyślna nazwa &quot;kanał-TWOJANAZWAUŻYTK
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="84"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
-        <translation>Jeśli zaznaczone, aplikacja zostanie uruchomiona automatycznie, gdy tylko przejdziesz do strony z nagrywaniem. Jeśli nie zaznaczone, nagrywanie będzie musiało zzostać uruchomione ręcznie.</translation>
+        <translation>Jeśli zaznaczone, aplikacja zostanie uruchomiona automatycznie, gdy tylko przejdziesz do strony z nagrywaniem. Jeśli nie zaznaczone, nagrywanie będzie musiało zostać uruchomione ręcznie.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="86"/>
