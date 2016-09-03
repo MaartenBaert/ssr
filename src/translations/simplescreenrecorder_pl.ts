@@ -62,23 +62,24 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
         <source>Choose channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kanał</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="53"/>
         <source>Channel name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa kanału:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
 If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwy kanałów są używane do identyfikacji aplikacji. Użyj tej opcji jeśli chcesz nagrać wiele aplikacji w tym samym czasie.
+Jeśli pozostawisz to pole pustym, domyślna nazwa &quot;kanał-TWOJANAZWAUŻYTKOWNIKA&quot; będzie użyta. </translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="73"/>
         <source>Launch application</source>
-        <translation type="unfinished"></translation>
+        <translation>Uruchom aplikację</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="75"/>
@@ -93,32 +94,32 @@ If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will 
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="79"/>
         <source>Working directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog roboczy:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="81"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Polecenie zostanie wykonane w tym katalogu. Jeśli pozostawisz to pole pustym, katalog roboczy nie będzie zmieniony. </translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
         <source>Launch automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Uruchom automatycznie</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="84"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli zaznaczone, aplikacja zostanie uruchomiona automatycznie, gdy tylko przejdziesz do strony z nagrywaniem. Jeśli nie zaznaczone, nagrywanie będzie musiało zzostać uruchomione ręcznie.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="86"/>
         <source>Launch now</source>
-        <translation type="unfinished"></translation>
+        <translation>Uruchom teraz</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="107"/>
         <source>Stream settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje wideo </translation>
     </message>
     <message>
         <source>Source:</source>
