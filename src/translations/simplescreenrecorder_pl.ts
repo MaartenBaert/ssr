@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pl_PL">
+<TS version="2.1" language="pl_PL">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -1704,7 +1704,7 @@ If the original file name is &apos;test.mkv&apos;, the segments will be saved as
         <location filename="../GUI/PageOutput.cpp" line="261"/>
         <source>The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),
 but results in larger files. The quality shouldn&apos;t be affected too much.</source>
-        <translation>Tępo kodowania. Wyższa wartość wykorzystuje procesor w mniejszym stopniu(pozwalając na nagrywanie
+        <translation>Tempo kodowania. Wyższa wartość wykorzystuje procesor w mniejszym stopniu (pozwalając na nagrywanie
 z większą ilością klatek na sekundę) lecz powoduje że plik końcowy będzie większy. Jakość nie powinna ulec zmianie.</translation>
     </message>
     <message>
@@ -2074,7 +2074,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="944"/>
         <source>Start preview</source>
-        <translation>Rozocznij podgląd</translation>
+        <translation>Rozpocznij podgląd</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="973"/>
