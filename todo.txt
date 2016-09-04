@@ -23,6 +23,7 @@ Wishlist:
 - Easier GLInject application selection (as an alternative to entering the command).
 - Timelapse recording, i.e. recording at a slow speed but playing it back faster (without sound obviously).
 - Cursor highlighting.
+- Webcam support (V4L2 input)
 
 Not sure yet:
 - Fixed cursor position when using 'follow cursor'?
