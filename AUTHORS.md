@@ -21,16 +21,16 @@ Translations
 - Arabic: Abdulla
 - Bulgarian: Svetoslav Sashkov
 - Czech: Radek Steiger
-- German: Manuel Schömburg
+- German: Manuel Schömburg, AlexMI
 - Greek: Nick Thom
 - Spanish: Dani Rodríguez
 - French: Mario Roger
 - Hebrew: GreenLunar
-- Hungarian: ViBE
+- Hungarian: ViBE, Balázs Úr
 - Italian: Bersil
 - Japanese: Tou Omiya
 - Dutch: Maarten Baert
-- Polish: Szamanx0
+- Polish: Szamanx0, Vetyt Yhonay, Michał Walenciak
 - Brazilian Portuguese: Paulo Milliet Roque, Rafael Ferreira
 - Russian: Dima Koshel
 - Swedish: Åke Engelbrektson
