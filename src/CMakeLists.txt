@@ -3,6 +3,7 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5X11Extras REQUIRED)
+find_package(Threads REQUIRED)
 
 option(ENABLE_X86_ASM "Allow x86/x64 assembly or intrinsics." TRUE)
 option(ENABLE_FFMPEG_VERSIONS "Whether ffmpeg or libav version numbers should be used for tests. The ffmpeg version number is usually slightly higher, so that's the default (deprecation warnings are better than compilation errors)." TRUE)
@@ -137,6 +138,7 @@ target_link_libraries(simplescreenrecorder
                             Qt5::Gui
                             Qt5::Widgets
                             Qt5::X11Extras
+                            ${CMAKE_THREAD_LIBS_INIT}
 )
 
 target_compile_definitions(simplescreenrecorder
