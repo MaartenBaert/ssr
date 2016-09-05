@@ -1,4 +1,5 @@
 
+find_package(AVFormat REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
@@ -120,6 +121,7 @@ add_executable(simplescreenrecorder
 
 target_include_directories(simplescreenrecorder
                             PRIVATE
+                                ${AVFORMAT_INCLUDE_DIRS}
                                 ${Qt5Core_INCLIDE_DIRS}
                                 ${Qt5Gui_INCLUDE_DIRS}
                                 ${Qt5Widgets_INCLUDE_DIRS}
@@ -136,6 +138,7 @@ target_include_directories(simplescreenrecorder
 
 target_link_libraries(simplescreenrecorder
                         PRIVATE
+                            ${AVFORMAT_LIBRARIES}
                             Qt5::Core
                             Qt5::Gui
                             Qt5::Widgets
