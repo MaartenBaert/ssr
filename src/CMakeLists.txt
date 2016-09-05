@@ -122,7 +122,7 @@ add_executable(simplescreenrecorder
 target_include_directories(simplescreenrecorder
                             PRIVATE
                                 ${AVFORMAT_INCLUDE_DIRS}
-                                ${Qt5Core_INCLIDE_DIRS}
+                                ${Qt5Core_INCLUDE_DIRS}
                                 ${Qt5Gui_INCLUDE_DIRS}
                                 ${Qt5Widgets_INCLUDE_DIRS}
                                 ${Qt5X11Extras_INCLUDE_DIRS}
