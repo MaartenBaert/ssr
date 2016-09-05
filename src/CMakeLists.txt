@@ -20,6 +20,7 @@ set(sources
         Benchmark.h
         Global.h
         Main.cpp
+        Main.h
         NVidia.cpp
         NVidia.h
 
