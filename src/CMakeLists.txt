@@ -121,9 +121,9 @@ target_include_directories(simplescreenrecorder
                             PRIVATE
                                 ${Qt5Core_INCLIDE_DIRS}
                                 ${Qt5Gui_INCLUDE_DIRS}
-                                ${Qt5Widgets_INCLIDE_DIRS}
-                                ${Qt5X11Extras_INCLIDE_DIRS}
-
+                                ${Qt5Widgets_INCLUDE_DIRS}
+                                ${Qt5X11Extras_INCLUDE_DIRS}
+                                
                                 ${CMAKE_CURRENT_SOURCE_DIR}
                                 ${CMAKE_CURRENT_SOURCE_DIR}/AV
                                 ${CMAKE_CURRENT_SOURCE_DIR}/AV/Input
