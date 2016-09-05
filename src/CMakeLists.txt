@@ -6,6 +6,7 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5X11Extras REQUIRED)
+find_package(SWScale REQUIRED)
 find_package(Threads REQUIRED)
 find_package(X11 REQUIRED)
 find_package(XFixes REQUIRED)
@@ -132,6 +133,7 @@ target_include_directories(simplescreenrecorder
                                 ${Qt5Gui_INCLUDE_DIRS}
                                 ${Qt5Widgets_INCLUDE_DIRS}
                                 ${Qt5X11Extras_INCLUDE_DIRS}
+                                ${SWSCALE_INCLUDE_DIRS}
                                 ${X11_INCLUDE_DIR}
                                 ${XFIXES_INCLUDE_DIR}
 
@@ -153,6 +155,7 @@ target_link_libraries(simplescreenrecorder
                             Qt5::Widgets
                             Qt5::X11Extras
                             ${CMAKE_THREAD_LIBS_INIT}
+                            ${SWSCALE_LIBRARIES}
                             ${X11_LIBRARIES}
                             ${XFIXES_LIBRARIES}
 )
