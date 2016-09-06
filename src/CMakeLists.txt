@@ -120,8 +120,17 @@ set(sources
         GUI/ProfileBox.h
 )
 
+set(files_to_moc
+        AV/Input/PulseAudioInput.h
+
+        common/Logger.h
+)
+
+qt5_wrap_cpp(moced_files ${files_to_moc})
+
 add_executable(simplescreenrecorder
                 ${sources}
+                ${moced_files}
 )
 
 target_include_directories(simplescreenrecorder
