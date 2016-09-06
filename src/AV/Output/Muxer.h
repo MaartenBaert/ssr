@@ -115,7 +115,7 @@ private:
 	void Free();
 
 	AVCodec* FindCodec(const QString& codec_name);
-	AVStream* AddStream(AVCodec* codec);
+	AVStream* AddStream(AVCodec* codec, AVCodecContext** codec_context);
 
 	void MuxerThread();
 

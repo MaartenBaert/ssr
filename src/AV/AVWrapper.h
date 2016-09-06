@@ -46,17 +46,22 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class AVFrameData {
 private:
 	uint8_t *m_data;
+	size_t m_size;
 public:
 	inline AVFrameData(size_t size) {
 		m_data = (uint8_t*) av_malloc(size);
 		if(m_data == NULL)
 			throw std::bad_alloc();
+		m_size = size;
 	}
 	inline ~AVFrameData() {
 		av_free(m_data);
 	}
 	inline uint8_t* GetData() {
 		return m_data;
+	}
+	inline size_t GetSize() {
+		return m_size;
 	}
 };
 
@@ -74,6 +79,13 @@ public:
 
 	AVFrameWrapper(const AVFrameWrapper&) = delete;
 	AVFrameWrapper& operator=(const AVFrameWrapper&) = delete;
+
+#if SSR_USE_AVCODEC_SEND_RECEIVE
+	// This function transfers ownership of the data to the AVFrame, and then releases ownership of the AVFrame itself.
+	// This turns the AVFrame into a stand-alone object which relies on the ffmpeg/libav reference counting mechanism to free the data.
+	// The returned frame should be freed with av_frame_free.
+	AVFrame* Release();
+#endif
 
 public:
 	inline AVFrame* GetFrame() { return m_frame; }

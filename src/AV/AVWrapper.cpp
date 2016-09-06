@@ -31,6 +31,12 @@ int lock_manager(void** m, AVLockOp op) {
 	return 0;
 }
 
+void DeleteFrameDataPointer(void* opaque, uint8_t* data) {
+	Q_UNUSED(data);
+	std::shared_ptr<AVFrameData> *ptr = (std::shared_ptr<AVFrameData>*) opaque;
+	delete ptr;
+}
+
 class AVGlobal {
 public:
 	AVGlobal() {
@@ -58,14 +64,31 @@ AVFrameWrapper::AVFrameWrapper(const std::shared_ptr<AVFrameData>& refcounted_da
 }
 
 AVFrameWrapper::~AVFrameWrapper() {
+	if(m_frame != NULL) {
 #if SSR_USE_AV_FRAME_FREE
-	av_frame_free(&m_frame);
+		av_frame_free(&m_frame);
 #elif SSR_USE_AVCODEC_FREE_FRAME
-	avcodec_free_frame(&m_frame);
+		avcodec_free_frame(&m_frame);
 #else
-	av_free(m_frame);
+		av_free(m_frame);
 #endif
+	}
 }
+
+#if SSR_USE_AVCODEC_SEND_RECEIVE
+AVFrame* AVFrameWrapper::Release() {
+	assert(m_frame != NULL);
+	std::shared_ptr<AVFrameData> *ptr = new std::shared_ptr<AVFrameData>(m_refcounted_data);
+	m_frame->buf[0] = av_buffer_create(m_refcounted_data->GetData(), m_refcounted_data->GetSize(), &DeleteFrameDataPointer, ptr, AV_BUFFER_FLAG_READONLY);
+	if(m_frame->buf[0] == NULL) {
+		delete ptr;
+		throw std::bad_alloc();
+	}
+	AVFrame *frame = m_frame;
+	m_frame = NULL;
+	return frame;
+}
+#endif
 
 AVPacketWrapper::AVPacketWrapper() {
 #if SSR_USE_AV_PACKET_ALLOC

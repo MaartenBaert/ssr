@@ -43,6 +43,7 @@ private:
 private:
 	Muxer *m_muxer;
 	AVStream *m_stream;
+	AVCodecContext *m_codec_context;
 	bool m_codec_opened;
 
 	std::thread m_thread;
@@ -50,7 +51,7 @@ private:
 	std::atomic<bool> m_should_stop, m_should_finish, m_is_done, m_error_occurred;
 
 protected:
-	BaseEncoder(Muxer* muxer, AVStream* stream, AVCodec* codec, AVDictionary** options);
+	BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options);
 
 public:
 	virtual ~BaseEncoder(); // encoders will be deleted by Muxer, don't delete them yourself!
@@ -102,14 +103,18 @@ public: // internal
 	// This function is thread-safe and lock-free.
 	inline bool HasErrorOccurred() { return m_error_occurred; }
 
+	inline Muxer* GetMuxer() { return m_muxer; }
+	inline AVStream* GetStream() { return m_stream; }
+	inline AVCodecContext* GetCodecContext() { return m_codec_context; }
+
 protected:
 
 	// Called by the encoder thread to encode a single frame. Frame can be NULL if the encoder uses delayed packets.
 	// Returns whether a packet was created.
-	virtual bool EncodeFrame(AVFrame* frame) = 0;
+	virtual bool EncodeFrame(AVFrameWrapper* frame) = 0;
 
-	inline Muxer* GetMuxer() { return m_muxer; }
-	inline AVStream* GetStream() { return m_stream; }
+	// Called to increment the packet counter.
+	void IncrementPacketCounter();
 
 private:
 	void Init(AVCodec* codec, AVDictionary** options);

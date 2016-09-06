@@ -34,8 +34,8 @@ const std::vector<VideoEncoder::PixelFormatData> VideoEncoder::SUPPORTED_PIXEL_F
 	{"bgr", AV_PIX_FMT_BGR24, false},
 };
 
-VideoEncoder::VideoEncoder(Muxer* muxer, AVStream* stream, AVCodec* codec, AVDictionary** options)
-	: BaseEncoder(muxer, stream, codec, options) {
+VideoEncoder::VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options)
+	: BaseEncoder(muxer, stream, codec_context, codec, options) {
 
 #if !SSR_USE_AVCODEC_ENCODE_VIDEO2
 	// allocate a temporary buffer
@@ -45,7 +45,7 @@ VideoEncoder::VideoEncoder(Muxer* muxer, AVStream* stream, AVCodec* codec, AVDic
 	// (one YUV frame takes w * h * 1.5 bytes)
 	// Newer versions of libav/ffmpeg have deprecated avcodec_encode_video and added a new function which does the allocation
 	// automatically, just like avcodec_encode_audio2, but that function isn't available in Ubuntu 12.04/12.10 yet.
-	m_temp_buffer.resize(std::max<unsigned int>(FF_MIN_BUFFER_SIZE, 256 * 1024 + GetStream()->codec->width * GetStream()->codec->height * 3));
+	m_temp_buffer.resize(std::max<unsigned int>(FF_MIN_BUFFER_SIZE, 256 * 1024 + GetCodecContext()->width * GetCodecContext()->height * 3));
 #endif
 
 	StartThread();
@@ -56,20 +56,20 @@ VideoEncoder::~VideoEncoder() {
 }
 
 AVPixelFormat VideoEncoder::GetPixelFormat() {
-	return GetStream()->codec->pix_fmt;
+	return GetCodecContext()->pix_fmt;
 }
 
 unsigned int VideoEncoder::GetWidth() {
-	return GetStream()->codec->width;
+	return GetCodecContext()->width;
 }
 
 unsigned int VideoEncoder::GetHeight() {
-	return GetStream()->codec->height;
+	return GetCodecContext()->height;
 }
 
 unsigned int VideoEncoder::GetFrameRate() {
-	assert(GetStream()->codec->time_base.num == 1);
-	return GetStream()->codec->time_base.den;
+	assert(GetCodecContext()->time_base.num == 1);
+	return GetCodecContext()->time_base.den;
 }
 
 bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
@@ -87,7 +87,7 @@ bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
 	return false;
 }
 
-void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
 								 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate) {
 
 	if(width == 0 || height == 0) {
@@ -108,45 +108,45 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 	}
 
 	// initialize codec context
-	stream->codec->bit_rate = bit_rate;
-	stream->codec->width = width;
-	stream->codec->height = height;
-	stream->codec->time_base.num = 1;
-	stream->codec->time_base.den = frame_rate;
+	codec_context->bit_rate = bit_rate;
+	codec_context->width = width;
+	codec_context->height = height;
+	codec_context->time_base.num = 1;
+	codec_context->time_base.den = frame_rate;
 #if SSR_USE_AVSTREAM_TIME_BASE
-	stream->time_base = stream->codec->time_base;
+	stream->time_base = codec_context->time_base;
 #endif
-	stream->codec->sample_aspect_ratio.num = 1;
-	stream->codec->sample_aspect_ratio.den = 1;
-	stream->sample_aspect_ratio = stream->codec->sample_aspect_ratio;
-	stream->codec->thread_count = std::max(1, (int) std::thread::hardware_concurrency());
+	codec_context->sample_aspect_ratio.num = 1;
+	codec_context->sample_aspect_ratio.den = 1;
+	stream->sample_aspect_ratio = codec_context->sample_aspect_ratio;
+	codec_context->thread_count = std::max(1, (int) std::thread::hardware_concurrency());
 
 	// parse options
 	QString pixel_format_name;
 	for(unsigned int i = 0; i < codec_options.size(); ++i) {
 		const QString &key = codec_options[i].first, &value = codec_options[i].second;
 		if(key == "threads") {
-			stream->codec->thread_count = ParseCodecOptionInt(key, value, 1, 100);
+			codec_context->thread_count = ParseCodecOptionInt(key, value, 1, 100);
 		} else if(key == "qscale") {
-			stream->codec->flags |= CODEC_FLAG_QSCALE;
-			stream->codec->global_quality = lrint(ParseCodecOptionDouble(key, value, -1.0e6, 1.0e6, FF_QP2LAMBDA));
+			codec_context->flags |= CODEC_FLAG_QSCALE;
+			codec_context->global_quality = lrint(ParseCodecOptionDouble(key, value, -1.0e6, 1.0e6, FF_QP2LAMBDA));
 		} else if(key == "minrate") {
-			stream->codec->rc_min_rate = ParseCodecOptionInt(key, value, 1, 1000000, 1024); // kbps
+			codec_context->rc_min_rate = ParseCodecOptionInt(key, value, 1, 1000000, 1024); // kbps
 		} else if(key == "maxrate") {
-			stream->codec->rc_max_rate = ParseCodecOptionInt(key, value, 1, 1000000, 1024); // kbps
+			codec_context->rc_max_rate = ParseCodecOptionInt(key, value, 1, 1000000, 1024); // kbps
 		} else if(key == "bufsize") {
-			stream->codec->rc_buffer_size = ParseCodecOptionInt(key, value, 1, 1000000, 1024); // kbps
+			codec_context->rc_buffer_size = ParseCodecOptionInt(key, value, 1, 1000000, 1024); // kbps
 		} else if(key == "keyint") {
-			stream->codec->gop_size = ParseCodecOptionInt(key, value, 1, 1000000);
+			codec_context->gop_size = ParseCodecOptionInt(key, value, 1, 1000000);
 		} else if(key == "pixelformat") {
 			pixel_format_name = value;
 #if !SSR_USE_AVCODEC_PRIVATE_PRESET
 		} else if(key == "crf") {
-			stream->codec->crf = ParseCodecOptionInt(key, value, 0, 51);
+			codec_context->crf = ParseCodecOptionInt(key, value, 0, 51);
 #endif
 #if !SSR_USE_AVCODEC_PRIVATE_PRESET
 		} else if(key == "preset") {
-			X264Preset(stream->codec, value.toUtf8().constData());
+			X264Preset(codec_context, value.toUtf8().constData());
 #endif
 		} else {
 			av_dict_set(options, key.toUtf8().constData(), value.toUtf8().constData(), 0);
@@ -154,56 +154,88 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodec* codec, AVDictionary*
 	}
 
 	// choose the pixel format
-	stream->codec->pix_fmt = AV_PIX_FMT_NONE;
+	codec_context->pix_fmt = AV_PIX_FMT_NONE;
 	for(unsigned int i = 0; i < SUPPORTED_PIXEL_FORMATS.size(); ++i) {
 		if(!pixel_format_name.isEmpty() && pixel_format_name != SUPPORTED_PIXEL_FORMATS[i].m_name)
 			continue;
 		if(!AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i].m_format))
 			continue;
 		Logger::LogInfo("[VideoEncoder::PrepareStream] " + Logger::tr("Using pixel format %1.").arg(SUPPORTED_PIXEL_FORMATS[i].m_name));
-		stream->codec->pix_fmt = SUPPORTED_PIXEL_FORMATS[i].m_format;
+		codec_context->pix_fmt = SUPPORTED_PIXEL_FORMATS[i].m_format;
 		if(SUPPORTED_PIXEL_FORMATS[i].m_is_yuv) {
-			stream->codec->color_primaries = AVCOL_PRI_BT709;
-			stream->codec->color_trc = AVCOL_TRC_BT709;
-			stream->codec->colorspace = AVCOL_SPC_BT709;
-			stream->codec->color_range = AVCOL_RANGE_MPEG;
-			stream->codec->chroma_sample_location = AVCHROMA_LOC_CENTER;
+			codec_context->color_primaries = AVCOL_PRI_BT709;
+			codec_context->color_trc = AVCOL_TRC_BT709;
+			codec_context->colorspace = AVCOL_SPC_BT709;
+			codec_context->color_range = AVCOL_RANGE_MPEG;
+			codec_context->chroma_sample_location = AVCHROMA_LOC_CENTER;
 		} else {
-			stream->codec->colorspace = AVCOL_SPC_RGB;
+			codec_context->colorspace = AVCOL_SPC_RGB;
 		}
 		break;
 	}
-	if(stream->codec->pix_fmt == AV_PIX_FMT_NONE) {
+	if(codec_context->pix_fmt == AV_PIX_FMT_NONE) {
 		Logger::LogError("[VideoEncoder::PrepareStream] " + Logger::tr("Error: The pixel format is not supported by the codec!"));
 		throw LibavException();
 	}
 
 }
 
-bool VideoEncoder::EncodeFrame(AVFrame* frame) {
+bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
 
 	if(frame != NULL) {
 #if SSR_USE_AVFRAME_WIDTH_HEIGHT
-		assert(frame->width == GetStream()->codec->width);
-		assert(frame->height == GetStream()->codec->height);
+		assert(frame->GetFrame()->width == GetCodecContext()->width);
+		assert(frame->GetFrame()->height == GetCodecContext()->height);
 #endif
 #if SSR_USE_AVFRAME_FORMAT
-		assert(frame->format == GetStream()->codec->pix_fmt);
+		assert(frame->GetFrame()->format == GetCodecContext()->pix_fmt);
 #endif
 #if SSR_USE_AVFRAME_SAR
-		assert(frame->sample_aspect_ratio.num == GetStream()->codec->sample_aspect_ratio.num);
-		assert(frame->sample_aspect_ratio.den == GetStream()->codec->sample_aspect_ratio.den);
+		assert(frame->GetFrame()->sample_aspect_ratio.num == GetCodecContext()->sample_aspect_ratio.num);
+		assert(frame->GetFrame()->sample_aspect_ratio.den == GetCodecContext()->sample_aspect_ratio.den);
 #endif
 	}
 
-#if SSR_USE_AVCODEC_ENCODE_VIDEO2
+#if SSR_USE_AVCODEC_SEND_RECEIVE
+
+	// send a frame
+	AVFrame *avframe = (frame == NULL)? NULL : frame->Release();
+	try {
+		if(avcodec_send_frame(GetCodecContext(), avframe) < 0) {
+			Logger::LogError("[VideoEncoder::EncodeFrame] " + Logger::tr("Error: Sending of video frame failed!"));
+			throw LibavException();
+		}
+	} catch(...) {
+		av_frame_free(&avframe);
+		throw;
+	}
+	av_frame_free(&avframe);
+
+	// try to receive a packet
+	for( ; ; ) {
+		std::unique_ptr<AVPacketWrapper> packet(new AVPacketWrapper());
+		int res = avcodec_receive_packet(GetCodecContext(), packet->GetPacket());
+		if(res == 0) { // we have a packet, send the packet to the muxer
+			GetMuxer()->AddPacket(GetStream()->index, std::move(packet));
+			IncrementPacketCounter();
+		} else if(res == AVERROR(EAGAIN)) { // we have no packet
+			return true;
+		} else if(res == AVERROR_EOF) { // this is the end of the stream
+			return false;
+		} else {
+			Logger::LogError("[VideoEncoder::EncodeFrame] " + Logger::tr("Error: Receiving of video packet failed!"));
+			throw LibavException();
+		}
+	}
+
+#elif SSR_USE_AVCODEC_ENCODE_VIDEO2
 
 	// allocate a packet
 	std::unique_ptr<AVPacketWrapper> packet(new AVPacketWrapper());
 
 	// encode the frame
 	int got_packet;
-	if(avcodec_encode_video2(GetStream()->codec, packet->GetPacket(), frame, &got_packet) < 0) {
+	if(avcodec_encode_video2(GetCodecContext(), packet->GetPacket(), (frame == NULL)? NULL : frame->GetFrame(), &got_packet) < 0) {
 		Logger::LogError("[VideoEncoder::EncodeFrame] " + Logger::tr("Error: Encoding of video frame failed!"));
 		throw LibavException();
 	}
@@ -213,6 +245,7 @@ bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 
 		// send the packet to the muxer
 		GetMuxer()->AddPacket(GetStream()->index, std::move(packet));
+		IncrementPacketCounter();
 		return true;
 
 	} else {
@@ -222,7 +255,7 @@ bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 #else
 
 	// encode the frame
-	int bytes_encoded = avcodec_encode_video(GetStream()->codec, m_temp_buffer.data(), m_temp_buffer.size(), frame);
+	int bytes_encoded = avcodec_encode_video(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), frame);
 	if(bytes_encoded < 0) {
 		Logger::LogError("[VideoEncoder::EncodeFrame] " + Logger::tr("Error: Encoding of video frame failed!"));
 		throw LibavException();
@@ -239,15 +272,16 @@ bool VideoEncoder::EncodeFrame(AVFrame* frame) {
 
 		// set the timestamp
 		// note: pts will be rescaled and stream_index will be set by Muxer
-		if(GetStream()->codec->coded_frame != NULL && GetStream()->codec->coded_frame->pts != (int64_t) AV_NOPTS_VALUE)
-			packet->GetPacket()->pts = GetStream()->codec->coded_frame->pts;
+		if(GetCodecContext()->coded_frame != NULL && GetCodecContext()->coded_frame->pts != (int64_t) AV_NOPTS_VALUE)
+			packet->GetPacket()->pts = GetCodecContext()->coded_frame->pts;
 
 		// set the keyframe flag
-		if(GetStream()->codec->coded_frame->key_frame)
+		if(GetCodecContext()->coded_frame->key_frame)
 			packet->GetPacket()->flags |= AV_PKT_FLAG_KEY;
 
 		// send the packet to the muxer
 		GetMuxer()->AddPacket(GetStream()->index, std::move(packet));
+		IncrementPacketCounter();
 		return true;
 
 	} else {

@@ -43,10 +43,11 @@ double ParseCodecOptionDouble(const QString& key, const QString& value, double m
 	return clamp(value_double, min, max) * multiply;
 }
 
-BaseEncoder::BaseEncoder(Muxer* muxer, AVStream* stream, AVCodec* codec, AVDictionary** options) {
+BaseEncoder::BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options) {
 
 	m_muxer = muxer;
 	m_stream = stream;
+	m_codec_context = codec_context;
 	m_codec_opened = false;
 
 	// initialize shared data
@@ -135,7 +136,7 @@ void BaseEncoder::AddFrame(std::unique_ptr<AVFrameWrapper> frame) {
 		lock->m_stats_previous_pts = frame->GetFrame()->pts;
 		lock->m_stats_previous_frames = lock->m_total_frames;
 	}
-	double timedelta = (double) (frame->GetFrame()->pts - lock->m_stats_previous_pts) * ToDouble(m_stream->codec->time_base);
+	double timedelta = (double) (frame->GetFrame()->pts - lock->m_stats_previous_pts) * ToDouble(m_codec_context->time_base);
 	if(timedelta > 0.999999) {
 		lock->m_stats_actual_frame_rate = (double) (lock->m_total_frames - lock->m_stats_previous_frames) / timedelta;
 		lock->m_stats_previous_pts = frame->GetFrame()->pts;
@@ -152,10 +153,15 @@ void BaseEncoder::Stop() {
 	m_should_stop = true;
 }
 
+void BaseEncoder::IncrementPacketCounter() {
+	SharedLock lock(&m_shared_data);
+	++lock->m_total_packets;
+}
+
 void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
 
 	// open codec
-	if(avcodec_open2(m_stream->codec, codec, options) < 0) {
+	if(avcodec_open2(m_codec_context, codec, options) < 0) {
 		Logger::LogError("[BaseEncoder::Init] " + Logger::tr("Error: Can't open codec!"));
 		throw LibavException();
 	}
@@ -171,7 +177,7 @@ void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
 
 void BaseEncoder::Free() {
 	if(m_codec_opened) {
-		avcodec_close(m_stream->codec);
+		avcodec_close(m_codec_context);
 		m_codec_opened = false;
 	}
 }
@@ -203,21 +209,15 @@ void BaseEncoder::EncoderThread() {
 			}
 
 			// encode the frame
-			if(EncodeFrame(frame->GetFrame())) {
-				SharedLock lock(&m_shared_data);
-				++lock->m_total_packets;
-			}
+			EncodeFrame(frame.get());
 
 		}
 
 		// flush the encoder
-		if(!m_should_stop && (m_stream->codec->codec->capabilities & CODEC_CAP_DELAY)) {
+		if(!m_should_stop && (m_codec_context->codec->capabilities & CODEC_CAP_DELAY)) {
 			Logger::LogInfo("[BaseEncoder::EncoderThread] " + Logger::tr("Flushing encoder ..."));
 			while(!m_should_stop) {
-				if(EncodeFrame(NULL)) {
-					SharedLock lock(&m_shared_data);
-					++lock->m_total_packets;
-				} else {
+				if(!EncodeFrame(NULL)) {
 					break;
 				}
 			}

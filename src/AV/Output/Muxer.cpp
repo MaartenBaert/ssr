@@ -89,12 +89,19 @@ Muxer::~Muxer() {
 VideoEncoder* Muxer::AddVideoEncoder(const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 									 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate) {
 	AVCodec *codec = FindCodec(codec_name);
-	AVStream *stream = AddStream(codec);
+	AVCodecContext *codec_context = NULL;
+	AVStream *stream = AddStream(codec, &codec_context);
 	VideoEncoder *encoder;
 	AVDictionary *options = NULL;
 	try {
-		VideoEncoder::PrepareStream(stream, codec, &options, codec_options, bit_rate, width, height, frame_rate);
-		m_encoders[stream->index] = encoder = new VideoEncoder(this, stream, codec, &options);
+		VideoEncoder::PrepareStream(stream, codec_context, codec, &options, codec_options, bit_rate, width, height, frame_rate);
+		m_encoders[stream->index] = encoder = new VideoEncoder(this, stream, codec_context, codec, &options);
+#if SSR_USE_AVSTREAM_CODECPAR
+		if(avcodec_parameters_from_context(stream->codecpar, codec_context) < 0) {
+			Logger::LogError("[Muxer::AddVideoEncoder] " + Logger::tr("Error: Can't copy parameters to stream!"));
+			throw LibavException();
+		}
+#endif
 		av_dict_free(&options);
 	} catch(...) {
 		av_dict_free(&options);
@@ -106,12 +113,19 @@ VideoEncoder* Muxer::AddVideoEncoder(const QString& codec_name, const std::vecto
 AudioEncoder* Muxer::AddAudioEncoder(const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 									 unsigned int bit_rate, unsigned int channels, unsigned int sample_rate) {
 	AVCodec *codec = FindCodec(codec_name);
-	AVStream *stream = AddStream(codec);
+	AVCodecContext *codec_context = NULL;
+	AVStream *stream = AddStream(codec, &codec_context);
 	AudioEncoder *encoder;
 	AVDictionary *options = NULL;
 	try {
-		AudioEncoder::PrepareStream(stream, codec, &options, codec_options, bit_rate, channels, sample_rate);
-		m_encoders[stream->index] = encoder = new AudioEncoder(this, stream, codec, &options);
+		AudioEncoder::PrepareStream(stream, codec_context, codec, &options, codec_options, bit_rate, channels, sample_rate);
+		m_encoders[stream->index] = encoder = new AudioEncoder(this, stream, codec_context, codec, &options);
+#if SSR_USE_AVSTREAM_CODECPAR
+		if(avcodec_parameters_from_context(stream->codecpar, codec_context) < 0) {
+			Logger::LogError("[Muxer::AddAudioEncoder] " + Logger::tr("Error: Can't copy parameters to stream!"));
+			throw LibavException();
+		}
+#endif
 		av_dict_free(&options);
 	} catch(...) {
 		av_dict_free(&options);
@@ -257,14 +271,16 @@ AVCodec* Muxer::FindCodec(const QString& codec_name) {
 	return codec;
 }
 
-AVStream* Muxer::AddStream(AVCodec* codec) {
+AVStream* Muxer::AddStream(AVCodec* codec, AVCodecContext** codec_context) {
 	assert(!m_started);
 	assert(m_format_context->nb_streams < MUXER_MAX_STREAMS);
 
 	Logger::LogInfo("[Muxer::AddStream] " + Logger::tr("Using codec %1 (%2).").arg(codec->name).arg(codec->long_name));
 
 	// create a new stream
-#if SSR_USE_AVFORMAT_NEW_STREAM
+#if SSR_USE_AVSTREAM_CODECPAR
+	AVStream *stream = avformat_new_stream(m_format_context, NULL);
+#elif SSR_USE_AVFORMAT_NEW_STREAM
 	AVStream *stream = avformat_new_stream(m_format_context, codec);
 #else
 	AVStream *stream = av_new_stream(m_format_context, m_format_context->nb_streams);
@@ -274,33 +290,42 @@ AVStream* Muxer::AddStream(AVCodec* codec) {
 		throw LibavException();
 	}
 	assert(stream->index == (int) m_format_context->nb_streams - 1);
+#if SSR_USE_AVSTREAM_CODECPAR
+	*codec_context = avcodec_alloc_context3(codec);
+	if(*codec_context == NULL) {
+		Logger::LogError("[Muxer::AddStream] " + Logger::tr("Error: Can't create new codec context!"));
+		throw LibavException();
+	}
+#else
 	assert(stream->codec != NULL);
+	*codec_context = stream->codec;
+#endif
 	//stream->id = m_format_context->nb_streams - 1;
 
 #if !SSR_USE_AVFORMAT_NEW_STREAM
 	// initialize the codec context (only needed for old API)
-	if(avcodec_get_context_defaults3(stream->codec, codec) < 0) {
+	if(avcodec_get_context_defaults3(*codec_context, codec) < 0) {
 		Logger::LogError("[Muxer::AddStream] " + Logger::tr("Error: Can't get codec context defaults!"));
 		throw LibavException();
 	}
-	stream->codec->codec_id = codec->id;
-	stream->codec->codec_type = codec->type;
+	(*codec_context)->codec_id = codec->id;
+	(*codec_context)->codec_type = codec->type;
 #endif
 
 	// not sure why this is needed, but it's in the example code and it doesn't work without this
 	if(m_format_context->oformat->flags & AVFMT_GLOBALHEADER)
-		stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
+		(*codec_context)->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
 	// if the codec is experimental, allow it
 	if(codec->capabilities & CODEC_CAP_EXPERIMENTAL) {
 		Logger::LogWarning("[Muxer::AddStream] " + Logger::tr("Warning: This codec is considered experimental by libav/ffmpeg."));
-		stream->codec->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
+		(*codec_context)->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
 	}
 
 #if SSR_USE_SIDE_DATA_ONLY_PACKETS && !SSR_USE_SIDE_DATA_ONLY_PACKETS_DEPRECATED
 	// this option was added with the intent to deprecate it again in the next version,
 	// because the ffmpeg/libav devs like deprecating things :)
-	stream->codec->side_data_only_packets = 1;
+	(*codec_context)->side_data_only_packets = 1;
 #endif
 
 	return stream;
@@ -344,25 +369,26 @@ void Muxer::MuxerThread() {
 			}
 
 			// try to figure out the time (the exact value is not critical, it's only used for bitrate statistics)
-			AVStream *stream = m_format_context->streams[current_stream];
+			AVStream *stream = m_encoders[current_stream]->GetStream();
+			AVCodecContext *codec_context = m_encoders[current_stream]->GetCodecContext();
 			double packet_time = 0.0;
 			if(packet->GetPacket()->dts != (int64_t) AV_NOPTS_VALUE)
-				packet_time = (double) packet->GetPacket()->dts * ToDouble(stream->codec->time_base);
+				packet_time = (double) packet->GetPacket()->dts * ToDouble(codec_context->time_base);
 			else if(packet->GetPacket()->pts != (int64_t) AV_NOPTS_VALUE)
-				packet_time = (double) packet->GetPacket()->pts * ToDouble(stream->codec->time_base);
+				packet_time = (double) packet->GetPacket()->pts * ToDouble(codec_context->time_base);
 			if(packet_time > total_time)
 				total_time = packet_time;
 
 			// prepare packet
 			packet->GetPacket()->stream_index = current_stream;
 #if SSR_USE_AV_PACKET_RESCALE_TS
-			av_packet_rescale_ts(packet->GetPacket(), stream->codec->time_base, stream->time_base);
+			av_packet_rescale_ts(packet->GetPacket(), codec_context->time_base, stream->time_base);
 #else
 			if(packet->GetPacket()->pts != (int64_t) AV_NOPTS_VALUE) {
-				packet->GetPacket()->pts = av_rescale_q(packet->GetPacket()->pts, stream->codec->time_base, stream->time_base);
+				packet->GetPacket()->pts = av_rescale_q(packet->GetPacket()->pts, codec_context->time_base, stream->time_base);
 			}
 			if(packet->GetPacket()->dts != (int64_t) AV_NOPTS_VALUE) {
-				packet->GetPacket()->dts = av_rescale_q(packet->GetPacket()->dts, stream->codec->time_base, stream->time_base);
+				packet->GetPacket()->dts = av_rescale_q(packet->GetPacket()->dts, codec_context->time_base, stream->time_base);
 			}
 #endif
 
