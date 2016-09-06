@@ -122,9 +122,24 @@ set(sources
 )
 
 set(files_to_moc
-        AV/Input/PulseAudioInput.h
+        AV/Input/X11Input.h
+        AV/Output/SyncDiagram.h
 
         common/Logger.h
+
+        GUI/PageInput.cpp
+        GUI/DialogGLInject.h
+        GUI/AudioPreviewer.h
+        GUI/PageInput.h
+        GUI/PageWelcome.h
+        GUI/MainWindow.h
+        GUI/VideoPreviewer.h
+        GUI/PageDone.h
+        GUI/PageOutput.h
+        GUI/PageRecord.h
+        GUI/HotkeyListener.h
+        GUI/ElidedLabel.h
+        GUI/ProfileBox.h
 )
 
 qt5_wrap_cpp(moced_files ${files_to_moc})
