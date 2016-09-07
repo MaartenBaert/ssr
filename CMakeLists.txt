@@ -25,7 +25,7 @@ install(FILES     data/simplescreenrecorder.desktop DESTINATION ${PATH_APP})
 
 
 #icons
-set(icons_res 128  16  192  22  24  256  32  48  64  96)
+set(icons_res 16 22 24 32 48 64 96 128 192 256)
 
 foreach(res IN LISTS icons_res)
 
