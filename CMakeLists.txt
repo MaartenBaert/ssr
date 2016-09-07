@@ -19,7 +19,7 @@ add_subdirectory(src)
 add_subdirectory(src/translations)
 
 
-install(DIRECTORY data/man DESTINATION ${PATH_DATA})
+install(DIRECTORY data/man/ DESTINATION ${PATH_DATA}/man/man1)
 install(DIRECTORY data/output-profiles DESTINATION ${PATH_PRIV_DATA})
 install(FILES     data/simplescreenrecorder.desktop DESTINATION ${PATH_APP})
 
