@@ -1,4 +1,6 @@
 
+option(ENABLE_32BIT_GLInject "Build 32 bit version of GLInject." FALSE)
+
 set(sources
     elfhacks.c
     GLInject.h
@@ -16,9 +18,8 @@ set(sources
 
 add_library(glinject SHARED ${sources})
 
-#target_include_directories(glinject)
+if(ENABLE_32BIT_GLInject)
+    add_library(glinject32 SHARED ${sources})
 
-#target_link_libraries(glinject)
-
-#target_compile_definitions(glinject)
-
+    set_target_properties(glinject32 PROPERTIES COMPILE_FLAGS -m32)
+endif()
