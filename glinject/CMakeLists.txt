@@ -16,14 +16,14 @@ set(sources
 
 )
 
-add_library(glinject SHARED ${sources})
+add_library(ssr-glinject SHARED ${sources})
 
-install(TARGETS glinject LIBRARY DESTINATION ${PATH_LIBS})
+install(TARGETS ssr-glinject LIBRARY DESTINATION ${PATH_LIBS})
 
 if(ENABLE_32BIT_GLInject)
-    add_library(glinject32 SHARED ${sources})
+    add_library(ssr-glinject32 SHARED ${sources})
 
-    install(TARGETS glinject32 LIBRARY DESTINATION ${PATH_LIBS})
+    install(TARGETS ssr-glinject32 LIBRARY DESTINATION ${PATH_LIBS})
 
-    set_target_properties(glinject32 PROPERTIES COMPILE_FLAGS -m32)
+    set_target_properties(ssr-glinject32 PROPERTIES COMPILE_FLAGS -m32)
 endif()
