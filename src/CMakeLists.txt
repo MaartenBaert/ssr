@@ -203,3 +203,5 @@ target_compile_definitions(simplescreenrecorder
                                 -DSSR_SYSTEM_DIR="${CMAKE_INSTALL_PREFIX}"
                                 -DPACKAGE_VERSION="${PROJECT_VERSION}"
 )
+
+install(TARGETS simplescreenrecorder RUNTIME DESTINATION ${PATH_BIN})
