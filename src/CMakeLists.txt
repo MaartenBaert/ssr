@@ -145,6 +145,10 @@ set(files_to_moc
 
 qt5_wrap_cpp(moced_files ${files_to_moc})
 
+set_source_files_properties(AV/FastScaler_Convert_SSSE3.cpp
+                            AV/FastScaler_Scale_SSSE3.cpp
+                            PROPERTIES COMPILE_FLAGS -mssse3)
+
 add_executable(simplescreenrecorder
                 ${sources}
                 ${moced_files}
