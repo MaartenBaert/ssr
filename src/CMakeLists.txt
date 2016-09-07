@@ -11,7 +11,7 @@ find_package(Qt5X11Extras REQUIRED)
 find_package(SWScale REQUIRED)
 find_package(Threads REQUIRED)
 find_package(X11 REQUIRED)
-find_package(XFixes REQUIRED)
+find_package(XExtensions REQUIRED)
 
 option(ENABLE_X86_ASM "Allow x86/x64 assembly or intrinsics." TRUE)
 option(ENABLE_FFMPEG_VERSIONS "Whether ffmpeg or libav version numbers should be used for tests. The ffmpeg version number is usually slightly higher, so that's the default (deprecation warnings are better than compilation errors)." TRUE)
@@ -163,7 +163,7 @@ target_include_directories(simplescreenrecorder
                                 ${Qt5X11Extras_INCLUDE_DIRS}
                                 ${SWSCALE_INCLUDE_DIRS}
                                 ${X11_INCLUDE_DIR}
-                                ${XFIXES_INCLUDE_DIR}
+                                ${XEXTENSIONS_INCLUDE_DIR}
 
                                 ${CMAKE_CURRENT_SOURCE_DIR}
                                 ${CMAKE_CURRENT_SOURCE_DIR}/AV
@@ -187,7 +187,7 @@ target_link_libraries(simplescreenrecorder
                             ${CMAKE_THREAD_LIBS_INIT}
                             ${SWSCALE_LIBRARIES}
                             ${X11_LIBRARIES}
-                            ${XFIXES_LIBRARIES}
+                            ${XEXTENSIONS_LIBRARIES}
 )
 
 target_compile_definitions(simplescreenrecorder
