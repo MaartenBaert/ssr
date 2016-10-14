@@ -77,7 +77,7 @@ void ProfileBox::LoadProfiles() {
 	// get all profiles
 	std::vector<Profile> profiles;
 	LoadProfilesFromDir(&profiles, GetApplicationSystemDir(m_type), false);
-	LoadProfilesFromDir(&profiles, GetApplicationUserDir(m_type), true);
+	LoadProfilesFromDir(&profiles, GetApplicationConfigDir(m_type), true);
 
 	// sort and remove duplicates
 	std::sort(profiles.begin(), profiles.end());
@@ -124,7 +124,7 @@ void ProfileBox::OnProfileChange() {
 	QString name = GetProfileName();
 	if(name.isEmpty())
 		return;
-	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".conf";
+	QString filename = GetApplicationConfigDir(m_type) + "/" + name + ".conf";
 	if(QFileInfo(filename).exists()) {
 		QSettings settings(filename, QSettings::IniFormat);
 		m_load_callback(&settings, m_userdata);
@@ -143,7 +143,7 @@ void ProfileBox::OnProfileSave() {
 	QString name = GetProfileName();
 	if(name.isEmpty())
 		return;
-	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".conf";
+	QString filename = GetApplicationConfigDir(m_type) + "/" + name + ".conf";
 	if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to overwrite this profile?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
 		{
 			QSettings settings(filename, QSettings::IniFormat);
@@ -160,7 +160,7 @@ void ProfileBox::OnProfileNew() {
 	if(name.isEmpty())
 		return;
 	name = name.toUtf8().toPercentEncoding();
-	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".conf";
+	QString filename = GetApplicationConfigDir(m_type) + "/" + name + ".conf";
 	if(!QFileInfo(filename).exists() || MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 			tr("A profile with the same name already exists. Are you sure that you want to replace it?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
 		{
@@ -177,7 +177,7 @@ void ProfileBox::OnProfileDelete() {
 	QString name = GetProfileName();
 	if(name.isEmpty())
 		return;
-	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".conf";
+	QString filename = GetApplicationConfigDir(m_type) + "/" + name + ".conf";
 	if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to delete this profile?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
 		QFile(filename).remove();
 		LoadProfiles();

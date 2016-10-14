@@ -40,7 +40,7 @@ void PrintOptionHelp() {
 				"\n"
 				"Options:\n"
 				"  --help              Show this help message.\n"
-				"  --logfile           Write log to ~/.ssr/log-DATE_TIME.txt instead of stdout.\n"
+				"  --logfile           Write log to $XDG_DATA_HOME/ssr/log-DATE_TIME.txt instead of stdout.\n"
 				"  --statsfile[=FILE]  Write recording statistics to FILE. If FILE is omitted,\n"
 				"                      /dev/shm/simplescreenrecorder-stats-PID is used. It will\n"
 				"                      be updated continuously and deleted when the recording\n"
@@ -164,12 +164,52 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
+	// migrate data from ~/.ssr to follow XDG directory spec
+	{
+		QString oldDir(QDir::homePath() + "/.ssr");
+		if (QDir(oldDir).exists()) {
+			QDir r;
+			// migrate config files
+			int num_conf_files = 3;
+			const char* conf_files[num_conf_files] {
+				"input-profiles", "output-profiles", "settings.conf"
+			};
+			for (int i = 0; i < num_conf_files; i++) {
+				QString oldFile(oldDir + "/" + conf_files[i]);
+				QString newFile(GetApplicationConfigDir() + "/" + conf_files[i]);
+				if (QFile(newFile).exists()) {
+					continue;
+				}
+				if (!r.rename(oldFile, newFile)) {
+					Logger::LogError("[main] " + Logger::tr("Error: Couldn't migrate config files from ~/.ssr to new XDG-compliant location!"));
+					throw 0;
+				}
+			}
+			// migrate the rest of the files to data directory
+			QDir qOldDir(oldDir);
+			for (QFileInfo fi : qOldDir.entryInfoList()) {
+				QString newFile(GetApplicationDataDir() + "/" + fi.fileName());
+				if (QFile(newFile).exists()) {
+					continue;
+				}
+				if (!r.rename(fi.filePath(), newFile)) {
+					Logger::LogError("[main] " + Logger::tr("Error: Couldn't migrate data files from ~/.ssr to new XDG-compliant location!"));
+					throw 0;
+				}
+			}
+			if (system(qPrintable("rm -rf ~/.ssr")) != 0) {  // TODO: If SSR ever switches to Qt5, this must be replaced by QDir::removeRecursively()
+				Logger::LogError("[main] " + Logger::tr("Error: Couldn't delete ~/.ssr directory after data migration attempt!"));
+				throw 0;
+			}
+		}
+	}
+
 	// redirect stdout and stderr to a log file
 	if(g_option_logfile) {
 
 		// delete logs from versions < 0.2.3 (should be removed at some point in the future)
 		{
-			QDir dir(GetApplicationUserDir());
+			QDir dir(GetApplicationDataDir());
 			dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
 			dir.setNameFilters(QStringList("log-*.txt"));
 			for(QFileInfo fileinfo : dir.entryInfoList()) {
@@ -179,7 +219,7 @@ int main(int argc, char* argv[]) {
 
 		// delete old logs
 		QDateTime now = QDateTime::currentDateTime();
-		QDir dir(GetApplicationUserDir("logs"));
+		QDir dir(GetApplicationDataDir("logs"));
 		dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
 		dir.setNameFilters(QStringList("log-*.txt"));
 		for(QFileInfo fileinfo : dir.entryInfoList()) {
@@ -237,12 +277,26 @@ QString GetApplicationSystemDir(const QString& subdir) {
 	return dir;
 }
 
-QString GetApplicationUserDir(const QString& subdir) {
-	QString dir = QDir::homePath() + "/.ssr";
+QString GetApplicationDataDir(const QString& subdir) {
+	return GetAppXDGDir(subdir, "XDG_DATA_HOME", "/.local/share");
+}
+
+QString GetApplicationConfigDir(const QString& subdir) {
+	return GetAppXDGDir(subdir, "XDG_CONFIG_HOME", "/.config");
+}
+
+QString GetAppXDGDir(const QString& subdir, const char* xdg_env_name, const char* default_xdg_home_subdir) {
+	QString dir;
+	QByteArray env = qgetenv(xdg_env_name);
+	if (env.count() == 0 || !QDir(QString(env)).exists()) {
+		dir = QDir::homePath() + default_xdg_home_subdir + "/ssr";
+	} else {
+		dir = QString(env) + "/ssr";
+	}
 	if(!subdir.isEmpty())
 		dir += "/" + subdir;
 	if(!QDir::root().mkpath(dir)) {
-		Logger::LogError("[GetApplicationUserDir] " + Logger::tr("Error: Can't create .ssr directory!"));
+		Logger::LogError("[GetAppXDGDir] " + Logger::tr("Error: Can't create '%1' directory!").arg(dir));
 		throw 0;
 	}
 	return dir;

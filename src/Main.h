@@ -27,7 +27,9 @@ extern bool g_option_systray;
 extern bool g_option_start_hidden;
 
 QString GetApplicationSystemDir(const QString& subdir = QString());
-QString GetApplicationUserDir(const QString& subdir = QString());
+QString GetApplicationDataDir(const QString& subdir = QString());
+QString GetApplicationConfigDir(const QString& subdir = QString());
+QString GetAppXDGDir(const QString& subdir, const char* xdg_env_name, const char* default_xdg_home_subdir);
 QString GetVersionInfo();
 
 bool NVidiaDetectFlipping();
