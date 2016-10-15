@@ -255,7 +255,7 @@ bool VideoEncoder::EncodeFrame(AVFrameWrapper* frame) {
 #else
 
 	// encode the frame
-	int bytes_encoded = avcodec_encode_video(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), frame);
+	int bytes_encoded = avcodec_encode_video(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), (frame == NULL)? NULL : frame->GetFrame());
 	if(bytes_encoded < 0) {
 		Logger::LogError("[VideoEncoder::EncodeFrame] " + Logger::tr("Error: Encoding of video frame failed!"));
 		throw LibavException();
