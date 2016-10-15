@@ -6,6 +6,15 @@ Git master
 
 - ?
 
+Version 0.3.7
+-------------
+
+- Added support for latest FFmpeg/libav.
+- Make relaxed GLInject permissions actually work.
+- The backend now supports fragmented recording, but there is no GUI for this yet.
+- The default audio sample rate is now 48 kHz. This makes SSR compatible with Opus.
+- System tray icon now indicates errors during recording.
+
 Version 0.3.6
 -------------
 
