@@ -6,6 +6,11 @@ Git master
 
 - ?
 
+Version 0.3.8
+-------------
+
+- Revert sample rate to 44.1 kHz for FLV container, since it does not support 48 kHz.
+
 Version 0.3.7
 -------------
 
