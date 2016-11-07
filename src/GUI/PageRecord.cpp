@@ -471,6 +471,11 @@ void PageRecord::StartPage() {
 	bool jack_connect_system_playback = page_input->GetJackConnectSystemPlayback();
 #endif
 
+	// override sample rate for problematic cases (these are hard-coded for now)
+	if(page_output->GetContainer() == PageOutput::CONTAINER_OTHER && page_output->GetContainerAVName() == "flv") {
+		m_audio_sample_rate = 44100;
+	}
+
 	// get the glinject settings
 	QString glinject_channel = page_input->GetGLInjectChannel();
 	bool glinject_relax_permissions = page_input->GetGLInjectRelaxPermissions();

@@ -20,7 +20,7 @@ You will need the following packages to compile SimpleScreenRecorder:
 
 - GCC (>= 4.6) and make
 - pkg-config
-- Qt 4
+- Qt 4 (Qt 5 is also possible, but still has some stability issues)
 - ffmpeg or libav (libavformat, libavcodec, libavutil, libswscale)
 - ALSA library
 - PulseAudio library (optional, disable with --without-pulseaudio)
