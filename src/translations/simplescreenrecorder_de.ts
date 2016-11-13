@@ -1522,7 +1522,7 @@ Wenn die Original-Datei &apos;test.mkv&apos; heißt, werden die Segmente als &ap
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
         <source>(not installed)</source>
-        <translation type="unfinished"></translation>
+        <translation>(nicht installiert)</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="192"/>
