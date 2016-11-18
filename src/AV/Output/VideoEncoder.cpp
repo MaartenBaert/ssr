@@ -32,6 +32,7 @@ const std::vector<VideoEncoder::PixelFormatData> VideoEncoder::SUPPORTED_PIXEL_F
 	{"yuv444", AV_PIX_FMT_YUV444P, true},
 	{"bgra", AV_PIX_FMT_BGRA, false},
 	{"bgr", AV_PIX_FMT_BGR24, false},
+	{"rgb", AV_PIX_FMT_RGB24, false},
 };
 
 VideoEncoder::VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options)
@@ -81,8 +82,10 @@ bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
 	if(codec->type != AVMEDIA_TYPE_VIDEO)
 		return false;
 	for(unsigned int i = 0; i < SUPPORTED_PIXEL_FORMATS.size(); ++i) {
-		if(AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i].m_format))
+		if(AVCodecSupportsPixelFormat(codec, SUPPORTED_PIXEL_FORMATS[i].m_format)) {
+			//qDebug() << codec_name << "supported by" << SUPPORTED_PIXEL_FORMATS[i].m_name;
 			return true;
+		}
 	}
 	return false;
 }

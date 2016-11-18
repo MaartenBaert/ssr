@@ -86,8 +86,10 @@ bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
 	if(codec->type != AVMEDIA_TYPE_AUDIO)
 		return false;
 	for(unsigned int i = 0; i < SUPPORTED_SAMPLE_FORMATS.size(); ++i) {
-		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i].m_format))
+		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i].m_format)) {
+			//qDebug() << codec_name << "supported by" << SUPPORTED_SAMPLE_FORMATS[i].m_name;
 			return true;
+		}
 	}
 	return false;
 }

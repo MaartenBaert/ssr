@@ -111,8 +111,9 @@ static std::unique_ptr<AVFrameWrapper> CreateVideoFrame(unsigned int width, unsi
 			linesize[0] = grow_align16(width * 4); planesize[0] = linesize[0] * height;
 			break;
 		}
-		case AV_PIX_FMT_BGR24: {
-			// BGR = 3 bytes per pixel
+		case AV_PIX_FMT_BGR24:
+		case AV_PIX_FMT_RGB24: {
+			// BGR/RGB = 3 bytes per pixel
 			planes = 1;
 			linesize[0] = grow_align16(width * 3); planesize[0] = linesize[0] * height;
 			break;
