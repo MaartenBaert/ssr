@@ -20,8 +20,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include "config.h"
-
 #include <QtGui>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
