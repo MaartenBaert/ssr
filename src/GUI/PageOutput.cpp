@@ -412,7 +412,19 @@ void PageOutput::LoadProfileSettings(QSettings* settings) {
 	}
 
 	// load settings
-	SetFile(settings->value("output/file", "").toString());
+    QString title("/home/renaud/Parties/%1_%2_%3.mp4");
+    QString date = QDate::currentDate().toString("yyyy_MM_dd");
+    QString game("L5R");
+    QString number;
+    number = number.setNum(settings->value("output/fileL5R", "57").toInt()+1);//57
+    if(QDate::currentDate().dayOfWeek() == 1 )//monday
+    {
+        game = "COPS";
+        number = number.setNum(settings->value("output/fileCOPS", "37").toInt()+1);//37
+    }
+
+    //SetFile(settings->value("output/file", "").toString());
+    SetFile(title.arg(game).arg(number).arg(date));
 	SetSeparateFiles(settings->value("output/separate_files", false).toBool());
 	SetContainer(StringToEnum(settings->value("output/container", QString()).toString(), default_container));
 	SetContainerAV(FindContainerAV(settings->value("output/container_av", QString()).toString()));
@@ -440,7 +452,29 @@ void PageOutput::LoadProfileSettings(QSettings* settings) {
 
 void PageOutput::SaveProfileSettings(QSettings* settings) {
 
-	settings->setValue("output/file", GetFile());
+    //settings->setValue("output/file", GetFile());
+
+    QString filename = GetFile();
+    QStringList list = filename.split('_');
+    QString number;
+    QString game("L5R");
+    if(list.size()>=2)
+    {
+        number = list[1];
+    }
+    if(!number.isEmpty())
+    {
+        QString key("output/fileL5R");
+        if(QDate::currentDate().dayOfWeek() == 1 )//monday
+        {
+            game = "COPS";
+            key = "output/fileCOPS";
+        }
+        if(filename.contains(game))
+        {
+            settings->setValue(key,number);
+        }
+    }
 	settings->setValue("output/separate_files", GetSeparateFiles());
 	settings->setValue("output/container", EnumToString(GetContainer()));
 	settings->setValue("output/container_av", m_containers_av[GetContainerAV()].avname);
