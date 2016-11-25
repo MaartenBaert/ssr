@@ -1316,7 +1316,8 @@ Podpowiedź: Możesz zmienić tę wartość przy pomocy kółka myszy lub strza�
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Szerokość obszaru nagrywania.
-Podpowiedź: Możesz zmienić tę wartość przy pomocy kółka myszy lub strzałek góra/dół.</translation>
+Podpowiedź: Możesz zmienić tę wartość przy pomocy kółka myszy lub strzałek
+ góra/dół.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="152"/>
@@ -1524,7 +1525,8 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
         <translation>Błąd: Nie znaleziono odpowiednich kodeków audio w libavcodec!</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="175"/>
+        <location filename="../GUI/PageOutput.cpp"
+ line="175"/>
         <source>File</source>
         <translation>Plik</translation>
     </message>
@@ -1903,6 +1905,7 @@ Aplikacja którą nagrywasz nie przechwyci tych klawiszy.</translation>
         <translation>Szybkość transmisji:</translation>
     </message>
     <message>
+
         <location filename="../GUI/PageRecord.cpp" line="238"/>
         <source>Preview</source>
         <translation>Podgląd</translation>
@@ -2326,6 +2329,7 @@ Przycisk start jest na górze ;).</translation>
     </message>
     <message>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
+
         <translation type="obsolete">Błąd: Nie można ustawić parametrów urządzenia PCM!</translation>
     </message>
     <message>
