@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pl_PL">
+<TS version="2.1" language="pl_PL">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -197,22 +197,22 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
     <message>
         <location filename="../AV/FastResampler.cpp" line="124"/>
         <source>Error: Resample ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: współczynnik próbkowania poza skalą! </translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="128"/>
         <source>Error: Drift ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: współczynnik przesunięcia poza skalą! </translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="158"/>
         <source>Resample ratio is %1 (was %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Współczynnik próbkowania wynosi %1 (było %2).</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="130"/>
         <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation type="unfinished">Uwaga: Format pikseli nie jest wspierany (%1 -&gt; %2), w zamian zostanie użyty swscale. To nie jest problem lecz wydajność będzie gorsza.</translation>
+        <translation>Uwaga: Format pikseli nie jest wspierany (%1 -&gt; %2), w zamian zostanie użyty swscale. To nie jest problem lecz wydajność będzie gorsza.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="139"/>
@@ -220,7 +220,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../Benchmark.cpp" line="203"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
-        <translation type="unfinished">Błąd: nie można otrzymać kontekstu swcale!</translation>
+        <translation>Błąd: nie można otrzymać kontekstu swcale!</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="161"/>
@@ -231,25 +231,25 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/FastScaler.cpp" line="280"/>
         <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
         <comment>Don&apos;t translate &apos;fallback&apos;</comment>
-        <translation type="unfinished">Uwaga: Pamięć nie jest poprawnie ustawiona do SSE, użyto konwertera &apos;fallback&apos;. To nie jest problem lecz wydajność będzie gorsza.</translation>
+        <translation>Uwaga: pamięć nie jest poprawnie wyrównana dla SSE, użyto konwertera &apos;fallback&apos;. To nie jest problem lecz wydajność będzie gorsza.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="32"/>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Uwaga: Nastąpiło zdarzenie (overrun), część próbek została utracona.</translation>
+        <translation>Uwaga: nastąpił overrun, część próbek została utracona.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="34"/>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Błąd: Nie można odzyskać urządzenia po zdarzeniu (overrun)!</translation>
+        <translation>Błąd: nie można przywrócić urządzenia po zdarzeniu overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="38"/>
         <source>Error: Can&apos;t start PCM device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Błąd: Nie można uruchomić urządzenia PCM po zdarzeniu (overrun)!</translation>
+        <translation>Błąd: bie można uruchomić urządzenia PCM po zdarzeniu overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="66"/>
@@ -257,33 +257,33 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="207"/>
         <source>Stopping input thread ...</source>
-        <translation type="unfinished">Zatrzymywanie wejściowego wątku...</translation>
+        <translation>Zatrzymywanie wejściowego wątku...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="96"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="232"/>
         <source>Generating source list ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Generowanie listy źródeł...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="115"/>
         <source>Error: Could not update ALSA configuration!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: Nie udało się zaktualizować konfiguracji ALSY!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="175"/>
         <source>Warning: Could not open sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga: Nie udało się otworzyć karty dźwiękowej %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="181"/>
         <source>Warning: Could not get info for sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga: nie udało się pozyskać informacji nt karty dźwiękowej %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="162"/>
         <source>Found plugin: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Znaleziono wtyczkę: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="185"/>
@@ -1192,7 +1192,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
 
 You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished">SimpleScreenRecorder wykrył że korzystasz z własnościowych sterowników NVIDIA z włączoną opcją &apos;flipping&apos; która powoduje błędy w trakcie nagrywania. Zalecane jest jej wyłączenie. Chcesz bym to za ciebie zrobił?
+        <translation>SimpleScreenRecorder wykrył że korzystasz z własnościowych sterowników NVIDIA z włączoną opcją &apos;flipping&apos; która powoduje błędy w trakcie nagrywania. Zalecane jest jej wyłączenie. Chcesz bym to za ciebie zrobił?
 
 Możesz zmienić tę opcję samodzielnie w panelu kontrolnym NVIDIA.</translation>
     </message>
@@ -1200,7 +1200,7 @@ Możesz zmienić tę opcję samodzielnie w panelu kontrolnym NVIDIA.</translatio
         <location filename="../GUI/MainWindow.cpp" line="90"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished">Z nieznanych przyczyn nie mogłem wyłączyć opcji &apos;flipping&apos; - przykro mi! Spróbuj wyłączyć ją w panelu kontrolnym NVIDIA..</translation>
+        <translation>Z nieznanych przyczyn nie mogłem wyłączyć opcji &apos;flipping&apos; - przykro mi! Spróbuj wyłączyć ją w panelu kontrolnym NVIDIA..</translation>
     </message>
 </context>
 <context>
