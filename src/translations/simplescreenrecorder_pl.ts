@@ -288,7 +288,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="185"/>
         <source>Found card: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Znaleziono kartę: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="210"/>
@@ -873,7 +873,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="519"/>
         <source>Warning: Audio input is more than 2% too fast!</source>
-        <translation type="unfinished">Uwaga: Wejście audio jest przyspieszone o 5% ! {2%?}</translation>
+        <translation type="unfinished">Uwaga: Wejście audio jest o 2% zbyt szybkie!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="554"/>
@@ -1398,7 +1398,7 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jeśli zaznaczone, porty zostaną automatycznie podłączone do nagrywanych portów systemowych. </translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="277"/>
@@ -1450,7 +1450,9 @@ Podsystem ALSA bęzie również działał na systemach które korzystają z Puls
         <location filename="../GUI/PageInput.cpp" line="260"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Urządzenie ALSY, które zostanie wykorzystane do nagrywania.
+&apos;default&apos; na ogół jest w porządku. Urządzenia &apos;shared&apos; pozwalają nagrywać kiulku programom naraz, ale mogą być bardziej zawodne.
+</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="262"/>
@@ -1461,7 +1463,7 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageInput.cpp" line="263"/>
         <source>Refreshes the list of ALSA sources.</source>
-        <translation type="unfinished"></translation>
+        <translation>Odśwież listę urządzeń ALSY.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="271"/>
@@ -1471,12 +1473,12 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>Record system microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagrywaj systemowym mikrofonem</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>Record system speakers</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagrywaj systemowe głośniki</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
@@ -1564,7 +1566,7 @@ Nazwy plików które już istnieją zostaną pominięte.</translation>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
         <source>(not installed)</source>
-        <translation type="unfinished"></translation>
+        <translation>(nie zainstalowany)</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="192"/>
@@ -1693,13 +1695,14 @@ Dopuszczalny przedział wartości: 0-51 (0 oznacza bezstratne, domyślnie 23).</
         <location filename="../GUI/PageOutput.cpp" line="127"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>pliki %1</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="182"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli zaznaczone, nowy plik wideo powstanie za każdym razem, gdy wstrzymasz i wznowisz nagrywanie.
+Jeśli orignalna nazwa pliku to &quot;test.mkv&quot;, powstałe pliki zostaną zapisane jako &quot;test-ROK-MIESIAC-DZIEN_GODZINA.MINUTA.SEKUNDA.mkv&quot;. </translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="261"/>
@@ -1823,7 +1826,7 @@ są słabe. Korzystaj wyłącznie przy braku innych opcji.
     <message>
         <location filename="../GUI/PageRecord.cpp" line="151"/>
         <source>Enable sound notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Włącz powiadomienia dźwiękowe</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="152"/>
@@ -1937,7 +1940,7 @@ Aplikacja którą nagrywasz nie przechwyci tych klawiszy.</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="325"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjście</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="368"/>
@@ -1949,17 +1952,17 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="380"/>
         <source>Hide window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukryj okno</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="382"/>
         <source>Show window</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż okno</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="839"/>
         <source>Encoding remaining data ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kończenie procesu kodowania... </translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="646"/>
@@ -1969,7 +1972,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="657"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: Nie udało się uzyskać wymiarów okna aplikacji OpenGL ponieważ wejście GLInject nie zostało utworzone. </translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="698"/>
@@ -1994,7 +1997,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="768"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: Nie udało się uruchomić wejścia GLInject ponieważ nie zostało ono utworzone. </translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="787"/>
@@ -2080,7 +2083,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="973"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: Coś poszło nie tak podczas tworzenia synth. </translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1015"/>
@@ -2130,67 +2133,67 @@ Przycisk start jest na górze ;).</translation>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="28"/>
         <source>Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="37"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="38"/>
         <source>Save the current settings to this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz bieżące ustawienia w tym profilu.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="39"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowy</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="40"/>
         <source>Create a new profile with the current settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz nowy profil na podstawie bieżących ustawień.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="41"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="42"/>
         <source>Delete this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń profil.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(brak)</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
         <source>Error: Can&apos;t load profile!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: nie udało się załadować profilu!</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="147"/>
         <source>Are you sure that you want to overwrite this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy napewno chcesz nadpisać profil?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="159"/>
         <source>Enter a name for the new profile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wprowadź nazwę dla nowego profilu:</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil o takiej nazwie już istnieje. Czy na pewno chcesz go nadpisać?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="181"/>
         <source>Are you sure that you want to delete this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno chcesz usunąć ten profil?</translation>
     </message>
 </context>
 <context>
@@ -2199,33 +2202,33 @@ Przycisk start jest na górze ;).</translation>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ok</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Anuluj</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tak</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished"></translation>
+        <translation>Tak, zawsze</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nie</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie, nigdy</translation>
     </message>
 </context>
 <context>
