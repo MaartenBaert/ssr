@@ -12,11 +12,6 @@ find_package(Threads REQUIRED)
 find_package(X11 REQUIRED)
 find_package(XExtensions REQUIRED)
 
-option(ENABLE_X86_ASM "Allow x86/x64 assembly or intrinsics." TRUE)
-option(ENABLE_FFMPEG_VERSIONS "Whether ffmpeg or libav version numbers should be used for tests. The ffmpeg version number is usually slightly higher, so that's the default (deprecation warnings are better than compilation errors)." TRUE)
-option(WITH_PULSEAUDIO "Whether PulseAudio should be used." TRUE)
-option(WITH_JACK "Whether JACK should be used." TRUE)
-
 set(sources
 	AV/Input/X11Input.cpp
 	AV/Input/ALSAInput.cpp
