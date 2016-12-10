@@ -8,6 +8,8 @@ option(ENABLE_FFMPEG_VERSIONS "Whether ffmpeg or libav version numbers should be
 option(WITH_PULSEAUDIO "Whether PulseAudio should be used." TRUE)
 option(WITH_JACK "Whether JACK should be used." TRUE)
 option(WITH_QT5 "Use Qt5 (instead of Qt4)" FALSE)
+option(WITH_SIMPLESCREENRECORDER "Build SimpleScreenRecorder executable" TRUE)
+option(WITH_GLINJECT "Build glinject" TRUE)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
@@ -18,9 +20,14 @@ set(PATH_APP       "${PATH_DATA}/applications")
 set(PATH_PRIV_DATA "${PATH_DATA}/simplescreenrecorder")
 set(PATH_TR        "${PATH_PRIV_DATA}/translations")
 
-add_subdirectory(glinject)
-add_subdirectory(src)
-add_subdirectory(src/translations)
+if(WITH_GLINJECT)
+    add_subdirectory(glinject)
+endif()
+
+if(WITH_SIMPLESCREENRECORDER)
+    add_subdirectory(src)
+    add_subdirectory(src/translations)
+endif()
 
 install(
 	DIRECTORY data/man
