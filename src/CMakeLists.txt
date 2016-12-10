@@ -3,14 +3,19 @@ find_package(AVCodec REQUIRED)
 find_package(AVFormat REQUIRED)
 find_package(AVUtil REQUIRED)
 find_package(PulseAudio REQUIRED)
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5X11Extras REQUIRED)
 find_package(SWScale REQUIRED)
 find_package(Threads REQUIRED)
 find_package(X11 REQUIRED)
 find_package(XExtensions REQUIRED)
+
+if(WITH_QT5)
+    find_package(Qt5Core REQUIRED)
+    find_package(Qt5Gui REQUIRED)
+    find_package(Qt5Widgets REQUIRED)
+    find_package(Qt5X11Extras REQUIRED)
+else()
+    find_package(Qt4 REQUIRED QtGui)
+endif()
 
 set(sources
 	AV/Input/X11Input.cpp
@@ -123,7 +128,6 @@ set(files_to_moc
 
 	AV/Output/SyncDiagram.h
 
-	GUI/PageInput.cpp
 	GUI/DialogGLInject.h
 	GUI/AudioPreviewer.h
 	GUI/PageInput.h
@@ -140,7 +144,25 @@ set(files_to_moc
 	common/Logger.h
 )
 
-qt5_wrap_cpp(moced_files ${files_to_moc})
+if(WITH_QT5)
+
+    qt5_wrap_cpp(moced_files ${files_to_moc})
+    set(QT_LIBS
+    	Qt5::Core
+	Qt5::Gui
+	Qt5::Widgets
+	Qt5::X11Extras
+    )
+
+else()
+
+    qt4_wrap_cpp(moced_files ${files_to_moc})
+
+    set(QT_LIBS
+        Qt4::QtGui
+    )
+
+endif()
 
 set_source_files_properties(
 	AV/FastResampler_FirFilter_SSE2.cpp
@@ -165,10 +187,6 @@ target_include_directories(simplescreenrecorder
 	${AVFORMAT_INCLUDE_DIRS}
 	${AVUTIL_INCLUDE_DIRS}
 	${PULSEAUDIO_INCLUDE_DIRS}
-	${Qt5Core_INCLUDE_DIRS}
-	${Qt5Gui_INCLUDE_DIRS}
-	${Qt5Widgets_INCLUDE_DIRS}
-	${Qt5X11Extras_INCLUDE_DIRS}
 	${SWSCALE_INCLUDE_DIRS}
 	${X11_INCLUDE_DIR}
 	${XEXTENSIONS_INCLUDE_DIR}
@@ -188,10 +206,7 @@ target_link_libraries(simplescreenrecorder
 	${AVFORMAT_LIBRARIES}
 	${AVUTIL_LIBRARIES}
 	${PULSEAUDIO_LIBRARIES}
-	Qt5::Core
-	Qt5::Gui
-	Qt5::Widgets
-	Qt5::X11Extras
+	${QT_LIBS}
 	${CMAKE_THREAD_LIBS_INIT}
 	${SWSCALE_LIBRARIES}
 	${X11_LIBRARIES}
