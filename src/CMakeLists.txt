@@ -8,6 +8,10 @@ find_package(Threads REQUIRED)
 find_package(X11 REQUIRED)
 find_package(XExtensions REQUIRED)
 
+if(WITH_JACK)
+    find_package(Jack REQUIRED)
+endif()
+
 if(WITH_QT5)
     find_package(Qt5Core REQUIRED)
     find_package(Qt5Gui REQUIRED)
@@ -190,6 +194,7 @@ target_include_directories(simplescreenrecorder
 	${SWSCALE_INCLUDE_DIRS}
 	${X11_INCLUDE_DIR}
 	${XEXTENSIONS_INCLUDE_DIR}
+	$<$<BOOL:${WITH_JACK}>:${JACK_INCLUDE_DIRS}>
 
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/AV
@@ -211,6 +216,7 @@ target_link_libraries(simplescreenrecorder
 	${SWSCALE_LIBRARIES}
 	${X11_LIBRARIES}
 	${XEXTENSIONS_LIBRARIES}
+	$<$<BOOL:${WITH_JACK}>:${JACK_LIBRARIES}>
 )
 
 target_compile_definitions(simplescreenrecorder
