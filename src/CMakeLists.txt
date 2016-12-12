@@ -58,14 +58,12 @@ set(sources
 
 	AV/AVWrapper.cpp
 	AV/AVWrapper.h
-	AV/FastScaler_Convert_SSSE3.cpp
 	AV/FastScaler.cpp
 	AV/FastResampler.h
 	AV/FastScaler_Scale_Generic.cpp
 	AV/FastScaler_Scale_Fallback.cpp
 	AV/SourceSink.cpp
 	AV/SimpleSynth.cpp
-	AV/FastResampler_FirFilter_SSE2.cpp
 	AV/FastScaler_Convert_Fallback.cpp
 	AV/SourceSink.h
 	AV/FastResampler_FirFilter_Fallback.cpp
@@ -76,7 +74,6 @@ set(sources
 	AV/SimpleSynth.h
 	AV/FastScaler_Scale.h
 	AV/FastScaler_Convert.h
-	AV/FastScaler_Scale_SSSE3.cpp
 	AV/SampleCast.h
 
 	common/CPUFeatures.cpp
@@ -168,16 +165,26 @@ else()
 
 endif()
 
-set_source_files_properties(
-	AV/FastResampler_FirFilter_SSE2.cpp
-	PROPERTIES COMPILE_FLAGS -msse2
+if(ENABLE_X86_ASM)
+
+    list(APPEND sources
+        AV/FastResampler_FirFilter_SSE2.cpp
+        AV/FastScaler_Convert_SSSE3.cpp
+	AV/FastScaler_Scale_SSSE3.cpp
+    )
+
+    set_source_files_properties(
+            AV/FastResampler_FirFilter_SSE2.cpp
+            PROPERTIES COMPILE_FLAGS -msse2
+    )
+
+    set_source_files_properties(
+            AV/FastScaler_Convert_SSSE3.cpp
+            AV/FastScaler_Scale_SSSE3.cpp
+            PROPERTIES COMPILE_FLAGS -mssse3
 )
 
-set_source_files_properties(
-	AV/FastScaler_Convert_SSSE3.cpp
-	AV/FastScaler_Scale_SSSE3.cpp
-	PROPERTIES COMPILE_FLAGS -mssse3
-)
+endif()
 
 add_executable(simplescreenrecorder
 	${sources}
