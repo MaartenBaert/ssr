@@ -86,7 +86,7 @@ dist_icon256_DATA = \
 	icons/256/simplescreenrecorder-recording.png
 dist_iconscalable_DATA = \
 	icons/scalable/simplescreenrecorder.svg \
-	icons/scalable/simplescreenrecorder-indicator.png \
+	icons/scalable/simplescreenrecorder-indicator.svg \
 	icons/scalable/simplescreenrecorder-error.svg \
 	icons/scalable/simplescreenrecorder-paused.svg \
 	icons/scalable/simplescreenrecorder-recording.svg
