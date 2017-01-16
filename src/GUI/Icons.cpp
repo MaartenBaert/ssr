@@ -19,7 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Icons.h"
 
-QIcon g_icon_ssr, g_icon_ssr_error, g_icon_ssr_paused, g_icon_ssr_recording;
+QIcon g_icon_ssr, g_icon_ssr_indicator, g_icon_ssr_error, g_icon_ssr_paused, g_icon_ssr_recording;
 QIcon g_icon_go_home, g_icon_go_previous, g_icon_go_next;
 QIcon g_icon_pause, g_icon_record;
 QIcon g_icon_cancel, g_icon_save, g_icon_quit;
@@ -28,6 +28,7 @@ QIcon g_icon_microphone;
 void LoadIcons() {
 
 	g_icon_ssr = QIcon::fromTheme("simplescreenrecorder");
+	g_icon_ssr_indicator = QIcon::fromTheme("simplescreenrecorder-indicator");
 	g_icon_ssr_error = QIcon::fromTheme("simplescreenrecorder-error");
 	g_icon_ssr_paused = QIcon::fromTheme("simplescreenrecorder-paused");
 	g_icon_ssr_recording = QIcon::fromTheme("simplescreenrecorder-recording");
