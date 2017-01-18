@@ -116,16 +116,13 @@ Some packages (e.g. ffmpeg) are not in the official repository, but can be insta
     zypper addrepo -f http://ftp.gwdg.de/pub/linux/packman/suse/12.3/ packman
 
 For Fedora:
+Install the RPM Fusion repository [RPM Fusion](http://rpmfusion.org/) with this command:
 
-    sudo yum install ffmpeg-devel qt4-devel alsa-lib-devel pulseaudio-libs-devel jack-audio-connection-kit-devel \
-    gcc make gcc-c++ glibc-devel.i686 libgcc.i686 libX11-devel libX11-devel.i686 libXext-devel libXext-devel.i686 \
-    libXfixes-devel libXfixes-devel.i686 mesa-libGL-devel mesa-libGL-devel.i686 mesa-libGLU-devel mesa-libGLU-devel.i686 \
-    mesa-libGLU-devel.x86_64 qt4
+    rpm -Uvh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm
 
-Some packages (e.g. ffmpeg) are not in the official repository, but can be installed from the [RPM Fusion](http://rpmfusion.org/) repository.  You can add the RPM Fusion repository with this command:
+Install the simplescreenrecorder:
 
-    rpm -Uvh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm \
-    http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-stable.noarch.rpm
+    dnf install simplescreenrecorder
     
 Compiling and installing
 ------------------------
