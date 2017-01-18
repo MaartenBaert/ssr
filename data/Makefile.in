@@ -169,47 +169,58 @@ MANS = $(dist_man1_MANS)
 am__dist_appdata_DATA_DIST = simplescreenrecorder.appdata.xml
 am__dist_desktop_DATA_DIST = simplescreenrecorder.desktop
 am__dist_icon128_DATA_DIST = icons/128/simplescreenrecorder.png \
+	icons/128/simplescreenrecorder-idle.png \
 	icons/128/simplescreenrecorder-error.png \
 	icons/128/simplescreenrecorder-paused.png \
 	icons/128/simplescreenrecorder-recording.png
 am__dist_icon16_DATA_DIST = icons/16/simplescreenrecorder.png \
+	icons/16/simplescreenrecorder-idle.png \
 	icons/16/simplescreenrecorder-error.png \
 	icons/16/simplescreenrecorder-paused.png \
 	icons/16/simplescreenrecorder-recording.png
 am__dist_icon192_DATA_DIST = icons/192/simplescreenrecorder.png \
+	icons/192/simplescreenrecorder-idle.png \
 	icons/192/simplescreenrecorder-error.png \
 	icons/192/simplescreenrecorder-paused.png \
 	icons/192/simplescreenrecorder-recording.png
 am__dist_icon22_DATA_DIST = icons/22/simplescreenrecorder.png \
+	icons/22/simplescreenrecorder-idle.png \
 	icons/22/simplescreenrecorder-error.png \
 	icons/22/simplescreenrecorder-paused.png \
 	icons/22/simplescreenrecorder-recording.png
 am__dist_icon24_DATA_DIST = icons/24/simplescreenrecorder.png \
+	icons/24/simplescreenrecorder-idle.png \
 	icons/24/simplescreenrecorder-error.png \
 	icons/24/simplescreenrecorder-paused.png \
 	icons/24/simplescreenrecorder-recording.png
 am__dist_icon256_DATA_DIST = icons/256/simplescreenrecorder.png \
+	icons/256/simplescreenrecorder-idle.png \
 	icons/256/simplescreenrecorder-error.png \
 	icons/256/simplescreenrecorder-paused.png \
 	icons/256/simplescreenrecorder-recording.png
 am__dist_icon32_DATA_DIST = icons/32/simplescreenrecorder.png \
+	icons/32/simplescreenrecorder-idle.png \
 	icons/32/simplescreenrecorder-error.png \
 	icons/32/simplescreenrecorder-paused.png \
 	icons/32/simplescreenrecorder-recording.png
 am__dist_icon48_DATA_DIST = icons/48/simplescreenrecorder.png \
+	icons/48/simplescreenrecorder-idle.png \
 	icons/48/simplescreenrecorder-error.png \
 	icons/48/simplescreenrecorder-paused.png \
 	icons/48/simplescreenrecorder-recording.png
 am__dist_icon64_DATA_DIST = icons/64/simplescreenrecorder.png \
+	icons/64/simplescreenrecorder-idle.png \
 	icons/64/simplescreenrecorder-error.png \
 	icons/64/simplescreenrecorder-paused.png \
 	icons/64/simplescreenrecorder-recording.png
 am__dist_icon96_DATA_DIST = icons/96/simplescreenrecorder.png \
+	icons/96/simplescreenrecorder-idle.png \
 	icons/96/simplescreenrecorder-error.png \
 	icons/96/simplescreenrecorder-paused.png \
 	icons/96/simplescreenrecorder-recording.png
 am__dist_iconscalable_DATA_DIST =  \
 	icons/scalable/simplescreenrecorder.svg \
+	icons/scalable/simplescreenrecorder-idle.svg \
 	icons/scalable/simplescreenrecorder-error.svg \
 	icons/scalable/simplescreenrecorder-paused.svg \
 	icons/scalable/simplescreenrecorder-recording.svg
@@ -388,66 +399,77 @@ top_srcdir = @top_srcdir@
 ########## Icons ##########
 @ENABLE_SSRPROGRAM_TRUE@dist_icon16_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/16/simplescreenrecorder.png \
+@ENABLE_SSRPROGRAM_TRUE@	icons/16/simplescreenrecorder-idle.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/16/simplescreenrecorder-error.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/16/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/16/simplescreenrecorder-recording.png
 
 @ENABLE_SSRPROGRAM_TRUE@dist_icon22_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/22/simplescreenrecorder.png \
+@ENABLE_SSRPROGRAM_TRUE@	icons/22/simplescreenrecorder-idle.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/22/simplescreenrecorder-error.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/22/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/22/simplescreenrecorder-recording.png
 
 @ENABLE_SSRPROGRAM_TRUE@dist_icon24_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/24/simplescreenrecorder.png \
+@ENABLE_SSRPROGRAM_TRUE@	icons/24/simplescreenrecorder-idle.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/24/simplescreenrecorder-error.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/24/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/24/simplescreenrecorder-recording.png
 
 @ENABLE_SSRPROGRAM_TRUE@dist_icon32_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/32/simplescreenrecorder.png \
+@ENABLE_SSRPROGRAM_TRUE@	icons/32/simplescreenrecorder-idle.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/32/simplescreenrecorder-error.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/32/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/32/simplescreenrecorder-recording.png
 
 @ENABLE_SSRPROGRAM_TRUE@dist_icon48_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/48/simplescreenrecorder.png \
+@ENABLE_SSRPROGRAM_TRUE@	icons/48/simplescreenrecorder-idle.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/48/simplescreenrecorder-error.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/48/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/48/simplescreenrecorder-recording.png
 
 @ENABLE_SSRPROGRAM_TRUE@dist_icon64_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/64/simplescreenrecorder.png \
+@ENABLE_SSRPROGRAM_TRUE@	icons/64/simplescreenrecorder-idle.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/64/simplescreenrecorder-error.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/64/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/64/simplescreenrecorder-recording.png
 
 @ENABLE_SSRPROGRAM_TRUE@dist_icon96_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/96/simplescreenrecorder.png \
+@ENABLE_SSRPROGRAM_TRUE@	icons/96/simplescreenrecorder-idle.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/96/simplescreenrecorder-error.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/96/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/96/simplescreenrecorder-recording.png
 
 @ENABLE_SSRPROGRAM_TRUE@dist_icon128_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/128/simplescreenrecorder.png \
+@ENABLE_SSRPROGRAM_TRUE@	icons/128/simplescreenrecorder-idle.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/128/simplescreenrecorder-error.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/128/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/128/simplescreenrecorder-recording.png
 
 @ENABLE_SSRPROGRAM_TRUE@dist_icon192_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/192/simplescreenrecorder.png \
+@ENABLE_SSRPROGRAM_TRUE@	icons/192/simplescreenrecorder-idle.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/192/simplescreenrecorder-error.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/192/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/192/simplescreenrecorder-recording.png
 
 @ENABLE_SSRPROGRAM_TRUE@dist_icon256_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/256/simplescreenrecorder.png \
+@ENABLE_SSRPROGRAM_TRUE@	icons/256/simplescreenrecorder-idle.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/256/simplescreenrecorder-error.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/256/simplescreenrecorder-paused.png \
 @ENABLE_SSRPROGRAM_TRUE@	icons/256/simplescreenrecorder-recording.png
 
 @ENABLE_SSRPROGRAM_TRUE@dist_iconscalable_DATA = \
 @ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder.svg \
+@ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder-idle.svg \
 @ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder-error.svg \
 @ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder-paused.svg \
 @ENABLE_SSRPROGRAM_TRUE@	icons/scalable/simplescreenrecorder-recording.svg
