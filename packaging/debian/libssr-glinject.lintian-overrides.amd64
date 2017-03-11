@@ -1,0 +1,2 @@
+shlib-without-versioned-soname usr/lib/x86_64-linux-gnu/libssr-glinject.so libssr-glinject.so
+pkg-has-shlibs-control-file-but-no-actual-shared-libs
