@@ -27,12 +27,25 @@ class PageWelcome : public QWidget {
 
 private:
 	MainWindow *m_main_window;
+	
+	QComboBox *m_combobox_profile;
+	QPushButton *m_pushbutton_load_profile;
+	QPushButton *m_pushbutton_delete_profile;
+	QLineEdit *m_lineedit_new_profile;
+	QPushButton *m_pushbutton_new_profile;
+	
+	void ReadProfiles(QComboBox* m_combobox_profile); // basically a static function
+	
 
 public:
 	PageWelcome(MainWindow* main_window);
+	QString GetAnyProfile(); // returns the first profile in alphabetical order, or "default" if none exist
 
 private slots:
 	void AboutDialog();
+	void LoadProfile(); // wrapper to LoadSettings
+	void NewProfile(); // also a wrapper
+	void DeleteProfile();
 
 };
 

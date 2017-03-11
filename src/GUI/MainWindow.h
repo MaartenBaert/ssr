@@ -51,12 +51,14 @@ private:
 	PageOutput *m_page_output;
 	PageRecord *m_page_record;
 	PageDone *m_page_done;
+	
+	QString m_settings_profile;
 
 public:
 	MainWindow();
 	~MainWindow();
 
-	void LoadSettings();
+	void LoadSettings(QString profile);
 	void SaveSettings();
 
 	bool Validate();
@@ -67,6 +69,7 @@ protected:
 public:
 	inline PageInput* GetPageInput() { return m_page_input; }
 	inline PageOutput* GetPageOutput() { return m_page_output; }
+	inline QString GetProfile() { return m_settings_profile; }
 
 	inline enum_nvidia_disable_flipping GetNVidiaDisableFlipping() { return m_nvidia_disable_flipping; }
 
