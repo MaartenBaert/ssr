@@ -180,7 +180,8 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 	common/QueueBuffer.h common/TempBuffer.h \
 	GUI/AudioPreviewer.cpp GUI/AudioPreviewer.h \
 	GUI/DialogGLInject.cpp GUI/DialogGLInject.h \
-	GUI/ElidedLabel.cpp GUI/ElidedLabel.h GUI/HotkeyListener.cpp \
+	GUI/ElidedLabel.cpp GUI/ElidedLabel.h GUI/HiddenScrollArea.cpp \
+	GUI/HiddenScrollArea.h GUI/HotkeyListener.cpp \
 	GUI/HotkeyListener.h GUI/Icons.cpp GUI/Icons.h \
 	GUI/MainWindow.cpp GUI/MainWindow.h GUI/PageDone.cpp \
 	GUI/PageDone.h GUI/PageInput.cpp GUI/PageInput.h \
@@ -219,6 +220,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-AudioPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-DialogGLInject.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-ElidedLabel.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-HiddenScrollArea.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-HotkeyListener.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-Icons.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/simplescreenrecorder-MainWindow.$(OBJEXT) \
@@ -239,6 +241,7 @@ am__simplescreenrecorder_SOURCES_DIST = AV/Input/ALSAInput.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_AudioPreviewer.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_DialogGLInject.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_ElidedLabel.$(OBJEXT) \
+@ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_HiddenScrollArea.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_HotkeyListener.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_MainWindow.$(OBJEXT) \
 @ENABLE_SSRPROGRAM_TRUE@	simplescreenrecorder-moc_PageDone.$(OBJEXT) \
@@ -591,6 +594,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	GUI/DialogGLInject.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/ElidedLabel.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/ElidedLabel.h \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/HiddenScrollArea.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	GUI/HiddenScrollArea.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/HotkeyListener.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/HotkeyListener.h \
 @ENABLE_SSRPROGRAM_TRUE@	GUI/Icons.cpp \
@@ -629,6 +634,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_SSRPROGRAM_TRUE@	moc_AudioPreviewer.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_DialogGLInject.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_ElidedLabel.cpp \
+@ENABLE_SSRPROGRAM_TRUE@	moc_HiddenScrollArea.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_HotkeyListener.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_MainWindow.cpp moc_PageDone.cpp \
 @ENABLE_SSRPROGRAM_TRUE@	moc_PageInput.cpp moc_PageOutput.cpp \
@@ -891,6 +897,8 @@ GUI/simplescreenrecorder-DialogGLInject.$(OBJEXT):  \
 	GUI/$(am__dirstamp) GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-ElidedLabel.$(OBJEXT): GUI/$(am__dirstamp) \
 	GUI/$(DEPDIR)/$(am__dirstamp)
+GUI/simplescreenrecorder-HiddenScrollArea.$(OBJEXT):  \
+	GUI/$(am__dirstamp) GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-HotkeyListener.$(OBJEXT):  \
 	GUI/$(am__dirstamp) GUI/$(DEPDIR)/$(am__dirstamp)
 GUI/simplescreenrecorder-Icons.$(OBJEXT): GUI/$(am__dirstamp) \
@@ -934,6 +942,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_AudioPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_DialogGLInject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_ElidedLabel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_HiddenScrollArea.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_HotkeyListener.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_Logger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplescreenrecorder-moc_MainWindow.Po@am__quote@
@@ -977,6 +986,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-AudioPreviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-DialogGLInject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-ElidedLabel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-HiddenScrollArea.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-HotkeyListener.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-Icons.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@GUI/$(DEPDIR)/simplescreenrecorder-MainWindow.Po@am__quote@
@@ -1456,6 +1466,20 @@ GUI/simplescreenrecorder-ElidedLabel.obj: GUI/ElidedLabel.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-ElidedLabel.obj `if test -f 'GUI/ElidedLabel.cpp'; then $(CYGPATH_W) 'GUI/ElidedLabel.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/ElidedLabel.cpp'; fi`
 
+GUI/simplescreenrecorder-HiddenScrollArea.o: GUI/HiddenScrollArea.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-HiddenScrollArea.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-HiddenScrollArea.Tpo -c -o GUI/simplescreenrecorder-HiddenScrollArea.o `test -f 'GUI/HiddenScrollArea.cpp' || echo '$(srcdir)/'`GUI/HiddenScrollArea.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-HiddenScrollArea.Tpo GUI/$(DEPDIR)/simplescreenrecorder-HiddenScrollArea.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/HiddenScrollArea.cpp' object='GUI/simplescreenrecorder-HiddenScrollArea.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-HiddenScrollArea.o `test -f 'GUI/HiddenScrollArea.cpp' || echo '$(srcdir)/'`GUI/HiddenScrollArea.cpp
+
+GUI/simplescreenrecorder-HiddenScrollArea.obj: GUI/HiddenScrollArea.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-HiddenScrollArea.obj -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-HiddenScrollArea.Tpo -c -o GUI/simplescreenrecorder-HiddenScrollArea.obj `if test -f 'GUI/HiddenScrollArea.cpp'; then $(CYGPATH_W) 'GUI/HiddenScrollArea.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/HiddenScrollArea.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-HiddenScrollArea.Tpo GUI/$(DEPDIR)/simplescreenrecorder-HiddenScrollArea.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI/HiddenScrollArea.cpp' object='GUI/simplescreenrecorder-HiddenScrollArea.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o GUI/simplescreenrecorder-HiddenScrollArea.obj `if test -f 'GUI/HiddenScrollArea.cpp'; then $(CYGPATH_W) 'GUI/HiddenScrollArea.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI/HiddenScrollArea.cpp'; fi`
+
 GUI/simplescreenrecorder-HotkeyListener.o: GUI/HotkeyListener.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT GUI/simplescreenrecorder-HotkeyListener.o -MD -MP -MF GUI/$(DEPDIR)/simplescreenrecorder-HotkeyListener.Tpo -c -o GUI/simplescreenrecorder-HotkeyListener.o `test -f 'GUI/HotkeyListener.cpp' || echo '$(srcdir)/'`GUI/HotkeyListener.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) GUI/$(DEPDIR)/simplescreenrecorder-HotkeyListener.Tpo GUI/$(DEPDIR)/simplescreenrecorder-HotkeyListener.Po
@@ -1735,6 +1759,20 @@ simplescreenrecorder-moc_ElidedLabel.obj: moc_ElidedLabel.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_ElidedLabel.cpp' object='simplescreenrecorder-moc_ElidedLabel.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_ElidedLabel.obj `if test -f 'moc_ElidedLabel.cpp'; then $(CYGPATH_W) 'moc_ElidedLabel.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_ElidedLabel.cpp'; fi`
+
+simplescreenrecorder-moc_HiddenScrollArea.o: moc_HiddenScrollArea.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_HiddenScrollArea.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_HiddenScrollArea.Tpo -c -o simplescreenrecorder-moc_HiddenScrollArea.o `test -f 'moc_HiddenScrollArea.cpp' || echo '$(srcdir)/'`moc_HiddenScrollArea.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_HiddenScrollArea.Tpo $(DEPDIR)/simplescreenrecorder-moc_HiddenScrollArea.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_HiddenScrollArea.cpp' object='simplescreenrecorder-moc_HiddenScrollArea.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_HiddenScrollArea.o `test -f 'moc_HiddenScrollArea.cpp' || echo '$(srcdir)/'`moc_HiddenScrollArea.cpp
+
+simplescreenrecorder-moc_HiddenScrollArea.obj: moc_HiddenScrollArea.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_HiddenScrollArea.obj -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_HiddenScrollArea.Tpo -c -o simplescreenrecorder-moc_HiddenScrollArea.obj `if test -f 'moc_HiddenScrollArea.cpp'; then $(CYGPATH_W) 'moc_HiddenScrollArea.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_HiddenScrollArea.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplescreenrecorder-moc_HiddenScrollArea.Tpo $(DEPDIR)/simplescreenrecorder-moc_HiddenScrollArea.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_HiddenScrollArea.cpp' object='simplescreenrecorder-moc_HiddenScrollArea.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -c -o simplescreenrecorder-moc_HiddenScrollArea.obj `if test -f 'moc_HiddenScrollArea.cpp'; then $(CYGPATH_W) 'moc_HiddenScrollArea.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_HiddenScrollArea.cpp'; fi`
 
 simplescreenrecorder-moc_HotkeyListener.o: moc_HotkeyListener.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(simplescreenrecorder_CPPFLAGS) $(CPPFLAGS) $(simplescreenrecorder_CXXFLAGS) $(CXXFLAGS) -MT simplescreenrecorder-moc_HotkeyListener.o -MD -MP -MF $(DEPDIR)/simplescreenrecorder-moc_HotkeyListener.Tpo -c -o simplescreenrecorder-moc_HotkeyListener.o `test -f 'moc_HotkeyListener.cpp' || echo '$(srcdir)/'`moc_HotkeyListener.cpp
@@ -2131,6 +2169,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-nodist_translationsDATA
 @ENABLE_SSRPROGRAM_TRUE@moc_DialogGLInject.cpp: $(srcdir)/GUI/DialogGLInject.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_ElidedLabel.cpp: $(srcdir)/GUI/ElidedLabel.h
+@ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
+@ENABLE_SSRPROGRAM_TRUE@moc_HiddenScrollArea.cpp: $(srcdir)/GUI/HiddenScrollArea.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"
 @ENABLE_SSRPROGRAM_TRUE@moc_HotkeyListener.cpp: $(srcdir)/GUI/HotkeyListener.h
 @ENABLE_SSRPROGRAM_TRUE@	$(MOC) "$<" -o "$@"

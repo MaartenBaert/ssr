@@ -28,42 +28,62 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 
 	m_main_window = main_window;
 
-	QLabel *label_logo = new QLabel(this);
-	label_logo->setPixmap(QPixmap(":/header.png"));
-	QLabel *label_welcome = new QLabel(this);
-	label_welcome->setText(tr("<p>Welcome to SimpleScreenRecorder!</p>\n\n"
-							  "<p>Despite the name, this program actually has a lot of options. Don't worry though, there are really just two things that you "
-							  "need to know. One, the default settings are usually fine. If you don't know what something does, just use the default. "
-							  "Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.</p>\n\n"
-							  "<p>For more information:<br>\n"
-							  "%1</p>").arg("<a href=\"http://www.maartenbaert.be/simplescreenrecorder/\">http://www.maartenbaert.be/simplescreenrecorder/</a>"));
-	label_welcome->setWordWrap(true);
-	label_welcome->setTextFormat(Qt::RichText);
-	label_welcome->setTextInteractionFlags(Qt::TextBrowserInteraction);
-	label_welcome->setOpenExternalLinks(true);
-	QPushButton *button_about = new QPushButton(tr("About SimpleScreenRecorder"), this);
+	QScrollArea *scrollarea = new QScrollArea(this);
+	QWidget *scrollarea_contents = new QWidget(scrollarea);
+	scrollarea->setWidgetResizable(true);
+	scrollarea->setWidget(scrollarea_contents);
+	scrollarea->setFrameShape(QFrame::NoFrame);
+	{
+		QLabel *label_logo = new QLabel(scrollarea_contents);
+		label_logo->setPixmap(QPixmap(":/header.png"));
+		QLabel *label_welcome = new QLabel(scrollarea_contents);
+		label_welcome->setText(tr("<p>Welcome to SimpleScreenRecorder!</p>\n\n"
+								  "<p>Despite the name, this program actually has a lot of options. Don't worry though, there are really just two things that you "
+								  "need to know. One, the default settings are usually fine. If you don't know what something does, just use the default. "
+								  "Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.</p>\n\n"
+								  "<p>For more information:<br>\n"
+								  "%1</p>").arg("<a href=\"http://www.maartenbaert.be/simplescreenrecorder/\">http://www.maartenbaert.be/simplescreenrecorder/</a>"));
+		label_welcome->setWordWrap(true);
+		label_welcome->setTextFormat(Qt::RichText);
+		label_welcome->setTextInteractionFlags(Qt::TextBrowserInteraction);
+		label_welcome->setOpenExternalLinks(true);
+		QPushButton *button_about = new QPushButton(tr("About SimpleScreenRecorder"), scrollarea_contents);
+
+		connect(button_about, SIGNAL(clicked()), this, SLOT(AboutDialog()));
+
+		QVBoxLayout *layout = new QVBoxLayout(scrollarea_contents);
+		//layout->setContentsMargins(0, 0, 0, 0);
+		{
+			QHBoxLayout *layout2 = new QHBoxLayout();
+			layout->addLayout(layout2);
+			layout2->addStretch();
+			layout2->addWidget(label_logo);
+			layout2->addStretch();
+		}
+		layout->addWidget(label_welcome);
+		{
+			QHBoxLayout *layout2 = new QHBoxLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(button_about);
+			layout2->addStretch();
+		}
+		layout->addStretch();
+	}
 	QPushButton *button_continue = new QPushButton(g_icon_go_next, tr("Continue"), this);
 
-	connect(button_about, SIGNAL(clicked()), this, SLOT(AboutDialog()));
 	connect(button_continue, SIGNAL(clicked()), m_main_window, SLOT(GoPageInput()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->addWidget(scrollarea);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
 		layout->addLayout(layout2);
-		layout2->addStretch();
-		layout2->addWidget(label_logo);
-		layout2->addStretch();
+		layout2->addSpacing(style()->pixelMetric(QStyle::PM_LayoutLeftMargin));
+		layout2->addWidget(button_continue);
+		layout2->addSpacing(style()->pixelMetric(QStyle::PM_LayoutRightMargin));
 	}
-	layout->addWidget(label_welcome);
-	{
-		QHBoxLayout *layout2 = new QHBoxLayout();
-		layout->addLayout(layout2);
-		layout2->addWidget(button_about);
-		layout2->addStretch();
-	}
-	layout->addStretch();
-	layout->addWidget(button_continue);
+	layout->addSpacing(style()->pixelMetric(QStyle::PM_LayoutBottomMargin));
 
 }
 

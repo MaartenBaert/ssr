@@ -17149,8 +17149,8 @@ if test -z "$ENABLE_SSRPROGRAM_TRUE"; then :
 
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QT5" >&5
-$as_echo_n "checking for QT5... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras" >&5
+$as_echo_n "checking for Qt5Core >= 5.1.0 Qt5Gui Qt5Widgets Qt5X11Extras... " >&6; }
 
 if test -n "$QT5_CFLAGS"; then
     pkg_cv_QT5_CFLAGS="$QT5_CFLAGS"
@@ -17190,7 +17190,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -17210,7 +17210,7 @@ fi
 			as_fn_error $? "Qt5 not found" "$LINENO" 5
 
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 			as_fn_error $? "Qt5 not found" "$LINENO" 5
@@ -17465,8 +17465,8 @@ else
 
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QT4" >&5
-$as_echo_n "checking for QT4... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QtCore >= 4.8.0 QtGui" >&5
+$as_echo_n "checking for QtCore >= 4.8.0 QtGui... " >&6; }
 
 if test -n "$QT4_CFLAGS"; then
     pkg_cv_QT4_CFLAGS="$QT4_CFLAGS"
@@ -17506,7 +17506,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -17526,7 +17526,7 @@ fi
 			as_fn_error $? "Qt4 not found" "$LINENO" 5
 
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 			as_fn_error $? "Qt4 not found" "$LINENO" 5
@@ -17884,8 +17884,8 @@ if test -z "$ENABLE_SSRPROGRAM_TRUE"; then :
 
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for FFMPEG" >&5
-$as_echo_n "checking for FFMPEG... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libavformat >= 53 libavcodec >= 53 libavutil >= 51 libswscale >= 2" >&5
+$as_echo_n "checking for libavformat >= 53 libavcodec >= 53 libavutil >= 51 libswscale >= 2... " >&6; }
 
 if test -n "$FFMPEG_CFLAGS"; then
     pkg_cv_FFMPEG_CFLAGS="$FFMPEG_CFLAGS"
@@ -17925,7 +17925,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -17952,7 +17952,7 @@ Alternatively, you may set the environment variables FFMPEG_CFLAGS
 and FFMPEG_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
