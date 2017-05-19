@@ -87,7 +87,7 @@ For Debian:
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev g++-multilib \
     libx11-6 libxext6 libxfixes3 \
-    libglu1-mesa-dev:i386 libx11-dev:i386 libxfixes-dev:i386 libgl1-mesa-dev:i386 libglu1-mesa-dev:i386 \
+    libglu1-mesa-dev:i386 libx11-dev:i386 libxfixes-dev:i386 libgl1-mesa-dev:i386 \
     desktop-file-utils
 
     cd /usr/lib/i386-linux-gnu
