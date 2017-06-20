@@ -73,8 +73,8 @@
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
 If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
-        <translation>Nazwy kanałów są używane do identyfikacji aplikacji. Użyj tej opcji jeśli chcesz nagrać wiele aplikacji w tym samym czasie.
-Jeśli pozostawisz to pole pustym, domyślną nazwą bedzie &quot;kanał-TWOJANAZWAUŻYTKOWNIKA&quot; będzie użyta.</translation>
+        <translation type="unfinished">Nazwy kanałów są używane do identyfikacji aplikacji. Użyj tej opcji jeśli chcesz nagrać wiele aplikacji w tym samym czasie.
+Jeśli pozostawisz to pole pustym, domyślną nazwą bedzie &quot;kanał-TWOJANAZWAUŻYTKOWNIKA&quot;.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="73"/>
