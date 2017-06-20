@@ -74,7 +74,7 @@
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
 If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
         <translation>Nazwy kanałów są używane do identyfikacji aplikacji. Użyj tej opcji jeśli chcesz nagrać wiele aplikacji w tym samym czasie.
-Jeśli pozostawisz to pole pustym, domyślna nazwa &quot;kanał-TWOJANAZWAUŻYTKOWNIKA&quot; będzie użyta. </translation>
+Jeśli pozostawisz to pole pustym, domyślną nazwą bedzie &quot;kanał-TWOJANAZWAUŻYTKOWNIKA&quot; będzie użyta.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="73"/>
@@ -99,7 +99,7 @@ Jeśli pozostawisz to pole pustym, domyślna nazwa &quot;kanał-TWOJANAZWAUŻYTK
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="81"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
-        <translation>Polecenie zostanie wykonane w tym katalogu. Jeśli pozostawisz to pole pustym, katalog roboczy nie będzie zmieniony. </translation>
+        <translation>Polecenie zostanie wykonane w tym katalogu. Jeśli pozostawisz to pole pustym, katalog roboczy nie będzie zmieniony.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
@@ -119,7 +119,7 @@ Jeśli pozostawisz to pole pustym, domyślna nazwa &quot;kanał-TWOJANAZWAUŻYTK
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="107"/>
         <source>Stream settings</source>
-        <translation>Opcje wideo </translation>
+        <translation>Opcje wideo</translation>
     </message>
     <message>
         <source>Source:</source>
@@ -293,89 +293,89 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="210"/>
         <source>Found device: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Znaleziono urządzenie: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="259"/>
         <location filename="../AV/SimpleSynth.cpp" line="123"/>
         <source>Error: Can&apos;t open PCM device!</source>
-        <translation type="unfinished">Błąd: nie można otworzyć urządzenia PCM!</translation>
+        <translation>Błąd: nie można otworzyć urządzenia PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="263"/>
         <location filename="../AV/SimpleSynth.cpp" line="127"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
-        <translation type="unfinished">Błąd: nie można otrzymać parametrów urządzenia PCM!</translation>
+        <translation>Błąd: nie można odczytać parametrów urządzenia PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="269"/>
         <location filename="../AV/SimpleSynth.cpp" line="133"/>
         <source>Error: Can&apos;t set access type!</source>
-        <translation type="unfinished">Błąd: nie można ustawić typu dostępu!</translation>
+        <translation>Błąd: nie można ustawić trybu pracy!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="275"/>
         <location filename="../AV/SimpleSynth.cpp" line="139"/>
         <source>Error: Can&apos;t set sample format!</source>
-        <translation type="unfinished">Błąd: nie można ustawić formatu próbkowania!</translation>
+        <translation>Błąd: nie można ustawić formatu próbkowania!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="282"/>
         <location filename="../AV/SimpleSynth.cpp" line="146"/>
         <source>Error: Can&apos;t set sample rate!</source>
-        <translation type="unfinished">Błąd: nie mozna ustawić częstotliwości próbkowania!</translation>
+        <translation>Błąd: nie mozna ustawić częstotliwości próbkowania!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="286"/>
         <location filename="../AV/SimpleSynth.cpp" line="150"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>UWaga: częstotliwość próbkowania %1 nie jest obsługiwana. W zamian zostanie użyta częstotliwość %2. Nie jest to błąd krytyczny.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="295"/>
         <location filename="../AV/SimpleSynth.cpp" line="158"/>
         <source>Error: Can&apos;t set channel count!</source>
-        <translation type="unfinished">Błąd: Nie można ustawić liczby kanałów! </translation>
+        <translation>Błąd: Nie można ustawić liczby kanałów!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="299"/>
         <source>Warning: Channel count %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga: liczba kanałów %1 nie jest obsługiwana. Zostaną użyte %2. To nie jest błąd krytyczny.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="308"/>
         <location filename="../AV/SimpleSynth.cpp" line="165"/>
         <source>Error: Can&apos;t set period size!</source>
-        <translation type="unfinished">Błąd: Nie można ustawić rozmiaru cyklu!</translation>
+        <translation>Błąd: Nie można ustawić rozmiaru cyklu!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="312"/>
         <location filename="../AV/SimpleSynth.cpp" line="169"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished">Uwaga: rozmiar cyklu %1 nie jest wspierany, użyto %2. To nie jest problem lecz wydajność będzie gorsza.</translation>
+        <translation>Uwaga: rozmiar cyklu %1 nie jest wspierany, użyto %2. To nie jest problem lecz wydajność będzie gorsza.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="321"/>
         <location filename="../AV/SimpleSynth.cpp" line="178"/>
         <source>Error: Can&apos;t set buffer size!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: nie można ustawić rozmiaru bufora!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="325"/>
         <location filename="../AV/SimpleSynth.cpp" line="182"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga: rozmiar bufora %1 nie jest obsługiwany, zostanie użyty rozmiar %2. To nie jest błąd krytyczny.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="333"/>
         <location filename="../AV/SimpleSynth.cpp" line="190"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
-        <translation type="unfinished">Błąd: Nie można ustawić parametrów urządzenia PCM!</translation>
+        <translation>Błąd: Nie można ustawić parametrów urządzenia PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="351"/>
         <source>Error: Can&apos;t start PCM device!</source>
-        <translation type="unfinished">Błąd: Nie można uruchomić urządzenia PCM!</translation>
+        <translation>Błąd: Nie można uruchomić urządzenia PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="372"/>
@@ -384,7 +384,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/Input/PulseAudioInput.cpp" line="299"/>
         <location filename="../AV/Input/X11Input.cpp" line="345"/>
         <source>Input thread started.</source>
-        <translation type="unfinished">Uruchomiono wątek wejścia.</translation>
+        <translation>Uruchomiono wątek wejścia.</translation>
     </message>
     <message>
         <source>Error: Can&apos;t check whether samples are available!</source>
@@ -393,7 +393,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="387"/>
         <source>Error: Can&apos;t read samples!</source>
-        <translation type="unfinished">Błąd: Nie można odczytać próbki!</translation>
+        <translation>Błąd: Nie można odczytać próbki!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="413"/>
@@ -402,7 +402,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/Input/PulseAudioInput.cpp" line="388"/>
         <location filename="../AV/Input/X11Input.cpp" line="444"/>
         <source>Input thread stopped.</source>
-        <translation type="unfinished">Zatrzymano wątek wejścia.</translation>
+        <translation>Zatrzymano wątek wejścia.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="417"/>
@@ -411,7 +411,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/Input/PulseAudioInput.cpp" line="392"/>
         <location filename="../AV/Input/X11Input.cpp" line="448"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
-        <translation type="unfinished">Wyjątek &apos;%1&apos; w wątku wejścia.</translation>
+        <translation>Wyjątek &apos;%1&apos; w wątku wejścia.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="420"/>
@@ -420,7 +420,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/Input/PulseAudioInput.cpp" line="395"/>
         <location filename="../AV/Input/X11Input.cpp" line="451"/>
         <source>Unknown exception in input thread.</source>
-        <translation type="unfinished">Nieznany wyjątek w wątku wejścia.</translation>
+        <translation>Nieznany wyjątek w wątku wejścia.</translation>
     </message>
     <message>
         <source>Error: Image is too small!</source>
@@ -437,12 +437,12 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="253"/>
         <source>Error: Can&apos;t get shared memory!</source>
-        <translation type="unfinished">Błąd: Pamięć współdzielona jest nie osiągalna!</translation>
+        <translation>Błąd: Pamięć współdzielona jest nie osiągalna!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="258"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation type="unfinished">Błąd: Nie można nawiązać połączenia z pamięcią współdzieloną!</translation>
+        <translation>Błąd: Nie można nawiązać połączenia z pamięcią współdzieloną!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t get frame shared memory!</source>
@@ -1398,12 +1398,12 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation type="unfinished">Jeśli zaznaczone, porty zostaną automatycznie podłączone do nagrywanych portów systemowych. </translation>
+        <translation>Jeśli zaznaczone, porty zostaną automatycznie podłączone do nagrywanych portów systemowych.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="277"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli zaznaczone, porty zostaną automatycznie podłączone do czegokolwiek, co łączy się systemowymi portami odtwarzania.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="680"/>
@@ -1451,8 +1451,7 @@ Podsystem ALSA bęzie również działał na systemach które korzystają z Puls
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
         <translation>Urządzenie ALSY, które zostanie wykorzystane do nagrywania.
-&apos;default&apos; na ogół jest w porządku. Urządzenia &apos;shared&apos; pozwalają nagrywać kiulku programom naraz, ale mogą być bardziej zawodne.
-</translation>
+&apos;default&apos; na ogół jest w porządku. Urządzenia &apos;shared&apos; pozwalają nagrywać kiulku programom naraz, ale mogą być bardziej zawodne.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="262"/>
@@ -1513,7 +1512,7 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageOutput.cpp" line="161"/>
         <source>Error: Could not find any suitable container in libavformat!</source>
-        <translation>Błąd: Nie znaleziono odpowiednich kontenerów w libavformat!  </translation>
+        <translation>Błąd: Nie znaleziono odpowiednich kontenerów w libavformat!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="165"/>
@@ -1702,7 +1701,7 @@ Dopuszczalny przedział wartości: 0-51 (0 oznacza bezstratne, domyślnie 23).</
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
         <translation>Jeśli zaznaczone, nowy plik wideo powstanie za każdym razem, gdy wstrzymasz i wznowisz nagrywanie.
-Jeśli orignalna nazwa pliku to &quot;test.mkv&quot;, powstałe pliki zostaną zapisane jako &quot;test-ROK-MIESIAC-DZIEN_GODZINA.MINUTA.SEKUNDA.mkv&quot;. </translation>
+Jeśli orignalna nazwa pliku to &quot;test.mkv&quot;, powstałe pliki zostaną zapisane jako &quot;test-ROK-MIESIAC-DZIEN_GODZINA.MINUTA.SEKUNDA.mkv&quot;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="261"/>
@@ -1962,7 +1961,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="839"/>
         <source>Encoding remaining data ...</source>
-        <translation>Kończenie procesu kodowania... </translation>
+        <translation>Kończenie procesu kodowania...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="646"/>
@@ -1972,7 +1971,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="657"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
-        <translation>Błąd: Nie udało się uzyskać wymiarów okna aplikacji OpenGL ponieważ wejście GLInject nie zostało utworzone. </translation>
+        <translation>Błąd: Nie udało się uzyskać wymiarów okna aplikacji OpenGL ponieważ wejście GLInject nie zostało utworzone.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="698"/>
@@ -1997,7 +1996,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="768"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
-        <translation>Błąd: Nie udało się uruchomić wejścia GLInject ponieważ nie zostało ono utworzone. </translation>
+        <translation>Błąd: Nie udało się uruchomić wejścia GLInject ponieważ nie zostało ono utworzone.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="787"/>
@@ -2083,7 +2082,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="973"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translation>Błąd: Coś poszło nie tak podczas tworzenia synth. </translation>
+        <translation>Błąd: Coś poszło nie tak podczas tworzenia synth.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1015"/>
