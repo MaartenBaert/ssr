@@ -1,6 +1,4 @@
 
-option(ENABLE_32BIT_GLInject "Build 32 bit version of GLInject." FALSE)
-
 set(sources
     elfhacks.c
     GLInject.h

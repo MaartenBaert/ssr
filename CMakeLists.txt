@@ -3,6 +3,7 @@ cmake_policy(SET CMP0048 NEW)
 
 project(simplescreenrecorder VERSION 0.3.8)
 
+option(ENABLE_32BIT_GLInject "Build 32 bit version of GLInject." FALSE)
 option(ENABLE_X86_ASM "Allow x86/x64 assembly or intrinsics." TRUE)
 option(ENABLE_FFMPEG_VERSIONS "Whether ffmpeg or libav version numbers should be used for tests. The ffmpeg version number is usually slightly higher, so that's the default (deprecation warnings are better than compilation errors)." TRUE)
 option(WITH_PULSEAUDIO "Whether PulseAudio should be used." TRUE)

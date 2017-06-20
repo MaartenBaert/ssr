@@ -8,6 +8,10 @@ find_package(Threads REQUIRED)
 find_package(X11 REQUIRED)
 find_package(XExtensions REQUIRED)
 
+if(WITH_JACK)
+    find_package(Jack REQUIRED)
+endif()
+
 if(WITH_QT5)
     find_package(Qt5Core REQUIRED)
     find_package(Qt5Gui REQUIRED)
@@ -54,14 +58,12 @@ set(sources
 
 	AV/AVWrapper.cpp
 	AV/AVWrapper.h
-	AV/FastScaler_Convert_SSSE3.cpp
 	AV/FastScaler.cpp
 	AV/FastResampler.h
 	AV/FastScaler_Scale_Generic.cpp
 	AV/FastScaler_Scale_Fallback.cpp
 	AV/SourceSink.cpp
 	AV/SimpleSynth.cpp
-	AV/FastResampler_FirFilter_SSE2.cpp
 	AV/FastScaler_Convert_Fallback.cpp
 	AV/SourceSink.h
 	AV/FastResampler_FirFilter_Fallback.cpp
@@ -72,7 +74,6 @@ set(sources
 	AV/SimpleSynth.h
 	AV/FastScaler_Scale.h
 	AV/FastScaler_Convert.h
-	AV/FastScaler_Scale_SSSE3.cpp
 	AV/SampleCast.h
 
 	common/CPUFeatures.cpp
@@ -164,16 +165,26 @@ else()
 
 endif()
 
-set_source_files_properties(
-	AV/FastResampler_FirFilter_SSE2.cpp
-	PROPERTIES COMPILE_FLAGS -msse2
+if(ENABLE_X86_ASM)
+
+    list(APPEND sources
+        AV/FastResampler_FirFilter_SSE2.cpp
+        AV/FastScaler_Convert_SSSE3.cpp
+	AV/FastScaler_Scale_SSSE3.cpp
+    )
+
+    set_source_files_properties(
+            AV/FastResampler_FirFilter_SSE2.cpp
+            PROPERTIES COMPILE_FLAGS -msse2
+    )
+
+    set_source_files_properties(
+            AV/FastScaler_Convert_SSSE3.cpp
+            AV/FastScaler_Scale_SSSE3.cpp
+            PROPERTIES COMPILE_FLAGS -mssse3
 )
 
-set_source_files_properties(
-	AV/FastScaler_Convert_SSSE3.cpp
-	AV/FastScaler_Scale_SSSE3.cpp
-	PROPERTIES COMPILE_FLAGS -mssse3
-)
+endif()
 
 add_executable(simplescreenrecorder
 	${sources}
@@ -186,10 +197,11 @@ target_include_directories(simplescreenrecorder
 	${AVCODEC_INCLUDE_DIRS}
 	${AVFORMAT_INCLUDE_DIRS}
 	${AVUTIL_INCLUDE_DIRS}
-	${PULSEAUDIO_INCLUDE_DIRS}
 	${SWSCALE_INCLUDE_DIRS}
-	${X11_INCLUDE_DIR}
-	${XEXTENSIONS_INCLUDE_DIR}
+	${X11_INCLUDE_DIRS}
+	${XEXTENSIONS_INCLUDE_DIRS}
+	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_INCLUDE_DIRS}>
+	$<$<BOOL:${WITH_JACK}>:${JACK_INCLUDE_DIRS}>
 
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/AV
@@ -205,12 +217,13 @@ target_link_libraries(simplescreenrecorder
 	${AVCODEC_LIBRARIES}
 	${AVFORMAT_LIBRARIES}
 	${AVUTIL_LIBRARIES}
-	${PULSEAUDIO_LIBRARIES}
 	${QT_LIBS}
 	${CMAKE_THREAD_LIBS_INIT}
 	${SWSCALE_LIBRARIES}
 	${X11_LIBRARIES}
 	${XEXTENSIONS_LIBRARIES}
+	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_LIBRARIES}>
+	$<$<BOOL:${WITH_JACK}>:${JACK_LIBRARIES}>
 )
 
 target_compile_definitions(simplescreenrecorder
