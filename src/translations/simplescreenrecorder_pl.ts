@@ -1735,7 +1735,7 @@ This increases the file size and CPU usage, but reduces the latency for live str
 It shouldn&apos;t affect the appearance of the video.</source>
         <translation>Po zaznaczeniu koder będzie pomijał klatki jeżeli ilość klatek na wejściu będzie niższa niż na wyjściu.
 W przypadku nie zaznaczenia klatki będą dublowane by wypełnić luki. Zwiększy to rozmiar pliku
-oraz wykorzystanie procesora lecz zmniejsza opuźnienie w trakcie stremowania na żywo w niektórych przypadkach.
+oraz wykorzystanie procesora lecz zmniejsza opóźnienie w trakcie stremowania na żywo w niektórych przypadkach.
 Nie powinno mieć wpływu na wygląd wideo.</translation>
     </message>
     <message>
