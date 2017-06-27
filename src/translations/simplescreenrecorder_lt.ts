@@ -148,8 +148,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
 (this depends on the application).</source>
         <translation>Jei pažymėta, įskiepyta biblioteka sulėtins programas tam, kad kadrų dažnis netaptų didesnis nei įrašinėjimo kadrų dažnis.
 Tai neleidžia programai eikvoti procesoriaus laiko kadrams, kurie nebus įrašinėjami ir kaip pasekmė, kartais, yra gaunamas glotnesnis
-vaizdo įrašas (tai priklauso nuo programos).
-</translation>
+vaizdo įrašas (tai priklauso nuo programos).</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="119"/>
@@ -1473,7 +1472,7 @@ Jei pradinio failo pavadinimas yra &quot;testas.mkv&quot;, tai segmentai bus iš
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
         <source>(not installed)</source>
-        <translation type="unfinished"></translation>
+        <translation>(neįdiegta)</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="192"/>
