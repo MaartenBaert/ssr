@@ -296,9 +296,9 @@ PageInput::PageInput(MainWindow* main_window)
 				layout->addLayout(layout2);
 				layout2->addWidget(m_label_audio_backend, 0, 0);
 				layout2->addWidget(m_combobox_audio_backend, 0, 1, 1, 2);
-				layout2->addWidget(m_label_alsa_source, 2, 0);
-				layout2->addWidget(m_combobox_alsa_source, 2, 1);
-				layout2->addWidget(m_pushbutton_alsa_refresh, 2, 2);
+				layout2->addWidget(m_label_alsa_source, 1, 0);
+				layout2->addWidget(m_combobox_alsa_source, 1, 1);
+				layout2->addWidget(m_pushbutton_alsa_refresh, 1, 2);
 	#if SSR_USE_PULSEAUDIO
 				layout2->addWidget(m_label_pulseaudio_source, 2, 0);
 				layout2->addWidget(m_combobox_pulseaudio_source, 2, 1);
