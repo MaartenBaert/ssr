@@ -95,6 +95,12 @@ MainWindow::MainWindow()
 		}
 	}
 
+	// change minimum size based on screen resolution
+	QSize preferred_size = minimumSizeHint() + QSize(style()->pixelMetric(QStyle::PM_ScrollBarExtent), 0);
+	QSize available_size = QApplication::desktop()->availableGeometry().size() - QSize(80, 80);
+	//qDebug() << preferred_size << available_size;
+	setMinimumSize(preferred_size.boundedTo(available_size));
+
 	// maybe show the window
 	if(!g_option_start_hidden)
 		show();

@@ -311,7 +311,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	QPushButton *button_save = new QPushButton(g_icon_save, tr("Save recording"), this);
 
 	if(g_option_systray) {
-		m_systray_icon = new QSystemTrayIcon(g_icon_ssr, m_main_window);
+		m_systray_icon = new QSystemTrayIcon(g_icon_ssr_idle, m_main_window);
 		QMenu *menu = new QMenu(m_main_window);
 		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
 		m_systray_action_start_pause->setIconVisibleInMenu(true);
@@ -924,7 +924,7 @@ void PageRecord::UpdateSysTray() {
 			m_systray_icon->setIcon(g_icon_ssr_paused);
 		}
 	} else {
-		m_systray_icon->setIcon(g_icon_ssr);
+		m_systray_icon->setIcon(g_icon_ssr_idle);
 	}
 	if(m_page_started && m_output_started) {
 		m_systray_action_start_pause->setIcon(g_icon_pause);

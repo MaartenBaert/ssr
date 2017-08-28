@@ -23,7 +23,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ElidedLabel.h"
 
-#include <QDebug>
 #include <QPainter>
 #include <QResizeEvent>
 

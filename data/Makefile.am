@@ -26,56 +26,67 @@ dist_appdata_DATA = \
 
 dist_icon16_DATA = \
 	icons/16/simplescreenrecorder.png \
+	icons/16/simplescreenrecorder-idle.png \
 	icons/16/simplescreenrecorder-error.png \
 	icons/16/simplescreenrecorder-paused.png \
 	icons/16/simplescreenrecorder-recording.png
 dist_icon22_DATA = \
 	icons/22/simplescreenrecorder.png \
+	icons/22/simplescreenrecorder-idle.png \
 	icons/22/simplescreenrecorder-error.png \
 	icons/22/simplescreenrecorder-paused.png \
 	icons/22/simplescreenrecorder-recording.png
 dist_icon24_DATA = \
 	icons/24/simplescreenrecorder.png \
+	icons/24/simplescreenrecorder-idle.png \
 	icons/24/simplescreenrecorder-error.png \
 	icons/24/simplescreenrecorder-paused.png \
 	icons/24/simplescreenrecorder-recording.png
 dist_icon32_DATA = \
 	icons/32/simplescreenrecorder.png \
+	icons/32/simplescreenrecorder-idle.png \
 	icons/32/simplescreenrecorder-error.png \
 	icons/32/simplescreenrecorder-paused.png \
 	icons/32/simplescreenrecorder-recording.png
 dist_icon48_DATA = \
 	icons/48/simplescreenrecorder.png \
+	icons/48/simplescreenrecorder-idle.png \
 	icons/48/simplescreenrecorder-error.png \
 	icons/48/simplescreenrecorder-paused.png \
 	icons/48/simplescreenrecorder-recording.png
 dist_icon64_DATA = \
 	icons/64/simplescreenrecorder.png \
+	icons/64/simplescreenrecorder-idle.png \
 	icons/64/simplescreenrecorder-error.png \
 	icons/64/simplescreenrecorder-paused.png \
 	icons/64/simplescreenrecorder-recording.png
 dist_icon96_DATA = \
 	icons/96/simplescreenrecorder.png \
+	icons/96/simplescreenrecorder-idle.png \
 	icons/96/simplescreenrecorder-error.png \
 	icons/96/simplescreenrecorder-paused.png \
 	icons/96/simplescreenrecorder-recording.png
 dist_icon128_DATA = \
 	icons/128/simplescreenrecorder.png \
+	icons/128/simplescreenrecorder-idle.png \
 	icons/128/simplescreenrecorder-error.png \
 	icons/128/simplescreenrecorder-paused.png \
 	icons/128/simplescreenrecorder-recording.png
 dist_icon192_DATA = \
 	icons/192/simplescreenrecorder.png \
+	icons/192/simplescreenrecorder-idle.png \
 	icons/192/simplescreenrecorder-error.png \
 	icons/192/simplescreenrecorder-paused.png \
 	icons/192/simplescreenrecorder-recording.png
 dist_icon256_DATA = \
 	icons/256/simplescreenrecorder.png \
+	icons/256/simplescreenrecorder-idle.png \
 	icons/256/simplescreenrecorder-error.png \
 	icons/256/simplescreenrecorder-paused.png \
 	icons/256/simplescreenrecorder-recording.png
 dist_iconscalable_DATA = \
 	icons/scalable/simplescreenrecorder.svg \
+	icons/scalable/simplescreenrecorder-idle.svg \
 	icons/scalable/simplescreenrecorder-error.svg \
 	icons/scalable/simplescreenrecorder-paused.svg \
 	icons/scalable/simplescreenrecorder-recording.svg

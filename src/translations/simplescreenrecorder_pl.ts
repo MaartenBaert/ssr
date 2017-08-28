@@ -73,8 +73,8 @@
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
 If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
-        <translation>Nazwy kanałów są używane do identyfikacji aplikacji. Użyj tej opcji jeśli chcesz nagrać wiele aplikacji w tym samym czasie.
-Jeśli pozostawisz to pole pustym, domyślna nazwa &quot;kanał-TWOJANAZWAUŻYTKOWNIKA&quot; będzie użyta. </translation>
+        <translation type="unfinished">Nazwy kanałów są używane do identyfikacji aplikacji. Użyj tej opcji jeśli chcesz nagrać wiele aplikacji w tym samym czasie.
+Jeśli pozostawisz to pole pustym, domyślną nazwą bedzie &quot;kanał-TWOJANAZWAUŻYTKOWNIKA&quot;.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="73"/>
@@ -99,7 +99,7 @@ Jeśli pozostawisz to pole pustym, domyślna nazwa &quot;kanał-TWOJANAZWAUŻYTK
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="81"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
-        <translation>Polecenie zostanie wykonane w tym katalogu. Jeśli pozostawisz to pole pustym, katalog roboczy nie będzie zmieniony. </translation>
+        <translation>Polecenie zostanie wykonane w tym katalogu. Jeśli pozostawisz to pole pustym, katalog roboczy nie będzie zmieniony.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="83"/>
@@ -119,7 +119,7 @@ Jeśli pozostawisz to pole pustym, domyślna nazwa &quot;kanał-TWOJANAZWAUŻYTK
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="107"/>
         <source>Stream settings</source>
-        <translation>Opcje wideo </translation>
+        <translation>Opcje wideo</translation>
     </message>
     <message>
         <source>Source:</source>
@@ -197,22 +197,22 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
     <message>
         <location filename="../AV/FastResampler.cpp" line="124"/>
         <source>Error: Resample ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: współczynnik próbkowania poza skalą! </translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="128"/>
         <source>Error: Drift ratio is out of range!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: współczynnik przesunięcia poza skalą! </translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="158"/>
         <source>Resample ratio is %1 (was %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Współczynnik próbkowania wynosi %1 (było %2).</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="130"/>
         <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation type="unfinished">Uwaga: Format pikseli nie jest wspierany (%1 -&gt; %2), w zamian zostanie użyty swscale. To nie jest problem lecz wydajność będzie gorsza.</translation>
+        <translation>Uwaga: Format pikseli nie jest wspierany (%1 -&gt; %2), w zamian zostanie użyty swscale. To nie jest problem lecz wydajność będzie gorsza.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="139"/>
@@ -220,7 +220,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../Benchmark.cpp" line="203"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
-        <translation type="unfinished">Błąd: nie można otrzymać kontekstu swcale!</translation>
+        <translation>Błąd: nie można otrzymać kontekstu swcale!</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="161"/>
@@ -231,25 +231,25 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/FastScaler.cpp" line="280"/>
         <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
         <comment>Don&apos;t translate &apos;fallback&apos;</comment>
-        <translation type="unfinished">Uwaga: Pamięć nie jest poprawnie ustawiona do SSE, użyto konwertera &apos;fallback&apos;. To nie jest problem lecz wydajność będzie gorsza.</translation>
+        <translation>Uwaga: pamięć nie jest poprawnie wyrównana dla SSE, użyto konwertera &apos;fallback&apos;. To nie jest problem lecz wydajność będzie gorsza.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="32"/>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Uwaga: Nastąpiło zdarzenie (overrun), część próbek została utracona.</translation>
+        <translation>Uwaga: nastąpił overrun, część próbek została utracona.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="34"/>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Błąd: Nie można odzyskać urządzenia po zdarzeniu (overrun)!</translation>
+        <translation>Błąd: nie można przywrócić urządzenia po zdarzeniu overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="38"/>
         <source>Error: Can&apos;t start PCM device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation type="unfinished">Błąd: Nie można uruchomić urządzenia PCM po zdarzeniu (overrun)!</translation>
+        <translation>Błąd: bie można uruchomić urządzenia PCM po zdarzeniu overrun!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="66"/>
@@ -257,125 +257,125 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/Input/JACKInput.cpp" line="56"/>
         <location filename="../AV/Input/X11Input.cpp" line="207"/>
         <source>Stopping input thread ...</source>
-        <translation type="unfinished">Zatrzymywanie wejściowego wątku...</translation>
+        <translation>Zatrzymywanie wejściowego wątku...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="96"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="232"/>
         <source>Generating source list ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Generowanie listy źródeł...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="115"/>
         <source>Error: Could not update ALSA configuration!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: Nie udało się zaktualizować konfiguracji ALSY!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="175"/>
         <source>Warning: Could not open sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga: Nie udało się otworzyć karty dźwiękowej %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="181"/>
         <source>Warning: Could not get info for sound card %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga: nie udało się pozyskać informacji nt karty dźwiękowej %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="162"/>
         <source>Found plugin: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Znaleziono wtyczkę: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="185"/>
         <source>Found card: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Znaleziono kartę: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="210"/>
         <source>Found device: [%1] %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Znaleziono urządzenie: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="259"/>
         <location filename="../AV/SimpleSynth.cpp" line="123"/>
         <source>Error: Can&apos;t open PCM device!</source>
-        <translation type="unfinished">Błąd: nie można otworzyć urządzenia PCM!</translation>
+        <translation>Błąd: nie można otworzyć urządzenia PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="263"/>
         <location filename="../AV/SimpleSynth.cpp" line="127"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
-        <translation type="unfinished">Błąd: nie można otrzymać parametrów urządzenia PCM!</translation>
+        <translation>Błąd: nie można odczytać parametrów urządzenia PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="269"/>
         <location filename="../AV/SimpleSynth.cpp" line="133"/>
         <source>Error: Can&apos;t set access type!</source>
-        <translation type="unfinished">Błąd: nie można ustawić typu dostępu!</translation>
+        <translation>Błąd: nie można ustawić trybu pracy!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="275"/>
         <location filename="../AV/SimpleSynth.cpp" line="139"/>
         <source>Error: Can&apos;t set sample format!</source>
-        <translation type="unfinished">Błąd: nie można ustawić formatu próbkowania!</translation>
+        <translation>Błąd: nie można ustawić formatu próbkowania!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="282"/>
         <location filename="../AV/SimpleSynth.cpp" line="146"/>
         <source>Error: Can&apos;t set sample rate!</source>
-        <translation type="unfinished">Błąd: nie mozna ustawić częstotliwości próbkowania!</translation>
+        <translation>Błąd: nie mozna ustawić częstotliwości próbkowania!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="286"/>
         <location filename="../AV/SimpleSynth.cpp" line="150"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>UWaga: częstotliwość próbkowania %1 nie jest obsługiwana. W zamian zostanie użyta częstotliwość %2. Nie jest to błąd krytyczny.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="295"/>
         <location filename="../AV/SimpleSynth.cpp" line="158"/>
         <source>Error: Can&apos;t set channel count!</source>
-        <translation type="unfinished">Błąd: Nie można ustawić liczby kanałów! </translation>
+        <translation>Błąd: Nie można ustawić liczby kanałów!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="299"/>
         <source>Warning: Channel count %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga: liczba kanałów %1 nie jest obsługiwana. Zostaną użyte %2. To nie jest błąd krytyczny.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="308"/>
         <location filename="../AV/SimpleSynth.cpp" line="165"/>
         <source>Error: Can&apos;t set period size!</source>
-        <translation type="unfinished">Błąd: Nie można ustawić rozmiaru cyklu!</translation>
+        <translation>Błąd: Nie można ustawić rozmiaru cyklu!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="312"/>
         <location filename="../AV/SimpleSynth.cpp" line="169"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished">Uwaga: rozmiar cyklu %1 nie jest wspierany, użyto %2. To nie jest problem lecz wydajność będzie gorsza.</translation>
+        <translation>Uwaga: rozmiar cyklu %1 nie jest wspierany, użyto %2. To nie jest problem lecz wydajność będzie gorsza.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="321"/>
         <location filename="../AV/SimpleSynth.cpp" line="178"/>
         <source>Error: Can&apos;t set buffer size!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: nie można ustawić rozmiaru bufora!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="325"/>
         <location filename="../AV/SimpleSynth.cpp" line="182"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga: rozmiar bufora %1 nie jest obsługiwany, zostanie użyty rozmiar %2. To nie jest błąd krytyczny.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="333"/>
         <location filename="../AV/SimpleSynth.cpp" line="190"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
-        <translation type="unfinished">Błąd: Nie można ustawić parametrów urządzenia PCM!</translation>
+        <translation>Błąd: Nie można ustawić parametrów urządzenia PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="351"/>
         <source>Error: Can&apos;t start PCM device!</source>
-        <translation type="unfinished">Błąd: Nie można uruchomić urządzenia PCM!</translation>
+        <translation>Błąd: Nie można uruchomić urządzenia PCM!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="372"/>
@@ -384,7 +384,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/Input/PulseAudioInput.cpp" line="299"/>
         <location filename="../AV/Input/X11Input.cpp" line="345"/>
         <source>Input thread started.</source>
-        <translation type="unfinished">Uruchomiono wątek wejścia.</translation>
+        <translation>Uruchomiono wątek wejścia.</translation>
     </message>
     <message>
         <source>Error: Can&apos;t check whether samples are available!</source>
@@ -393,7 +393,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="387"/>
         <source>Error: Can&apos;t read samples!</source>
-        <translation type="unfinished">Błąd: Nie można odczytać próbki!</translation>
+        <translation>Błąd: Nie można odczytać próbki!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="413"/>
@@ -402,7 +402,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/Input/PulseAudioInput.cpp" line="388"/>
         <location filename="../AV/Input/X11Input.cpp" line="444"/>
         <source>Input thread stopped.</source>
-        <translation type="unfinished">Zatrzymano wątek wejścia.</translation>
+        <translation>Zatrzymano wątek wejścia.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="417"/>
@@ -411,7 +411,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/Input/PulseAudioInput.cpp" line="392"/>
         <location filename="../AV/Input/X11Input.cpp" line="448"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
-        <translation type="unfinished">Wyjątek &apos;%1&apos; w wątku wejścia.</translation>
+        <translation>Wyjątek &apos;%1&apos; w wątku wejścia.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="420"/>
@@ -420,7 +420,7 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
         <location filename="../AV/Input/PulseAudioInput.cpp" line="395"/>
         <location filename="../AV/Input/X11Input.cpp" line="451"/>
         <source>Unknown exception in input thread.</source>
-        <translation type="unfinished">Nieznany wyjątek w wątku wejścia.</translation>
+        <translation>Nieznany wyjątek w wątku wejścia.</translation>
     </message>
     <message>
         <source>Error: Image is too small!</source>
@@ -437,12 +437,12 @@ zasobów na klatki które nie będą nagrane oraz może sprawić że nagranie b�
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="253"/>
         <source>Error: Can&apos;t get shared memory!</source>
-        <translation type="unfinished">Błąd: Pamięć współdzielona jest nie osiągalna!</translation>
+        <translation>Błąd: Pamięć współdzielona jest nie osiągalna!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="258"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation type="unfinished">Błąd: Nie można nawiązać połączenia z pamięcią współdzieloną!</translation>
+        <translation>Błąd: Nie można nawiązać połączenia z pamięcią współdzieloną!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t get frame shared memory!</source>
@@ -873,7 +873,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="519"/>
         <source>Warning: Audio input is more than 2% too fast!</source>
-        <translation type="unfinished">Uwaga: Wejście audio jest przyspieszone o 5% ! {2%?}</translation>
+        <translation type="unfinished">Uwaga: Wejście audio jest o 2% zbyt szybkie!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="554"/>
@@ -1192,7 +1192,7 @@ Możliwe że twój system nie korzysta z PulseAudio. Spróbuj użyć podsystemu 
 
 You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished">SimpleScreenRecorder wykrył że korzystasz z własnościowych sterowników NVIDIA z włączoną opcją &apos;flipping&apos; która powoduje błędy w trakcie nagrywania. Zalecane jest jej wyłączenie. Chcesz bym to za ciebie zrobił?
+        <translation>SimpleScreenRecorder wykrył że korzystasz z własnościowych sterowników NVIDIA z włączoną opcją &apos;flipping&apos; która powoduje błędy w trakcie nagrywania. Zalecane jest jej wyłączenie. Chcesz bym to za ciebie zrobił?
 
 Możesz zmienić tę opcję samodzielnie w panelu kontrolnym NVIDIA.</translation>
     </message>
@@ -1200,7 +1200,7 @@ Możesz zmienić tę opcję samodzielnie w panelu kontrolnym NVIDIA.</translatio
         <location filename="../GUI/MainWindow.cpp" line="90"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation type="unfinished">Z nieznanych przyczyn nie mogłem wyłączyć opcji &apos;flipping&apos; - przykro mi! Spróbuj wyłączyć ją w panelu kontrolnym NVIDIA..</translation>
+        <translation>Z nieznanych przyczyn nie mogłem wyłączyć opcji &apos;flipping&apos; - przykro mi! Spróbuj wyłączyć ją w panelu kontrolnym NVIDIA..</translation>
     </message>
 </context>
 <context>
@@ -1398,12 +1398,12 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli zaznaczone, porty zostaną automatycznie podłączone do nagrywanych portów systemowych.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="277"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli zaznaczone, porty zostaną automatycznie podłączone do czegokolwiek, co łączy się systemowymi portami odtwarzania.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="680"/>
@@ -1450,7 +1450,8 @@ Podsystem ALSA bęzie również działał na systemach które korzystają z Puls
         <location filename="../GUI/PageInput.cpp" line="260"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Urządzenie ALSY, które zostanie wykorzystane do nagrywania.
+&apos;default&apos; na ogół jest w porządku. Urządzenia &apos;shared&apos; pozwalają nagrywać kiulku programom naraz, ale mogą być bardziej zawodne.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="262"/>
@@ -1461,7 +1462,7 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageInput.cpp" line="263"/>
         <source>Refreshes the list of ALSA sources.</source>
-        <translation type="unfinished"></translation>
+        <translation>Odśwież listę urządzeń ALSY.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="271"/>
@@ -1471,12 +1472,12 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageInput.cpp" line="274"/>
         <source>Record system microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagrywaj systemowym mikrofonem</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="276"/>
         <source>Record system speakers</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagrywaj systemowe głośniki</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
@@ -1511,7 +1512,7 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageOutput.cpp" line="161"/>
         <source>Error: Could not find any suitable container in libavformat!</source>
-        <translation>Błąd: Nie znaleziono odpowiednich kontenerów w libavformat!  </translation>
+        <translation>Błąd: Nie znaleziono odpowiednich kontenerów w libavformat!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="165"/>
@@ -1564,7 +1565,7 @@ Nazwy plików które już istnieją zostaną pominięte.</translation>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
         <source>(not installed)</source>
-        <translation type="unfinished"></translation>
+        <translation>(nie zainstalowany)</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="192"/>
@@ -1693,13 +1694,14 @@ Dopuszczalny przedział wartości: 0-51 (0 oznacza bezstratne, domyślnie 23).</
         <location filename="../GUI/PageOutput.cpp" line="127"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>pliki %1</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="182"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli zaznaczone, nowy plik wideo powstanie za każdym razem, gdy wstrzymasz i wznowisz nagrywanie.
+Jeśli orignalna nazwa pliku to &quot;test.mkv&quot;, powstałe pliki zostaną zapisane jako &quot;test-ROK-MIESIAC-DZIEN_GODZINA.MINUTA.SEKUNDA.mkv&quot;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="261"/>
@@ -1733,7 +1735,7 @@ This increases the file size and CPU usage, but reduces the latency for live str
 It shouldn&apos;t affect the appearance of the video.</source>
         <translation>Po zaznaczeniu koder będzie pomijał klatki jeżeli ilość klatek na wejściu będzie niższa niż na wyjściu.
 W przypadku nie zaznaczenia klatki będą dublowane by wypełnić luki. Zwiększy to rozmiar pliku
-oraz wykorzystanie procesora lecz zmniejsza opuźnienie w trakcie stremowania na żywo w niektórych przypadkach.
+oraz wykorzystanie procesora lecz zmniejsza opóźnienie w trakcie stremowania na żywo w niektórych przypadkach.
 Nie powinno mieć wpływu na wygląd wideo.</translation>
     </message>
     <message>
@@ -1823,7 +1825,7 @@ są słabe. Korzystaj wyłącznie przy braku innych opcji.
     <message>
         <location filename="../GUI/PageRecord.cpp" line="151"/>
         <source>Enable sound notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Włącz powiadomienia dźwiękowe</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="152"/>
@@ -1937,7 +1939,7 @@ Aplikacja którą nagrywasz nie przechwyci tych klawiszy.</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="325"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjście</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="368"/>
@@ -1949,17 +1951,17 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="380"/>
         <source>Hide window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukryj okno</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="382"/>
         <source>Show window</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż okno</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="839"/>
         <source>Encoding remaining data ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kończenie procesu kodowania...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="646"/>
@@ -1969,7 +1971,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="657"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: Nie udało się uzyskać wymiarów okna aplikacji OpenGL ponieważ wejście GLInject nie zostało utworzone.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="698"/>
@@ -1994,7 +1996,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="768"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: Nie udało się uruchomić wejścia GLInject ponieważ nie zostało ono utworzone.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="787"/>
@@ -2080,7 +2082,7 @@ Czy na pewno chcesz wyjść?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="973"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: Coś poszło nie tak podczas tworzenia synth.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1015"/>
@@ -2130,67 +2132,67 @@ Przycisk start jest na górze ;).</translation>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="28"/>
         <source>Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="37"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="38"/>
         <source>Save the current settings to this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz bieżące ustawienia w tym profilu.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="39"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowy</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="40"/>
         <source>Create a new profile with the current settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz nowy profil na podstawie bieżących ustawień.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="41"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="42"/>
         <source>Delete this profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń profil.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(brak)</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
         <source>Error: Can&apos;t load profile!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: nie udało się załadować profilu!</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="147"/>
         <source>Are you sure that you want to overwrite this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy napewno chcesz nadpisać profil?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="159"/>
         <source>Enter a name for the new profile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wprowadź nazwę dla nowego profilu:</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil o takiej nazwie już istnieje. Czy na pewno chcesz go nadpisać?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="181"/>
         <source>Are you sure that you want to delete this profile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno chcesz usunąć ten profil?</translation>
     </message>
 </context>
 <context>
@@ -2199,33 +2201,33 @@ Przycisk start jest na górze ;).</translation>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ok</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Anuluj</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tak</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished"></translation>
+        <translation>Tak, zawsze</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nie</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie, nigdy</translation>
     </message>
 </context>
 <context>

@@ -21,6 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Dialogs.h"
 #include "EnumStrings.h"
+#include "HiddenScrollArea.h"
 #include "Icons.h"
 #include "Logger.h"
 #include "Main.h"
@@ -170,176 +171,188 @@ PageOutput::PageOutput(MainWindow* main_window)
 		throw LibavException();
 	}
 
-	m_profile_box = new ProfileBox(this, "output-profiles", &LoadProfileSettingsCallback, &SaveProfileSettingsCallback, this);
-
-	QGroupBox *groupbox_file = new QGroupBox(tr("File"), this);
+	HiddenScrollArea *scrollarea = new HiddenScrollArea(this);
+	QWidget *scrollarea_contents = new QWidget(scrollarea);
+	scrollarea->setWidget(scrollarea_contents);
 	{
-		QLabel *label_file = new QLabel(tr("Save as:"), groupbox_file);
-		m_lineedit_file = new QLineEdit(groupbox_file);
-		m_lineedit_file->setToolTip(tr("The recording will be saved to this location."));
-		QPushButton *button_browse = new QPushButton(tr("Browse..."), groupbox_file);
-		m_checkbox_separate_files = new QCheckBox(tr("Separate file per segment"), groupbox_file);
-		m_checkbox_separate_files->setToolTip(tr("If checked, a separate video file will be created every time you pause and resume the recording.\n"
-												 "If the original file name is 'test.mkv', the segments will be saved as 'test-YYYY-MM-DD_HH.MM.SS.mkv'."));
-		QLabel *label_container = new QLabel(tr("Container:"), groupbox_file);
-		m_combobox_container = new QComboBox(groupbox_file);
-		for(unsigned int i = 0; i < CONTAINER_COUNT; ++i) {
-			QString name = "\u200e" + m_containers[i].name + "\u200e";
-			if(i != CONTAINER_OTHER && !AVFormatIsInstalled(m_containers[i].avname))
-				name += " \u200e" + tr("(not installed)") + "\u200e";
-			m_combobox_container->addItem(name);
-		}
-		m_combobox_container->setToolTip(tr("The container (file format) that will be used to save the recording.\n"
-											"Note that not all codecs are supported by all containers, and that not all media players can read all file formats.\n"
-											"- Matroska (MKV) supports all the codecs, but is less well-known.\n"
-											"- MP4 is the most well-known format and will play on almost any modern media player, but supports only H.264 video\n"
-											"   (and many media players only support AAC audio).\n"
-											"- WebM is intended for embedding video into websites (with the HTML5 <video> tag). The format was created by Google.\n"
-											"   WebM is supported by default in Firefox, Chrome and Opera, and plugins are available for Internet Explorer and Safari.\n"
-											"   It supports only VP8 and Vorbis.\n"
-											"- OGG supports only Theora and Vorbis."));
-		m_label_container_av = new QLabel(tr("Container name:"), groupbox_file);
-		m_combobox_container_av = new QComboBox(groupbox_file);
-		for(unsigned int i = 0; i < m_containers_av.size(); ++i) {
-			ContainerData &c = m_containers_av[i];
-			m_combobox_container_av->addItem(c.avname);
-		}
-		m_combobox_container_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work."));
+		m_profile_box = new ProfileBox(scrollarea_contents, "output-profiles", &LoadProfileSettingsCallback, &SaveProfileSettingsCallback, this);
 
-		connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
-		connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
-		connect(button_browse, SIGNAL(clicked()), this, SLOT(OnBrowse()));
+		QGroupBox *groupbox_file = new QGroupBox(tr("File"), scrollarea_contents);
+		{
+			QLabel *label_file = new QLabel(tr("Save as:"), groupbox_file);
+			m_lineedit_file = new QLineEdit(groupbox_file);
+			m_lineedit_file->setToolTip(tr("The recording will be saved to this location."));
+			QPushButton *button_browse = new QPushButton(tr("Browse..."), groupbox_file);
+			m_checkbox_separate_files = new QCheckBox(tr("Create separate timestamped file for each segment"), groupbox_file);
+			m_checkbox_separate_files->setToolTip(tr("If checked, a separate timestamped video file will be created every time you pause and resume the recording.\n"
+													 "If the original file name is 'test.mkv', the segments will be saved as 'test-YYYY-MM-DD_HH.MM.SS.mkv'."));
+			QLabel *label_container = new QLabel(tr("Container:"), groupbox_file);
+			m_combobox_container = new QComboBox(groupbox_file);
+			for(unsigned int i = 0; i < CONTAINER_COUNT; ++i) {
+				QString name = "\u200e" + m_containers[i].name + "\u200e";
+				if(i != CONTAINER_OTHER && !AVFormatIsInstalled(m_containers[i].avname))
+					name += " \u200e" + tr("(not installed)") + "\u200e";
+				m_combobox_container->addItem(name);
+			}
+			m_combobox_container->setToolTip(tr("The container (file format) that will be used to save the recording.\n"
+												"Note that not all codecs are supported by all containers, and that not all media players can read all file formats.\n"
+												"- Matroska (MKV) supports all the codecs, but is less well-known.\n"
+												"- MP4 is the most well-known format and will play on almost any modern media player, but supports only H.264 video\n"
+												"   (and many media players only support AAC audio).\n"
+												"- WebM is intended for embedding video into websites (with the HTML5 <video> tag). The format was created by Google.\n"
+												"   WebM is supported by default in Firefox, Chrome and Opera, and plugins are available for Internet Explorer and Safari.\n"
+												"   It supports only VP8 and Vorbis.\n"
+												"- OGG supports only Theora and Vorbis."));
+			m_label_container_av = new QLabel(tr("Container name:"), groupbox_file);
+			m_combobox_container_av = new QComboBox(groupbox_file);
+			for(unsigned int i = 0; i < m_containers_av.size(); ++i) {
+				ContainerData &c = m_containers_av[i];
+				m_combobox_container_av->addItem(c.avname);
+			}
+			m_combobox_container_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work."));
 
-		QGridLayout *layout = new QGridLayout(groupbox_file);
-		layout->addWidget(label_file, 0, 0);
-		layout->addWidget(m_lineedit_file, 0, 1);
-		layout->addWidget(button_browse, 0, 2);
-		layout->addWidget(m_checkbox_separate_files, 1, 0, 1, 3);
-		layout->addWidget(label_container, 2, 0);
-		layout->addWidget(m_combobox_container, 2, 1, 1, 2);
-		layout->addWidget(m_label_container_av, 3, 0);
-		layout->addWidget(m_combobox_container_av, 3, 1, 1, 2);
-	}
-	QGroupBox *groupbox_video = new QGroupBox(tr("Video"), this);
-	{
-		QLabel *label_video_codec = new QLabel(tr("Codec:"), groupbox_video);
-		m_combobox_video_codec = new QComboBox(groupbox_video);
-		for(unsigned int i = 0; i < VIDEO_CODEC_COUNT; ++i) {
-			m_combobox_video_codec->addItem(m_video_codecs[i].name);
-		}
-		m_combobox_video_codec->setToolTip(tr("The codec that will be used to compress the video stream.\n"
-											  "- H.264 (libx264) is by far the best codec - high quality and very fast.\n"
-											  "- VP8 (libvpx) is quite good but also quite slow.\n"
-											  "- Theora (libtheora) isn't really recommended because the quality isn't very good."));
-		m_label_video_codec_av = new QLabel(tr("Codec name:"), groupbox_video);
-		m_combobox_video_codec_av = new QComboBox(groupbox_video);
-		for(unsigned int i = 0; i < m_video_codecs_av.size(); ++i) {
-			VideoCodecData &c = m_video_codecs_av[i];
-			m_combobox_video_codec_av->addItem(c.avname);
-		}
-		m_combobox_video_codec_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work."));
-		m_label_video_kbit_rate = new QLabel(tr("Bit rate (in kbps):"), groupbox_video);
-		m_lineedit_video_kbit_rate = new QLineEdit(groupbox_video);
-		m_lineedit_video_kbit_rate->setToolTip(tr("The video bit rate (in kilobit per second). A higher value means a higher quality."
-												  "\nIf you have no idea where to start, try 5000 and change it if needed."));
-		m_label_h264_crf = new QLabel(tr("Constant rate factor:", "libx264 setting: don't translate this unless you can come up with something sensible"), groupbox_video);
-		m_slider_h264_crf = new QSlider(Qt::Horizontal, groupbox_video);
-		m_slider_h264_crf->setRange(0, 51);
-		m_slider_h264_crf->setSingleStep(1);
-		m_slider_h264_crf->setPageStep(5);
-		m_slider_h264_crf->setToolTip(tr("This setting changes the video quality. A lower value means a higher quality.\n"
-										 "The allowed range is 0-51 (0 means lossless, the default is 23)."));
-		m_label_h264_crf_value = new QLabel(groupbox_video);
-		m_label_h264_crf_value->setNum(m_slider_h264_crf->value());
-		m_label_h264_crf_value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		m_label_h264_crf_value->setMinimumWidth(QFontMetrics(m_label_h264_crf_value->font()).width("99") + 2);
-		m_label_h264_preset = new QLabel(tr("Preset:", "libx264 setting: don't translate this unless you can come up with something sensible"), groupbox_video);
-		m_combobox_h264_preset = new QComboBox(groupbox_video);
-		for(unsigned int i = 0; i < H264_PRESET_COUNT; ++i) {
-			m_combobox_h264_preset->addItem(EnumToString((enum_h264_preset) i));
-		}
-		m_combobox_h264_preset->setToolTip(tr("The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),\n"
-											  "but results in larger files. The quality shouldn't be affected too much."));
-		m_label_vp8_cpu_used = new QLabel(tr("CPU used:", "libvpx setting: don't translate this unless you can come up with something sensible"), groupbox_video);
-		m_combobox_vp8_cpu_used = new QComboBox(groupbox_video);
-		m_combobox_vp8_cpu_used->addItem("5 (" + tr("fastest") + ")");
-		m_combobox_vp8_cpu_used->addItem("4");
-		m_combobox_vp8_cpu_used->addItem("3");
-		m_combobox_vp8_cpu_used->addItem("2");
-		m_combobox_vp8_cpu_used->addItem("1");
-		m_combobox_vp8_cpu_used->addItem("0 (" + tr("slowest") + ")");
-		m_combobox_vp8_cpu_used->setToolTip(tr("The encoding speed. A higher value uses *less* CPU time. (I didn't choose the name, this is the name\n"
-											   "used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too."));
-		m_label_video_options = new QLabel(tr("Custom options:"), groupbox_video);
-		m_lineedit_video_options = new QLineEdit(groupbox_video);
-		m_lineedit_video_options->setToolTip(tr("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)"));
-		m_checkbox_video_allow_frame_skipping = new QCheckBox(tr("Allow frame skipping"), groupbox_video);
-		m_checkbox_video_allow_frame_skipping->setToolTip(tr("If checked, the video encoder will be allowed to skip frames if the input frame rate is\n"
-															 "lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.\n"
-															 "This increases the file size and CPU usage, but reduces the latency for live streams in some cases.\n"
-															 "It shouldn't affect the appearance of the video."));
+			connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
+			connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
+			connect(button_browse, SIGNAL(clicked()), this, SLOT(OnBrowse()));
 
-		connect(m_combobox_video_codec, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoCodecFields()));
-		connect(m_slider_h264_crf, SIGNAL(valueChanged(int)), m_label_h264_crf_value, SLOT(setNum(int)));
-
-		QGridLayout *layout = new QGridLayout(groupbox_video);
-		layout->addWidget(label_video_codec, 0, 0);
-		layout->addWidget(m_combobox_video_codec, 0, 1, 1, 2);
-		layout->addWidget(m_label_video_codec_av, 1, 0);
-		layout->addWidget(m_combobox_video_codec_av, 1, 1, 1, 2);
-		layout->addWidget(m_label_video_kbit_rate, 2, 0);
-		layout->addWidget(m_lineedit_video_kbit_rate, 2, 1, 1, 2);
-		layout->addWidget(m_label_h264_crf, 3, 0);
-		layout->addWidget(m_slider_h264_crf, 3, 1);
-		layout->addWidget(m_label_h264_crf_value, 3, 2);
-		layout->addWidget(m_label_h264_preset, 4, 0);
-		layout->addWidget(m_combobox_h264_preset, 4, 1, 1, 2);
-		layout->addWidget(m_label_vp8_cpu_used, 5, 0);
-		layout->addWidget(m_combobox_vp8_cpu_used, 5, 1, 1, 2);
-		layout->addWidget(m_label_video_options, 6, 0);
-		layout->addWidget(m_lineedit_video_options, 6, 1, 1, 2);
-		layout->addWidget(m_checkbox_video_allow_frame_skipping, 7, 0, 1, 3);
-	}
-	m_groupbox_audio = new QGroupBox(tr("Audio"));
-	{
-		QLabel *label_audio_codec = new QLabel(tr("Codec:"), m_groupbox_audio);
-		m_combobox_audio_codec = new QComboBox(m_groupbox_audio);
-		for(unsigned int i = 0; i < AUDIO_CODEC_COUNT; ++i) {
-			m_combobox_audio_codec->addItem(m_audio_codecs[i].name);
+			QGridLayout *layout = new QGridLayout(groupbox_file);
+			layout->addWidget(label_file, 0, 0);
+			layout->addWidget(m_lineedit_file, 0, 1);
+			layout->addWidget(button_browse, 0, 2);
+			layout->addWidget(m_checkbox_separate_files, 1, 0, 1, 3);
+			layout->addWidget(label_container, 2, 0);
+			layout->addWidget(m_combobox_container, 2, 1, 1, 2);
+			layout->addWidget(m_label_container_av, 3, 0);
+			layout->addWidget(m_combobox_container_av, 3, 1, 1, 2);
 		}
-		m_combobox_audio_codec->setToolTip(tr("The codec that will be used to compress the audio stream. You shouldn't worry too much about\n"
-											  "this, because the size of the audio data is usually negligible compared to the size of the video data.\n"
-											  "And if you're only recording your own voice (i.e. no music), the quality won't matter that much anyway.\n"
-											  "- Vorbis (libvorbis) is great, this is the recommended codec.\n"
-											  "- MP3 (libmp3lame) is reasonably good.\n"
-											  "- AAC is a good codec, but the implementations used here (libvo_aacenc or the experimental ffmpeg aac encoder)\n"
-											  "   are pretty bad. Only use it if you have no other choice.\n"
-											  "- Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it's very fast."));
-		m_label_audio_codec_av = new QLabel(tr("Codec name:"), m_groupbox_audio);
-		m_combobox_audio_codec_av = new QComboBox(m_groupbox_audio);
-		for(unsigned int i = 0; i < m_audio_codecs_av.size(); ++i) {
-			AudioCodecData &c = m_audio_codecs_av[i];
-			m_combobox_audio_codec_av->addItem(c.avname);
+		QGroupBox *groupbox_video = new QGroupBox(tr("Video"), scrollarea_contents);
+		{
+			QLabel *label_video_codec = new QLabel(tr("Codec:"), groupbox_video);
+			m_combobox_video_codec = new QComboBox(groupbox_video);
+			for(unsigned int i = 0; i < VIDEO_CODEC_COUNT; ++i) {
+				m_combobox_video_codec->addItem(m_video_codecs[i].name);
+			}
+			m_combobox_video_codec->setToolTip(tr("The codec that will be used to compress the video stream.\n"
+												  "- H.264 (libx264) is by far the best codec - high quality and very fast.\n"
+												  "- VP8 (libvpx) is quite good but also quite slow.\n"
+												  "- Theora (libtheora) isn't really recommended because the quality isn't very good."));
+			m_label_video_codec_av = new QLabel(tr("Codec name:"), groupbox_video);
+			m_combobox_video_codec_av = new QComboBox(groupbox_video);
+			for(unsigned int i = 0; i < m_video_codecs_av.size(); ++i) {
+				VideoCodecData &c = m_video_codecs_av[i];
+				m_combobox_video_codec_av->addItem(c.avname);
+			}
+			m_combobox_video_codec_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work."));
+			m_label_video_kbit_rate = new QLabel(tr("Bit rate (in kbps):"), groupbox_video);
+			m_lineedit_video_kbit_rate = new QLineEdit(groupbox_video);
+			m_lineedit_video_kbit_rate->setToolTip(tr("The video bit rate (in kilobit per second). A higher value means a higher quality."
+													  "\nIf you have no idea where to start, try 5000 and change it if needed."));
+			m_label_h264_crf = new QLabel(tr("Constant rate factor:", "libx264 setting: don't translate this unless you can come up with something sensible"), groupbox_video);
+			m_slider_h264_crf = new QSlider(Qt::Horizontal, groupbox_video);
+			m_slider_h264_crf->setRange(0, 51);
+			m_slider_h264_crf->setSingleStep(1);
+			m_slider_h264_crf->setPageStep(5);
+			m_slider_h264_crf->setToolTip(tr("This setting changes the video quality. A lower value means a higher quality.\n"
+											 "The allowed range is 0-51 (0 means lossless, the default is 23)."));
+			m_label_h264_crf_value = new QLabel(groupbox_video);
+			m_label_h264_crf_value->setNum(m_slider_h264_crf->value());
+			m_label_h264_crf_value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+			m_label_h264_crf_value->setMinimumWidth(QFontMetrics(m_label_h264_crf_value->font()).width("99") + 2);
+			m_label_h264_preset = new QLabel(tr("Preset:", "libx264 setting: don't translate this unless you can come up with something sensible"), groupbox_video);
+			m_combobox_h264_preset = new QComboBox(groupbox_video);
+			for(unsigned int i = 0; i < H264_PRESET_COUNT; ++i) {
+				m_combobox_h264_preset->addItem(EnumToString((enum_h264_preset) i));
+			}
+			m_combobox_h264_preset->setToolTip(tr("The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),\n"
+												  "but results in larger files. The quality shouldn't be affected too much."));
+			m_label_vp8_cpu_used = new QLabel(tr("CPU used:", "libvpx setting: don't translate this unless you can come up with something sensible"), groupbox_video);
+			m_combobox_vp8_cpu_used = new QComboBox(groupbox_video);
+			m_combobox_vp8_cpu_used->addItem("5 (" + tr("fastest") + ")");
+			m_combobox_vp8_cpu_used->addItem("4");
+			m_combobox_vp8_cpu_used->addItem("3");
+			m_combobox_vp8_cpu_used->addItem("2");
+			m_combobox_vp8_cpu_used->addItem("1");
+			m_combobox_vp8_cpu_used->addItem("0 (" + tr("slowest") + ")");
+			m_combobox_vp8_cpu_used->setToolTip(tr("The encoding speed. A higher value uses *less* CPU time. (I didn't choose the name, this is the name\n"
+												   "used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too."));
+			m_label_video_options = new QLabel(tr("Custom options:"), groupbox_video);
+			m_lineedit_video_options = new QLineEdit(groupbox_video);
+			m_lineedit_video_options->setToolTip(tr("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)"));
+			m_checkbox_video_allow_frame_skipping = new QCheckBox(tr("Allow frame skipping"), groupbox_video);
+			m_checkbox_video_allow_frame_skipping->setToolTip(tr("If checked, the video encoder will be allowed to skip frames if the input frame rate is\n"
+																 "lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.\n"
+																 "This increases the file size and CPU usage, but reduces the latency for live streams in some cases.\n"
+																 "It shouldn't affect the appearance of the video."));
+
+			connect(m_combobox_video_codec, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoCodecFields()));
+			connect(m_slider_h264_crf, SIGNAL(valueChanged(int)), m_label_h264_crf_value, SLOT(setNum(int)));
+
+			QGridLayout *layout = new QGridLayout(groupbox_video);
+			layout->addWidget(label_video_codec, 0, 0);
+			layout->addWidget(m_combobox_video_codec, 0, 1, 1, 2);
+			layout->addWidget(m_label_video_codec_av, 1, 0);
+			layout->addWidget(m_combobox_video_codec_av, 1, 1, 1, 2);
+			layout->addWidget(m_label_video_kbit_rate, 2, 0);
+			layout->addWidget(m_lineedit_video_kbit_rate, 2, 1, 1, 2);
+			layout->addWidget(m_label_h264_crf, 3, 0);
+			layout->addWidget(m_slider_h264_crf, 3, 1);
+			layout->addWidget(m_label_h264_crf_value, 3, 2);
+			layout->addWidget(m_label_h264_preset, 4, 0);
+			layout->addWidget(m_combobox_h264_preset, 4, 1, 1, 2);
+			layout->addWidget(m_label_vp8_cpu_used, 5, 0);
+			layout->addWidget(m_combobox_vp8_cpu_used, 5, 1, 1, 2);
+			layout->addWidget(m_label_video_options, 6, 0);
+			layout->addWidget(m_lineedit_video_options, 6, 1, 1, 2);
+			layout->addWidget(m_checkbox_video_allow_frame_skipping, 7, 0, 1, 3);
 		}
-		m_combobox_audio_codec_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work."));
-		m_label_audio_kbit_rate = new QLabel(tr("Bit rate (in kbps):"), m_groupbox_audio);
-		m_lineedit_audio_kbit_rate = new QLineEdit(m_groupbox_audio);
-		m_lineedit_audio_kbit_rate->setToolTip(tr("The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128."));
-		m_label_audio_options = new QLabel(tr("Custom options:"), m_groupbox_audio);
-		m_lineedit_audio_options = new QLineEdit(m_groupbox_audio);
-		m_lineedit_audio_options->setToolTip(tr("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)"));
+		m_groupbox_audio = new QGroupBox(tr("Audio"), scrollarea_contents);
+		{
+			QLabel *label_audio_codec = new QLabel(tr("Codec:"), m_groupbox_audio);
+			m_combobox_audio_codec = new QComboBox(m_groupbox_audio);
+			for(unsigned int i = 0; i < AUDIO_CODEC_COUNT; ++i) {
+				m_combobox_audio_codec->addItem(m_audio_codecs[i].name);
+			}
+			m_combobox_audio_codec->setToolTip(tr("The codec that will be used to compress the audio stream. You shouldn't worry too much about\n"
+												  "this, because the size of the audio data is usually negligible compared to the size of the video data.\n"
+												  "And if you're only recording your own voice (i.e. no music), the quality won't matter that much anyway.\n"
+												  "- Vorbis (libvorbis) is great, this is the recommended codec.\n"
+												  "- MP3 (libmp3lame) is reasonably good.\n"
+												  "- AAC is a good codec, but the implementations used here (libvo_aacenc or the experimental ffmpeg aac encoder)\n"
+												  "   are pretty bad. Only use it if you have no other choice.\n"
+												  "- Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it's very fast."));
+			m_label_audio_codec_av = new QLabel(tr("Codec name:"), m_groupbox_audio);
+			m_combobox_audio_codec_av = new QComboBox(m_groupbox_audio);
+			for(unsigned int i = 0; i < m_audio_codecs_av.size(); ++i) {
+				AudioCodecData &c = m_audio_codecs_av[i];
+				m_combobox_audio_codec_av->addItem(c.avname);
+			}
+			m_combobox_audio_codec_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work."));
+			m_label_audio_kbit_rate = new QLabel(tr("Bit rate (in kbps):"), m_groupbox_audio);
+			m_lineedit_audio_kbit_rate = new QLineEdit(m_groupbox_audio);
+			m_lineedit_audio_kbit_rate->setToolTip(tr("The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128."));
+			m_label_audio_options = new QLabel(tr("Custom options:"), m_groupbox_audio);
+			m_lineedit_audio_options = new QLineEdit(m_groupbox_audio);
+			m_lineedit_audio_options->setToolTip(tr("Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)"));
 
-		connect(m_combobox_audio_codec, SIGNAL(activated(int)), this, SLOT(OnUpdateAudioCodecFields()));
+			connect(m_combobox_audio_codec, SIGNAL(activated(int)), this, SLOT(OnUpdateAudioCodecFields()));
 
-		QGridLayout *layout = new QGridLayout(m_groupbox_audio);
-		layout->addWidget(label_audio_codec, 0, 0);
-		layout->addWidget(m_combobox_audio_codec, 0, 1);
-		layout->addWidget(m_label_audio_codec_av, 1, 0);
-		layout->addWidget(m_combobox_audio_codec_av, 1, 1);
-		layout->addWidget(m_label_audio_kbit_rate, 2, 0);
-		layout->addWidget(m_lineedit_audio_kbit_rate, 2, 1);
-		layout->addWidget(m_label_audio_options, 3, 0);
-		layout->addWidget(m_lineedit_audio_options, 3, 1);
+			QGridLayout *layout = new QGridLayout(m_groupbox_audio);
+			layout->addWidget(label_audio_codec, 0, 0);
+			layout->addWidget(m_combobox_audio_codec, 0, 1);
+			layout->addWidget(m_label_audio_codec_av, 1, 0);
+			layout->addWidget(m_combobox_audio_codec_av, 1, 1);
+			layout->addWidget(m_label_audio_kbit_rate, 2, 0);
+			layout->addWidget(m_lineedit_audio_kbit_rate, 2, 1);
+			layout->addWidget(m_label_audio_options, 3, 0);
+			layout->addWidget(m_lineedit_audio_options, 3, 1);
+		}
+
+		QVBoxLayout *layout = new QVBoxLayout(scrollarea_contents);
+		layout->addWidget(m_profile_box);
+		layout->addWidget(groupbox_file);
+		layout->addWidget(groupbox_video);
+		layout->addWidget(m_groupbox_audio);
+		layout->addStretch();
 	}
 	QPushButton *button_back = new QPushButton(g_icon_go_previous, tr("Back"), this);
 	QPushButton *button_continue = new QPushButton(g_icon_go_next, tr("Continue"), this);
@@ -348,17 +361,22 @@ PageOutput::PageOutput(MainWindow* main_window)
 	connect(button_continue, SIGNAL(clicked()), this, SLOT(OnContinue()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->addWidget(m_profile_box);
-	layout->addWidget(groupbox_file);
-	layout->addWidget(groupbox_video);
-	layout->addWidget(m_groupbox_audio);
-	layout->addStretch();
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->addWidget(scrollarea);
 	{
 		QHBoxLayout *layout2 = new QHBoxLayout();
 		layout->addLayout(layout2);
+		layout2->addSpacing(style()->pixelMetric(QStyle::PM_LayoutLeftMargin));
 		layout2->addWidget(button_back);
 		layout2->addWidget(button_continue);
+		layout2->addSpacing(style()->pixelMetric(QStyle::PM_LayoutRightMargin));
 	}
+	layout->addSpacing(style()->pixelMetric(QStyle::PM_LayoutBottomMargin));
+
+	// temporary settings to calculate the worst-case size
+	SetContainer(CONTAINER_OTHER);
+	SetVideoCodec(VIDEO_CODEC_OTHER);
+	SetAudioCodec(AUDIO_CODEC_OTHER);
 
 	OnUpdateContainerFields();
 	OnUpdateVideoCodecFields();

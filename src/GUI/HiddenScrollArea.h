@@ -20,10 +20,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-extern QIcon g_icon_ssr, g_icon_ssr_idle, g_icon_ssr_error, g_icon_ssr_paused, g_icon_ssr_recording;
-extern QIcon g_icon_go_home, g_icon_go_previous, g_icon_go_next;
-extern QIcon g_icon_pause, g_icon_record;
-extern QIcon g_icon_cancel, g_icon_save, g_icon_quit;
-extern QIcon g_icon_microphone;
+// A scroll area that tries to stay invisible if possible. The goal is to keep SSR functional even when the screen
+// resolution is too small to show the full GUI, but without affecting the behaviour under normal conditions.
+class HiddenScrollArea : public QScrollArea {
+	Q_OBJECT
 
-void LoadIcons();
+public:
+	HiddenScrollArea(QWidget* parent);
+	~HiddenScrollArea();
+
+	virtual QSize sizeHint() const override;
+	virtual QSize minimumSizeHint() const override;
+
+};

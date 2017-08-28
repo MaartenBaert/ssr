@@ -46,6 +46,7 @@ SOURCES += \
 	GUI/AudioPreviewer.cpp \
 	GUI/DialogGLInject.cpp \
 	GUI/ElidedLabel.cpp \
+	GUI/HiddenScrollArea.cpp \
 	GUI/HotkeyListener.cpp \
 	GUI/Icons.cpp \
 	GUI/MainWindow.cpp \
@@ -99,6 +100,7 @@ HEADERS  += \
 	GUI/AudioPreviewer.h \
 	GUI/DialogGLInject.h \
 	GUI/ElidedLabel.h \
+	GUI/HiddenScrollArea.h \
 	GUI/HotkeyListener.h \
 	GUI/Icons.h \
 	GUI/MainWindow.h \

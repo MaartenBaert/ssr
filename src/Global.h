@@ -47,6 +47,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QLineEdit>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QScrollArea>
 #include <QScrollBar>
 #include <QSpinBox>
 #include <QSplitter>

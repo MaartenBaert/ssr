@@ -43,7 +43,6 @@ private:
 		std::vector<ChannelData> m_channel_data;
 		unsigned int m_next_samples;
 		int64_t m_next_frame_time;
-		bool m_is_visible;
 		unsigned int m_frame_rate;
 	};
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
@@ -71,8 +70,6 @@ public:
 	virtual QSize sizeHint() const override { return QSize(100, 21); }
 
 protected:
-	virtual void showEvent(QShowEvent* event) override;
-	virtual void hideEvent(QHideEvent* event) override;
 	virtual void paintEvent(QPaintEvent* event) override;
 
 signals:

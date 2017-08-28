@@ -100,6 +100,8 @@ simplescreenrecorder_SOURCES = \
 	GUI/DialogGLInject.h \
 	GUI/ElidedLabel.cpp \
 	GUI/ElidedLabel.h \
+	GUI/HiddenScrollArea.cpp \
+	GUI/HiddenScrollArea.h \
 	GUI/HotkeyListener.cpp \
 	GUI/HotkeyListener.h \
 	GUI/Icons.cpp \
@@ -178,6 +180,7 @@ nodist_simplescreenrecorder_SOURCES += \
 	moc_AudioPreviewer.cpp \
 	moc_DialogGLInject.cpp \
 	moc_ElidedLabel.cpp \
+	moc_HiddenScrollArea.cpp \
 	moc_HotkeyListener.cpp \
 	moc_MainWindow.cpp \
 	moc_PageDone.cpp \
@@ -199,6 +202,8 @@ moc_AudioPreviewer.cpp: $(srcdir)/GUI/AudioPreviewer.h
 moc_DialogGLInject.cpp: $(srcdir)/GUI/DialogGLInject.h
 	$(MOC) "$<" -o "$@"
 moc_ElidedLabel.cpp: $(srcdir)/GUI/ElidedLabel.h
+	$(MOC) "$<" -o "$@"
+moc_HiddenScrollArea.cpp: $(srcdir)/GUI/HiddenScrollArea.h
 	$(MOC) "$<" -o "$@"
 moc_HotkeyListener.cpp: $(srcdir)/GUI/HotkeyListener.h
 	$(MOC) "$<" -o "$@"
