@@ -1,3 +1,5 @@
+# 'simplescreenrecorder' executable
+
 find_package(ALSA REQUIRED)
 find_package(AVCodec REQUIRED)
 find_package(AVFormat REQUIRED)
@@ -9,72 +11,72 @@ find_package(X11 REQUIRED)
 find_package(XExtensions REQUIRED)
 
 if(WITH_JACK)
-    find_package(Jack REQUIRED)
+	find_package(Jack REQUIRED)
 endif()
 
 if(WITH_QT5)
-    find_package(Qt5Core REQUIRED)
-    find_package(Qt5Gui REQUIRED)
-    find_package(Qt5Widgets REQUIRED)
-    find_package(Qt5X11Extras REQUIRED)
+	find_package(Qt5Core REQUIRED)
+	find_package(Qt5Gui REQUIRED)
+	find_package(Qt5Widgets REQUIRED)
+	find_package(Qt5X11Extras REQUIRED)
 else()
-    find_package(Qt4 REQUIRED QtGui)
+	find_package(Qt4 REQUIRED QtGui)
 endif()
 
 set(sources
-	AV/Input/X11Input.cpp
 	AV/Input/ALSAInput.cpp
-	AV/Input/PulseAudioInput.h
-	AV/Input/X11Input.h
+	AV/Input/ALSAInput.h
 	AV/Input/GLInjectInput.cpp
 	AV/Input/GLInjectInput.h
-	AV/Input/PulseAudioInput.cpp
-	AV/Input/SSRVideoStreamWatcher.h
-	AV/Input/JACKInput.h
-	AV/Input/SSRVideoStreamReader.h
-	AV/Input/SSRVideoStream.h
-	AV/Input/SSRVideoStreamWatcher.cpp
-	AV/Input/SSRVideoStreamReader.cpp
-	AV/Input/ALSAInput.h
 	AV/Input/JACKInput.cpp
+	AV/Input/JACKInput.h
+	AV/Input/PulseAudioInput.cpp
+	AV/Input/PulseAudioInput.h
+	AV/Input/SSRVideoStream.h
+	AV/Input/SSRVideoStreamReader.cpp
+	AV/Input/SSRVideoStreamReader.h
+	AV/Input/SSRVideoStreamWatcher.cpp
+	AV/Input/SSRVideoStreamWatcher.h
+	AV/Input/X11Input.cpp
+	AV/Input/X11Input.h
 
-	AV/Output/OutputManager.h
-	AV/Output/SyncDiagram.cpp
-	AV/Output/VideoEncoder.cpp
-	AV/Output/Muxer.h
+	AV/Output/AudioEncoder.cpp
+	AV/Output/AudioEncoder.h
+	AV/Output/BaseEncoder.cpp
 	AV/Output/BaseEncoder.h
 	AV/Output/Muxer.cpp
-	AV/Output/AudioEncoder.cpp
-	AV/Output/BaseEncoder.cpp
-	AV/Output/VideoEncoder.h
-	AV/Output/SyncDiagram.h
+	AV/Output/Muxer.h
 	AV/Output/OutputManager.cpp
-	AV/Output/Synchronizer.h
-	AV/Output/X264Presets.h
-	AV/Output/X264Presets.cpp
-	AV/Output/Synchronizer.cpp
-	AV/Output/AudioEncoder.h
+	AV/Output/OutputManager.h
 	AV/Output/OutputSettings.h
+	AV/Output/SyncDiagram.cpp
+	AV/Output/SyncDiagram.h
+	AV/Output/Synchronizer.cpp
+	AV/Output/Synchronizer.h
+	AV/Output/VideoEncoder.cpp
+	AV/Output/VideoEncoder.h
+	AV/Output/X264Presets.cpp
+	AV/Output/X264Presets.h
 
 	AV/AVWrapper.cpp
 	AV/AVWrapper.h
-	AV/FastScaler.cpp
-	AV/FastResampler.h
-	AV/FastScaler_Scale_Generic.cpp
-	AV/FastScaler_Scale_Fallback.cpp
-	AV/SourceSink.cpp
-	AV/SimpleSynth.cpp
-	AV/FastScaler_Convert_Fallback.cpp
-	AV/SourceSink.h
-	AV/FastResampler_FirFilter_Fallback.cpp
-	AV/FastScaler.h
-	AV/FastResampler_FirFilter.h
-	AV/FastScaler_Scale_Generic.h
 	AV/FastResampler.cpp
-	AV/SimpleSynth.h
-	AV/FastScaler_Scale.h
+	AV/FastResampler.h
+	AV/FastResampler_FirFilter.h
+	AV/FastResampler_FirFilter_Fallback.cpp
+	AV/FastScaler.cpp
+	AV/FastScaler.h
 	AV/FastScaler_Convert.h
+	AV/FastScaler_Convert_Fallback.cpp
+	AV/FastScaler_Scale.h
+	AV/FastScaler_Scale_Fallback.cpp
+	AV/FastScaler_Scale_Generic.cpp
+	AV/FastScaler_Scale_Generic.h
 	AV/SampleCast.h
+	AV/SimpleSynth.cpp
+	AV/SimpleSynth.h
+	AV/SourceSink.cpp
+	AV/SourceSink.h
 
 	common/CPUFeatures.cpp
 	common/CPUFeatures.h
@@ -89,31 +91,33 @@ set(sources
 	common/TempBuffer.h
 
 	GUI/AudioPreviewer.cpp
-	GUI/PageInput.cpp
-	GUI/DialogGLInject.h
-	GUI/PageOutput.cpp
-	GUI/HotkeyListener.cpp
 	GUI/AudioPreviewer.h
-	GUI/PageDone.cpp
-	GUI/PageInput.h
-	GUI/PageWelcome.h
-	GUI/MainWindow.h
-	GUI/VideoPreviewer.h
-	GUI/MainWindow.cpp
-	GUI/PageDone.h
-	GUI/PageOutput.h
 	GUI/DialogGLInject.cpp
-	GUI/Icons.cpp
-	GUI/PageRecord.h
-	GUI/HotkeyListener.h
+	GUI/DialogGLInject.h
 	GUI/ElidedLabel.cpp
 	GUI/ElidedLabel.h
-	GUI/PageWelcome.cpp
+	GUI/HiddenScrollArea.cpp
+	GUI/HiddenScrollArea.h
+	GUI/HotkeyListener.h
+	GUI/HotkeyListener.cpp
+	GUI/Icons.cpp
 	GUI/Icons.h
+	GUI/MainWindow.cpp
+	GUI/MainWindow.h
+	GUI/PageDone.cpp
+	GUI/PageDone.h
+	GUI/PageInput.cpp
+	GUI/PageInput.h
+	GUI/PageOutput.cpp
+	GUI/PageOutput.h
 	GUI/PageRecord.cpp
+	GUI/PageRecord.h
+	GUI/PageWelcome.cpp
+	GUI/PageWelcome.h
 	GUI/ProfileBox.cpp
-	GUI/VideoPreviewer.cpp
 	GUI/ProfileBox.h
+	GUI/VideoPreviewer.cpp
+	GUI/VideoPreviewer.h
 
 	Benchmark.cpp
 	Benchmark.h
@@ -129,60 +133,57 @@ set(files_to_moc
 
 	AV/Output/SyncDiagram.h
 
-	GUI/DialogGLInject.h
+	common/Logger.h
+
 	GUI/AudioPreviewer.h
-	GUI/PageInput.h
-	GUI/PageWelcome.h
+	GUI/DialogGLInject.h
+	GUI/ElidedLabel.h
+	GUI/HiddenScrollArea.h
+	GUI/HotkeyListener.h
 	GUI/MainWindow.h
-	GUI/VideoPreviewer.h
 	GUI/PageDone.h
+	GUI/PageInput.h
 	GUI/PageOutput.h
 	GUI/PageRecord.h
-	GUI/HotkeyListener.h
-	GUI/ElidedLabel.h
+	GUI/PageWelcome.h
 	GUI/ProfileBox.h
+	GUI/VideoPreviewer.h
 
-	common/Logger.h
 )
 
 if(WITH_QT5)
-
-    qt5_wrap_cpp(moced_files ${files_to_moc})
-    set(QT_LIBS
-    	Qt5::Core
-	Qt5::Gui
-	Qt5::Widgets
-	Qt5::X11Extras
-    )
-
+	qt5_wrap_cpp(moced_files ${files_to_moc})
+	set(QT_LIBS
+		Qt5::Core
+		Qt5::Gui
+		Qt5::Widgets
+		Qt5::X11Extras
+	)
 else()
-
-    qt4_wrap_cpp(moced_files ${files_to_moc})
-
-    set(QT_LIBS
-        Qt4::QtGui
-    )
-
+	qt4_wrap_cpp(moced_files ${files_to_moc})
+	set(QT_LIBS
+		Qt4::QtGui
+	)
 endif()
 
 if(ENABLE_X86_ASM)
 
-    list(APPEND sources
-        AV/FastResampler_FirFilter_SSE2.cpp
-        AV/FastScaler_Convert_SSSE3.cpp
-	AV/FastScaler_Scale_SSSE3.cpp
-    )
+	list(APPEND sources
+		AV/FastResampler_FirFilter_SSE2.cpp
+		AV/FastScaler_Convert_SSSE3.cpp
+		AV/FastScaler_Scale_SSSE3.cpp
+	)
 
-    set_source_files_properties(
-            AV/FastResampler_FirFilter_SSE2.cpp
-            PROPERTIES COMPILE_FLAGS -msse2
-    )
+	set_source_files_properties(
+		AV/FastResampler_FirFilter_SSE2.cpp
+		PROPERTIES COMPILE_FLAGS -msse2
+	)
 
-    set_source_files_properties(
-            AV/FastScaler_Convert_SSSE3.cpp
-            AV/FastScaler_Scale_SSSE3.cpp
-            PROPERTIES COMPILE_FLAGS -mssse3
-)
+	set_source_files_properties(
+		AV/FastScaler_Convert_SSSE3.cpp
+		AV/FastScaler_Scale_SSSE3.cpp
+		PROPERTIES COMPILE_FLAGS -mssse3
+	)
 
 endif()
 

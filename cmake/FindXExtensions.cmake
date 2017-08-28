@@ -1,5 +1,5 @@
-
 #rules for finding library XExtensions
+
 find_path(XEXTENSIONS_INCLUDE_DIR X11/extensions/Xfixes.h)
 find_library(XFIXES_LIBRARY NAMES Xfixes)
 find_library(XEXT_LIBRARY NAMES Xext)

@@ -1,5 +1,5 @@
+# rules for finding library SWScale
 
-#rules for finding library SWScale
 find_path(SWSCALE_INCLUDE_DIR libswscale/swscale.h)
 find_library(SWSCALE_LIBRARY NAMES swscale)
 

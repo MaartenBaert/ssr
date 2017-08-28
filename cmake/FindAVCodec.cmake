@@ -1,5 +1,5 @@
+# rules for finding library AVCodec
 
-#rules for finding library AVCodec
 find_path(AVCODEC_INCLUDE_DIR libavcodec/avcodec.h)
 find_library(AVCODEC_LIBRARY NAMES avcodec)
 

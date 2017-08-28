@@ -1,5 +1,5 @@
+# rules for finding library AVUtil
 
-#rules for finding library AVUtil
 find_path(AVUTIL_INCLUDE_DIR libavutil/avutil.h)
 find_library(AVUTIL_LIBRARY NAMES avutil)
 

@@ -1,5 +1,5 @@
+# rules for finding library Jack
 
-#rules for finding Jack library
 find_path(JACK_INCLUDE_DIR jack/jack.h)
 find_library(JACK_LIBRARY NAMES jack)
 

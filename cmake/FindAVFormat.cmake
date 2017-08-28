@@ -1,5 +1,5 @@
+# rules for finding library AVFormat
 
-#rules for finding library AVFormat
 find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h)
 find_library(AVFORMAT_LIBRARY NAMES avformat)
 

@@ -1,5 +1,5 @@
+# rules for finding library PulseAudio
 
-#rules for finding library PulseAudio
 find_path(PULSEAUDIO_INCLUDE_DIR pulse/pulseaudio.h)
 find_library(PULSEAUDIO_LIBRARY NAMES pulse)
 
