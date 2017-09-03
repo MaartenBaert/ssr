@@ -128,44 +128,6 @@ set(sources
 	NVidia.h
 )
 
-set(files_to_moc
-	AV/Input/X11Input.h
-
-	AV/Output/SyncDiagram.h
-
-	common/Logger.h
-
-	GUI/AudioPreviewer.h
-	GUI/DialogGLInject.h
-	GUI/ElidedLabel.h
-	GUI/HiddenScrollArea.h
-	GUI/HotkeyListener.h
-	GUI/MainWindow.h
-	GUI/PageDone.h
-	GUI/PageInput.h
-	GUI/PageOutput.h
-	GUI/PageRecord.h
-	GUI/PageWelcome.h
-	GUI/ProfileBox.h
-	GUI/VideoPreviewer.h
-
-)
-
-if(WITH_QT5)
-	qt5_wrap_cpp(moced_files ${files_to_moc})
-	set(QT_LIBS
-		Qt5::Core
-		Qt5::Gui
-		Qt5::Widgets
-		Qt5::X11Extras
-	)
-else()
-	qt4_wrap_cpp(moced_files ${files_to_moc})
-	set(QT_LIBS
-		Qt4::QtGui
-	)
-endif()
-
 if(ENABLE_X86_ASM)
 
 	list(APPEND sources
@@ -187,9 +149,52 @@ if(ENABLE_X86_ASM)
 
 endif()
 
+set(moc_input
+	AV/Input/X11Input.h
+
+	AV/Output/SyncDiagram.h
+
+	common/Logger.h
+
+	GUI/AudioPreviewer.h
+	GUI/DialogGLInject.h
+	GUI/ElidedLabel.h
+	GUI/HiddenScrollArea.h
+	GUI/HotkeyListener.h
+	GUI/MainWindow.h
+	GUI/PageDone.h
+	GUI/PageInput.h
+	GUI/PageOutput.h
+	GUI/PageRecord.h
+	GUI/PageWelcome.h
+	GUI/ProfileBox.h
+	GUI/VideoPreviewer.h
+)
+
+set(res_input
+	../data/resources/resources.qrc
+)
+
+if(WITH_QT5)
+	qt5_add_resources(res_output ${res_input})
+	qt5_wrap_cpp(moc_output ${moc_input})
+	set(QT_LIBS
+		Qt5::Core
+		Qt5::Gui
+		Qt5::Widgets
+		Qt5::X11Extras
+	)
+else()
+	qt4_wrap_cpp(moc_output ${moc_input})
+	set(QT_LIBS
+		Qt4::QtGui
+	)
+endif()
+
 add_executable(simplescreenrecorder
 	${sources}
-	${moced_files}
+	${moc_output}
+	${res_output}
 )
 
 target_include_directories(simplescreenrecorder
@@ -237,4 +242,4 @@ target_compile_definitions(simplescreenrecorder
 	-DPACKAGE_VERSION="${PROJECT_VERSION}"
 )
 
-install(TARGETS simplescreenrecorder RUNTIME DESTINATION ${PATH_BIN})
+install(TARGETS simplescreenrecorder RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})

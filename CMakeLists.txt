@@ -14,46 +14,93 @@ option(WITH_GLINJECT "Build the 'libssr-glinject' library. Required for OpenGL r
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-set(PATH_BIN "bin")
-set(PATH_LIBS "lib")
-set(PATH_DATA "share")
-set(PATH_APP "${PATH_DATA}/applications")
-set(PATH_PRIV_DATA "${PATH_DATA}/simplescreenrecorder")
-set(PATH_TR "${PATH_PRIV_DATA}/translations")
+find_package(GNUInstallDirs REQUIRED)
+
+# try to guess correct 32-bit library path on 64-bit systems
+if(ENABLE_32BIT_GLINJECT)
+
+	if(NOT DEFINED CMAKE_INSTALL_LIB32DIR)
+		set(_LIB32DIR_DEFAULT "lib32")
+		if(EXISTS "/etc/debian_version")
+			if(EXISTS "/usr/lib/i386-linux-gnu")
+				set(_LIB32DIR_DEFAULT "lib/i386-linux-gnu")
+			elseif(EXISTS "/usr/lib/i686-linux-gnu")
+				set(_LIB32DIR_DEFAULT "lib/i686-linux-gnu")
+			else()
+				message(WARNING "Could not find correct multiarch 32-bit library path, falling back to 'lib32'.")
+			endif()
+		endif()
+		set(CMAKE_INSTALL_LIB32DIR "${_LIB32DIR_DEFAULT}" CACHE PATH "object code libraries, 32-bit (${_LIB32DIR_DEFAULT})")
+	endif()
+	
+	mark_as_advanced(CMAKE_INSTALL_LIB32DIR)
+
+	if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_LIB32DIR})
+		set(CMAKE_INSTALL_FULL_LIB32DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIB32DIR}")
+	else()
+		set(CMAKE_INSTALL_FULL_LIB32DIR "${CMAKE_INSTALL_LIB32DIR}")
+	endif()
+
+endif()
+
+#set(PATH_BIN "bin")
+#set(PATH_LIBS "lib")
+#set(PATH_DATA "share")
+#set(PATH_DESKTOP "${CMAKE_INSTALL_FULL_DATADIR}/applications")
+#set(PATH_APPDATA "${CMAKE_INSTALL_FULL_DATADIR}/appdata")
+#set(PATH_PRIV_DATA "${CMAKE_INSTALL_FULL_DATADIR}/simplescreenrecorder")
+#set(PATH_TR "${PATH_PRIV_DATA}/translations")
 
 if(WITH_GLINJECT)
+
 	add_subdirectory(glinject)
+
+	install(
+		FILES scripts/ssr-glinject
+		DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
+	)
+	install(
+		FILES data/man/ssr-glinject.man
+		DESTINATION ${CMAKE_INSTALL_FULL_MANDIR}/man1
+	)
+
 endif()
 
 if(WITH_SIMPLESCREENRECORDER)
+
 	add_subdirectory(src)
 	add_subdirectory(src/translations)
-endif()
 
-install(
-	DIRECTORY data/man
-	DESTINATION ${PATH_DATA}/man/man1
-)
-install(
-	DIRECTORY data/output-profiles
-	DESTINATION ${PATH_PRIV_DATA}
-)
-install(
-	FILES data/simplescreenrecorder.desktop
-	DESTINATION ${PATH_APP}
-)
+	install(
+		DIRECTORY data/output-profiles
+		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/simplescreenrecorder
+	)
+	install(
+		FILES data/man/simplescreenrecorder.man
+		DESTINATION ${CMAKE_INSTALL_FULL_MANDIR}/man1
+	)
+	install(
+		FILES data/simplescreenrecorder.desktop
+		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/applications
+	)
+	install(
+		FILES data/simplescreenrecorder.appdata.xml
+		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/appdata
+	)
+
+endif()
 
 # icons
 set(icons_res 16 22 24 32 48 64 96 128 192 256)
 
 foreach(res IN LISTS icons_res)
 	install(
-		DIRECTORY data/icons/${res}
-		DESTINATION ${PATH_DATA}/icons/hicolor/${res}x${res}/apps
+		DIRECTORY data/icons/${res}/
+		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/${res}x${res}/apps
 	)
 endforeach()
 
 install(
 	DIRECTORY data/icons/scalable/
-	DESTINATION ${PATH_DATA}/icons/hicolor/scalable/apps
+	DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/scalable/apps
 )

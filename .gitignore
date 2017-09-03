@@ -22,6 +22,8 @@ stamp-h1
 
 build/
 build32/
+build-debug/
+build-release/
 src/simplescreenrecorder
 
 private-*
