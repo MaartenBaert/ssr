@@ -20,11 +20,15 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include <QDBusConnection>
+
+
 class PageWelcome;
 class PageInput;
 class PageOutput;
 class PageRecord;
 class PageDone;
+class PageRecordAdaptor;
 
 class MainWindow : public QMainWindow {
 	Q_OBJECT
@@ -50,6 +54,7 @@ private:
 	PageInput *m_page_input;
 	PageOutput *m_page_output;
 	PageRecord *m_page_record;
+	PageRecordAdaptor *m_page_record_adaptor;
 	PageDone *m_page_done;
 
 public:
