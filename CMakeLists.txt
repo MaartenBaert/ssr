@@ -43,14 +43,6 @@ if(ENABLE_32BIT_GLINJECT)
 
 endif()
 
-#set(PATH_BIN "bin")
-#set(PATH_LIBS "lib")
-#set(PATH_DATA "share")
-#set(PATH_DESKTOP "${CMAKE_INSTALL_FULL_DATADIR}/applications")
-#set(PATH_APPDATA "${CMAKE_INSTALL_FULL_DATADIR}/appdata")
-#set(PATH_PRIV_DATA "${CMAKE_INSTALL_FULL_DATADIR}/simplescreenrecorder")
-#set(PATH_TR "${PATH_PRIV_DATA}/translations")
-
 if(WITH_GLINJECT)
 
 	add_subdirectory(glinject)

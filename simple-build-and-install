@@ -1,0 +1,108 @@
+#!/bin/bash
+# Run this if you just want to build and install the program and you don't care about all the details.
+# Any additional arguments will be passed on to 'cmake'.
+
+set -e
+cd "$( dirname "${BASH_SOURCE[0]}" )"
+
+if [ x"$( whoami )" = x"root" ]; then
+	echo "Error: don't run this script as root, this will mess up file permissions"
+	exit 1
+fi
+
+export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig"
+
+echo "Detecting architecture ..."
+case "$( uname -m )" in
+	"i386"|"i486"|"i586"|"i686")
+		ENABLE_32BIT_GLINJECT="FALSE"
+		ENABLE_X86_ASM="TRUE"
+		WITH_GLINJECT="TRUE"
+		;;
+	"x86_64")
+		ENABLE_32BIT_GLINJECT="TRUE"
+		ENABLE_X86_ASM="TRUE"
+		WITH_GLINJECT="TRUE"
+		;;
+	*)
+		ENABLE_32BIT_GLINJECT="FALSE"
+		ENABLE_X86_ASM="FALSE"
+		WITH_GLINJECT="FALSE"
+		;;
+esac
+
+echo "Detecting ffmpeg/libav ..."
+if ! pkg-config --exists libavcodec; then
+	echo "  Error: libavcodec development package not found, make sure ffmpeg or libav development packages are installed."
+	exit 1
+fi
+LIBAVCODEC_INCLUDE_DIR=`pkg-config --variable=includedir libavcodec`
+HAS_FFMPEG=$( grep -c "This file is part of FFmpeg." $LIBAVCODEC_INCLUDE_DIR/libavcodec/avcodec.h || true )
+HAS_LIBAV=$( grep -c "This file is part of Libav." $LIBAVCODEC_INCLUDE_DIR/libavcodec/avcodec.h || true )
+if [ $HAS_FFMPEG -gt 0 ]; then
+	if [ $HAS_LIBAV -gt 0 ]; then
+		echo "  Error: Detected ffmpeg AND libav, this should not happen!"
+		exit 1
+	else
+		echo "  Detected ffmpeg."
+		ENABLE_FFMPEG_VERSIONS="TRUE"
+	fi
+else
+	if [ $HAS_LIBAV -gt 0 ]; then
+		echo "  Detected libav."
+		ENABLE_FFMPEG_VERSIONS="FALSE"
+	else
+		echo "  Error: Detection failed."
+		exit 1
+	fi
+fi
+
+echo "Detecting Qt version ..."
+if pkg-config --exists QtGui; then
+	echo "  Detected Qt4."
+	WITH_QT5="FALSE"
+elif pkg-config --exists Qt5Gui; then
+	echo "  Detected Qt5."
+	WITH_QT5="TRUE"
+else
+	echo "  Error: Qt development package not found."
+	exit 1
+fi
+
+echo "Auto-detected options:"
+echo "  ENABLE_32BIT_GLINJECT = $ENABLE_32BIT_GLINJECT"
+echo "  ENABLE_X86_ASM = $ENABLE_X86_ASM"
+echo "  ENABLE_FFMPEG_VERSIONS = $ENABLE_FFMPEG_VERSIONS"
+echo "  WITH_QT5=$WITH_QT5"
+echo "  WITH_GLINJECT=$WITH_GLINJECT"
+
+PREFIX="/usr"
+OPTIONS="-DENABLE_32BIT_GLINJECT=$ENABLE_32BIT_GLINJECT -DENABLE_X86_ASM=$ENABLE_X86_ASM -DENABLE_FFMPEG_VERSIONS=$ENABLE_FFMPEG_VERSIONS -DWITH_QT5=$WITH_QT5 -DWITH_GLINJECT=$WITH_GLINJECT"
+
+echo "Creating build-release ..."
+mkdir -p build-release
+cd build-release
+
+echo "Running cmake ..."
+cmake -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_BUILD_TYPE=Release $OPTIONS "$@" ..
+
+echo "Compiling ..."
+make -j "$( nproc )"
+
+echo "Removing old SSR libraries ..."
+sudo rm -f "/usr/lib/libssr-glinject."*
+sudo rm -f "/usr/lib32/libssr-glinject."*
+sudo rm -f "/usr/lib64/libssr-glinject."*
+sudo rm -f "/usr/lib/i386-linux-gnu/libssr-glinject."*
+sudo rm -f "/usr/lib/i686-linux-gnu/libssr-glinject."*
+sudo rm -f "/usr/lib/x86_64-linux-gnu/libssr-glinject."*
+
+echo "Installing ..."
+sudo make install
+
+cd ..
+
+echo "Running post-install script ..."
+sudo ./postinstall
+
+echo "Done."

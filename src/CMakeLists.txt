@@ -185,6 +185,7 @@ if(WITH_QT5)
 		Qt5::X11Extras
 	)
 else()
+	qt4_add_resources(res_output ${res_input})
 	qt4_wrap_cpp(moc_output ${moc_input})
 	set(QT_LIBS
 		Qt4::QtGui
