@@ -1,0 +1,24 @@
+#!/bin/bash
+# Run this if you used 'simple-build-and-install' and you want to uninstall the program again.
+
+set -e
+cd "$( dirname "${BASH_SOURCE[0]}" )"
+
+if [ x"$( whoami )" = x"root" ]; then
+	echo "Error: don't run this script as root, this will mess up file permissions"
+	exit 1
+fi
+
+echo "Entering build-release directory ..."
+cd build-release
+
+echo "Uninstalling ..."
+sudo xargs rm < install_manifest.txt
+
+echo "Leaving build-release directory ..."
+cd ..
+
+echo "Running post-install script ..."
+sudo ./postinstall
+
+echo "Done."

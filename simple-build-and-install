@@ -79,7 +79,7 @@ echo "  WITH_GLINJECT=$WITH_GLINJECT"
 PREFIX="/usr"
 OPTIONS="-DENABLE_32BIT_GLINJECT=$ENABLE_32BIT_GLINJECT -DENABLE_X86_ASM=$ENABLE_X86_ASM -DENABLE_FFMPEG_VERSIONS=$ENABLE_FFMPEG_VERSIONS -DWITH_QT5=$WITH_QT5 -DWITH_GLINJECT=$WITH_GLINJECT"
 
-echo "Creating build-release ..."
+echo "Entering build-release directory ..."
 mkdir -p build-release
 cd build-release
 
@@ -100,6 +100,7 @@ sudo rm -f "/usr/lib/x86_64-linux-gnu/libssr-glinject."*
 echo "Installing ..."
 sudo make install
 
+echo "Leaving build-release directory ..."
 cd ..
 
 echo "Running post-install script ..."
