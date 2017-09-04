@@ -77,19 +77,19 @@ if(WITH_SIMPLESCREENRECORDER)
 		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/appdata
 	)
 
-endif()
+	# icons
+	set(icons_res 16 22 24 32 48 64 96 128 192 256)
 
-# icons
-set(icons_res 16 22 24 32 48 64 96 128 192 256)
+	foreach(res IN LISTS icons_res)
+		install(
+			DIRECTORY data/icons/${res}/
+			DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/${res}x${res}/apps
+		)
+	endforeach()
 
-foreach(res IN LISTS icons_res)
 	install(
-		DIRECTORY data/icons/${res}/
-		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/${res}x${res}/apps
+		DIRECTORY data/icons/scalable/
+		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/scalable/apps
 	)
-endforeach()
 
-install(
-	DIRECTORY data/icons/scalable/
-	DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/scalable/apps
-)
+endif()
