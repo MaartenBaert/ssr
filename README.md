@@ -18,13 +18,14 @@ If you have a 64-bit system, you have to install some 32-bit libraries as well. 
 
 You will need the following packages to compile SimpleScreenRecorder:
 
-- GCC (>= 4.6) and make
+- GCC (>= 4.6)
+- cmake
 - pkg-config
-- Qt 4 (Qt 5 is also possible, but still has some stability issues)
+- Qt 4 or 5
 - ffmpeg or libav (libavformat, libavcodec, libavutil, libswscale)
 - ALSA library
-- PulseAudio library (optional, disable with --without-pulseaudio)
-- JACK library (optional, disable with --without-jack)
+- PulseAudio library (optional, disable with -DWITH_PULSEAUDIO=FALSE)
+- JACK library (optional, disable with -DWITH_JACK=FALSE)
 - libGL (32 and 64 bit)
 - libGLU (32 and 64 bit)
 - libX11 (32 and 64 bit)
@@ -38,7 +39,7 @@ For Ubuntu 12.04 - 13.04:
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev g++-multilib ia32-libs
 
-For Ubuntu 13.10 - 15.10:
+For Ubuntu 13.10 - 17.10:
 
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev libavformat-dev \
     libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
@@ -138,7 +139,15 @@ The simplest way to compile and install everything is to run:
 
 This will compile the 64-bit main program and library, and then the 32-bit library. If the 32-bit build fails because libraries are missing, but 64-bit works fine, read the instructions above again :).
 
-If you want to compile step-by-step, just run configure followed by make. Configure with --disable-ffmpeg-versions if your distribution uses libav instead of ffmpeg. It's a good idea to build in a separate directory, because you will need to build the library twice (32-bit and 64-bit). Look at the 'simple-build-and-install' script to see how this is done.
+If you want to compile step-by-step, you can use the following steps:
+
+    mkdir build-release
+    cd build-release
+    cmake -DCMAKE_INSTALL_PREFIX="/usr" -DCMAKE_BUILD_TYPE=Release ..
+    make
+    sudo make install
+
+Note that you may need to specify additional options depending on which Linux distribution and CPU architecture you have. The simple-build-and-install script detects the correct options automatically, you can run it to see which options you need.
 
 You don't need to install the program to use it, but installing will give you a desktop entry and an icon. Also, if you don't install the program, you will need to specify where the GLInject libraries are located with LD_LIBRARY_PATH when using OpenGL recording.
 
