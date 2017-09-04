@@ -16,7 +16,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 find_package(GNUInstallDirs REQUIRED)
 
-# try to guess correct 32-bit library path on 64-bit systems
+# try to guess the correct 32-bit library path on 64-bit systems
 if(ENABLE_32BIT_GLINJECT)
 
 	if(NOT DEFINED CMAKE_INSTALL_LIB32DIR)
@@ -47,15 +47,6 @@ if(WITH_GLINJECT)
 
 	add_subdirectory(glinject)
 
-	install(
-		FILES scripts/ssr-glinject
-		DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
-	)
-	install(
-		FILES data/man/ssr-glinject.man
-		DESTINATION ${CMAKE_INSTALL_FULL_MANDIR}/man1
-	)
-
 endif()
 
 if(WITH_SIMPLESCREENRECORDER)
@@ -63,12 +54,18 @@ if(WITH_SIMPLESCREENRECORDER)
 	add_subdirectory(src)
 	add_subdirectory(src/translations)
 
+	# the 'ssr-glinject' script is installed together with the main SSR executable to avoid problems with multiarch packages
+	install(
+		FILES scripts/ssr-glinject
+		DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
+		PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+	)
 	install(
 		DIRECTORY data/output-profiles
 		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/simplescreenrecorder
 	)
 	install(
-		FILES data/man/simplescreenrecorder.man
+		DIRECTORY data/man/
 		DESTINATION ${CMAKE_INSTALL_FULL_MANDIR}/man1
 	)
 	install(

@@ -255,7 +255,7 @@ inline QString av_version(unsigned int ver) {
 
 QString GetVersionInfo() {
 	return QString() +
-			"SimpleScreenRecorder " + PACKAGE_VERSION + "\n"
+			"SimpleScreenRecorder " + SSR_VERSION + "\n"
 #ifdef __clang__
 			"Compiled with Clang " + QString::number(__clang_major__) + "." + QString::number(__clang_minor__) + "." + QString::number(__clang_patchlevel__) + "\n"
 #else

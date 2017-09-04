@@ -1,14 +1,13 @@
 # 'simplescreenrecorder' executable
 
+find_package(Threads REQUIRED)
 find_package(ALSA REQUIRED)
 find_package(AVCodec REQUIRED)
 find_package(AVFormat REQUIRED)
 find_package(AVUtil REQUIRED)
 find_package(PulseAudio REQUIRED)
 find_package(SWScale REQUIRED)
-find_package(Threads REQUIRED)
 find_package(X11 REQUIRED)
-find_package(XExtensions REQUIRED)
 
 if(WITH_JACK)
 	find_package(Jack REQUIRED)
@@ -198,18 +197,18 @@ add_executable(simplescreenrecorder
 	${res_output}
 )
 
-target_include_directories(simplescreenrecorder
-	PRIVATE
+target_include_directories(simplescreenrecorder PRIVATE
 	${ALSA_INCLUDE_DIRS}
 	${AVCODEC_INCLUDE_DIRS}
 	${AVFORMAT_INCLUDE_DIRS}
 	${AVUTIL_INCLUDE_DIRS}
 	${SWSCALE_INCLUDE_DIRS}
-	${X11_INCLUDE_DIRS}
-	${XEXTENSIONS_INCLUDE_DIRS}
+	${X11_X11_INCLUDE_PATH}
+	${X11_Xext_INCLUDE_PATH}
+	${X11_Xfixes_INCLUDE_PATH}
+	${X11_Xi_INCLUDE_PATH}
 	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_INCLUDE_DIRS}>
 	$<$<BOOL:${WITH_JACK}>:${JACK_INCLUDE_DIRS}>
-
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/AV
 	${CMAKE_CURRENT_SOURCE_DIR}/AV/Input
@@ -218,8 +217,7 @@ target_include_directories(simplescreenrecorder
 	${CMAKE_CURRENT_SOURCE_DIR}/GUI
 )
 
-target_link_libraries(simplescreenrecorder
-	PRIVATE
+target_link_libraries(simplescreenrecorder PRIVATE
 	${ALSA_LIBRARIES}
 	${AVCODEC_LIBRARIES}
 	${AVFORMAT_LIBRARIES}
@@ -227,20 +225,21 @@ target_link_libraries(simplescreenrecorder
 	${QT_LIBS}
 	${CMAKE_THREAD_LIBS_INIT}
 	${SWSCALE_LIBRARIES}
-	${X11_LIBRARIES}
-	${XEXTENSIONS_LIBRARIES}
+	${X11_X11_LIB}
+	${X11_Xext_LIB}
+	${X11_Xfixes_LIB}
+	${X11_Xi_LIB}
 	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_LIBRARIES}>
 	$<$<BOOL:${WITH_JACK}>:${JACK_LIBRARIES}>
 )
 
-target_compile_definitions(simplescreenrecorder
-	PRIVATE
+target_compile_definitions(simplescreenrecorder PRIVATE
 	-DSSR_USE_X86_ASM=$<BOOL:${ENABLE_X86_ASM}>
 	-DSSR_USE_FFMPEG_VERSIONS=$<BOOL:${ENABLE_FFMPEG_VERSIONS}>
 	-DSSR_USE_PULSEAUDIO=$<BOOL:${WITH_PULSEAUDIO}>
 	-DSSR_USE_JACK=$<BOOL:${WITH_JACK}>
 	-DSSR_SYSTEM_DIR="${CMAKE_INSTALL_PREFIX}"
-	-DPACKAGE_VERSION="${PROJECT_VERSION}"
+	-DSSR_VERSION="${PROJECT_VERSION}"
 )
 
 install(TARGETS simplescreenrecorder RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
