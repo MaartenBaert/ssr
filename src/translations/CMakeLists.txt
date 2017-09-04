@@ -14,6 +14,7 @@ if(LRELEASE)
 		fr
 		he
 		hu
+		id
 		it
 		ja
 		lt

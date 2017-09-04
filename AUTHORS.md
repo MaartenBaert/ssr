@@ -14,6 +14,13 @@ Graphics
 
 - David Revoy (icon)
 - Mrallowski (original camera lens from openclipart.org)
+- Maarten Baert (header)
+
+Build system
+------------
+
+- Maarten Baert
+- Michał Walenciak (switch to cmake)
 
 Translations
 ------------
@@ -27,8 +34,10 @@ Translations
 - French: Mario Roger
 - Hebrew: GreenLunar
 - Hungarian: ViBE, Balázs Úr
+- Indonesian: Arif Budiman
 - Italian: Bersil
 - Japanese: Tou Omiya
+- Lithuanian: welaq
 - Dutch: Maarten Baert
 - Polish: Szamanx0, Vetyt Yhonay, Michał Walenciak
 - Brazilian Portuguese: Paulo Milliet Roque, Rafael Ferreira

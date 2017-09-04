@@ -851,6 +851,58 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <source>Starting converter benchmark ...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Error: Sending of audio frame failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Receiving of audio packet failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t copy parameters to stream!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t create new codec context!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stopping fragment thread ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fragment thread started.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Next fragment ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finishing ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fragment thread stopped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exception &apos;%1&apos; in fragment thread.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown exception in fragment thread.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Sending of video frame failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Receiving of video packet failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -1135,12 +1187,12 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     </message>
     <message>
         <source>Separate file per segment</source>
-        <translation>Διαχωρισμός αρχείου ανά τμήμα</translation>
+        <translation type="obsolete">Διαχωρισμός αρχείου ανά τμήμα</translation>
     </message>
     <message>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
 If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation>Αν ενεργοποιηθεί, ένα ξεχωριστό αρχείο βίντεο θα δημιουργείται κάθε φορά που σταματάτε και εκκινείτε την εγγραφή.
+        <translation type="obsolete">Αν ενεργοποιηθεί, ένα ξεχωριστό αρχείο βίντεο θα δημιουργείται κάθε φορά που σταματάτε και εκκινείτε την εγγραφή.
 Αν το αρχικό όνομα αρχείου είναι &apos;test.mkv&apos;, τα τμήματα θα αποθηκευτούν ως &apos;test-YYYY-MM-DD-HH.MM.SS.mkv&apos;.</translation>
     </message>
     <message>
@@ -1334,6 +1386,15 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     </message>
     <message>
         <source>(not installed)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create separate timestamped file for each segment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, a separate timestamped video file will be created every time you pause and resume the recording.
+If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
