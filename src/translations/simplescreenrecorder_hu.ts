@@ -48,21 +48,21 @@
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="37"/>
-        <source>&lt;p>Warning: OpenGL recording works by injecting a library into the program that will be recorded. This library will override some system functions in order to capture the frames before they are displayed on the screen. If you are trying to record a game that tries to detect hacking attempts on the client side, it's (theoretically) possible that the game will consider this a hack. This might even get you banned, so it's a good idea to make sure that the program you want to record won't ban you, *before* you try to record it. You've been warned :).&lt;/p>
+        <source>&lt;p&gt;Warning: OpenGL recording works by injecting a library into the program that will be recorded. This library will override some system functions in order to capture the frames before they are displayed on the screen. If you are trying to record a game that tries to detect hacking attempts on the client side, it&apos;s (theoretically) possible that the game will consider this a hack. This might even get you banned, so it&apos;s a good idea to make sure that the program you want to record won&apos;t ban you, *before* you try to record it. You&apos;ve been warned :).&lt;/p&gt;
 
-&lt;p>Another warning: OpenGL recording is experimental, it may not work or even crash the program you are recording. If you are worried about losing program data, make a backup first!&lt;/p>
+&lt;p&gt;Another warning: OpenGL recording is experimental, it may not work or even crash the program you are recording. If you are worried about losing program data, make a backup first!&lt;/p&gt;
 
-&lt;p>If you want to record Steam games, &lt;a href="http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/">read this first&lt;/a>.&lt;/p></source>
-        <translation>&lt;p>Figyelmeztetés: az OpenGL alkalmazások felvétele egy programkönyvtár beültetésével történik abba a programba, amely rögzítésre fog kerülni. Ez a programkönyvtár felül fog bírálni néhány rendszerfüggvényt annak érdekében, hogy a képkockákat a képernyőn való megjelenítésük előtt rögzítse. Ha olyan játékról szeretne felvételt készíteni, amely megpróbálja a kliens oldalon felismerni a csalási kísérleteket, akkor (elméletileg) lehetséges, hogy a játék ezt csalásnak fogja gondolni. Ez akár a kitiltásához is vezethet, ezért a rögzítési kísérlet *előtt* jó ötlet lehet meggyőződni arról, hogy a rögzíteni kívánt program nem fogja kitiltani önt. Mi figyelmeztettük :).&lt;/p>
+&lt;p&gt;If you want to record Steam games, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;read this first&lt;/a&gt;.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Figyelmeztetés: az OpenGL alkalmazások felvétele egy programkönyvtár beültetésével történik abba a programba, amely rögzítésre fog kerülni. Ez a programkönyvtár felül fog bírálni néhány rendszerfüggvényt annak érdekében, hogy a képkockákat a képernyőn való megjelenítésük előtt rögzítse. Ha olyan játékról szeretne felvételt készíteni, amely megpróbálja a kliens oldalon felismerni a csalási kísérleteket, akkor (elméletileg) lehetséges, hogy a játék ezt csalásnak fogja gondolni. Ez akár a kitiltásához is vezethet, ezért a rögzítési kísérlet *előtt* jó ötlet lehet meggyőződni arról, hogy a rögzíteni kívánt program nem fogja kitiltani önt. Mi figyelmeztettük :).&lt;/p&gt;
 
-&lt;p>Egy másik figyelmeztetés: az OpenGL rögzítés kísérleti funkció, előfordulhat, hogy nem működik, vagy akár az éppen rögzített programot összeomlásához is vezethet. Ha aggódik a program adatainak elvesztésével kapcsolatban, akkor először készítsen biztonsági mentést!&lt;/p>
+&lt;p&gt;Egy másik figyelmeztetés: az OpenGL rögzítés kísérleti funkció, előfordulhat, hogy nem működik, vagy akár az éppen rögzített programot összeomlásához is vezethet. Ha aggódik a program adatainak elvesztésével kapcsolatban, akkor először készítsen biztonsági mentést!&lt;/p&gt;
 
-&lt;p>Ha Steam játékokat szeretne rögzíteni, akkor &lt;a href="http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/">először ezt olvassa el&lt;/a>.&lt;/p></translation>
+&lt;p&gt;Ha Steam játékokat szeretne rögzíteni, akkor &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;először ezt olvassa el&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="51"/>
         <source>Choose channel</source>
-        <translation>Csatorna kiválasztása	</translation>
+        <translation>Csatorna kiválasztása</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="53"/>
@@ -72,7 +72,7 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="55"/>
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
-If you leave this empty, the default name 'channel-YOURUSERNAME' will be used.</source>
+If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
         <translation>A csatornaneveket az alkalmazások azonosításához használják. Csak akkor kell ezt használnia, ha egyszerre több alkalmazást szeretne rögzíteni.
 Ha ezt üresen hagyja, akkor az alapértelmezett „channel-FELHASZNÁLÓNÉV” név lesz használva.</translation>
     </message>
@@ -83,7 +83,7 @@ Ha ezt üresen hagyja, akkor az alapértelmezett „channel-FELHASZNÁLÓNÉV”
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="58"/>
-        <source>If checked, other users on the same machine will be able to attach to the shared memory that's used for communication with the OpenGL program.
+        <source>If checked, other users on the same machine will be able to attach to the shared memory that&apos;s used for communication with the OpenGL program.
 This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.
 This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user.</source>
         <translation>Ha be van jelölve, akkor az azonos rendszeren lévő egyéb felhasználók képesek lesznek hozzácsatolni ahhoz az osztott memóriához, amelyet az OpenGL programmal történő kommunikációhoz használnak.
@@ -112,7 +112,7 @@ Ez még azokra a felhasználókra is alkalmazható, akik távolról jelentkeznek
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="81"/>
-        <source>The command will be executed in this directory. If you leave this empty, the working directory won't be changed.</source>
+        <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
         <translation>A parancs ebben a könyvtárban lesz végrehajtva. Ha ezt üresen hagyja, akkor a munkakönyvtár nem lesz megváltoztatva.</translation>
     </message>
     <message>
@@ -142,8 +142,8 @@ Ez még azokra a felhasználókra is alkalmazható, akik távolról jelentkeznek
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="110"/>
-        <source>If checked, the injected library will slow down the application so the frame rate doesn't become higher than the recording frame rate.
-This stops the application from wasting CPU time for frames that won't be recorded, and sometimes results in smoother video
+        <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
+This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
         <translation>Ha be van jelölve, akkor a beültetett programkönyvtár le fogja lassítani az alkalmazást, így a képkockasebesség nem lesz magasabb a rögzítés képkockasebességénél.
 Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkockáknál, amelyek nem lesznek rögzítve, és ez néha simább videót eredményez (ez az alkalmazástól függ).</translation>
@@ -180,8 +180,8 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
         <location filename="../AV/FastScaler.cpp" line="139"/>
         <location filename="../Benchmark.cpp" line="124"/>
         <location filename="../Benchmark.cpp" line="205"/>
-        <source>Error: Can't get swscale context!</source>
-        <comment>Don't translate 'swscale'</comment>
+        <source>Error: Can&apos;t get swscale context!</source>
+        <comment>Don&apos;t translate &apos;swscale&apos;</comment>
         <translation>Hiba: nem lehet lekérni a szoftveres méretezés környezetét!</translation>
     </message>
     <message>
@@ -192,25 +192,25 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
         <location filename="../AV/FastScaler.cpp" line="257"/>
         <location filename="../AV/FastScaler.cpp" line="280"/>
         <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
-        <comment>Don't translate 'fallback'</comment>
+        <comment>Don&apos;t translate &apos;fallback&apos;</comment>
         <translation>Figyelmeztetés: a memória nincs megfelelően az SSE-hez igazítva, tartalék átalakító használata helyette. Ez nem probléma, de a teljesítmény rosszabb lesz.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="32"/>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
-        <comment>Don't translate 'overrun'</comment>
+        <comment>Don&apos;t translate &apos;overrun&apos;</comment>
         <translation>Figyelmeztetés: túlfutás történt, néhány minta elveszett.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="34"/>
-        <source>Error: Can't recover device after overrun!</source>
-        <comment>Don't translate 'overrun'</comment>
+        <source>Error: Can&apos;t recover device after overrun!</source>
+        <comment>Don&apos;t translate &apos;overrun&apos;</comment>
         <translation>Hiba: nem lehet visszaállítani az eszközt a túlfutás után!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="38"/>
-        <source>Error: Can't start PCM device after overrun!</source>
-        <comment>Don't translate 'overrun'</comment>
+        <source>Error: Can&apos;t start PCM device after overrun!</source>
+        <comment>Don&apos;t translate &apos;overrun&apos;</comment>
         <translation>Hiba: nem lehet elindítani a PCM-eszközt a túlfutás után!</translation>
     </message>
     <message>
@@ -260,31 +260,31 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="259"/>
         <location filename="../AV/SimpleSynth.cpp" line="123"/>
-        <source>Error: Can't open PCM device!</source>
+        <source>Error: Can&apos;t open PCM device!</source>
         <translation>Hiba: nem nyitható meg a PCM-eszköz!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="263"/>
         <location filename="../AV/SimpleSynth.cpp" line="127"/>
-        <source>Error: Can't get PCM hardware parameters!</source>
+        <source>Error: Can&apos;t get PCM hardware parameters!</source>
         <translation>Hiba: nem lehet lekérni a PCM-hardver paramétereit!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="269"/>
         <location filename="../AV/SimpleSynth.cpp" line="133"/>
-        <source>Error: Can't set access type!</source>
+        <source>Error: Can&apos;t set access type!</source>
         <translation>Hiba: nem lehet beállítani a hozzáférési típust!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="275"/>
         <location filename="../AV/SimpleSynth.cpp" line="139"/>
-        <source>Error: Can't set sample format!</source>
+        <source>Error: Can&apos;t set sample format!</source>
         <translation>Hiba: nem lehet beállítani a mintavételezési formátumot!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="282"/>
         <location filename="../AV/SimpleSynth.cpp" line="146"/>
-        <source>Error: Can't set sample rate!</source>
+        <source>Error: Can&apos;t set sample rate!</source>
         <translation>Hiba: nem lehet beállítani a mintavételezési gyakoriságot!</translation>
     </message>
     <message>
@@ -296,7 +296,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="295"/>
         <location filename="../AV/SimpleSynth.cpp" line="158"/>
-        <source>Error: Can't set channel count!</source>
+        <source>Error: Can&apos;t set channel count!</source>
         <translation>Hiba: nem lehet beállítani a csatornaszámot!</translation>
     </message>
     <message>
@@ -307,7 +307,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="308"/>
         <location filename="../AV/SimpleSynth.cpp" line="165"/>
-        <source>Error: Can't set period size!</source>
+        <source>Error: Can&apos;t set period size!</source>
         <translation>Hiba: nem lehet beállítani az időszak méretét!</translation>
     </message>
     <message>
@@ -319,7 +319,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="321"/>
         <location filename="../AV/SimpleSynth.cpp" line="178"/>
-        <source>Error: Can't set buffer size!</source>
+        <source>Error: Can&apos;t set buffer size!</source>
         <translation>Hiba: nem lehet beállítani a puffer méretét!</translation>
     </message>
     <message>
@@ -331,12 +331,12 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="333"/>
         <location filename="../AV/SimpleSynth.cpp" line="190"/>
-        <source>Error: Can't apply PCM hardware parameters!</source>
+        <source>Error: Can&apos;t apply PCM hardware parameters!</source>
         <translation>Hiba: nem lehet alkalmazni a PCM-hardver paramétereit!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="351"/>
-        <source>Error: Can't start PCM device!</source>
+        <source>Error: Can&apos;t start PCM device!</source>
         <translation>Hiba: nem lehet elindítani a PCM-eszközt!</translation>
     </message>
     <message>
@@ -350,7 +350,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="387"/>
-        <source>Error: Can't read samples!</source>
+        <source>Error: Can&apos;t read samples!</source>
         <translation>Hiba: nem lehet olvasni a mintákat!</translation>
     </message>
     <message>
@@ -368,7 +368,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
         <location filename="../AV/Input/JACKInput.cpp" line="293"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="392"/>
         <location filename="../AV/Input/X11Input.cpp" line="448"/>
-        <source>Exception '%1' in input thread.</source>
+        <source>Exception &apos;%1&apos; in input thread.</source>
         <translation>„%1” kivétel a bemeneti szálban.</translation>
     </message>
     <message>
@@ -435,19 +435,19 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="35"/>
         <source>Error: pa_mainloop_prepare failed!</source>
-        <comment>Don't translate 'pa_mainloop_prepare'</comment>
+        <comment>Don&apos;t translate &apos;pa_mainloop_prepare&apos;</comment>
         <translation>Hiba: a pa_mainloop_prepare hívás sikertelen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="39"/>
         <source>Error: pa_mainloop_poll failed!</source>
-        <comment>Don't translate 'pa_mainloop_poll'</comment>
+        <comment>Don&apos;t translate &apos;pa_mainloop_poll&apos;</comment>
         <translation>Hiba: a pa_mainloop_poll hívás sikertelen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="43"/>
         <source>Error: pa_mainloop_dispatch failed!</source>
-        <comment>Don't translate 'pa_mainloop_dispatch'</comment>
+        <comment>Don&apos;t translate &apos;pa_mainloop_dispatch&apos;</comment>
         <translation>Hiba: a pa_mainloop_dispatch hívás sikertelen!</translation>
     </message>
     <message>
@@ -463,7 +463,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="64"/>
         <source>Error: Could not connect! Reason: %1
-It is possible that your system doesn't use PulseAudio. Try using the ALSA backend instead.</source>
+It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA backend instead.</source>
         <translation>Hiba: nem sikerült kapcsolódni! Ok: %1
 Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbálja meg az ALSA háttérprogramot használni helyette.</translation>
     </message>
@@ -500,7 +500,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="313"/>
         <source>Error: pa_stream_peek failed!</source>
-        <comment>Don't translate 'pa_stream_peek'</comment>
+        <comment>Don&apos;t translate &apos;pa_stream_peek&apos;</comment>
         <translation>Hiba: a pa_stream_peek hívás sikertelen!</translation>
     </message>
     <message>
@@ -520,22 +520,22 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="69"/>
-        <source>Error: Can't open video stream file!</source>
+        <source>Error: Can&apos;t open video stream file!</source>
         <translation>Hiba: nem lehet megnyitni a videó adatfolyam fájlt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="76"/>
-        <source>Error: Can't resize video stream file!</source>
+        <source>Error: Can&apos;t resize video stream file!</source>
         <translation>Hiba: nem lehet átméretezni a videó adatfolyam fájlt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="83"/>
-        <source>Error: Can't memory-map video stream file!</source>
+        <source>Error: Can&apos;t memory-map video stream file!</source>
         <translation>Hiba: nem lehet leképezni a memóriába a videó adatfolyam fájlt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="92"/>
-        <source>Error: Can't open video frame file!</source>
+        <source>Error: Can&apos;t open video frame file!</source>
         <translation>Hiba: nem lehet megnyitni a videoképkocka fájlt!</translation>
     </message>
     <message>
@@ -550,17 +550,17 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="247"/>
-        <source>Error: Can't memory-map video frame file!</source>
+        <source>Error: Can&apos;t memory-map video frame file!</source>
         <translation>Hiba: nem lehet leképezni a memóriába a videoképkocka fájlt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="94"/>
-        <source>Error: Can't create channel directory!</source>
+        <source>Error: Can&apos;t create channel directory!</source>
         <translation>Hiba: nem lehet létrehozni csatornakönyvtárat!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="102"/>
-        <source>Error: Can't stat channel directory!</source>
+        <source>Error: Can&apos;t stat channel directory!</source>
         <translation>Hiba: nem lehet elérni a csatornakönyvtárat!</translation>
     </message>
     <message>
@@ -570,7 +570,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="111"/>
-        <source>Error: Can't set channel directory mode!</source>
+        <source>Error: Can&apos;t set channel directory mode!</source>
         <translation>Hiba: nem lehet beállítani a csatornakönyvtár módját!</translation>
     </message>
     <message>
@@ -580,18 +580,18 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="126"/>
-        <source>Error: Can't initialize inotify!</source>
-        <comment>don't translate 'inotify'</comment>
+        <source>Error: Can&apos;t initialize inotify!</source>
+        <comment>don&apos;t translate &apos;inotify&apos;</comment>
         <translation>Hiba: nem lehet előkészíteni az inotify hívást!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="132"/>
-        <source>Error: Can't watch channel directory!</source>
+        <source>Error: Can&apos;t watch channel directory!</source>
         <translation>Hiba: nem lehet megfigyelni a csatornakönyvtárat!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="144"/>
-        <source>Error: Can't open channel directory!</source>
+        <source>Error: Can&apos;t open channel directory!</source>
         <translation>Hiba: nem lehet megnyitni a csatornakönyvtárat!</translation>
     </message>
     <message>
@@ -601,26 +601,26 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="197"/>
-        <source>Error: Can't get read length from inotify!</source>
-        <comment>don't translate 'inotify'</comment>
+        <source>Error: Can&apos;t get read length from inotify!</source>
+        <comment>don&apos;t translate &apos;inotify&apos;</comment>
         <translation>Hiba: nem lehet lekérni az olvasási hosszt az inotify értesítésből!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="205"/>
-        <source>Error: Can't read from inotify!</source>
-        <comment>don't translate 'inotify'</comment>
+        <source>Error: Can&apos;t read from inotify!</source>
+        <comment>don&apos;t translate &apos;inotify&apos;</comment>
         <translation>Hiba: nem lehet olvasni az inotify értesítésből!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="215"/>
         <source>Error: Received partial event from inotify!</source>
-        <comment>don't translate 'inotify'</comment>
+        <comment>don&apos;t translate &apos;inotify&apos;</comment>
         <translation>Hiba: részleges esemény érkezett az inotify értesítésből!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="227"/>
         <source>Error: Received partial name from inotify!</source>
-        <comment>don't translate 'inotify'</comment>
+        <comment>don&apos;t translate &apos;inotify&apos;</comment>
         <translation>Hiba: részleges név érkezett az inotify értesítésből!</translation>
     </message>
     <message>
@@ -658,8 +658,8 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="236"/>
         <location filename="../GUI/HotkeyListener.cpp" line="118"/>
-        <source>Error: Can't open X display!</source>
-        <comment>Don't translate 'display'</comment>
+        <source>Error: Can&apos;t open X display!</source>
+        <comment>Don&apos;t translate &apos;display&apos;</comment>
         <translation>Hiba: nem lehet megnyitni az X-megjelenítőt!</translation>
     </message>
     <message>
@@ -669,17 +669,17 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="248"/>
-        <source>Error: Can't create shared image!</source>
+        <source>Error: Can&apos;t create shared image!</source>
         <translation>Hiba: nem lehet létrehozni osztott képet!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="253"/>
-        <source>Error: Can't get shared memory!</source>
+        <source>Error: Can&apos;t get shared memory!</source>
         <translation>Hiba: nem lehet lekérni az osztott memóriát!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="258"/>
-        <source>Error: Can't attach to shared memory!</source>
+        <source>Error: Can&apos;t attach to shared memory!</source>
         <translation>Hiba: nem lehet hozzácsatolni az osztott memóriához!</translation>
     </message>
     <message>
@@ -690,7 +690,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="271"/>
         <source>Warning: XFixes is not supported by X server, the cursor has been hidden.</source>
-        <comment>Don't translate 'XFixes'</comment>
+        <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
         <translation>Figyelmeztetés: az XFixes-t nem támogatja az X-kiszolgáló, a kurzor rejtve lesz.</translation>
     </message>
     <message>
@@ -700,19 +700,19 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="393"/>
-        <source>Error: Can't attach server to shared memory!</source>
+        <source>Error: Can&apos;t attach server to shared memory!</source>
         <translation>Hiba: nem lehet hozzácsatolni a kiszolgálót az osztott memóriához!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="399"/>
-        <source>Error: Can't get image (using shared memory)!
+        <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation>Hiba: nem lehet lekérni a képet (osztott memória használata)!
     Általában ez azt jelenti, hogy a rögzítendő terület nincs teljesen a képernyőn belül. Vagy megváltoztatta a képernyőfelbontást?</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="410"/>
-        <source>Error: Can't get image (not using shared memory)!
+        <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation>Hiba: nem lehet lekérni a képet (nem használ osztott memóriát)!
     Általában ez azt jelenti, hogy a rögzítendő terület nincs teljesen a képernyőn belül. Vagy megváltoztatta a képernyőfelbontást?</translation>
@@ -756,7 +756,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="31"/>
         <location filename="../AV/Output/BaseEncoder.cpp" line="40"/>
-        <source>Error: Option '%1' could not be parsed!</source>
+        <source>Error: Option &apos;%1&apos; could not be parsed!</source>
         <translation>Hiba: a(z) „%1” kapcsoló feldolgozása nem sikerült!</translation>
     </message>
     <message>
@@ -766,12 +766,12 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="165"/>
-        <source>Error: Can't open codec!</source>
+        <source>Error: Can&apos;t open codec!</source>
         <translation>Hiba: nem lehet megnyitni a kodeket!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="173"/>
-        <source>Warning: Codec option '%1' was not recognised!</source>
+        <source>Warning: Codec option &apos;%1&apos; was not recognised!</source>
         <translation>Figyelmeztetés: a(z) „%1” kodek kapcsoló nem volt felismerhető!</translation>
     </message>
     <message>
@@ -791,7 +791,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="233"/>
-        <source>Exception '%1' in encoder thread.</source>
+        <source>Exception &apos;%1&apos; in encoder thread.</source>
         <translation>„%1” kivétel a kódoló szálban.</translation>
     </message>
     <message>
@@ -812,13 +812,13 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="101"/>
         <location filename="../AV/Output/Muxer.cpp" line="125"/>
-        <source>Error: Can't copy parameters to stream!</source>
+        <source>Error: Can&apos;t copy parameters to stream!</source>
         <translation>Hiba: nem lehet átmásolni paramétereket az adatfolyamba!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="147"/>
-        <source>Error: Can't write header!</source>
-        <comment>Don't translate 'header'</comment>
+        <source>Error: Can&apos;t write header!</source>
+        <comment>Don&apos;t translate &apos;header&apos;</comment>
         <translation>Hiba: nem lehet kiírni a fejlécet!</translation>
     </message>
     <message>
@@ -828,7 +828,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="200"/>
-        <source>Error: Can't find chosen output format!</source>
+        <source>Error: Can&apos;t find chosen output format!</source>
         <translation>Hiba: nem található a kiválasztott kimeneti formátum!</translation>
     </message>
     <message>
@@ -838,23 +838,23 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="210"/>
-        <source>Error: Can't allocate format context!</source>
+        <source>Error: Can&apos;t allocate format context!</source>
         <translation>Hiba: nem lehet lefoglalni formátumkörnyezetet!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="217"/>
-        <source>Error: Can't open output file!</source>
+        <source>Error: Can&apos;t open output file!</source>
         <translation>Hiba: nem lehet megnyitni a kimeneti fájlt!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="230"/>
-        <source>Error: Can't write trailer, continuing anyway.</source>
-        <comment>Don't translate 'trailer'</comment>
+        <source>Error: Can&apos;t write trailer, continuing anyway.</source>
+        <comment>Don&apos;t translate &apos;trailer&apos;</comment>
         <translation>Hiba: nem lehet kiírni a záró részt, folytatás mindenképp.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="268"/>
-        <source>Error: Can't find codec!</source>
+        <source>Error: Can&apos;t find codec!</source>
         <translation>Hiba: nem található kodek!</translation>
     </message>
     <message>
@@ -864,17 +864,17 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="289"/>
-        <source>Error: Can't create new stream!</source>
+        <source>Error: Can&apos;t create new stream!</source>
         <translation>Hiba: nem lehet létrehozni új adatfolyamot!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="296"/>
-        <source>Error: Can't create new codec context!</source>
+        <source>Error: Can&apos;t create new codec context!</source>
         <translation>Hiba: nem lehet létrehozni új kodek környezetet!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="308"/>
-        <source>Error: Can't get codec context defaults!</source>
+        <source>Error: Can&apos;t get codec context defaults!</source>
         <translation>Hiba: nem lehet lekérni a kodek környezet alapértelmezéseit!</translation>
     </message>
     <message>
@@ -889,7 +889,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="397"/>
-        <source>Error: Can't write frame to muxer!</source>
+        <source>Error: Can&apos;t write frame to muxer!</source>
         <translation>Hiba: nem lehet kiírni a keretet a muxerbe!</translation>
     </message>
     <message>
@@ -899,7 +899,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="429"/>
-        <source>Exception '%1' in muxer thread.</source>
+        <source>Exception &apos;%1&apos; in muxer thread.</source>
         <translation>„%1” kivétel a muxer szálban.</translation>
     </message>
     <message>
@@ -969,7 +969,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="912"/>
-        <source>Exception '%1' in synchronizer thread.</source>
+        <source>Exception &apos;%1&apos; in synchronizer thread.</source>
         <translation>„%1” kivétel a szinkronizáló szálban.</translation>
     </message>
     <message>
@@ -1021,18 +1021,18 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="50"/>
         <source>Using nice priority.</source>
-        <comment>Don't translate 'nice', it's a UNIX parameter that defines the priority of a process.</comment>
+        <comment>Don&apos;t translate &apos;nice&apos;, it&apos;s a UNIX parameter that defines the priority of a process.</comment>
         <translation>Nice prioritás használata.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="55"/>
-        <source>Warning: Can't increase the thread priority.</source>
+        <source>Warning: Can&apos;t increase the thread priority.</source>
         <translation>Figyelmeztetés: nem lehet növelni a szálprioritást.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="63"/>
-        <source>Error: Can't recover device after underrun!</source>
-        <comment>Don't translate 'underrun'</comment>
+        <source>Error: Can&apos;t recover device after underrun!</source>
+        <comment>Don&apos;t translate &apos;underrun&apos;</comment>
         <translation>Hiba: nem lehet visszaállítani az eszközt az aláfutás után!</translation>
     </message>
     <message>
@@ -1047,7 +1047,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="276"/>
-        <source>Error: Can't write samples!</source>
+        <source>Error: Can&apos;t write samples!</source>
         <translation>Hiba: nem lehet kiírni a mintákat!</translation>
     </message>
     <message>
@@ -1057,7 +1057,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="288"/>
-        <source>Exception '%1' in synth thread.</source>
+        <source>Exception &apos;%1&apos; in synth thread.</source>
         <translation>„%1” kivétel a szintetizáló szálban.</translation>
     </message>
     <message>
@@ -1078,22 +1078,22 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     <message>
         <location filename="../GUI/HotkeyListener.cpp" line="164"/>
         <source>Warning: XInput2 is not supported by X server, hotkeys may not work in some applications.</source>
-        <comment>Don't translate 'XInput2'</comment>
+        <comment>Don&apos;t translate &apos;XInput2&apos;</comment>
         <translation>Figyelmeztetés: az XInput2-t nem támogatja az X-kiszolgáló, a gyorsbillentyűk esetleg nem működnek néhány alkalmazásban.</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="119"/>
-        <source>Error: Command-line option '%1' does not take a value!</source>
+        <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation>Hiba: a(z) „%1” parancssori kapcsoló nem vár értéket!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="150"/>
-        <source>Error: Unknown command-line option '%1'!</source>
+        <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation>Hiba: ismeretlen parancssori kapcsoló: „%1”!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="160"/>
-        <source>Error: Unknown command-line argument '%1'!</source>
+        <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation>Hiba: ismeretlen parancssori argumentum: „%1”!</translation>
     </message>
     <message>
@@ -1108,7 +1108,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../Main.cpp" line="245"/>
-        <source>Error: Can't create .ssr directory!</source>
+        <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Hiba: nem lehet létrehozni a .ssr könyvtárat!</translation>
     </message>
     <message>
@@ -1158,7 +1158,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="385"/>
-        <source>Exception '%1' in fragment thread.</source>
+        <source>Exception &apos;%1&apos; in fragment thread.</source>
         <translation>„%1” kivétel a töredékszálban.</translation>
     </message>
     <message>
@@ -1174,15 +1174,15 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
         <source>SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?
 
 You can also change this option manually in the NVIDIA control panel.</source>
-        <comment>Don't translate 'flipping' unless NVIDIA does the same</comment>
+        <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
         <translation>A SimpleScreenRecorder azt észlelte, hogy a zárt NVIDIA illesztőprogramot használja, és engedélyezve van a képernyő tükrözése. Ismert, hogy ez grafikai problémákhoz vezethet rögzítés közben. Ajánlott a tükrözés letiltása. Szeretné, hogy ezt megtegyem önnek?
 
 Ezt a beállítást kézzel is megváltoztathatja az NVIDIA vezérlőpultján.</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="90"/>
-        <source>I couldn't disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
-        <comment>Don't translate 'flipping' unless NVIDIA does the same</comment>
+        <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
+        <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
         <translation>Nem tudtam letiltani a tükrözést valamilyen oknál fogva - elnézést! Próbálja meg letiltani az NVIDIA vezérlőpultján.</translation>
     </message>
 </context>
@@ -1378,7 +1378,7 @@ Az ALSA háttérprogram is működni fog azokon a rendszereken, amelyek PulseAud
     <message>
         <location filename="../GUI/PageInput.cpp" line="265"/>
         <source>The ALSA source that will be used for recording.
-The default is usually fine. The 'shared' sources allow multiple programs to record at the same time, but they may be less reliable.</source>
+The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
         <translation>Az ALSA forrás, amely használva lesz a rögzítésnél.
 Az alapértelmezés általában megfelelő. Az „osztott” források lehetővé teszik több programnak is az egyidejű rögzítést, de ezek kevésbé megbízhatóak lehetnek.</translation>
     </message>
@@ -1396,8 +1396,8 @@ Az alapértelmezés általában megfelelő. Az „osztott” források lehetőv�
     <message>
         <location filename="../GUI/PageInput.cpp" line="273"/>
         <source>The PulseAudio source that will be used for recording.
-A 'monitor' is a source that records the audio played by other applications.</source>
-        <comment>Don't translate 'monitor' unless PulseAudio does this as well</comment>
+A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
+        <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
         <translation>A PulseAudio forrás, amely használva lesz a rögzítésnél.
 A „monitor” egy olyan forrás, amely a más alkalmazások által lejátszott hangot rögzíti.</translation>
     </message>
@@ -1464,7 +1464,7 @@ A „monitor” egy olyan forrás, amely a más alkalmazások által lejátszott
         <location filename="../GUI/PageOutput.cpp" line="92"/>
         <location filename="../GUI/PageOutput.cpp" line="128"/>
         <source>%1 files</source>
-        <comment>This appears in the file dialog, e.g. 'MP4 files'</comment>
+        <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
         <translation>%1 fájlok</translation>
     </message>
     <message>
@@ -1520,7 +1520,7 @@ A „monitor” egy olyan forrás, amely a más alkalmazások által lejátszott
     </message>
     <message>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
-If the original file name is 'test.mkv', the segments will be saved as 'test-YYYY-MM-DD_HH.MM.SS.mkv'.</source>
+If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
         <translation>Ha be van jelölve, akkor különálló videofájl lesz létrehozva minden alkalommal, amikor szünetelteti és folytatja a rögzítést. Ha az eredeti fájlnév „próba.mkv”, akkor a szakaszok „próba-ÉÉÉÉ-HH-NN_ÓÓ.PP.MM.mkv” néven lesznek elmentve.</translation>
     </message>
     <message>
@@ -1580,7 +1580,7 @@ Vegye figyelembe, hogy nem minden konténer támogat minden kodeket, és hogy ne
         <source>The codec that will be used to compress the video stream.
 - H.264 (libx264) is by far the best codec - high quality and very fast.
 - VP8 (libvpx) is quite good but also quite slow.
-- Theora (libtheora) isn't really recommended because the quality isn't very good.</source>
+- Theora (libtheora) isn&apos;t really recommended because the quality isn&apos;t very good.</source>
         <translation>A kodek, amely a videó adatfolyam tömörítéséhez lesz használva.
 - H.264 (libx264): kiemelkedően a legjobb kodek - kiváló minőségű és nagyon gyors.
 - VP8 (libvpx): elég jó, de meglehetősen lassú.
@@ -1613,7 +1613,7 @@ Ha nincs ötlete, hogy merre induljon, akkor próbáljon meg 5000-et, és válto
     <message>
         <location filename="../GUI/PageOutput.cpp" line="250"/>
         <source>Constant rate factor:</source>
-        <comment>libx264 setting: don't translate this unless you can come up with something sensible</comment>
+        <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
         <translation>Állandó sebességtényező:</translation>
     </message>
     <message>
@@ -1626,19 +1626,19 @@ A megengedett tartomány 0-51 között van (a 0 jelenti a veszteségmentest, az 
     <message>
         <location filename="../GUI/PageOutput.cpp" line="261"/>
         <source>Preset:</source>
-        <comment>libx264 setting: don't translate this unless you can come up with something sensible</comment>
+        <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
         <translation>Alapbeállítás:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="266"/>
         <source>The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),
-but results in larger files. The quality shouldn't be affected too much.</source>
+but results in larger files. The quality shouldn&apos;t be affected too much.</source>
         <translation>A kódolás sebessége. A nagyobb sebesség kevesebb processzort használ (magasabb rögzítési képkockasebességeket lehetővé téve), de nagyobb fájlokat eredményez. A minőséget nem érintheti túl nagy mértékben.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="268"/>
         <source>CPU used:</source>
-        <comment>libvpx setting: don't translate this unless you can come up with something sensible</comment>
+        <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
         <translation>Használt processzor:</translation>
     </message>
     <message>
@@ -1653,7 +1653,7 @@ but results in larger files. The quality shouldn't be affected too much.</source
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="276"/>
-        <source>The encoding speed. A higher value uses *less* CPU time. (I didn't choose the name, this is the name
+        <source>The encoding speed. A higher value uses *less* CPU time. (I didn&apos;t choose the name, this is the name
 used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
         <translation>A kódolás sebessége. A magasabb érték *kevesebb* processzoridőt használ. (Nem én választottam ki a nevet, ez a VP8 kódoló által használt név). A magasabb értékek alacsonyabb minőségű videót eredményeznek, hacsak nem növeli meg a bitsebességet is.</translation>
     </message>
@@ -1679,7 +1679,7 @@ used by the VP8 encoder). Higher values result in lower quality video, unless yo
         <source>If checked, the video encoder will be allowed to skip frames if the input frame rate is
 lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.
 This increases the file size and CPU usage, but reduces the latency for live streams in some cases.
-It shouldn't affect the appearance of the video.</source>
+It shouldn&apos;t affect the appearance of the video.</source>
         <translation>Ha be van jelölve, akkor a videokódolónak engedélyezett lesz a képkockák kihagyása, ha a bemenet képkockasebessége alacsonyabb a kimenet képkockasebességénél. Ha nincs bejelölve, akkor a bemeneti képkockák kettőzve lesznek a lyukak kitöltéséhez.
 Ez növeli a fájlméretet és a processzorhasználatot, de néhány esetben csökkenti a késleltetést az élő adatfolyamoknál.
 Nem kellene érintenie a videó megjelenését.</translation>
@@ -1691,14 +1691,14 @@ Nem kellene érintenie a videó megjelenését.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="315"/>
-        <source>The codec that will be used to compress the audio stream. You shouldn't worry too much about
+        <source>The codec that will be used to compress the audio stream. You shouldn&apos;t worry too much about
 this, because the size of the audio data is usually negligible compared to the size of the video data.
-And if you're only recording your own voice (i.e. no music), the quality won't matter that much anyway.
+And if you&apos;re only recording your own voice (i.e. no music), the quality won&apos;t matter that much anyway.
 - Vorbis (libvorbis) is great, this is the recommended codec.
 - MP3 (libmp3lame) is reasonably good.
 - AAC is a good codec, but the implementations used here (libvo_aacenc or the experimental ffmpeg aac encoder)
    are pretty bad. Only use it if you have no other choice.
-- Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it's very fast.</source>
+- Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it&apos;s very fast.</source>
         <translation>A kodek, amely a hang adatfolyam tömörítéséhez lesz használva. Nem kell túlságosan aggódnia emiatt, mert a hangadat mérete általában elhanyagolható a videoadat méretéhez viszonyítva.
 És ha csak a saját hangját rögzíti (azaz nem zenét), akkor a minőség nem igazán számít egyébként.
 - Vorbis (libvorbis): nagyszerű, ez az ajánlott kodek.
@@ -1757,13 +1757,13 @@ And if you're only recording your own voice (i.e. no music), the quality won't m
     <message>
         <location filename="../GUI/PageOutput.cpp" line="187"/>
         <source>If checked, a separate timestamped video file will be created every time you pause and resume the recording.
-If the original file name is 'test.mkv', the segments will be saved as 'test-YYYY-MM-DD_HH.MM.SS.mkv'.</source>
+If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
         <translation>Ha be van jelölve, akkor különálló, időbélyeggel ellátott videofájl lesz létrehozva minden alkalommal, amikor szünetelteti és folytatja a rögzítést.
 Ha az eredeti fájlnév „próba.mkv”, akkor a szakaszok „próba-ÉÉÉÉ-HH-NN_ÓÓ.PP.MM.mkv” néven lesznek elmentve.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="497"/>
-        <source>The file '%1' already exists. Are you sure that you want to overwrite it?</source>
+        <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
         <translation>A(z) „%1” fájl már létezik. Biztosan felül akarja írni?</translation>
     </message>
 </context>
@@ -1958,7 +1958,7 @@ Biztosan ki akar lépni?</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="667"/>
-        <source>Error: Could not get the size of the OpenGL application. Either the application wasn't started correctly, or the application hasn't created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
+        <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation>Hiba: nem sikerült lekérni az OpenGL alkalmazás méretét. Vagy az alkalmazás nem lett helyesen elindítva, vagy az alkalmazás még nem hozott létre OpenGL ablakot. Ha el szeretné indítani a rögzítést az alkalmazás indítása előtt, akkor engedélyeznie kell a méretezést, és kézzel kell megadnia a videó méretét.</translation>
     </message>
     <message>
@@ -2035,7 +2035,7 @@ Biztosan ki akar lépni?</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1041"/>
-        <source>You haven't recorded anything, there is nothing to save.
+        <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
         <translation>Nem rögzített semmit, nincs mit menteni.
@@ -2049,7 +2049,7 @@ A kezdés gomb felül van ;).</translation>
         <location filename="../GUI/PageWelcome.cpp" line="40"/>
         <source>&lt;p>Welcome to SimpleScreenRecorder!&lt;/p>
 
-&lt;p>Despite the name, this program actually has a lot of options. Don't worry though, there are really just two things that you need to know. One, the default settings are usually fine. If you don't know what something does, just use the default. Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.&lt;/p>
+&lt;p>Despite the name, this program actually has a lot of options. Don&apos;t worry though, there are really just two things that you need to know. One, the default settings are usually fine. If you don&apos;t know what something does, just use the default. Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.&lt;/p>
 
 &lt;p>For more information:&lt;br>
 %1&lt;/p></source>
@@ -2115,7 +2115,7 @@ A kezdés gomb felül van ;).</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
-        <source>Error: Can't load profile!</source>
+        <source>Error: Can&apos;t load profile!</source>
         <translation>Hiba: nem lehet betölteni a profilt!</translation>
     </message>
     <message>
