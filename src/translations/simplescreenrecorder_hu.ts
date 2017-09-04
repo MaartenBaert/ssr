@@ -173,8 +173,8 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="130"/>
-        <source>Warning: Pixel format is not supported (%1 -> %2), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation>Figyelmeztetés: a képpontformátum nem támogatott (%1 -> %2), szoftveres méretezés használata helyette. Ez nem probléma, de a teljesítmény rosszabb lesz.</translation>
+        <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
+        <translation>Figyelmeztetés: a képpontformátum nem támogatott (%1 -&gt; %2), szoftveres méretezés használata helyette. Ez nem probléma, de a teljesítmény rosszabb lesz.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="139"/>
@@ -1114,12 +1114,12 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
     <message>
         <location filename="../Benchmark.cpp" line="165"/>
         <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
-        <translation>BGRA %1 -> BGRA %2  |  SWScale %3 ha  |  Tartalék %4 ha (%5%)  |  SSSE3 %6 ha (%7%)</translation>
+        <translation>BGRA %1 -&gt; BGRA %2  |  SWScale %3 ha  |  Tartalék %4 ha (%5%)  |  SSSE3 %6 ha (%7%)</translation>
     </message>
     <message>
         <location filename="../Benchmark.cpp" line="243"/>
         <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
-        <translation>%1 %2 -> %3 %4  |  SWScale %5 ha  |  Tartalék %6 ha (%7%)  |  SSSE3 %8 ha (%9%)</translation>
+        <translation>%1 %2 -&gt; %3 %4  |  SWScale %5 ha  |  Tartalék %6 ha (%7%)  |  SSSE3 %8 ha (%9%)</translation>
     </message>
     <message>
         <location filename="../Benchmark.cpp" line="253"/>
