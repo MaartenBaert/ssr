@@ -19,7 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "NVidia.h"
 
-bool NVidiaDetectFlipping() {
+bool NVidiaGetFlipping() {
 	QString program = "nvidia-settings";
 	QStringList args;
 	args << "-tq" << "AllowFlipping";
@@ -32,14 +32,14 @@ bool NVidiaDetectFlipping() {
 	return (result.trimmed() == "1");
 }
 
-bool NVidiaDisableFlipping() {
+bool NVidiaSetFlipping(bool enable) {
 	QString program = "nvidia-settings";
 	QStringList args;
-	args << "-a" << "AllowFlipping=0";
+	args << "-a" << ((enable)? "AllowFlipping=1" : "AllowFlipping=0");
 	QProcess p;
 	p.start(program, args);
 	p.waitForFinished();
 	if(p.exitCode() != 0)
 		return false;
-	return !NVidiaDetectFlipping();
+	return (NVidiaGetFlipping() == enable);
 }

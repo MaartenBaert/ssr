@@ -20,5 +20,5 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-bool NVidiaDetectFlipping();
-bool NVidiaDisableFlipping();
+bool NVidiaGetFlipping();
+bool NVidiaSetFlipping(bool enable);

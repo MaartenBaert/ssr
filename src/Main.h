@@ -30,5 +30,5 @@ QString GetApplicationSystemDir(const QString& subdir = QString());
 QString GetApplicationUserDir(const QString& subdir = QString());
 QString GetVersionInfo();
 
-bool NVidiaDetectFlipping();
+bool NVidiaGetFlipping();
 bool NVidiaDisableFlipping();

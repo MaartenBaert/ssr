@@ -41,6 +41,7 @@ const QString MainWindow::WINDOW_CAPTION = "SimpleScreenRecorder";
 MainWindow::MainWindow()
 	: QMainWindow() {
 
+	m_nvidia_reenable_flipping = false;
 	m_old_geometry = QRect();
 
 	setWindowTitle(WINDOW_CAPTION);
@@ -67,7 +68,7 @@ MainWindow::MainWindow()
 
 	// warning for glitch with proprietary NVIDIA drivers
 	if(GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_ASK || GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_YES) {
-		if(NVidiaDetectFlipping()) {
+		if(NVidiaGetFlipping()) {
 			bool disable;
 			if(GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_ASK) {
 				enum_button button = MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION,
@@ -84,7 +85,9 @@ MainWindow::MainWindow()
 				disable = true;
 			}
 			if(disable) {
-				if(!NVidiaDisableFlipping()) {
+				if(NVidiaSetFlipping(false)) {
+					m_nvidia_reenable_flipping = true;
+				} else {
 					SetNVidiaDisableFlipping(NVIDIA_DISABLE_FLIPPING_ASK);
 					MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION,
 							   MainWindow::tr("I couldn't disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.",
@@ -147,6 +150,9 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 		return;
 	}
 	SaveSettings();
+	if(m_nvidia_reenable_flipping) {
+		NVidiaSetFlipping(true);
+	}
 	event->accept();
 	QApplication::quit();
 }

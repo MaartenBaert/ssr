@@ -42,6 +42,7 @@ public:
 
 private:
 	enum_nvidia_disable_flipping m_nvidia_disable_flipping;
+	bool m_nvidia_reenable_flipping;
 
 	QRect m_old_geometry;
 
