@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="id_ID">
+<TS version="2.1" language="id">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -432,7 +432,7 @@ Hal ini menghentikan aplikasi dari membuang waktu CPU untuk frame yang tidak ing
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="256"/>
         <source>Disconnecting port %1 from %2.</source>
-        <translation>Memutus sambungan port %%1 dari %2.</translation>
+        <translation>Memutus sambungan port %1 dari %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="35"/>
