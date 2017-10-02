@@ -99,7 +99,7 @@ private:
 	QPushButton *m_pushbutton_profile_save, *m_pushbutton_profile_new, *m_pushbutton_profile_delete;
 
 	QLineEdit *m_lineedit_file;
-	QCheckBox *m_checkbox_separate_files;
+	QCheckBox *m_checkbox_separate_files, *m_checkbox_add_timestamp;
 	QComboBox *m_combobox_container;
 	QLabel *m_label_container_av;
 	QComboBox *m_combobox_container_av;
@@ -174,6 +174,7 @@ public:
 	inline unsigned int GetProfile() { return m_profile_box->GetProfile(); }
 	inline QString GetFile() { return m_lineedit_file->text(); }
 	inline bool GetSeparateFiles() { return m_checkbox_separate_files->isChecked(); }
+	inline bool GetAddTimestamp() { return m_checkbox_add_timestamp->isChecked(); }
 	inline enum_container GetContainer() { return (enum_container) clamp(m_combobox_container->currentIndex(), 0, CONTAINER_COUNT - 1); }
 	inline unsigned int GetContainerAV() { return clamp(m_combobox_container_av->currentIndex(), 0, (int) m_containers_av.size() - 1); }
 	inline enum_video_codec GetVideoCodec() { return (enum_video_codec) clamp(m_combobox_video_codec->currentIndex(), 0, VIDEO_CODEC_COUNT - 1); }
@@ -194,6 +195,7 @@ public:
 	inline void SetContainerAV(unsigned int container) { m_combobox_container_av->setCurrentIndex(clamp(container, 0u, (unsigned int) m_containers_av.size() - 1)); }
 	inline void SetFile(const QString& file) { m_lineedit_file->setText(file); }
 	inline void SetSeparateFiles(bool separate_files) { m_checkbox_separate_files->setChecked(separate_files); }
+	inline void SetAddTimestamp(bool add_timestamp) { m_checkbox_add_timestamp->setChecked(add_timestamp); }
 	inline void SetVideoCodec(enum_video_codec video_codec) { m_combobox_video_codec->setCurrentIndex(clamp((unsigned int) video_codec, 0u, (unsigned int) VIDEO_CODEC_COUNT - 1)); }
 	inline void SetVideoCodecAV(unsigned int video_codec_av) { m_combobox_video_codec_av->setCurrentIndex(clamp(video_codec_av, 0u, (unsigned int) m_video_codecs_av.size() - 1)); }
 	inline void SetVideoKBitRate(unsigned int kbit_rate) { m_lineedit_video_kbit_rate->setText(QString::number(kbit_rate)); }

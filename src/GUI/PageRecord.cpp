@@ -49,14 +49,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
 
-static QString GetNewSegmentFile(const QString& file) {
+static QString GetNewSegmentFile(const QString& file, bool add_timestamp) {
 	QFileInfo fi(file);
 	QDateTime now = QDateTime::currentDateTime();
 	QString newfile;
 	unsigned int counter = 0;
 	do {
 		++counter;
-		newfile = fi.path() + "/" + fi.completeBaseName() + "-" + now.toString("yyyy-MM-dd_hh.mm.ss");
+		newfile = fi.path() + "/" + fi.completeBaseName();
+		if(add_timestamp)
+			newfile += "-" + now.toString("yyyy-MM-dd_hh.mm.ss");
 		if(counter != 1)
 			newfile += "-(" + QString::number(counter) + ")";
 		if(!fi.suffix().isEmpty())
@@ -488,12 +490,10 @@ void PageRecord::StartPage() {
 	m_file_base = page_output->GetFile();
 	m_file_protocol = page_output->GetFileProtocol();
 	m_separate_files = page_output->GetSeparateFiles();
+	m_add_timestamp = page_output->GetAddTimestamp();
 
 	// get the output settings
-	if(m_separate_files)
-		m_output_settings.file = QString(); // will be set later
-	else
-		m_output_settings.file = m_file_base;
+	m_output_settings.file = QString(); // will be set later
 	m_output_settings.container_avname = page_output->GetContainerAVName();
 
 	m_output_settings.video_codec_avname = page_output->GetVideoCodecAVName();
@@ -653,8 +653,7 @@ void PageRecord::StartOutput() {
 		if(m_output_manager == NULL) {
 
 			// set the file name
-			if(m_separate_files)
-				m_output_settings.file = GetNewSegmentFile(m_file_base);
+			m_output_settings.file = GetNewSegmentFile(m_file_base, m_add_timestamp);
 
 			// for OpenGL recording, detect the application size
 			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT && !m_video_scaling) {
@@ -674,7 +673,7 @@ void PageRecord::StartOutput() {
 
 			// calculate the output width and height
 			if(m_video_scaling) {
-				// Only even width and height is allowed because the final images are encoded as YUV.
+				// Only even width and height is allowed because some pixel formats (e.g. YUV420) require this.
 				m_output_settings.video_width = m_video_scaled_width / 2 * 2;
 				m_output_settings.video_height = m_video_scaled_height / 2 * 2;
 			} else if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {

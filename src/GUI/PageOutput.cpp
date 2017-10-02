@@ -183,9 +183,12 @@ PageOutput::PageOutput(MainWindow* main_window)
 			m_lineedit_file = new QLineEdit(groupbox_file);
 			m_lineedit_file->setToolTip(tr("The recording will be saved to this location."));
 			QPushButton *button_browse = new QPushButton(tr("Browse..."), groupbox_file);
-			m_checkbox_separate_files = new QCheckBox(tr("Create separate timestamped file for each segment"), groupbox_file);
-			m_checkbox_separate_files->setToolTip(tr("If checked, a separate timestamped video file will be created every time you pause and resume the recording.\n"
-													 "If the original file name is 'test.mkv', the segments will be saved as 'test-YYYY-MM-DD_HH.MM.SS.mkv'."));
+			m_checkbox_separate_files = new QCheckBox(tr("Separate file per segment"), groupbox_file);
+			m_checkbox_separate_files->setToolTip(tr("If checked, a separate video file will be created every time you pause and resume the recording."
+													 "If unchecked, all recorded segments will be combined into a single video file."));
+			m_checkbox_add_timestamp = new QCheckBox(tr("Add timestamp"), groupbox_file);
+			m_checkbox_add_timestamp->setToolTip(tr("If checked, the current date and time will be appended to the file name automatically.\n"
+													"If the original file name is 'test.mkv', the video will be saved as 'test-YYYY-MM-DD_HH.MM.SS.mkv'."));
 			QLabel *label_container = new QLabel(tr("Container:"), groupbox_file);
 			m_combobox_container = new QComboBox(groupbox_file);
 			for(unsigned int i = 0; i < CONTAINER_COUNT; ++i) {
@@ -219,7 +222,12 @@ PageOutput::PageOutput(MainWindow* main_window)
 			layout->addWidget(label_file, 0, 0);
 			layout->addWidget(m_lineedit_file, 0, 1);
 			layout->addWidget(button_browse, 0, 2);
-			layout->addWidget(m_checkbox_separate_files, 1, 0, 1, 3);
+			{
+				QHBoxLayout *layout2 = new QHBoxLayout();
+				layout->addLayout(layout2, 1, 0, 1, 3);
+				layout2->addWidget(m_checkbox_separate_files);
+				layout2->addWidget(m_checkbox_add_timestamp);
+			}
 			layout->addWidget(label_container, 2, 0);
 			layout->addWidget(m_combobox_container, 2, 1, 1, 2);
 			layout->addWidget(m_label_container_av, 3, 0);
@@ -408,30 +416,38 @@ void PageOutput::LoadProfileSettings(QSettings* settings) {
 
 	// choose default container and codecs
 	enum_container default_container = (enum_container) 0;
-	for(unsigned int i = 0; i < VIDEO_CODEC_COUNT; ++i) {
+	for(unsigned int i = 0; i < CONTAINER_OTHER; ++i) {
 		if(AVFormatIsInstalled(m_containers[i].avname)) {
 			default_container = (enum_container) i;
 			break;
 		}
 	}
 	enum_video_codec default_video_codec = (enum_video_codec) 0;
-	for(unsigned int i = 0; i < VIDEO_CODEC_COUNT; ++i) {
+	for(unsigned int i = 0; i < VIDEO_CODEC_OTHER; ++i) {
 		if(AVCodecIsInstalled(m_video_codecs[i].avname) && m_containers[default_container].supported_video_codecs.count((enum_video_codec) i)) {
 			default_video_codec = (enum_video_codec) i;
 			break;
 		}
 	}
 	enum_audio_codec default_audio_codec = (enum_audio_codec) 0;
-	for(unsigned int i = 0; i < AUDIO_CODEC_COUNT; ++i) {
+	for(unsigned int i = 0; i < VIDEO_CODEC_OTHER; ++i) {
 		if(AVCodecIsInstalled(m_audio_codecs[i].avname) && m_containers[default_container].supported_audio_codecs.count((enum_audio_codec) i)) {
 			default_audio_codec = (enum_audio_codec) i;
 			break;
 		}
 	}
 
+	// choose default file name
+	QString dir_videos = QDesktopServices::storageLocation(QDesktopServices::MoviesLocation);
+	QString dir_documents = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+	QString dir_home = QDir::homePath();
+	QString best_dir = (QDir(dir_videos).exists())? dir_videos : (QDir(dir_documents).exists())? dir_documents : dir_home;
+	QString default_file = best_dir + "/simplescreenrecorder." + m_containers[default_container].suffixes[0];
+
 	// load settings
-	SetFile(settings->value("output/file", "").toString());
+	SetFile(settings->value("output/file", default_file).toString());
 	SetSeparateFiles(settings->value("output/separate_files", false).toBool());
+	SetAddTimestamp(settings->value("output/add_timestamp", true).toBool());
 	SetContainer(StringToEnum(settings->value("output/container", QString()).toString(), default_container));
 	SetContainerAV(FindContainerAV(settings->value("output/container_av", QString()).toString()));
 
@@ -460,6 +476,7 @@ void PageOutput::SaveProfileSettings(QSettings* settings) {
 
 	settings->setValue("output/file", GetFile());
 	settings->setValue("output/separate_files", GetSeparateFiles());
+	settings->setValue("output/add_timestamp", GetAddTimestamp());
 	settings->setValue("output/container", EnumToString(GetContainer()));
 	settings->setValue("output/container_av", m_containers_av[GetContainerAV()].avname);
 
@@ -492,13 +509,13 @@ bool PageOutput::Validate() {
 		MessageBox(QMessageBox::Critical, this, MainWindow::WINDOW_CAPTION, tr("You did not select an output file!"), BUTTON_OK, BUTTON_OK);
 		return false;
 	}
-	if(GetFileProtocol().isNull() && !GetSeparateFiles() && QFileInfo(file).exists()) {
+	/*if(GetFileProtocol().isNull() && !GetSeparateFiles() && QFileInfo(file).exists()) {
 		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 					  tr("The file '%1' already exists. Are you sure that you want to overwrite it?").arg(QFileInfo(file).fileName()),
 					  BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
 			return false;
 		}
-	}
+	}*/
 	return true;
 }
 
