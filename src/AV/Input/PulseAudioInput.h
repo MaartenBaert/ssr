@@ -51,6 +51,7 @@ private:
 	pa_stream *m_pa_stream;
 	unsigned int m_pa_period_size;
 
+	bool m_stream_is_monitor;
 	bool m_stream_suspended, m_stream_moved;
 
 	std::thread m_thread;
@@ -71,6 +72,9 @@ private:
 	void Init();
 	void Free();
 
+	void DetectMonitor();
+
+	static void SourceInfoCallback(pa_context* context, const pa_source_info* info, int eol, void* userdata);
 	static void SuspendedCallback(pa_stream* stream, void* userdata);
 	static void MovedCallback(pa_stream* stream, void* userdata);
 

@@ -187,7 +187,7 @@ PulseAudioInput::PulseAudioInput(const QString& source_name, unsigned int sample
 
 	m_source_name = source_name;
 	m_sample_rate = sample_rate;
-	m_channels = 2; // always 2 channels because the synchronizer and encoder don't support anything else at this point
+	m_channels = 2;
 
 	m_pa_mainloop = NULL;
 	m_pa_context = NULL;
@@ -263,11 +263,14 @@ void PulseAudioInput::Init() {
 	PulseAudioConnectStream(m_pa_mainloop, m_pa_context, &m_pa_stream, m_source_name,
 							m_sample_rate, m_channels, m_pa_period_size);
 
+	m_stream_is_monitor = false;
 	m_stream_suspended = false;
 	m_stream_moved = false;
 
 	pa_stream_set_suspended_callback(m_pa_stream, SuspendedCallback, this);
 	pa_stream_set_moved_callback(m_pa_stream, MovedCallback, this);
+
+	DetectMonitor();
 
 	// start input thread
 	m_should_stop = false;
@@ -279,6 +282,34 @@ void PulseAudioInput::Init() {
 void PulseAudioInput::Free() {
 	PulseAudioDisconnectStream(&m_pa_stream);
 	PulseAudioDisconnect(&m_pa_mainloop, &m_pa_context);
+}
+
+void PulseAudioInput::DetectMonitor() {
+	pa_operation *operation = NULL;
+	try {
+		operation = pa_context_get_source_info_by_index(m_pa_context, pa_stream_get_device_index(m_pa_stream), SourceInfoCallback, this);
+		if(operation == NULL) {
+			Logger::LogError("[PulseAudioInput::Init] " + Logger::tr("Error: Could not get source info! Reason: %1").arg(pa_strerror(pa_context_errno(m_pa_context))));
+			throw PulseAudioException();
+		}
+		PulseAudioCompleteOperation(m_pa_mainloop, &operation);
+		if(m_stream_is_monitor) {
+			Logger::LogInfo("[PulseAudioInput::InputThread] " + Logger::tr("Stream is a monitor."));
+		} else {
+			Logger::LogInfo("[PulseAudioInput::InputThread] " + Logger::tr("Stream is not a monitor."));
+		}
+	} catch(...) {
+		PulseAudioCancelOperation(m_pa_mainloop, &operation);
+		throw;
+	}
+}
+
+void PulseAudioInput::SourceInfoCallback(pa_context* context, const pa_source_info* info, int eol, void* userdata) {
+	Q_UNUSED(context);
+	if(!eol) {
+		PulseAudioInput *input = (PulseAudioInput*) userdata;
+		input->m_stream_is_monitor = (info->monitor_of_sink != PA_INVALID_INDEX);
+	}
 }
 
 void PulseAudioInput::SuspendedCallback(pa_stream* stream, void* userdata) {
@@ -350,7 +381,10 @@ void PulseAudioInput::InputThread() {
 
 						// push the samples
 						/*int64_t time = timestamp - latency;*/
-						int64_t time = timestamp - (int64_t) samples * (int64_t) 1000000 / (int64_t) m_sample_rate;
+						int64_t time = timestamp;
+						if(!m_stream_is_monitor) {
+							time -= (int64_t) samples * (int64_t) 1000000 / (int64_t) m_sample_rate;
+						}
 						PushAudioSamples(m_channels, m_sample_rate, AV_SAMPLE_FMT_S16, samples, push_data, time);
 
 					}
@@ -381,6 +415,7 @@ void PulseAudioInput::InputThread() {
 				m_stream_moved = false;
 				Logger::LogWarning("[PulseAudioInput::InputThread] " + Logger::tr("Warning: Stream was moved to a different source."));
 				PushAudioHole();
+				DetectMonitor();
 			}
 
 		}
