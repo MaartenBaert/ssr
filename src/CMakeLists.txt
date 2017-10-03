@@ -2,11 +2,8 @@
 
 find_package(Threads REQUIRED)
 find_package(ALSA REQUIRED)
-find_package(AVCodec REQUIRED)
-find_package(AVFormat REQUIRED)
-find_package(AVUtil REQUIRED)
+find_package(FFmpeg REQUIRED)
 find_package(PulseAudio REQUIRED)
-find_package(SWScale REQUIRED)
 find_package(X11 REQUIRED)
 
 if(WITH_JACK)
@@ -199,10 +196,7 @@ add_executable(simplescreenrecorder
 
 target_include_directories(simplescreenrecorder PRIVATE
 	${ALSA_INCLUDE_DIRS}
-	${AVCODEC_INCLUDE_DIRS}
-	${AVFORMAT_INCLUDE_DIRS}
-	${AVUTIL_INCLUDE_DIRS}
-	${SWSCALE_INCLUDE_DIRS}
+	${FFMPEG_INCLUDE_DIRS}
 	${X11_X11_INCLUDE_PATH}
 	${X11_Xext_INCLUDE_PATH}
 	${X11_Xfixes_INCLUDE_PATH}
@@ -219,12 +213,9 @@ target_include_directories(simplescreenrecorder PRIVATE
 
 target_link_libraries(simplescreenrecorder PRIVATE
 	${ALSA_LIBRARIES}
-	${AVCODEC_LIBRARIES}
-	${AVFORMAT_LIBRARIES}
-	${AVUTIL_LIBRARIES}
+	${FFMPEG_LIBRARIES}
 	${QT_LIBS}
 	${CMAKE_THREAD_LIBS_INIT}
-	${SWSCALE_LIBRARIES}
 	${X11_X11_LIB}
 	${X11_Xext_LIB}
 	${X11_Xfixes_LIB}
