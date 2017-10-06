@@ -6,6 +6,7 @@
 *.tar.gz
 *.user
 *.orig
+*.autosave
 *.qm
 qrc_*
 moc_*
