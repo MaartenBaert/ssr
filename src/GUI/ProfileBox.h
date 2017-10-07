@@ -46,7 +46,7 @@ private:
 	QPushButton *m_pushbutton_save, *m_pushbutton_new, *m_pushbutton_delete;
 
 public:
-	ProfileBox(QWidget* parent, const QString& type, LoadCallback load_callback, SaveCallback save_callback, void* userdata);
+	ProfileBox(const QString& title, QWidget* parent, const QString& type, LoadCallback load_callback, SaveCallback save_callback, void* userdata);
 
 	QString GetProfileName();
 	unsigned int FindProfile(const QString& name);

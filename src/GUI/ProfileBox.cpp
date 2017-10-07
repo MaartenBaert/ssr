@@ -24,8 +24,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Dialogs.h"
 #include "MainWindow.h"
 
-ProfileBox::ProfileBox(QWidget* parent, const QString& type, LoadCallback load_callback, SaveCallback save_callback, void *userdata)
-	: QGroupBox(tr("Profile"), parent) {
+ProfileBox::ProfileBox(const QString& title, QWidget* parent, const QString& type, LoadCallback load_callback, SaveCallback save_callback, void *userdata)
+	: QGroupBox(title, parent) {
 
 	m_type = type;
 	m_load_callback = load_callback;
