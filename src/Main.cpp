@@ -74,16 +74,17 @@ int main(int argc, char* argv[]) {
 
 	// load Qt translations
 	QTranslator translator_qt;
-	if(!translator_qt.load(QLocale::system(), "qt", "_", QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
-	//if(!translator_qt.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
-		qDebug() << "Could not load system translator.";
-	QApplication::installTranslator(&translator_qt);
+	if(translator_qt.load(QLocale::system(), "qt", "_", QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
+		QApplication::installTranslator(&translator_qt);
+	}
 
 	// load SSR translations
 	QTranslator translator_ssr;
-	if(!translator_ssr.load(QLocale::system(), "simplescreenrecorder", "_", QCoreApplication::applicationDirPath()))
-		translator_ssr.load(QLocale::system(), "simplescreenrecorder", "_", GetApplicationSystemDir("translations"));
-	QApplication::installTranslator(&translator_ssr);
+	if(translator_ssr.load(QLocale::system(), "simplescreenrecorder", "_", QCoreApplication::applicationDirPath() + "/translations")) {
+		QApplication::installTranslator(&translator_ssr);
+	} else if(translator_ssr.load(QLocale::system(), "simplescreenrecorder", "_", GetApplicationSystemDir("translations"))) {
+		QApplication::installTranslator(&translator_ssr);
+	}
 
 	// Qt doesn't count hidden windows, so if the main window is hidden and a dialog box is closed, Qt thinks the application should quit.
 	// That's not what we want, so disable this and do it manually.
