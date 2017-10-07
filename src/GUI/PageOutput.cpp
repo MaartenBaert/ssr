@@ -438,10 +438,18 @@ void PageOutput::LoadProfileSettings(QSettings* settings) {
 	}
 
 	// choose default file name
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	QString dir_videos = QDesktopServices::storageLocation(QDesktopServices::MoviesLocation);
 	QString dir_documents = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
 	QString dir_home = QDir::homePath();
 	QString best_dir = (QDir(dir_videos).exists())? dir_videos : (QDir(dir_documents).exists())? dir_documents : dir_home;
+#else
+	QStringList dir_videos = QStandardPaths::standardLocations(QStandardPaths::MoviesLocation);
+	QStringList dir_documents = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+	QString dir_home = QDir::homePath();
+	QString best_dir = (!dir_videos.empty() && QDir(dir_videos[0]).exists())? dir_videos[0] :
+					   (!dir_documents.empty() && QDir(dir_documents[0]).exists())? dir_documents[0] : dir_home;
+#endif
 	QString default_file = best_dir + "/simplescreenrecorder." + m_containers[default_container].suffixes[0];
 
 	// load settings
