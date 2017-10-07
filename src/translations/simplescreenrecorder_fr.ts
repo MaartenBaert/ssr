@@ -1711,7 +1711,7 @@ Et si vous enregistrer simplement votre propre voix (pas de musique), la qualit�
 - Vorbis (libvorbis) est super, c&apos;est le codec recommandé.
 - MP3 (libmp3lame) est raisonnablement bon.
 - AAC est un bon codec, mais les implémentations utilisées ici (libvo_aacenc ou l&apos;encodeur expérimental AAC  de ffmpeg)
-    sont assez mauvaises. Ne l&apos;utilisez que si vous avez pas d&apos;autre choix.
+    sont assez mauvaises. Ne l&apos;utilisez que si vous n&apos;avez pas d&apos;autre choix.
 - Le mode &apos;Non compressé&apos; enregistrera simplement les données sonores sans les compresser. Le fichier sera assez grand, mais il est très rapide.</translation>
     </message>
     <message>
