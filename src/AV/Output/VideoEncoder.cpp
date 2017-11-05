@@ -134,11 +134,11 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 			codec_context->flags |= CODEC_FLAG_QSCALE;
 			codec_context->global_quality = lrint(ParseCodecOptionDouble(key, value, -1.0e6, 1.0e6, FF_QP2LAMBDA));
 		} else if(key == "minrate") {
-			codec_context->rc_min_rate = ParseCodecOptionInt(key, value, 1, 1000000, 1024); // kbps
+			codec_context->rc_min_rate = ParseCodecOptionInt(key, value, 1, 1000000, 1000); // kbit/s
 		} else if(key == "maxrate") {
-			codec_context->rc_max_rate = ParseCodecOptionInt(key, value, 1, 1000000, 1024); // kbps
+			codec_context->rc_max_rate = ParseCodecOptionInt(key, value, 1, 1000000, 1000); // kbit/s
 		} else if(key == "bufsize") {
-			codec_context->rc_buffer_size = ParseCodecOptionInt(key, value, 1, 1000000, 1024); // kbps
+			codec_context->rc_buffer_size = ParseCodecOptionInt(key, value, 1, 1000000, 1000); // kbit/s
 		} else if(key == "keyint") {
 			codec_context->gop_size = ParseCodecOptionInt(key, value, 1, 1000000);
 		} else if(key == "pixelformat") {

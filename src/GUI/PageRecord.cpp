@@ -82,14 +82,24 @@ static std::vector<std::pair<QString, QString> > GetOptionsFromString(const QStr
 	return options;
 }
 
-static QString ReadableSize(uint64_t size, const QString& suffix) {
+static QString ReadableSizeIEC(uint64_t size, const QString& suffix) {
 	if(size < (uint64_t) 10 * 1024)
 		return QString::number(size) + " " + suffix;
 	if(size < (uint64_t) 10 * 1024 * 1024)
-		return QString::number((size + 512) / 1024) + " k" + suffix;
+		return QString::number((size + 512) / 1024) + " Ki" + suffix;
 	if(size < (uint64_t) 10 * 1024 * 1024 * 1024)
-		return QString::number((size / 1024 + 512) / 1024) + " M" + suffix;
-	return QString::number((size / 1024 / 1024 + 512) / 1024) + " G" + suffix;
+		return QString::number((size / 1024 + 512) / 1024) + " Mi" + suffix;
+	return QString::number((size / (1024 * 1024) + 512) / 1024) + " Gi" + suffix;
+}
+
+static QString ReadableSizeSI(uint64_t size, const QString& suffix) {
+	if(size < (uint64_t) 10 * 1000)
+		return QString::number(size) + " " + suffix;
+	if(size < (uint64_t) 10 * 1000 * 1000)
+		return QString::number((size + 500) / 1000) + " k" + suffix;
+	if(size < (uint64_t) 10 * 1000 * 1000 * 1000)
+		return QString::number((size / 1000 + 500) / 1000) + " M" + suffix;
+	return QString::number((size / (1000 * 1000) + 512) / 1024) + " G" + suffix;
 }
 
 static QString ReadableTime(int64_t time_micro) {
@@ -1084,8 +1094,8 @@ void PageRecord::OnUpdateInformation() {
 		m_label_info_size_in->setText(ReadableWidthHeight(m_video_in_width, m_video_in_height));
 		m_label_info_size_out->setText(ReadableWidthHeight(m_output_settings.video_width, m_output_settings.video_height));
 		m_label_info_file_name->setText(file_name);
-		m_label_info_file_size->setText(ReadableSize(total_bytes, "B"));
-		m_label_info_bit_rate->setText(ReadableSize(bit_rate, "bps"));
+		m_label_info_file_size->setText(ReadableSizeIEC(total_bytes, "B"));
+		m_label_info_bit_rate->setText(ReadableSizeSI(bit_rate, "bit/s"));
 
 		if(!g_option_statsfile.isNull()) {
 			QString str = QString() +

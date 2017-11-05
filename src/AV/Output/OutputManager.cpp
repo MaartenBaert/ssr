@@ -273,10 +273,10 @@ void OutputManager::StartFragment() {
 	VideoEncoder *video_encoder = NULL;
 	AudioEncoder *audio_encoder = NULL;
 	if(!m_output_settings.video_codec_avname.isEmpty())
-		video_encoder = muxer->AddVideoEncoder(m_output_settings.video_codec_avname, m_output_settings.video_options, m_output_settings.video_kbit_rate * 1024,
+		video_encoder = muxer->AddVideoEncoder(m_output_settings.video_codec_avname, m_output_settings.video_options, m_output_settings.video_kbit_rate * 1000,
 											   m_output_settings.video_width, m_output_settings.video_height, m_output_settings.video_frame_rate);
 	if(!m_output_settings.audio_codec_avname.isEmpty())
-		audio_encoder = muxer->AddAudioEncoder(m_output_settings.audio_codec_avname, m_output_settings.audio_options, m_output_settings.audio_kbit_rate * 1024,
+		audio_encoder = muxer->AddAudioEncoder(m_output_settings.audio_codec_avname, m_output_settings.audio_options, m_output_settings.audio_kbit_rate * 1000,
 											   m_output_settings.audio_channels, m_output_settings.audio_sample_rate);
 	muxer->Start();
 

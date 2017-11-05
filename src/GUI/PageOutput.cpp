@@ -251,7 +251,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 				m_combobox_video_codec_av->addItem(c.avname);
 			}
 			m_combobox_video_codec_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work."));
-			m_label_video_kbit_rate = new QLabel(tr("Bit rate (in kbps):"), groupbox_video);
+			m_label_video_kbit_rate = new QLabel(tr("Bit rate (in kbit/s):"), groupbox_video);
 			m_lineedit_video_kbit_rate = new QLineEdit(groupbox_video);
 			m_lineedit_video_kbit_rate->setToolTip(tr("The video bit rate (in kilobit per second). A higher value means a higher quality."
 													  "\nIf you have no idea where to start, try 5000 and change it if needed."));
@@ -335,7 +335,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 				m_combobox_audio_codec_av->addItem(c.avname);
 			}
 			m_combobox_audio_codec_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work."));
-			m_label_audio_kbit_rate = new QLabel(tr("Bit rate (in kbps):"), m_groupbox_audio);
+			m_label_audio_kbit_rate = new QLabel(tr("Bit rate (in kbit/s):"), m_groupbox_audio);
 			m_lineedit_audio_kbit_rate = new QLineEdit(m_groupbox_audio);
 			m_lineedit_audio_kbit_rate->setToolTip(tr("The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128."));
 			m_label_audio_options = new QLabel(tr("Custom options:"), m_groupbox_audio);
