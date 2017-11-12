@@ -159,7 +159,7 @@ void ProfileBox::OnProfileNew() {
 	QString name = InputBox(this, MainWindow::WINDOW_CAPTION, tr("Enter a name for the new profile:"), "");
 	if(name.isEmpty())
 		return;
-	name = name.toUtf8().toPercentEncoding();
+	name = name.toUtf8().toPercentEncoding(); // TODO: exclude the following characters: " !#$%&'()+,;=@[]^{}"
 	QString filename = GetApplicationUserDir(m_type) + "/" + name + ".conf";
 	if(!QFileInfo(filename).exists() || MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 			tr("A profile with the same name already exists. Are you sure that you want to replace it?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) == BUTTON_YES) {
