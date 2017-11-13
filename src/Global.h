@@ -336,9 +336,6 @@ inline bool StringToNum(const std::string& str, T* number) {
 inline double ToDouble(const AVRational& r) {
 	return (double) r.num / (double) r.den;
 }
-inline double ToDouble(const AVFrac& f) {
-	return (double) f.val + (double) f.num / (double) f.den;
-}
 
 inline void GroupEnabled(std::initializer_list<QAction*> actions, bool enabled) {
 	for(QAction *a : actions) {
