@@ -6,6 +6,18 @@ Git master
 
 - ?
 
+Version 0.3.9
+-------------
+
+- Switch to CMake build system.
+- Add RGB24 support.
+- Automatically add scroll bars when the screen resolution is too low to display the complete window.
+- Improve PulseAudio latency handling of monitors.
+- Add a separate checkbox to enable timestamps.
+- Provide a default file name, so now all options are set to a sensible default value.
+- Use base-10 units for bitrate for consistency with FFmpeg (1 kbit/s = 1000 bit/s).
+- Minor bugfixes.
+
 Version 0.3.8
 -------------
 

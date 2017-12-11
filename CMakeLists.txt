@@ -3,7 +3,7 @@ cmake_policy(SET CMP0048 NEW)
 
 set(CMAKE_CXX_STANDARD 11)
 
-project(simplescreenrecorder VERSION 0.3.8)
+project(simplescreenrecorder VERSION 0.3.9)
 
 option(ENABLE_32BIT_GLINJECT "Build the 32-bit version of 'libssr-glinject' on 64-bit systems (in addition to the 64-bit version). Required for OpenGL recording of 32-bit applications on 64-bit systems." FALSE)
 option(ENABLE_X86_ASM "Allow x86/x64 assembly or intrinsics." TRUE)
