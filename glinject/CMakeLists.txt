@@ -30,7 +30,7 @@ set(link_libraries
 	${X11_Xfixes_LIB}
 	${OPENGL_LIBRARIES}
 	-lrt
-	-ldl
+	${CMAKE_DL_LIBS}
 )
 
 add_library(ssr-glinject SHARED ${sources})
