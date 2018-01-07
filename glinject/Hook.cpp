@@ -15,6 +15,8 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include <GL/glx.h>
 #include <X11/X.h>
 
+extern char **environ;
+
 typedef void (*GLXextFuncPtr)(void);
 
 void InitGLInject();
