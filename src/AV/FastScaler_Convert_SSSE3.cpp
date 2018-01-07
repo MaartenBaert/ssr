@@ -73,10 +73,10 @@ void Convert_BGRA_YUV444_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 	__m128i v_mat_ub_vr = _mm_set1_epi16(112);
 	__m128i v_mat_vg    = _mm_set1_epi16(-102);
 	__m128i v_mat_vb    = _mm_set1_epi16(-10);
-	__m128i v_offset_y  = _mm_set1_epi16(128 + (16 << 8));
-	__m128i v_offset_uv = _mm_set1_epi16(128 + (128 << 8));
-	__m128i v_shuffle1  = _mm_setr_epi8(1, 5, 9, 13, 3, 7, 11, 15, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle2  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 1, 5, 9, 13, 3, 7, 11, 15);
+	__m128i v_offset_y  = _mm_set1_epi16((int16_t) (128 + (16 << 8)));
+	__m128i v_offset_uv = _mm_set1_epi16((int16_t) (128 + (128 << 8)));
+	__m128i v_shuffle1  = _mm_setr_epi8(1, 5, 9, 13, 3, 7, 11, 15, -1, -1, -1, -1, -1, -1, -1, -1);
+	__m128i v_shuffle2  = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1, 1, 5, 9, 13, 3, 7, 11, 15);
 
 	const int offset_y = 128 + (16 << 8), offset_uv = 128 + (128 << 8);
 
@@ -134,11 +134,11 @@ void Convert_BGRA_YUV422_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 	__m128i v_mat_ub_vr = _mm_set1_epi16(112);
 	__m128i v_mat_vg    = _mm_set1_epi16(-102);
 	__m128i v_mat_vb    = _mm_set1_epi16(-10);
-	__m128i v_offset_y  = _mm_set1_epi16(128 + (16 << 8));
-	__m128i v_offset_uv = _mm_set1_epi16(128 + (128 << 8));
-	__m128i v_shuffle1  = _mm_setr_epi8(1, 5, 9, 13, 3, 7, 11, 15, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle2  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 1, 5, 9, 13, 3, 7, 11, 15);
-	__m128i v_shuffle3  = _mm_setr_epi8(1, 5, 3, 7, 9, 13, 11, 15, 255, 255, 255, 255, 255, 255, 255, 255);
+	__m128i v_offset_y  = _mm_set1_epi16((int16_t) (128 + (16 << 8)));
+	__m128i v_offset_uv = _mm_set1_epi16((int16_t) (128 + (128 << 8)));
+	__m128i v_shuffle1  = _mm_setr_epi8(1, 5, 9, 13, 3, 7, 11, 15, -1, -1, -1, -1, -1, -1, -1, -1);
+	__m128i v_shuffle2  = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1, 1, 5, 9, 13, 3, 7, 11, 15);
+	__m128i v_shuffle3  = _mm_setr_epi8(1, 5, 3, 7, 9, 13, 11, 15, -1, -1, -1, -1, -1, -1, -1, -1);
 
 	const int offset_y = 128 + (16 << 8), offset_uv = (128 + (128 << 8)) << 1;
 
@@ -203,12 +203,12 @@ void Convert_BGRA_YUV420_SSSE3(unsigned int w, unsigned int h, const uint8_t* in
 	__m128i v_mat_ub_vr = _mm_set1_epi16(112);
 	__m128i v_mat_vg    = _mm_set1_epi16(-102);
 	__m128i v_mat_vb    = _mm_set1_epi16(-10);
-	__m128i v_offset_y  = _mm_set1_epi16(128 + (16 << 8));
-	__m128i v_offset_uv = _mm_set1_epi16(128 + (128 << 8));
+	__m128i v_offset_y  = _mm_set1_epi16((int16_t) (128 + (16 << 8)));
+	__m128i v_offset_uv = _mm_set1_epi16((int16_t) (128 + (128 << 8)));
 	__m128i v_2         = _mm_set1_epi16(2);
-	__m128i v_shuffle1  = _mm_setr_epi8(1, 5, 9, 13, 3, 7, 11, 15, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle2  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 1, 5, 9, 13, 3, 7, 11, 15);
-	__m128i v_shuffle3  = _mm_setr_epi8(1, 5, 3, 7, 9, 13, 11, 15, 255, 255, 255, 255, 255, 255, 255, 255);
+	__m128i v_shuffle1  = _mm_setr_epi8(1, 5, 9, 13, 3, 7, 11, 15, -1, -1, -1, -1, -1, -1, -1, -1);
+	__m128i v_shuffle2  = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1, 1, 5, 9, 13, 3, 7, 11, 15);
+	__m128i v_shuffle3  = _mm_setr_epi8(1, 5, 3, 7, 9, 13, 11, 15, -1, -1, -1, -1, -1, -1, -1, -1);
 
 	const int offset_y = 128 + (16 << 8), offset_uv = (128 + (128 << 8)) << 2;
 
@@ -297,13 +297,13 @@ void Convert_BGRA_NV12_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_d
 	__m128i v_mat_ub_vr = _mm_set1_epi16(112);
 	__m128i v_mat_vg    = _mm_set1_epi16(-102);
 	__m128i v_mat_vb    = _mm_set1_epi16(-10);
-	__m128i v_offset_y  = _mm_set1_epi16(128 + (16 << 8));
-	__m128i v_offset_uv = _mm_set1_epi16(128 + (128 << 8));
+	__m128i v_offset_y  = _mm_set1_epi16((int16_t) (128 + (16 << 8)));
+	__m128i v_offset_uv = _mm_set1_epi16((int16_t) (128 + (128 << 8)));
 	__m128i v_2         = _mm_set1_epi16(2);
-	__m128i v_shuffle1  = _mm_setr_epi8(1, 5, 9, 13, 3, 7, 11, 15, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle2  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 1, 5, 9, 13, 3, 7, 11, 15);
-	__m128i v_shuffle3  = _mm_setr_epi8(1, 255, 5, 255, 3, 255, 7, 255, 9, 255, 13, 255, 11, 255, 15, 255);
-	__m128i v_shuffle4  = _mm_setr_epi8(255, 1, 255, 5, 255, 3, 255, 7, 255, 9, 255, 13, 255, 11, 255, 15);
+	__m128i v_shuffle1  = _mm_setr_epi8( 1,  5,  9, 13,  3,  7, 11, 15, -1, -1, -1, -1, -1, -1, -1, -1);
+	__m128i v_shuffle2  = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1,  1,  5,  9, 13,  3,  7, 11, 15);
+	__m128i v_shuffle3  = _mm_setr_epi8( 1, -1,  5, -1,  3, -1,  7, -1,  9, -1, 13, -1, 11, -1, 15, -1);
+	__m128i v_shuffle4  = _mm_setr_epi8(-1,  1, -1,  5, -1,  3, -1,  7, -1,  9, -1, 13, -1, 11, -1, 15);
 
 	const int offset_y = 128 + (16 << 8), offset_uv = (128 + (128 << 8)) << 2;
 
@@ -385,12 +385,12 @@ Same as the fallback converter, but with a larger block size and shuffles instea
 void Convert_BGRA_BGR_SSSE3(unsigned int w, unsigned int h, const uint8_t* in_data, int in_stride, uint8_t* out_data, int out_stride) {
 	assert((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0);
 
-	__m128i v_shuffle1  = _mm_setr_epi8(  0,   1,   2,   4,   5,   6,   8,   9,  10,  12,  13,  14, 255, 255, 255, 255);
-	__m128i v_shuffle2  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,   0,   1,   2,   4);
-	__m128i v_shuffle3  = _mm_setr_epi8(  5,   6,   8,   9,  10,  12,  13,  14, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle4  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255,   0,   1,   2,   4,   5,   6,   8,   9);
-	__m128i v_shuffle5  = _mm_setr_epi8( 10,  12,  13,  14, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle6  = _mm_setr_epi8(255, 255, 255, 255,   0,   1,   2,   4,   5,   6,   8,   9,  10,  12,  13,  14);
+	__m128i v_shuffle1  = _mm_setr_epi8( 0,  1,  2,  4,  5,  6,  8,  9, 10, 12, 13, 14, -1, -1, -1, -1);
+	__m128i v_shuffle2  = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  0,  1,  2,  4);
+	__m128i v_shuffle3  = _mm_setr_epi8( 5,  6,  8,  9, 10, 12, 13, 14, -1, -1, -1, -1, -1, -1, -1, -1);
+	__m128i v_shuffle4  = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1,  0,  1,  2,  4,  5,  6,  8,  9);
+	__m128i v_shuffle5  = _mm_setr_epi8(10, 12, 13, 14, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+	__m128i v_shuffle6  = _mm_setr_epi8(-1, -1, -1, -1,  0,  1,  2,  4,  5,  6,  8,  9, 10, 12, 13, 14);
 
 	for(unsigned int j = 0; j < h; ++j) {
 		const uint8_t *in = in_data + in_stride * (int) j;

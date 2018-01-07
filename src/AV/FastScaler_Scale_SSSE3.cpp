@@ -256,11 +256,11 @@ void Bilinear_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in
 	// constants
 	__m128i v_128      = _mm_set1_epi16(128);
 	__m128i v_256      = _mm_set1_epi16(256);
-	__m128i v_shuffle1 = _mm_setr_epi8(0, 255, 1, 255, 2, 255, 3, 255, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle2 = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 0, 255, 1, 255, 2, 255, 3, 255);
-	__m128i v_shuffle3 = _mm_setr_epi8(4, 255, 5, 255, 6, 255, 7, 255, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle4 = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 4, 255, 5, 255, 6, 255, 7, 255);
-	__m128i v_shuffle5 = _mm_setr_epi8(1, 3, 5, 7, 9, 11, 13, 15, 255, 255, 255, 255, 255, 255, 255, 255);
+	__m128i v_shuffle1 = _mm_setr_epi8( 0, -1,  1, -1,  2, -1,  3, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+	__m128i v_shuffle2 = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1,  0, -1,  1, -1,  2, -1,  3, -1);
+	__m128i v_shuffle3 = _mm_setr_epi8( 4, -1,  5, -1,  6, -1 , 7, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+	__m128i v_shuffle4 = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1,  4, -1,  5, -1,  6, -1,  7, -1);
+	__m128i v_shuffle5 = _mm_setr_epi8( 1,  3,  5,  7,  9, 11, 13, 15, -1, -1, -1, -1, -1, -1, -1, -1);
 
 	// scale
 	for(unsigned int out_j = 0; out_j < out_h; ++out_j) {
