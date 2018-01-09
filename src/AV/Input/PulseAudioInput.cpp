@@ -61,9 +61,15 @@ static void PulseAudioConnect(pa_mainloop** mainloop, pa_context** context) {
 		throw PulseAudioException();
 	}
 	if(pa_context_connect(*context, NULL, PA_CONTEXT_NOAUTOSPAWN , NULL) < 0) {
+#if SSR_USE_ALSA
 		Logger::LogError("[PulseAudioConnect] " + Logger::tr("Error: Could not connect! Reason: %1\n"
 															  "It is possible that your system doesn't use PulseAudio. Try using the ALSA backend instead.")
 						 .arg(pa_strerror(pa_context_errno(*context))));
+#else
+		Logger::LogError("[PulseAudioConnect] " + Logger::tr("Error: Could not connect! Reason: %1\n"
+															  "It is possible that your system doesn't use PulseAudio.")
+						 .arg(pa_strerror(pa_context_errno(*context))));
+#endif
 		throw PulseAudioException();
 	}
 

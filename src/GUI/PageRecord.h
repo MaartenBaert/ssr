@@ -36,7 +36,9 @@ class Synchronizer;
 class X11Input;
 class GLInjectLauncher;
 class GLInjectInput;
+#if SSR_USE_ALSA
 class ALSAInput;
+#endif
 #if SSR_USE_PULSEAUDIO
 class PulseAudioInput;
 #endif
@@ -68,7 +70,9 @@ private:
 	bool m_audio_enabled;
 	unsigned int m_audio_channels, m_audio_sample_rate;
 	PageInput::enum_audio_backend m_audio_backend;
+#if SSR_USE_ALSA
 	QString m_alsa_source;
+#endif
 #if SSR_USE_PULSEAUDIO
 	QString m_pulseaudio_source;
 #endif
@@ -82,7 +86,9 @@ private:
 
 	std::unique_ptr<X11Input> m_x11_input;
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
+#if SSR_USE_ALSA
 	std::unique_ptr<ALSAInput> m_alsa_input;
+#endif
 #if SSR_USE_PULSEAUDIO
 	std::unique_ptr<PulseAudioInput> m_pulseaudio_input;
 #endif

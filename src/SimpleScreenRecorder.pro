@@ -5,7 +5,7 @@ QT += core gui
 TARGET = SimpleScreenRecorder
 TEMPLATE = app
 
-DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_PULSEAUDIO=1 SSR_USE_JACK=1 SSR_SYSTEM_DIR=\\"/usr/share/simplescreenrecorder\\"
+DEFINES += SSR_USE_X86_ASM=1 SSR_USE_FFMPEG_VERSIONS=1 SSR_USE_ALSA=1 SSR_USE_PULSEAUDIO=1 SSR_USE_JACK=1 SSR_SYSTEM_DIR=\\"/usr/share/simplescreenrecorder\\"
 QMAKE_CXXFLAGS += -std=c++0x -flax-vector-conversions
 LIBS += -lavformat -lavcodec -lavutil -lswscale -lX11 -lXext -lXfixes -lasound
 

@@ -195,12 +195,12 @@ add_executable(simplescreenrecorder
 )
 
 target_include_directories(simplescreenrecorder PRIVATE
-	${ALSA_INCLUDE_DIRS}
 	${FFMPEG_INCLUDE_DIRS}
 	${X11_X11_INCLUDE_PATH}
 	${X11_Xext_INCLUDE_PATH}
 	${X11_Xfixes_INCLUDE_PATH}
 	${X11_Xi_INCLUDE_PATH}
+	$<$<BOOL:${WITH_ALSA}>:${ALSA_INCLUDE_DIRS}>
 	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_INCLUDE_DIRS}>
 	$<$<BOOL:${WITH_JACK}>:${JACK_INCLUDE_DIRS}>
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -212,7 +212,6 @@ target_include_directories(simplescreenrecorder PRIVATE
 )
 
 target_link_libraries(simplescreenrecorder PRIVATE
-	${ALSA_LIBRARIES}
 	${FFMPEG_LIBRARIES}
 	${QT_LIBS}
 	${CMAKE_THREAD_LIBS_INIT}
@@ -220,6 +219,7 @@ target_link_libraries(simplescreenrecorder PRIVATE
 	${X11_Xext_LIB}
 	${X11_Xfixes_LIB}
 	${X11_Xi_LIB}
+	$<$<BOOL:${WITH_ALSA}>:${ALSA_LIBRARIES}>
 	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_LIBRARIES}>
 	$<$<BOOL:${WITH_JACK}>:${JACK_LIBRARIES}>
 )
@@ -227,6 +227,7 @@ target_link_libraries(simplescreenrecorder PRIVATE
 target_compile_definitions(simplescreenrecorder PRIVATE
 	-DSSR_USE_X86_ASM=$<BOOL:${ENABLE_X86_ASM}>
 	-DSSR_USE_FFMPEG_VERSIONS=$<BOOL:${ENABLE_FFMPEG_VERSIONS}>
+	-DSSR_USE_ALSA=$<BOOL:${WITH_ALSA}>
 	-DSSR_USE_PULSEAUDIO=$<BOOL:${WITH_PULSEAUDIO}>
 	-DSSR_USE_JACK=$<BOOL:${WITH_JACK}>
 	-DSSR_SYSTEM_DIR="${CMAKE_INSTALL_FULL_DATADIR}/simplescreenrecorder"

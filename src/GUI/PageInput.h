@@ -22,7 +22,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ProfileBox.h"
 
+#if SSR_USE_ALSA
 #include "ALSAInput.h"
+#endif
 #if SSR_USE_PULSEAUDIO
 #include "PulseAudioInput.h"
 #endif
@@ -86,7 +88,9 @@ public:
 		VIDEO_AREA_COUNT // must be last
 	};
 	enum enum_audio_backend {
+#if SSR_USE_ALSA
 		AUDIO_BACKEND_ALSA,
+#endif
 #if SSR_USE_PULSEAUDIO
 		AUDIO_BACKEND_PULSEAUDIO,
 #endif
@@ -103,7 +107,9 @@ private:
 	std::unique_ptr<QRubberBand> m_rubber_band, m_recording_frame;
 	QRect m_rubber_band_rect, m_select_window_outer_rect, m_select_window_inner_rect;
 
+#if SSR_USE_ALSA
 	std::vector<ALSAInput::Source> m_alsa_sources;
+#endif
 #if SSR_USE_PULSEAUDIO
 	bool m_pulseaudio_available;
 	std::vector<PulseAudioInput::Source> m_pulseaudio_sources;
@@ -134,9 +140,11 @@ private:
 	QCheckBox *m_checkbox_audio_enable;
 	QLabel *m_label_audio_backend;
 	QComboBox *m_combobox_audio_backend;
+#if SSR_USE_ALSA
 	QLabel *m_label_alsa_source;
 	QComboBox *m_combobox_alsa_source;
 	QPushButton *m_pushbutton_alsa_refresh;
+#endif
 #if SSR_USE_PULSEAUDIO
 	QLabel *m_label_pulseaudio_source;
 	QComboBox *m_combobox_pulseaudio_source;
@@ -159,13 +167,17 @@ private:
 	void SaveProfileSettings(QSettings* settings);
 
 public:
+#if SSR_USE_ALSA
 	QString GetALSASourceName();
+#endif
 #if SSR_USE_PULSEAUDIO
 	QString GetPulseAudioSourceName();
 #endif
 
 private:
+#if SSR_USE_ALSA
 	unsigned int FindALSASource(const QString& name);
+#endif
 #if SSR_USE_PULSEAUDIO
 	unsigned int FindPulseAudioSource(const QString& name);
 #endif
@@ -182,7 +194,9 @@ private:
 	void SetVideoAreaFromRubberBand();
 
 	void LoadScreenConfigurations();
+#if SSR_USE_ALSA
 	void LoadALSASources();
+#endif
 #if SSR_USE_PULSEAUDIO
 	void LoadPulseAudioSources();
 #endif
@@ -220,7 +234,9 @@ public:
 	inline bool GetVideoRecordCursor() { return m_checkbox_record_cursor->isChecked(); }
 	inline bool GetAudioEnabled() { return m_checkbox_audio_enable->isChecked(); }
 	inline enum_audio_backend GetAudioBackend() { return (enum_audio_backend) clamp(m_combobox_audio_backend->currentIndex(), 0, AUDIO_BACKEND_COUNT - 1); }
+#if SSR_USE_ALSA
 	inline unsigned int GetALSASource() { return clamp(m_combobox_alsa_source->currentIndex(), 0, (int) m_alsa_sources.size() - 1); }
+#endif
 #if SSR_USE_PULSEAUDIO
 	inline unsigned int GetPulseAudioSource() { return clamp(m_combobox_pulseaudio_source->currentIndex(), 0, (int) m_pulseaudio_sources.size() - 1); }
 #endif
@@ -249,7 +265,9 @@ public:
 	inline void SetVideoRecordCursor(bool show) { m_checkbox_record_cursor->setChecked(show); }
 	inline void SetAudioEnabled(bool enable) { m_checkbox_audio_enable->setChecked(enable); }
 	inline void SetAudioBackend(enum_audio_backend backend) { m_combobox_audio_backend->setCurrentIndex(clamp((int) backend, 0, AUDIO_BACKEND_COUNT - 1)); }
+#if SSR_USE_ALSA
 	inline void SetALSASource(unsigned int source) { m_combobox_alsa_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_alsa_sources.size() - 1)); }
+#endif
 #if SSR_USE_PULSEAUDIO
 	inline void SetPulseAudioSource(unsigned int source) { m_combobox_pulseaudio_source->setCurrentIndex(clamp(source, 0u, (unsigned int) m_pulseaudio_sources.size() - 1)); }
 #endif

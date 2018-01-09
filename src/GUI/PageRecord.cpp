@@ -35,7 +35,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Synchronizer.h"
 #include "X11Input.h"
 #include "GLInjectInput.h"
+#if SSR_USE_ALSA
 #include "ALSAInput.h"
+#endif
 #if SSR_USE_PULSEAUDIO
 #include "PulseAudioInput.h"
 #endif
@@ -474,7 +476,9 @@ void PageRecord::StartPage() {
 	m_audio_channels = 2;
 	m_audio_sample_rate = 48000;
 	m_audio_backend = page_input->GetAudioBackend();
+#if SSR_USE_ALSA
 	m_alsa_source = page_input->GetALSASourceName();
+#endif
 #if SSR_USE_PULSEAUDIO
 	m_pulseaudio_source = page_input->GetPulseAudioSourceName();
 #endif
@@ -767,7 +771,9 @@ void PageRecord::StartInput() {
 		return;
 
 	assert(m_x11_input == NULL);
+#if SSR_USE_ALSA
 	assert(m_alsa_input == NULL);
+#endif
 #if SSR_USE_PULSEAUDIO
 	assert(m_pulseaudio_input == NULL);
 #endif
@@ -789,8 +795,10 @@ void PageRecord::StartInput() {
 
 		// start the audio input
 		if(m_audio_enabled) {
+#if SSR_USE_ALSA
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_ALSA)
 				m_alsa_input.reset(new ALSAInput(m_alsa_source, m_audio_sample_rate));
+#endif
 #if SSR_USE_PULSEAUDIO
 			if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
 				m_pulseaudio_input.reset(new PulseAudioInput(m_pulseaudio_source, m_audio_sample_rate));
@@ -807,7 +815,9 @@ void PageRecord::StartInput() {
 		m_x11_input.reset();
 		if(m_gl_inject_input != NULL)
 			m_gl_inject_input->SetCapturing(false);
+#if SSR_USE_ALSA
 		m_alsa_input.reset();
+#endif
 #if SSR_USE_PULSEAUDIO
 		m_pulseaudio_input.reset();
 #endif
@@ -828,7 +838,9 @@ void PageRecord::StopInput() {
 	m_x11_input.reset();
 	if(m_gl_inject_input != NULL)
 		m_gl_inject_input->SetCapturing(false);
+#if SSR_USE_ALSA
 	m_alsa_input.reset();
+#endif
 #if SSR_USE_PULSEAUDIO
 	m_pulseaudio_input.reset();
 #endif
@@ -888,8 +900,10 @@ void PageRecord::UpdateInput() {
 		video_source = m_x11_input.get();
 	}
 	if(m_audio_enabled) {
+#if SSR_USE_ALSA
 		if(m_audio_backend == PageInput::AUDIO_BACKEND_ALSA)
 			audio_source = m_alsa_input.get();
+#endif
 #if SSR_USE_PULSEAUDIO
 		if(m_audio_backend == PageInput::AUDIO_BACKEND_PULSEAUDIO)
 			audio_source = m_pulseaudio_input.get();

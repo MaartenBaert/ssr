@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 #include "ALSAInput.h"
 
+#if SSR_USE_ALSA
+
 #include "Logger.h"
 
 // Artificial delay after the first samples have been received (in microseconds). Any samples received during this time will be dropped.
@@ -420,3 +422,5 @@ void ALSAInput::InputThread() {
 		Logger::LogError("[ALSAInput::InputThread] " + Logger::tr("Unknown exception in input thread."));
 	}
 }
+
+#endif
