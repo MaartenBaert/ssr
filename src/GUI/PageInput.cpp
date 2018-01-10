@@ -33,7 +33,9 @@ ENUMSTRINGS(PageInput::enum_video_area) = {
 	{PageInput::VIDEO_AREA_SCREEN, "screen"},
 	{PageInput::VIDEO_AREA_FIXED, "fixed"},
 	{PageInput::VIDEO_AREA_CURSOR, "cursor"},
+#if SSR_USE_OPENGL_RECORDING
 	{PageInput::VIDEO_AREA_GLINJECT, "glinject"},
+#endif
 };
 ENUMSTRINGS(PageInput::enum_audio_backend) = {
 #if SSR_USE_ALSA
@@ -123,11 +125,15 @@ PageInput::PageInput(MainWindow* main_window)
 			QRadioButton *radio_area_screen = new QRadioButton(tr("Record the entire screen"), groupbox_video);
 			QRadioButton *radio_area_fixed = new QRadioButton(tr("Record a fixed rectangle"), groupbox_video);
 			QRadioButton *radio_area_cursor = new QRadioButton(tr("Follow the cursor"), groupbox_video);
-			QRadioButton *radio_area_glinject = new QRadioButton(tr("Record OpenGL (experimental)"), groupbox_video);
+#if SSR_USE_OPENGL_RECORDING
+			QRadioButton *radio_area_glinject = new QRadioButton(tr("Record OpenGL"), groupbox_video);
+#endif
 			m_buttongroup_video_area->addButton(radio_area_screen, VIDEO_AREA_SCREEN);
 			m_buttongroup_video_area->addButton(radio_area_fixed, VIDEO_AREA_FIXED);
 			m_buttongroup_video_area->addButton(radio_area_cursor, VIDEO_AREA_CURSOR);
+#if SSR_USE_OPENGL_RECORDING
 			m_buttongroup_video_area->addButton(radio_area_glinject, VIDEO_AREA_GLINJECT);
+#endif
 			m_combobox_screens = new QComboBoxWithSignal(groupbox_video);
 			m_combobox_screens->setToolTip(tr("Select what monitor should be recorded in a multi-monitor configuration."));
 			m_pushbutton_video_select_rectangle = new QPushButton(tr("Select rectangle..."), groupbox_video);
@@ -136,8 +142,10 @@ PageInput::PageInput(MainWindow* main_window)
 			m_pushbutton_video_select_window->setToolTip(tr("Use the mouse to select a window to record.\n"
 															"Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only\n"
 															"the client area of the window will be recorded."));
+#if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings = new QPushButton(tr("OpenGL settings..."), groupbox_video);
 			m_pushbutton_video_opengl_settings->setToolTip(tr("Change the settings for OpenGL recording."));
+#endif
 			m_label_video_x = new QLabel(tr("Left:"), groupbox_video);
 			m_spinbox_video_x = new QSpinBoxWithSignal(groupbox_video);
 			m_spinbox_video_x->setRange(0, 10000);
@@ -197,7 +205,9 @@ PageInput::PageInput(MainWindow* main_window)
 			connect(m_spinbox_video_h, SIGNAL(valueChanged(int)), this, SLOT(OnUpdateRecordingFrame()));
 			connect(m_pushbutton_video_select_rectangle, SIGNAL(clicked()), this, SLOT(OnStartSelectRectangle()));
 			connect(m_pushbutton_video_select_window, SIGNAL(clicked()), this, SLOT(OnStartSelectWindow()));
+#if SSR_USE_OPENGL_RECORDING
 			connect(m_pushbutton_video_opengl_settings, SIGNAL(clicked()), this, SLOT(OnGLInjectDialog()));
+#endif
 			connect(m_checkbox_scale, SIGNAL(clicked()), this, SLOT(OnUpdateVideoScaleFields()));
 
 			QVBoxLayout *layout = new QVBoxLayout(groupbox_video);
@@ -209,13 +219,17 @@ PageInput::PageInput(MainWindow* main_window)
 			}
 			layout->addWidget(radio_area_fixed);
 			layout->addWidget(radio_area_cursor);
+#if SSR_USE_OPENGL_RECORDING
 			layout->addWidget(radio_area_glinject);
+#endif
 			{
 				QHBoxLayout *layout2 = new QHBoxLayout();
 				layout->addLayout(layout2);
 				layout2->addWidget(m_pushbutton_video_select_rectangle);
 				layout2->addWidget(m_pushbutton_video_select_window);
+#if SSR_USE_OPENGL_RECORDING
 				layout2->addWidget(m_pushbutton_video_opengl_settings);
+#endif
 				layout2->addStretch();
 			}
 			{
@@ -454,12 +468,14 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	SetJackConnectSystemCapture(settings->value("input/audio_jack_connect_system_capture", true).toBool());
 	SetJackConnectSystemPlayback(settings->value("input/audio_jack_connect_system_playback", false).toBool());
 #endif
+#if SSR_USE_OPENGL_RECORDING
 	SetGLInjectChannel(settings->value("input/glinject_channel", QString()).toString());
 	SetGLInjectRelaxPermissions(settings->value("input/glinject_relax_permissions", false).toBool());
 	SetGLInjectCommand(settings->value("input/glinject_command", "").toString());
 	SetGLInjectWorkingDirectory(settings->value("input/glinject_working_directory", "").toString());
 	SetGLInjectAutoLaunch(settings->value("input/glinject_auto_launch", false).toBool());
 	SetGLInjectLimitFPS(settings->value("input/glinject_limit_fps", false).toBool());
+#endif
 
 	// update things
 	OnUpdateRecordingFrame();
@@ -493,12 +509,14 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/audio_jack_connect_system_capture", GetJackConnectSystemCapture());
 	settings->setValue("input/audio_jack_connect_system_playback", GetJackConnectSystemPlayback());
 #endif
+#if SSR_USE_OPENGL_RECORDING
 	settings->setValue("input/glinject_channel", GetGLInjectChannel());
 	settings->setValue("input/glinject_relax_permissions", GetGLInjectRelaxPermissions());
 	settings->setValue("input/glinject_command", GetGLInjectCommand());
 	settings->setValue("input/glinject_working_directory", GetGLInjectWorkingDirectory());
 	settings->setValue("input/glinject_auto_launch", GetGLInjectAutoLaunch());
 	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
+#endif
 }
 
 #if SSR_USE_ALSA
@@ -806,7 +824,9 @@ void PageInput::OnUpdateVideoAreaFields() {
 			m_combobox_screens->setEnabled(true);
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
+#if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings->setEnabled(false);
+#endif
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, false);
 			int sc = m_combobox_screens->currentIndex();
@@ -829,7 +849,9 @@ void PageInput::OnUpdateVideoAreaFields() {
 			m_combobox_screens->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
+#if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings->setEnabled(false);
+#endif
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
 			break;
@@ -838,13 +860,16 @@ void PageInput::OnUpdateVideoAreaFields() {
 			m_combobox_screens->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
+#if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings->setEnabled(false);
+#endif
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y}, false);
 			GroupEnabled({m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
 			SetVideoX(0);
 			SetVideoY(0);
 			break;
 		}
+#if SSR_USE_OPENGL_RECORDING
 		case VIDEO_AREA_GLINJECT: {
 			m_combobox_screens->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(false);
@@ -854,6 +879,7 @@ void PageInput::OnUpdateVideoAreaFields() {
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, false);
 			break;
 		}
+#endif
 		default: break;
 	}
 }
@@ -951,9 +977,12 @@ void PageInput::OnStartSelectWindow() {
 	StartGrabbing();
 }
 
+// conditional compilation for slots doesn't work
 void PageInput::OnGLInjectDialog() {
+#if SSR_USE_OPENGL_RECORDING
 	DialogGLInject dialog(this);
 	dialog.exec();
+#endif
 }
 
 void PageInput::OnContinue() {

@@ -14,6 +14,7 @@ endif()
 option(ENABLE_32BIT_GLINJECT "Build the 32-bit version of 'libssr-glinject' on 64-bit systems (in addition to the 64-bit version). Required for OpenGL recording of 32-bit applications on 64-bit systems." FALSE)
 option(ENABLE_X86_ASM "Allow x86/x64 assembly or intrinsics." ${PROCESSOR_IS_X86})
 option(ENABLE_FFMPEG_VERSIONS "Use FFmpeg version numbers for feature support tests. Enable when using FFmpeg, disable when using Libav." TRUE)
+option(WITH_OPENGL_RECORDING "Build with OpenGL recording support." TRUE)
 option(WITH_ALSA "Build with ALSA support." TRUE)
 option(WITH_PULSEAUDIO "Build with PulseAudio support." TRUE)
 option(WITH_JACK "Build with JACK support." TRUE)
@@ -63,12 +64,14 @@ if(WITH_SIMPLESCREENRECORDER)
 	add_subdirectory(src)
 	add_subdirectory(src/translations)
 
-	# the 'ssr-glinject' script is installed together with the main SSR executable to avoid problems with multiarch packages
-	install(
-		FILES scripts/ssr-glinject
-		DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
-		PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-	)
+	if(WITH_OPENGL_RECORDING)
+		# the 'ssr-glinject' script is installed together with the main SSR executable to avoid problems with multiarch packages
+		install(
+			FILES scripts/ssr-glinject
+			DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
+			PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+		)
+	endif()
 	install(
 		DIRECTORY data/output-profiles
 		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/simplescreenrecorder

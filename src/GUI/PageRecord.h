@@ -85,7 +85,9 @@ private:
 	bool m_separate_files, m_add_timestamp;
 
 	std::unique_ptr<X11Input> m_x11_input;
+#if SSR_USE_OPENGL_RECORDING
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
+#endif
 #if SSR_USE_ALSA
 	std::unique_ptr<ALSAInput> m_alsa_input;
 #endif

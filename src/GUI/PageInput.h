@@ -84,7 +84,9 @@ public:
 		VIDEO_AREA_SCREEN,
 		VIDEO_AREA_FIXED,
 		VIDEO_AREA_CURSOR,
+#if SSR_USE_OPENGL_RECORDING
 		VIDEO_AREA_GLINJECT,
+#endif
 		VIDEO_AREA_COUNT // must be last
 	};
 	enum enum_audio_backend {
@@ -115,12 +117,13 @@ private:
 	std::vector<PulseAudioInput::Source> m_pulseaudio_sources;
 #endif
 
+#if SSR_USE_OPENGL_RECORDING
 	QString m_glinject_channel;
 	bool m_glinject_relax_permissions;
 	QString m_glinject_command, m_glinject_working_directory;
 	bool m_glinject_auto_launch;
-	QString m_glinject_match_user, m_glinject_match_process, m_glinject_match_source, m_glinject_match_program_name;
 	bool m_glinject_limit_fps;
+#endif
 
 	std::vector<WidgetScreenLabel*> m_screen_labels;
 
@@ -128,7 +131,10 @@ private:
 
 	QButtonGroup *m_buttongroup_video_area;
 	QComboBoxWithSignal *m_combobox_screens;
-	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window, *m_pushbutton_video_opengl_settings;
+	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window;
+#if SSR_USE_OPENGL_RECORDING
+	QPushButton *m_pushbutton_video_opengl_settings;
+#endif
 	QLabel *m_label_video_x, *m_label_video_y, *m_label_video_w, *m_label_video_h;
 	QSpinBoxWithSignal *m_spinbox_video_x, *m_spinbox_video_y, *m_spinbox_video_w, *m_spinbox_video_h;
 	QSpinBox *m_spinbox_video_frame_rate;
@@ -244,12 +250,14 @@ public:
 	inline bool GetJackConnectSystemCapture() { return m_checkbox_jack_connect_system_capture->isChecked(); }
 	inline bool GetJackConnectSystemPlayback() { return m_checkbox_jack_connect_system_playback->isChecked(); }
 #endif
+#if SSR_USE_OPENGL_RECORDING
 	inline QString GetGLInjectChannel() { return m_glinject_channel; }
 	inline bool GetGLInjectRelaxPermissions() { return m_glinject_relax_permissions; }
 	inline QString GetGLInjectCommand() { return m_glinject_command; }
 	inline QString GetGLInjectWorkingDirectory() { return m_glinject_working_directory; }
 	inline bool GetGLInjectAutoLaunch() { return m_glinject_auto_launch; }
 	inline bool GetGLInjectLimitFPS() { return m_glinject_limit_fps; }
+#endif
 
 	inline void SetProfile(unsigned int profile) { m_profile_box->SetProfile(profile); }
 	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
@@ -275,11 +283,13 @@ public:
 	inline void SetJackConnectSystemCapture(bool connect) { m_checkbox_jack_connect_system_capture->setChecked(connect); }
 	inline void SetJackConnectSystemPlayback(bool connect) { m_checkbox_jack_connect_system_playback->setChecked(connect); }
 #endif
+#if SSR_USE_OPENGL_RECORDING
 	inline void SetGLInjectChannel(const QString& channel) { m_glinject_channel = channel; }
 	inline void SetGLInjectRelaxPermissions(bool relax_permissions) { m_glinject_relax_permissions = relax_permissions; }
 	inline void SetGLInjectCommand(const QString& command) { m_glinject_command = command; }
 	inline void SetGLInjectWorkingDirectory(const QString& glinject_working_directory) { m_glinject_working_directory = glinject_working_directory; }
 	inline void SetGLInjectAutoLaunch(bool auto_launch) { m_glinject_auto_launch = auto_launch; }
 	inline void SetGLInjectLimitFPS(bool limit_fps) { m_glinject_limit_fps = limit_fps; }
+#endif
 
 };

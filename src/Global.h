@@ -107,10 +107,15 @@ extern "C" {
 #error SSR_USE_FFMPEG_VERSIONS should be defined!
 #endif
 
+// Whether OpenGL recording should be used.
+#ifndef SSR_USE_OPENGL_RECORDING
+#error SSR_USE_OPENGL_RECORDING should be defined!
+#endif
+
 // Whether ALSA should be used.
-//#ifndef SSR_USE_ALSA
-//#error SSR_USE_ALSA should be defined!
-//#endif
+#ifndef SSR_USE_ALSA
+#error SSR_USE_ALSA should be defined!
+#endif
 
 // Whether PulseAudio should be used.
 #ifndef SSR_USE_PULSEAUDIO

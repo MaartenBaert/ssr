@@ -19,6 +19,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DialogGLInject.h"
 
+#if SSR_USE_OPENGL_RECORDING
+
 #include "Logger.h"
 #include "MainWindow.h"
 #include "PageInput.h"
@@ -159,3 +161,5 @@ void DialogGLInject::OnLaunchNow() {
 		QMessageBox::critical(NULL, MainWindow::WINDOW_CAPTION, Logger::tr("The application could not be launched."), QMessageBox::Ok);
 	}
 }
+
+#endif

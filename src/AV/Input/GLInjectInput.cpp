@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
 #include "GLInjectInput.h"
+
+#if SSR_USE_OPENGL_RECORDING
 
 #include "Logger.h"
 #include "AVWrapper.h"
@@ -255,3 +256,5 @@ void GLInjectInput::InputThread() {
 		Logger::LogError("[GLInjectInput::InputThread] " + Logger::tr("Unknown exception in input thread."));
 	}
 }
+
+#endif

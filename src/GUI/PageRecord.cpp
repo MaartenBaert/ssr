@@ -458,13 +458,19 @@ void PageRecord::StartPage() {
 	m_video_area = page_input->GetVideoArea();
 	m_video_x = page_input->GetVideoX();
 	m_video_y = page_input->GetVideoY();
+#if SSR_USE_OPENGL_RECORDING
 	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 		m_video_in_width = 0;
 		m_video_in_height = 0;
 	} else {
+#else
+	{
+#endif
 		m_video_in_width = page_input->GetVideoW();
 		m_video_in_height = page_input->GetVideoH();
 	}
+	m_video_in_width = page_input->GetVideoW();
+	m_video_in_height = page_input->GetVideoH();
 	m_video_frame_rate = page_input->GetVideoFrameRate();
 	m_video_scaling = page_input->GetVideoScalingEnabled();
 	m_video_scaled_width = page_input->GetVideoScaledW();
@@ -492,6 +498,7 @@ void PageRecord::StartPage() {
 		m_audio_sample_rate = 44100;
 	}
 
+#if SSR_USE_OPENGL_RECORDING
 	// get the glinject settings
 	QString glinject_channel = page_input->GetGLInjectChannel();
 	bool glinject_relax_permissions = page_input->GetGLInjectRelaxPermissions();
@@ -499,6 +506,7 @@ void PageRecord::StartPage() {
 	QString glinject_working_directory = page_input->GetGLInjectWorkingDirectory();
 	bool glinject_auto_launch = page_input->GetGLInjectAutoLaunch();
 	bool glinject_limit_fps = page_input->GetGLInjectLimitFPS();
+#endif
 
 	// get file settings
 	m_file_base = page_output->GetFile();
@@ -566,12 +574,14 @@ void PageRecord::StartPage() {
 
 	try {
 
+#if SSR_USE_OPENGL_RECORDING
 		// for OpenGL recording, create the input now
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 			if(glinject_auto_launch)
 				GLInjectInput::LaunchApplication(glinject_channel, glinject_relax_permissions, glinject_command, glinject_working_directory);
 			m_gl_inject_input.reset(new GLInjectInput(glinject_channel, glinject_relax_permissions, m_video_record_cursor, glinject_limit_fps, m_video_frame_rate));
 		}
+#endif
 
 #if SSR_USE_JACK
 		if(m_audio_enabled) {
@@ -583,7 +593,9 @@ void PageRecord::StartPage() {
 
 	} catch(...) {
 		Logger::LogError("[PageRecord::StartPage] " + tr("Error: Something went wrong during initialization."));
+#if SSR_USE_OPENGL_RECORDING
 		m_gl_inject_input.reset();
+#endif
 #if SSR_USE_JACK
 		m_jack_input.reset();
 #endif
@@ -630,11 +642,13 @@ void PageRecord::StopPage(bool save) {
 
 	}
 
-	// destroy the GLInject input
+#if SSR_USE_OPENGL_RECORDING
+	// stop GLInject input
 	m_gl_inject_input.reset();
+#endif
 
-	// stop JACK input
 #if SSR_USE_JACK
+	// stop JACK input
 	m_jack_input.reset();
 #endif
 
@@ -669,6 +683,7 @@ void PageRecord::StartOutput() {
 			// set the file name
 			m_output_settings.file = GetNewSegmentFile(m_file_base, m_add_timestamp);
 
+#if SSR_USE_OPENGL_RECORDING
 			// for OpenGL recording, detect the application size
 			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT && !m_video_scaling) {
 				if(m_gl_inject_input == NULL) {
@@ -684,16 +699,19 @@ void PageRecord::StartOutput() {
 					throw GLInjectException();
 				}
 			}
+#endif
 
 			// calculate the output width and height
 			if(m_video_scaling) {
 				// Only even width and height is allowed because some pixel formats (e.g. YUV420) require this.
 				m_output_settings.video_width = m_video_scaled_width / 2 * 2;
 				m_output_settings.video_height = m_video_scaled_height / 2 * 2;
+#if SSR_USE_OPENGL_RECORDING
 			} else if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 				// The input size is the size of the OpenGL application and can't be changed. The output size is set to the current size of the application.
 				m_output_settings.video_width = m_video_in_width / 2 * 2;
 				m_output_settings.video_height = m_video_in_height / 2 * 2;
+#endif
 			} else {
 				// If the user did not explicitly select scaling, then don't force scaling just because the recording area is one pixel too large.
 				// One missing row/column of pixels is probably better than a blurry video (and scaling is SLOW).
@@ -783,6 +801,7 @@ void PageRecord::StartInput() {
 		Logger::LogInfo("[PageRecord::StartInput] " + tr("Starting input ..."));
 
 		// start the video input
+#if SSR_USE_OPENGL_RECORDING
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 			if(m_gl_inject_input == NULL) {
 				Logger::LogError("[PageRecord::StartInput] " + tr("Error: Could not start the GLInject input because it has not been created."));
@@ -790,6 +809,9 @@ void PageRecord::StartInput() {
 			}
 			m_gl_inject_input->SetCapturing(true);
 		} else {
+#else
+		{
+#endif
 			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
 		}
 
@@ -813,8 +835,10 @@ void PageRecord::StartInput() {
 	} catch(...) {
 		Logger::LogError("[PageRecord::StartInput] " + tr("Error: Something went wrong during initialization."));
 		m_x11_input.reset();
+#if SSR_USE_OPENGL_RECORDING
 		if(m_gl_inject_input != NULL)
 			m_gl_inject_input->SetCapturing(false);
+#endif
 #if SSR_USE_ALSA
 		m_alsa_input.reset();
 #endif
@@ -836,8 +860,10 @@ void PageRecord::StopInput() {
 	Logger::LogInfo("[PageRecord::StopInput] " + tr("Stopping input ..."));
 
 	m_x11_input.reset();
+#if SSR_USE_OPENGL_RECORDING
 	if(m_gl_inject_input != NULL)
 		m_gl_inject_input->SetCapturing(false);
+#endif
 #if SSR_USE_ALSA
 	m_alsa_input.reset();
 #endif
@@ -894,9 +920,13 @@ void PageRecord::UpdateInput() {
 	// get sources
 	VideoSource *video_source = NULL;
 	AudioSource *audio_source = NULL;
+#if SSR_USE_OPENGL_RECORDING
 	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 		video_source = m_gl_inject_input.get();
 	} else {
+#else
+	{
+#endif
 		video_source = m_x11_input.get();
 	}
 	if(m_audio_enabled) {
@@ -1078,11 +1108,12 @@ void PageRecord::OnUpdateInformation() {
 		double fps_out = 0.0;
 		uint64_t bit_rate = 0, total_bytes = 0;
 
-		if(m_gl_inject_input != NULL) {
+#if SSR_USE_OPENGL_RECORDING
+		if(m_gl_inject_input != NULL)
 			fps_in = m_gl_inject_input->GetFPS();
-		} else if(m_x11_input != NULL) {
+#endif
+		if(m_x11_input != NULL)
 			fps_in = m_x11_input->GetFPS();
-		}
 
 		if(m_output_manager != NULL) {
 			total_time = (m_output_manager->GetSynchronizer() == NULL)? 0 : m_output_manager->GetSynchronizer()->GetTotalTime();
@@ -1097,10 +1128,11 @@ void PageRecord::OnUpdateInformation() {
 		else
 			file_name = "(" + m_file_protocol + ")";
 
+#if SSR_USE_OPENGL_RECORDING
 		// for OpenGL recording, update the application size
-		if(m_gl_inject_input != NULL) {
+		if(m_gl_inject_input != NULL)
 			m_gl_inject_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
-		}
+#endif
 
 		m_label_info_total_time->setText(ReadableTime(total_time));
 		m_label_info_frame_rate_in->setText(QString::number(fps_in, 'f', 2));
