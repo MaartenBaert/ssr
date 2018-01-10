@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#if SSR_USE_ALSA
+
 #include "MutexDataPair.h"
 
 #include <alsa/asoundlib.h>
@@ -64,3 +66,5 @@ private:
 	void SynthThread();
 
 };
+
+#endif

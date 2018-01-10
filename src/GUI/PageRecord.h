@@ -34,8 +34,10 @@ class VideoEncoder;
 class AudioEncoder;
 class Synchronizer;
 class X11Input;
+#if SSR_USE_OPENGL_RECORDING
 class GLInjectLauncher;
 class GLInjectInput;
+#endif
 #if SSR_USE_ALSA
 class ALSAInput;
 #endif
@@ -45,7 +47,9 @@ class PulseAudioInput;
 #if SSR_USE_JACK
 class JACKInput;
 #endif
+#if SSR_USE_ALSA
 class SimpleSynth;
+#endif
 class VideoPreviewer;
 class AudioPreviewer;
 
@@ -98,14 +102,19 @@ private:
 	std::unique_ptr<JACKInput> m_jack_input;
 #endif
 
+#if SSR_USE_ALSA
 	std::unique_ptr<SimpleSynth> m_simple_synth;
 	int64_t m_last_error_sound;
+#endif
 
 	HotkeyCallback m_hotkey_start_pause;
 
 	QPushButton *m_pushbutton_start_pause;
 
-	QCheckBox *m_checkbox_hotkey_enable, *m_checkbox_sound_notifications_enable;
+	QCheckBox *m_checkbox_hotkey_enable;
+#if SSR_USE_ALSA
+	QCheckBox *m_checkbox_sound_notifications_enable;
+#endif
 	QCheckBox *m_checkbox_hotkey_ctrl, *m_checkbox_hotkey_shift, *m_checkbox_hotkey_alt, *m_checkbox_hotkey_super;
 	QComboBox *m_combobox_hotkey_key;
 
@@ -165,7 +174,9 @@ public:
 	inline bool IsHotkeyAltEnabled() { return m_checkbox_hotkey_alt->isChecked(); }
 	inline bool IsHotkeySuperEnabled() { return m_checkbox_hotkey_super->isChecked(); }
 	inline unsigned int GetHotkeyKey() { return m_combobox_hotkey_key->currentIndex(); }
+#if SSR_USE_ALSA
 	inline bool AreSoundNotificationsEnabled() { return m_checkbox_sound_notifications_enable->isChecked(); }
+#endif
 	inline unsigned int GetPreviewFrameRate() { return m_spinbox_preview_frame_rate->value(); }
 
 	inline void SetHotkeyEnabled(bool enable) { m_checkbox_hotkey_enable->setChecked(enable); }
@@ -174,13 +185,17 @@ public:
 	inline void SetHotkeyAltEnabled(bool enable) { m_checkbox_hotkey_alt->setChecked(enable); }
 	inline void SetHotkeySuperEnabled(bool enable) { m_checkbox_hotkey_super->setChecked(enable); }
 	inline void SetHotkeyKey(unsigned int key) { m_combobox_hotkey_key->setCurrentIndex(clamp(key, 0u, 25u)); }
+#if SSR_USE_ALSA
 	inline void SetSoundNotificationsEnabled(bool enable) { m_checkbox_sound_notifications_enable->setChecked(enable); }
+#endif
 	inline void SetPreviewFrameRate(unsigned int frame_rate) { m_spinbox_preview_frame_rate->setValue(frame_rate); }
 
 public slots:
 	void OnUpdateHotkeyFields();
 	void OnUpdateHotkey();
+#if SSR_USE_ALSA
 	void OnUpdateSoundNotifications();
+#endif
 
 private slots:
 	void OnRecordStartPause();

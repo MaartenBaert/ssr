@@ -19,6 +19,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "SimpleSynth.h"
 
+#if SSR_USE_ALSA
+
 #include "Logger.h"
 #include "SampleCast.h"
 
@@ -290,3 +292,5 @@ void SimpleSynth::SynthThread() {
 		Logger::LogError("[SimpleSynth::SynthThread] " + Logger::tr("Unknown exception in synth thread."));
 	}
 }
+
+#endif

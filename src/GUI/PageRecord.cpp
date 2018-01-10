@@ -51,6 +51,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 static QString GetNewSegmentFile(const QString& file, bool add_timestamp) {
 	QFileInfo fi(file);
 	QDateTime now = QDateTime::currentDateTime();
@@ -128,6 +132,7 @@ public:
 };
 
 // sound notification sequences
+#if SSR_USE_ALSA
 static const std::array<SimpleSynth::Note, 1> SEQUENCE_RECORD_START = {{
 	{0    , 500, 10000, 440.0f * exp2f( 3.0f / 12.0f), 0.8f}, // C5
 }};
@@ -141,6 +146,7 @@ static const std::array<SimpleSynth::Note, 4> SEQUENCE_RECORD_ERROR = {{
 	{20000, 500, 20000, 440.0f * exp2f(-6.0f / 12.0f), 0.4f}, // D#4
 	{20000, 500, 20000, 440.0f * exp2f(-9.0f / 12.0f), 0.6f}, // C4
 }};
+#endif
 
 const int PageRecord::PRIORITY_RECORD = 0;
 const int PageRecord::PRIORITY_PREVIEW = -1;
@@ -155,14 +161,18 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_output_started = false;
 	m_previewing = false;
 
+#if SSR_USE_ALSA
 	m_last_error_sound = std::numeric_limits<int64_t>::min();
+#endif
 
 	QGroupBox *groupbox_recording = new QGroupBox(tr("Recording"), this);
 	{
 		m_pushbutton_start_pause = new QPushButton(groupbox_recording);
 
 		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), groupbox_recording);
+#if SSR_USE_ALSA
 		m_checkbox_sound_notifications_enable = new QCheckBox(tr("Enable sound notifications"), groupbox_recording);
+#endif
 		QLabel *label_hotkey = new QLabel(tr("Hotkey:"), groupbox_recording);
 		m_checkbox_hotkey_ctrl = new QCheckBox(tr("Ctrl +"), groupbox_recording);
 		m_checkbox_hotkey_shift = new QCheckBox(tr("Shift +"), groupbox_recording);
@@ -179,7 +189,9 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 		connect(m_pushbutton_start_pause, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
 		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(OnUpdateHotkeyFields()));
+#if SSR_USE_ALSA
 		connect(m_checkbox_sound_notifications_enable, SIGNAL(clicked()), this, SLOT(OnUpdateSoundNotifications()));
+#endif
 		connect(m_checkbox_hotkey_ctrl, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
 		connect(m_checkbox_hotkey_shift, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
 		connect(m_checkbox_hotkey_alt, SIGNAL(clicked()), this, SLOT(OnUpdateHotkey()));
@@ -192,7 +204,9 @@ PageRecord::PageRecord(MainWindow* main_window)
 			QHBoxLayout *layout2 = new QHBoxLayout();
 			layout->addLayout(layout2);
 			layout2->addWidget(m_checkbox_hotkey_enable);
+#if SSR_USE_ALSA
 			layout2->addWidget(m_checkbox_sound_notifications_enable);
+#endif
 		}
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
@@ -404,10 +418,14 @@ void PageRecord::LoadSettings(QSettings *settings) {
 	SetHotkeyAltEnabled(settings->value("record/hotkey_alt", false).toBool());
 	SetHotkeySuperEnabled(settings->value("record/hotkey_super", false).toBool());
 	SetHotkeyKey(settings->value("record/hotkey_key", 'r' - 'a').toUInt());
+#if SSR_USE_ALSA
 	SetSoundNotificationsEnabled(settings->value("record/sound_notifications_enable", false).toBool());
+#endif
 	SetPreviewFrameRate(settings->value("record/preview_frame_rate", 10).toUInt());
 	OnUpdateHotkeyFields();
+#if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
+#endif
 }
 
 void PageRecord::SaveSettings(QSettings *settings) {
@@ -417,7 +435,9 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	settings->setValue("record/hotkey_alt", IsHotkeyAltEnabled());
 	settings->setValue("record/hotkey_super", IsHotkeySuperEnabled());
 	settings->setValue("record/hotkey_key", GetHotkeyKey());
+#if SSR_USE_ALSA
 	settings->setValue("record/sound_notifications_enable", AreSoundNotificationsEnabled());
+#endif
 	settings->setValue("record/preview_frame_rate", GetPreviewFrameRate());
 }
 
@@ -608,7 +628,9 @@ void PageRecord::StartPage() {
 	m_wait_saving = false;
 	m_error_occurred = false;
 	UpdateSysTray();
+#if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
+#endif
 
 	UpdateInput();
 
@@ -656,7 +678,9 @@ void PageRecord::StopPage(bool save) {
 
 	m_page_started = false;
 	UpdateSysTray();
+#if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
+#endif
 
 	m_timer_update_info->stop();
 	OnUpdateInformation();
@@ -669,10 +693,12 @@ void PageRecord::StartOutput() {
 	if(m_output_started)
 		return;
 
+#if SSR_USE_ALSA
 	if(m_simple_synth != NULL) {
 		m_simple_synth->PlaySequence(SEQUENCE_RECORD_START.data(), SEQUENCE_RECORD_START.size());
 		usleep(200000);
 	}
+#endif
 
 	try {
 
@@ -771,9 +797,11 @@ void PageRecord::StopOutput(bool final) {
 
 	Logger::LogInfo("[PageRecord::StopOutput] " + tr("Stopped output."));
 
+#if SSR_USE_ALSA
 	// if final, don't play the notification (it would get interrupted anyway)
 	if(m_simple_synth != NULL && !final)
 		m_simple_synth->PlaySequence(SEQUENCE_RECORD_STOP.data(), SEQUENCE_RECORD_STOP.size());
+#endif
 
 	m_output_started = false;
 	UpdateSysTray();
@@ -1028,6 +1056,7 @@ void PageRecord::OnUpdateHotkey() {
 	}
 }
 
+#if SSR_USE_ALSA
 void PageRecord::OnUpdateSoundNotifications() {
 	if(m_page_started && AreSoundNotificationsEnabled()) {
 		if(m_simple_synth == NULL) {
@@ -1041,6 +1070,7 @@ void PageRecord::OnUpdateSoundNotifications() {
 		m_simple_synth.reset();
 	}
 }
+#endif
 
 void PageRecord::OnRecordStartPause() {
 	if(QApplication::activeModalWidget() != NULL || QApplication::activePopupWidget() != NULL)
@@ -1192,6 +1222,7 @@ void PageRecord::OnUpdateInformation() {
 
 void PageRecord::OnNewLogLine(Logger::enum_type type, QString string) {
 
+#if SSR_USE_ALSA
 	// play sound for errors
 	//TODO// this is an ugly way to detect errors, this should be improved at some point
 	int64_t time = hrt_time_micro();
@@ -1199,7 +1230,10 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString string) {
 		m_simple_synth->PlaySequence(SEQUENCE_RECORD_ERROR.data(), SEQUENCE_RECORD_ERROR.size());
 		m_last_error_sound = time;
 	}
-	if(m_page_started && type == Logger::TYPE_ERROR) {
+#endif
+
+	// change system tray icon if an error has occurred
+	if(m_page_started && type == Logger::TYPE_ERROR && !m_error_occurred) {
 		m_error_occurred = true;
 		UpdateSysTray();
 	}
