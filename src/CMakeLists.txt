@@ -1,11 +1,17 @@
 # 'simplescreenrecorder' executable
 
+set(CMAKE_AUTOMOC ON)
+
 find_package(Threads REQUIRED)
-find_package(ALSA REQUIRED)
 find_package(FFmpeg REQUIRED)
-find_package(PulseAudio REQUIRED)
 find_package(X11 REQUIRED)
 
+if(WITH_ALSA)
+	find_package(ALSA REQUIRED)
+endif()
+if(WITH_PULSEAUDIO)
+	find_package(PulseAudio REQUIRED)
+endif()
 if(WITH_JACK)
 	find_package(Jack REQUIRED)
 endif()
@@ -35,7 +41,6 @@ set(sources
 	AV/Input/SSRVideoStreamWatcher.h
 	AV/Input/X11Input.cpp
 	AV/Input/X11Input.h
-
 	AV/Output/AudioEncoder.cpp
 	AV/Output/AudioEncoder.h
 	AV/Output/BaseEncoder.cpp
@@ -53,7 +58,6 @@ set(sources
 	AV/Output/VideoEncoder.h
 	AV/Output/X264Presets.cpp
 	AV/Output/X264Presets.h
-
 	AV/AVWrapper.cpp
 	AV/AVWrapper.h
 	AV/FastResampler.cpp
@@ -73,7 +77,6 @@ set(sources
 	AV/SimpleSynth.h
 	AV/SourceSink.cpp
 	AV/SourceSink.h
-
 	common/CPUFeatures.cpp
 	common/CPUFeatures.h
 	common/Dialogs.cpp
@@ -85,7 +88,6 @@ set(sources
 	common/MutexDataPair.h
 	common/QueueBuffer.h
 	common/TempBuffer.h
-
 	GUI/AudioPreviewer.cpp
 	GUI/AudioPreviewer.h
 	GUI/DialogGLInject.cpp
@@ -114,7 +116,6 @@ set(sources
 	GUI/ProfileBox.h
 	GUI/VideoPreviewer.cpp
 	GUI/VideoPreviewer.h
-
 	Benchmark.cpp
 	Benchmark.h
 	Global.h
@@ -145,35 +146,12 @@ if(ENABLE_X86_ASM)
 
 endif()
 
-set(moc_input
-	AV/Input/X11Input.h
-
-	AV/Output/SyncDiagram.h
-
-	common/Logger.h
-
-	GUI/AudioPreviewer.h
-	GUI/DialogGLInject.h
-	GUI/ElidedLabel.h
-	GUI/HiddenScrollArea.h
-	GUI/HotkeyListener.h
-	GUI/MainWindow.h
-	GUI/PageDone.h
-	GUI/PageInput.h
-	GUI/PageOutput.h
-	GUI/PageRecord.h
-	GUI/PageWelcome.h
-	GUI/ProfileBox.h
-	GUI/VideoPreviewer.h
-)
-
 set(res_input
 	../data/resources/resources.qrc
 )
 
 if(WITH_QT5)
 	qt5_add_resources(res_output ${res_input})
-	qt5_wrap_cpp(moc_output ${moc_input})
 	set(QT_LIBS
 		Qt5::Core
 		Qt5::Gui
@@ -182,7 +160,6 @@ if(WITH_QT5)
 	)
 else()
 	qt4_add_resources(res_output ${res_input})
-	qt4_wrap_cpp(moc_output ${moc_input})
 	set(QT_LIBS
 		Qt4::QtGui
 	)
@@ -190,7 +167,6 @@ endif()
 
 add_executable(simplescreenrecorder
 	${sources}
-	${moc_output}
 	${res_output}
 )
 

@@ -931,23 +931,21 @@ void PageInput::OnUpdateScreenConfiguration() {
 	SetVideoAreaScreen(selected_screen);
 }
 
-// conditional compilation for slots doesn't work
-void PageInput::OnUpdateALSASources() {
 #if SSR_USE_ALSA
+void PageInput::OnUpdateALSASources() {
 	QString selected_source = GetALSASourceName();
 	LoadALSASources();
 	SetALSASource(FindALSASource(selected_source));
-#endif
 }
+#endif
 
-// conditional compilation for slots doesn't work
-void PageInput::OnUpdatePulseAudioSources() {
 #if SSR_USE_PULSEAUDIO
+void PageInput::OnUpdatePulseAudioSources() {
 	QString selected_source = GetPulseAudioSourceName();
 	LoadPulseAudioSources();
 	SetPulseAudioSource(FindPulseAudioSource(selected_source));
-#endif
 }
+#endif
 
 void PageInput::OnIdentifyScreens() {
 	OnStopIdentifyScreens();
@@ -977,13 +975,12 @@ void PageInput::OnStartSelectWindow() {
 	StartGrabbing();
 }
 
-// conditional compilation for slots doesn't work
-void PageInput::OnGLInjectDialog() {
 #if SSR_USE_OPENGL_RECORDING
+void PageInput::OnGLInjectDialog() {
 	DialogGLInject dialog(this);
 	dialog.exec();
-#endif
 }
+#endif
 
 void PageInput::OnContinue() {
 	m_main_window->GoPageOutput();

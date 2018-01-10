@@ -216,8 +216,12 @@ public slots:
 private slots:
 	void OnFocusChange(QWidget* old, QWidget* now);
 	void OnUpdateScreenConfiguration();
+#if SSR_USE_ALSA
 	void OnUpdateALSASources();
-	void OnUpdatePulseAudioSources(); // conditional compilation of slots is hard, so we keep the slot even if PulseAudio is not used
+#endif
+#if SSR_USE_PULSEAUDIO
+	void OnUpdatePulseAudioSources();
+#endif
 	void OnIdentifyScreens();
 	void OnStopIdentifyScreens();
 	void OnStartSelectRectangle();

@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0071 NEW)
 
 set(CMAKE_CXX_STANDARD 11)
 
