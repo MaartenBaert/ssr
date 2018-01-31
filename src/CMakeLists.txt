@@ -165,6 +165,8 @@ else()
 	)
 endif()
 
+set_property(SOURCE ${res_output} PROPERTY SKIP_AUTOMOC ON)
+
 add_executable(simplescreenrecorder
 	${sources}
 	${res_output}
