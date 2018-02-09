@@ -45,7 +45,7 @@ if [ -z "$ENABLE_FFMPEG_VERSIONS" ]; then
 		echo "  Error: libavcodec development package not found, make sure ffmpeg or libav development packages are installed."
 		exit 1
 	fi
-	LIBAVCODEC_INCLUDE_DIR=`pkg-config --variable=includedir libavcodec`
+	LIBAVCODEC_INCLUDE_DIR="$( pkg-config --variable=includedir libavcodec )"
 	HAS_FFMPEG=$( grep -c "This file is part of FFmpeg." $LIBAVCODEC_INCLUDE_DIR/libavcodec/avcodec.h || true )
 	HAS_LIBAV=$( grep -c "This file is part of Libav." $LIBAVCODEC_INCLUDE_DIR/libavcodec/avcodec.h || true )
 	if [ $HAS_FFMPEG -gt 0 ]; then
@@ -108,13 +108,17 @@ cmake -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_BUILD_TYPE=Release $OPTIONS "$@" 
 echo "Compiling ..."
 make -j "$( nproc )"
 
-echo "Removing old SSR libraries ..."
-sudo rm -f "/usr/lib/libssr-glinject."*
-sudo rm -f "/usr/lib32/libssr-glinject."*
-sudo rm -f "/usr/lib64/libssr-glinject."*
-sudo rm -f "/usr/lib/i386-linux-gnu/libssr-glinject."*
-sudo rm -f "/usr/lib/i686-linux-gnu/libssr-glinject."*
-sudo rm -f "/usr/lib/x86_64-linux-gnu/libssr-glinject."*
+if [ x"$WITH_GLINJECT" == x"TRUE" ]; then
+	echo "Removing old GLInject libraries ..."
+	sudo rm -f "/usr/lib/libssr-glinject."*
+	sudo rm -f "/usr/lib64/libssr-glinject."*
+	sudo rm -f "/usr/lib/x86_64-linux-gnu/libssr-glinject."*
+	if [ x"$ENABLE_32BIT_GLINJECT" == x"TRUE" ]; then
+		sudo rm -f "/usr/lib32/libssr-glinject."*
+		sudo rm -f "/usr/lib/i386-linux-gnu/libssr-glinject."*
+		sudo rm -f "/usr/lib/i686-linux-gnu/libssr-glinject."*
+	fi
+fi
 
 echo "Installing ..."
 sudo make install
