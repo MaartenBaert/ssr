@@ -58,12 +58,12 @@ else
 fi
 
 echo "Detecting Qt version ..."
-if pkg-config --exists QtGui; then
-	echo "  Detected Qt4."
-	WITH_QT5="FALSE"
-elif pkg-config --exists Qt5Gui; then
+if pkg-config --exists Qt5Gui; then
 	echo "  Detected Qt5."
 	WITH_QT5="TRUE"
+elif pkg-config --exists QtGui; then
+	echo "  Detected Qt4."
+	WITH_QT5="FALSE"
 else
 	echo "  Error: Qt development package not found."
 	exit 1
