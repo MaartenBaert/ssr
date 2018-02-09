@@ -21,10 +21,7 @@ libtool
 .dirstamp
 stamp-h1
 
-build/
-build32/
-build-debug/
-build-release/
+build-*
 src/simplescreenrecorder
 
 private-*
