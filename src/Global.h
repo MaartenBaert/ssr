@@ -87,6 +87,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <X11/Xlib.h>
 #include <X11/extensions/XShm.h>
 
+// Replacement for Qt::WindowTransparentForInput.
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <X11/extensions/shape.h>
+#endif
+
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>

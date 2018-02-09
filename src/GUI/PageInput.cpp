@@ -87,15 +87,44 @@ void QSpinBoxWithSignal::focusOutEvent(QFocusEvent* event) {
 	QSpinBox::focusOutEvent(event);
 }
 
-WidgetScreenLabel::WidgetScreenLabel(QWidget* parent, const QString &text)
-	: QWidget(parent, Qt::Window | Qt::X11BypassWindowManagerHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+
+#define TRANSPARENT_WINDOW_FLAGS (Qt::Window | Qt::BypassWindowManagerHint | Qt::FramelessWindowHint | \
+		Qt::WindowStaysOnTopHint | Qt::WindowTransparentForInput | Qt::WindowDoesNotAcceptFocus)
+
+#define TRANSPARENT_WINDOW_ATTRIBUTES() {\
+}
+
+#else
+
+#define TRANSPARENT_WINDOW_FLAGS (Qt::Window | Qt::X11BypassWindowManagerHint | Qt::FramelessWindowHint | \
+		Qt::WindowStaysOnTopHint)
+
+// Replacement for Qt::WindowTransparentForInput based on X11 'shape' extension as described here:
+// http://shallowsky.com/blog/programming/translucent-window-click-thru.html
+#define TRANSPARENT_WINDOW_ATTRIBUTES() {\
+	setAttribute(Qt::WA_X11DoNotAcceptFocus); \
+	int shape_event_base, shape_error_base; \
+	if(XShapeQueryExtension(QX11Info::display(), &shape_event_base, &shape_error_base)) { \
+		Region region = XCreateRegion(); \
+		XShapeCombineRegion(QX11Info::display(), winId(), ShapeInput, 0, 0, region, ShapeSet); \
+		XDestroyRegion(region); \
+	} \
+}
+
+#endif
+
+ScreenLabelWindow::ScreenLabelWindow(QWidget* parent, const QString &text)
+	: QWidget(parent, TRANSPARENT_WINDOW_FLAGS) {
+	TRANSPARENT_WINDOW_ATTRIBUTES();
 	m_text = text;
 	m_font = QFont("Sans", 18, QFont::Bold);
 	QFontMetrics fm(m_font);
 	setFixedSize(fm.size(Qt::TextSingleLine, m_text) + QSize(60, 40));
+	setWindowOpacity(0.75);
 }
 
-void WidgetScreenLabel::paintEvent(QPaintEvent* event) {
+void ScreenLabelWindow::paintEvent(QPaintEvent* event) {
 	Q_UNUSED(event);
 	QPainter painter(this);
 	painter.setPen(QColor(0, 0, 0));
@@ -103,6 +132,44 @@ void WidgetScreenLabel::paintEvent(QPaintEvent* event) {
 	painter.drawRect(0, 0, width() - 1, height() - 1);
 	painter.setFont(m_font);
 	painter.drawText(0, 0, width(), height(), Qt::AlignHCenter | Qt::AlignVCenter | Qt::TextSingleLine, m_text);
+}
+
+RecordingFrameWindow::RecordingFrameWindow(QWidget* parent)
+	: QWidget(parent, TRANSPARENT_WINDOW_FLAGS) {
+	TRANSPARENT_WINDOW_ATTRIBUTES();
+	QImage image(16, 16, QImage::Format_RGB32);
+	for(size_t j = 0; j < image.height(); ++j) {
+		uint32_t *row = (uint32_t*) image.scanLine(j);
+		for(size_t i = 0; i < image.width(); ++i) {
+			//row[i] = ((i + j) % 16 < 8)? 0xffbfbfff : 0xff9f9fdf;
+			row[i] = ((i + j) % 16 < 8)? 0xffff8080 : 0xff8080ff;
+		}
+	}
+	m_texture = QPixmap::fromImage(image);
+	UpdateMask();
+}
+
+void RecordingFrameWindow::UpdateMask() {
+	if(QX11Info::isCompositingManagerRunning()) {
+		clearMask();
+		setWindowOpacity(0.25);
+	} else {
+		setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(3, 3, width() - 6, height() - 6)));
+		setWindowOpacity(1.0);
+	}
+}
+
+void RecordingFrameWindow::resizeEvent(QResizeEvent *event) {
+	UpdateMask();
+}
+
+void RecordingFrameWindow::paintEvent(QPaintEvent* event) {
+	Q_UNUSED(event);
+	QPainter painter(this);
+	painter.setPen(QColor(0, 0, 0, 128));
+	painter.setBrush(Qt::NoBrush);
+	painter.fillRect(0, 0, width(), height(), QBrush(m_texture));
+	painter.drawRect(0, 0, width() - 1, height() - 1);
 }
 
 PageInput::PageInput(MainWindow* main_window)
@@ -648,7 +715,7 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 
 						// pick the inner rectangle if the users clicks inside the window, or the outer rectangle otherwise
 						m_rubber_band_rect = (m_select_window_inner_rect.contains(event->globalPos()))? m_select_window_inner_rect : m_select_window_outer_rect;
-						m_rubber_band.reset(new QRubberBand(QRubberBand::Rectangle));
+						m_rubber_band.reset(new RecordingFrameWindow(this));
 						m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
 						m_rubber_band->show();
 
@@ -656,7 +723,7 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 				}
 			} else {
 				m_rubber_band_rect = QRect(event->globalPos(), QSize(0, 0));
-				m_rubber_band.reset(new QRubberBand(QRubberBand::Rectangle));
+				m_rubber_band.reset(new RecordingFrameWindow(this));
 				m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
 				m_rubber_band->show();
 			}
@@ -807,7 +874,7 @@ void PageInput::LoadPulseAudioSources() {
 void PageInput::OnUpdateRecordingFrame() {
 	if(m_spinbox_video_x->hasFocus() || m_spinbox_video_y->hasFocus() || m_spinbox_video_w->hasFocus() || m_spinbox_video_h->hasFocus()) {
 		if(m_recording_frame == NULL) {
-			m_recording_frame.reset(new QRubberBand(QRubberBand::Rectangle));
+			m_recording_frame.reset(new RecordingFrameWindow(this));
 			m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
 			m_recording_frame->show();
 		} else {
@@ -951,7 +1018,7 @@ void PageInput::OnIdentifyScreens() {
 	OnStopIdentifyScreens();
 	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
 		QRect rect = QApplication::desktop()->screenGeometry(i);
-		WidgetScreenLabel *label = new WidgetScreenLabel(this, tr("Screen %1", "This appears in the screen labels").arg(i + 1));
+		ScreenLabelWindow *label = new ScreenLabelWindow(this, tr("Screen %1", "This appears in the screen labels").arg(i + 1));
 		label->move(rect.left(), rect.top());
 		label->show();
 		m_screen_labels.push_back(label);

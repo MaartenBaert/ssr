@@ -59,7 +59,7 @@ signals:
 
 };
 
-class WidgetScreenLabel : public QWidget {
+class ScreenLabelWindow : public QWidget {
 	Q_OBJECT
 
 private:
@@ -67,9 +67,27 @@ private:
 	QFont m_font;
 
 public:
-	WidgetScreenLabel(QWidget* parent, const QString& text);
+	ScreenLabelWindow(QWidget* parent, const QString& text);
 
 protected:
+	virtual void paintEvent(QPaintEvent* event) override;
+
+};
+
+class RecordingFrameWindow : public QWidget {
+	Q_OBJECT
+
+private:
+	QPixmap m_texture;
+
+public:
+	RecordingFrameWindow(QWidget* parent);
+
+private:
+	void UpdateMask();
+
+protected:
+	virtual void resizeEvent(QResizeEvent* event) override;
 	virtual void paintEvent(QPaintEvent* event) override;
 
 };
@@ -106,7 +124,7 @@ private:
 	MainWindow *m_main_window;
 
 	bool m_grabbing, m_selecting_window;
-	std::unique_ptr<QRubberBand> m_rubber_band, m_recording_frame;
+	std::unique_ptr<RecordingFrameWindow> m_rubber_band, m_recording_frame;
 	QRect m_rubber_band_rect, m_select_window_outer_rect, m_select_window_inner_rect;
 
 #if SSR_USE_ALSA
@@ -125,7 +143,7 @@ private:
 	bool m_glinject_limit_fps;
 #endif
 
-	std::vector<WidgetScreenLabel*> m_screen_labels;
+	std::vector<ScreenLabelWindow*> m_screen_labels;
 
 	ProfileBox *m_profile_box;
 
