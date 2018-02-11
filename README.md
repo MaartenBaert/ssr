@@ -20,7 +20,7 @@ First install the required dependencies (see below). After you have done that, y
 
     ./simple-build-and-install
 
-In order to use OpenGL recording for 32-bit applications on a 64-bit system, you need to compile a 32-bit version of `libssr-glinject.so`. The script will do this automatically if your system is 64-bit. Unfortunately some distributions (Debian, Ubuntu, Linux Mint, ...) don't properly support compiling 32-bit libraries on a 64-bit system, which results in errors related to missing libraries (libGL, libGLU, libX11, libXfixes, libXext, libXi) even when those libraries have in fact been installed. The problem is caused by the fact that the required symlinks are included in the `-dev` packages, but there are no 32-bit `-dev` packages. The simplest solution is to skip compilation of the 32-bit GLInject library, which can be done by running:
+In order to use OpenGL recording for 32-bit applications on a 64-bit system, you need to compile a 32-bit version of `libssr-glinject.so`. The script will do this automatically if your system is 64-bit. Unfortunately some distributions (older versions of Debian, Ubuntu, Linux Mint, ...) don't properly support compiling 32-bit libraries on a 64-bit system, which results in errors related to missing libraries (usually libGL, libGLU) even when those libraries have in fact been installed. The problem is caused by the fact that the required symlinks are included in the `-dev` packages, but the 32-bit `-dev` packages can't be installed. The simplest solution is to skip compilation of the 32-bit GLInject library, which can be done by running:
 
     ENABLE_32BIT_GLINJECT=FALSE ./simple-build-and-install
 
@@ -30,9 +30,6 @@ If you actually want to compile the 32-bit library, you have to manually create 
 
     cd /usr/lib/i386-linux-gnu
     sudo ln -s libGLU.so.1 libGLU.so
-    sudo ln -s libX11.so.6 libX11.so
-    sudo ln -s libXext.so.6 libXext.so
-    sudo ln -s libXfixes.so.3 libXfixes.so
     sudo ldconfig
 
 The OpenGL library `libGL.so` is a special case, because on some distributions (Ubuntu, Linux Mint, ...) it is installed in a different location depending on which driver you are using. If your distribution has installed the file `libGL.so.1` in the regular 32-bit library directory `/usr/lib/i386-linux-gnu` (e.g. Debian), then run this:
@@ -131,27 +128,7 @@ You will need the following packages to compile SimpleScreenRecorder:
 
 If you have a 64-bit system and you want to compile the 32-bit GLInject library, you have to install some 32-bit libraries as well. Otherwise the regular packages are sufficient.
 
-### Ubuntu 12.04 - 13.04
-
-    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev desktop-file-utils \
-    libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
-    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev
-
-Extra dependencies for 32-bit GLInject on 64-bit systems:
-
-    sudo apt-get install g++-multilib ia32-libs
-
-### Ubuntu 13.10 - 17.10
-
-    sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev desktop-file-utils \
-    libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
-    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev
-
-Extra dependencies for 32-bit GLInject on 64-bit systems:
-
-    sudo apt-get install g++-multilib libglu1-mesa:i386 libx11-6:i386 libxfixes3:i386
-
-### Debian
+### Debian / Ubuntu
 
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev desktop-file-utils \
     libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
@@ -162,6 +139,12 @@ Extra dependencies for 32-bit GLInject on 64-bit systems:
     sudo dpkg --add-architecture i386
     sudo apt-get update
     sudo apt-get install g++-multilib libgl1-mesa-dev:i386 libglu1-mesa-dev:i386 libx11-dev:i386 libxfixes-dev:i386
+
+Note: Debian <= 7 and Ubuntu <= 14.04 are affected by Debian bug #689088 (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=689088), which makes it impossible to install the 32-bit and 64-bit libGL/libGLU development packages at the same time. You should use the following command instead:
+
+    sudo apt-get install g++-multilib libglu1-mesa:i386 libx11-dev:i386 libxfixes-dev:i386
+
+Next you should apply the workarounds described in the 'compiling' section.
 
 ### OpenSUSE
 
