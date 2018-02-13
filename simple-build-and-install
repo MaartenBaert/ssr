@@ -107,7 +107,7 @@ mkdir build-release
 cd build-release
 
 echo "Running cmake ..."
-cmake -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_BUILD_TYPE=Release "$OPTIONS" "$@" ..
+cmake -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_BUILD_TYPE=Release "${OPTIONS[@]}" "$@" ..
 
 echo "Compiling ..."
 make -j "$( nproc )"
