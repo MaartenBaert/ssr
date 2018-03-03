@@ -69,14 +69,14 @@ fi
 
 if [ -z "$WITH_QT5" ]; then
 	echo "Detecting Qt version ..."
-	if pkg-config --exists Qt5Gui; then
-		echo "  Detected Qt5."
+	if pkg-config --exists "Qt5Gui >= 5.7"; then
+		echo "  Detected Qt5 (version $( pkg-config --modversion Qt5Gui ))."
 		WITH_QT5="TRUE"
-	elif pkg-config --exists QtGui; then
-		echo "  Detected Qt4."
+	elif pkg-config --exists "QtGui >= 4.8"; then
+		echo "  Detected Qt4 (version $( pkg-config --modversion QtGui ))."
 		WITH_QT5="FALSE"
 	else
-		echo "  Error: Qt development package not found."
+		echo "  Error: Qt development package not found, make sure that either Qt4 (4.8 or newer) or Qt5 (5.7 or newer) is installed."
 		exit 1
 	fi
 fi
