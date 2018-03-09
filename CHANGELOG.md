@@ -6,6 +6,12 @@ Git master
 
 - ?
 
+Version 0.3.10
+--------------
+
+- Custom recording frame to replace QRubberBand (important for Qt5).
+- Improved build system.
+
 Version 0.3.9
 -------------
 
