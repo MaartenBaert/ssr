@@ -903,6 +903,23 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <source>Error: Receiving of video packet failed!</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Error: Could not connect! Reason: %1
+It is possible that your system doesn&apos;t use PulseAudio.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Could not get source info! Reason: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stream is a monitor.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stream is not a monitor.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -952,7 +969,7 @@ You can also change this option manually in the NVIDIA control panel.</source>
     </message>
     <message>
         <source>Record OpenGL (experimental)</source>
-        <translation>Εγγραφή OpenGL (πειραματικό)</translation>
+        <translation type="obsolete">Εγγραφή OpenGL (πειραματικό)</translation>
     </message>
     <message>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
@@ -1139,6 +1156,18 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
         <comment>This appears in the screen labels</comment>
         <translation>Οθόνη %1</translation>
     </message>
+    <message>
+        <source>Input profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Record OpenGL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The audio backend that will be used for recording.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PageOutput</name>
@@ -1187,7 +1216,7 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     </message>
     <message>
         <source>Separate file per segment</source>
-        <translation type="obsolete">Διαχωρισμός αρχείου ανά τμήμα</translation>
+        <translation type="unfinished">Διαχωρισμός αρχείου ανά τμήμα</translation>
     </message>
     <message>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
@@ -1255,7 +1284,7 @@ Note that not all codecs are supported by all containers, and that not all media
     </message>
     <message>
         <source>Bit rate (in kbps):</source>
-        <translation>Ρυθμός bit (σε kbps):</translation>
+        <translation type="obsolete">Ρυθμός bit (σε kbps):</translation>
     </message>
     <message>
         <source>The video bit rate (in kilobit per second). A higher value means a higher quality.
@@ -1382,19 +1411,31 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     </message>
     <message>
         <source>The file &apos;%1&apos; already exists. Are you sure that you want to overwrite it?</source>
-        <translation>Το αρχείο &apos;%1&apos; υπάρχει ήδη. Είστε σίγουροι πως θέλετε να το αντικαταστήσετε;</translation>
+        <translation type="obsolete">Το αρχείο &apos;%1&apos; υπάρχει ήδη. Είστε σίγουροι πως θέλετε να το αντικαταστήσετε;</translation>
     </message>
     <message>
         <source>(not installed)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create separate timestamped file for each segment</source>
+        <source>Output profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>If checked, a separate timestamped video file will be created every time you pause and resume the recording.
-If the original file name is &apos;test.mkv&apos;, the segments will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
+        <source>If checked, a separate video file will be created every time you pause and resume the recording.If unchecked, all recorded segments will be combined into a single video file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add timestamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, the current date and time will be appended to the file name automatically.
+If the original file name is &apos;test.mkv&apos;, the video will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bit rate (in kbit/s):</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1645,7 +1686,7 @@ The start button is at the top ;).</source>
     <name>ProfileBox</name>
     <message>
         <source>Profile</source>
-        <translation>Προφίλ</translation>
+        <translation type="obsolete">Προφίλ</translation>
     </message>
     <message>
         <source>Save</source>
