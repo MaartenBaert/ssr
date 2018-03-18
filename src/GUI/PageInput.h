@@ -244,7 +244,9 @@ private slots:
 	void OnStopIdentifyScreens();
 	void OnStartSelectRectangle();
 	void OnStartSelectWindow();
+#if SSR_USE_OPENGL_RECORDING
 	void OnGLInjectDialog();
+#endif
 	void OnContinue();
 
 public:
