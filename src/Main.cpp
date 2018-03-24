@@ -39,6 +39,7 @@ void PrintOptionHelp() {
 				"\n"
 				"Options:\n"
 				"  --help              Show this help message.\n"
+				"  --version           Show version information.\n"
 				"  --logfile           Write log to ~/.ssr/log-DATE_TIME.txt instead of stdout.\n"
 				"  --statsfile[=FILE]  Write recording statistics to FILE. If FILE is omitted,\n"
 				"                      /dev/shm/simplescreenrecorder-stats-PID is used. It will\n"
@@ -125,6 +126,9 @@ int main(int argc, char* argv[]) {
 			if(option == "--help") {
 				PrintOptionHelp();
 				return 0;
+			} else if(option == "--version") {
+				Logger::LogInfo(GetVersionInfo());
+				return 0;
 			} else if(option == "--logfile") {
 				NOVALUE
 				g_option_logfile = true;
@@ -205,11 +209,14 @@ int main(int argc, char* argv[]) {
 	CPUFeatures::Detect();
 #endif
 
-	// start the GUI
+	// start the program
 	int ret;
 	if(g_option_benchmark) {
+
+		// run benchmark
 		Benchmark();
 		ret = 0;
+
 	} else {
 
 		// create hotkey listener
