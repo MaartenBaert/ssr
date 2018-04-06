@@ -138,9 +138,9 @@ RecordingFrameWindow::RecordingFrameWindow(QWidget* parent)
 	: QWidget(parent, TRANSPARENT_WINDOW_FLAGS) {
 	TRANSPARENT_WINDOW_ATTRIBUTES();
 	QImage image(16, 16, QImage::Format_RGB32);
-	for(size_t j = 0; j < image.height(); ++j) {
+	for(int j = 0; j < image.height(); ++j) {
 		uint32_t *row = (uint32_t*) image.scanLine(j);
-		for(size_t i = 0; i < image.width(); ++i) {
+		for(int i = 0; i < image.width(); ++i) {
 			//row[i] = ((i + j) % 16 < 8)? 0xffbfbfff : 0xff9f9fdf;
 			row[i] = ((i + j) % 16 < 8)? 0xffff8080 : 0xff8080ff;
 		}
