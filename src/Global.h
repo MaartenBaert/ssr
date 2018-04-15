@@ -266,12 +266,14 @@ public:
 		return "SSRStreamException";
 	}
 };
+#if SSR_USE_ALSA
 class ALSAException : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
 		return "ALSAException";
 	}
 };
+#endif
 #if SSR_USE_PULSEAUDIO
 class PulseAudioException : public std::exception {
 public:
@@ -280,12 +282,14 @@ public:
 	}
 };
 #endif
+#if SSR_USE_JACK
 class JACKException : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
 		return "JACKException";
 	}
 };
+#endif
 
 // simple function to do 16-byte alignment
 inline size_t grow_align16(size_t size) {
