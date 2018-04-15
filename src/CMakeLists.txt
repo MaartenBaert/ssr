@@ -17,9 +17,9 @@ if(WITH_JACK)
 endif()
 
 if(WITH_QT5)
-	find_package(Qt5 COMPONENTS Core Gui Widgets X11Extras REQUIRED)
+	find_package(Qt5 5.7 COMPONENTS Core Gui Widgets X11Extras REQUIRED)
 else()
-	find_package(Qt4 COMPONENTS QtGui REQUIRED)
+	find_package(Qt4 4.8 COMPONENTS QtGui REQUIRED)
 endif()
 
 set(sources
