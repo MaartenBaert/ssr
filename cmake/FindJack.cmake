@@ -1,6 +1,6 @@
 # rules for finding the Jack library
 
-find_package(PkgConfig)
+find_package(PkgConfig REQUIRED)
 pkg_check_modules(PC_JACK jack)
 
 find_path(JACK_INCLUDE_DIR jack/jack.h HINTS ${PC_JACK_INCLUDEDIR} ${PC_JACK_INCLUDE_DIRS})

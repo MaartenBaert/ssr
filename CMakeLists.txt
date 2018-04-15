@@ -24,6 +24,7 @@ option(WITH_GLINJECT "Build the 'libssr-glinject' library. Required for OpenGL r
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
+include(FeatureSummary)
 include(GNUInstallDirs)
 
 # try to guess the correct 32-bit library path on 64-bit systems
@@ -105,3 +106,5 @@ if(WITH_SIMPLESCREENRECORDER)
 	)
 
 endif()
+
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

@@ -1,6 +1,6 @@
 # rules for finding the FFmpeg libraries
 
-find_package(PkgConfig)
+find_package(PkgConfig REQUIRED)
 pkg_check_modules(PC_FFMPEG libavformat libavcodec libavutil libswscale)
 
 find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h HINTS ${PC_FFMPEG_LIBAVFORMAT_INCLUDEDIR} ${PC_FFMPEG_INCLUDE_DIRS})
@@ -28,3 +28,9 @@ mark_as_advanced(SWSCALE_INCLUDE_DIR SWSCALE_LIBRARY)
 
 set(FFMPEG_INCLUDE_DIRS ${AVFORMAT_INCLUDE_DIR} ${AVCODEC_INCLUDE_DIR} ${AVUTIL_INCLUDE_DIR} ${SWSCALE_INCLUDE_DIR})
 set(FFMPEG_LIBRARIES ${AVFORMAT_LIBRARY} ${AVCODEC_LIBRARY} ${AVUTIL_LIBRARY} ${SWSCALE_LIBRARY})
+
+if(${AVFORMAT_FOUND} AND ${AVCODEC_FOUND} AND ${AVUTIL_FOUND} AND ${SWSCALE_FOUND})
+	set(FFMPEG_FOUND TRUE)
+else()
+	set(FFMPEG_FOUND FALSE)
+endif()

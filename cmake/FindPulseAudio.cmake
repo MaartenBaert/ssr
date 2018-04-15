@@ -1,6 +1,6 @@
 # rules for finding the PulseAudio library
 
-find_package(PkgConfig)
+find_package(PkgConfig REQUIRED)
 pkg_check_modules(PC_PULSEAUDIO libpulse)
 
 find_path(PULSEAUDIO_INCLUDE_DIR pulse/pulseaudio.h HINTS ${PC_PULSEAUDIO_INCLUDEDIR} ${PC_PULSEAUDIO_INCLUDE_DIRS})
