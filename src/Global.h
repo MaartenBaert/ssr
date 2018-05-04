@@ -186,6 +186,9 @@ inline void atomic_thread_fence_replacement(memory_order) {
 #define SSR_USE_AVCODEC_SEND_RECEIVE               TEST_AV_VERSION(LIBAVCODEC, 57, 37, 999, 999)
 // av_packet_alloc: lavc 57.12.100 / 57.8.0
 #define SSR_USE_AV_PACKET_ALLOC                    TEST_AV_VERSION(LIBAVCODEC, 57, 12, 57, 8)
+// AV_CODEC_CAP_*, AV_CODEC_FLAG_*: lavc 56.56.100 / 56.35.0
+#define SSR_USE_AV_CODEC_CAP                       TEST_AV_VERSION(LIBAVCODEC, 56, 56, 56, 35)
+#define SSR_USE_AV_CODEC_FLAG                      TEST_AV_VERSION(LIBAVCODEC, 56, 56, 56, 35)
 // av_packet_rescale_ts: lavc 55.68.100 / 55.55.0
 #define SSR_USE_AV_PACKET_RESCALE_TS               TEST_AV_VERSION(LIBAVCODEC, 55, 68, 55, 55)
 // AVCodecContext::side_data_only_packets added: lavc 55.66.100 / 55.54.0

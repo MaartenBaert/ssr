@@ -130,7 +130,7 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 		if(key == "threads") {
 			codec_context->thread_count = ParseCodecOptionInt(key, value, 1, 100);
 		} else if(key == "qscale") {
-			codec_context->flags |= CODEC_FLAG_QSCALE;
+			codec_context->flags |= AV_CODEC_FLAG_QSCALE;
 			codec_context->global_quality = lrint(ParseCodecOptionDouble(key, value, -1.0e6, 1.0e6, FF_QP2LAMBDA));
 		} else if(key == "minrate") {
 			codec_context->rc_min_rate = ParseCodecOptionInt(key, value, 1, 1000000, 1000); // kbit/s

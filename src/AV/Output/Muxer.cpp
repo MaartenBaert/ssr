@@ -313,10 +313,10 @@ AVStream* Muxer::AddStream(AVCodec* codec, AVCodecContext** codec_context) {
 
 	// not sure why this is needed, but it's in the example code and it doesn't work without this
 	if(m_format_context->oformat->flags & AVFMT_GLOBALHEADER)
-		(*codec_context)->flags |= CODEC_FLAG_GLOBAL_HEADER;
+		(*codec_context)->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 	// if the codec is experimental, allow it
-	if(codec->capabilities & CODEC_CAP_EXPERIMENTAL) {
+	if(codec->capabilities & AV_CODEC_CAP_EXPERIMENTAL) {
 		Logger::LogWarning("[Muxer::AddStream] " + Logger::tr("Warning: This codec is considered experimental by libav/ffmpeg."));
 		(*codec_context)->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
 	}

@@ -42,6 +42,17 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #define AV_PIX_FMT_NV12 PIX_FMT_NV12
 #endif
 
+#if !SSR_USE_AV_CODEC_CAP
+#define AV_CODEC_CAP_DELAY CODEC_CAP_DELAY
+#define AV_CODEC_CAP_EXPERIMENTAL CODEC_CAP_EXPERIMENTAL
+#define AV_CODEC_CAP_VARIABLE_FRAME_SIZE CODEC_CAP_VARIABLE_FRAME_SIZE
+#endif
+
+#if !SSR_USE_AV_CODEC_FLAG
+#define AV_CODEC_FLAG_GLOBAL_HEADER CODEC_FLAG_GLOBAL_HEADER
+#define AV_CODEC_FLAG_QSCALE CODEC_FLAG_QSCALE
+#endif
+
 // A trivial class that holds (aligned) frame data. This makes it easy to implement reference counting through std::shared_ptr.
 class AVFrameData {
 private:

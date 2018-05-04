@@ -58,7 +58,7 @@ AudioEncoder::~AudioEncoder() {
 
 unsigned int AudioEncoder::GetFrameSize() {
 #if SSR_USE_AVCODEC_ENCODE_AUDIO2
-	return (GetCodecContext()->codec->capabilities & CODEC_CAP_VARIABLE_FRAME_SIZE)? DEFAULT_FRAME_SAMPLES : GetCodecContext()->frame_size;
+	return (GetCodecContext()->codec->capabilities & AV_CODEC_CAP_VARIABLE_FRAME_SIZE)? DEFAULT_FRAME_SAMPLES : GetCodecContext()->frame_size;
 #else
 	return (GetCodecContext()->frame_size <= 1)? DEFAULT_FRAME_SAMPLES : GetCodecContext()->frame_size;
 #endif
@@ -122,7 +122,7 @@ void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 		if(key == "threads") {
 			codec_context->thread_count = ParseCodecOptionInt(key, value, 1, 100);
 		} else if(key == "qscale") {
-			codec_context->flags |= CODEC_FLAG_QSCALE;
+			codec_context->flags |= AV_CODEC_FLAG_QSCALE;
 			codec_context->global_quality = lrint(ParseCodecOptionDouble(key, value, -1.0e6, 1.0e6, FF_QP2LAMBDA));
 		} else if(key == "sampleformat") {
 			sample_format_name = value;

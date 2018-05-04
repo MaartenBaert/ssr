@@ -213,7 +213,7 @@ void BaseEncoder::EncoderThread() {
 		}
 
 		// flush the encoder
-		if(!m_should_stop && (m_codec_context->codec->capabilities & CODEC_CAP_DELAY)) {
+		if(!m_should_stop && (m_codec_context->codec->capabilities & AV_CODEC_CAP_DELAY)) {
 			Logger::LogInfo("[BaseEncoder::EncoderThread] " + Logger::tr("Flushing encoder ..."));
 			while(!m_should_stop) {
 				if(!EncodeFrame(NULL)) {
