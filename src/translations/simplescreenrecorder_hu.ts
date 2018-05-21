@@ -749,28 +749,28 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <translation>Hiba: a mintavételezési gyakoriság nulla.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="141"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="142"/>
         <source>Using sample format %1.</source>
         <translation>%1 mintavételezési formátum használata.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="146"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="147"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
         <translation>Hiba: a kódoló egy nem támogatott mintavételezési formátumot igényel!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="175"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
         <source>Error: Sending of audio frame failed!</source>
         <translation>Hiba: a hangkockák küldése nem sikerült!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="196"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Receiving of audio packet failed!</source>
         <translation>Hiba: a hangcsomag fogadása nem sikerült!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="209"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="231"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="210"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="232"/>
         <source>Error: Encoding of audio frame failed!</source>
         <translation>Hiba: a hangkockák kódolása nem sikerült!</translation>
     </message>
@@ -1103,32 +1103,32 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <translation>Figyelmeztetés: az XInput2-t nem támogatja az X-kiszolgáló, a gyorsbillentyűk esetleg nem működnek néhány alkalmazásban.</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="119"/>
+        <location filename="../Main.cpp" line="120"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation>Hiba: a(z) „%1” parancssori kapcsoló nem vár értéket!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="150"/>
+        <location filename="../Main.cpp" line="154"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation>Hiba: ismeretlen parancssori kapcsoló: „%1”!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="160"/>
+        <location filename="../Main.cpp" line="164"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation>Hiba: ismeretlen parancssori argumentum: „%1”!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="200"/>
+        <location filename="../Main.cpp" line="204"/>
         <source>SSR started</source>
         <translation>SSR elindítva</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="228"/>
+        <location filename="../Main.cpp" line="235"/>
         <source>SSR stopped</source>
         <translation>SSR leállítva</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="245"/>
+        <location filename="../Main.cpp" line="252"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Hiba: nem lehet létrehozni a .ssr könyvtárat!</translation>
     </message>

@@ -666,28 +666,28 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <translation>Erro: Taxa de amostragem é zero.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="141"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="142"/>
         <source>Using sample format %1.</source>
         <translation>Usando formato de amostra %1.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="146"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="147"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
         <translation>Erro: Codificador requer um formato de amostra não suportado!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="175"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
         <source>Error: Sending of audio frame failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="196"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Receiving of audio packet failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="209"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="231"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="210"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="232"/>
         <source>Error: Encoding of audio frame failed!</source>
         <translation>Erro: Codificação do quadro de áudio falhou!</translation>
     </message>
@@ -1022,32 +1022,32 @@ Aviso: Número excessivo de amostras de áudio, descartando amostras para manter
         <translation>Recursos da CPU</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="119"/>
+        <location filename="../Main.cpp" line="120"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation>Erro: Opção da linha de comando &apos;%1&apos; não leva um valor!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="150"/>
+        <location filename="../Main.cpp" line="154"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation>Erro: Opção desconhecida na linha de comando &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="160"/>
+        <location filename="../Main.cpp" line="164"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation>Erro: Argumento desconhecido na linha de comando &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="200"/>
+        <location filename="../Main.cpp" line="204"/>
         <source>SSR started</source>
         <translation>SSR iniciado</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="228"/>
+        <location filename="../Main.cpp" line="235"/>
         <source>SSR stopped</source>
         <translation>SSR parado</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="245"/>
+        <location filename="../Main.cpp" line="252"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Erro: Não foi possível criar o o diretório de .ssr!</translation>
     </message>

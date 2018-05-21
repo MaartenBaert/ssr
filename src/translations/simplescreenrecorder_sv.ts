@@ -750,28 +750,28 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <translation>Fel: Samplingsfrekvensen är noll</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="141"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="142"/>
         <source>Using sample format %1.</source>
         <translation>Använder samplingsformat %1.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="146"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="147"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
         <translation>Fel: Kodaren kräver ett samplingsformat som inte stöds!</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="175"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
         <source>Error: Sending of audio frame failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="196"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Receiving of audio packet failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="209"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="231"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="210"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="232"/>
         <source>Error: Encoding of audio frame failed!</source>
         <translation>Fel: Kodning av ljudram misslyckades!</translation>
     </message>
@@ -1124,32 +1124,32 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <translation>Varning! XInput2 stöds inte av X server, snabbtangenter kanske inte fungerar i vissa program.</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="119"/>
+        <location filename="../Main.cpp" line="120"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation>Fel: Kommandoradsalternativet &apos;%1&apos; tar inte emot ett värde!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="150"/>
+        <location filename="../Main.cpp" line="154"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation>Fel: Okänt kommandoradsalternativ &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="160"/>
+        <location filename="../Main.cpp" line="164"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation>Fel: Okänt kommandoradsargument &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="200"/>
+        <location filename="../Main.cpp" line="204"/>
         <source>SSR started</source>
         <translation>SSR startad</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="228"/>
+        <location filename="../Main.cpp" line="235"/>
         <source>SSR stopped</source>
         <translation>SSR stoppad</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="245"/>
+        <location filename="../Main.cpp" line="252"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Fel: Kan inte skapa .ssr-mapp</translation>
     </message>

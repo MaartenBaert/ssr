@@ -751,28 +751,28 @@ Habituellement, cela signifie que la zone d&apos;enregistrement n&apos;est pas c
         <translation>Erreur : le taux d&apos;échantillonnage est de zéro.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="141"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="142"/>
         <source>Using sample format %1.</source>
         <translation>Utilisation du format de l&apos;échantillon %1.</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="146"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="147"/>
         <source>Error: Encoder requires an unsupported sample format!</source>
         <translation>Erreur : l&apos;encodeur demande un format de l&apos;échantillon non supporté !</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="175"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
         <source>Error: Sending of audio frame failed!</source>
         <translation>Erreur : l&apos;envoi de la trame audio a échouée !</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="196"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Receiving of audio packet failed!</source>
         <translation>Erreur : la réception du paquet audio a échouée !</translation>
     </message>
     <message>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="209"/>
-        <location filename="../AV/Output/AudioEncoder.cpp" line="231"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="210"/>
+        <location filename="../AV/Output/AudioEncoder.cpp" line="232"/>
         <source>Error: Encoding of audio frame failed!</source>
         <translation>Erreur : l&apos;encodage de la trame audio a échoué !</translation>
     </message>
@@ -1127,32 +1127,32 @@ Habituellement, cela signifie que la zone d&apos;enregistrement n&apos;est pas c
         <translation>Attention : XInput2 n&apos;est pas pris en charge par le serveur X, les raccourcis peuvent ne pas fonctionner dans certaines applications.</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="119"/>
+        <location filename="../Main.cpp" line="120"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation>Erreur : l&apos;option &apos;%1&apos; en ligne de commande ne prend pas de valeur !</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="150"/>
+        <location filename="../Main.cpp" line="154"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation>Erreur : option inconnue &apos;%1&apos; dans la ligne de commande !</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="160"/>
+        <location filename="../Main.cpp" line="164"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation>Erreur : argument inconnu &apos;%1&apos; dans la ligne de commande !</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="200"/>
+        <location filename="../Main.cpp" line="204"/>
         <source>SSR started</source>
         <translation>SSR démarré</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="228"/>
+        <location filename="../Main.cpp" line="235"/>
         <source>SSR stopped</source>
         <translation>SSR arrêté</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="245"/>
+        <location filename="../Main.cpp" line="252"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Erreur : impossible de créer le répertoire .ssr !</translation>
     </message>
@@ -1253,7 +1253,7 @@ Vous pouvez également modifier manuellement cette option dans le panneau de con
     <message>
         <location filename="../GUI/PageInput.cpp" line="187"/>
         <source>Input profile</source>
-        <translation>Profile d'entrée</translation>
+        <translation>Profile d&apos;entrée</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="196"/>
