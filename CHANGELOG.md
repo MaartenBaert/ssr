@@ -6,6 +6,14 @@ Git master
 
 - ?
 
+Version 0.3.11
+--------------
+
+- Fixed FFmpeg 4.0 compatibility.
+- Fixed AAC codec (missing channel layout).
+- Improved build system.
+- Minor bugfixes.
+
 Version 0.3.10
 --------------
 
