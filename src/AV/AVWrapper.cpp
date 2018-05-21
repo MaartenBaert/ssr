@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "AVWrapper.h"
 
+#if !SSR_USE_AV_LOCKMGR_REGISTER_DEPRECATED
 int lock_manager(void** m, AVLockOp op) {
 	std::mutex *&mutex = *(std::mutex**) m;
 	switch(op) {
@@ -29,6 +30,7 @@ int lock_manager(void** m, AVLockOp op) {
 	}
 	return 0;
 }
+#endif
 
 void DeleteFrameDataPointer(void* opaque, uint8_t* data) {
 	Q_UNUSED(data);
@@ -39,8 +41,12 @@ void DeleteFrameDataPointer(void* opaque, uint8_t* data) {
 class AVGlobal {
 public:
 	AVGlobal() {
+#if !SSR_USE_AV_REGISTER_ALL_DEPRECATED
 		av_register_all();
+#endif
+#if !SSR_USE_AV_LOCKMGR_REGISTER_DEPRECATED
 		av_lockmgr_register(&lock_manager);
+#endif
 #if SSR_USE_AVFORMAT_NETWORK_INIT
 		avformat_network_init();
 #endif

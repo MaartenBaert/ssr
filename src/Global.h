@@ -171,6 +171,8 @@ inline void atomic_thread_fence_replacement(memory_order) {
 #define TEST_AV_VERSION(prefix, ffmpeg_major, ffmpeg_minor, libav_major, libav_minor) TEST_MAJOR_MINOR(prefix##_VERSION_MAJOR, prefix##_VERSION_MINOR, libav_major, libav_minor)
 #endif
 
+// av_register_all deprecated: lavf 58.9.100 / ???
+#define SSR_USE_AV_REGISTER_ALL_DEPRECATED         TEST_AV_VERSION(LIBAVFORMAT, 58, 9, 999, 999)
 // AVStream::codecpar: lavf 57.33.100 / 57.5.0
 #define SSR_USE_AVSTREAM_CODECPAR                  TEST_AV_VERSION(LIBAVFORMAT, 57, 33, 57, 5)
 // AVStream::time_base as time base hint: lavf 55.44.100 / 55.20.0
@@ -184,6 +186,8 @@ inline void atomic_thread_fence_replacement(memory_order) {
 // avformat_free_context: lavf 52.96.0 / 52.96.0
 #define SSR_USE_AVFORMAT_FREE_CONTEXT              TEST_AV_VERSION(LIBAVFORMAT, 52, 96, 52, 96)
 
+// av_lockmgr_register deprecated: lavc 58.9.100 / ???
+#define SSR_USE_AV_LOCKMGR_REGISTER_DEPRECATED     TEST_AV_VERSION(LIBAVCODEC, 58, 9, 999, 999)
 // avcodec_send_packet, avcodec_receive_frame, avcodec_send_frame, avcodec_receive_packet: lavc 57.37.100 / ???
 #define SSR_USE_AVCODEC_SEND_RECEIVE               TEST_AV_VERSION(LIBAVCODEC, 57, 37, 999, 999)
 // av_packet_alloc: lavc 57.12.100 / 57.8.0
