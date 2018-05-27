@@ -115,7 +115,13 @@ PageOutput::PageOutput(MainWindow* main_window)
 
 	// load AV container list
 	m_containers_av.clear();
+#if SSR_USE_AV_MUXER_ITERATE
+	const AVOutputFormat *format;
+	void *format_opaque = NULL;
+	while((format = av_muxer_iterate(&format_opaque)) != NULL) {
+#else
 	for(AVOutputFormat *format = av_oformat_next(NULL); format != NULL; format = av_oformat_next(format)) {
+#endif
 		if(format->video_codec == AV_CODEC_ID_NONE)
 			continue;
 		ContainerData c;
@@ -139,7 +145,13 @@ PageOutput::PageOutput(MainWindow* main_window)
 	// load AV codec list
 	m_video_codecs_av.clear();
 	m_audio_codecs_av.clear();
+#if SSR_USE_AV_MUXER_ITERATE
+	const AVCodec *codec;
+	void *codec_opaque = NULL;
+	while((codec = av_codec_iterate(&codec_opaque)) != NULL) {
+#else
 	for(AVCodec *codec = av_codec_next(NULL); codec != NULL; codec = av_codec_next(codec)) {
+#endif
 		if(!av_codec_is_encoder(codec))
 			continue;
 		if(codec->type == AVMEDIA_TYPE_VIDEO && VideoEncoder::AVCodecIsSupported(codec->name)) {
