@@ -22,6 +22,7 @@ if(LRELEASE)
 		pl
 		pt_BR
 		ru
+		sr
 		sv
 		uk
 		zh_CN
