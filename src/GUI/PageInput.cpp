@@ -27,6 +27,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "MainWindow.h"
 
 #include <QX11Info>
+#include <QApplication>
+#include <QScreen>
+#include <QList>
 #include <X11/Xlib.h>
 
 ENUMSTRINGS(PageInput::enum_video_area) = {
@@ -49,13 +52,81 @@ ENUMSTRINGS(PageInput::enum_audio_backend) = {
 #endif
 };
 
+inline QRect ToPhysicalPixelSize(const QRect &rect, int screenIndex) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	QList<QScreen*> screens = QApplication::screens();
+	if (screens.size() <= screenIndex)
+		return rect;
+
+	QScreen* screen = screens[screenIndex];
+	if (!screen)
+		return QRect();
+
+	qreal ratio = screen->devicePixelRatio();
+	return QRect(qRound(rect.left()*ratio),
+				 qRound(rect.top()*ratio),
+				 qRound(rect.width()*ratio),
+				 qRound(rect.height()*ratio));
+#else
+	return rect;
+#endif
+}
+
+inline QRect ToDIPixelSize(const QRect &rect, int screenIndex) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	QList<QScreen*> screens = QApplication::screens();
+	if (screens.size() <= screenIndex)
+		return rect;
+
+	QScreen* screen = screens[screenIndex];
+	if (!screen)
+		return QRect();
+
+	qreal ratio = screen->devicePixelRatio();
+	if (ratio < 1E-5)
+		return rect;
+
+	return QRect(qRound(rect.left()/ratio),
+				 qRound(rect.top()/ratio),
+				 qRound(rect.width()/ratio),
+				 qRound(rect.height()/ratio));
+#else
+	return rect;
+#endif
+}
+
+inline QRect PhysicalPixelGeometry(int index) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	QList<QScreen*> screens = QApplication::screens();
+	if (screens.size() <= index)
+		return QRect();
+
+	QScreen* screen = screens[index];
+	if (!screen)
+		return QRect();
+
+	QRect rect = screen->geometry();
+	return ToPhysicalPixelSize(rect, index);
+#else
+	return QApplication::desktop()->screenGeometry(index);
+#endif
+}
+
+inline QRect PhysicalDesktopGeometry() {
+	QRect rect = PhysicalPixelGeometry(0);
+	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
+		QRect rect = QApplication::desktop()->screenGeometry(i);
+		QRect physicalPixelGeometry = PhysicalPixelGeometry(i);
+		rect |= QRect(QPoint(rect.left(), rect.top()), physicalPixelGeometry.size());
+	}
+
+	return rect;
+}
+
 // This does some sanity checking on the rubber band rectangle before creating it.
 // Rubber bands with width or height zero or extremely large appear to cause problems.
 static QRect ValidateRubberBandRectangle(QRect rect) {
-	QRect screenrect = QApplication::desktop()->screenGeometry(0);
-	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
-		screenrect |= QApplication::desktop()->screenGeometry(i);
-	}
+	QRect screenrect = PhysicalDesktopGeometry();
 	rect = rect.normalized();
 	rect &= screenrect.adjusted(-10, -10, 10, 10);
 	return (rect.isNull())? QRect(-10, -10, 1, 1) : rect;
@@ -673,10 +744,10 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 				// since X will simply return a handle the rubber band itself (even though it should be transparent to mouse events).
 				Window selected_window;
 				int x, y;
-				if(XTranslateCoordinates(QX11Info::display(), QX11Info::appRootWindow(), QX11Info::appRootWindow(), event->globalX(), event->globalY(), &x, &y, &selected_window)) {
+				QRect toPhysical = ToPhysicalPixelSize(QRect(event->globalX(), event->globalY(), 0, 0), 0);
+				if(XTranslateCoordinates(QX11Info::display(), QX11Info::appRootWindow(), QX11Info::appRootWindow(), toPhysical.left(), toPhysical.top(), &x, &y, &selected_window)) {
 					XWindowAttributes attributes;
 					if(selected_window != None && XGetWindowAttributes(QX11Info::display(), selected_window, &attributes)) {
-
 						// naive outer/inner rectangle, this won't work for window decorations
 						m_select_window_outer_rect = QRect(attributes.x, attributes.y, attributes.width + 2 * attributes.border_width, attributes.height + 2 * attributes.border_width);
 						m_select_window_inner_rect = QRect(attributes.x + attributes.border_width, attributes.y + attributes.border_width, attributes.width, attributes.height);
@@ -696,11 +767,9 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 									// the attributes of the real window only store the *relative* position which is not what we need, so use XTranslateCoordinates again
 									if(XTranslateCoordinates(QX11Info::display(), real_window, QX11Info::appRootWindow(), 0, 0, &x, &y, &child)
 											 && XGetWindowAttributes(QX11Info::display(), real_window, &attributes)) {
-
 										// finally!
 										m_select_window_inner_rect = QRect(x, y, attributes.width, attributes.height);
 										m_select_window_outer_rect = m_select_window_inner_rect.adjusted(-data[0], -data[2], data[1], data[3]);
-
 									} else {
 
 										// I doubt this will ever be needed, but do it anyway
@@ -714,7 +783,10 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 						}
 
 						// pick the inner rectangle if the users clicks inside the window, or the outer rectangle otherwise
-						m_rubber_band_rect = (m_select_window_inner_rect.contains(event->globalPos()))? m_select_window_inner_rect : m_select_window_outer_rect;
+						if (m_select_window_inner_rect.contains(toPhysical.topLeft()))
+							m_rubber_band_rect = ToDIPixelSize(m_select_window_inner_rect, 0);
+						else
+							m_rubber_band_rect = ToDIPixelSize(m_select_window_outer_rect, 0);
 						m_rubber_band.reset(new RecordingFrameWindow(this));
 						m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
 						m_rubber_band->show();
@@ -722,7 +794,7 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 					}
 				}
 			} else {
-				m_rubber_band_rect = QRect(event->globalPos(), QSize(0, 0));
+				m_rubber_band_rect = ToPhysicalPixelSize(QRect(event->globalPos(), QSize(0, 0)), 0);
 				m_rubber_band.reset(new RecordingFrameWindow(this));
 				m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
 				m_rubber_band->show();
@@ -810,7 +882,7 @@ void PageInput::StopGrabbing() {
 }
 
 void PageInput::SetVideoAreaFromRubberBand() {
-	QRect r = m_rubber_band_rect.normalized();
+	QRect r = ToPhysicalPixelSize(m_rubber_band_rect.normalized(), 0);
 	if(GetVideoArea() == VIDEO_AREA_CURSOR) {
 		SetVideoX(0);
 		SetVideoY(0);
@@ -823,17 +895,15 @@ void PageInput::SetVideoAreaFromRubberBand() {
 }
 
 void PageInput::LoadScreenConfigurations() {
-	QRect rect = QApplication::desktop()->screenGeometry(0);
-	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
-		rect |= QApplication::desktop()->screenGeometry(i);
-	}
+	QRect rect = PhysicalDesktopGeometry();
 	m_combobox_screens->clear();
 	m_combobox_screens->addItem(tr("All screens: %1x%2", "This appears in the screen selection combobox")
 								.arg(rect.width()).arg(rect.height()));
 	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
-		rect = QApplication::desktop()->screenGeometry(i);
+		rect = PhysicalPixelGeometry(i);
+		QRect virtualRect = QApplication::desktop()->screenGeometry(i);
 		m_combobox_screens->addItem(tr("Screen %1: %2x%3 at %4,%5", "This appears in the screen selection combobox")
-									.arg(i + 1).arg(rect.width()).arg(rect.height()).arg(rect.left()).arg(rect.top()));
+									.arg(i + 1).arg(rect.width()).arg(rect.height()).arg(virtualRect.left()).arg(virtualRect.top()));
 	}
 	// update the video x/y/w/h in case the position or size of the selected screen changed
 	OnUpdateVideoAreaFields();
@@ -875,10 +945,10 @@ void PageInput::OnUpdateRecordingFrame() {
 	if(m_spinbox_video_x->hasFocus() || m_spinbox_video_y->hasFocus() || m_spinbox_video_w->hasFocus() || m_spinbox_video_h->hasFocus()) {
 		if(m_recording_frame == NULL) {
 			m_recording_frame.reset(new RecordingFrameWindow(this));
-			m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
+			m_recording_frame->setGeometry(ValidateRubberBandRectangle(ToDIPixelSize(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH()), 0)));
 			m_recording_frame->show();
 		} else {
-			m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
+			m_recording_frame->setGeometry(ValidateRubberBandRectangle(ToDIPixelSize(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH()), 0)));
 		}
 	} else {
 		m_recording_frame.reset();
@@ -899,12 +969,10 @@ void PageInput::OnUpdateVideoAreaFields() {
 			int sc = m_combobox_screens->currentIndex();
 			QRect rect;
 			if(sc == 0) {
-				rect = QApplication::desktop()->screenGeometry(0);
-				for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
-					rect |= QApplication::desktop()->screenGeometry(i);
-				}
+				rect = PhysicalDesktopGeometry();
 			} else {
-				rect = QApplication::desktop()->screenGeometry(sc - 1);
+				QRect virtualRect = QApplication::desktop()->screenGeometry(sc - 1);
+				rect = QRect(QPoint(virtualRect.left(), virtualRect.top()), PhysicalPixelGeometry(sc - 1).size());
 			}
 			SetVideoX(rect.left());
 			SetVideoY(rect.top());
