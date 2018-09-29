@@ -57,6 +57,11 @@ int main(int argc, char* argv[]) {
 
 	QApplication application(argc, argv);
 
+	// disable automatic scaling on high-dpi screens
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	application.setAttribute(Qt::AA_DisableHighDpiScaling, true);
+#endif
+
 	// SSR uses two separate character encodings:
 	// - UTF-8: Used for all internal strings.
 	//   Used by QString::fromAscii and QString::toAscii, and all implicit conversions from C-strings to QString. Also used for translations.
