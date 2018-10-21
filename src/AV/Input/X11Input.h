@@ -23,13 +23,17 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 
-class X11Input : public QObject, public VideoSource {
-	Q_OBJECT
+class X11Input : public VideoSource {
 
 private:
+	struct Rect {
+		unsigned int m_x1, m_y1, m_x2, m_y2;
+		inline Rect() {}
+		inline Rect(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) : m_x1(x1), m_y1(y1), m_x2(x2), m_y2(y2) {}
+	};
 	struct SharedData {
-		QRect m_screen_bbox;
-		QVector<QRect> m_screen_dead_space;
+		Rect m_screen_bbox;
+		std::vector<Rect> m_screen_dead_space;
 	};
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
 

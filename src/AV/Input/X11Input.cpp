@@ -40,6 +40,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <X11/Xutil.h>
 #include <X11/extensions/Xfixes.h>
+#include <X11/extensions/Xinerama.h>
 
 /*
 The code in this file is based on the MIT-SHM example code and the x11grab device in libav/ffmpeg (which is GPL):
@@ -273,9 +274,7 @@ void X11Input::Init() {
 	}
 
 	// get screen configuration information, so we can replace the unused areas with black rectangles (rather than showing random uninitialized memory)
-	// this also used by the mouse following code to make sure that the rectangle stays on the screen
-	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(UpdateScreenConfiguration()));
-	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(UpdateScreenConfiguration()));
+	// this is also used by the mouse following code to make sure that the rectangle stays on the screen
 	UpdateScreenConfiguration();
 
 	// initialize frame counter
@@ -315,26 +314,82 @@ void X11Input::Free() {
 }
 
 void X11Input::UpdateScreenConfiguration() {
-	SharedLock lock(&m_shared_data);
 
-	// get the bounding box of the screens
-	QRegion region;
-	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
-		region += QApplication::desktop()->screenGeometry(i);
+	// get screen rectangles
+	std::vector<Rect> screen_rects;
+	int event_base, error_base;
+	if(XineramaQueryExtension(m_x11_display, &event_base, &error_base)) {
+		int num_screens;
+		XineramaScreenInfo *screens = XineramaQueryScreens(m_x11_display, &num_screens);
+		try {
+			for(int i = 0; i < num_screens; ++i) {
+				screen_rects.emplace_back(screens[i].x_org, screens[i].y_org, screens[i].x_org + screens[i].width, screens[i].y_org + screens[i].height);
+			}
+		} catch(...) {
+			XFree(screens);
+			throw;
+		}
+		XFree(screens);
+	} else {
+		Logger::LogWarning("[X11Input::Init] " + Logger::tr("Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.", "Don't translate 'Xinerama'"));
+		return;
 	}
-	lock->m_screen_bbox = region.boundingRect();
 
-	if(lock->m_screen_bbox.x() < 0 || lock->m_screen_bbox.y() < 0 || lock->m_screen_bbox.width() <= 0 || lock->m_screen_bbox.height() <= 0) {
+	// make sure that we have at least one monitor
+	if(screen_rects.size() == 0) {
+		Logger::LogWarning("[X11Input::Init] " + Logger::tr("Warning: No monitors detected, multi-monitor support may not work properly."));
+		return;
+	}
+
+	// calculate bounding box
+	Rect screen_bbox = screen_rects[0];
+	for(size_t i = 1; i < screen_rects.size(); ++i) {
+		Rect &rect = screen_rects[i];
+		if(rect.m_x1 < screen_bbox.m_x1)
+			screen_bbox.m_x1 = rect.m_x1;
+		if(rect.m_y1 < screen_bbox.m_y1)
+			screen_bbox.m_y1 = rect.m_y1;
+		if(rect.m_x2 > screen_bbox.m_x2)
+			screen_bbox.m_x2 = rect.m_x2;
+		if(rect.m_y2 > screen_bbox.m_y2)
+			screen_bbox.m_y2 = rect.m_y2;
+	}
+	if(screen_bbox.m_x1 >= screen_bbox.m_x2 || screen_bbox.m_y1 >= screen_bbox.m_y2 ||
+	   screen_bbox.m_x2 - screen_bbox.m_x1 > 10000 || screen_bbox.m_y2 - screen_bbox.m_y1 > 10000) {
 		Logger::LogError("[X11Input::UpdateScreenConfiguration] " + Logger::tr("Error: Invalid screen bounding box!") + "\n"
-						   "    x = " + QString::number(lock->m_screen_bbox.x()) + ", y = " + QString::number(lock->m_screen_bbox.y())
-						   + ", width = " + QString::number(lock->m_screen_bbox.width()) + ", height = " + QString::number(lock->m_screen_bbox.height()));
+						   "    x1 = " + QString::number(screen_bbox.m_x1) + ", y1 = " + QString::number(screen_bbox.m_y1)
+						   + ", x2 = " + QString::number(screen_bbox.m_x2) + ", y2 = " + QString::number(screen_bbox.m_y2));
 		throw X11Exception();
 	}
 
-	// now get all the space that is inside the bounding box but not inside any screen
-	QRegion inverted_region(lock->m_screen_bbox);
-	inverted_region -= region;
-	lock->m_screen_dead_space = inverted_region.rects();
+	// calculate dead space
+	std::vector<Rect> screen_dead_space = {screen_bbox};
+	for(size_t i = 0; i < screen_rects.size(); ++i) {
+		Rect &subtract = screen_rects[i];
+		std::vector<Rect> result;
+		for(Rect &rect : screen_dead_space) {
+			if(rect.m_x1 < subtract.m_x1) {
+				result.emplace_back(rect.m_x1, rect.m_y1, subtract.m_x1, rect.m_y2);
+			}
+			if(rect.m_x2 > subtract.m_x2) {
+				result.emplace_back(subtract.m_x2, rect.m_y1, rect.m_x2, rect.m_y2);
+			}
+			unsigned int lo = std::max(rect.m_x1, subtract.m_x1), hi = std::min(rect.m_x2, subtract.m_x2);
+			if(lo < hi) {
+				if(rect.m_y1 < subtract.m_y1) {
+					result.emplace_back(lo, rect.m_y1, hi, subtract.m_y1);
+				}
+				if(rect.m_y2 > subtract.m_y2) {
+					result.emplace_back(lo, subtract.m_y2, hi, rect.m_y2);
+				}
+			}
+		}
+		screen_dead_space = std::move(result);
+	}
+
+	SharedLock lock(&m_shared_data);
+	lock->m_screen_bbox = screen_bbox;
+	lock->m_screen_dead_space = screen_dead_space;
 
 }
 
@@ -343,7 +398,7 @@ void X11Input::InputThread() {
 
 		Logger::LogInfo("[X11Input::InputThread] " + Logger::tr("Input thread started."));
 
-		int grab_x = m_x, grab_y = m_y;
+		unsigned int grab_x = m_x, grab_y = m_y;
 		bool has_initial_cursor = false;
 		int64_t last_timestamp = hrt_time_micro();
 
@@ -377,10 +432,10 @@ void X11Input::InputThread() {
 					int grab_x_target = (mouse_x - (int) m_width / 2) >> 1;
 					int grab_y_target = (mouse_y - (int) m_height / 2) >> 1;
 					int frac = (has_initial_cursor)? lrint(1024.0 * exp(-1e-5 * (double) (timestamp - last_timestamp))) : 0;
-					grab_x = (grab_x_target + ((grab_x >> 1) - grab_x_target) * frac / 1024) << 1;
-					grab_y = (grab_y_target + ((grab_y >> 1) - grab_y_target) * frac / 1024) << 1;
-					grab_x = clamp(grab_x, lock->m_screen_bbox.x(), lock->m_screen_bbox.x() + lock->m_screen_bbox.width() - (int) m_width);
-					grab_y = clamp(grab_y, lock->m_screen_bbox.y(), lock->m_screen_bbox.y() + lock->m_screen_bbox.height() - (int) m_height);
+					grab_x_target = (grab_x_target + ((grab_x >> 1) - grab_x_target) * frac / 1024) << 1;
+					grab_y_target = (grab_y_target + ((grab_y >> 1) - grab_y_target) * frac / 1024) << 1;
+					grab_x = clamp(grab_x_target, (int) lock->m_screen_bbox.m_x1, (int) lock->m_screen_bbox.m_x2 - (int) m_width);
+					grab_y = clamp(grab_y_target, (int) lock->m_screen_bbox.m_y1, (int) lock->m_screen_bbox.m_y2 - (int) m_height);
 				}
 				has_initial_cursor = true;
 			}
@@ -415,11 +470,18 @@ void X11Input::InputThread() {
 			// clear the dead space
 			{
 				SharedLock lock(&m_shared_data);
-				QRect clip_rect(0, 0, m_width, m_height);
-				for(int i = 0; i < lock->m_screen_dead_space.size(); ++i) {
-					QRect r = lock->m_screen_dead_space[i].translated(-grab_x, -grab_y).intersected(clip_rect);
-					if(r.width() > 0 && r.height() > 0)
-						X11ImageClearRectangle(m_x11_image, r.x(), r.y(), r.width(), r.height());
+				for(size_t i = 0; i < lock->m_screen_dead_space.size(); ++i) {
+					Rect rect = lock->m_screen_dead_space[i];
+					if(rect.m_x1 < grab_x)
+						rect.m_x1 = grab_x;
+					if(rect.m_y1 < grab_y)
+						rect.m_y1 = grab_y;
+					if(rect.m_x2 > grab_x + m_width)
+						rect.m_x2 = grab_x + m_width;
+					if(rect.m_y2 > grab_y + m_height)
+						rect.m_y2 = grab_y + m_height;
+					if(rect.m_x2 > rect.m_x1 && rect.m_y2 > rect.m_y1)
+						X11ImageClearRectangle(m_x11_image, rect.m_x1 - grab_x, rect.m_y1 - grab_y, rect.m_x2 - rect.m_x1, rect.m_y2 - rect.m_y1);
 				}
 			}
 

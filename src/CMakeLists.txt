@@ -175,6 +175,7 @@ target_include_directories(simplescreenrecorder PRIVATE
 	${X11_Xext_INCLUDE_PATH}
 	${X11_Xfixes_INCLUDE_PATH}
 	${X11_Xi_INCLUDE_PATH}
+	${X11_Xinerama_INCLUDE_PATH}
 	$<$<BOOL:${WITH_ALSA}>:${ALSA_INCLUDE_DIRS}>
 	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_INCLUDE_DIRS}>
 	$<$<BOOL:${WITH_JACK}>:${JACK_INCLUDE_DIRS}>
@@ -194,6 +195,7 @@ target_link_libraries(simplescreenrecorder PRIVATE
 	${X11_Xext_LIB}
 	${X11_Xfixes_LIB}
 	${X11_Xi_LIB}
+	${X11_Xinerama_LIB}
 	$<$<BOOL:${WITH_ALSA}>:${ALSA_LIBRARIES}>
 	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_LIBRARIES}>
 	$<$<BOOL:${WITH_JACK}>:${JACK_LIBRARIES}>
