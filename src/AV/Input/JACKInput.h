@@ -37,7 +37,7 @@ private:
 		EVENTTYPE_HOLE,
 		EVENTTYPE_DATA,
 	};
-	struct Event_Data {
+	struct EventData {
 		int64_t m_timestamp;
 		unsigned int m_sample_rate, m_sample_count;
 	};

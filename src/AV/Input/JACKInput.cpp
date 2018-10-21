@@ -169,17 +169,17 @@ int JACKInput::ProcessCallback(jack_nframes_t nframes, void* arg) {
 	// This function is called from a real-time thread, so it's not a good idea to do actual work here.
 	// The data is moved to a queue, and a second thread will do the work as usual.
 	//TODO// if nframes is small, then combine multiple blocks into one?
-	char *message = input->m_message_queue.PrepareWriteMessage(sizeof(enum_eventtype) + sizeof(Event_Data) + nframes * input->m_channels * sizeof(float));
+	char *message = input->m_message_queue.PrepareWriteMessage(sizeof(enum_eventtype) + sizeof(EventData) + nframes * input->m_channels * sizeof(float));
 	if(message == NULL) {
 		input->m_jackthread_hole = true;
 		return 0;
 	}
 	*((enum_eventtype*) message) = EVENTTYPE_DATA;
 	message += sizeof(enum_eventtype);
-	((Event_Data*) message)->m_timestamp = hrt_time_micro() - (int64_t) nframes * (int64_t) 1000000 / (int64_t) input->m_jackthread_sample_rate;
-	((Event_Data*) message)->m_sample_rate = input->m_jackthread_sample_rate;
-	((Event_Data*) message)->m_sample_count = nframes;
-	message += sizeof(Event_Data);
+	((EventData*) message)->m_timestamp = hrt_time_micro() - (int64_t) nframes * (int64_t) 1000000 / (int64_t) input->m_jackthread_sample_rate;
+	((EventData*) message)->m_sample_rate = input->m_jackthread_sample_rate;
+	((EventData*) message)->m_sample_count = nframes;
+	message += sizeof(EventData);
 	for(unsigned int p = 0; p < input->m_channels; ++p) {
 		SampleCopy(nframes, (float*) jack_port_get_buffer(input->m_jack_ports[p], nframes), 1, (float*) message + p, input->m_channels);
 	}
@@ -274,10 +274,10 @@ void JACKInput::InputThread() {
 				PushAudioHole();
 			}
 			if(type == EVENTTYPE_DATA) {
-				assert(message_size >= sizeof(enum_eventtype) + sizeof(Event_Data));
-				assert(message_size >= sizeof(enum_eventtype) + sizeof(Event_Data) + ((Event_Data*) message)->m_sample_count * m_channels * sizeof(float));
-				PushAudioSamples(m_channels, ((Event_Data*) message)->m_sample_rate, AV_SAMPLE_FMT_FLT, ((Event_Data*) message)->m_sample_count,
-								 (uint8_t*) (message + sizeof(Event_Data)), ((Event_Data*) message)->m_timestamp);
+				assert(message_size >= sizeof(enum_eventtype) + sizeof(EventData));
+				assert(message_size >= sizeof(enum_eventtype) + sizeof(EventData) + ((EventData*) message)->m_sample_count * m_channels * sizeof(float));
+				PushAudioSamples(m_channels, ((EventData*) message)->m_sample_rate, AV_SAMPLE_FMT_FLT, ((EventData*) message)->m_sample_count,
+								 (uint8_t*) (message + sizeof(EventData)), ((EventData*) message)->m_timestamp);
 			}
 
 			// go to next message
