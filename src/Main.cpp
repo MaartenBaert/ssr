@@ -57,9 +57,8 @@ int main(int argc, char* argv[]) {
 
 	QApplication application(argc, argv);
 
-	// disable automatic scaling on high-dpi screens
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-	application.setAttribute(Qt::AA_DisableHighDpiScaling, true);
+	application.setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
 
 	// SSR uses two separate character encodings:

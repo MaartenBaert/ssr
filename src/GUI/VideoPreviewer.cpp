@@ -153,7 +153,8 @@ void VideoPreviewer::hideEvent(QHideEvent *event) {
 void VideoPreviewer::resizeEvent(QResizeEvent* event) {
 	Q_UNUSED(event);
 	SharedLock lock(&m_shared_data);
-	lock->m_widget_size = QSize(width() - 2, height() - 2);
+	qreal ratio = devicePixelRatioF();
+	lock->m_widget_size = QSize(lrint((qreal) (width() - 2) * ratio), lrint((qreal) (height() - 2) * ratio));
 }
 
 void VideoPreviewer::paintEvent(QPaintEvent* event) {
@@ -176,19 +177,24 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 
 		// create image (data is not copied)
 		QImage img(image_buffer->GetData(), image_size.width(), image_size.height(), image_stride, QImage::Format_RGB32);
+		img.setDevicePixelRatio(devicePixelRatioF());
 
 		// draw the image
 		// Scaling is only used if the widget was resized after the image was captured, which is unlikely
 		// except when the video is paused. That's good because the quality after Qt's scaling is horrible.
-		QSize out_size = CalculateScaledSize(source_size, QSize(width() - 2, height() - 2));
-		QPoint out_pos((width() - out_size.width()) / 2, (height() - out_size.height()) / 2);
-		QRect out_rect(out_pos, out_size);
-		painter.drawImage(out_rect, img);
+		qreal ratio = devicePixelRatioF();
+		QSize widget_size = QSize(lrint((qreal) (width() - 2) * ratio), lrint((qreal) (height() - 2) * ratio));
+		QSize out_size = CalculateScaledSize(source_size, widget_size);
+		QPoint draw_pos(1 + lrint((qreal) (widget_size.width() - out_size.width()) / (2.0 * ratio) - 0.4999),
+						1 + lrint((qreal) (widget_size.height() - out_size.height()) / (2.0 * ratio) - 0.4999));
+		QSize draw_size(lrint((qreal) out_size.width() / ratio - 0.4999), lrint((qreal) out_size.height() / ratio - 0.4999));
+		QRect draw_rect(draw_pos, draw_size);
+		painter.drawImage(draw_rect, img);
 
 		// draw the border
 		painter.setPen(Qt::black);
 		painter.setBrush(Qt::NoBrush);
-		painter.drawRect(out_rect.adjusted(-1, -1, 0, 0));
+		painter.drawRect(QRectF(draw_rect).adjusted(-0.5, -0.5, 0.5, 0.5));
 
 	}
 
