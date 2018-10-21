@@ -215,6 +215,7 @@ protected:
 private:
 	void StartGrabbing();
 	void StopGrabbing();
+	void UpdateRubberBand();
 	void SetVideoAreaFromRubberBand();
 
 	void LoadScreenConfigurations();
@@ -233,6 +234,9 @@ public slots:
 
 private slots:
 	void OnFocusChange(QWidget* old, QWidget* now);
+#if QT_VERSION_MAJOR >= 5
+	void OnScreenAdded(QScreen* screen);
+#endif
 	void OnUpdateScreenConfiguration();
 #if SSR_USE_ALSA
 	void OnUpdateALSASources();

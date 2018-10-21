@@ -49,16 +49,63 @@ ENUMSTRINGS(PageInput::enum_audio_backend) = {
 #endif
 };
 
+static std::vector<QRect> GetScreenGeometries() {
+	std::vector<QRect> screen_geometries;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	for(QScreen *screen :  QApplication::screens()) {
+		QRect geometry = screen->geometry();
+		qreal ratio = screen->devicePixelRatio();
+		screen_geometries.emplace_back(geometry.x(), geometry.y(), lrint((qreal) geometry.width() * ratio), lrint((qreal) geometry.height() * ratio));
+	}
+#else
+	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
+		screen_geometries.push_back(QApplication::desktop()->screenGeometry(i));
+	}
+#endif
+	return screen_geometries;
+}
+
+static QRect CombineScreenGeometries(const std::vector<QRect>& screen_geometries) {
+	QRect combined_geometry;
+	for(const QRect &geometry : screen_geometries) {
+		combined_geometry |= geometry;
+	}
+	return combined_geometry;
+}
+
+static QPoint GetMousePhysicalCoordinates() {
+	Window root, child;
+	int root_x, root_y;
+	int win_x, win_y;
+	unsigned int mask_return;
+	XQueryPointer(QX11Info::display(), QX11Info::appRootWindow(), &root, &child, &root_x, &root_y, &win_x, &win_y, &mask_return);
+	return QPoint(root_x, root_y);
+}
+
+static QRect MapToLogicalCoordinates(const QRect& rect) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	for(QScreen *screen :  QApplication::screens()) {
+		QRect geometry = screen->geometry();
+		qreal ratio = screen->devicePixelRatio();
+		QRect physical_geometry(geometry.x(), geometry.y(), lrint((qreal) geometry.width() * ratio), lrint((qreal) geometry.height() * ratio));
+		if(physical_geometry.contains(rect.center())) {
+			return QRect(
+						geometry.x() + lrint((qreal) (rect.x() - physical_geometry.x()) / ratio - 0.4999),
+						geometry.y() + lrint((qreal) (rect.y() - physical_geometry.y()) / ratio - 0.4999),
+						lrint((qreal) rect.width() / ratio - 0.4999),
+						lrint((qreal) rect.height() / ratio - 0.4999));
+		}
+	}
+#endif
+	return rect;
+};
+
 // This does some sanity checking on the rubber band rectangle before creating it.
 // Rubber bands with width or height zero or extremely large appear to cause problems.
 static QRect ValidateRubberBandRectangle(QRect rect) {
-	QRect screenrect = QApplication::desktop()->screenGeometry(0);
-	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
-		screenrect |= QApplication::desktop()->screenGeometry(i);
-	}
-	rect = rect.normalized();
-	rect &= screenrect.adjusted(-10, -10, 10, 10);
-	return (rect.isNull())? QRect(-10, -10, 1, 1) : rect;
+	std::vector<QRect> screen_geometries = GetScreenGeometries();
+	QRect combined_geometry = CombineScreenGeometries(screen_geometries);
+	return rect.normalized() & combined_geometry.adjusted(-10, -10, 10, 10);
 }
 
 QComboBoxWithSignal::QComboBoxWithSignal(QWidget* parent)
@@ -129,7 +176,7 @@ void ScreenLabelWindow::paintEvent(QPaintEvent* event) {
 	QPainter painter(this);
 	painter.setPen(QColor(0, 0, 0));
 	painter.setBrush(QColor(255, 192, 128));
-	painter.drawRect(0, 0, width() - 1, height() - 1);
+	painter.drawRect(QRectF(0.5, 0.5, (qreal) width() - 1.0, (qreal) height() - 1.0));
 	painter.setFont(m_font);
 	painter.drawText(0, 0, width(), height(), Qt::AlignHCenter | Qt::AlignVCenter | Qt::TextSingleLine, m_text);
 }
@@ -160,16 +207,20 @@ void RecordingFrameWindow::UpdateMask() {
 }
 
 void RecordingFrameWindow::resizeEvent(QResizeEvent *event) {
+	Q_UNUSED(event);
 	UpdateMask();
 }
 
 void RecordingFrameWindow::paintEvent(QPaintEvent* event) {
 	Q_UNUSED(event);
 	QPainter painter(this);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	m_texture.setDevicePixelRatio(devicePixelRatioF());
+#endif
 	painter.setPen(QColor(0, 0, 0, 128));
 	painter.setBrush(Qt::NoBrush);
-	painter.fillRect(0, 0, width(), height(), QBrush(m_texture));
-	painter.drawRect(0, 0, width() - 1, height() - 1);
+	painter.drawTiledPixmap(0, 0, width(), height(), m_texture);
+	painter.drawRect(QRectF(0.5, 0.5, (qreal) width() - 1.0, (qreal) height() - 1.0));
 }
 
 PageInput::PageInput(MainWindow* main_window)
@@ -437,8 +488,13 @@ PageInput::PageInput(MainWindow* main_window)
 	layout->addSpacing(style()->pixelMetric(QStyle::PM_LayoutBottomMargin));
 
 	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(OnFocusChange(QWidget*, QWidget*)));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	connect(qApp, SIGNAL(screenAdded(QScreen*)), this, SLOT(OnScreenAdded(QScreen*)));
+	connect(qApp, SIGNAL(screenRemoved(QScreen*)), this, SLOT(OnUpdateScreenConfiguration()));
+#else
 	connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(OnUpdateScreenConfiguration()));
 	connect(QApplication::desktop(), SIGNAL(resized(int)), this, SLOT(OnUpdateScreenConfiguration()));
+#endif
 
 	LoadScreenConfigurations();
 #if SSR_USE_ALSA
@@ -664,6 +720,7 @@ static Window X11FindRealWindow(Display* display, Window window) {
 void PageInput::mousePressEvent(QMouseEvent* event) {
 	if(m_grabbing) {
 		if(event->button() == Qt::LeftButton) {
+			QPoint mouse_physical = GetMousePhysicalCoordinates();
 			if(m_selecting_window) {
 				// As expected, Qt does not provide any functions to find the window at a specific position, so I have to use Xlib directly.
 				// I'm not completely sure whether this is the best way to do this, but it appears to work. XQueryPointer returns the window
@@ -673,7 +730,7 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 				// since X will simply return a handle the rubber band itself (even though it should be transparent to mouse events).
 				Window selected_window;
 				int x, y;
-				if(XTranslateCoordinates(QX11Info::display(), QX11Info::appRootWindow(), QX11Info::appRootWindow(), event->globalX(), event->globalY(), &x, &y, &selected_window)) {
+				if(XTranslateCoordinates(QX11Info::display(), QX11Info::appRootWindow(), QX11Info::appRootWindow(), mouse_physical.x(), mouse_physical.y(), &x, &y, &selected_window)) {
 					XWindowAttributes attributes;
 					if(selected_window != None && XGetWindowAttributes(QX11Info::display(), selected_window, &attributes)) {
 
@@ -714,18 +771,14 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 						}
 
 						// pick the inner rectangle if the users clicks inside the window, or the outer rectangle otherwise
-						m_rubber_band_rect = (m_select_window_inner_rect.contains(event->globalPos()))? m_select_window_inner_rect : m_select_window_outer_rect;
-						m_rubber_band.reset(new RecordingFrameWindow(this));
-						m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
-						m_rubber_band->show();
+						m_rubber_band_rect = (m_select_window_inner_rect.contains(mouse_physical))? m_select_window_inner_rect : m_select_window_outer_rect;
+						UpdateRubberBand();
 
 					}
 				}
 			} else {
-				m_rubber_band_rect = QRect(event->globalPos(), QSize(0, 0));
-				m_rubber_band.reset(new RecordingFrameWindow(this));
-				m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
-				m_rubber_band->show();
+				m_rubber_band_rect = QRect(mouse_physical, mouse_physical);
+				UpdateRubberBand();
 			}
 		} else {
 			StopGrabbing();
@@ -753,13 +806,14 @@ void PageInput::mouseReleaseEvent(QMouseEvent* event) {
 void PageInput::mouseMoveEvent(QMouseEvent* event) {
 	if(m_grabbing) {
 		if(m_rubber_band != NULL) {
+			QPoint mouse_physical = GetMousePhysicalCoordinates();
 			if(m_selecting_window) {
-				// pick the inner rectangle if the users clicks inside the window, or the outer rectangle otherwise
-				m_rubber_band_rect = (m_select_window_inner_rect.contains(event->globalPos()))? m_select_window_inner_rect : m_select_window_outer_rect;
+				// pick the inner rectangle if the user clicks inside the window, or the outer rectangle otherwise
+				m_rubber_band_rect = (m_select_window_inner_rect.contains(mouse_physical))? m_select_window_inner_rect : m_select_window_outer_rect;
 			} else {
-				m_rubber_band_rect.setBottomRight(event->globalPos());
+				m_rubber_band_rect.setBottomRight(mouse_physical);
 			}
-			m_rubber_band->setGeometry(ValidateRubberBandRectangle(m_rubber_band_rect));
+			UpdateRubberBand();
 		}
 		event->accept();
 		return;
@@ -809,6 +863,18 @@ void PageInput::StopGrabbing() {
 	m_grabbing = false;
 }
 
+void PageInput::UpdateRubberBand() {
+	if(m_rubber_band == NULL)
+		m_rubber_band.reset(new RecordingFrameWindow(this));
+	QRect rect = MapToLogicalCoordinates(ValidateRubberBandRectangle(m_rubber_band_rect));
+	if(rect.isNull()) {
+		m_rubber_band->hide();
+	} else {
+		m_rubber_band->setGeometry(rect);
+		m_rubber_band->show();
+	}
+}
+
 void PageInput::SetVideoAreaFromRubberBand() {
 	QRect r = m_rubber_band_rect.normalized();
 	if(GetVideoArea() == VIDEO_AREA_CURSOR) {
@@ -823,17 +889,15 @@ void PageInput::SetVideoAreaFromRubberBand() {
 }
 
 void PageInput::LoadScreenConfigurations() {
-	QRect rect = QApplication::desktop()->screenGeometry(0);
-	for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
-		rect |= QApplication::desktop()->screenGeometry(i);
-	}
+	std::vector<QRect> screen_geometries = GetScreenGeometries();
+	QRect combined_geometry = CombineScreenGeometries(screen_geometries);
 	m_combobox_screens->clear();
 	m_combobox_screens->addItem(tr("All screens: %1x%2", "This appears in the screen selection combobox")
-								.arg(rect.width()).arg(rect.height()));
-	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
-		rect = QApplication::desktop()->screenGeometry(i);
+								.arg(combined_geometry.width()).arg(combined_geometry.height()));
+	for(size_t i = 0; i < screen_geometries.size(); ++i) {
+		QRect &geometry = screen_geometries[i];
 		m_combobox_screens->addItem(tr("Screen %1: %2x%3 at %4,%5", "This appears in the screen selection combobox")
-									.arg(i + 1).arg(rect.width()).arg(rect.height()).arg(rect.left()).arg(rect.top()));
+									.arg(i + 1).arg(geometry.width()).arg(geometry.height()).arg(geometry.x()).arg(geometry.y()));
 	}
 	// update the video x/y/w/h in case the position or size of the selected screen changed
 	OnUpdateVideoAreaFields();
@@ -873,12 +937,14 @@ void PageInput::LoadPulseAudioSources() {
 
 void PageInput::OnUpdateRecordingFrame() {
 	if(m_spinbox_video_x->hasFocus() || m_spinbox_video_y->hasFocus() || m_spinbox_video_w->hasFocus() || m_spinbox_video_h->hasFocus()) {
-		if(m_recording_frame == NULL) {
+		if(m_recording_frame == NULL)
 			m_recording_frame.reset(new RecordingFrameWindow(this));
-			m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
-			m_recording_frame->show();
+		QRect rect = MapToLogicalCoordinates(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
+		if(rect.isNull()) {
+			m_recording_frame->hide();
 		} else {
-			m_recording_frame->setGeometry(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
+			m_recording_frame->setGeometry(rect);
+			m_recording_frame->show();
 		}
 	} else {
 		m_recording_frame.reset();
@@ -897,14 +963,12 @@ void PageInput::OnUpdateVideoAreaFields() {
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, false);
 			int sc = m_combobox_screens->currentIndex();
+			std::vector<QRect> screen_geometries = GetScreenGeometries();
 			QRect rect;
-			if(sc == 0) {
-				rect = QApplication::desktop()->screenGeometry(0);
-				for(int i = 1; i < QApplication::desktop()->screenCount(); ++i) {
-					rect |= QApplication::desktop()->screenGeometry(i);
-				}
+			if(sc > 0 && sc <= (int) screen_geometries.size()) {
+				rect = screen_geometries[sc];
 			} else {
-				rect = QApplication::desktop()->screenGeometry(sc - 1);
+				rect = CombineScreenGeometries(screen_geometries);
 			}
 			SetVideoX(rect.left());
 			SetVideoY(rect.top());
@@ -992,6 +1056,14 @@ void PageInput::OnFocusChange(QWidget* old, QWidget* now) {
 	}
 }
 
+#if QT_VERSION_MAJOR >= 5
+void PageInput::OnScreenAdded(QScreen* screen) {
+	connect(screen, SIGNAL(geometryChanged()), this, SLOT(OnUpdateScreenConfiguration()));
+	connect(screen, SIGNAL(physicalDotsPerInchChanged()), this, SLOT(OnUpdateScreenConfiguration()));
+	OnUpdateScreenConfiguration();
+}
+#endif
+
 void PageInput::OnUpdateScreenConfiguration() {
 	unsigned int selected_screen = GetVideoAreaScreen();
 	LoadScreenConfigurations();
@@ -1016,10 +1088,11 @@ void PageInput::OnUpdatePulseAudioSources() {
 
 void PageInput::OnIdentifyScreens() {
 	OnStopIdentifyScreens();
-	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
-		QRect rect = QApplication::desktop()->screenGeometry(i);
+	std::vector<QRect> screen_geometries = GetScreenGeometries();
+	for(size_t i = 0; i < screen_geometries.size(); ++i) {
+		QRect &rect = screen_geometries[i];
 		ScreenLabelWindow *label = new ScreenLabelWindow(this, tr("Screen %1", "This appears in the screen labels").arg(i + 1));
-		label->move(rect.left(), rect.top());
+		label->move(rect.x(), rect.y());
 		label->show();
 		m_screen_labels.push_back(label);
 	}
