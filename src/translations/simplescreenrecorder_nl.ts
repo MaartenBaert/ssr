@@ -291,7 +291,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <location filename="../AV/Input/ALSAInput.cpp" line="67"/>
         <location filename="../AV/Input/GLInjectInput.cpp" line="64"/>
         <location filename="../AV/Input/JACKInput.cpp" line="55"/>
-        <location filename="../AV/Input/X11Input.cpp" line="206"/>
+        <location filename="../AV/Input/X11Input.cpp" line="218"/>
         <source>Stopping input thread ...</source>
         <translation>Stop input thread ...</translation>
     </message>
@@ -434,7 +434,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <location filename="../AV/Input/GLInjectInput.cpp" line="181"/>
         <location filename="../AV/Input/JACKInput.cpp" line="237"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="335"/>
-        <location filename="../AV/Input/X11Input.cpp" line="344"/>
+        <location filename="../AV/Input/X11Input.cpp" line="428"/>
         <source>Input thread started.</source>
         <translation>Input thread gestart.</translation>
     </message>
@@ -452,7 +452,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <location filename="../AV/Input/GLInjectInput.cpp" line="249"/>
         <location filename="../AV/Input/JACKInput.cpp" line="288"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="428"/>
-        <location filename="../AV/Input/X11Input.cpp" line="443"/>
+        <location filename="../AV/Input/X11Input.cpp" line="543"/>
         <source>Input thread stopped.</source>
         <translation>Input thread gestopt.</translation>
     </message>
@@ -461,7 +461,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <location filename="../AV/Input/GLInjectInput.cpp" line="253"/>
         <location filename="../AV/Input/JACKInput.cpp" line="292"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="432"/>
-        <location filename="../AV/Input/X11Input.cpp" line="447"/>
+        <location filename="../AV/Input/X11Input.cpp" line="547"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
         <translation>Exceptie &apos;%1&apos; in input thread.</translation>
     </message>
@@ -470,7 +470,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <location filename="../AV/Input/GLInjectInput.cpp" line="256"/>
         <location filename="../AV/Input/JACKInput.cpp" line="295"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="435"/>
-        <location filename="../AV/Input/X11Input.cpp" line="450"/>
+        <location filename="../AV/Input/X11Input.cpp" line="550"/>
         <source>Unknown exception in input thread.</source>
         <translation>Onbekende exceptie in input thread.</translation>
     </message>
@@ -487,12 +487,12 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <translation type="obsolete">Fout: De afbeelding past niet in het geheugen!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="252"/>
+        <location filename="../AV/Input/X11Input.cpp" line="314"/>
         <source>Error: Can&apos;t get shared memory!</source>
         <translation>Fout: Kan geen gedeeld geheugen krijgen!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="257"/>
+        <location filename="../AV/Input/X11Input.cpp" line="319"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
         <translation>Fout: Kan niet vastmaken aan gedeeld geheugen!</translation>
     </message>
@@ -667,46 +667,46 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt.</translation>
         <translation>Waarschuwing: Stream werd verplaatst naar een andere bron.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="73"/>
+        <location filename="../AV/Input/X11Input.cpp" line="74"/>
         <source>Error: Unsupported X11 image pixel format!</source>
         <translation>Fout: X11-afbeeldingspixelformaat wordt niet ondersteund!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="185"/>
+        <location filename="../AV/Input/X11Input.cpp" line="197"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="96"/>
         <source>Error: Width or height is zero!</source>
         <translation>Fout: Breedte of hoogte is nul!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="189"/>
+        <location filename="../AV/Input/X11Input.cpp" line="201"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="100"/>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
         <translation>Fout: Breedte of hoogte is te groot, de maximum breedte en hoogte is %1!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="235"/>
+        <location filename="../AV/Input/X11Input.cpp" line="253"/>
         <location filename="../GUI/HotkeyListener.cpp" line="118"/>
         <source>Error: Can&apos;t open X display!</source>
         <comment>Don&apos;t translate &apos;display&apos;</comment>
         <translation>Fout: Kan X display niet openen!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="244"/>
+        <location filename="../AV/Input/X11Input.cpp" line="262"/>
         <source>Using X11 shared memory.</source>
         <translation>Gebruik X11 gedeeld geheugen.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="247"/>
+        <location filename="../AV/Input/X11Input.cpp" line="309"/>
         <source>Error: Can&apos;t create shared image!</source>
         <translation>Fout: Kan geen gedeelde afbeelding maken!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="263"/>
+        <location filename="../AV/Input/X11Input.cpp" line="264"/>
         <source>Not using X11 shared memory.</source>
         <translation>Gebruik geen X11 gedeeld geheugen.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="270"/>
+        <location filename="../AV/Input/X11Input.cpp" line="271"/>
         <source>Warning: XFixes is not supported by X server, the cursor has been hidden.</source>
         <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
         <translation>Waarschuwing: XFixes wordt niet ondersteund door de X server, de cursor is verborgen.</translation>
@@ -717,24 +717,35 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt.</translation>
         <translation type="obsolete">Waarschuwing: XFixes wordt niet ondersteund door de server, de cursor is verborgen.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="328"/>
+        <location filename="../AV/Input/X11Input.cpp" line="392"/>
         <source>Error: Invalid screen bounding box!</source>
         <translation>Fout: Ongeldige schermrechthoek!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="392"/>
+        <location filename="../AV/Input/X11Input.cpp" line="324"/>
         <source>Error: Can&apos;t attach server to shared memory!</source>
         <translation>Fout: Kan server niet vastmaken aan gedeeld geheugen!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="398"/>
+        <location filename="../AV/Input/X11Input.cpp" line="367"/>
+        <source>Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.</source>
+        <comment>Don&apos;t translate &apos;Xinerama&apos;</comment>
+        <translation>Waarschuwing: Xinerama wordt niet ondersteund door de X server, multi-monitor ondersteuning werkt mogelijk niet correct.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="373"/>
+        <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
+        <translation>Waarschuwing: Geen monitors gedetecteerd, multi-monitor ondersteuning werkt mogelijk niet correct.</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="494"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation>Fout: Kan geen afbeelding krijgen (met gedeeld geheugen)!
     Meestal betekent dit dat het opgenomen gebied niet volledig binnen het scherm is. Of heb je de schermresolutie veranderd?</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="409"/>
+        <location filename="../AV/Input/X11Input.cpp" line="505"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation>Fout: Kan geen afbeelding krijgen (zonder gedeeld geheugen)!
@@ -1119,32 +1130,32 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt.</translation>
         <translation>CPU-eigenschappen</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="120"/>
+        <location filename="../Main.cpp" line="124"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation>Fout: Command-line optie &apos;%1&apos; neemt geen waarde aan!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="154"/>
+        <location filename="../Main.cpp" line="158"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation>Fout: Onbekende command-line optie &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="164"/>
+        <location filename="../Main.cpp" line="168"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation>Fout: Onbekend command-line argument &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="204"/>
+        <location filename="../Main.cpp" line="208"/>
         <source>SSR started</source>
         <translation>SSR gestart</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="235"/>
+        <location filename="../Main.cpp" line="239"/>
         <source>SSR stopped</source>
         <translation>SSR gestopt</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="252"/>
+        <location filename="../Main.cpp" line="256"/>
         <source>Error: Can&apos;t create .ssr directory!</source>
         <translation>Fout: Kan geen .ssr map maken!</translation>
     </message>
@@ -1388,22 +1399,22 @@ Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translat
 <context>
     <name>PageInput</name>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="189"/>
+        <location filename="../GUI/PageInput.cpp" line="240"/>
         <source>Video input</source>
         <translation>Video input</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="192"/>
+        <location filename="../GUI/PageInput.cpp" line="243"/>
         <source>Record the entire screen</source>
         <translation>Neem het hele scherm op</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="193"/>
+        <location filename="../GUI/PageInput.cpp" line="244"/>
         <source>Record a fixed rectangle</source>
         <translation>Neem een vaste rechthoek op</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="194"/>
+        <location filename="../GUI/PageInput.cpp" line="245"/>
         <source>Follow the cursor</source>
         <translation>Volg de cursor</translation>
     </message>
@@ -1412,37 +1423,47 @@ Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translat
         <translation type="obsolete">OpenGL opname (experimenteel)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="187"/>
+        <location filename="../GUI/PageInput.cpp" line="238"/>
         <source>Input profile</source>
         <translation>Inputprofiel</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="196"/>
+        <location filename="../GUI/PageInput.cpp" line="247"/>
         <source>Record OpenGL</source>
         <translation>Neem OpenGL op</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="205"/>
+        <location filename="../GUI/PageInput.cpp" line="256"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
         <translation>Selecteer welke monitor opgenomen moet worden in een multi-monitor configuratie.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="206"/>
+        <location filename="../GUI/PageInput.cpp" line="257"/>
+        <source>Record entire screen with cursor</source>
+        <translation>Neem het hele scherm met cursor op</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageInput.cpp" line="258"/>
+        <source>Record the entire screen on which the cursor is located, rather than following the cursor position.</source>
+        <translation>Neem het hele scherm waarop de cursor zich bevindt op, in plaats van de cursorpositie te volgen.</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageInput.cpp" line="259"/>
         <source>Select rectangle...</source>
         <translation>Selecteer rechthoek...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="207"/>
+        <location filename="../GUI/PageInput.cpp" line="260"/>
         <source>Use the mouse to select the recorded rectangle.</source>
         <translation>Gebruik de muis om de opgenomen rechthoek te selecteren.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="208"/>
+        <location filename="../GUI/PageInput.cpp" line="261"/>
         <source>Select window...</source>
         <translation>Selecteer venster...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="209"/>
+        <location filename="../GUI/PageInput.cpp" line="262"/>
         <source>Use the mouse to select a window to record.
 Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only
 the client area of the window will be recorded.</source>
@@ -1451,115 +1472,115 @@ Hint: Als je op de rand van het venster klikt, zal het hele venster worden opgen
 enkel het client-gedeelte (binnenkant) van het venster opgenomen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="213"/>
+        <location filename="../GUI/PageInput.cpp" line="266"/>
         <source>OpenGL settings...</source>
         <translation>OpenGL-instellingen...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="214"/>
+        <location filename="../GUI/PageInput.cpp" line="267"/>
         <source>Change the settings for OpenGL recording.</source>
         <translation>Verander de instellingen voor OpenGL opnames.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="216"/>
+        <location filename="../GUI/PageInput.cpp" line="269"/>
         <source>Left:</source>
         <translation>Links:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="220"/>
+        <location filename="../GUI/PageInput.cpp" line="273"/>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>De x-coordinaat van de linkerbovenhoek van de opgenomen rechthoek.
 Hint: Je kan deze waarde ook aanpassen met het scrollwiel of de omhoog/omlaag-pijltjes.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="222"/>
+        <location filename="../GUI/PageInput.cpp" line="275"/>
         <source>Top:</source>
         <translation>Boven:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="226"/>
+        <location filename="../GUI/PageInput.cpp" line="279"/>
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>De y-coordinaat van de linkerbovenhoek van de opgenomen rechthoek.
 Hint: Je kan deze waarde ook aanpassen met het scrollwiel of de omhoog/omlaag-pijltjes.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="228"/>
+        <location filename="../GUI/PageInput.cpp" line="281"/>
         <source>Width:</source>
         <translation>Breedte:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="232"/>
+        <location filename="../GUI/PageInput.cpp" line="285"/>
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>De breedte van de opgenomen rechthoek.
 Hint: Je kan deze waarde ook aanpassen met het scrollwiel of de omhoog/omlaag-pijltjes.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="234"/>
+        <location filename="../GUI/PageInput.cpp" line="287"/>
         <source>Height:</source>
         <translation>Hoogte:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="238"/>
+        <location filename="../GUI/PageInput.cpp" line="291"/>
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>De hoogte van de opgenomen rechthoek.
 Hint: Je kan deze waarde ook aanpassen met het scrollwiel of de omhoog/omlaag-pijltjes.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="240"/>
+        <location filename="../GUI/PageInput.cpp" line="293"/>
         <source>Frame rate:</source>
         <translation>Beelden per seconde:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="244"/>
+        <location filename="../GUI/PageInput.cpp" line="297"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
         <translation>Het aantal beelden per seconde in de uiteindelijke video. Hogere frame rates gebruiken meer CPU-tijd.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="245"/>
+        <location filename="../GUI/PageInput.cpp" line="298"/>
         <source>Scale video</source>
         <translation>Schaal video</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="246"/>
+        <location filename="../GUI/PageInput.cpp" line="299"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
         <translation>Schakel schalen in of uit. Schalen gebruikt meer CPU-tijd, maar als de geschaalde video kleiner is, zou dit het encoderen sneller kunnen maken.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="247"/>
+        <location filename="../GUI/PageInput.cpp" line="300"/>
         <source>Scaled width:</source>
         <translation>Geschaalde breedte:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="251"/>
+        <location filename="../GUI/PageInput.cpp" line="304"/>
         <source>Scaled height:</source>
         <translation>Geschaalde hoogte:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="255"/>
+        <location filename="../GUI/PageInput.cpp" line="308"/>
         <source>Record cursor</source>
         <translation>Neem de cursor op</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="331"/>
+        <location filename="../GUI/PageInput.cpp" line="390"/>
         <source>Audio input</source>
         <translation>Audio input</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="333"/>
+        <location filename="../GUI/PageInput.cpp" line="392"/>
         <source>Record audio</source>
         <translation>Neem audio op</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="334"/>
+        <location filename="../GUI/PageInput.cpp" line="393"/>
         <source>Backend:</source>
         <translation>Backend:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="349"/>
+        <location filename="../GUI/PageInput.cpp" line="408"/>
         <source>The audio backend that will be used for recording.</source>
         <translation>De audio-backend die gebruikt zal worden voor opname.</translation>
     </message>
@@ -1571,7 +1592,7 @@ You can change this to something like plughw:0,0 (which means sound card 0 input
 Je kan dit veranderen naar iets zoals plughw:0,0 (dit betekent geluidskaard 0 input 0 met plugins ingeschakeld).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="364"/>
+        <location filename="../GUI/PageInput.cpp" line="423"/>
         <source>The PulseAudio source that will be used for recording.
 A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
         <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
@@ -1579,29 +1600,29 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
 Een &apos;monitor&apos; is een bron die de audio opneemt die wordt afgespeeld door andere applicaties.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="371"/>
+        <location filename="../GUI/PageInput.cpp" line="430"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
         <translation>Indien aangevinkt zullen de poorten automatisch verbonden worden met de systeemopnamepoorten.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="373"/>
+        <location filename="../GUI/PageInput.cpp" line="432"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
         <translation>Indien aangevinkt zullen de poorten automatisch verbonden worden met alles dat verbinding maakt met de systeemafspeelpoorten.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="831"/>
+        <location filename="../GUI/PageInput.cpp" line="905"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Alle schermen: %1x%2</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="835"/>
+        <location filename="../GUI/PageInput.cpp" line="909"/>
         <source>Screen %1: %2x%3 at %4,%5</source>
         <comment>This appears in the screen selection combobox</comment>
         <translation>Scherm %1: %2x%3 op %4,%5</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="1021"/>
+        <location filename="../GUI/PageInput.cpp" line="1121"/>
         <source>Screen %1</source>
         <comment>This appears in the screen labels</comment>
         <translation>Scherm %1</translation>
@@ -1613,7 +1634,7 @@ Click the &apos;OpenGL settings&apos; button and enter a command.</source>
 Klik op de &apos;OpenGL instellingen&apos; knop en geef een commando in.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="346"/>
+        <location filename="../GUI/PageInput.cpp" line="405"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
         <translation>De audio-backend die gebruikt zal worden om op te nemen.
@@ -1624,51 +1645,51 @@ De ALSA-backend zal ook werken op systemen die PulseAudio gebruiken, maar het is
         <translation type="obsolete">Apparaat:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="352"/>
-        <location filename="../GUI/PageInput.cpp" line="361"/>
+        <location filename="../GUI/PageInput.cpp" line="411"/>
+        <location filename="../GUI/PageInput.cpp" line="420"/>
         <source>Source:</source>
         <translation>Bron:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="355"/>
+        <location filename="../GUI/PageInput.cpp" line="414"/>
         <source>The ALSA source that will be used for recording.
 The default is usually fine. The &apos;shared&apos; sources allow multiple programs to record at the same time, but they may be less reliable.</source>
         <translation>De ALSA-bron die gebruikt wordt voor opname.
 De standaardkeuze is meestal goed. De &apos;shared&apos; bronnen kunnen door meerdere programma&apos;s tegelijk worden opgenomen, maar zijn mogelijk minder betrouwbaar.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="357"/>
-        <location filename="../GUI/PageInput.cpp" line="366"/>
+        <location filename="../GUI/PageInput.cpp" line="416"/>
+        <location filename="../GUI/PageInput.cpp" line="425"/>
         <source>Refresh</source>
         <translation>Vernieuwen</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="358"/>
+        <location filename="../GUI/PageInput.cpp" line="417"/>
         <source>Refreshes the list of ALSA sources.</source>
         <translation>Vernieuwt de lijst met ALSA-bronnen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="367"/>
+        <location filename="../GUI/PageInput.cpp" line="426"/>
         <source>Refreshes the list of PulseAudio sources.</source>
         <translation>Vernieuwt de lijst met PulseAudio-bronnen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="370"/>
+        <location filename="../GUI/PageInput.cpp" line="429"/>
         <source>Record system microphone</source>
         <translation>Neem systeemmicrofoon op</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="372"/>
+        <location filename="../GUI/PageInput.cpp" line="431"/>
         <source>Record system speakers</source>
         <translation>Neem systeemluidsprekers op</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="420"/>
+        <location filename="../GUI/PageInput.cpp" line="479"/>
         <source>Back</source>
         <translation>Terug</translation>
     </message>
     <message>
-        <location filename="../GUI/PageInput.cpp" line="421"/>
+        <location filename="../GUI/PageInput.cpp" line="480"/>
         <source>Continue</source>
         <translation>Verder</translation>
     </message>
@@ -1693,47 +1714,47 @@ De standaardkeuze is meestal goed. De &apos;shared&apos; bronnen kunnen door mee
         <translation type="obsolete">bestanden</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="162"/>
+        <location filename="../GUI/PageOutput.cpp" line="174"/>
         <source>Error: Could not find any suitable container in libavformat!</source>
         <translation>Fout: Kon geen enkele geschikte container vinden in libavformat!</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="166"/>
+        <location filename="../GUI/PageOutput.cpp" line="178"/>
         <source>Error: Could not find any suitable video codec in libavcodec!</source>
         <translation>Fout: Kon geen enkele geschikte videocodec vinden in libavcodec!</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="170"/>
+        <location filename="../GUI/PageOutput.cpp" line="182"/>
         <source>Error: Could not find any suitable audio codec in libavcodec!</source>
         <translation>Fout: Kon geen enkele geschikte audiocodec vinden in libavcodec!</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="178"/>
+        <location filename="../GUI/PageOutput.cpp" line="190"/>
         <source>Output profile</source>
         <translation>Outputprofiel</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="180"/>
+        <location filename="../GUI/PageOutput.cpp" line="192"/>
         <source>File</source>
         <translation>Bestand</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="182"/>
+        <location filename="../GUI/PageOutput.cpp" line="194"/>
         <source>Save as:</source>
         <translation>Opslaan als:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="184"/>
+        <location filename="../GUI/PageOutput.cpp" line="196"/>
         <source>The recording will be saved to this location.</source>
         <translation>De opname wordt opgeslagen op deze locatie.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="185"/>
+        <location filename="../GUI/PageOutput.cpp" line="197"/>
         <source>Browse...</source>
         <translation>Bladeren...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="186"/>
+        <location filename="../GUI/PageOutput.cpp" line="198"/>
         <source>Separate file per segment</source>
         <translation>Apart bestand per segment</translation>
     </message>
@@ -1746,17 +1767,17 @@ Als de originele bestandsnaam &apos;test.mkv&apos; is, zullen de segmenten worde
 Bestandsnamen die al bestaan zullen worden overgeslagen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="192"/>
+        <location filename="../GUI/PageOutput.cpp" line="204"/>
         <source>Container:</source>
         <translation>Container:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="197"/>
+        <location filename="../GUI/PageOutput.cpp" line="209"/>
         <source>(not installed)</source>
         <translation>(niet geinstalleerd)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="200"/>
+        <location filename="../GUI/PageOutput.cpp" line="212"/>
         <source>The container (file format) that will be used to save the recording.
 Note that not all codecs are supported by all containers, and that not all media players can read all file formats.
 - Matroska (MKV) supports all the codecs, but is less well-known.
@@ -1777,28 +1798,28 @@ Merk op dat niet alle codecs ondersteund worden door alle containers, en dat nie
 - OGG ondersteunt enkel Theora en Vorbis.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="209"/>
+        <location filename="../GUI/PageOutput.cpp" line="221"/>
         <source>Container name:</source>
         <translation>Containernaam:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="215"/>
+        <location filename="../GUI/PageOutput.cpp" line="227"/>
         <source>For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.</source>
         <translation>Voor gevorderde gebruikers. Je kan elk libav/ffmpeg-formaat gebruiken, maar veel zijn niet nuttig of werken niet.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="236"/>
+        <location filename="../GUI/PageOutput.cpp" line="248"/>
         <source>Video</source>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="238"/>
-        <location filename="../GUI/PageOutput.cpp" line="318"/>
+        <location filename="../GUI/PageOutput.cpp" line="250"/>
+        <location filename="../GUI/PageOutput.cpp" line="330"/>
         <source>Codec:</source>
         <translation>Codec:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="243"/>
+        <location filename="../GUI/PageOutput.cpp" line="255"/>
         <source>The codec that will be used to compress the video stream.
 - H.264 (libx264) is by far the best codec - high quality and very fast.
 - VP8 (libvpx) is quite good but also quite slow.
@@ -1809,13 +1830,13 @@ Merk op dat niet alle codecs ondersteund worden door alle containers, en dat nie
 - Theora (libtheora) is niet echt aangeraden omdat de kwaliteit niet erg goed is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="247"/>
-        <location filename="../GUI/PageOutput.cpp" line="331"/>
+        <location filename="../GUI/PageOutput.cpp" line="259"/>
+        <location filename="../GUI/PageOutput.cpp" line="343"/>
         <source>Codec name:</source>
         <translation>Codecnaam:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="253"/>
+        <location filename="../GUI/PageOutput.cpp" line="265"/>
         <source>For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.</source>
         <translation>Voor gevorderde gebruikers. Je kan elke libav/ffmpeg-videocodec gebruiken, maar veel zijn niet nuttig of werken niet.</translation>
     </message>
@@ -1824,49 +1845,49 @@ Merk op dat niet alle codecs ondersteund worden door alle containers, en dat nie
         <translation type="obsolete">Bitrate (in kbps):</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="256"/>
+        <location filename="../GUI/PageOutput.cpp" line="268"/>
         <source>The video bit rate (in kilobit per second). A higher value means a higher quality.
 If you have no idea where to start, try 5000 and change it if needed.</source>
         <translation>De video-bitrate (in kilobit per seconde). Een hogere waarde betekent een hogere kwaliteit.
 Als je geen idee hebt waar je moet beginnen, probeer dan 5000 en verander het indien nodig.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="258"/>
+        <location filename="../GUI/PageOutput.cpp" line="270"/>
         <source>Constant rate factor:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
         <translation>Constant rate factor:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="269"/>
+        <location filename="../GUI/PageOutput.cpp" line="281"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
         <translation>Preset:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="276"/>
+        <location filename="../GUI/PageOutput.cpp" line="288"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
         <translation>CPU-gebruik:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="278"/>
+        <location filename="../GUI/PageOutput.cpp" line="290"/>
         <source>fastest</source>
         <translation>snelste</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="283"/>
+        <location filename="../GUI/PageOutput.cpp" line="295"/>
         <source>slowest</source>
         <translation>traagste</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="284"/>
+        <location filename="../GUI/PageOutput.cpp" line="296"/>
         <source>The encoding speed. A higher value uses *less* CPU time. (I didn&apos;t choose the name, this is the name
 used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
         <translation>De encodeersnelheid. Een hogere waarde gebruikt *minder* CPU-tijd. (Ik heb de naam niet gekozen, dit is de naam
 die gebruikt wordt door de VP8-encoder). Hogere waarden resulteren in lagere beeldkwaliteit, tenzij je de bitrate ook verhoogt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="263"/>
+        <location filename="../GUI/PageOutput.cpp" line="275"/>
         <source>This setting changes the video quality. A lower value means a higher quality.
 The allowed range is 0-51 (0 means lossless, the default is 23).</source>
         <translation>Deze instelling verandert de videokwaliteit. Een lagere waarde betekent een hogere kwaliteit.
@@ -1877,7 +1898,7 @@ Het toegestane bereik is 0-51 (0 betekent verliesvrij, de standaardwaarde is 23)
         <location filename="../GUI/PageOutput.cpp" line="86"/>
         <location filename="../GUI/PageOutput.cpp" line="89"/>
         <location filename="../GUI/PageOutput.cpp" line="92"/>
-        <location filename="../GUI/PageOutput.cpp" line="128"/>
+        <location filename="../GUI/PageOutput.cpp" line="134"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
         <translation>%1 bestanden</translation>
@@ -1889,55 +1910,55 @@ If the original file name is &apos;test.mkv&apos;, the segments will be saved as
 Als de originele bestandsnaam &apos;test.mkv&apos; is, zullen de segmenten worden opgeslagen als &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="187"/>
+        <location filename="../GUI/PageOutput.cpp" line="199"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.If unchecked, all recorded segments will be combined into a single video file.</source>
         <translation>Indien aangevinkt zal een apart videobestand aangemaakt worden elke keer wanneer je de opname pauzeert en hervat.
 Indien niet aangevinkt zullen alle opgenomen segmenten gecombineerd worden in één videobestand.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="189"/>
+        <location filename="../GUI/PageOutput.cpp" line="201"/>
         <source>Add timestamp</source>
         <translation>Voeg tijdstempel toe</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="190"/>
+        <location filename="../GUI/PageOutput.cpp" line="202"/>
         <source>If checked, the current date and time will be appended to the file name automatically.
 If the original file name is &apos;test.mkv&apos;, the video will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
         <translation>Indien aangevinkt zal de huidige datum en tijd automatisch toegevoegd worden aan de bestandsnaam.
 Als de originele bestandsnaam &apos;test.mkv&apos; is, zal de video worden opgeslagen als &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="254"/>
-        <location filename="../GUI/PageOutput.cpp" line="338"/>
+        <location filename="../GUI/PageOutput.cpp" line="266"/>
+        <location filename="../GUI/PageOutput.cpp" line="350"/>
         <source>Bit rate (in kbit/s):</source>
         <translation>Bitrate (in kbit/s):</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="274"/>
+        <location filename="../GUI/PageOutput.cpp" line="286"/>
         <source>The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),
 but results in larger files. The quality shouldn&apos;t be affected too much.</source>
         <translation>De encodeersnelheid. Een hogere snelheid gebruikt minder CPU (waardoor meer beelden per seconde opgenomen kunnen worden),
 maar resulteert in grotere bestanden. De kwaliteit verandert normaal gezien niet veel.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="286"/>
-        <location filename="../GUI/PageOutput.cpp" line="341"/>
+        <location filename="../GUI/PageOutput.cpp" line="298"/>
+        <location filename="../GUI/PageOutput.cpp" line="353"/>
         <source>Custom options:</source>
         <translation>Aangepaste opties:</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="288"/>
-        <location filename="../GUI/PageOutput.cpp" line="343"/>
+        <location filename="../GUI/PageOutput.cpp" line="300"/>
+        <location filename="../GUI/PageOutput.cpp" line="355"/>
         <source>Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)</source>
         <translation>Aangepaste opties gescheiden door komma&apos;s (b.v. optie1=waarde1,optie2=waarde2,optie3=waarde3)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="289"/>
+        <location filename="../GUI/PageOutput.cpp" line="301"/>
         <source>Allow frame skipping</source>
         <translation>Frames overslaan toestaan</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="290"/>
+        <location filename="../GUI/PageOutput.cpp" line="302"/>
         <source>If checked, the video encoder will be allowed to skip frames if the input frame rate is
 lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.
 This increases the file size and CPU usage, but reduces the latency for live streams in some cases.
@@ -1948,12 +1969,12 @@ Dit verhoogt de bestandsgrootte en het CPU-gebruik, maar vermindert de vertragin
 Het heeft normaal gezien geen effect op de videobeelden zelf.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="316"/>
+        <location filename="../GUI/PageOutput.cpp" line="328"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="323"/>
+        <location filename="../GUI/PageOutput.cpp" line="335"/>
         <source>The codec that will be used to compress the audio stream. You shouldn&apos;t worry too much about
 this, because the size of the audio data is usually negligible compared to the size of the video data.
 And if you&apos;re only recording your own voice (i.e. no music), the quality won&apos;t matter that much anyway.
@@ -1972,44 +1993,44 @@ En als je enkel je eigen stem opneemt (d.w.z. geen muziek), dan zal de kwaliteit
 - Ongecomprimeerd zal simpelweg de geluidsdata opslaan zonder compressie. Het bestand zal erg groot zijn, maar het is zeer snel.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="337"/>
+        <location filename="../GUI/PageOutput.cpp" line="349"/>
         <source>For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work.</source>
         <translation>Voor gevorderde gebruikers. Je kan elke libav/ffmpeg-audiocodec gebruiken, maar veel zijn niet nuttig of werken niet.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="340"/>
+        <location filename="../GUI/PageOutput.cpp" line="352"/>
         <source>The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.</source>
         <translation>De video-bitrate (in kilobit per seconde). Een hogere waarde betekent een hogere kwaliteit. De typische waarde is 128.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="365"/>
+        <location filename="../GUI/PageOutput.cpp" line="377"/>
         <source>Back</source>
         <translation>Terug</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="366"/>
+        <location filename="../GUI/PageOutput.cpp" line="378"/>
         <source>Continue</source>
         <translation>Verder</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="620"/>
-        <location filename="../GUI/PageOutput.cpp" line="628"/>
+        <location filename="../GUI/PageOutput.cpp" line="632"/>
+        <location filename="../GUI/PageOutput.cpp" line="640"/>
         <source>not installed</source>
         <translation>niet geinstalleerd</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="622"/>
-        <location filename="../GUI/PageOutput.cpp" line="630"/>
+        <location filename="../GUI/PageOutput.cpp" line="634"/>
+        <location filename="../GUI/PageOutput.cpp" line="642"/>
         <source>not supported by container</source>
         <translation>niet ondersteund door container</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="673"/>
+        <location filename="../GUI/PageOutput.cpp" line="685"/>
         <source>Save recording as</source>
         <translation>Opname opslaan als</translation>
     </message>
     <message>
-        <location filename="../GUI/PageOutput.cpp" line="514"/>
+        <location filename="../GUI/PageOutput.cpp" line="526"/>
         <source>You did not select an output file!</source>
         <translation>Je hebt geen outputbestand gekozen!</translation>
     </message>
@@ -2177,62 +2198,62 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation>Toon venster</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="919"/>
+        <location filename="../GUI/PageRecord.cpp" line="925"/>
         <source>Encoding remaining data ...</source>
         <translation>Overblijvende data encoderen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="705"/>
+        <location filename="../GUI/PageRecord.cpp" line="706"/>
         <source>Starting output ...</source>
         <translation>Output starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="716"/>
+        <location filename="../GUI/PageRecord.cpp" line="721"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
         <translation>Fout: Kan de grootte van de OpenGL-applicatie niet krijgen omdat de GLInject input niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="760"/>
+        <location filename="../GUI/PageRecord.cpp" line="765"/>
         <source>Started output.</source>
         <translation>Output gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="780"/>
+        <location filename="../GUI/PageRecord.cpp" line="785"/>
         <source>Stopping output ...</source>
         <translation>Output stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="798"/>
+        <location filename="../GUI/PageRecord.cpp" line="803"/>
         <source>Stopped output.</source>
         <translation>Output gestopt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="829"/>
+        <location filename="../GUI/PageRecord.cpp" line="834"/>
         <source>Starting input ...</source>
         <translation>Input starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="835"/>
+        <location filename="../GUI/PageRecord.cpp" line="840"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
         <translation>Fout: Kan de GLInject input niet starten omdat deze niet aangemaakt is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="859"/>
+        <location filename="../GUI/PageRecord.cpp" line="865"/>
         <source>Started input.</source>
         <translation>Input gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="888"/>
+        <location filename="../GUI/PageRecord.cpp" line="894"/>
         <source>Stopping input ...</source>
         <translation>Input stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="903"/>
+        <location filename="../GUI/PageRecord.cpp" line="909"/>
         <source>Stopped input.</source>
         <translation>Input gestopt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="592"/>
+        <location filename="../GUI/PageRecord.cpp" line="593"/>
         <source>Starting page ...</source>
         <translation>Pagina starten ...</translation>
     </message>
@@ -2241,17 +2262,17 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Er ging iets fout tijdens de GLInject initialisatie.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="624"/>
+        <location filename="../GUI/PageRecord.cpp" line="625"/>
         <source>Started page.</source>
         <translation>Pagina gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="650"/>
+        <location filename="../GUI/PageRecord.cpp" line="651"/>
         <source>Stopping page ...</source>
         <translation>Pagina stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="677"/>
+        <location filename="../GUI/PageRecord.cpp" line="678"/>
         <source>Stopped page.</source>
         <translation>Pagina gestopt.</translation>
     </message>
@@ -2260,14 +2281,14 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Kan de grootte van de OpenGL-applicatie niet krijgen omdat GLInject niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="721"/>
+        <location filename="../GUI/PageRecord.cpp" line="726"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation>Fout: Kon de grootte van de OpenGL-applicatie niet krijgen. Ofwel is de applicatie niet correct gestart, ofwel heeft de applicatie nog geen OpenGL-venster gemaakt. Als je wil beginnen met opnemen voordat de applicatie is gestart, dan moet je schalen inschakelen en manueel de videogrootte instellen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="615"/>
-        <location filename="../GUI/PageRecord.cpp" line="769"/>
-        <location filename="../GUI/PageRecord.cpp" line="864"/>
+        <location filename="../GUI/PageRecord.cpp" line="616"/>
+        <location filename="../GUI/PageRecord.cpp" line="774"/>
+        <location filename="../GUI/PageRecord.cpp" line="870"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation>Fout: Er ging iets fout tijdens de initialisatie.</translation>
     </message>
@@ -2276,39 +2297,39 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Kan geen GLInject input maken omdat GLInject niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1012"/>
-        <location filename="../GUI/PageRecord.cpp" line="1022"/>
+        <location filename="../GUI/PageRecord.cpp" line="1018"/>
+        <location filename="../GUI/PageRecord.cpp" line="1028"/>
         <source>Pause recording</source>
         <translation>Opname pauzeren</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1015"/>
-        <location filename="../GUI/PageRecord.cpp" line="1025"/>
+        <location filename="../GUI/PageRecord.cpp" line="1021"/>
+        <location filename="../GUI/PageRecord.cpp" line="1031"/>
         <source>Start recording</source>
         <translation>Opname starten</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1033"/>
+        <location filename="../GUI/PageRecord.cpp" line="1039"/>
         <source>Stop preview</source>
         <translation>Voorbeeld stoppen</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1036"/>
+        <location filename="../GUI/PageRecord.cpp" line="1042"/>
         <source>Start preview</source>
         <translation>Voorbeeld starten</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1066"/>
+        <location filename="../GUI/PageRecord.cpp" line="1072"/>
         <source>Error: Something went wrong while creating the synth.</source>
         <translation>Fout: Er ging iets fout bij het maken van de synth.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1109"/>
+        <location filename="../GUI/PageRecord.cpp" line="1115"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>Weet je zeker dat je deze opname wilt annuleren?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1124"/>
+        <location filename="../GUI/PageRecord.cpp" line="1130"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>

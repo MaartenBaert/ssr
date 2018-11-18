@@ -920,6 +920,15 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <source>Stream is not a monitor.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.</source>
+        <comment>Don&apos;t translate &apos;Xinerama&apos;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -1166,6 +1175,14 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     </message>
     <message>
         <source>The audio backend that will be used for recording.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Record entire screen with cursor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Record the entire screen on which the cursor is located, rather than following the cursor position.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
