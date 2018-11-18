@@ -476,6 +476,7 @@ void PageRecord::StartPage() {
 
 	// get the video input settings
 	m_video_area = page_input->GetVideoArea();
+	m_video_area_follow_fullscreen = page_input->GetVideoAreaFollowFullscreen();
 	m_video_x = page_input->GetVideoX();
 	m_video_y = page_input->GetVideoY();
 #if SSR_USE_OPENGL_RECORDING
@@ -709,8 +710,12 @@ void PageRecord::StartOutput() {
 			// set the file name
 			m_output_settings.file = GetNewSegmentFile(m_file_base, m_add_timestamp);
 
+			// for X11 recording, update the video size (if possible)
+			if(m_x11_input != NULL)
+				m_x11_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+
 #if SSR_USE_OPENGL_RECORDING
-			// for OpenGL recording, detect the application size
+			// for OpenGL recording, detect the video size
 			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT && !m_video_scaling) {
 				if(m_gl_inject_input == NULL) {
 					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application because the GLInject input has not been created."));
@@ -840,7 +845,8 @@ void PageRecord::StartInput() {
 #else
 		{
 #endif
-			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor, m_video_area == PageInput::VIDEO_AREA_CURSOR));
+			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor,
+										   m_video_area == PageInput::VIDEO_AREA_CURSOR, m_video_area_follow_fullscreen));
 		}
 
 		// start the audio input
@@ -1158,8 +1164,12 @@ void PageRecord::OnUpdateInformation() {
 		else
 			file_name = "(" + m_file_protocol + ")";
 
+		// for X11 recording, update the video size
+		if(m_x11_input != NULL)
+			m_x11_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+
 #if SSR_USE_OPENGL_RECORDING
-		// for OpenGL recording, update the application size
+		// for OpenGL recording, update the video size
 		if(m_gl_inject_input != NULL)
 			m_gl_inject_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 #endif

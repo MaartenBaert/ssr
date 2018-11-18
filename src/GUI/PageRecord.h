@@ -66,6 +66,7 @@ private:
 	bool m_recorded_something, m_wait_saving, m_error_occurred;
 
 	PageInput::enum_video_area m_video_area;
+	bool m_video_area_follow_fullscreen;
 	unsigned int m_video_x, m_video_y, m_video_in_width, m_video_in_height;
 	unsigned int m_video_frame_rate;
 	bool m_video_scaling;

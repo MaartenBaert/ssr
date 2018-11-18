@@ -254,6 +254,8 @@ PageInput::PageInput(MainWindow* main_window)
 #endif
 			m_combobox_screens = new QComboBoxWithSignal(groupbox_video);
 			m_combobox_screens->setToolTip(tr("Select what monitor should be recorded in a multi-monitor configuration."));
+			m_checkbox_follow_fullscreen = new QCheckBox(tr("Record entire screen with cursor"), groupbox_video);
+			m_checkbox_follow_fullscreen->setToolTip(tr("Record the entire screen on which the cursor is located, rather than following the cursor position."));
 			m_pushbutton_video_select_rectangle = new QPushButton(tr("Select rectangle..."), groupbox_video);
 			m_pushbutton_video_select_rectangle->setToolTip(tr("Use the mouse to select the recorded rectangle."));
 			m_pushbutton_video_select_window = new QPushButton(tr("Select window..."), groupbox_video);
@@ -309,6 +311,7 @@ PageInput::PageInput(MainWindow* main_window)
 			connect(m_combobox_screens, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoAreaFields()));
 			connect(m_combobox_screens, SIGNAL(popupShown()), this, SLOT(OnIdentifyScreens()));
 			connect(m_combobox_screens, SIGNAL(popupHidden()), this, SLOT(OnStopIdentifyScreens()));
+			connect(m_checkbox_follow_fullscreen, SIGNAL(clicked()), this, SLOT(OnUpdateVideoAreaFields()));
 			connect(m_spinbox_video_x, SIGNAL(focusIn()), this, SLOT(OnUpdateRecordingFrame()));
 			connect(m_spinbox_video_x, SIGNAL(focusOut()), this, SLOT(OnUpdateRecordingFrame()));
 			connect(m_spinbox_video_x, SIGNAL(valueChanged(int)), this, SLOT(OnUpdateRecordingFrame()));
@@ -336,7 +339,12 @@ PageInput::PageInput(MainWindow* main_window)
 				layout2->addWidget(m_combobox_screens);
 			}
 			layout->addWidget(radio_area_fixed);
-			layout->addWidget(radio_area_cursor);
+			{
+				QHBoxLayout *layout2 = new QHBoxLayout();
+				layout->addLayout(layout2);
+				layout2->addWidget(radio_area_cursor);
+				layout2->addWidget(m_checkbox_follow_fullscreen);
+			}
 #if SSR_USE_OPENGL_RECORDING
 			layout->addWidget(radio_area_glinject);
 #endif
@@ -570,6 +578,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	// load settings
 	SetVideoArea(StringToEnum(settings->value("input/video_area", QString()).toString(), VIDEO_AREA_SCREEN));
 	SetVideoAreaScreen(settings->value("input/video_area_screen", 0).toUInt());
+	SetVideoAreaFollowFullscreen(settings->value("input/video_area_follow_fullscreen", false).toBool());
 	SetVideoX(settings->value("input/video_x", 0).toUInt());
 	SetVideoY(settings->value("input/video_y", 0).toUInt());
 	SetVideoW(settings->value("input/video_w", 800).toUInt());
@@ -611,6 +620,7 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/video_area", EnumToString(GetVideoArea()));
 	settings->setValue("input/video_area_screen", GetVideoAreaScreen());
+	settings->setValue("input/video_area_follow_fullscreen", GetVideoAreaFollowFullscreen());
 	settings->setValue("input/video_x", GetVideoX());
 	settings->setValue("input/video_y", GetVideoY());
 	settings->setValue("input/video_w", GetVideoW());
@@ -955,6 +965,7 @@ void PageInput::OnUpdateVideoAreaFields() {
 	switch(GetVideoArea()) {
 		case VIDEO_AREA_SCREEN: {
 			m_combobox_screens->setEnabled(true);
+			m_checkbox_follow_fullscreen->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
 #if SSR_USE_OPENGL_RECORDING
@@ -966,7 +977,7 @@ void PageInput::OnUpdateVideoAreaFields() {
 			std::vector<QRect> screen_geometries = GetScreenGeometries();
 			QRect rect;
 			if(sc > 0 && sc <= (int) screen_geometries.size()) {
-				rect = screen_geometries[sc];
+				rect = screen_geometries[sc - 1];
 			} else {
 				rect = CombineScreenGeometries(screen_geometries);
 			}
@@ -978,6 +989,7 @@ void PageInput::OnUpdateVideoAreaFields() {
 		}
 		case VIDEO_AREA_FIXED: {
 			m_combobox_screens->setEnabled(false);
+			m_checkbox_follow_fullscreen->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(true);
 			m_pushbutton_video_select_window->setEnabled(true);
 #if SSR_USE_OPENGL_RECORDING
@@ -989,20 +1001,35 @@ void PageInput::OnUpdateVideoAreaFields() {
 		}
 		case VIDEO_AREA_CURSOR: {
 			m_combobox_screens->setEnabled(false);
-			m_pushbutton_video_select_rectangle->setEnabled(true);
-			m_pushbutton_video_select_window->setEnabled(true);
+			m_checkbox_follow_fullscreen->setEnabled(true);
 #if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings->setEnabled(false);
 #endif
-			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y}, false);
-			GroupEnabled({m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
-			SetVideoX(0);
-			SetVideoY(0);
+			if(m_checkbox_follow_fullscreen->isChecked()) {
+				m_pushbutton_video_select_rectangle->setEnabled(false);
+				m_pushbutton_video_select_window->setEnabled(false);
+				GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
+							  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, false);
+				std::vector<QRect> screen_geometries = GetScreenGeometries();
+				QRect rect = (screen_geometries.size() == 0)? QRect(0, 0, 0, 0) : screen_geometries[0];
+				SetVideoX(rect.left());
+				SetVideoY(rect.top());
+				SetVideoW(rect.width());
+				SetVideoH(rect.height());
+			} else {
+				m_pushbutton_video_select_rectangle->setEnabled(true);
+				m_pushbutton_video_select_window->setEnabled(true);
+				GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y}, false);
+				GroupEnabled({m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
+				SetVideoX(0);
+				SetVideoY(0);
+			}
 			break;
 		}
 #if SSR_USE_OPENGL_RECORDING
 		case VIDEO_AREA_GLINJECT: {
 			m_combobox_screens->setEnabled(false);
+			m_checkbox_follow_fullscreen->setEnabled(false);
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
 			m_pushbutton_video_opengl_settings->setEnabled(true);

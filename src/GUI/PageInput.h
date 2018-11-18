@@ -149,6 +149,7 @@ private:
 
 	QButtonGroup *m_buttongroup_video_area;
 	QComboBoxWithSignal *m_combobox_screens;
+	QCheckBox *m_checkbox_follow_fullscreen;
 	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window;
 #if SSR_USE_OPENGL_RECORDING
 	QPushButton *m_pushbutton_video_opengl_settings;
@@ -257,6 +258,7 @@ public:
 	inline unsigned int GetProfile() { return m_profile_box->GetProfile(); }
 	inline enum_video_area GetVideoArea() { return (enum_video_area) clamp(m_buttongroup_video_area->checkedId(), 0, VIDEO_AREA_COUNT - 1); }
 	inline unsigned int GetVideoAreaScreen() { return m_combobox_screens->currentIndex(); }
+	inline bool GetVideoAreaFollowFullscreen() { return m_checkbox_follow_fullscreen->isChecked(); }
 	inline unsigned int GetVideoX() { return m_spinbox_video_x->value(); }
 	inline unsigned int GetVideoY() { return m_spinbox_video_y->value(); }
 	inline unsigned int GetVideoW() { return m_spinbox_video_w->value(); }
@@ -290,6 +292,7 @@ public:
 	inline void SetProfile(unsigned int profile) { m_profile_box->SetProfile(profile); }
 	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
 	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_screens->count() - 1)); }
+	inline void SetVideoAreaFollowFullscreen(bool follow_fulscreen) { m_checkbox_follow_fullscreen->setChecked(follow_fulscreen); }
 	inline void SetVideoX(unsigned int x) { m_spinbox_video_x->setValue(x); }
 	inline void SetVideoY(unsigned int y) { m_spinbox_video_y->setValue(y); }
 	inline void SetVideoW(unsigned int w) { m_spinbox_video_w->setValue(w); }

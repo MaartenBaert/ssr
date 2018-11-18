@@ -167,7 +167,7 @@ static void X11ImageDrawCursor(Display* dpy, XImage* image, int recording_area_x
 
 }
 
-X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor) {
+X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor, bool follow_full_screen) {
 
 	m_x = x;
 	m_y = y;
@@ -175,12 +175,23 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 	m_height = height;
 	m_record_cursor = record_cursor;
 	m_follow_cursor = follow_cursor;
+	m_follow_fullscreen = follow_full_screen;
 
 	m_x11_display = NULL;
+	m_x11_image = NULL;
+	m_x11_shm_info.shmseg = 0;
 	m_x11_shm_info.shmid = -1;
 	m_x11_shm_info.shmaddr = (char*) -1;
+	m_x11_shm_info.readOnly = false;
 	m_x11_shm_server_attached = false;
-	m_x11_image = NULL;
+
+	m_screen_bbox = Rect(0, 0, 0, 0);
+
+	{
+		SharedLock lock(&m_shared_data);
+		lock->m_current_width = m_width;
+		lock->m_current_height = m_height;
+	}
 
 	if(m_width == 0 || m_height == 0) {
 		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Width or height is zero!"));
@@ -214,6 +225,12 @@ X11Input::~X11Input() {
 
 }
 
+void X11Input::GetCurrentSize(unsigned int *width, unsigned int *height) {
+	SharedLock lock(&m_shared_data);
+	*width = lock->m_current_width;
+	*height = lock->m_current_height;
+}
+
 double X11Input::GetFPS() {
 	int64_t timestamp = hrt_time_micro();
 	uint32_t frame_counter = m_frame_counter;
@@ -243,23 +260,6 @@ void X11Input::Init() {
 	m_x11_use_shm = XShmQueryExtension(m_x11_display);
 	if(m_x11_use_shm) {
 		Logger::LogInfo("[X11Input::Init] " + Logger::tr("Using X11 shared memory."));
-		m_x11_image = XShmCreateImage(m_x11_display, m_x11_visual, m_x11_depth, ZPixmap, NULL, &m_x11_shm_info, m_width, m_height);
-		if(m_x11_image == NULL) {
-			Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't create shared image!"));
-			throw X11Exception();
-		}
-		m_x11_shm_info.shmid = shmget(IPC_PRIVATE, m_x11_image->bytes_per_line * m_x11_image->height, IPC_CREAT | 0700);
-		if(m_x11_shm_info.shmid == -1) {
-			Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't get shared memory!"));
-			throw X11Exception();
-		}
-		m_x11_shm_info.shmaddr = m_x11_image->data = (char*) shmat(m_x11_shm_info.shmid, NULL, SHM_RND);
-		if(m_x11_shm_info.shmaddr == (char*) -1) {
-			Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't attach to shared memory!"));
-			throw X11Exception();
-		}
-		m_x11_shm_info.readOnly = false;
-		// the server will attach later
 	} else {
 		Logger::LogInfo("[X11Input::Init] " + Logger::tr("Not using X11 shared memory."));
 	}
@@ -291,6 +291,43 @@ void X11Input::Init() {
 }
 
 void X11Input::Free() {
+	FreeImage();
+	if(m_x11_display != NULL) {
+		XCloseDisplay(m_x11_display);
+		m_x11_display = NULL;
+	}
+}
+
+void X11Input::AllocateImage(unsigned int width, unsigned int height) {
+	assert(m_x11_use_shm);
+	if(m_x11_shm_server_attached && m_x11_image->width == (int) width && m_x11_image->height == (int) height) {
+		return; // reuse existing image
+	}
+	FreeImage();
+	m_x11_image = XShmCreateImage(m_x11_display, m_x11_visual, m_x11_depth, ZPixmap, NULL, &m_x11_shm_info, width, height);
+	if(m_x11_image == NULL) {
+		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't create shared image!"));
+		throw X11Exception();
+	}
+	m_x11_shm_info.shmid = shmget(IPC_PRIVATE, m_x11_image->bytes_per_line * m_x11_image->height, IPC_CREAT | 0700);
+	if(m_x11_shm_info.shmid == -1) {
+		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't get shared memory!"));
+		throw X11Exception();
+	}
+	m_x11_shm_info.shmaddr = (char*) shmat(m_x11_shm_info.shmid, NULL, SHM_RND);
+	if(m_x11_shm_info.shmaddr == (char*) -1) {
+		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't attach to shared memory!"));
+		throw X11Exception();
+	}
+	m_x11_image->data = m_x11_shm_info.shmaddr;
+	if(!XShmAttach(m_x11_display, &m_x11_shm_info)) {
+		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't attach server to shared memory!"));
+		throw X11Exception();
+	}
+	m_x11_shm_server_attached = true;
+}
+
+void X11Input::FreeImage() {
 	if(m_x11_shm_server_attached) {
 		XShmDetach(m_x11_display, &m_x11_shm_info);
 		m_x11_shm_server_attached = false;
@@ -307,23 +344,19 @@ void X11Input::Free() {
 		XDestroyImage(m_x11_image);
 		m_x11_image = NULL;
 	}
-	if(m_x11_display != NULL) {
-		XCloseDisplay(m_x11_display);
-		m_x11_display = NULL;
-	}
 }
 
 void X11Input::UpdateScreenConfiguration() {
 
 	// get screen rectangles
-	std::vector<Rect> screen_rects;
+	m_screen_rects.clear();
 	int event_base, error_base;
 	if(XineramaQueryExtension(m_x11_display, &event_base, &error_base)) {
 		int num_screens;
 		XineramaScreenInfo *screens = XineramaQueryScreens(m_x11_display, &num_screens);
 		try {
 			for(int i = 0; i < num_screens; ++i) {
-				screen_rects.emplace_back(screens[i].x_org, screens[i].y_org, screens[i].x_org + screens[i].width, screens[i].y_org + screens[i].height);
+				m_screen_rects.emplace_back(screens[i].x_org, screens[i].y_org, screens[i].x_org + screens[i].width, screens[i].y_org + screens[i].height);
 			}
 		} catch(...) {
 			XFree(screens);
@@ -336,38 +369,38 @@ void X11Input::UpdateScreenConfiguration() {
 	}
 
 	// make sure that we have at least one monitor
-	if(screen_rects.size() == 0) {
+	if(m_screen_rects.size() == 0) {
 		Logger::LogWarning("[X11Input::Init] " + Logger::tr("Warning: No monitors detected, multi-monitor support may not work properly."));
 		return;
 	}
 
 	// calculate bounding box
-	Rect screen_bbox = screen_rects[0];
-	for(size_t i = 1; i < screen_rects.size(); ++i) {
-		Rect &rect = screen_rects[i];
-		if(rect.m_x1 < screen_bbox.m_x1)
-			screen_bbox.m_x1 = rect.m_x1;
-		if(rect.m_y1 < screen_bbox.m_y1)
-			screen_bbox.m_y1 = rect.m_y1;
-		if(rect.m_x2 > screen_bbox.m_x2)
-			screen_bbox.m_x2 = rect.m_x2;
-		if(rect.m_y2 > screen_bbox.m_y2)
-			screen_bbox.m_y2 = rect.m_y2;
+	m_screen_bbox = m_screen_rects[0];
+	for(size_t i = 1; i < m_screen_rects.size(); ++i) {
+		Rect &rect = m_screen_rects[i];
+		if(rect.m_x1 < m_screen_bbox.m_x1)
+			m_screen_bbox.m_x1 = rect.m_x1;
+		if(rect.m_y1 < m_screen_bbox.m_y1)
+			m_screen_bbox.m_y1 = rect.m_y1;
+		if(rect.m_x2 > m_screen_bbox.m_x2)
+			m_screen_bbox.m_x2 = rect.m_x2;
+		if(rect.m_y2 > m_screen_bbox.m_y2)
+			m_screen_bbox.m_y2 = rect.m_y2;
 	}
-	if(screen_bbox.m_x1 >= screen_bbox.m_x2 || screen_bbox.m_y1 >= screen_bbox.m_y2 ||
-	   screen_bbox.m_x2 - screen_bbox.m_x1 > 10000 || screen_bbox.m_y2 - screen_bbox.m_y1 > 10000) {
+	if(m_screen_bbox.m_x1 >= m_screen_bbox.m_x2 || m_screen_bbox.m_y1 >= m_screen_bbox.m_y2 ||
+	   m_screen_bbox.m_x2 - m_screen_bbox.m_x1 > 10000 || m_screen_bbox.m_y2 - m_screen_bbox.m_y1 > 10000) {
 		Logger::LogError("[X11Input::UpdateScreenConfiguration] " + Logger::tr("Error: Invalid screen bounding box!") + "\n"
-						   "    x1 = " + QString::number(screen_bbox.m_x1) + ", y1 = " + QString::number(screen_bbox.m_y1)
-						   + ", x2 = " + QString::number(screen_bbox.m_x2) + ", y2 = " + QString::number(screen_bbox.m_y2));
+						   "    x1 = " + QString::number(m_screen_bbox.m_x1) + ", y1 = " + QString::number(m_screen_bbox.m_y1)
+						   + ", x2 = " + QString::number(m_screen_bbox.m_x2) + ", y2 = " + QString::number(m_screen_bbox.m_y2));
 		throw X11Exception();
 	}
 
 	// calculate dead space
-	std::vector<Rect> screen_dead_space = {screen_bbox};
-	for(size_t i = 0; i < screen_rects.size(); ++i) {
-		Rect &subtract = screen_rects[i];
+	m_screen_dead_space = {m_screen_bbox};
+	for(size_t i = 0; i < m_screen_rects.size(); ++i) {
+		Rect &subtract = m_screen_rects[i];
 		std::vector<Rect> result;
-		for(Rect &rect : screen_dead_space) {
+		for(Rect &rect : m_screen_dead_space) {
 			if(rect.m_x1 < subtract.m_x1) {
 				result.emplace_back(rect.m_x1, rect.m_y1, subtract.m_x1, rect.m_y2);
 			}
@@ -384,12 +417,8 @@ void X11Input::UpdateScreenConfiguration() {
 				}
 			}
 		}
-		screen_dead_space = std::move(result);
+		m_screen_dead_space = std::move(result);
 	}
-
-	SharedLock lock(&m_shared_data);
-	lock->m_screen_bbox = screen_bbox;
-	lock->m_screen_dead_space = screen_dead_space;
 
 }
 
@@ -398,7 +427,7 @@ void X11Input::InputThread() {
 
 		Logger::LogInfo("[X11Input::InputThread] " + Logger::tr("Input thread started."));
 
-		unsigned int grab_x = m_x, grab_y = m_y;
+		unsigned int grab_x = m_x, grab_y = m_y, grab_width = m_width, grab_height = m_height;
 		bool has_initial_cursor = false;
 		int64_t last_timestamp = hrt_time_micro();
 
@@ -424,31 +453,43 @@ void X11Input::InputThread() {
 
 			// follow the cursor
 			if(m_follow_cursor) {
-				SharedLock lock(&m_shared_data);
 				int mouse_x, mouse_y, dummy;
 				Window dummy_win;
 				unsigned int dummy_mask;
 				if(XQueryPointer(m_x11_display, m_x11_root, &dummy_win, &dummy_win, &dummy, &dummy, &mouse_x, &mouse_y, &dummy_mask)) {
-					int grab_x_target = (mouse_x - (int) m_width / 2) >> 1;
-					int grab_y_target = (mouse_y - (int) m_height / 2) >> 1;
-					int frac = (has_initial_cursor)? lrint(1024.0 * exp(-1e-5 * (double) (timestamp - last_timestamp))) : 0;
-					grab_x_target = (grab_x_target + ((int) (grab_x >> 1) - grab_x_target) * frac / 1024) << 1;
-					grab_y_target = (grab_y_target + ((int) (grab_y >> 1) - grab_y_target) * frac / 1024) << 1;
-					grab_x = clamp(grab_x_target, (int) lock->m_screen_bbox.m_x1, (int) lock->m_screen_bbox.m_x2 - (int) m_width);
-					grab_y = clamp(grab_y_target, (int) lock->m_screen_bbox.m_y1, (int) lock->m_screen_bbox.m_y2 - (int) m_height);
+					if(m_follow_fullscreen) {
+						for(Rect &rect : m_screen_rects) {
+							if(mouse_x >= (int) rect.m_x1 && mouse_y >= (int) rect.m_y1 && mouse_x < (int) rect.m_x2 && mouse_y < (int) rect.m_y2) {
+								grab_x = rect.m_x1;
+								grab_y = rect.m_y1;
+								grab_width = rect.m_x2 - rect.m_x1;
+								grab_height = rect.m_y2 - rect.m_y1;
+								break;
+							}
+						}
+					} else {
+						int grab_x_target = (mouse_x - (int) grab_width / 2) >> 1;
+						int grab_y_target = (mouse_y - (int) grab_height / 2) >> 1;
+						int frac = (has_initial_cursor)? lrint(1024.0 * exp(-1e-5 * (double) (timestamp - last_timestamp))) : 0;
+						grab_x_target = (grab_x_target + ((int) (grab_x >> 1) - grab_x_target) * frac / 1024) << 1;
+						grab_y_target = (grab_y_target + ((int) (grab_y >> 1) - grab_y_target) * frac / 1024) << 1;
+						grab_x = clamp(grab_x_target, (int) m_screen_bbox.m_x1, (int) m_screen_bbox.m_x2 - (int) grab_width);
+						grab_y = clamp(grab_y_target, (int) m_screen_bbox.m_y1, (int) m_screen_bbox.m_y2 - (int) grab_height);
+					}
 				}
 				has_initial_cursor = true;
 			}
 
+			// save current size
+			{
+				SharedLock lock(&m_shared_data);
+				lock->m_current_width = grab_width;
+				lock->m_current_height = grab_height;
+			}
+
 			// get the image
 			if(m_x11_use_shm) {
-				if(!m_x11_shm_server_attached) {
-					if(!XShmAttach(m_x11_display, &m_x11_shm_info)) {
-						Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Can't attach server to shared memory!"));
-						throw X11Exception();
-					}
-					m_x11_shm_server_attached = true;
-				}
+				AllocateImage(grab_width, grab_height);
 				if(!XShmGetImage(m_x11_display, m_x11_root, m_x11_image, grab_x, grab_y, AllPlanes)) {
 					Logger::LogError("[X11Input::InputThread] " + Logger::tr("Error: Can't get image (using shared memory)!\n"
 									 "    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?"));
@@ -459,7 +500,7 @@ void X11Input::InputThread() {
 					XDestroyImage(m_x11_image);
 					m_x11_image = NULL;
 				}
-				m_x11_image = XGetImage(m_x11_display, m_x11_root, grab_x, grab_y, m_width, m_height, AllPlanes, ZPixmap);
+				m_x11_image = XGetImage(m_x11_display, m_x11_root, grab_x, grab_y, grab_width, grab_height, AllPlanes, ZPixmap);
 				if(m_x11_image == NULL) {
 					Logger::LogError("[X11Input::InputThread] " + Logger::tr("Error: Can't get image (not using shared memory)!\n"
 									 "    Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?"));
@@ -468,21 +509,18 @@ void X11Input::InputThread() {
 			}
 
 			// clear the dead space
-			{
-				SharedLock lock(&m_shared_data);
-				for(size_t i = 0; i < lock->m_screen_dead_space.size(); ++i) {
-					Rect rect = lock->m_screen_dead_space[i];
-					if(rect.m_x1 < grab_x)
-						rect.m_x1 = grab_x;
-					if(rect.m_y1 < grab_y)
-						rect.m_y1 = grab_y;
-					if(rect.m_x2 > grab_x + m_width)
-						rect.m_x2 = grab_x + m_width;
-					if(rect.m_y2 > grab_y + m_height)
-						rect.m_y2 = grab_y + m_height;
-					if(rect.m_x2 > rect.m_x1 && rect.m_y2 > rect.m_y1)
-						X11ImageClearRectangle(m_x11_image, rect.m_x1 - grab_x, rect.m_y1 - grab_y, rect.m_x2 - rect.m_x1, rect.m_y2 - rect.m_y1);
-				}
+			for(size_t i = 0; i < m_screen_dead_space.size(); ++i) {
+				Rect rect = m_screen_dead_space[i];
+				if(rect.m_x1 < grab_x)
+					rect.m_x1 = grab_x;
+				if(rect.m_y1 < grab_y)
+					rect.m_y1 = grab_y;
+				if(rect.m_x2 > grab_x + grab_width)
+					rect.m_x2 = grab_x + grab_width;
+				if(rect.m_y2 > grab_y + grab_height)
+					rect.m_y2 = grab_y + grab_height;
+				if(rect.m_x2 > rect.m_x1 && rect.m_y2 > rect.m_y1)
+					X11ImageClearRectangle(m_x11_image, rect.m_x1 - grab_x, rect.m_y1 - grab_y, rect.m_x2 - rect.m_x1, rect.m_y2 - rect.m_y1);
 			}
 
 			// draw the cursor
@@ -497,7 +535,7 @@ void X11Input::InputThread() {
 			uint8_t *image_data = (uint8_t*) m_x11_image->data;
 			int image_stride = m_x11_image->bytes_per_line;
 			AVPixelFormat x11_image_format = X11ImageGetPixelFormat(m_x11_image);
-			PushVideoFrame(m_width, m_height, image_data, image_stride, x11_image_format, timestamp);
+			PushVideoFrame(grab_width, grab_height, image_data, image_stride, x11_image_format, timestamp);
 			last_timestamp = timestamp;
 
 		}
