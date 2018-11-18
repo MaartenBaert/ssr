@@ -432,8 +432,8 @@ void X11Input::InputThread() {
 					int grab_x_target = (mouse_x - (int) m_width / 2) >> 1;
 					int grab_y_target = (mouse_y - (int) m_height / 2) >> 1;
 					int frac = (has_initial_cursor)? lrint(1024.0 * exp(-1e-5 * (double) (timestamp - last_timestamp))) : 0;
-					grab_x_target = (grab_x_target + ((grab_x >> 1) - grab_x_target) * frac / 1024) << 1;
-					grab_y_target = (grab_y_target + ((grab_y >> 1) - grab_y_target) * frac / 1024) << 1;
+					grab_x_target = (grab_x_target + ((int) (grab_x >> 1) - grab_x_target) * frac / 1024) << 1;
+					grab_y_target = (grab_y_target + ((int) (grab_y >> 1) - grab_y_target) * frac / 1024) << 1;
 					grab_x = clamp(grab_x_target, (int) lock->m_screen_bbox.m_x1, (int) lock->m_screen_bbox.m_x2 - (int) m_width);
 					grab_y = clamp(grab_y_target, (int) lock->m_screen_bbox.m_y1, (int) lock->m_screen_bbox.m_y2 - (int) m_height);
 				}
