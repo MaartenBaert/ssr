@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="lt_LT">
+<TS version="2.1" language="lt_LT">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -473,7 +473,8 @@ Gali būti, kad jūsų sistema nenaudoja PulseAudio. Vietoj to, pabandykite ALSA
         <location filename="../AV/Input/PulseAudioInput.cpp" line="68"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko prisijungti! Priežastis: %1
+Gali būti, kad jūsų sistema nenaudoja PulseAudio.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="82"/>
@@ -508,17 +509,17 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="297"/>
         <source>Error: Could not get source info! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyko gauti šaltinio informacijos! Priežastis: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="302"/>
         <source>Stream is a monitor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Srautas yra monitorinis.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="304"/>
         <source>Stream is not a monitor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Srautas nėra monitorinis.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="349"/>
@@ -763,12 +764,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
         <source>Error: Sending of audio frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Garso kadro siuntimas nepavyko!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Receiving of audio packet failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Garso paketo gavimas nepavyko!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="210"/>
@@ -836,7 +837,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <location filename="../AV/Output/Muxer.cpp" line="100"/>
         <location filename="../AV/Output/Muxer.cpp" line="124"/>
         <source>Error: Can&apos;t copy parameters to stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta nukopijuoti parametrų į srautą!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="146"/>
@@ -893,7 +894,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="295"/>
         <source>Error: Can&apos;t create new codec context!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Nepavyksta sukurti naujo kodeko konteksto!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="307"/>
@@ -1023,12 +1024,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="207"/>
         <source>Error: Sending of video frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Vaizdo kadro siuntimas nepavyko!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="228"/>
         <source>Error: Receiving of video packet failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: Vaizdo paketo gavimas nepavyko!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="241"/>
@@ -1157,37 +1158,37 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="70"/>
         <source>Stopping fragment thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stabdoma fragmento gija ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="346"/>
         <source>Fragment thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fragmento gija pradėta.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="364"/>
         <source>Next fragment ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kitas fragmentas ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="368"/>
         <source>Finishing ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Užbaigiama ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="380"/>
         <source>Fragment thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fragmento gija sustabdyta.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="384"/>
         <source>Exception &apos;%1&apos; in fragment thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Išimtis &apos;%1&apos;fragmento gijoje.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="387"/>
         <source>Unknown exception in fragment thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nežinoma išimtis fragmento gijoje.</translation>
     </message>
 </context>
 <context>
@@ -1251,12 +1252,12 @@ Jūs taip pat galite rankiniu būdu keisti šią parinktį NVIDIA valdymo skydel
     <message>
         <location filename="../GUI/PageInput.cpp" line="187"/>
         <source>Input profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Įvesties profilis</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="196"/>
         <source>Record OpenGL</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašinėti OpenGL</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="205"/>
@@ -1406,7 +1407,7 @@ ALSA vidinė pusė veiks sistemose, kurios naudoja PulseAudio, tačiau geriau na
     <message>
         <location filename="../GUI/PageInput.cpp" line="349"/>
         <source>The audio backend that will be used for recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašymui naudojama garso vidinė pusė.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="352"/>
@@ -1536,7 +1537,7 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageOutput.cpp" line="178"/>
         <source>Output profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Išvesties profilis</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="180"/>
@@ -1561,7 +1562,7 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageOutput.cpp" line="186"/>
         <source>Separate file per segment</source>
-        <translation type="unfinished">Atskirti failus segmentais</translation>
+        <translation>Atskirti failus segmentais</translation>
     </message>
     <message>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
@@ -1650,24 +1651,25 @@ Turėkite omenyje, kad ne visi konteineriai palaiko visus kodekus ir, kad ne vis
     <message>
         <location filename="../GUI/PageOutput.cpp" line="187"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.If unchecked, all recorded segments will be combined into a single video file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jei pažymėta, kas kartą jums pristabdžius ir pratęsus įrašinėjimą, bus sukuriamas atskiras vaizdo failas. Jei žymėjimas nuimtas, tuomet visi įrašinėti segmentai bus sujungti į vieną vaizdo failą.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
         <source>Add timestamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridėti laiko žymą</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="190"/>
         <source>If checked, the current date and time will be appended to the file name automatically.
 If the original file name is &apos;test.mkv&apos;, the video will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jei pažymėta, prie failo pavadinimo bus automatiškai pridėta dabartinė data ir laikas.
+Jei pradinio failo pavadinimas yra &quot;bandymas.mkv&quot;, tuomet vaizdas bus išsaugotas kaip &quot;bandymas-MMMM-mm-dd_VV.MM.SS.mkv&apos;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="254"/>
         <location filename="../GUI/PageOutput.cpp" line="338"/>
         <source>Bit rate (in kbit/s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Pralaidumas (kbit/s):</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="256"/>
