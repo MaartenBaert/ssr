@@ -185,7 +185,7 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 	m_x11_shm_info.readOnly = false;
 	m_x11_shm_server_attached = false;
 
-	m_screen_bbox = Rect(0, 0, 0, 0);
+	m_screen_bbox = Rect(m_x, m_y, m_x + m_width, m_y + m_height);
 
 	{
 		SharedLock lock(&m_shared_data);
@@ -395,17 +395,28 @@ void X11Input::UpdateScreenConfiguration() {
 		throw X11Exception();
 	}
 
+	/*qDebug() << "m_screen_rects:";
+	for(Rect &rect : m_screen_rects) {
+		qDebug() << "    rect" << rect.m_x1 << rect.m_y1 << rect.m_x2 << rect.m_y2;
+	}
+	qDebug() << "m_screen_bbox:";
+	qDebug() << "    rect" << m_screen_bbox.m_x1 << m_screen_bbox.m_y1 << m_screen_bbox.m_x2 << m_screen_bbox.m_y2;*/
+
 	// calculate dead space
 	m_screen_dead_space = {m_screen_bbox};
 	for(size_t i = 0; i < m_screen_rects.size(); ++i) {
+		/*qDebug() << "PARTIAL m_screen_dead_space:";
+		for(Rect &rect : m_screen_dead_space) {
+			qDebug() << "    rect" << rect.m_x1 << rect.m_y1 << rect.m_x2 << rect.m_y2;
+		}*/
 		Rect &subtract = m_screen_rects[i];
 		std::vector<Rect> result;
 		for(Rect &rect : m_screen_dead_space) {
 			if(rect.m_x1 < subtract.m_x1) {
-				result.emplace_back(rect.m_x1, rect.m_y1, subtract.m_x1, rect.m_y2);
+				result.emplace_back(rect.m_x1, rect.m_y1, std::min(rect.m_x2, subtract.m_x1), rect.m_y2);
 			}
 			if(rect.m_x2 > subtract.m_x2) {
-				result.emplace_back(subtract.m_x2, rect.m_y1, rect.m_x2, rect.m_y2);
+				result.emplace_back(std::max(rect.m_x1, subtract.m_x2), rect.m_y1, rect.m_x2, rect.m_y2);
 			}
 			unsigned int lo = std::max(rect.m_x1, subtract.m_x1), hi = std::min(rect.m_x2, subtract.m_x2);
 			if(lo < hi) {
@@ -419,6 +430,11 @@ void X11Input::UpdateScreenConfiguration() {
 		}
 		m_screen_dead_space = std::move(result);
 	}
+
+	/*qDebug() << "m_screen_dead_space:";
+	for(Rect &rect : m_screen_dead_space) {
+		qDebug() << "    rect" << rect.m_x1 << rect.m_y1 << rect.m_x2 << rect.m_y2;
+	}*/
 
 }
 
