@@ -412,20 +412,19 @@ void X11Input::UpdateScreenConfiguration() {
 		Rect &subtract = m_screen_rects[i];
 		std::vector<Rect> result;
 		for(Rect &rect : m_screen_dead_space) {
-			if(rect.m_x1 < subtract.m_x1) {
-				result.emplace_back(rect.m_x1, rect.m_y1, std::min(rect.m_x2, subtract.m_x1), rect.m_y2);
-			}
-			if(rect.m_x2 > subtract.m_x2) {
-				result.emplace_back(std::max(rect.m_x1, subtract.m_x2), rect.m_y1, rect.m_x2, rect.m_y2);
-			}
-			unsigned int lo = std::max(rect.m_x1, subtract.m_x1), hi = std::min(rect.m_x2, subtract.m_x2);
-			if(lo < hi) {
-				if(rect.m_y1 < subtract.m_y1) {
-					result.emplace_back(lo, rect.m_y1, hi, subtract.m_y1);
-				}
-				if(rect.m_y2 > subtract.m_y2) {
-					result.emplace_back(lo, subtract.m_y2, hi, rect.m_y2);
-				}
+			if(rect.m_x1 < subtract.m_x2 && rect.m_y1 < subtract.m_y2 && subtract.m_x1 < rect.m_x2 && subtract.m_y1 < rect.m_y2) {
+				unsigned int mid_y1 = std::max(rect.m_y1, subtract.m_y1);
+				unsigned int mid_y2 = std::min(rect.m_y2, subtract.m_y2);
+				if(rect.m_y1 < subtract.m_y1)
+					result.emplace_back(rect.m_x1, rect.m_y1, rect.m_x2, subtract.m_y1);
+				if(rect.m_x1 < subtract.m_x1)
+					result.emplace_back(rect.m_x1, mid_y1, subtract.m_x1, mid_y2);
+				if(subtract.m_x2 < rect.m_x2)
+					result.emplace_back(subtract.m_x2, mid_y1, rect.m_x2, mid_y2);
+				if(subtract.m_y2 < rect.m_y2)
+					result.emplace_back(rect.m_x1, subtract.m_y2, rect.m_x2, rect.m_y2);
+			} else {
+				result.emplace_back(rect);
 			}
 		}
 		m_screen_dead_space = std::move(result);
