@@ -170,8 +170,12 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_pushbutton_start_pause = new QPushButton(groupbox_recording);
 
 		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), groupbox_recording);
+		m_checkbox_hotkey_enable->setToolTip(tr("The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,\n"
+												"even when the SimpleScreenRecorder window is not visible. This way you can create recordings without having the\n"
+												"SimpleScreenRecorder window show up in the final video."));
 #if SSR_USE_ALSA
 		m_checkbox_sound_notifications_enable = new QCheckBox(tr("Enable sound notifications"), groupbox_recording);
+		m_checkbox_sound_notifications_enable->setToolTip(tr("When enabled, a sound will be played when the recording is started or paused, or when an error occurs."));
 #endif
 		QLabel *label_hotkey = new QLabel(tr("Hotkey:"), groupbox_recording);
 		m_checkbox_hotkey_ctrl = new QCheckBox(tr("Ctrl +"), groupbox_recording);
