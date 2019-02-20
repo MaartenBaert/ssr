@@ -132,7 +132,7 @@ If you have a 64-bit system and you want to compile the 32-bit GLInject library,
 
     sudo apt-get install build-essential pkg-config qt4-qmake libqt4-dev desktop-file-utils \
     libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
-    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev
+    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev cmake
 
 Extra dependencies for 32-bit GLInject on 64-bit systems:
 
