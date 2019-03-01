@@ -36,6 +36,7 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 	{
 		QLabel *label_logo = new QLabel(scrollarea_contents);
 		label_logo->setPixmap(QPixmap(":/header.png"));
+		label_logo->setScaledContents(true);
 		QLabel *label_welcome = new QLabel(scrollarea_contents);
 		label_welcome->setText(tr("<p>Welcome to SimpleScreenRecorder!</p>\n\n"
 								  "<p>Despite the name, this program actually has a lot of options. Don't worry though, there are really just two things that you "

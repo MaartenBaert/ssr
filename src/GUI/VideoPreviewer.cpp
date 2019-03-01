@@ -206,6 +206,7 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 		// draw the border
 		painter.setPen(Qt::black);
 		painter.setBrush(Qt::NoBrush);
+		painter.setRenderHint(QPainter::Antialiasing);
 		painter.drawRect(QRectF(draw_rect).adjusted(-0.5, -0.5, 0.5, 0.5));
 
 	}

@@ -152,9 +152,10 @@ void AudioPreviewer::paintEvent(QPaintEvent* event) {
 
 	painter.setPen(QColor(0, 0, 0));
 	painter.setBrush(Qt::NoBrush);
+	painter.setRenderHint(QPainter::Antialiasing);
 	for(unsigned int c = 0; c < n; ++c) {
 		int y1 = h * c / n, y2 = h * (c + 1) / n;
-		painter.drawRect(0, y1, w, y2 - y1);
+		painter.drawRect(QRectF(0.5, (qreal) y1 + 0.5, (qreal) w, (qreal) (y2 - y1)));
 	}
 
 }
