@@ -1,0 +1,22 @@
+language: cpp
+addons:
+  apt:
+    packages:
+      - libavcodec-dev
+      - libavformat-dev
+      - libswscale-dev
+      - libasound2-dev
+      - libpulse-dev
+      - libjack-dev
+      - libxi-dev
+      - libxinerama-dev
+      - libx11-dev
+      - libx11-dev:i386
+      - libxfixes-dev
+      - libxfixes-dev:i386
+      - libgl1-mesa-glx:i386
+      - libglu1-mesa-dev
+      - libglu1-mesa:i386
+      - desktop-file-utils
+      - g++-multilib
+script: ./simple-build-and-install
