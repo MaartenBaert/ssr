@@ -1,6 +1,10 @@
 # translations for 'simplescreenrecorder' executable
 
-find_program(LRELEASE lrelease)
+if(WITH_QT5)
+	find_program(LRELEASE NAMES lrelease-qt5 lrelease)
+else()
+	find_program(LRELEASE NAMES lrelease-qt4 lrelease)
+endif()
 
 if(LRELEASE)
 
