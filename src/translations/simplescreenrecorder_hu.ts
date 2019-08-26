@@ -471,7 +471,8 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ. Próbá
         <location filename="../AV/Input/PulseAudioInput.cpp" line="68"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: nem sikerült kapcsolódni! Ok: %1
+Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="82"/>
@@ -506,17 +507,17 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="297"/>
         <source>Error: Could not get source info! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: nem sikerült lekérni a forrásinformációt! Ok: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="302"/>
         <source>Stream is a monitor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az adatfolyam egy monitor.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="304"/>
         <source>Stream is not a monitor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az adatfolyam nem monitor.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="349"/>
@@ -718,12 +719,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <location filename="../AV/Input/X11Input.cpp" line="367"/>
         <source>Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.</source>
         <comment>Don&apos;t translate &apos;Xinerama&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Figyelmeztetés: a Xinerama kiterjesztést nem támogatja az X-kiszolgáló, a többmonitoros támogatás esetleg nem működik megfelelően.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="373"/>
         <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Figyelmeztetés: nem észlelhetők monitorok, a többmonitoros támogatás esetleg nem működik megfelelően.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="392"/>
@@ -1260,12 +1261,12 @@ Ezt a beállítást kézzel is megváltoztathatja az NVIDIA vezérlőpultján.</
     <message>
         <location filename="../GUI/PageInput.cpp" line="238"/>
         <source>Input profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Bemeneti profil</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="247"/>
         <source>Record OpenGL</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenGL rögzítése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="256"/>
@@ -1275,12 +1276,12 @@ Ezt a beállítást kézzel is megváltoztathatja az NVIDIA vezérlőpultján.</
     <message>
         <location filename="../GUI/PageInput.cpp" line="257"/>
         <source>Record entire screen with cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Teljes képernyő rögzítése kurzorral</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="258"/>
         <source>Record the entire screen on which the cursor is located, rather than following the cursor position.</source>
-        <translation type="unfinished"></translation>
+        <translation>A teljes képernyő rögzítése, amelyen a kurzor található, ahelyett hogy követné a kurzor pozícióját.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="259"/>
@@ -1423,7 +1424,7 @@ Az ALSA háttérprogram is működni fog azokon a rendszereken, amelyek PulseAud
     <message>
         <location filename="../GUI/PageInput.cpp" line="408"/>
         <source>The audio backend that will be used for recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>A hang háttérprogram, amely a rögzítéshez lesz használva.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="411"/>
@@ -1553,7 +1554,7 @@ A „monitor” egy olyan forrás, amely a más alkalmazások által lejátszott
     <message>
         <location filename="../GUI/PageOutput.cpp" line="190"/>
         <source>Output profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Kimeneti profil</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="192"/>
@@ -1666,24 +1667,24 @@ Vegye figyelembe, hogy nem minden konténer támogat minden kodeket, és hogy ne
     <message>
         <location filename="../GUI/PageOutput.cpp" line="199"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.If unchecked, all recorded segments will be combined into a single video file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha be van jelölve, akkor különálló videofájl lesz létrehozva minden alkalommal, amikor szünetelteti és folytatja a rögzítést. Ha nincs bejelölve, akkor az összes rögzített szakasz egy önálló videofájlba lesz egyesítve.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="201"/>
         <source>Add timestamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Időbélyeg hozzáadása</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="202"/>
         <source>If checked, the current date and time will be appended to the file name automatically.
 If the original file name is &apos;test.mkv&apos;, the video will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha be van jelölve, akkor a jelenlegi dátum és idő automatikusan hozzá lesz fűzve a fájlnévhez. Ha az eredeti fájlnév „próba.mkv”, akkor a videó „próba-ÉÉÉÉ-HH-NN_ÓÓ.PP.MM.mkv” néven lesz elmentve.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="266"/>
         <location filename="../GUI/PageOutput.cpp" line="350"/>
         <source>Bit rate (in kbit/s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitsebesség (kbit/mp):</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="268"/>
