@@ -62,9 +62,14 @@ MainWindow::MainWindow()
 	m_stacked_layout->addWidget(m_page_output);
 	m_stacked_layout->addWidget(m_page_record);
 	m_stacked_layout->addWidget(m_page_done);
-	m_stacked_layout->setCurrentWidget(m_page_welcome);
 
 	LoadSettings();
+
+	if(m_page_welcome->GetSkipPage()) {
+		m_stacked_layout->setCurrentWidget(m_page_input);
+	} else {
+		m_stacked_layout->setCurrentWidget(m_page_welcome);
+	}
 
 	// warning for glitch with proprietary NVIDIA drivers
 	if(GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_ASK || GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_YES) {
@@ -121,6 +126,7 @@ void MainWindow::LoadSettings() {
 
 	SetNVidiaDisableFlipping(StringToEnum(settings.value("global/nvidia_disable_flipping", QString()).toString(), NVIDIA_DISABLE_FLIPPING_ASK));
 
+	m_page_welcome->LoadSettings(&settings);
 	m_page_input->LoadSettings(&settings);
 	m_page_output->LoadSettings(&settings);
 	m_page_record->LoadSettings(&settings);
@@ -134,6 +140,7 @@ void MainWindow::SaveSettings() {
 
 	settings.setValue("global/nvidia_disable_flipping", EnumToString(GetNVidiaDisableFlipping()));
 
+	m_page_welcome->SaveSettings(&settings);
 	m_page_input->SaveSettings(&settings);
 	m_page_output->SaveSettings(&settings);
 	m_page_record->SaveSettings(&settings);

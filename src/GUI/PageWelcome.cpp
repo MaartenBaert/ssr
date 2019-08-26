@@ -49,6 +49,8 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 		label_welcome->setTextInteractionFlags(Qt::TextBrowserInteraction);
 		label_welcome->setOpenExternalLinks(true);
 		QPushButton *button_about = new QPushButton(tr("About SimpleScreenRecorder"), scrollarea_contents);
+		m_checkbox_skip_page = new QCheckBox(tr("Skip this page next time"), scrollarea_contents);
+		m_checkbox_skip_page->setToolTip(tr("Go directly to the input page when the program is started."));
 
 		connect(button_about, SIGNAL(clicked()), this, SLOT(AboutDialog()));
 
@@ -68,6 +70,7 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 			layout2->addWidget(button_about);
 			layout2->addStretch();
 		}
+		layout->addWidget(m_checkbox_skip_page);
 		layout->addStretch();
 	}
 	QPushButton *button_continue = new QPushButton(g_icon_go_next, tr("Continue"), this);
@@ -86,6 +89,15 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 	}
 	layout->addSpacing(style()->pixelMetric(QStyle::PM_LayoutBottomMargin));
 
+}
+
+
+void PageWelcome::LoadSettings(QSettings* settings) {
+	SetSkipPage(settings->value("welcome/skip_page", false).toBool());
+}
+
+void PageWelcome::SaveSettings(QSettings* settings) {
+	settings->setValue("welcome/skip_page", GetSkipPage());
 }
 
 void PageWelcome::AboutDialog() {
