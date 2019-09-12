@@ -1579,7 +1579,7 @@ Un «monitor» est une source qui enregistre le son produit par d&apos;autres ap
     <message>
         <location filename="../GUI/PageOutput.cpp" line="197"/>
         <source>Browse...</source>
-        <translation>Afficher...</translation>
+        <translation>Naviguer...</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="198"/>
