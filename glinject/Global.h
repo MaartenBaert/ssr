@@ -32,6 +32,9 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include <sstream>
 #include <vector>
 
+// Maximum allowed image size (to avoid 32-bit integer overflow)
+#define SSR_MAX_IMAGE_SIZE 20000
+
 // generic macro to test version numbers
 #define TEST_MAJOR_MINOR(major, minor, required_major, required_minor) (major > required_major || (major == required_major && minor >= required_minor))
 

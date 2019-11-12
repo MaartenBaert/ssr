@@ -206,7 +206,7 @@ void GLXFrameGrabber::GrabFrame() {
 		}
 		return;
 	}
-	if(width > 10000 || height > 10000) {
+	if(width > SSR_MAX_IMAGE_SIZE || height > SSR_MAX_IMAGE_SIZE) {
 		if(m_warn_too_large) {
 			m_warn_too_large = false;
 			GLINJECT_PRINT("[GLXFrameGrabber " << m_id << "] Error: Frame is too large!");

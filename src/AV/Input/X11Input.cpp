@@ -197,8 +197,8 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Width or height is zero!"));
 		throw X11Exception();
 	}
-	if(m_width > 10000 || m_height > 10000) {
-		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
+	if(m_width > SSR_MAX_IMAGE_SIZE || m_height > SSR_MAX_IMAGE_SIZE) {
+		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(SSR_MAX_IMAGE_SIZE));
 		throw X11Exception();
 	}
 
@@ -388,7 +388,7 @@ void X11Input::UpdateScreenConfiguration() {
 			m_screen_bbox.m_y2 = rect.m_y2;
 	}
 	if(m_screen_bbox.m_x1 >= m_screen_bbox.m_x2 || m_screen_bbox.m_y1 >= m_screen_bbox.m_y2 ||
-	   m_screen_bbox.m_x2 - m_screen_bbox.m_x1 > 10000 || m_screen_bbox.m_y2 - m_screen_bbox.m_y1 > 10000) {
+	   m_screen_bbox.m_x2 - m_screen_bbox.m_x1 > SSR_MAX_IMAGE_SIZE || m_screen_bbox.m_y2 - m_screen_bbox.m_y1 > SSR_MAX_IMAGE_SIZE) {
 		Logger::LogError("[X11Input::UpdateScreenConfiguration] " + Logger::tr("Error: Invalid screen bounding box!") + "\n"
 						   "    x1 = " + QString::number(m_screen_bbox.m_x1) + ", y1 = " + QString::number(m_screen_bbox.m_y1)
 						   + ", x2 = " + QString::number(m_screen_bbox.m_x2) + ", y2 = " + QString::number(m_screen_bbox.m_y2));

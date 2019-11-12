@@ -268,25 +268,25 @@ PageInput::PageInput(MainWindow* main_window)
 #endif
 			m_label_video_x = new QLabel(tr("Left:"), groupbox_video);
 			m_spinbox_video_x = new QSpinBoxWithSignal(groupbox_video);
-			m_spinbox_video_x->setRange(0, 10000);
+			m_spinbox_video_x->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_x->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_spinbox_video_x->setToolTip(tr("The x coordinate of the upper-left corner of the recorded rectangle.\n"
 											 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
 			m_label_video_y = new QLabel(tr("Top:"), groupbox_video);
 			m_spinbox_video_y = new QSpinBoxWithSignal(groupbox_video);
-			m_spinbox_video_y->setRange(0, 10000);
+			m_spinbox_video_y->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_y->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_spinbox_video_y->setToolTip(tr("The y coordinate of the upper-left corner of the recorded rectangle.\n"
 											 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
 			m_label_video_w = new QLabel(tr("Width:"), groupbox_video);
 			m_spinbox_video_w = new QSpinBoxWithSignal(groupbox_video);
-			m_spinbox_video_w->setRange(0, 10000);
+			m_spinbox_video_w->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_spinbox_video_w->setToolTip(tr("The width of the recorded rectangle.\n"
 											 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
 			m_label_video_h = new QLabel(tr("Height:"), groupbox_video);
 			m_spinbox_video_h = new QSpinBoxWithSignal(groupbox_video);
-			m_spinbox_video_h->setRange(0, 10000);
+			m_spinbox_video_h->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_spinbox_video_h->setToolTip(tr("The height of the recorded rectangle.\n"
 											 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
@@ -299,11 +299,11 @@ PageInput::PageInput(MainWindow* main_window)
 			m_checkbox_scale->setToolTip(tr("Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster."));
 			m_label_video_scaled_w = new QLabel(tr("Scaled width:"), groupbox_video);
 			m_spinbox_video_scaled_w = new QSpinBox(groupbox_video);
-			m_spinbox_video_scaled_w->setRange(0, 10000);
+			m_spinbox_video_scaled_w->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_scaled_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_label_video_scaled_h = new QLabel(tr("Scaled height:"), groupbox_video);
 			m_spinbox_video_scaled_h = new QSpinBox(groupbox_video);
-			m_spinbox_video_scaled_h->setRange(0, 10000);
+			m_spinbox_video_scaled_h->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_scaled_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_checkbox_record_cursor = new QCheckBox(tr("Record cursor"), groupbox_video);
 

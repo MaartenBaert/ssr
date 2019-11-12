@@ -96,8 +96,8 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 		Logger::LogError("[VideoEncoder::PrepareStream] " + Logger::tr("Error: Width or height is zero!"));
 		throw LibavException();
 	}
-	if(width > 10000 || height > 10000) {
-		Logger::LogError("[VideoEncoder::PrepareStream] " + Logger::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
+	if(width > SSR_MAX_IMAGE_SIZE || height > SSR_MAX_IMAGE_SIZE) {
+		Logger::LogError("[VideoEncoder::PrepareStream] " + Logger::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(SSR_MAX_IMAGE_SIZE));
 		throw LibavException();
 	}
 	if(width % 2 != 0 || height % 2 != 0) {
