@@ -720,12 +720,12 @@ Il est possible que votre système n&apos;utilise pas PulseAudio.</translation>
         <location filename="../AV/Input/X11Input.cpp" line="367"/>
         <source>Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.</source>
         <comment>Don&apos;t translate &apos;Xinerama&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Avertissement : Xinerama n'est pas supporté par le serveur X, le support multi-moniteur pourrait ne pas fonctionner correctement.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="373"/>
         <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Avertissement : aucun moniteur détecté, la prise en charge de plusieurs moniteurs pourrait ne pas fonctionner correctement.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="392"/>
@@ -1279,12 +1279,12 @@ Vous pouvez également modifier manuellement cette option dans le panneau de con
     <message>
         <location filename="../GUI/PageInput.cpp" line="257"/>
         <source>Record entire screen with cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer tout l'écran avec le curseur</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="258"/>
         <source>Record the entire screen on which the cursor is located, rather than following the cursor position.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer tout l'écran sur lequel se trouve le curseur, plutôt que de suivre la position du curseur.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="259"/>
@@ -1579,7 +1579,7 @@ Un «monitor» est une source qui enregistre le son produit par d&apos;autres ap
     <message>
         <location filename="../GUI/PageOutput.cpp" line="197"/>
         <source>Browse...</source>
-        <translation>Afficher...</translation>
+        <translation>Naviguer...</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="198"/>
