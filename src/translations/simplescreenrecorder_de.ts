@@ -491,7 +491,8 @@ Es ist möglich, dass ihr System kein PulseAudio verwendet. Versuchen Sie es sta
         <location filename="../AV/Input/PulseAudioInput.cpp" line="68"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: keine Verbindung möglich! Grund: %1
+Es ist möglich, dass ihr System kein PulseAudio verwendet.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="82"/>
@@ -530,17 +531,17 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="297"/>
         <source>Error: Could not get source info! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: konnte keine Quellen-Information abrufen! Grund: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="302"/>
         <source>Stream is a monitor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stream ist ein Monitor.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="304"/>
         <source>Stream is not a monitor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stream ist kein Monitor.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="349"/>
@@ -750,12 +751,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <location filename="../AV/Input/X11Input.cpp" line="367"/>
         <source>Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.</source>
         <comment>Don&apos;t translate &apos;Xinerama&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Warnung: Xinerama wird nicht vom X-Server unterstützt, Multi-Monitor-Unterstützung könnte nicht richtig funktionieren.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="373"/>
         <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warnung: Keine Monitore erkannt, Multi-Monitor-Unterstützung könnte nicht richtig funktionieren.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="392"/>
@@ -794,7 +795,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="142"/>
         <source>Using sample format %1.</source>
-        <translation>Verwende Sample-Format %1</translation>
+        <translation>Verwende Sample-Format %1.</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="147"/>
@@ -804,12 +805,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
         <source>Error: Sending of audio frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Senden eines Audio Frames ist gescheitert!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Receiving of audio packet failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Empfang eines Audio Paketes ist gescheitert!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="210"/>
@@ -881,7 +882,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <location filename="../AV/Output/Muxer.cpp" line="100"/>
         <location filename="../AV/Output/Muxer.cpp" line="124"/>
         <source>Error: Can&apos;t copy parameters to stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: kann Parameter nicht zu dem Stream kopieren!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="146"/>
@@ -938,7 +939,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="295"/>
         <source>Error: Can&apos;t create new codec context!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: kann keinen neuen Codec-Kontext erzeugen!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="307"/>
@@ -1068,12 +1069,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="207"/>
         <source>Error: Sending of video frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Senden des Video Frames ist fehlgeschlagen!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="228"/>
         <source>Error: Receiving of video packet failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Empfang des Video Paketes ist fehlgeschlagen!</translation>
     </message>
     <message>
         <source>Error: Encoder requires an unsupported pixel format!</source>
@@ -1216,37 +1217,39 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="70"/>
         <source>Stopping fragment thread ...</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>no good translation for &quot;Fragment Thread&quot;</translatorcomment>
+        <translation>Stoppe Fragment Thread ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="346"/>
         <source>Fragment thread started.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>no good translation for &quot;Fragment Thread&quot;</translatorcomment>
+        <translation>Fragment Thread wurde gestartet.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="364"/>
         <source>Next fragment ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nächstes Fragment ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="368"/>
         <source>Finishing ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Beende ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="380"/>
         <source>Fragment thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fragment Thread angehalten.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="384"/>
         <source>Exception &apos;%1&apos; in fragment thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausnahme &apos;%1&apos; im Fragment Thread aufgetreten.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="387"/>
         <source>Unknown exception in fragment thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannte Ausnahme im Fragment Thread aufgetreten.</translation>
     </message>
 </context>
 <context>
@@ -1310,12 +1313,12 @@ Sie können diese Option auch manuell im NVIDIA-Control-Panel ändern.</translat
     <message>
         <location filename="../GUI/PageInput.cpp" line="238"/>
         <source>Input profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingangs-Profil</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="247"/>
         <source>Record OpenGL</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenGL Aufnahme</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="256"/>
@@ -1325,12 +1328,12 @@ Sie können diese Option auch manuell im NVIDIA-Control-Panel ändern.</translat
     <message>
         <location filename="../GUI/PageInput.cpp" line="257"/>
         <source>Record entire screen with cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesamten Bildschirm mit Cursor aufnehmen</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="258"/>
         <source>Record the entire screen on which the cursor is located, rather than following the cursor position.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesamten Bildschirm aufnehmen auf dem sich der Cursor befindet, statt der Cursor-Position zu folgen. </translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="259"/>
@@ -1475,7 +1478,7 @@ Alsa funktioniert auch auf Systemen, die PulseAudio verwenden, aber es ist besse
     <message>
         <location filename="../GUI/PageInput.cpp" line="408"/>
         <source>The audio backend that will be used for recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Audio-Backend, dass für die Aufnahme verwendet wird.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="411"/>
@@ -1607,7 +1610,7 @@ Ein &apos;monitor&apos; ist eine Quelle, die Audio von anderen Applikationen auf
     <message>
         <location filename="../GUI/PageOutput.cpp" line="190"/>
         <source>Output profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabe-Profil</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="192"/>
@@ -1632,7 +1635,7 @@ Ein &apos;monitor&apos; ist eine Quelle, die Audio von anderen Applikationen auf
     <message>
         <location filename="../GUI/PageOutput.cpp" line="198"/>
         <source>Separate file per segment</source>
-        <translation type="unfinished">Separate Datei pro Segment</translation>
+        <translation>Separate Datei pro Segment</translation>
     </message>
     <message>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
@@ -1721,24 +1724,26 @@ Beachten Sie, dass nicht alle Codecs von allen Containern unterstützt werden, u
     <message>
         <location filename="../GUI/PageOutput.cpp" line="199"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.If unchecked, all recorded segments will be combined into a single video file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn ausgewählt, wird jedesmal beim Pausieren und Fortsetzen der Aufnahme eine neue Datei erzeugt.
+Wenn nicht ausgewählt, werden alle Segmente zu einer einzige Video-Datei kombiniert.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="201"/>
         <source>Add timestamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitstempel hinzufügen</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="202"/>
         <source>If checked, the current date and time will be appended to the file name automatically.
 If the original file name is &apos;test.mkv&apos;, the video will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn ausgewählt, wird das aktuelle Datum und Uhrzeit automatisch an den Dateinamen angehangen.
+Wenn die Original-Datei &apos;test.mkv&apos; heißt, wird das Video als &apos;test-JJJJ-MM-TT_SS.MM.SS.mkv&apos; gespeichert.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="266"/>
         <location filename="../GUI/PageOutput.cpp" line="350"/>
         <source>Bit rate (in kbit/s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitrate (in kBit/s):</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="268"/>
