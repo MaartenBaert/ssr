@@ -6,6 +6,8 @@ SimpleScreenRecorder is a screen recorder for Linux. Despite the name, this prog
 There is a separate repository for SimpleScreenRecorder packages:
 https://github.com/MaartenBaert/ssr-packages
 
+![Screenshot](data/screenshots/screenshot01.png)
+
 License
 -------
 
