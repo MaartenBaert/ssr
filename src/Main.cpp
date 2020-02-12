@@ -22,6 +22,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Benchmark.h"
 #include "CPUFeatures.h"
 #include "HotkeyListener.h"
+#include "CommandSettings.h"
 #include "Icons.h"
 #include "Logger.h"
 #include "MainWindow.h"
@@ -38,16 +39,21 @@ void PrintOptionHelp() {
 				"Usage: simplescreenrecorder [OPTIONS]\n"
 				"\n"
 				"Options:\n"
-				"  --help              Show this help message.\n"
-				"  --version           Show version information.\n"
-				"  --logfile           Write log to ~/.ssr/log-DATE_TIME.txt instead of stdout.\n"
-				"  --statsfile[=FILE]  Write recording statistics to FILE. If FILE is omitted,\n"
-				"                      /dev/shm/simplescreenrecorder-stats-PID is used. It will\n"
-				"                      be updated continuously and deleted when the recording\n"
-				"                      page is closed.\n"
-				"  --syncdiagram       Show synchronization diagram (for debugging).\n"
-				"  --no-systray        Don't show the system tray icon.\n"
-				"  --start-hidden      Start the application in hidden form.\n"
+				"  --input_profile[=NAME]     Use this input profile.\n"
+				"  --help                     Show this help message.\n"
+				"  --logfile                  Write log to ~/.ssr/log-DATE_TIME.txt instead of stdout.\n"
+				"  --no-systray               Don't show the system tray icon.\n"
+				"  --output_file              Save to this file.\n"
+				"  --record_on_start          Start recording as soon as application starts.\n"
+				"  --statsfile[=FILE]         Write recording statistics to FILE. If FILE is omitted,\n"
+				"                             /dev/shm/simplescreenrecorder-stats-PID is used. It will\n"
+				"                             be updated continuously and deleted when the recording\n"
+				"                             page is closed.\n"
+				"  --syncdiagram              Show synchronization diagram (for debugging).\n"
+				"  --termination_timer[=SEC]  Stop recording in indicated seconds.\n"
+				"  --start-hidden             Start the application in hidden form.\n"
+				"  --version                  Show version information.\n"
+				"  --output_profile[=NAME]     Use this output profile.\n"
 	);
 }
 
@@ -154,6 +160,16 @@ int main(int argc, char* argv[]) {
 			} else if(option == "--benchmark") {
 				NOVALUE
 				g_option_benchmark = true;
+			} else if (option == "--output_file") {
+				CommandSettings::SetOutputFile(value);
+			} else if (option == "--input_profile") {
+				CommandSettings::SetInputProfile(value);
+			} else if (option == "--output_profile") {
+				CommandSettings::SetOutputProfile(value);
+			} else if (option == "--termination_timer") {
+				CommandSettings::SetTerminationTimer(value);
+			} else if (option == "--record_on_start") {
+				CommandSettings::SetRecordOnStart(true);
 			} else {
 				Logger::LogError("[main] " + Logger::tr("Error: Unknown command-line option '%1'!").arg(option));
 				PrintOptionHelp();

@@ -20,6 +20,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "MainWindow.h"
 
 #include "Main.h"
+#include "CommandSettings.h"
+#include "Terminator.h"
 #include "Icons.h"
 #include "Dialogs.h"
 #include "EnumStrings.h"
@@ -67,8 +69,16 @@ MainWindow::MainWindow()
 
 	if(m_page_welcome->GetSkipPage()) {
 		m_stacked_layout->setCurrentWidget(m_page_input);
+	} else if (CommandSettings::ShouldRecordOnStart()) {
+		m_stacked_layout->setCurrentWidget(m_page_record);
+		m_page_record->StartPage();
+		m_page_record->StartOutput();
 	} else {
 		m_stacked_layout->setCurrentWidget(m_page_welcome);
+	}
+
+	if (CommandSettings::GetTerminationTimer() > 0) {
+		Terminator(CommandSettings::GetTerminationTimer(), m_page_record);
 	}
 
 	// warning for glitch with proprietary NVIDIA drivers
@@ -121,16 +131,24 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::LoadSettings() {
-
 	QSettings settings(GetApplicationUserDir() + "/settings.conf", QSettings::IniFormat);
 
 	SetNVidiaDisableFlipping(StringToEnum(settings.value("global/nvidia_disable_flipping", QString()).toString(), NVIDIA_DISABLE_FLIPPING_ASK));
 
 	m_page_welcome->LoadSettings(&settings);
-	m_page_input->LoadSettings(&settings);
-	m_page_output->LoadSettings(&settings);
+	LoadProfileSettings();
 	m_page_record->LoadSettings(&settings);
 
+}
+
+void MainWindow::LoadProfileSettings() {
+	QString inputProfile = CommandSettings::GetInputProfile();
+	QSettings * inputSettings = ProfileBox::GetProfileSettings(inputProfile, "input-profiles");
+	m_page_input->LoadSettings(inputSettings);
+
+	QString outputProfile = CommandSettings::GetOutputProfile();
+	QSettings * outputSettings = ProfileBox::GetProfileSettings(outputProfile, "output-profiles");
+	m_page_output->LoadSettings(outputSettings);
 }
 
 void MainWindow::SaveSettings() {

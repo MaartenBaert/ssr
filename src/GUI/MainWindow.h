@@ -53,6 +53,8 @@ private:
 	PageRecord *m_page_record;
 	PageDone *m_page_done;
 
+	void LoadProfileSettings();
+
 public:
 	MainWindow();
 	~MainWindow();

@@ -24,6 +24,9 @@ class ProfileBox : public QGroupBox {
 	Q_OBJECT
 
 public:
+	static QSettings * GetProfileSettings(const QString& name, const QString& type);
+
+public:
 	typedef void (*LoadCallback)(QSettings*, void*);
 	typedef void (*SaveCallback)(QSettings*, void*);
 
