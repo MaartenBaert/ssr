@@ -148,6 +148,7 @@ void MainWindow::LoadProfileSettings() {
 
 	QString outputProfile = CommandSettings::GetOutputProfile();
 	QSettings * outputSettings = ProfileBox::GetProfileSettings(outputProfile, "output-profiles");
+	outputSettings->setValue("output/file", CommandSettings::GetOutputFile());	
 	m_page_output->LoadSettings(outputSettings);
 }
 
