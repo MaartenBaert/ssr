@@ -19,8 +19,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.h"
 
-#include "Main.h"
-
 Logger *Logger::s_instance = NULL;
 
 Logger::Logger() {

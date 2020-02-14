@@ -19,7 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageRecord.h"
 
-#include "Main.h"
+#include "CommandLineOptions.h"
 #include "Icons.h"
 #include "Dialogs.h"
 #include "EnumStrings.h"
@@ -167,7 +167,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 	QGroupBox *groupbox_recording = new QGroupBox(tr("Recording"), this);
 	{
-		m_pushbutton_start_pause = new QPushButton(groupbox_recording);
+		m_pushbutton_record = new QPushButton(groupbox_recording);
 
 		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), groupbox_recording);
 		m_checkbox_hotkey_enable->setToolTip(tr("The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,\n"
@@ -191,7 +191,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 			m_combobox_hotkey_key->addItem(QString('A' + i));
 		}
 
-		connect(m_pushbutton_start_pause, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
+		connect(m_pushbutton_record, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
 		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(OnUpdateHotkeyFields()));
 #if SSR_USE_ALSA
 		connect(m_checkbox_sound_notifications_enable, SIGNAL(clicked()), this, SLOT(OnUpdateSoundNotifications()));
@@ -203,7 +203,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		connect(m_combobox_hotkey_key, SIGNAL(activated(int)), this, SLOT(OnUpdateHotkey()));
 
 		QVBoxLayout *layout = new QVBoxLayout(groupbox_recording);
-		layout->addWidget(m_pushbutton_start_pause);
+		layout->addWidget(m_pushbutton_record);
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
 			layout->addLayout(layout2);
@@ -342,7 +342,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	QPushButton *button_cancel = new QPushButton(g_icon_cancel, tr("Cancel recording"), this);
 	QPushButton *button_save = new QPushButton(g_icon_save, tr("Save recording"), this);
 
-	if(g_option_systray) {
+	if(CommandLineOptions::GetSysTray()) {
 		m_systray_icon = new QSystemTrayIcon(g_icon_ssr_idle, m_main_window);
 		QMenu *menu = new QMenu(m_main_window);
 		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
@@ -377,7 +377,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	}
 
 	UpdateSysTray();
-	UpdateRecordPauseButton();
+	UpdateRecordButton();
 	UpdatePreview();
 
 	m_timer_update_info = new QTimer(this);
@@ -771,7 +771,7 @@ void PageRecord::StartOutput() {
 		m_output_started = true;
 		m_recorded_something = true;
 		UpdateSysTray();
-		UpdateRecordPauseButton();
+		UpdateRecordButton();
 		UpdateInput();
 
 	} catch(...) {
@@ -814,7 +814,7 @@ void PageRecord::StopOutput(bool final) {
 
 	m_output_started = false;
 	UpdateSysTray();
-	UpdateRecordPauseButton();
+	UpdateRecordButton();
 	UpdateInput();
 
 }
@@ -1026,13 +1026,13 @@ void PageRecord::UpdateSysTray() {
 	}
 }
 
-void PageRecord::UpdateRecordPauseButton() {
+void PageRecord::UpdateRecordButton() {
 	if(m_output_started) {
-		m_pushbutton_start_pause->setIcon(g_icon_pause);
-		m_pushbutton_start_pause->setText(tr("Pause recording"));
+		m_pushbutton_record->setIcon(g_icon_pause);
+		m_pushbutton_record->setText(tr("Pause recording"));
 	} else {
-		m_pushbutton_start_pause->setIcon(g_icon_record);
-		m_pushbutton_start_pause->setText(tr("Start recording"));
+		m_pushbutton_record->setIcon(g_icon_record);
+		m_pushbutton_record->setText(tr("Start recording"));
 	}
 }
 
@@ -1083,7 +1083,7 @@ void PageRecord::OnUpdateSoundNotifications() {
 #endif
 
 void PageRecord::OnRecordStartPause() {
-	if(QApplication::activeModalWidget() != NULL || QApplication::activePopupWidget() != NULL)
+	if(m_main_window->IsBusy())
 		return;
 	if(!TryStartPage())
 		return;
@@ -1111,6 +1111,8 @@ void PageRecord::OnPreviewStartStop() {
 }
 
 void PageRecord::OnCancel() {
+	if(m_main_window->IsBusy())
+		return;
 	if(!m_page_started)
 		return;
 	if(m_wait_saving)
@@ -1126,6 +1128,8 @@ void PageRecord::OnCancel() {
 }
 
 void PageRecord::OnSave() {
+	if(m_main_window->IsBusy())
+		return;
 	if(!m_page_started)
 		return;
 	if(m_wait_saving)
@@ -1187,7 +1191,7 @@ void PageRecord::OnUpdateInformation() {
 		m_label_info_file_size->setText(ReadableSizeIEC(total_bytes, "B"));
 		m_label_info_bit_rate->setText(ReadableSizeSI(bit_rate, "bit/s"));
 
-		if(!g_option_statsfile.isNull()) {
+		if(!CommandLineOptions::GetStatsFile().isNull()) {
 			QString str = QString() +
 					"capturing\t" + ((m_input_started)? "1" : "0") + "\n"
 					"recording\t" + ((m_output_started)? "1" : "0") + "\n"
@@ -1202,8 +1206,8 @@ void PageRecord::OnUpdateInformation() {
 					"file_size\t" + QString::number(total_bytes) + "\n"
 					"bit_rate\t" + QString::number(bit_rate) + "\n";
 			QByteArray data = str.toLocal8Bit();
-			QByteArray old_file = g_option_statsfile.toLocal8Bit();
-			QByteArray new_file = (g_option_statsfile + "-new").toLocal8Bit();
+			QByteArray old_file = CommandLineOptions::GetStatsFile().toLocal8Bit();
+			QByteArray new_file = (CommandLineOptions::GetStatsFile() + "-new").toLocal8Bit();
 			// Qt doesn't get the permissions right (you can only change the permissions after creating the file, that's too late),
 			// and it doesn't allow renaming a file over another file, so don't bother with QFile and just use POSIX and C functions.
 			int fd = open(new_file.constData(), O_WRONLY | O_CREAT | O_CLOEXEC, 0600);
@@ -1225,8 +1229,8 @@ void PageRecord::OnUpdateInformation() {
 		m_label_info_file_size->clear();
 		m_label_info_bit_rate->clear();
 
-		if(!g_option_statsfile.isNull()) {
-			QByteArray old_file = g_option_statsfile.toLocal8Bit();
+		if(!CommandLineOptions::GetStatsFile().isNull()) {
+			QByteArray old_file = CommandLineOptions::GetStatsFile().toLocal8Bit();
 			remove(old_file.constData());
 		}
 

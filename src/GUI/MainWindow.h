@@ -60,6 +60,7 @@ public:
 	void LoadSettings();
 	void SaveSettings();
 
+	bool IsBusy();
 	bool Validate();
 
 protected:

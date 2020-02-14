@@ -110,7 +110,7 @@ private:
 
 	HotkeyCallback m_hotkey_start_pause;
 
-	QPushButton *m_pushbutton_start_pause;
+	QPushButton *m_pushbutton_record;
 
 	QCheckBox *m_checkbox_hotkey_enable;
 #if SSR_USE_ALSA
@@ -165,7 +165,7 @@ private:
 	void FinishOutput();
 	void UpdateInput();
 	void UpdateSysTray();
-	void UpdateRecordPauseButton();
+	void UpdateRecordButton();
 	void UpdatePreview();
 
 public:

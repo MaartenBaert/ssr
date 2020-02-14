@@ -652,6 +652,12 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 #endif
 }
 
+bool PageInput::Validate() {
+	if(m_grabbing || m_selecting_window)
+		return false;
+	return true;
+}
+
 #if SSR_USE_ALSA
 QString PageInput::GetALSASourceName() {
 	return QString::fromStdString(m_alsa_sources[GetALSASource()].m_name);
@@ -1150,5 +1156,7 @@ void PageInput::OnGLInjectDialog() {
 #endif
 
 void PageInput::OnContinue() {
+	if(!Validate())
+		return;
 	m_main_window->GoPageOutput();
 }

@@ -19,8 +19,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ProfileBox.h"
 
-#include "Main.h"
 #include "Logger.h"
+#include "CommandLineOptions.h"
 #include "Dialogs.h"
 #include "MainWindow.h"
 

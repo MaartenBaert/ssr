@@ -19,8 +19,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Synchronizer.h"
 
-#include "Main.h"
 #include "Logger.h"
+#include "CommandLineOptions.h"
 #include "OutputManager.h"
 #include "OutputSettings.h"
 #include "VideoEncoder.h"
@@ -252,7 +252,7 @@ void Synchronizer::Init() {
 	}
 
 	// create sync diagram
-	if(g_option_syncdiagram) {
+	if(CommandLineOptions::GetSyncDiagram()) {
 		m_sync_diagram.reset(new SyncDiagram(4));
 		m_sync_diagram->SetChannelName(0, SyncDiagram::tr("Video in"));
 		m_sync_diagram->SetChannelName(1, SyncDiagram::tr("Audio in"));

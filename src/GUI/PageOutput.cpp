@@ -24,7 +24,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "HiddenScrollArea.h"
 #include "Icons.h"
 #include "Logger.h"
-#include "Main.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 
@@ -513,7 +512,7 @@ void PageOutput::SaveProfileSettings(QSettings* settings) {
 
 }
 
-void PageOutput::PageStart() {
+void PageOutput::StartPage() {
 
 	// only show audio settings if audio is enabled
 	m_groupbox_audio->setVisible(m_main_window->GetPageInput()->GetAudioEnabled());

@@ -19,8 +19,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageWelcome.h"
 
+#include "CommandLineOptions.h"
 #include "Icons.h"
-#include "Main.h"
 #include "MainWindow.h"
 
 PageWelcome::PageWelcome(MainWindow* main_window)

@@ -74,6 +74,8 @@ set(sources
 	AV/SimpleSynth.h
 	AV/SourceSink.cpp
 	AV/SourceSink.h
+	common/CommandLineOptions.cpp
+	common/CommandLineOptions.h
 	common/CPUFeatures.cpp
 	common/CPUFeatures.h
 	common/Dialogs.cpp
@@ -117,7 +119,6 @@ set(sources
 	Benchmark.h
 	Global.h
 	Main.cpp
-	Main.h
 	NVidia.cpp
 	NVidia.h
 )

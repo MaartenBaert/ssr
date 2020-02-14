@@ -142,7 +142,7 @@ private:
 	void SaveProfileSettings(QSettings* settings);
 
 public:
-	void PageStart();
+	void StartPage();
 	bool Validate();
 
 	QString GetFileProtocol();

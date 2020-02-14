@@ -192,6 +192,8 @@ private:
 	void SaveProfileSettings(QSettings* settings);
 
 public:
+	bool Validate();
+
 #if SSR_USE_ALSA
 	QString GetALSASourceName();
 #endif
