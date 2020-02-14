@@ -40,9 +40,11 @@ SOURCES += \
 	AV/FastScaler_Scale_SSSE3.cpp \
 	AV/SimpleSynth.cpp \
 	AV/SourceSink.cpp \
+	common/CommandSettings.cpp \
 	common/CPUFeatures.cpp \
 	common/Dialogs.cpp \
 	common/Logger.cpp \
+	common/Terminator.cpp \
 	GUI/AudioPreviewer.cpp \
 	GUI/DialogGLInject.cpp \
 	GUI/ElidedLabel.cpp \
@@ -89,6 +91,7 @@ HEADERS  += \
 	AV/SampleCast.h \
 	AV/SimpleSynth.h \
 	AV/SourceSink.h \
+	common/CommandSettings.h \
 	common/CPUFeatures.h \
 	common/Dialogs.h \
 	common/EnumStrings.h \
@@ -97,6 +100,7 @@ HEADERS  += \
 	common/MutexDataPair.h \
 	common/QueueBuffer.h \
 	common/TempBuffer.h \
+	common/Terminator.h \
 	GUI/AudioPreviewer.h \
 	GUI/DialogGLInject.h \
 	GUI/ElidedLabel.h \

@@ -74,6 +74,8 @@ set(sources
 	AV/SimpleSynth.h
 	AV/SourceSink.cpp
 	AV/SourceSink.h
+	common/CommandSettings.cpp
+	common/CommandSettings.h
 	common/CPUFeatures.cpp
 	common/CPUFeatures.h
 	common/Dialogs.cpp
@@ -85,6 +87,8 @@ set(sources
 	common/MutexDataPair.h
 	common/QueueBuffer.h
 	common/TempBuffer.h
+	common/Terminator.cpp
+	common/Terminator.h
 	GUI/AudioPreviewer.cpp
 	GUI/AudioPreviewer.h
 	GUI/DialogGLInject.cpp
