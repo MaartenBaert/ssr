@@ -1,7 +1,7 @@
 <?php
 
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 

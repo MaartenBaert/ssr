@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file contains code from x11grab.c (part of ffmpeg/libav). The copyright information for x11grab.c is:
 >> FFmpeg/Libav integration:
