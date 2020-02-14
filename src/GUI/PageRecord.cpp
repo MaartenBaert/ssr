@@ -26,6 +26,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "MainWindow.h"
 #include "PageInput.h"
 #include "PageOutput.h"
+#include "DialogRecordSchedule.h"
 
 #include "HotkeyListener.h"
 
@@ -148,9 +149,6 @@ static const std::array<SimpleSynth::Note, 4> SEQUENCE_RECORD_ERROR = {{
 }};
 #endif
 
-const int PageRecord::PRIORITY_RECORD = 0;
-const int PageRecord::PRIORITY_PREVIEW = -1;
-
 PageRecord::PageRecord(MainWindow* main_window)
 	: QWidget(main_window->centralWidget()) {
 
@@ -161,6 +159,9 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_output_started = false;
 	m_previewing = false;
 
+	m_schedule_active = false;
+	m_schedule_time_zone = SCHEDULE_TIME_ZONE_LOCAL;
+
 #if SSR_USE_ALSA
 	m_last_error_sound = std::numeric_limits<int64_t>::min();
 #endif
@@ -168,6 +169,11 @@ PageRecord::PageRecord(MainWindow* main_window)
 	QGroupBox *groupbox_recording = new QGroupBox(tr("Recording"), this);
 	{
 		m_pushbutton_record = new QPushButton(groupbox_recording);
+
+		m_label_schedule_status = new QLabel(groupbox_recording);
+		m_pushbutton_schedule_activate = new QPushButton(groupbox_recording);
+		m_pushbutton_schedule_edit = new QPushButton(tr("Edit schedule"), groupbox_recording);
+		// TODO: tooptips
 
 		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), groupbox_recording);
 		m_checkbox_hotkey_enable->setToolTip(tr("The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,\n"
@@ -192,6 +198,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 		}
 
 		connect(m_pushbutton_record, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
+		connect(m_pushbutton_schedule_activate, SIGNAL(clicked()), this, SLOT(OnScheduleActivateDeactivate()));
+		connect(m_pushbutton_schedule_edit, SIGNAL(clicked()), this, SLOT(OnScheduleEdit()));
 		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(OnUpdateHotkeyFields()));
 #if SSR_USE_ALSA
 		connect(m_checkbox_sound_notifications_enable, SIGNAL(clicked()), this, SLOT(OnUpdateSoundNotifications()));
@@ -204,6 +212,13 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 		QVBoxLayout *layout = new QVBoxLayout(groupbox_recording);
 		layout->addWidget(m_pushbutton_record);
+		{
+			QHBoxLayout *layout2 = new QHBoxLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(m_label_schedule_status, 2);
+			layout2->addWidget(m_pushbutton_schedule_activate, 1);
+			layout2->addWidget(m_pushbutton_schedule_edit, 1);
+		}
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
 			layout->addLayout(layout2);
@@ -376,14 +391,18 @@ PageRecord::PageRecord(MainWindow* main_window)
 		layout2->addWidget(button_save);
 	}
 
-	UpdateSysTray();
-	UpdateRecordButton();
-	UpdatePreview();
-
+	m_timer_schedule = new QTimer(this);
+	m_timer_schedule->setSingleShot(true);
 	m_timer_update_info = new QTimer(this);
+	connect(m_timer_schedule, SIGNAL(timeout()), this, SLOT(OnScheduleTimer()));
 	connect(m_timer_update_info, SIGNAL(timeout()), this, SLOT(OnUpdateInformation()));
 	connect(&m_hotkey_start_pause, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()), Qt::QueuedConnection);
 	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(OnNewLogLine(Logger::enum_type,QString)), Qt::QueuedConnection);
+
+	UpdateSysTray();
+	UpdateRecordButton();
+	UpdateSchedule();
+	UpdatePreview();
 
 	if(m_systray_icon != NULL)
 		m_systray_icon->show();
@@ -426,6 +445,18 @@ void PageRecord::LoadSettings(QSettings *settings) {
 	SetSoundNotificationsEnabled(settings->value("record/sound_notifications_enable", false).toBool());
 #endif
 	SetPreviewFrameRate(settings->value("record/preview_frame_rate", 10).toUInt());
+	SetScheduleTimeZone(StringToEnum(settings->value("record/schedule_time_zone", QString()).toString(), SCHEDULE_TIME_ZONE_LOCAL));
+	unsigned int num_entries = clamp(settings->value("record/schedule_num_entries", 0).toUInt(), 0u, 1000u);
+	m_schedule_entries.clear();
+	m_schedule_entries.resize(num_entries);
+	Qt::TimeSpec spec = SCHEDULE_TIME_ZONE_TIMESPECS[GetScheduleTimeZone()];
+	for(unsigned int i = 0; i < num_entries; ++i) {
+		QString timestring = settings->value(QString("record/schedule_entry%1_time").arg(i), QString()).toString();
+		QString actionstring = settings->value(QString("record/schedule_entry%1_action").arg(i), QString()).toString();
+		m_schedule_entries[i].time = QDateTime::fromString(timestring, "yyyy-MM-dd hh:mm:ss");
+		m_schedule_entries[i].time.setTimeSpec(spec);
+		m_schedule_entries[i].action = StringToEnum(actionstring, SCHEDULE_ACTION_START);
+	}
 	OnUpdateHotkeyFields();
 #if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
@@ -443,6 +474,12 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	settings->setValue("record/sound_notifications_enable", AreSoundNotificationsEnabled());
 #endif
 	settings->setValue("record/preview_frame_rate", GetPreviewFrameRate());
+	settings->setValue("record/schedule_time_zone", EnumToString(GetScheduleTimeZone()));
+	settings->setValue("record/schedule_num_entries", (unsigned int) m_schedule_entries.size());
+	for(unsigned int i = 0; i < m_schedule_entries.size(); ++i) {
+		settings->setValue(QString("record/schedule_entry%1_time").arg(i), m_schedule_entries[i].time.toString("yyyy-MM-dd hh:mm:ss"));
+		settings->setValue(QString("record/schedule_entry%1_action").arg(i), EnumToString(m_schedule_entries[i].action));
+	}
 }
 
 bool PageRecord::TryStartPage() {
@@ -642,12 +679,18 @@ void PageRecord::StartPage() {
 	OnUpdateInformation();
 	m_timer_update_info->start(1000);
 
+	m_schedule_active = false;
+	UpdateSchedule();
+
 }
 
 void PageRecord::StopPage(bool save) {
 
 	if(!m_page_started)
 		return;
+
+	m_schedule_active = false;
+	UpdateSchedule();
 
 	StopOutput(true);
 	StopInput();
@@ -1036,6 +1079,25 @@ void PageRecord::UpdateRecordButton() {
 	}
 }
 
+void PageRecord::UpdateSchedule() {
+	if(!m_page_started)
+		return;
+	if(m_schedule_active) {
+		m_pushbutton_schedule_activate->setText(tr("Deactivate schedule"));
+		m_schedule_position = 0;
+		QDateTime now = QDateTime::currentDateTimeUtc();
+		while(m_schedule_position < m_schedule_entries.size()) {
+			ScheduleEntry &entry = m_schedule_entries[m_schedule_position];
+			if(now < entry.time)
+				break;
+			++m_schedule_position;
+		}
+	} else {
+		m_pushbutton_schedule_activate->setText(tr("Activate schedule"));
+	}
+	OnScheduleTimer();
+}
+
 void PageRecord::UpdatePreview() {
 	if(m_previewing) {
 		m_video_previewer->SetFrameRate(GetPreviewFrameRate());
@@ -1110,6 +1172,79 @@ void PageRecord::OnRecordStartPause() {
 	} else {
 		OnRecordStart();
 	}
+}
+
+void PageRecord::OnScheduleTimer() {
+	if(!m_page_started)
+		return;
+	if(m_schedule_active) {
+		QDateTime now = QDateTime::currentDateTimeUtc();
+		while(m_schedule_position < m_schedule_entries.size()) {
+			ScheduleEntry &entry = m_schedule_entries[m_schedule_position];
+			if(now < entry.time)
+				break;
+			Logger::LogInfo("[PageRecord::OnScheduleTimer] " + tr("Triggering scheduled action '%1' ...").arg(EnumToString(entry.action)));
+			switch(entry.action) {
+				case SCHEDULE_ACTION_START: OnRecordStart(); break;
+				case SCHEDULE_ACTION_PAUSE: OnRecordPause(); break;
+				default: break; // to keep GCC happy
+			}
+			++m_schedule_position;
+		}
+		if(m_schedule_position < m_schedule_entries.size()) {
+			ScheduleEntry &entry = m_schedule_entries[m_schedule_position];
+			int64_t msec = now.msecsTo(entry.time);
+			m_label_schedule_status->setText(tr("Schedule: %1 in %2").arg(SCHEDULE_ACTION_TEXT[entry.action]).arg(ReadableTime(msec * 1000)));
+			if(msec < 1000) {
+				m_timer_schedule->start(msec);
+			} else {
+				m_timer_schedule->start((msec - 100) % 1000 + 100);
+			}
+		} else {
+			m_label_schedule_status->setText(tr("Schedule: (none)"));
+			m_timer_schedule->stop();
+		}
+	} else {
+		m_label_schedule_status->setText(tr("Schedule: (inactive)"));
+		m_timer_schedule->stop();
+	}
+}
+
+void PageRecord::OnScheduleActivate() {
+	if(m_main_window->IsBusy())
+		return;
+	if(!TryStartPage())
+		return;
+	if(!m_schedule_active) {
+		m_schedule_active = true;
+		UpdateSchedule();
+	}
+}
+
+void PageRecord::OnScheduleDeactivate() {
+	if(m_main_window->IsBusy())
+		return;
+	if(!m_page_started)
+		return;
+	if(m_schedule_active) {
+		m_schedule_active = false;
+		UpdateSchedule();
+	}
+}
+
+void PageRecord::OnScheduleActivateDeactivate() {
+	if(m_page_started && m_schedule_active) {
+		OnScheduleDeactivate();
+	} else {
+		OnScheduleActivate();
+	}
+}
+
+void PageRecord::OnScheduleEdit() {
+	OnScheduleDeactivate();
+	DialogRecordSchedule dialog(this);
+	dialog.exec();
+	UpdateSchedule();
 }
 
 void PageRecord::OnPreviewStartStop() {

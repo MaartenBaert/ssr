@@ -26,7 +26,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "PageInput.h"
 
 #include "GLInjectInput.h"
-#include "SSRVideoStreamWatcher.h"
 
 DialogGLInject::DialogGLInject(PageInput* parent)
 	: QDialog(parent) {

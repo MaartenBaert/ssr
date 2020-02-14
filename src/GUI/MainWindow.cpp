@@ -124,7 +124,7 @@ MainWindow::MainWindow()
 }
 
 MainWindow::~MainWindow() {
-
+	// nothing
 }
 
 void MainWindow::LoadSettings() {

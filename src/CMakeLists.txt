@@ -91,6 +91,8 @@ set(sources
 	GUI/AudioPreviewer.h
 	GUI/DialogGLInject.cpp
 	GUI/DialogGLInject.h
+	GUI/DialogRecordSchedule.cpp
+	GUI/DialogRecordSchedule.h
 	GUI/ElidedLabel.cpp
 	GUI/ElidedLabel.h
 	GUI/HiddenScrollArea.cpp
@@ -115,6 +117,8 @@ set(sources
 	GUI/ProfileBox.h
 	GUI/VideoPreviewer.cpp
 	GUI/VideoPreviewer.h
+	GUI/WidgetRack.cpp
+	GUI/WidgetRack.h
 	Benchmark.cpp
 	Benchmark.h
 	Global.h

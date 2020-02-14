@@ -42,6 +42,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QDateTimeEdit>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>

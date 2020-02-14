@@ -26,6 +26,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "OutputManager.h"
 #include "ElidedLabel.h"
 #include "HotkeyListener.h"
+#include "DialogRecordSchedule.h"
 
 class MainWindow;
 
@@ -57,13 +58,18 @@ class PageRecord : public QWidget {
 	Q_OBJECT
 
 private:
-	static const int PRIORITY_RECORD, PRIORITY_PREVIEW;
+	static constexpr int PRIORITY_RECORD = 0, PRIORITY_PREVIEW = -1;
 
 private:
 	MainWindow *m_main_window;
 
 	bool m_page_started, m_input_started, m_output_started, m_previewing;
 	bool m_recorded_something, m_wait_saving, m_error_occurred;
+
+	bool m_schedule_active;
+	unsigned int m_schedule_position;
+	enum_schedule_time_zone m_schedule_time_zone;
+	std::vector<ScheduleEntry> m_schedule_entries;
 
 	PageInput::enum_video_area m_video_area;
 	bool m_video_area_follow_fullscreen;
@@ -111,6 +117,8 @@ private:
 	HotkeyCallback m_hotkey_start_pause;
 
 	QPushButton *m_pushbutton_record;
+	QLabel *m_label_schedule_status;
+	QPushButton *m_pushbutton_schedule_activate, *m_pushbutton_schedule_edit;
 
 	QCheckBox *m_checkbox_hotkey_enable;
 #if SSR_USE_ALSA
@@ -137,7 +145,7 @@ private:
 	QAction *m_systray_action_start_pause, *m_systray_action_cancel, *m_systray_action_save;
 	QAction *m_systray_action_show_hide, *m_systray_action_quit;
 
-	QTimer *m_timer_update_info;
+	QTimer *m_timer_schedule, *m_timer_update_info;
 
 public:
 	PageRecord(MainWindow* main_window);
@@ -166,9 +174,12 @@ private:
 	void UpdateInput();
 	void UpdateSysTray();
 	void UpdateRecordButton();
+	void UpdateSchedule();
 	void UpdatePreview();
 
 public:
+	inline enum_schedule_time_zone GetScheduleTimeZone() { return m_schedule_time_zone; }
+	inline std::vector<ScheduleEntry> GetScheduleEntries() { return m_schedule_entries; }
 	inline bool IsHotkeyEnabled() { return m_checkbox_hotkey_enable->isChecked(); }
 	inline bool IsHotkeyCtrlEnabled() { return m_checkbox_hotkey_ctrl->isChecked(); }
 	inline bool IsHotkeyShiftEnabled() { return m_checkbox_hotkey_shift->isChecked(); }
@@ -180,6 +191,8 @@ public:
 #endif
 	inline unsigned int GetPreviewFrameRate() { return m_spinbox_preview_frame_rate->value(); }
 
+	inline void SetScheduleTimeZone(enum_schedule_time_zone time_zone) { m_schedule_time_zone = (enum_schedule_time_zone) clamp((unsigned int) time_zone, 0u, (unsigned int) SCHEDULE_TIME_ZONE_COUNT - 1); }
+	inline void SetScheduleEntries(const std::vector<ScheduleEntry>& schedule) { m_schedule_entries = schedule; }
 	inline void SetHotkeyEnabled(bool enable) { m_checkbox_hotkey_enable->setChecked(enable); }
 	inline void SetHotkeyCtrlEnabled(bool enable) { m_checkbox_hotkey_ctrl->setChecked(enable); }
 	inline void SetHotkeyShiftEnabled(bool enable) { m_checkbox_hotkey_shift->setChecked(enable); }
@@ -202,6 +215,11 @@ public slots:
 	void OnRecordStart();
 	void OnRecordPause();
 	void OnRecordStartPause();
+	void OnScheduleTimer();
+	void OnScheduleActivate();
+	void OnScheduleDeactivate();
+	void OnScheduleActivateDeactivate();
+	void OnScheduleEdit();
 	void OnPreviewStartStop();
 	void OnCancel();
 	void OnSave();
