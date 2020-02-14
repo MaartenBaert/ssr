@@ -110,10 +110,16 @@ MainWindow::MainWindow()
 	//qDebug() << preferred_size << available_size;
 	setMinimumSize(preferred_size.boundedTo(available_size));
 
-	// maybe show the window
-	if(!CommandLineOptions::GetStartHidden())
+	// show the window if needed
+	if(!CommandLineOptions::GetStartHidden()) {
 		show();
+	}
 	m_page_record->UpdateShowHide();
+
+	// start recording if needed
+	if(CommandLineOptions::GetStartRecording()) {
+		m_page_record->OnRecordStart();
+	}
 
 }
 

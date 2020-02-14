@@ -40,6 +40,7 @@ void PrintOptionHelp() {
 		"                      page is closed.\n"
 		"  --no-systray        Don't show the system tray icon.\n"
 		"  --start-hidden      Start the application in hidden form.\n"
+		"  --start-recording   Start recording as soon as the application is launched.\n"
 		"  --syncdiagram       Show synchronization diagram (for debugging).\n"
 		"  --benchmark         Run the internal benchmark.\n"
 	);
@@ -96,6 +97,7 @@ CommandLineOptions::CommandLineOptions() {
 	m_stats_file = QString();
 	m_systray = true;
 	m_start_hidden = false;
+	m_start_recording = false;
 	m_sync_diagram = false;
 	m_benchmark = false;
 	m_gui = true;
@@ -158,6 +160,9 @@ void CommandLineOptions::Parse() {
 			} else if(option == "--start-hidden") {
 				CheckOptionHasNoValue(option, value);
 				m_start_hidden = true;
+			} else if(option == "--start-recording") {
+				CheckOptionHasNoValue(option, value);
+				m_start_recording = true;
 			} else if(option == "--syncdiagram") {
 				CheckOptionHasNoValue(option, value);
 				m_sync_diagram = true;

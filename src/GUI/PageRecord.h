@@ -198,12 +198,15 @@ public slots:
 	void OnUpdateSoundNotifications();
 #endif
 
-private slots:
+public slots:
+	void OnRecordStart();
+	void OnRecordPause();
 	void OnRecordStartPause();
 	void OnPreviewStartStop();
 	void OnCancel();
 	void OnSave();
 
+private slots:
 	void OnUpdateInformation();
 	void OnNewLogLine(Logger::enum_type type, QString string);
 

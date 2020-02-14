@@ -1082,17 +1082,33 @@ void PageRecord::OnUpdateSoundNotifications() {
 }
 #endif
 
-void PageRecord::OnRecordStartPause() {
+void PageRecord::OnRecordStart() {
 	if(m_main_window->IsBusy())
 		return;
 	if(!TryStartPage())
 		return;
 	if(m_wait_saving)
 		return;
-	if(m_output_started) {
-		StopOutput(false);
-	} else {
+	if(!m_output_started)
 		StartOutput();
+}
+
+void PageRecord::OnRecordPause() {
+	if(m_main_window->IsBusy())
+		return;
+	if(!m_page_started)
+		return;
+	if(m_wait_saving)
+		return;
+	if(m_output_started)
+		StopOutput(false);
+}
+
+void PageRecord::OnRecordStartPause() {
+	if(m_page_started && m_output_started) {
+		OnRecordPause();
+	} else {
+		OnRecordStart();
 	}
 }
 
@@ -1135,7 +1151,7 @@ void PageRecord::OnSave() {
 	if(m_wait_saving)
 		return;
 	if(!m_recorded_something) {
-		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;)."),
+		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save."),
 				   BUTTON_OK, BUTTON_OK);
 		return;
 	}
