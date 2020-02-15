@@ -62,6 +62,7 @@ public:
 
 	bool IsBusy();
 	bool Validate();
+	void Quit();
 
 protected:
 	virtual void closeEvent(QCloseEvent* event) override;
@@ -81,6 +82,8 @@ public slots:
 	void GoPageRecord();
 	void GoPageDone();
 
+	void OnShow();
+	void OnHide();
 	void OnShowHide();
 	void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 

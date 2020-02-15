@@ -36,7 +36,7 @@ private:
 	bool m_systray;
 	bool m_start_hidden;
 	bool m_start_recording;
-	bool m_start_schedule;
+	bool m_activate_schedule;
 	bool m_sync_diagram;
 	bool m_benchmark;
 	bool m_gui;
@@ -57,7 +57,7 @@ public:
 	inline static bool GetSysTray() { return GetInstance()->m_systray; }
 	inline static bool GetStartHidden() { return GetInstance()->m_start_hidden; }
 	inline static bool GetStartRecording() { return GetInstance()->m_start_recording; }
-	inline static bool GetStartSchedule() { return GetInstance()->m_start_schedule; }
+	inline static bool GetActivateSchedule() { return GetInstance()->m_activate_schedule; }
 	inline static bool GetSyncDiagram() { return GetInstance()->m_sync_diagram; }
 	inline static bool GetBenchmark() { return GetInstance()->m_benchmark; }
 	inline static bool GetGui() { return GetInstance()->m_gui; }

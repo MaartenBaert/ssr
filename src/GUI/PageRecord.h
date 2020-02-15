@@ -145,6 +145,9 @@ private:
 	QAction *m_systray_action_start_pause, *m_systray_action_cancel, *m_systray_action_save;
 	QAction *m_systray_action_show_hide, *m_systray_action_quit;
 
+	QSocketNotifier *m_stdin_notifier;
+	QByteArray m_stdin_buffer;
+
 	QTimer *m_timer_schedule, *m_timer_update_info;
 
 public:
@@ -215,16 +218,17 @@ public slots:
 	void OnRecordStart();
 	void OnRecordPause();
 	void OnRecordStartPause();
+	void OnRecordCancel(bool confirm = true);
+	void OnRecordSave(bool confirm = true);
 	void OnScheduleTimer();
 	void OnScheduleActivate();
 	void OnScheduleDeactivate();
 	void OnScheduleActivateDeactivate();
 	void OnScheduleEdit();
 	void OnPreviewStartStop();
-	void OnCancel();
-	void OnSave();
 
 private slots:
+	void OnStdin();
 	void OnUpdateInformation();
 	void OnNewLogLine(Logger::enum_type type, QString string);
 

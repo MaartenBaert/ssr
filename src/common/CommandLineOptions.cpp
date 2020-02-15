@@ -28,22 +28,22 @@ void PrintOptionHelp() {
 		"Usage: simplescreenrecorder [OPTIONS]\n"
 		"\n"
 		"Options:\n"
-		"  --help              Show this help message.\n"
-		"  --version           Show version information.\n"
-		"  --settingsfile=FILE Load and save program settings to FILE. If omitted,\n"
-		"                      ~/.ssr/settings.conf is used.\n"
-		"  --logfile[=FILE]    Write log to FILE instead of stdout. If FILE is omitted,\n"
-		"                      ~/.ssr/log-DATE_TIME.txt is used.\n"
-		"  --statsfile[=FILE]  Write recording statistics to FILE. If FILE is omitted,\n"
-		"                      /dev/shm/simplescreenrecorder-stats-PID is used. It will\n"
-		"                      be updated continuously and deleted when the recording\n"
-		"                      page is closed.\n"
-		"  --no-systray        Don't show the system tray icon.\n"
-		"  --start-hidden      Start the application in hidden form.\n"
-		"  --start-recording   Start recording immediately.\n"
-		"  --start-schedule    Activate the recording schedule immediately.\n"
-		"  --syncdiagram       Show synchronization diagram (for debugging).\n"
-		"  --benchmark         Run the internal benchmark.\n"
+		"  --help                Show this help message.\n"
+		"  --version             Show version information.\n"
+		"  --settingsfile=FILE   Load and save program settings to FILE. If omitted,\n"
+		"                        ~/.ssr/settings.conf is used.\n"
+		"  --logfile[=FILE]      Write log to FILE instead of stdout. If FILE is omitted,\n"
+		"                        ~/.ssr/log-DATE_TIME.txt is used.\n"
+		"  --statsfile[=FILE]    Write recording statistics to FILE. If FILE is omitted,\n"
+		"                        /dev/shm/simplescreenrecorder-stats-PID is used. It will\n"
+		"                        be updated continuously and deleted when the recording\n"
+		"                        page is closed.\n"
+		"  --no-systray          Don't show the system tray icon.\n"
+		"  --start-hidden        Start the application in hidden form.\n"
+		"  --start-recording     Start recording immediately.\n"
+		"  --activate-schedule   Activate the recording schedule immediately.\n"
+		"  --syncdiagram         Show synchronization diagram (for debugging).\n"
+		"  --benchmark           Run the internal benchmark.\n"
 	);
 }
 
@@ -99,7 +99,7 @@ CommandLineOptions::CommandLineOptions() {
 	m_systray = true;
 	m_start_hidden = false;
 	m_start_recording = false;
-	m_start_schedule = false;
+	m_activate_schedule = false;
 	m_sync_diagram = false;
 	m_benchmark = false;
 	m_gui = true;
@@ -165,9 +165,9 @@ void CommandLineOptions::Parse() {
 			} else if(option == "--start-recording") {
 				CheckOptionHasNoValue(option, value);
 				m_start_recording = true;
-			} else if(option == "--start-schedule") {
+			} else if(option == "--activate-schedule") {
 				CheckOptionHasNoValue(option, value);
-				m_start_schedule = true;
+				m_activate_schedule = true;
 			} else if(option == "--syncdiagram") {
 				CheckOptionHasNoValue(option, value);
 				m_sync_diagram = true;

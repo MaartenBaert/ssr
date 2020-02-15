@@ -38,10 +38,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "VideoPreviewer.h"
 
-#include <X11/Xutil.h>
-#include <X11/extensions/Xfixes.h>
-#include <X11/extensions/Xinerama.h>
-
 /*
 The code in this file is based on the MIT-SHM example code and the x11grab device in libav/ffmpeg (which is GPL):
 http://www.xfree86.org/current/mit-shm.html

@@ -26,9 +26,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Icons.h"
 #include "MainWindow.h"
 
-#include <QX11Info>
-#include <X11/Xlib.h>
-
 ENUMSTRINGS(PageInput::enum_video_area) = {
 	{PageInput::VIDEO_AREA_SCREEN, "screen"},
 	{PageInput::VIDEO_AREA_FIXED, "fixed"},

@@ -120,7 +120,7 @@ MainWindow::MainWindow()
 	if(CommandLineOptions::GetStartRecording()) {
 		m_page_record->OnRecordStart();
 	}
-	if(CommandLineOptions::GetStartSchedule()) {
+	if(CommandLineOptions::GetActivateSchedule()) {
 		m_page_record->OnScheduleActivate();
 	}
 
@@ -169,17 +169,21 @@ bool MainWindow::Validate() {
 	return true;
 }
 
+void MainWindow::Quit() {
+	SaveSettings();
+	if(m_nvidia_reenable_flipping) {
+		NVidiaSetFlipping(true);
+	}
+	QApplication::quit();
+}
+
 void MainWindow::closeEvent(QCloseEvent* event) {
 	if(m_page_record->ShouldBlockClose()) {
 		event->ignore();
 		return;
 	}
-	SaveSettings();
-	if(m_nvidia_reenable_flipping) {
-		NVidiaSetFlipping(true);
-	}
 	event->accept();
-	QApplication::quit();
+	Quit();
 }
 
 void MainWindow::GoPageWelcome() {
@@ -200,20 +204,35 @@ void MainWindow::GoPageDone() {
 	m_stacked_layout->setCurrentWidget(m_page_done);
 }
 
-void MainWindow::OnShowHide() {
+void MainWindow::OnShow() {
 	if(IsBusy())
 		return;
-	if(isVisible()) {
-		m_old_geometry = geometry();
-		hide();
-	} else {
-		show();
-		if(!m_old_geometry.isNull()) {
-			setGeometry(m_old_geometry);
-			m_old_geometry = QRect();
-		}
+	if(isVisible())
+		return;
+	show();
+	if(!m_old_geometry.isNull()) {
+		setGeometry(m_old_geometry);
+		m_old_geometry = QRect();
 	}
 	m_page_record->UpdateShowHide();
+}
+
+void MainWindow::OnHide() {
+	if(IsBusy())
+		return;
+	if(!isVisible())
+		return;
+	m_old_geometry = geometry();
+	hide();
+	m_page_record->UpdateShowHide();
+}
+
+void MainWindow::OnShowHide() {
+	if(isVisible()) {
+		OnHide();
+	} else {
+		OnShow();
+	}
 }
 
 void MainWindow::OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason) {

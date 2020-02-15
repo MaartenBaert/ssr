@@ -21,9 +21,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.h"
 
-#include <X11/keysym.h>
-#include <X11/extensions/XInput2.h>
-
 /*
 In theory, global hotkeys are pretty easy to implement since X11 has functions specifically for this purpose (XGrabKey/XUngrabKey).
 Unfortunately, some programs (particularly games that use SDL < 2.0) abuse the keyboard grab function in X11: They simply grab the

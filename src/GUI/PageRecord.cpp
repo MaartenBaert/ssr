@@ -52,9 +52,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <unistd.h>
 
 static QString GetNewSegmentFile(const QString& file, bool add_timestamp) {
 	QFileInfo fi(file);
@@ -362,9 +365,9 @@ PageRecord::PageRecord(MainWindow* main_window)
 		QMenu *menu = new QMenu(m_main_window);
 		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
 		m_systray_action_start_pause->setIconVisibleInMenu(true);
-		m_systray_action_cancel = menu->addAction(g_icon_cancel, tr("Cancel recording"), this, SLOT(OnCancel()));
+		m_systray_action_cancel = menu->addAction(g_icon_cancel, tr("Cancel recording"), this, SLOT(OnRecordCancel()));
 		m_systray_action_cancel->setIconVisibleInMenu(true);
-		m_systray_action_save = menu->addAction(g_icon_save, tr("Save recording"), this, SLOT(OnSave()));
+		m_systray_action_save = menu->addAction(g_icon_save, tr("Save recording"), this, SLOT(OnRecordSave()));
 		m_systray_action_save->setIconVisibleInMenu(true);
 		menu->addSeparator();
 		m_systray_action_show_hide = menu->addAction(QString(), m_main_window, SLOT(OnShowHide()));
@@ -376,8 +379,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_systray_icon = NULL;
 	}
 
-	connect(button_cancel, SIGNAL(clicked()), this, SLOT(OnCancel()));
-	connect(button_save, SIGNAL(clicked()), this, SLOT(OnSave()));
+	connect(button_cancel, SIGNAL(clicked()), this, SLOT(OnRecordCancel()));
+	connect(button_save, SIGNAL(clicked()), this, SLOT(OnRecordSave()));
 	if(m_systray_icon != NULL)
 		connect(m_systray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), m_main_window, SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
 
@@ -390,6 +393,9 @@ PageRecord::PageRecord(MainWindow* main_window)
 		layout2->addWidget(button_cancel);
 		layout2->addWidget(button_save);
 	}
+
+	m_stdin_notifier = new QSocketNotifier(0, QSocketNotifier::Read, this);
+	connect(m_stdin_notifier, SIGNAL(activated(int)), this, SLOT(OnStdin()));
 
 	m_timer_schedule = new QTimer(this);
 	m_timer_schedule->setSingleShot(true);
@@ -1174,6 +1180,40 @@ void PageRecord::OnRecordStartPause() {
 	}
 }
 
+
+void PageRecord::OnRecordCancel(bool confirm) {
+	if(m_main_window->IsBusy())
+		return;
+	if(!m_page_started)
+		return;
+	if(m_wait_saving)
+		return;
+	if(m_output_manager != NULL && confirm) {
+		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to cancel this recording?"),
+					  BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
+			return;
+		}
+	}
+	StopPage(false);
+	m_main_window->GoPageOutput();
+}
+
+void PageRecord::OnRecordSave(bool confirm) {
+	if(m_main_window->IsBusy())
+		return;
+	if(!m_page_started)
+		return;
+	if(m_wait_saving)
+		return;
+	if(!m_recorded_something && confirm) {
+		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save."),
+				   BUTTON_OK, BUTTON_OK);
+		return;
+	}
+	StopPage(true);
+	m_main_window->GoPageDone();
+}
+
 void PageRecord::OnScheduleTimer() {
 	if(!m_page_started)
 		return;
@@ -1261,37 +1301,74 @@ void PageRecord::OnPreviewStartStop() {
 	UpdateInput();
 }
 
-void PageRecord::OnCancel() {
-	if(m_main_window->IsBusy())
+void PageRecord::OnStdin() {
+
+	// get available length
+	int len, res;
+	do {
+		res = ioctl(0, FIONREAD, &len);
+	} while(res == -1 && errno == EINTR);
+	if(res == -1) {
+		Logger::LogError("[PageRecord::OnStdin] " + tr("Standard input read error (%1).").arg("ioctl"));
+		m_stdin_notifier->setEnabled(false);
 		return;
-	if(!m_page_started)
+	}
+	if(len == 0) {
+		Logger::LogInfo("[PageRecord::OnStdin] " + tr("Standard input closed (%1).").arg("ioctl"));
+		m_stdin_notifier->setEnabled(false);
 		return;
-	if(m_wait_saving)
+	}
+
+	// read data
+	QByteArray buffer(len, 0);
+	ssize_t bytes;
+	do {
+		bytes = read(0, buffer.data(), buffer.size());
+	} while(bytes == -1 && errno == EINTR);
+	if(bytes == -1) {
+		Logger::LogError("[PageRecord::OnStdin] " + tr("Standard input read error (%1).").arg("read"));
+		m_stdin_notifier->setEnabled(false);
 		return;
-	if(m_output_manager != NULL) {
-		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to cancel this recording?"),
-					  BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
-			return;
+	}
+	if(bytes == 0) {
+		Logger::LogInfo("[PageRecord::OnStdin] " + tr("Standard input closed (%1).").arg("read"));
+		m_stdin_notifier->setEnabled(false);
+		return;
+	}
+	m_stdin_buffer.append(buffer.data(), bytes);
+
+	// process commands
+	int begin = 0;
+	for(int end = 0; end < m_stdin_buffer.size(); ++end) {
+		if(m_stdin_buffer[end] == '\n') {
+			QString command = QString::fromUtf8(m_stdin_buffer.data() + begin, end - begin);
+			Logger::LogInfo("[PageRecord::OnStdin] " + tr("Received command '%1'.").arg(command));
+			if(command == "record-start") {
+				OnRecordStart();
+			} else if(command == "record-pause") {
+				OnRecordPause();
+			} else if(command == "record-cancel") {
+				OnRecordCancel(false);
+			} else if(command == "record-save") {
+				OnRecordSave(false);
+			} else if(command == "schedule-activate") {
+				OnScheduleActivate();
+			} else if(command == "schedule-deactivate") {
+				OnScheduleDeactivate();
+			} else if(command == "window-show") {
+				m_main_window->OnShow();
+			} else if(command == "window-hide") {
+				m_main_window->OnHide();
+			} else if(command == "quit") {
+				m_main_window->Quit();
+			} else {
+				Logger::LogError("[PageRecord::OnStdin] " + tr("Unknown command.").arg(command));
+			}
+			begin = end + 1;
 		}
 	}
-	StopPage(false);
-	m_main_window->GoPageOutput();
-}
+	m_stdin_buffer = QByteArray(m_stdin_buffer.data() + begin, m_stdin_buffer.size() - begin);
 
-void PageRecord::OnSave() {
-	if(m_main_window->IsBusy())
-		return;
-	if(!m_page_started)
-		return;
-	if(m_wait_saving)
-		return;
-	if(!m_recorded_something) {
-		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save."),
-				   BUTTON_OK, BUTTON_OK);
-		return;
-	}
-	StopPage(true);
-	m_main_window->GoPageDone();
 }
 
 void PageRecord::OnUpdateInformation() {
@@ -1356,7 +1433,7 @@ void PageRecord::OnUpdateInformation() {
 					"file_name\t" + file_name + "\n"
 					"file_size\t" + QString::number(total_bytes) + "\n"
 					"bit_rate\t" + QString::number(bit_rate) + "\n";
-			QByteArray data = str.toLocal8Bit();
+			QByteArray data = str.toUtf8();
 			QByteArray old_file = CommandLineOptions::GetStatsFile().toLocal8Bit();
 			QByteArray new_file = (CommandLineOptions::GetStatsFile() + "-new").toLocal8Bit();
 			// Qt doesn't get the permissions right (you can only change the permissions after creating the file, that's too late),
