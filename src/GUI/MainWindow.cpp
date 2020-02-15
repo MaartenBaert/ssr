@@ -116,9 +116,12 @@ MainWindow::MainWindow()
 	}
 	m_page_record->UpdateShowHide();
 
-	// start recording if needed
+	// start recording and/or activate schedule if needed
 	if(CommandLineOptions::GetStartRecording()) {
 		m_page_record->OnRecordStart();
+	}
+	if(CommandLineOptions::GetStartSchedule()) {
+		m_page_record->OnScheduleActivate();
 	}
 
 }
