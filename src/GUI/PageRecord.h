@@ -180,6 +180,8 @@ private:
 	void UpdateSchedule();
 	void UpdatePreview();
 
+	QString ReadStdinCommand();
+
 public:
 	inline enum_schedule_time_zone GetScheduleTimeZone() { return m_schedule_time_zone; }
 	inline std::vector<ScheduleEntry> GetScheduleEntries() { return m_schedule_entries; }

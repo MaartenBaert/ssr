@@ -1115,6 +1115,17 @@ void PageRecord::UpdatePreview() {
 	}
 }
 
+QString PageRecord::ReadStdinCommand() {
+	for(int i = 0; i < m_stdin_buffer.size(); ++i) {
+		if(m_stdin_buffer[i] == '\n') {
+			QString command = QString::fromUtf8(m_stdin_buffer.data(), i);
+			m_stdin_buffer = QByteArray(m_stdin_buffer.data() + i + 1, m_stdin_buffer.size() - i - 1);
+			return command;
+		}
+	}
+	return QString();
+}
+
 void PageRecord::OnUpdateHotkeyFields() {
 	bool enabled = IsHotkeyEnabled();
 	GroupEnabled({m_checkbox_hotkey_ctrl, m_checkbox_hotkey_shift, m_checkbox_hotkey_alt, m_checkbox_hotkey_super, m_combobox_hotkey_key}, enabled);
@@ -1338,36 +1349,33 @@ void PageRecord::OnStdin() {
 	m_stdin_buffer.append(buffer.data(), bytes);
 
 	// process commands
-	int begin = 0;
-	for(int end = 0; end < m_stdin_buffer.size(); ++end) {
-		if(m_stdin_buffer[end] == '\n') {
-			QString command = QString::fromUtf8(m_stdin_buffer.data() + begin, end - begin);
-			Logger::LogInfo("[PageRecord::OnStdin] " + tr("Received command '%1'.").arg(command));
-			if(command == "record-start") {
-				OnRecordStart();
-			} else if(command == "record-pause") {
-				OnRecordPause();
-			} else if(command == "record-cancel") {
-				OnRecordCancel(false);
-			} else if(command == "record-save") {
-				OnRecordSave(false);
-			} else if(command == "schedule-activate") {
-				OnScheduleActivate();
-			} else if(command == "schedule-deactivate") {
-				OnScheduleDeactivate();
-			} else if(command == "window-show") {
-				m_main_window->OnShow();
-			} else if(command == "window-hide") {
-				m_main_window->OnHide();
-			} else if(command == "quit") {
-				m_main_window->Quit();
-			} else {
-				Logger::LogError("[PageRecord::OnStdin] " + tr("Unknown command.").arg(command));
-			}
-			begin = end + 1;
+	for( ; ; ) {
+		QString command = ReadStdinCommand();
+		if(command.isNull())
+			break;
+		Logger::LogInfo("[PageRecord::OnStdin] " + tr("Received command '%1'.").arg(command));
+		if(command == "record-start") {
+			OnRecordStart();
+		} else if(command == "record-pause") {
+			OnRecordPause();
+		} else if(command == "record-cancel") {
+			OnRecordCancel(false);
+		} else if(command == "record-save") {
+			OnRecordSave(false);
+		} else if(command == "schedule-activate") {
+			OnScheduleActivate();
+		} else if(command == "schedule-deactivate") {
+			OnScheduleDeactivate();
+		} else if(command == "window-show") {
+			m_main_window->OnShow();
+		} else if(command == "window-hide") {
+			m_main_window->OnHide();
+		} else if(command == "quit") {
+			m_main_window->Quit();
+		} else {
+			Logger::LogError("[PageRecord::OnStdin] " + tr("Unknown command.").arg(command));
 		}
 	}
-	m_stdin_buffer = QByteArray(m_stdin_buffer.data() + begin, m_stdin_buffer.size() - begin);
 
 }
 
