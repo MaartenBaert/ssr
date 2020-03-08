@@ -442,10 +442,10 @@ void PageRecord::UpdateShowHide() {
 
 void PageRecord::LoadSettings(QSettings *settings) {
 	SetHotkeyEnabled(settings->value("record/hotkey_enable", true).toBool());
-	SetHotkeyCtrlEnabled(settings->value("record/hotkey_ctrl", true).toBool());
+	SetHotkeyCtrlEnabled(settings->value("record/hotkey_ctrl", false).toBool());
 	SetHotkeyShiftEnabled(settings->value("record/hotkey_shift", false).toBool());
 	SetHotkeyAltEnabled(settings->value("record/hotkey_alt", false).toBool());
-	SetHotkeySuperEnabled(settings->value("record/hotkey_super", false).toBool());
+	SetHotkeySuperEnabled(settings->value("record/hotkey_super", true).toBool());
 	SetHotkeyKey(settings->value("record/hotkey_key", 'r' - 'a').toUInt());
 #if SSR_USE_ALSA
 	SetSoundNotificationsEnabled(settings->value("record/sound_notifications_enable", false).toBool());
