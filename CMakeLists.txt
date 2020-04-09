@@ -86,8 +86,8 @@ if(WITH_SIMPLESCREENRECORDER)
 		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/applications
 	)
 	install(
-		FILES data/simplescreenrecorder.appdata.xml
-		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/appdata
+		FILES data/simplescreenrecorder.metainfo.xml
+		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/metainfo
 	)
 
 	# icons
