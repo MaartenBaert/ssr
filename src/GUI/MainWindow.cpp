@@ -72,6 +72,15 @@ MainWindow::MainWindow()
 		m_stacked_layout->setCurrentWidget(m_page_welcome);
 	}
 
+	// warning for non-X11 window systems (e.g. Wayland)
+	if(!QX11Info::isPlatformX11()) {
+		MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION,
+				   MainWindow::tr("You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. "
+								  "Several features will most likely not work properly. "
+								  "In order to solve this, you should log out, choose a X11/Xorg session at the login screen, and then log back in."),
+				   BUTTON_OK, BUTTON_OK);
+	}
+
 	// warning for glitch with proprietary NVIDIA drivers
 	if(GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_ASK || GetNVidiaDisableFlipping() == NVIDIA_DISABLE_FLIPPING_YES) {
 		if(NVidiaGetFlipping()) {
