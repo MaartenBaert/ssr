@@ -71,7 +71,7 @@ static QRect CombineScreenGeometries(const std::vector<QRect>& screen_geometries
 }
 
 static QPoint GetMousePhysicalCoordinates() {
-	if(QX11Info::isPlatformX11()) {
+	if(IsPlatformX11()) {
 		Window root, child;
 		int root_x, root_y;
 		int win_x, win_y;
@@ -153,7 +153,7 @@ void QSpinBoxWithSignal::focusOutEvent(QFocusEvent* event) {
 #define TRANSPARENT_WINDOW_ATTRIBUTES() {\
 	setAttribute(Qt::WA_X11DoNotAcceptFocus); \
 	int shape_event_base, shape_error_base; \
-	if(QX11Info::isPlatformX11()) { \
+	if(IsPlatformX11()) { \
 		if(XShapeQueryExtension(QX11Info::display(), &shape_event_base, &shape_error_base)) { \
 			Region region = XCreateRegion(); \
 			XShapeCombineRegion(QX11Info::display(), winId(), ShapeInput, 0, 0, region, ShapeSet); \
@@ -739,7 +739,7 @@ static Window X11FindRealWindow(Display* display, Window window) {
 void PageInput::mousePressEvent(QMouseEvent* event) {
 	if(m_grabbing) {
 		if(event->button() == Qt::LeftButton) {
-			if(QX11Info::isPlatformX11()) {
+			if(IsPlatformX11()) {
 				QPoint mouse_physical = GetMousePhysicalCoordinates();
 				if(m_selecting_window) {
 					// As expected, Qt does not provide any functions to find the window at a specific position, so I have to use Xlib directly.
@@ -826,7 +826,7 @@ void PageInput::mouseReleaseEvent(QMouseEvent* event) {
 
 void PageInput::mouseMoveEvent(QMouseEvent* event) {
 	if(m_grabbing) {
-		if(m_rubber_band != NULL && QX11Info::isPlatformX11()) {
+		if(m_rubber_band != NULL && IsPlatformX11()) {
 			QPoint mouse_physical = GetMousePhysicalCoordinates();
 			if(m_selecting_window) {
 				// pick the inner rectangle if the user clicks inside the window, or the outer rectangle otherwise

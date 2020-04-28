@@ -73,7 +73,7 @@ MainWindow::MainWindow()
 	}
 
 	// warning for non-X11 window systems (e.g. Wayland)
-	if(!QX11Info::isPlatformX11()) {
+	if(!IsPlatformX11()) {
 		MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION,
 				   MainWindow::tr("You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. "
 								  "Several features will most likely not work properly. "
