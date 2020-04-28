@@ -212,7 +212,7 @@ void Muxer::Init() {
 	m_format_context->oformat = format;
 
 	// open file
-	if(avio_open(&m_format_context->pb, m_output_file.toLocal8Bit().constData(), AVIO_FLAG_WRITE) < 0) {
+	if(avio_open(&m_format_context->pb, QFile::encodeName(m_output_file).constData(), AVIO_FLAG_WRITE) < 0) {
 		Logger::LogError("[Muxer::Init] " + Logger::tr("Error: Can't open output file!"));
 		throw LibavException();
 	}

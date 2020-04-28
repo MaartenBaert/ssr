@@ -67,10 +67,15 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <ctime>
 #include <stdint.h>
 
+#include <fcntl.h>
 #include <pwd.h>
 #include <random>
+#include <sys/ioctl.h>
 #include <sys/shm.h>
+#include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
+#include <termios.h>
 #include <unistd.h>
 
 #include <array>
@@ -92,6 +97,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <X11/extensions/XShm.h>
 #include <X11/extensions/XInput2.h>
 #include <X11/keysym.h>
+#include <X11/keysymdef.h>
 
 // replacement for Qt::WindowTransparentForInput.
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)

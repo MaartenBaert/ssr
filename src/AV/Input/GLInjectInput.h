@@ -72,6 +72,7 @@ public:
 	// This function is thread-safe.
 	inline bool HasErrorOccurred() { return m_error_occurred; }
 
+	// Launches an application with OpenGL injection. Returns whether successful.
 	static bool LaunchApplication(const QString& channel, bool relax_permissions, const QString& command, const QString& working_directory);
 
 private:

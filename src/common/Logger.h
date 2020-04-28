@@ -27,17 +27,24 @@ public:
 	enum enum_type {
 		TYPE_INFO,
 		TYPE_WARNING,
-		TYPE_ERROR
+		TYPE_ERROR,
+		TYPE_STDERR
 	};
 
 private:
 	std::mutex m_mutex;
+	QFile m_log_file;
+
+	std::thread m_capture_thread;
+	int m_capture_pipe[2], m_shutdown_pipe[2], m_original_stderr;
 
 	static Logger *s_instance;
 
 public:
 	Logger();
 	~Logger();
+
+	void SetLogFile(const QString& filename);
 
 	// These functions are thread-safe.
 	static void LogInfo(const QString& str);
@@ -48,6 +55,11 @@ public:
 
 signals:
 	void NewLine(Logger::enum_type type, QString str);
+
+private:
+	void Init();
+	void Free();
+	void CaptureThread();
 
 };
 

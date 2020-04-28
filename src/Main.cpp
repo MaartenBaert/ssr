@@ -87,14 +87,12 @@ int main(int argc, char* argv[]) {
 		return 0;
 	}
 
-	// redirect stdout and stderr to a log file
+	// open the log file
 	if(!CommandLineOptions::GetLogFile().isEmpty()) {
-		FILE *f = fopen(CommandLineOptions::GetLogFile().toLocal8Bit().constData(), "a");
-		dup2(fileno(f), 1); // redirect stdout
-		dup2(fileno(f), 2); // redirect stderr
+		logger.SetLogFile(CommandLineOptions::GetLogFile());
 	}
 
-	// start logging
+	// start main program
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");
 	Logger::LogInfo(GetVersionInfo());
 
@@ -125,7 +123,7 @@ int main(int argc, char* argv[]) {
 
 	}
 
-	// stop logging
+	// stop main program
 	Logger::LogInfo("==================== " + Logger::tr("SSR stopped") + " ====================");
 
 	return ret;

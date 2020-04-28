@@ -49,16 +49,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoPreviewer.h"
 #include "AudioPreviewer.h"
 
-#include <X11/keysym.h>
-#include <X11/keysymdef.h>
-
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <termios.h>
-#include <unistd.h>
-
 static QString GetNewSegmentFile(const QString& file, bool add_timestamp) {
 	QFileInfo fi(file);
 	QDateTime now = QDateTime::currentDateTime();
@@ -1373,7 +1363,7 @@ void PageRecord::OnStdin() {
 		} else if(command == "quit") {
 			m_main_window->Quit();
 		} else {
-			Logger::LogError("[PageRecord::OnStdin] " + tr("Unknown command.").arg(command));
+			Logger::LogError("[PageRecord::OnStdin] " + tr("Unknown command."));
 		}
 	}
 
@@ -1442,8 +1432,8 @@ void PageRecord::OnUpdateInformation() {
 					"file_size\t" + QString::number(total_bytes) + "\n"
 					"bit_rate\t" + QString::number(bit_rate) + "\n";
 			QByteArray data = str.toUtf8();
-			QByteArray old_file = CommandLineOptions::GetStatsFile().toLocal8Bit();
-			QByteArray new_file = (CommandLineOptions::GetStatsFile() + "-new").toLocal8Bit();
+			QByteArray old_file = QFile::encodeName(CommandLineOptions::GetStatsFile());
+			QByteArray new_file = QFile::encodeName(CommandLineOptions::GetStatsFile() + "-new");
 			// Qt doesn't get the permissions right (you can only change the permissions after creating the file, that's too late),
 			// and it doesn't allow renaming a file over another file, so don't bother with QFile and just use POSIX and C functions.
 			int fd = open(new_file.constData(), O_WRONLY | O_CREAT | O_CLOEXEC, 0600);
@@ -1466,7 +1456,7 @@ void PageRecord::OnUpdateInformation() {
 		m_label_info_bit_rate->clear();
 
 		if(!CommandLineOptions::GetStatsFile().isNull()) {
-			QByteArray old_file = CommandLineOptions::GetStatsFile().toLocal8Bit();
+			QByteArray old_file = QFile::encodeName(CommandLineOptions::GetStatsFile());
 			remove(old_file.constData());
 		}
 
@@ -1497,9 +1487,10 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString string) {
 	QTextCharFormat format;
 	bool should_scroll = (m_textedit_log->verticalScrollBar()->value() >= m_textedit_log->verticalScrollBar()->maximum());
 	switch(type) {
-		case Logger::TYPE_INFO:     format.setForeground(m_textedit_log->palette().foreground());  break;
+		case Logger::TYPE_INFO:     format.setForeground(m_textedit_log->palette().windowText());  break;
 		case Logger::TYPE_WARNING:  format.setForeground(Qt::darkYellow);                          break;
 		case Logger::TYPE_ERROR:    format.setForeground(Qt::red);                                 break;
+		case Logger::TYPE_STDERR:   format.setForeground(Qt::gray);                                break;
 	}
 	cursor.movePosition(QTextCursor::End);
 	if(cursor.position() != 0)
