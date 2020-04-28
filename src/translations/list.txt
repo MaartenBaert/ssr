@@ -5,6 +5,7 @@ simplescreenrecorder_de.ts
 simplescreenrecorder_el.ts
 simplescreenrecorder_es.ts
 simplescreenrecorder_fr.ts
+simplescreenrecorder_gl.ts
 simplescreenrecorder_he.ts
 simplescreenrecorder_hu.ts
 simplescreenrecorder_id.ts

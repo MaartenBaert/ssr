@@ -16,6 +16,7 @@ if(LRELEASE)
 		el
 		es
 		fr
+		gl
 		he
 		hu
 		id
