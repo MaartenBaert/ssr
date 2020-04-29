@@ -656,7 +656,7 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 }
 
 bool PageInput::Validate() {
-	if(m_grabbing || m_selecting_window)
+	if(m_grabbing)
 		return false;
 	return true;
 }
