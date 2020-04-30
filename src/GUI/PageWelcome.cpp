@@ -43,7 +43,7 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 								  "need to know. One, the default settings are usually fine. If you don't know what something does, just use the default. "
 								  "Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.</p>\n\n"
 								  "<p>For more information:<br>\n"
-								  "%1</p>").arg("<a href=\"http://www.maartenbaert.be/simplescreenrecorder/\">http://www.maartenbaert.be/simplescreenrecorder/</a>"));
+								  "%1</p>").arg("<a href=\"https://www.maartenbaert.be/simplescreenrecorder/\">https://www.maartenbaert.be/simplescreenrecorder/</a>"));
 		label_welcome->setWordWrap(true);
 		label_welcome->setTextFormat(Qt::RichText);
 		label_welcome->setTextInteractionFlags(Qt::TextBrowserInteraction);
