@@ -164,7 +164,7 @@ Cela empêche l&apos;application de gaspiller du temps CPU pour des trames qui n
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="80"/>
         <source>Time zone:</source>
-        <translation>Fuseau horaire</translation>
+        <translation>Fuseau horaire : </translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="82"/>
