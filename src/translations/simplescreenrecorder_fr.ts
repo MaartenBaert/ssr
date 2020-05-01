@@ -2247,7 +2247,7 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1346"/>
         <source>Received command &apos;%1&apos;.</source>
-        <translation>Commande &apos;%1&apos; re&ccedil;ue.</translation>
+        <translation>Commande &apos;%1&apos; reçue.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1366"/>
