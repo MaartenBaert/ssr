@@ -1933,7 +1933,7 @@ even when the SimpleScreenRecorder window is not visible. This way you can creat
 SimpleScreenRecorder window show up in the final video.</source>
         <translation>La touche de raccourci d&apos;enregistrement est un raccourci-clavier global qui peut être utilisé pour démarrer
 ou interrompre l&apos;enregistrement à tout moment, même lorsque la fenêtre de SimpleScreenRecorder n&apos;est pas visible. 
-Vous pouvez ainsi créer des enregistrements sans que la fenêtre de SimpleScreenRecorder n'apparaisse dans la vidéo finale.</translation>
+Vous pouvez ainsi créer des enregistrements sans que la fenêtre de SimpleScreenRecorder n&apos;apparaisse dans la vidéo finale.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="176"/>
