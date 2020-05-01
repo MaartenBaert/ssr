@@ -159,52 +159,52 @@ Cela empêche l&apos;application de gaspiller du temps CPU pour des trames qui n
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="78"/>
         <source>Recording schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Planification d&apos;enregistrement</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="80"/>
         <source>Time zone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fuseau horaire : </translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="82"/>
         <source>Local time</source>
-        <translation type="unfinished"></translation>
+        <translation>Heure locale</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="83"/>
         <source>UTC</source>
-        <translation type="unfinished"></translation>
+        <translation>UTC</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="85"/>
         <source>Current time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Heure actuelle : </translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="102"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="103"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="104"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer vers le haut</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="105"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer vers le bas</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="107"/>
         <source>Close</source>
-        <translation type="unfinished">Fermer</translation>
+        <translation>Fermer</translation>
     </message>
 </context>
 <context>
@@ -1193,7 +1193,7 @@ Habituellement, cela signifie que la zone d&apos;enregistrement n&apos;est pas c
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="78"/>
         <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur : l&apos;option &apos;%1&apos; en ligne de commande nécessite une valeur !</translation>
     </message>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="86"/>
@@ -1266,7 +1266,7 @@ Habituellement, cela signifie que la zone d&apos;enregistrement n&apos;est pas c
     <message>
         <location filename="../GUI/MainWindow.cpp" line="78"/>
         <source>You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. Several features will most likely not work properly. In order to solve this, you should log out, choose a X11/Xorg session at the login screen, and then log back in.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous utilisez un système de fenêtre non-X11 (par exemple Wayland) qui n&apos;est pas actuellement pris en charge par SimpleScreenRecorder. Plusieurs fonctionnalités ne fonctionneront probablement pas correctement. Afin de résoudre ce problème, vous devez vous déconnecter, choisir une session X11/Xorg à l&apos;écran de connexion, puis vous reconnecter.</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="90"/>
@@ -1919,7 +1919,7 @@ Et si vous enregistrer simplement votre propre voix (pas de musique), la qualit�
     <message>
         <location filename="../GUI/PageRecord.cpp" line="168"/>
         <source>Edit schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer la planification</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="171"/>
@@ -1931,7 +1931,9 @@ Et si vous enregistrer simplement votre propre voix (pas de musique), la qualit�
         <source>The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,
 even when the SimpleScreenRecorder window is not visible. This way you can create recordings without having the
 SimpleScreenRecorder window show up in the final video.</source>
-        <translation type="unfinished"></translation>
+        <translation>La touche de raccourci d&apos;enregistrement est un raccourci-clavier global qui peut être utilisé pour démarrer
+ou interrompre l&apos;enregistrement à tout moment, même lorsque la fenêtre de SimpleScreenRecorder n&apos;est pas visible. 
+Vous pouvez ainsi créer des enregistrements sans que la fenêtre de SimpleScreenRecorder n'apparaisse dans la vidéo finale.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="176"/>
@@ -1941,7 +1943,7 @@ SimpleScreenRecorder window show up in the final video.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="177"/>
         <source>When enabled, a sound will be played when the recording is started or paused, or when an error occurs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lorsqu&apos;il est activé, un son sera joué lorsque l&apos;enregistrement est lancé ou mis en pause, ou lorsqu&apos;une erreur se produit.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="179"/>
@@ -2178,12 +2180,12 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1082"/>
         <source>Deactivate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactiver la planification</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1092"/>
         <source>Activate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer la planification</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1101"/>
@@ -2208,49 +2210,49 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1210"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous n&apos;avez rien enregistré, il n&apos;y a rien à sauvegarder.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1227"/>
         <source>Triggering scheduled action &apos;%1&apos; ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Déclenchement d&apos;une action planifiée &apos;%1&apos; ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1238"/>
         <source>Schedule: %1 in %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Planification : %1 de %2</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1245"/>
         <source>Schedule: (none)</source>
-        <translation type="unfinished"></translation>
+        <translation>Planification : (aucune)</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1249"/>
         <source>Schedule: (inactive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Planification : (inactif)</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1313"/>
         <location filename="../GUI/PageRecord.cpp" line="1330"/>
         <source>Standard input read error (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de lecture d&apos;entrée standard (%1).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1318"/>
         <location filename="../GUI/PageRecord.cpp" line="1335"/>
         <source>Standard input closed (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrée standard fermée (%1).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1346"/>
         <source>Received command &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Commande &apos;%1&apos; re&ccedil;ue.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1366"/>
         <source>Unknown command.</source>
-        <translation type="unfinished"></translation>
+        <translation>Commande inconnue.</translation>
     </message>
     <message>
         <source>You haven&apos;t recorded anything, there is nothing to save.
@@ -2271,7 +2273,7 @@ Le bouton de démarrage est en haut;).</translation>
 
 &lt;p&gt;For more information:&lt;br&gt;
 %1&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Bienvenue sur SimpleScreenRecorder!&lt;/p&gt;&gt;
+        <translation>&lt;p&gt;Bienvenue sur SimpleScreenRecorder!&lt;/p&gt;
 
 &lt;p&gt;Malgré son nom ce programme possède de fait de nombreuses options, Cependant ne vous inquiétez pas, il n&apos;y a que deux choses que vous devez connaître. Un, les paramètres par défaut sont généralement parfaits. Si vous ne savez pas ce que quelque chose fait, il suffit d&apos;utiliser les valeurs par défaut. Deux, pratiquement tous les paramètres possèdent des infobulles. Il suffit de passer la souris sur le paramètre pour savoir ce qu&apos;il fait.&lt;/p&gt;
 
@@ -2286,12 +2288,12 @@ Le bouton de démarrage est en haut;).</translation>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="52"/>
         <source>Skip this page next time</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauter cette page la prochaine fois</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="53"/>
         <source>Go directly to the input page when the program is started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Allez directement à la page de saisie lorsque le programme est lancé.</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="76"/>
@@ -2406,22 +2408,22 @@ Le bouton de démarrage est en haut;).</translation>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="39"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrer</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="40"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Pause</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="46"/>
         <source>Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Temps : </translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="51"/>
         <source>Action:</source>
-        <translation type="unfinished"></translation>
+        <translation>Action : </translation>
     </message>
 </context>
 <context>
