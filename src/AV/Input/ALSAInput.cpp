@@ -267,7 +267,7 @@ void ALSAInput::Init() {
 		}
 
 		// open PCM device
-		if(snd_pcm_open(&m_alsa_pcm, m_source_name.toUtf8().constData(), SND_PCM_STREAM_CAPTURE, 0) < 0) {
+		if(snd_pcm_open(&m_alsa_pcm, m_source_name.toUtf8().constData(), SND_PCM_STREAM_CAPTURE, SND_PCM_NONBLOCK) < 0) {
 			Logger::LogError("[ALSAInput::Init] " + Logger::tr("Error: Can't open PCM device!"));
 			throw ALSAException();
 		}
@@ -441,22 +441,37 @@ void ALSAInput::InputThread() {
 
 		while(!m_should_stop) {
 
+			// wait for new samples
+			int wait = snd_pcm_wait(m_alsa_pcm, 100);
+			if(wait < 0) {
+				if(wait == -EPIPE) {
+					ALSARecoverAfterOverrun(m_alsa_pcm);
+					PushAudioHole();
+					continue;
+				} else {
+					Logger::LogError("[ALSAInput::InputThread] " + Logger::tr("Error: Can't wait for new samples!"));
+					throw ALSAException();
+				}
+			} else if(wait == 0) {
+				continue;
+			}
+
+			int64_t timestamp = hrt_time_micro();
+
 			// read the samples
 			snd_pcm_sframes_t samples_read = snd_pcm_readi(m_alsa_pcm, buffer.GetData(), m_period_size);
 			if(samples_read < 0) {
 				if(samples_read == -EPIPE) {
 					ALSARecoverAfterOverrun(m_alsa_pcm);
 					PushAudioHole();
+					continue;
 				} else {
 					Logger::LogError("[ALSAInput::InputThread] " + Logger::tr("Error: Can't read samples!"));
 					throw ALSAException();
 				}
+			} else if(samples_read == 0) {
 				continue;
 			}
-			if(samples_read <= 0)
-				continue;
-
-			int64_t timestamp = hrt_time_micro();
 
 			// skip the first samples
 			if(has_first_samples) {
