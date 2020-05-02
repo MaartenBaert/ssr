@@ -464,6 +464,8 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 				data += n * channels * sizeof(float);
 			} else if(format == AV_SAMPLE_FMT_S16) {
 				data += n * channels * sizeof(int16_t);
+			} else if(format == AV_SAMPLE_FMT_S32) {
+				data += n * channels * sizeof(int32_t);
 			} else {
 				assert(false);
 			}
@@ -531,6 +533,10 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 		audiolock->m_temp_input_buffer.Alloc(sample_count * m_output_format->m_audio_channels);
 		data_float = audiolock->m_temp_input_buffer.GetData();
 		SampleChannelRemap(sample_count, (const int16_t*) data, channels, audiolock->m_temp_input_buffer.GetData(), m_output_format->m_audio_channels);
+	} else if(format == AV_SAMPLE_FMT_S32) {
+		audiolock->m_temp_input_buffer.Alloc(sample_count * m_output_format->m_audio_channels);
+		data_float = audiolock->m_temp_input_buffer.GetData();
+		SampleChannelRemap(sample_count, (const int32_t*) data, channels, audiolock->m_temp_input_buffer.GetData(), m_output_format->m_audio_channels);
 	} else {
 		assert(false);
 	}

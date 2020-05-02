@@ -40,6 +40,8 @@ private:
 
 private:
 	QString m_source_name;
+	AVSampleFormat m_sample_format;
+	bool m_convert_24_to_32;
 	unsigned int m_sample_rate, m_channels;
 	unsigned int m_period_size, m_buffer_size;
 
