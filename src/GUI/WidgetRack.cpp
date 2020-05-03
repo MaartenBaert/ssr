@@ -108,9 +108,9 @@ void WidgetRack::RemoveWidget(unsigned int index) {
 			--m_selected_widget;
 		} else if(m_selected_widget >= m_widgets.size()) {
 			m_selected_widget = (m_widgets.size() == 0)? NO_SELECTION : m_widgets.size() - 1;
-			UpdateSelection();
 		}
 	}
+	UpdateSelection();
 
 }
 
