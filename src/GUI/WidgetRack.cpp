@@ -70,6 +70,7 @@ unsigned int WidgetRack::GetSelected() {
 }
 
 void WidgetRack::SetSelected(unsigned int index) {
+	assert(index == NO_SELECTION || index < m_widgets.size());
 	m_selected_widget = index;
 	UpdateSelection();
 }
@@ -89,7 +90,7 @@ void WidgetRack::AddWidget(unsigned int index, QWidget* widget) {
 	UpdateRange();
 	UpdateLayout();
 
-	if(m_selected_widget != NO_SELECTION && index <= m_selected_widget)
+	if(m_selected_widget != NO_SELECTION && m_selected_widget >= index)
 		++m_selected_widget;
 
 }
@@ -104,13 +105,12 @@ void WidgetRack::RemoveWidget(unsigned int index) {
 	UpdateLayout();
 
 	if(m_selected_widget != NO_SELECTION) {
-		if(m_selected_widget > index) {
+		if(m_selected_widget == index) {
+			m_selected_widget = NO_SELECTION;
+		} else if(m_selected_widget > index) {
 			--m_selected_widget;
-		} else if(m_selected_widget >= m_widgets.size()) {
-			m_selected_widget = (m_widgets.size() == 0)? NO_SELECTION : m_widgets.size() - 1;
 		}
 	}
-	UpdateSelection();
 
 }
 

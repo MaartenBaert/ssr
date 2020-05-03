@@ -200,6 +200,11 @@ void DialogRecordSchedule::OnRemove() {
 	unsigned int selected = m_widgetrack_schedule->GetSelected();
 	if(selected != WidgetRack::NO_SELECTION) {
 		m_widgetrack_schedule->RemoveWidget(selected);
+		if(selected < m_widgetrack_schedule->GetWidgetCount()) {
+			m_widgetrack_schedule->SetSelected(selected);
+		} else if(m_widgetrack_schedule->GetWidgetCount() != 0) {
+			m_widgetrack_schedule->SetSelected(m_widgetrack_schedule->GetWidgetCount() - 1);
+		}
 	}
 }
 
