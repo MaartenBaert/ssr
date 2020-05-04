@@ -1327,7 +1327,7 @@ Vous pouvez également modifier manuellement cette option dans le panneau de con
     <message>
         <location filename="../GUI/PageInput.cpp" line="241"/>
         <source>Input profile</source>
-        <translation>Profile d&apos;entrée</translation>
+        <translation>Profil d&apos;entrée</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="250"/>
@@ -1622,7 +1622,7 @@ Un «monitor» est une source qui enregistre le son produit par d&apos;autres ap
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
         <source>Output profile</source>
-        <translation>Profile de sortie</translation>
+        <translation>Profil de sortie</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="191"/>
@@ -1680,7 +1680,7 @@ Note that not all codecs are supported by all containers, and that not all media
 Notez que tous les codecs ne sont pas supportés par tous les conteneurs, et que pas tous les lecteurs multimédia peuvent lire tous les formats de fichiers.
 - Matroska (MKV) prend en charge tous les codecs, mais il n&apos;est pas très connu.
 - MP4 est le format le plus connu et sera lu par la plus part des lecteurs de multimédia modernes, mais ne supporte que la vidéo H.264
-    (et de nombreux lecteurs de multimédia ne lise que l&apos;audio AAC).
+    (et de nombreux lecteurs de multimédia ne lisent que l&apos;audio AAC).
 - WebM est conçu pour l&apos;intégration de vidéo dans les sites Web (avec le HTML5 &lt;video&gt;). Le format a été créé par Google.
     WebM est supporté par défaut dans Firefox, Chrome et Opera, et les plugins sont disponibles pour Internet Explorer et Safari.
     Il ne supporte que VP8 et Vorbis.
