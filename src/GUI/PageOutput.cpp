@@ -224,6 +224,8 @@ PageOutput::PageOutput(MainWindow* main_window)
 				m_combobox_container_av->addItem(c.avname);
 			}
 			m_combobox_container_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work."));
+			m_label_container_warning = new QLabel(tr("Warning: This format will produce unreadable files if the recording is interrupted! Consider using MKV instead."), groupbox_file);
+			m_label_container_warning->setWordWrap(true);
 
 			connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
 			connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
@@ -243,6 +245,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 			layout->addWidget(m_combobox_container, 2, 1, 1, 2);
 			layout->addWidget(m_label_container_av, 3, 0);
 			layout->addWidget(m_combobox_container_av, 3, 1, 1, 2);
+			layout->addWidget(m_label_container_warning, 4, 0, 1, 3);
 		}
 		QGroupBox *groupbox_video = new QGroupBox(tr("Video"), scrollarea_contents);
 		{
@@ -623,6 +626,9 @@ void PageOutput::OnUpdateContainerFields() {
 
 	// show/hide fields
 	GroupVisible({m_label_container_av, m_combobox_container_av}, (container == CONTAINER_OTHER));
+
+	// show/hide warning
+	m_label_container_warning->setVisible(GetContainerAVName() == "mp4");
 
 	// mark uninstalled or unsupported codecs
 	for(unsigned int i = 0; i < VIDEO_CODEC_OTHER; ++i) {

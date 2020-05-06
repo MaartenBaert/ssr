@@ -103,6 +103,7 @@ private:
 	QComboBox *m_combobox_container;
 	QLabel *m_label_container_av;
 	QComboBox *m_combobox_container_av;
+	QLabel *m_label_container_warning;
 
 	QComboBox *m_combobox_video_codec;
 	QLabel *m_label_video_codec_av;
