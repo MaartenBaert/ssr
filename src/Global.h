@@ -106,17 +106,21 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 // replacement for QX11Info::isPlatformX11()
-#if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
 inline bool IsPlatformX11() {
-	char *v = getenv("XDG_SESSION_TYPE");
-	return (v == NULL || strcasecmp(v, "x11") == 0);
-}
-#else
-inline bool IsPlatformX11() {
-	char *v = getenv("XDG_SESSION_TYPE");
-	return ((v == NULL || strcasecmp(v, "x11") == 0) && QX11Info::isPlatformX11());
-}
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	if(!QX11Info::isPlatformX11())
+		return false;
 #endif
+	char *v = getenv("XDG_SESSION_TYPE");
+	if(v != NULL) {
+		if(strcasecmp(v, "x11") == 0)
+			return true;
+		if(strcasecmp(v, "wayland") == 0 || strcasecmp(v, "mir") == 0)
+			return false;
+	}
+	char *d = getenv("DISPLAY");
+	return (d != NULL);
+}
 
 // undefine problematic Xlib macros
 #undef Bool
