@@ -41,7 +41,7 @@ void LoadIcons() {
 		g_icon_go_previous = QIcon::fromTheme("go-previous");
 		g_icon_go_next = QIcon::fromTheme("go-next");
 	}
-        g_icon_document_open = QIcon::fromTheme("document-open");
+	g_icon_document_open = QIcon::fromTheme("document-open");
 
 	g_icon_pause = QIcon::fromTheme("media-playback-pause");
 	g_icon_record = QIcon::fromTheme("media-record");

@@ -49,7 +49,7 @@ PageDone::PageDone(MainWindow* main_window)
 }
 
 void PageDone::OpenStorageFolder() {
-    QString save_directory = m_main_window->GetPageOutput()->GetFile();
-    save_directory.chop(save_directory.size() - save_directory.lastIndexOf('/'));
+	QString save_directory = m_main_window->GetPageOutput()->GetFile();
+	save_directory.chop(save_directory.size() - save_directory.lastIndexOf('/'));
 	QDesktopServices::openUrl(QUrl::fromLocalFile(save_directory));
 }
