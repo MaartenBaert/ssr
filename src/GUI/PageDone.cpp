@@ -21,6 +21,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Icons.h"
 #include "MainWindow.h"
+#include "PageOutput.h"
+
+#include <QDesktopServices> // to open the folder with the resulting recording
 
 PageDone::PageDone(MainWindow* main_window)
 	: QWidget(main_window->centralWidget()) {
@@ -30,13 +33,23 @@ PageDone::PageDone(MainWindow* main_window)
 	QLabel *label_done = new QLabel(tr("The recording has been saved. You can edit the video now, or re-encode it with better settings to "
 									   "make the file smaller (the default settings are optimized for quality and speed, not file size)."), this);
 	label_done->setWordWrap(true);
-	QPushButton *button_back = new QPushButton(g_icon_go_home, tr("Back to the start screen"), this);
 
+	QPushButton *button_open_folder = new QPushButton(g_icon_document_open, tr("Open folder"), this);
+	connect(button_open_folder, SIGNAL(clicked()), this, SLOT(OpenStorageFolder()));
+
+	QPushButton *button_back = new QPushButton(g_icon_go_home, tr("Back to the start screen"), this);
 	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageWelcome()));
 
 	QVBoxLayout *layout_page = new QVBoxLayout(this);
 	layout_page->addWidget(label_done);
+        layout_page->addWidget(button_open_folder);
 	layout_page->addStretch();
 	layout_page->addWidget(button_back);
 
+}
+
+void PageDone::OpenStorageFolder() {
+	QString save_directory = m_main_window->GetPageOutput()->GetFile();
+	save_directory.chop(save_directory.size() - save_directory.lastIndexOf('/'));
+	QDesktopServices::openUrl(QUrl::fromLocalFile(save_directory));
 }
