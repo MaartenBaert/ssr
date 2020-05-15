@@ -32,6 +32,6 @@ public:
 	PageDone(MainWindow* main_window);
 
 public slots:
-	void OpenStorageFolder();
+	void OnOpenFolder();
 
 };
