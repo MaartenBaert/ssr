@@ -32,7 +32,7 @@ PageDone::PageDone(MainWindow* main_window)
 									   "make the file smaller (the default settings are optimized for quality and speed, not file size)."), this);
 	label_done->setWordWrap(true);
 
-	QPushButton *button_open_folder = new QPushButton(g_icon_folder, tr("Open folder"), this);
+	QPushButton *button_open_folder = new QPushButton(g_icon_folder_open, tr("Open folder"), this);
 	connect(button_open_folder, SIGNAL(clicked()), this, SLOT(OnOpenFolder()));
 
 	QPushButton *button_back = new QPushButton(g_icon_go_home, tr("Back to the start screen"), this);
