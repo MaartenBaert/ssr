@@ -30,12 +30,16 @@ PageDone::PageDone(MainWindow* main_window)
 	QLabel *label_done = new QLabel(tr("The recording has been saved. You can edit the video now, or re-encode it with better settings to "
 									   "make the file smaller (the default settings are optimized for quality and speed, not file size)."), this);
 	label_done->setWordWrap(true);
+
+        QPushButton *button_open_folder = new QPushButton(g_icon_document_open, tr("Open folder"), this);
+
 	QPushButton *button_back = new QPushButton(g_icon_go_home, tr("Back to the start screen"), this);
 
 	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageWelcome()));
 
 	QVBoxLayout *layout_page = new QVBoxLayout(this);
 	layout_page->addWidget(label_done);
+        layout_page->addWidget(button_open_folder);
 	layout_page->addStretch();
 	layout_page->addWidget(button_back);
 
