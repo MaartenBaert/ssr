@@ -6,6 +6,15 @@ Git master
 
 - ?
 
+Version 0.4.2
+-------------
+
+- Improved X11/Wayland detection.
+- Changed ALSA input to use non-blocking API. This seems to reduce the latency in some cases.
+- Added support for s24, s32 and f32 sample formats for ALSA input.
+- Added 'open folder' button after saving the recording.
+- Several minor improvements.
+
 Version 0.4.1
 -------------
 
