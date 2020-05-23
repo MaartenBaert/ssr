@@ -49,7 +49,7 @@ void PrintOptionHelp() {
 		"  record-start          Start the recording.\n"
 		"  record-pause          Pause the recording.\n"
 		"  record-cancel         Cancel the recording and delete the output file.\n"
-		"  record-save           Stop the recording and save the output file.\n"
+		"  record-save           Finish the recording and save the output file.\n"
 		"  schedule-activate     Activate the recording schedule.\n"
 		"  schedule-deactivate   Deactivate the recording schedule.\n"
 		"  window-show           Show the application window.\n"

@@ -147,6 +147,7 @@ private:
 
 	QSocketNotifier *m_stdin_notifier;
 	QByteArray m_stdin_buffer;
+	bool m_stdin_reentrant;
 
 	QTimer *m_timer_schedule, *m_timer_update_info;
 

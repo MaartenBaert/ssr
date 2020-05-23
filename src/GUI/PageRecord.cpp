@@ -159,6 +159,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_last_error_sound = std::numeric_limits<int64_t>::min();
 #endif
 
+	m_stdin_reentrant = false;
+
 	QGroupBox *groupbox_recording = new QGroupBox(tr("Recording"), this);
 	{
 		m_pushbutton_record = new QPushButton(groupbox_recording);
@@ -1339,32 +1341,36 @@ void PageRecord::OnStdin() {
 	m_stdin_buffer.append(buffer.data(), bytes);
 
 	// process commands
-	for( ; ; ) {
-		QString command = ReadStdinCommand();
-		if(command.isNull())
-			break;
-		Logger::LogInfo("[PageRecord::OnStdin] " + tr("Received command '%1'.").arg(command));
-		if(command == "record-start") {
-			OnRecordStart();
-		} else if(command == "record-pause") {
-			OnRecordPause();
-		} else if(command == "record-cancel") {
-			OnRecordCancel(false);
-		} else if(command == "record-save") {
-			OnRecordSave(false);
-		} else if(command == "schedule-activate") {
-			OnScheduleActivate();
-		} else if(command == "schedule-deactivate") {
-			OnScheduleDeactivate();
-		} else if(command == "window-show") {
-			m_main_window->OnShow();
-		} else if(command == "window-hide") {
-			m_main_window->OnHide();
-		} else if(command == "quit") {
-			m_main_window->Quit();
-		} else {
-			Logger::LogError("[PageRecord::OnStdin] " + tr("Unknown command."));
+	if(!m_stdin_reentrant) {
+		m_stdin_reentrant = true;
+		for( ; ; ) {
+			QString command = ReadStdinCommand();
+			if(command.isNull())
+				break;
+			Logger::LogInfo("[PageRecord::OnStdin] " + tr("Received command '%1'.").arg(command));
+			if(command == "record-start") {
+				OnRecordStart();
+			} else if(command == "record-pause") {
+				OnRecordPause();
+			} else if(command == "record-cancel") {
+				OnRecordCancel(false);
+			} else if(command == "record-save") {
+				OnRecordSave(false);
+			} else if(command == "schedule-activate") {
+				OnScheduleActivate();
+			} else if(command == "schedule-deactivate") {
+				OnScheduleDeactivate();
+			} else if(command == "window-show") {
+				m_main_window->OnShow();
+			} else if(command == "window-hide") {
+				m_main_window->OnHide();
+			} else if(command == "quit") {
+				m_main_window->Quit();
+			} else {
+				Logger::LogError("[PageRecord::OnStdin] " + tr("Unknown command."));
+			}
 		}
+		m_stdin_reentrant = false;
 	}
 
 }
