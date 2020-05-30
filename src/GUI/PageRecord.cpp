@@ -1284,7 +1284,6 @@ void PageRecord::OnScheduleActivateDeactivate() {
 }
 
 void PageRecord::OnScheduleEdit() {
-	OnScheduleDeactivate();
 	DialogRecordSchedule dialog(this);
 	dialog.exec();
 	UpdateSchedule();
