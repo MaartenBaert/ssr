@@ -256,6 +256,10 @@ PageRecord::PageRecord(MainWindow* main_window)
 				m_label_info_file_size = new QLabel(groupbox_information);
 				QLabel *label_bit_rate = new QLabel(tr("Bit rate:"), groupbox_information);
 				m_label_info_bit_rate = new QLabel(groupbox_information);
+				m_checkbox_show_recording_area = new QCheckBox(tr("Show recording area"), groupbox_information);
+				m_checkbox_show_recording_area->setToolTip(tr("When enabled, the recorded area is marked on the screen."));
+
+				connect(m_checkbox_show_recording_area, SIGNAL(clicked()), this, SLOT(OnUpdateRecordingFrame()));
 
 				QGridLayout *layout = new QGridLayout(groupbox_information);
 				layout->addWidget(label_total_time, 0, 0);
@@ -274,6 +278,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 				layout->addWidget(m_label_info_file_size, 6, 1);
 				layout->addWidget(label_bit_rate, 7, 0);
 				layout->addWidget(m_label_info_bit_rate, 7, 1);
+				layout->addWidget(m_checkbox_show_recording_area, 9, 0, 1, 2);
 				layout->setColumnStretch(1, 1);
 				layout->setRowStretch(8, 1);
 			}
@@ -401,6 +406,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	UpdateRecordButton();
 	UpdateSchedule();
 	UpdatePreview();
+	OnUpdateRecordingFrame();
 
 	if(m_systray_icon != NULL)
 		m_systray_icon->show();
@@ -442,6 +448,7 @@ void PageRecord::LoadSettings(QSettings *settings) {
 #if SSR_USE_ALSA
 	SetSoundNotificationsEnabled(settings->value("record/sound_notifications_enable", false).toBool());
 #endif
+	SetShowRecordingArea(settings->value("record/show_recording_area", false).toBool());
 	SetPreviewFrameRate(settings->value("record/preview_frame_rate", 10).toUInt());
 	SetScheduleTimeZone(StringToEnum(settings->value("record/schedule_time_zone", QString()).toString(), SCHEDULE_TIME_ZONE_LOCAL));
 	unsigned int num_entries = clamp(settings->value("record/schedule_num_entries", 0).toUInt(), 0u, 1000u);
@@ -459,6 +466,7 @@ void PageRecord::LoadSettings(QSettings *settings) {
 #if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
 #endif
+	OnUpdateRecordingFrame();
 }
 
 void PageRecord::SaveSettings(QSettings *settings) {
@@ -471,6 +479,7 @@ void PageRecord::SaveSettings(QSettings *settings) {
 #if SSR_USE_ALSA
 	settings->setValue("record/sound_notifications_enable", AreSoundNotificationsEnabled());
 #endif
+	settings->setValue("record/show_recording_area", GetShowRecordingArea());
 	settings->setValue("record/preview_frame_rate", GetPreviewFrameRate());
 	settings->setValue("record/schedule_time_zone", EnumToString(GetScheduleTimeZone()));
 	settings->setValue("record/schedule_num_entries", (unsigned int) m_schedule_entries.size());
@@ -626,6 +635,9 @@ void PageRecord::StartPage() {
 		default: break; // to keep GCC happy
 	}
 
+	// only show the recording frame option when using a fixed rectangle
+	GroupVisible({m_checkbox_show_recording_area}, (m_video_area == PageInput::VIDEO_AREA_FIXED));
+
 	// hide the audio previewer if there is no audio
 	GroupVisible({m_label_mic_icon, m_audio_previewer}, m_audio_enabled);
 
@@ -673,6 +685,7 @@ void PageRecord::StartPage() {
 #endif
 
 	UpdateInput();
+	OnUpdateRecordingFrame();
 
 	OnUpdateInformation();
 	m_timer_update_info->start(1000);
@@ -727,6 +740,7 @@ void PageRecord::StopPage(bool save) {
 #if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
 #endif
+	OnUpdateRecordingFrame();
 
 	m_timer_update_info->stop();
 	OnUpdateInformation();
@@ -814,6 +828,7 @@ void PageRecord::StartOutput() {
 		UpdateSysTray();
 		UpdateRecordButton();
 		UpdateInput();
+		OnUpdateRecordingFrame();
 
 	} catch(...) {
 		Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Something went wrong during initialization."));
@@ -857,6 +872,7 @@ void PageRecord::StopOutput(bool final) {
 	UpdateSysTray();
 	UpdateRecordButton();
 	UpdateInput();
+	OnUpdateRecordingFrame();
 
 }
 
@@ -892,6 +908,7 @@ void PageRecord::StartInput() {
 #endif
 			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor,
 										   m_video_area == PageInput::VIDEO_AREA_CURSOR, m_video_area_follow_fullscreen));
+			connect(m_x11_input.get(), SIGNAL(CurrentRectangleChanged()), this, SLOT(OnUpdateRecordingFrame()), Qt::QueuedConnection);
 		}
 
 		// start the audio input
@@ -1153,6 +1170,22 @@ void PageRecord::OnUpdateSoundNotifications() {
 }
 #endif
 
+void PageRecord::OnUpdateRecordingFrame() {
+	if(m_page_started && m_video_area == PageInput::VIDEO_AREA_FIXED && GetShowRecordingArea()) {
+		if(m_recording_frame == NULL)
+			m_recording_frame.reset(new RecordingFrameWindow(this, true));
+		if(m_x11_input == NULL) {
+			m_recording_frame->SetRectangle(QRect(m_video_x, m_video_y, m_video_in_width, m_video_in_height));
+		} else {
+			unsigned int x, y, width, height;
+			m_x11_input->GetCurrentRectangle(&x, &y, &width, &height);
+			m_recording_frame->SetRectangle(QRect(x, y, width, height));
+		}
+	} else {
+		m_recording_frame.reset();
+	}
+}
+
 void PageRecord::OnRecordStart() {
 	if(m_main_window->IsBusy())
 		return;
@@ -1301,6 +1334,7 @@ void PageRecord::OnPreviewStartStop() {
 	}
 	UpdatePreview();
 	UpdateInput();
+	OnUpdateRecordingFrame();
 }
 
 void PageRecord::OnStdin() {

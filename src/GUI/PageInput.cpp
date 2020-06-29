@@ -184,9 +184,10 @@ void ScreenLabelWindow::paintEvent(QPaintEvent* event) {
 	painter.drawText(0, 0, width(), height(), Qt::AlignHCenter | Qt::AlignVCenter | Qt::TextSingleLine, m_text);
 }
 
-RecordingFrameWindow::RecordingFrameWindow(QWidget* parent)
+RecordingFrameWindow::RecordingFrameWindow(QWidget* parent, bool outside)
 	: QWidget(parent, TRANSPARENT_WINDOW_FLAGS) {
 	TRANSPARENT_WINDOW_ATTRIBUTES();
+	m_outside = outside;
 	QImage image(16, 16, QImage::Format_RGB32);
 	for(size_t j = 0; j < (size_t) image.height(); ++j) {
 		uint32_t *row = (uint32_t*) image.scanLine(j);
@@ -199,13 +200,31 @@ RecordingFrameWindow::RecordingFrameWindow(QWidget* parent)
 	UpdateMask();
 }
 
-void RecordingFrameWindow::UpdateMask() {
-	if(QX11Info::isCompositingManagerRunning()) {
-		clearMask();
-		setWindowOpacity(0.25);
+void RecordingFrameWindow::SetRectangle(const QRect& r) {
+	QRect rect = MapToLogicalCoordinates(ValidateRubberBandRectangle(r));
+	if(m_outside)
+		rect.adjust(-RecordingFrameWindow::BORDER_WIDTH, -RecordingFrameWindow::BORDER_WIDTH,
+					RecordingFrameWindow::BORDER_WIDTH, RecordingFrameWindow::BORDER_WIDTH);
+	if(rect.isEmpty()) {
+		hide();
 	} else {
-		setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(3, 3, width() - 6, height() - 6)));
-		setWindowOpacity(1.0);
+		setGeometry(rect);
+		show();
+	}
+}
+
+void RecordingFrameWindow::UpdateMask() {
+	if(m_outside) {
+		setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(BORDER_WIDTH, BORDER_WIDTH, width() - 2 * BORDER_WIDTH, height() - 2 * BORDER_WIDTH)));
+		setWindowOpacity(0.5);
+	} else {
+		if(QX11Info::isCompositingManagerRunning()) {
+			clearMask();
+			setWindowOpacity(0.25);
+		} else {
+			setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(BORDER_WIDTH, BORDER_WIDTH, width() - 2 * BORDER_WIDTH, height() - 2 * BORDER_WIDTH)));
+			setWindowOpacity(1.0);
+		}
 	}
 }
 
@@ -223,7 +242,14 @@ void RecordingFrameWindow::paintEvent(QPaintEvent* event) {
 	painter.setPen(QColor(0, 0, 0, 128));
 	painter.setBrush(Qt::NoBrush);
 	painter.drawTiledPixmap(0, 0, width(), height(), m_texture);
-	painter.drawRect(QRectF(0.5, 0.5, (qreal) width() - 1.0, (qreal) height() - 1.0));
+	if(m_outside) {
+		painter.drawRect(QRectF((qreal) BORDER_WIDTH - 0.5,
+								(qreal) BORDER_WIDTH - 0.5,
+								(qreal) (width() - 2 * BORDER_WIDTH) + 1.0,
+								(qreal) (height() - 2 * BORDER_WIDTH) + 1.0));
+	} else {
+		painter.drawRect(QRectF(0.5, 0.5, (qreal) width() - 1.0, (qreal) height() - 1.0));
+	}
 }
 
 PageInput::PageInput(MainWindow* main_window)
@@ -886,14 +912,8 @@ void PageInput::StopGrabbing() {
 
 void PageInput::UpdateRubberBand() {
 	if(m_rubber_band == NULL)
-		m_rubber_band.reset(new RecordingFrameWindow(this));
-	QRect rect = MapToLogicalCoordinates(ValidateRubberBandRectangle(m_rubber_band_rect));
-	if(rect.isNull()) {
-		m_rubber_band->hide();
-	} else {
-		m_rubber_band->setGeometry(rect);
-		m_rubber_band->show();
-	}
+		m_rubber_band.reset(new RecordingFrameWindow(this, false));
+	m_rubber_band->SetRectangle(m_rubber_band_rect);
 }
 
 void PageInput::SetVideoAreaFromRubberBand() {
@@ -959,14 +979,8 @@ void PageInput::LoadPulseAudioSources() {
 void PageInput::OnUpdateRecordingFrame() {
 	if(m_spinbox_video_x->hasFocus() || m_spinbox_video_y->hasFocus() || m_spinbox_video_w->hasFocus() || m_spinbox_video_h->hasFocus()) {
 		if(m_recording_frame == NULL)
-			m_recording_frame.reset(new RecordingFrameWindow(this));
-		QRect rect = MapToLogicalCoordinates(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
-		if(rect.isNull()) {
-			m_recording_frame->hide();
-		} else {
-			m_recording_frame->setGeometry(rect);
-			m_recording_frame->show();
-		}
+			m_recording_frame.reset(new RecordingFrameWindow(this, false));
+		m_recording_frame->SetRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH()));
 	} else {
 		m_recording_frame.reset();
 	}

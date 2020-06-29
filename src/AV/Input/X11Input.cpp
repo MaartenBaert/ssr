@@ -185,6 +185,8 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 
 	{
 		SharedLock lock(&m_shared_data);
+		lock->m_current_x = m_x;
+		lock->m_current_y = m_y;
 		lock->m_current_width = m_width;
 		lock->m_current_height = m_height;
 	}
@@ -219,6 +221,14 @@ X11Input::~X11Input() {
 	// free everything
 	Free();
 
+}
+
+void X11Input::GetCurrentRectangle(unsigned int *x, unsigned int *y, unsigned int *width, unsigned int *height) {
+	SharedLock lock(&m_shared_data);
+	*x = lock->m_current_x;
+	*y = lock->m_current_y;
+	*width = lock->m_current_width;
+	*height = lock->m_current_height;
 }
 
 void X11Input::GetCurrentSize(unsigned int *width, unsigned int *height) {
@@ -494,8 +504,13 @@ void X11Input::InputThread() {
 			// save current size
 			{
 				SharedLock lock(&m_shared_data);
-				lock->m_current_width = grab_width;
-				lock->m_current_height = grab_height;
+				if(lock->m_current_x != grab_x || lock->m_current_y != grab_y || lock->m_current_width != grab_width || lock->m_current_height != grab_height) {
+					lock->m_current_x = grab_x;
+					lock->m_current_y = grab_y;
+					lock->m_current_width = grab_width;
+					lock->m_current_height = grab_height;
+					emit CurrentRectangleChanged();
+				}
 			}
 
 			// get the image

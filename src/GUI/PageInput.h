@@ -78,10 +78,16 @@ class RecordingFrameWindow : public QWidget {
 	Q_OBJECT
 
 private:
+	bool m_outside;
 	QPixmap m_texture;
 
 public:
-	RecordingFrameWindow(QWidget* parent);
+	static constexpr int BORDER_WIDTH = 4;
+
+public:
+	RecordingFrameWindow(QWidget* parent, bool outside);
+
+	void SetRectangle(const QRect& r);
 
 private:
 	void UpdateMask();

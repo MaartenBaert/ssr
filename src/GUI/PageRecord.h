@@ -130,6 +130,7 @@ private:
 	QLabel *m_label_info_total_time, *m_label_info_frame_rate_in, *m_label_info_frame_rate_out, *m_label_info_size_in, *m_label_info_size_out;
 	ElidedLabel *m_label_info_file_name;
 	QLabel *m_label_info_file_size, *m_label_info_bit_rate;
+	QCheckBox *m_checkbox_show_recording_area;
 
 	QStackedLayout *m_stacked_layout_preview;
 	QWidget *m_preview_page1, *m_preview_page2;
@@ -150,6 +151,8 @@ private:
 	bool m_stdin_reentrant;
 
 	QTimer *m_timer_schedule, *m_timer_update_info;
+
+	std::unique_ptr<RecordingFrameWindow> m_recording_frame;
 
 public:
 	PageRecord(MainWindow* main_window);
@@ -195,6 +198,7 @@ public:
 #if SSR_USE_ALSA
 	inline bool AreSoundNotificationsEnabled() { return m_checkbox_sound_notifications_enable->isChecked(); }
 #endif
+	inline bool GetShowRecordingArea() { return m_checkbox_show_recording_area->isChecked(); }
 	inline unsigned int GetPreviewFrameRate() { return m_spinbox_preview_frame_rate->value(); }
 
 	inline void SetScheduleTimeZone(enum_schedule_time_zone time_zone) { m_schedule_time_zone = (enum_schedule_time_zone) clamp((unsigned int) time_zone, 0u, (unsigned int) SCHEDULE_TIME_ZONE_COUNT - 1); }
@@ -208,6 +212,7 @@ public:
 #if SSR_USE_ALSA
 	inline void SetSoundNotificationsEnabled(bool enable) { m_checkbox_sound_notifications_enable->setChecked(enable); }
 #endif
+	inline void SetShowRecordingArea(bool enable) { m_checkbox_show_recording_area->setChecked(enable); }
 	inline void SetPreviewFrameRate(unsigned int frame_rate) { m_spinbox_preview_frame_rate->setValue(frame_rate); }
 
 public slots:
@@ -216,6 +221,7 @@ public slots:
 #if SSR_USE_ALSA
 	void OnUpdateSoundNotifications();
 #endif
+	void OnUpdateRecordingFrame();
 
 public slots:
 	void OnRecordStart();
