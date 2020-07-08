@@ -35,7 +35,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AudioEncoder.h"
 #include "Synchronizer.h"
 #include "X11Input.h"
+#if SSR_USE_OPENGL_RECORDING
 #include "GLInjectInput.h"
+#endif
+#if SSR_USE_V4L2
+#include "V4L2Input.h"
+#endif
 #if SSR_USE_ALSA
 #include "ALSAInput.h"
 #endif
@@ -525,6 +530,9 @@ void PageRecord::StartPage() {
 	// get the video input settings
 	m_video_area = page_input->GetVideoArea();
 	m_video_area_follow_fullscreen = page_input->GetVideoAreaFollowFullscreen();
+#if SSR_USE_V4L2
+	m_v4l2_device = page_input->GetVideoV4L2Device();
+#endif
 	m_video_x = page_input->GetVideoX();
 	m_video_y = page_input->GetVideoY();
 #if SSR_USE_OPENGL_RECORDING
@@ -895,6 +903,11 @@ void PageRecord::StartInput() {
 		Logger::LogInfo("[PageRecord::StartInput] " + tr("Starting input ..."));
 
 		// start the video input
+		if(m_video_area == PageInput::VIDEO_AREA_SCREEN || m_video_area == PageInput::VIDEO_AREA_FIXED || m_video_area == PageInput::VIDEO_AREA_CURSOR) {
+			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor,
+										   m_video_area == PageInput::VIDEO_AREA_CURSOR, m_video_area_follow_fullscreen));
+			connect(m_x11_input.get(), SIGNAL(CurrentRectangleChanged()), this, SLOT(OnUpdateRecordingFrame()), Qt::QueuedConnection);
+		}
 #if SSR_USE_OPENGL_RECORDING
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 			if(m_gl_inject_input == NULL) {
@@ -902,14 +915,14 @@ void PageRecord::StartInput() {
 				throw GLInjectException();
 			}
 			m_gl_inject_input->SetCapturing(true);
-		} else {
-#else
-		{
-#endif
-			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor,
-										   m_video_area == PageInput::VIDEO_AREA_CURSOR, m_video_area_follow_fullscreen));
-			connect(m_x11_input.get(), SIGNAL(CurrentRectangleChanged()), this, SLOT(OnUpdateRecordingFrame()), Qt::QueuedConnection);
 		}
+#endif
+#if SSR_USE_V4L2
+		if(m_video_area == PageInput::VIDEO_AREA_V4L2) {
+			m_v4l2_input.reset(new V4L2Input(m_v4l2_device, m_video_in_width, m_video_in_height));
+			m_v4l2_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+		}
+#endif
 
 		// start the audio input
 		if(m_audio_enabled) {
@@ -935,6 +948,9 @@ void PageRecord::StartInput() {
 		if(m_gl_inject_input != NULL)
 			m_gl_inject_input->SetCapturing(false);
 #endif
+#if SSR_USE_V4L2
+		m_v4l2_input.reset();
+#endif
 #if SSR_USE_ALSA
 		m_alsa_input.reset();
 #endif
@@ -959,6 +975,9 @@ void PageRecord::StopInput() {
 #if SSR_USE_OPENGL_RECORDING
 	if(m_gl_inject_input != NULL)
 		m_gl_inject_input->SetCapturing(false);
+#endif
+#if SSR_USE_V4L2
+	m_v4l2_input.reset();
 #endif
 #if SSR_USE_ALSA
 	m_alsa_input.reset();
@@ -1016,15 +1035,16 @@ void PageRecord::UpdateInput() {
 	// get sources
 	VideoSource *video_source = NULL;
 	AudioSource *audio_source = NULL;
-#if SSR_USE_OPENGL_RECORDING
-	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
-		video_source = m_gl_inject_input.get();
-	} else {
-#else
-	{
-#endif
+	if(m_video_area == PageInput::VIDEO_AREA_SCREEN || m_video_area == PageInput::VIDEO_AREA_FIXED|| m_video_area == PageInput::VIDEO_AREA_CURSOR)
 		video_source = m_x11_input.get();
-	}
+#if SSR_USE_OPENGL_RECORDING
+	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
+		video_source = m_gl_inject_input.get();
+#endif
+#if SSR_USE_V4L2
+	if(m_video_area == PageInput::VIDEO_AREA_V4L2)
+		video_source = m_v4l2_input.get();
+#endif
 	if(m_audio_enabled) {
 #if SSR_USE_ALSA
 		if(m_audio_backend == PageInput::AUDIO_BACKEND_ALSA)
@@ -1417,12 +1437,16 @@ void PageRecord::OnUpdateInformation() {
 		double fps_out = 0.0;
 		uint64_t bit_rate = 0, total_bytes = 0;
 
+		if(m_x11_input != NULL)
+			fps_in = m_x11_input->GetFPS();
 #if SSR_USE_OPENGL_RECORDING
 		if(m_gl_inject_input != NULL)
 			fps_in = m_gl_inject_input->GetFPS();
 #endif
-		if(m_x11_input != NULL)
-			fps_in = m_x11_input->GetFPS();
+#if SSR_USE_V4L2
+		if(m_v4l2_input != NULL)
+			fps_in = m_v4l2_input->GetFPS();
+#endif
 
 		if(m_output_manager != NULL) {
 			total_time = (m_output_manager->GetSynchronizer() == NULL)? 0 : m_output_manager->GetSynchronizer()->GetTotalTime();

@@ -15,6 +15,7 @@ option(ENABLE_32BIT_GLINJECT "Build the 32-bit version of 'libssr-glinject' on 6
 option(ENABLE_X86_ASM "Allow x86/x64 assembly or intrinsics." ${PROCESSOR_IS_X86})
 option(ENABLE_FFMPEG_VERSIONS "Use FFmpeg version numbers for feature support tests. Enable when using FFmpeg, disable when using Libav." TRUE)
 option(WITH_OPENGL_RECORDING "Build with OpenGL recording support." TRUE)
+option(WITH_V4L2 "Build with V4L2 support." TRUE)
 option(WITH_ALSA "Build with ALSA support." TRUE)
 option(WITH_PULSEAUDIO "Build with PulseAudio support." TRUE)
 option(WITH_JACK "Build with JACK support." TRUE)

@@ -59,6 +59,28 @@ AVPixelFormat VideoEncoder::GetPixelFormat() {
 	return GetCodecContext()->pix_fmt;
 }
 
+int VideoEncoder::GetColorSpace() {
+	switch(GetCodecContext()->colorspace) {
+		case AVCOL_SPC_BT709:
+			return SWS_CS_ITU709;
+		case AVCOL_SPC_FCC:
+			return SWS_CS_FCC;
+		case AVCOL_SPC_BT470BG:
+			return SWS_CS_ITU601;
+		case AVCOL_SPC_SMPTE170M:
+			return SWS_CS_SMPTE170M;
+		case AVCOL_SPC_SMPTE240M:
+			return SWS_CS_SMPTE240M;
+#ifdef SWS_CS_BT2020
+		case AVCOL_SPC_BT2020_NCL:
+		case AVCOL_SPC_BT2020_CL:
+			return SWS_CS_BT2020;
+#endif
+		default:
+			return SWS_CS_DEFAULT;
+	}
+}
+
 unsigned int VideoEncoder::GetWidth() {
 	return GetCodecContext()->width;
 }

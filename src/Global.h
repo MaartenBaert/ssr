@@ -72,6 +72,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <pwd.h>
 #include <strings.h>
 #include <sys/ioctl.h>
+#include <sys/mman.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -151,6 +152,11 @@ extern "C" {
 // Whether OpenGL recording should be used.
 #ifndef SSR_USE_OPENGL_RECORDING
 #error SSR_USE_OPENGL_RECORDING should be defined!
+#endif
+
+// Whether V4L2 should be used.
+#ifndef SSR_USE_V4L2
+#error SSR_USE_V4L2 should be defined!
 #endif
 
 // Whether ALSA should be used.
@@ -316,6 +322,14 @@ public:
 		return "SSRStreamException";
 	}
 };
+#if SSR_USE_V4L2
+class V4L2Exception : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "V4L2Exception";
+	}
+};
+#endif
 #if SSR_USE_ALSA
 class ALSAException : public std::exception {
 public:

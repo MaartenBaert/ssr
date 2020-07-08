@@ -45,6 +45,9 @@ public:
 
 	// Returns the required pixel format.
 	AVPixelFormat GetPixelFormat();
+	
+	// Returns the required color space.
+	int GetColorSpace();
 
 	unsigned int GetWidth();
 	unsigned int GetHeight();

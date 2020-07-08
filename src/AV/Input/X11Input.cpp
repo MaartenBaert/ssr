@@ -36,8 +36,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Synchronizer.h"
 #include "VideoEncoder.h"
 
-#include "VideoPreviewer.h"
-
 /*
 The code in this file is based on the MIT-SHM example code and the x11grab device in libav/ffmpeg (which is GPL):
 http://www.xfree86.org/current/mit-shm.html
@@ -561,7 +559,7 @@ void X11Input::InputThread() {
 			uint8_t *image_data = (uint8_t*) m_x11_image->data;
 			int image_stride = m_x11_image->bytes_per_line;
 			AVPixelFormat x11_image_format = X11ImageGetPixelFormat(m_x11_image);
-			PushVideoFrame(grab_width, grab_height, image_data, image_stride, x11_image_format, timestamp);
+			PushVideoFrame(grab_width, grab_height, image_data, image_stride, x11_image_format, SWS_CS_DEFAULT, timestamp);
 			last_timestamp = timestamp;
 
 		}

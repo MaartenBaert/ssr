@@ -33,7 +33,11 @@ ENUMSTRINGS(PageInput::enum_video_area) = {
 #if SSR_USE_OPENGL_RECORDING
 	{PageInput::VIDEO_AREA_GLINJECT, "glinject"},
 #endif
+#if SSR_USE_V4L2
+	{PageInput::VIDEO_AREA_V4L2, "v4l2"},
+#endif
 };
+
 ENUMSTRINGS(PageInput::enum_audio_backend) = {
 #if SSR_USE_ALSA
 	{PageInput::AUDIO_BACKEND_ALSA, "alsa"},
@@ -275,11 +279,17 @@ PageInput::PageInput(MainWindow* main_window)
 #if SSR_USE_OPENGL_RECORDING
 			QRadioButton *radio_area_glinject = new QRadioButton(tr("Record OpenGL"), groupbox_video);
 #endif
+#if SSR_USE_V4L2
+			QRadioButton *radio_area_v4l2 = new QRadioButton(tr("Record V4L2 device"), groupbox_video);
+#endif
 			m_buttongroup_video_area->addButton(radio_area_screen, VIDEO_AREA_SCREEN);
 			m_buttongroup_video_area->addButton(radio_area_fixed, VIDEO_AREA_FIXED);
 			m_buttongroup_video_area->addButton(radio_area_cursor, VIDEO_AREA_CURSOR);
 #if SSR_USE_OPENGL_RECORDING
 			m_buttongroup_video_area->addButton(radio_area_glinject, VIDEO_AREA_GLINJECT);
+#endif
+#if SSR_USE_V4L2
+			m_buttongroup_video_area->addButton(radio_area_v4l2, VIDEO_AREA_V4L2);
 #endif
 			m_combobox_screens = new QComboBoxWithSignal(groupbox_video);
 			m_combobox_screens->setToolTip(tr("Select what monitor should be recorded in a multi-monitor configuration."));
@@ -294,6 +304,10 @@ PageInput::PageInput(MainWindow* main_window)
 #if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings = new QPushButton(tr("OpenGL settings..."), groupbox_video);
 			m_pushbutton_video_opengl_settings->setToolTip(tr("Change the settings for OpenGL recording."));
+#endif
+#if SSR_USE_V4L2
+			m_lineedit_v4l2_device = new QLineEdit(groupbox_video);
+			m_lineedit_v4l2_device->setToolTip(tr("The V4L2 device to record (e.g. /dev/video0)."));
 #endif
 			m_label_video_x = new QLabel(tr("Left:"), groupbox_video);
 			m_spinbox_video_x = new QSpinBoxWithSignal(groupbox_video);
@@ -376,6 +390,14 @@ PageInput::PageInput(MainWindow* main_window)
 			}
 #if SSR_USE_OPENGL_RECORDING
 			layout->addWidget(radio_area_glinject);
+#endif
+#if SSR_USE_V4L2
+			{
+				QHBoxLayout *layout2 = new QHBoxLayout();
+				layout->addLayout(layout2);
+				layout2->addWidget(radio_area_v4l2);
+				layout2->addWidget(m_lineedit_v4l2_device);
+			}
 #endif
 			{
 				QHBoxLayout *layout2 = new QHBoxLayout();
@@ -608,6 +630,9 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	SetVideoArea(StringToEnum(settings->value("input/video_area", QString()).toString(), VIDEO_AREA_SCREEN));
 	SetVideoAreaScreen(settings->value("input/video_area_screen", 0).toUInt());
 	SetVideoAreaFollowFullscreen(settings->value("input/video_area_follow_fullscreen", false).toBool());
+#if SSR_USE_V4L2
+	SetVideoV4L2Device(settings->value("input/video_v4l2_device", "/dev/video0").toString());
+#endif
 	SetVideoX(settings->value("input/video_x", 0).toUInt());
 	SetVideoY(settings->value("input/video_y", 0).toUInt());
 	SetVideoW(settings->value("input/video_w", 800).toUInt());
@@ -650,6 +675,9 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/video_area", EnumToString(GetVideoArea()));
 	settings->setValue("input/video_area_screen", GetVideoAreaScreen());
 	settings->setValue("input/video_area_follow_fullscreen", GetVideoAreaFollowFullscreen());
+#if SSR_USE_V4L2
+	settings->setValue("input/video_v4l2_device", GetVideoV4L2Device());
+#endif
 	settings->setValue("input/video_x", GetVideoX());
 	settings->setValue("input/video_y", GetVideoY());
 	settings->setValue("input/video_w", GetVideoW());
@@ -996,6 +1024,10 @@ void PageInput::OnUpdateVideoAreaFields() {
 #if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings->setEnabled(false);
 #endif
+#if SSR_USE_V4L2
+			m_lineedit_v4l2_device->setEnabled(false);
+#endif
+			m_checkbox_record_cursor->setEnabled(true);
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, false);
 			int sc = m_combobox_screens->currentIndex();
@@ -1020,6 +1052,10 @@ void PageInput::OnUpdateVideoAreaFields() {
 #if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings->setEnabled(false);
 #endif
+#if SSR_USE_V4L2
+			m_lineedit_v4l2_device->setEnabled(false);
+#endif
+			m_checkbox_record_cursor->setEnabled(true);
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
 			break;
@@ -1030,6 +1066,10 @@ void PageInput::OnUpdateVideoAreaFields() {
 #if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings->setEnabled(false);
 #endif
+#if SSR_USE_V4L2
+			m_lineedit_v4l2_device->setEnabled(false);
+#endif
+			m_checkbox_record_cursor->setEnabled(true);
 			if(m_checkbox_follow_fullscreen->isChecked()) {
 				m_pushbutton_video_select_rectangle->setEnabled(false);
 				m_pushbutton_video_select_window->setEnabled(false);
@@ -1058,8 +1098,28 @@ void PageInput::OnUpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
 			m_pushbutton_video_opengl_settings->setEnabled(true);
+#if SSR_USE_V4L2
+			m_lineedit_v4l2_device->setEnabled(false);
+#endif
+			m_checkbox_record_cursor->setEnabled(true);
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, false);
+			break;
+		}
+#endif
+#if SSR_USE_V4L2
+		case VIDEO_AREA_V4L2: {
+			m_combobox_screens->setEnabled(false);
+			m_checkbox_follow_fullscreen->setEnabled(false);
+			m_pushbutton_video_select_rectangle->setEnabled(false);
+			m_pushbutton_video_select_window->setEnabled(false);
+#if SSR_USE_OPENGL_RECORDING
+			m_pushbutton_video_opengl_settings->setEnabled(false);
+#endif
+			m_lineedit_v4l2_device->setEnabled(true);
+			m_checkbox_record_cursor->setEnabled(false);
+			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y}, false);
+			GroupEnabled({m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
 			break;
 		}
 #endif

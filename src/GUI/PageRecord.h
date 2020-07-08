@@ -39,6 +39,9 @@ class X11Input;
 class GLInjectLauncher;
 class GLInjectInput;
 #endif
+#if SSR_USE_V4L2
+class V4L2Input;
+#endif
 #if SSR_USE_ALSA
 class ALSAInput;
 #endif
@@ -73,6 +76,9 @@ private:
 
 	PageInput::enum_video_area m_video_area;
 	bool m_video_area_follow_fullscreen;
+#if SSR_USE_V4L2
+	QString m_v4l2_device;
+#endif
 	unsigned int m_video_x, m_video_y, m_video_in_width, m_video_in_height;
 	unsigned int m_video_frame_rate;
 	bool m_video_scaling;
@@ -98,6 +104,9 @@ private:
 	std::unique_ptr<X11Input> m_x11_input;
 #if SSR_USE_OPENGL_RECORDING
 	std::unique_ptr<GLInjectInput> m_gl_inject_input;
+#endif
+#if SSR_USE_V4L2
+	std::unique_ptr<V4L2Input> m_v4l2_input;
 #endif
 #if SSR_USE_ALSA
 	std::unique_ptr<ALSAInput> m_alsa_input;

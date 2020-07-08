@@ -70,7 +70,7 @@ public:
 
 	// Reads a video frame from the video source.
 	// This function is thread-safe.
-	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp) override;
+	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int colorspace, int64_t timestamp) override;
 
 	virtual QSize sizeHint() const override { return QSize(100, 100); }
 

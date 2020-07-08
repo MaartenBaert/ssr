@@ -40,6 +40,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #define AV_PIX_FMT_YUV422P PIX_FMT_YUV422P
 #define AV_PIX_FMT_YUV444P PIX_FMT_YUV444P
 #define AV_PIX_FMT_NV12 PIX_FMT_NV12
+#define AV_PIX_FMT_YUYV422 PIX_FMT_YUYV422
 #endif
 
 #if !SSR_USE_AV_CODEC_CAP
