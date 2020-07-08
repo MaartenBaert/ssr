@@ -3,7 +3,10 @@
 set(CMAKE_AUTOMOC ON)
 
 find_package(Threads REQUIRED)
-find_package(FFmpeg REQUIRED)
+find_package(AVFormat REQUIRED)
+find_package(AVCodec REQUIRED)
+find_package(AVUtil REQUIRED)
+find_package(SWScale REQUIRED)
 find_package(X11 REQUIRED)
 
 if(WITH_V4L2)
@@ -180,7 +183,10 @@ add_executable(simplescreenrecorder
 )
 
 target_include_directories(simplescreenrecorder PRIVATE
-	${FFMPEG_INCLUDE_DIRS}
+	${AVFORMAT_INCLUDE_DIRS}
+	${AVCODEC_INCLUDE_DIRS}
+	${AVUTIL_INCLUDE_DIRS}
+	${SWSCALE_INCLUDE_DIRS}
 	${X11_X11_INCLUDE_PATH}
 	${X11_Xext_INCLUDE_PATH}
 	${X11_Xfixes_INCLUDE_PATH}
@@ -199,7 +205,10 @@ target_include_directories(simplescreenrecorder PRIVATE
 )
 
 target_link_libraries(simplescreenrecorder PRIVATE
-	${FFMPEG_LIBRARIES}
+	${AVFORMAT_LIBRARIES}
+	${AVCODEC_LIBRARIES}
+	${AVUTIL_LIBRARIES}
+	${SWSCALE_LIBRARIES}
 	${QT_LIBS}
 	${CMAKE_THREAD_LIBS_INIT}
 	${X11_X11_LIB}
