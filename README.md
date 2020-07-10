@@ -86,7 +86,7 @@ Most of these issues are avoided when using `simple-build-and-install`, but you 
 
 ### FFmpeg vs Libav confusion
 
-Libav is a fork of FFmpeg that was created in 2011 as a result of a conflict between the developers. Some Linux distributions (including Debian and Ubuntu) switched to Libav because the package maintainers were among the Libav developers, while others stuck to FFmpeg. In order to deal with this situation, SSR supports both FFmpeg and Libav. In 2015 Debian and Ubuntu decided to switch back to FFmpeg for technical reasons, which means that these days very few SSR users are still using Libav. Although Libav is theoretically still supported by SSR, I am no longer doing any testing with it.
+Libav is a fork of FFmpeg that was created in 2011 as a result of a conflict between the developers. Some Linux distributions (including Debian and Ubuntu) switched to Libav because the package maintainers were among the Libav developers, while others stuck to FFmpeg. In order to deal with this situation, SSR supports both FFmpeg and Libav. In 2015 Debian and Ubuntu decided to switch back to FFmpeg for technical reasons, which means that these days very few SSR users are still using Libav. Although Libav is theoretically still supported by SSR, I am no longer doing any testing with it. As of 2020 Libav is effectively no longer being developed, so Libav support may be dropped entirely at some point in the future.
 
 Since the FFmpeg and Libav APIs have changed significantly over time, SSR checks which version of the libraries is being used to determine which features are safe to use. Although the FFmpeg and Libav API are almost identical, there are some minor differences, mostly related to the version numbering scheme. Unfortunately SSR can not determine automatically whether you are using FFmpeg or Libav, so you have to specify this manually when running `cmake`, using the `ENABLE_FFMPEG_VERSIONS` option, which defaults to `TRUE` (i.e. FFmpeg). If you are using Libav, you should add the option `ENABLE_FFMPEG_VERSIONS=FALSE`. If you forget this, you will likely get various error messages during compilation related to missing functions, structures or fields.
 
@@ -128,6 +128,7 @@ You will need the following packages to compile SimpleScreenRecorder:
 - libXext
 - libXi
 - libxinerama
+- video4linux2 (V4L2) library
 
 If you have a 64-bit system and you want to compile the 32-bit GLInject library, you have to install some 32-bit libraries as well. Otherwise the regular packages are sufficient.
 
@@ -135,7 +136,7 @@ If you have a 64-bit system and you want to compile the 32-bit GLInject library,
 
     sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev desktop-file-utils \
     libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
-    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev libxinerama-dev
+    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev libxinerama-dev libv4l-dev
 
 Extra dependencies for 32-bit GLInject on 64-bit systems:
 
