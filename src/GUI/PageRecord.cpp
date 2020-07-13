@@ -61,13 +61,20 @@ static QString GetNewSegmentFile(const QString& file, bool add_timestamp) {
 	unsigned int counter = 0;
 	do {
 		++counter;
-		newfile = fi.path() + "/" + fi.completeBaseName();
-		if(add_timestamp)
-			newfile += "-" + now.toString("yyyy-MM-dd_hh.mm.ss");
-		if(counter != 1)
-			newfile += "-(" + QString::number(counter) + ")";
+		newfile = fi.completeBaseName();
+		if(add_timestamp) {
+			if(!newfile.isEmpty())
+				newfile += "-";
+			newfile += now.toString("yyyy-MM-dd_hh.mm.ss");
+		}
+		if(counter != 1) {
+			if(!newfile.isEmpty())
+				newfile += "-";
+			newfile += "(" + QString::number(counter) + ")";
+		}
 		if(!fi.suffix().isEmpty())
 			newfile += "." + fi.suffix();
+		newfile = fi.path() + "/" + newfile;
 	} while(QFileInfo(newfile).exists());
 	return newfile;
 }
