@@ -81,7 +81,7 @@ static QString GetNewSegmentFile(const QString& file, bool add_timestamp) {
 
 static std::vector<std::pair<QString, QString> > GetOptionsFromString(const QString& str) {
 	std::vector<std::pair<QString, QString> > options;
-	QStringList optionlist = str.split(',', QString::SkipEmptyParts);
+	QStringList optionlist = SplitSkipEmptyParts(str, ',');
 	for(int i = 0; i < optionlist.size(); ++i) {
 		QString a = optionlist[i];
 		int p = a.indexOf('=');

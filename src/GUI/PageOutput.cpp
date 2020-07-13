@@ -126,7 +126,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		ContainerData c;
 		c.name = format->long_name;
 		c.avname = format->name;
-		c.suffixes = QString(format->extensions).split(',', QString::SkipEmptyParts);
+		c.suffixes = SplitSkipEmptyParts(format->extensions, ',');
 		if(c.suffixes.isEmpty()) {
 			c.filter = "";
 		} else {
@@ -279,7 +279,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 			m_label_h264_crf_value = new QLabel(groupbox_video);
 			m_label_h264_crf_value->setNum(m_slider_h264_crf->value());
 			m_label_h264_crf_value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			m_label_h264_crf_value->setMinimumWidth(QFontMetrics(m_label_h264_crf_value->font()).width("99") + 2);
+			m_label_h264_crf_value->setMinimumWidth(GetTextWidth(m_label_h264_crf_value->font(), "99") + 2);
 			m_label_h264_preset = new QLabel(tr("Preset:", "libx264 setting: don't translate this unless you can come up with something sensible"), groupbox_video);
 			m_combobox_h264_preset = new QComboBox(groupbox_video);
 			for(unsigned int i = 0; i < H264_PRESET_COUNT; ++i) {

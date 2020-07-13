@@ -84,7 +84,7 @@ DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
 	m_combobox_timezone->setCurrentIndex(m_parent->GetScheduleTimeZone());
 	QLabel *label_time = new QLabel(tr("Current time:"), this);
 	m_label_time = new QLabel(this);
-	m_label_time->setMinimumWidth(m_label_time->fontMetrics().width("0000-00-00 00:00:00 XXXXX") + 10);
+	m_label_time->setMinimumWidth(GetTextWidth(m_label_time->fontMetrics(), "0000-00-00 00:00:00 XXXXX") + 10);
 	m_label_time->setAlignment((m_label_time->alignment() & ~Qt::AlignHorizontal_Mask) | Qt::AlignRight);
 
 	m_widgetrack_schedule = new WidgetRack(this);
