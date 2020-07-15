@@ -115,7 +115,7 @@ MainWindow::MainWindow()
 
 	// change minimum size based on screen resolution
 	QSize preferred_size = minimumSizeHint() + QSize(style()->pixelMetric(QStyle::PM_ScrollBarExtent), 0);
-#if QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	QSize available_size(0, 0);
 	for(QScreen *screen : QApplication::screens()) {
 		QSize size = screen->availableGeometry().size() - QSize(80, 80);

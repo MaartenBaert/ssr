@@ -126,7 +126,7 @@ inline bool IsPlatformX11() {
 
 // replacement for QFontMetrics::width()
 inline int GetTextWidth(const QFontMetrics& font, const QString& str) {
-#if QT_VERSION_CHECK(5, 11, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
 	return font.horizontalAdvance(str);
 #else
 	return QFontMetrics(font).width(str);
@@ -138,7 +138,7 @@ inline int GetTextWidth(const QFont& font, const QString& str) {
 
 // replacement for QString::split() with QString::SkipEmptyParts
 inline QStringList SplitSkipEmptyParts(const QString& str, QChar sep) {
-#if QT_VERSION_CHECK(5, 14, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
 	return str.split(sep, Qt::SkipEmptyParts);
 #else
 	return str.split(sep, QString::SkipEmptyParts);

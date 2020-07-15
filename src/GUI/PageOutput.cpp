@@ -452,12 +452,12 @@ void PageOutput::LoadProfileSettings(QSettings* settings) {
 	}
 
 	// choose default file name
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-	QString dir_videos = QDesktopServices::storageLocation(QDesktopServices::MoviesLocation);
-	QString dir_documents = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
-#else
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	QString dir_videos = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
 	QString dir_documents = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+#else
+	QString dir_videos = QDesktopServices::storageLocation(QDesktopServices::MoviesLocation);
+	QString dir_documents = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
 #endif
 	QString dir_home = QDir::homePath();
 	QString best_dir = (QDir(dir_videos).exists())? dir_videos : (QDir(dir_documents).exists())? dir_documents : dir_home;
