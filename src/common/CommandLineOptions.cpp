@@ -233,10 +233,19 @@ QString GetApplicationSystemDir(const QString& subdir) {
 
 QString GetApplicationUserDir(const QString& subdir) {
 	QString dir = QDir::homePath() + "/.ssr";
+	if(!QDir(dir).exists()) {
+		QString xdg_config_home = getenv("XDG_CONFIG_HOME");
+		if(xdg_config_home.isEmpty())
+			xdg_config_home = QDir::homePath() + "/.config";
+
+		QString dir2 = xdg_config_home + "/simplescreenrecorder";
+		if(QDir(dir2).exists())
+			dir = dir2;
+	}
 	if(!subdir.isEmpty())
 		dir += "/" + subdir;
 	if(!QDir::root().mkpath(dir)) {
-		Logger::LogError("[GetApplicationUserDir] " + Logger::tr("Error: Can't create .ssr directory!"));
+		Logger::LogError("[GetApplicationUserDir] " + Logger::tr("Error: Can't create configuration directory!"));
 		throw 0;
 	}
 	return dir;
