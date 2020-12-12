@@ -115,7 +115,7 @@ GLXFrameGrabber::GLXFrameGrabber(Display* display, Window window, GLXDrawable dr
 	m_warn_too_small = true;
 	m_warn_too_large = true;
 
-	m_stream_writer = NULL;
+	m_stream_writer = NULL; // will be created when we get the first frame
 
 	try {
 		Init();
@@ -156,17 +156,6 @@ void GLXFrameGrabber::Init() {
 		}
 	}
 
-	// create stream writer
-	{
-		std::string channel;
-		const char *ssr_channel = getenv("SSR_CHANNEL");
-		if(ssr_channel != NULL)
-			channel = ssr_channel;
-		std::ostringstream source;
-		source << "glx" << std::setw(4) << std::setfill('0') << m_id;
-		m_stream_writer = new SSRVideoStreamWriter(channel, source.str());
-	}
-
 }
 
 void GLXFrameGrabber::Free() {
@@ -182,6 +171,17 @@ void GLXFrameGrabber::Free() {
 }
 
 void GLXFrameGrabber::GrabFrame() {
+
+	// create stream writer
+	if(m_stream_writer == NULL) {
+		std::string channel;
+		const char *ssr_channel = getenv("SSR_CHANNEL");
+		if(ssr_channel != NULL)
+			channel = ssr_channel;
+		std::ostringstream source;
+		source << "glx" << std::setw(4) << std::setfill('0') << m_id;
+		m_stream_writer = new SSRVideoStreamWriter(channel, source.str());
+	}
 
 	// get the OpenGL version
 	if(m_gl_version == (unsigned int) -1)
