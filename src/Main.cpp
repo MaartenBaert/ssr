@@ -26,16 +26,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Icons.h"
 #include "Logger.h"
 #include "MainWindow.h"
+#include "ScreenScaling.h"
 
 int main(int argc, char* argv[]) {
 
 	XInitThreads();
 
-	QApplication application(argc, argv);
+	// Workarounds for broken screen scaling.
+	ScreenScalingFix();
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-	application.setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
+	QApplication application(argc, argv);
 
 	// SSR uses two separate character encodings:
 	// - UTF-8: Used for all internal strings.
@@ -100,6 +100,9 @@ int main(int argc, char* argv[]) {
 	// detect CPU features
 	CPUFeatures::Detect();
 #endif
+
+	// show screen scaling message
+	ScreenScalingMessage();
 
 	// load icons
 	LoadIcons();

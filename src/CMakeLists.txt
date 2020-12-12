@@ -93,7 +93,11 @@ set(sources
 	common/Logger.cpp
 	common/Logger.h
 	common/MutexDataPair.h
+	common/NVidia.cpp
+	common/NVidia.h
 	common/QueueBuffer.h
+	common/ScreenScaling.cpp
+	common/ScreenScaling.h
 	common/TempBuffer.h
 	GUI/AudioPreviewer.cpp
 	GUI/AudioPreviewer.h
@@ -131,8 +135,6 @@ set(sources
 	Benchmark.h
 	Global.h
 	Main.cpp
-	NVidia.cpp
-	NVidia.h
 )
 
 if(ENABLE_X86_ASM)
