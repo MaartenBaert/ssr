@@ -1,7 +1,8 @@
 # translations for 'simplescreenrecorder' executable
 
 if(WITH_QT5)
-	find_program(LRELEASE NAMES lrelease-qt5 lrelease)
+	find_package(Qt5LinguistTools REQUIRED)
+	set(LRELEASE Qt5::lrelease)
 else()
 	find_program(LRELEASE NAMES lrelease-qt4 lrelease)
 endif()
