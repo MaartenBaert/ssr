@@ -170,6 +170,11 @@ extern "C" {
 #error SSR_USE_FFMPEG_VERSIONS should be defined!
 #endif
 
+// Whether the JACK metadata API should be used. Does not work with really old JACK versions.
+#ifndef SSR_USE_JACK_METADATA
+#error SSR_USE_JACK_METADATA should be defined!
+#endif
+
 // Whether OpenGL recording should be used.
 #ifndef SSR_USE_OPENGL_RECORDING
 #error SSR_USE_OPENGL_RECORDING should be defined!
