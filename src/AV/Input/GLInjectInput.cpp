@@ -70,7 +70,7 @@ bool ExecuteDetached(const char* command, const char* working_directory) {
 
 			// fork failed, send feedback
 			char buf = 1;
-			write(feedback_pipe[1], &buf, 1);
+			ssize_t wres = write(feedback_pipe[1], &buf, 1); Q_UNUSED(wres);
 			close(feedback_pipe[1]);
 			_exit(EXIT_FAILURE);
 
@@ -85,7 +85,7 @@ bool ExecuteDetached(const char* command, const char* working_directory) {
 
 				// failed, send feedback
 				char buf = 1;
-				write(feedback_pipe[1], &buf, 1);
+				ssize_t wres = write(feedback_pipe[1], &buf, 1); Q_UNUSED(wres);
 				close(feedback_pipe[1]);
 				_exit(EXIT_FAILURE);
 
@@ -104,7 +104,7 @@ bool ExecuteDetached(const char* command, const char* working_directory) {
 
 					// failed, send feedback
 					char buf = 1;
-					write(feedback_pipe[1], &buf, 1);
+					ssize_t wres = write(feedback_pipe[1], &buf, 1); Q_UNUSED(wres);
 					close(feedback_pipe[1]);
 					_exit(EXIT_FAILURE);
 
@@ -118,7 +118,7 @@ bool ExecuteDetached(const char* command, const char* working_directory) {
 
 			// failed, send feedback
 			char buf = 1;
-			write(feedback_pipe[1], &buf, 1);
+			ssize_t wres = write(feedback_pipe[1], &buf, 1); Q_UNUSED(wres);
 			close(feedback_pipe[1]);
 			_exit(EXIT_FAILURE);
 
