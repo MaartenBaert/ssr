@@ -76,6 +76,7 @@ public:
 	inline void SetNVidiaDisableFlipping(enum_nvidia_disable_flipping flipping) { m_nvidia_disable_flipping = (enum_nvidia_disable_flipping) clamp((unsigned int) flipping, 0u, (unsigned int) NVIDIA_DISABLE_FLIPPING_COUNT - 1); }
 
 public slots:
+	void GoPageStart();
 	void GoPageWelcome();
 	void GoPageInput();
 	void GoPageOutput();
