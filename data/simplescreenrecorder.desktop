@@ -7,6 +7,7 @@ Comment[hu]=Funkciógazdag képernyőrögzítő X11 és OpenGL támogatással
 Comment[id]=Perekam layar kaya fitur yang mendukung X11 dan OpenGL
 Comment[lt]=Funkcionali ekrano įrašymo programa, palaikanti X11 ir OpenGL
 Comment[ru]=Многофункциональный рекордер экрана, который поддерживает X11 и OpenGL
+Comment[sk]=Vlastnosťami nabitý nahrávač obrazovky, ktorý podporuje X11 a OpenGL
 Icon=simplescreenrecorder
 Exec=simplescreenrecorder --logfile
 Terminal=false
