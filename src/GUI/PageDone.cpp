@@ -36,7 +36,7 @@ PageDone::PageDone(MainWindow* main_window)
 	connect(button_open_folder, SIGNAL(clicked()), this, SLOT(OnOpenFolder()));
 
 	QPushButton *button_back = new QPushButton(g_icon_go_home, tr("Back to the start screen"), this);
-	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageWelcome()));
+	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageStart()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(label_done);

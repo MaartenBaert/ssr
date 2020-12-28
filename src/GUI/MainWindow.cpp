@@ -66,11 +66,7 @@ MainWindow::MainWindow()
 
 	LoadSettings();
 
-	if(m_page_welcome->GetSkipPage()) {
-		m_stacked_layout->setCurrentWidget(m_page_input);
-	} else {
-		m_stacked_layout->setCurrentWidget(m_page_welcome);
-	}
+	GoPageStart();
 
 	// warning for non-X11 window systems (e.g. Wayland)
 	if(!IsPlatformX11()) {
@@ -204,6 +200,13 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 	Quit();
 }
 
+void MainWindow::GoPageStart() {
+	if(m_page_welcome->GetSkipPage()) {
+		m_stacked_layout->setCurrentWidget(m_page_input);
+	} else {
+		m_stacked_layout->setCurrentWidget(m_page_welcome);
+	}
+}
 void MainWindow::GoPageWelcome() {
 	m_stacked_layout->setCurrentWidget(m_page_welcome);
 }
