@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -156,52 +156,52 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="78"/>
         <source>Recording schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Расписание записи</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="80"/>
         <source>Time zone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Часовой пояс:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="82"/>
         <source>Local time</source>
-        <translation type="unfinished"></translation>
+        <translation>Местное время</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="83"/>
         <source>UTC</source>
-        <translation type="unfinished"></translation>
+        <translation>UTC</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="85"/>
         <source>Current time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущее время:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="102"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="103"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="104"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить вверх</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="105"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить вниз</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="107"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
 </context>
 <context>
@@ -1167,7 +1167,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="78"/>
         <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: для использования параметра командной строки «%1» необходимо указать значение!</translation>
     </message>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="86"/>
@@ -1260,7 +1260,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="78"/>
         <source>You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. Several features will most likely not work properly. In order to solve this, you should log out, choose a X11/Xorg session at the login screen, and then log back in.</source>
-        <translation type="unfinished"></translation>
+        <translation>В настоящее время SimpleScreenRecorder не поддерживает использование оконных систем, отличных от X11 (например, Wayland). Некоторые функции могут работать неправильно. Для решения этой проблемы рекомендуется завершить сеанс, выбрать на экране входа сеанс X11/Xorg и снова войти в систему.</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="90"/>
@@ -1937,7 +1937,7 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageRecord.cpp" line="168"/>
         <source>Edit schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить расписание</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="171"/>
@@ -2194,12 +2194,12 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1082"/>
         <source>Deactivate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключить расписание</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1092"/>
         <source>Activate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить расписание</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1101"/>
@@ -2224,49 +2224,49 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1210"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ничего не записано, поэтому ничего не будет сохранено.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1227"/>
         <source>Triggering scheduled action &apos;%1&apos; ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Срабатывание запланированного действия «%1»...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1238"/>
         <source>Schedule: %1 in %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Расписание: %1 в %2</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1245"/>
         <source>Schedule: (none)</source>
-        <translation type="unfinished"></translation>
+        <translation>Расписание: (нет)</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1249"/>
         <source>Schedule: (inactive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Расписание: (неактивно)</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1313"/>
         <location filename="../GUI/PageRecord.cpp" line="1330"/>
         <source>Standard input read error (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка чтения стандартного входного потока (%1).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1318"/>
         <location filename="../GUI/PageRecord.cpp" line="1335"/>
         <source>Standard input closed (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартный входной поток закрыт (%1).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1346"/>
         <source>Received command &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Получена команда «%1».</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1366"/>
         <source>Unknown command.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестная команда.</translation>
     </message>
     <message>
         <source>You haven&apos;t recorded anything, there is nothing to save.
@@ -2449,22 +2449,22 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="39"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Начать</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="40"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Приостановить</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="46"/>
         <source>Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Время:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="51"/>
         <source>Action:</source>
-        <translation type="unfinished"></translation>
+        <translation>Действие:</translation>
     </message>
 </context>
 <context>
