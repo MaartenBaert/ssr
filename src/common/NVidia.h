@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -20,15 +20,5 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-extern bool g_option_logfile;
-extern QString g_option_statsfile;
-extern bool g_option_syncdiagram;
-extern bool g_option_systray;
-extern bool g_option_start_hidden;
-
-QString GetApplicationSystemDir(const QString& subdir = QString());
-QString GetApplicationUserDir(const QString& subdir = QString());
-QString GetVersionInfo();
-
 bool NVidiaGetFlipping();
-bool NVidiaDisableFlipping();
+bool NVidiaSetFlipping(bool enable);

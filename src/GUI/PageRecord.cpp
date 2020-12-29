@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -19,13 +19,14 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageRecord.h"
 
-#include "Main.h"
+#include "CommandLineOptions.h"
 #include "Icons.h"
 #include "Dialogs.h"
 #include "EnumStrings.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 #include "PageOutput.h"
+#include "DialogRecordSchedule.h"
 
 #include "HotkeyListener.h"
 
@@ -34,7 +35,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AudioEncoder.h"
 #include "Synchronizer.h"
 #include "X11Input.h"
+#if SSR_USE_OPENGL_RECORDING
 #include "GLInjectInput.h"
+#endif
+#if SSR_USE_V4L2
+#include "V4L2Input.h"
+#endif
 #if SSR_USE_ALSA
 #include "ALSAInput.h"
 #endif
@@ -48,13 +54,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "VideoPreviewer.h"
 #include "AudioPreviewer.h"
 
-#include <X11/keysym.h>
-#include <X11/keysymdef.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
 static QString GetNewSegmentFile(const QString& file, bool add_timestamp) {
 	QFileInfo fi(file);
 	QDateTime now = QDateTime::currentDateTime();
@@ -62,20 +61,27 @@ static QString GetNewSegmentFile(const QString& file, bool add_timestamp) {
 	unsigned int counter = 0;
 	do {
 		++counter;
-		newfile = fi.path() + "/" + fi.completeBaseName();
-		if(add_timestamp)
-			newfile += "-" + now.toString("yyyy-MM-dd_hh.mm.ss");
-		if(counter != 1)
-			newfile += "-(" + QString::number(counter) + ")";
+		newfile = fi.completeBaseName();
+		if(add_timestamp) {
+			if(!newfile.isEmpty())
+				newfile += "-";
+			newfile += now.toString("yyyy-MM-dd_hh.mm.ss");
+		}
+		if(counter != 1) {
+			if(!newfile.isEmpty())
+				newfile += "-";
+			newfile += "(" + QString::number(counter) + ")";
+		}
 		if(!fi.suffix().isEmpty())
 			newfile += "." + fi.suffix();
+		newfile = fi.path() + "/" + newfile;
 	} while(QFileInfo(newfile).exists());
 	return newfile;
 }
 
 static std::vector<std::pair<QString, QString> > GetOptionsFromString(const QString& str) {
 	std::vector<std::pair<QString, QString> > options;
-	QStringList optionlist = str.split(',', QString::SkipEmptyParts);
+	QStringList optionlist = SplitSkipEmptyParts(str, ',');
 	for(int i = 0; i < optionlist.size(); ++i) {
 		QString a = optionlist[i];
 		int p = a.indexOf('=');
@@ -148,9 +154,6 @@ static const std::array<SimpleSynth::Note, 4> SEQUENCE_RECORD_ERROR = {{
 }};
 #endif
 
-const int PageRecord::PRIORITY_RECORD = 0;
-const int PageRecord::PRIORITY_PREVIEW = -1;
-
 PageRecord::PageRecord(MainWindow* main_window)
 	: QWidget(main_window->centralWidget()) {
 
@@ -161,13 +164,23 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_output_started = false;
 	m_previewing = false;
 
+	m_schedule_active = false;
+	m_schedule_time_zone = SCHEDULE_TIME_ZONE_LOCAL;
+
 #if SSR_USE_ALSA
 	m_last_error_sound = std::numeric_limits<int64_t>::min();
 #endif
 
+	m_stdin_reentrant = false;
+
 	QGroupBox *groupbox_recording = new QGroupBox(tr("Recording"), this);
 	{
-		m_pushbutton_start_pause = new QPushButton(groupbox_recording);
+		m_pushbutton_record = new QPushButton(groupbox_recording);
+
+		m_label_schedule_status = new QLabel(groupbox_recording);
+		m_pushbutton_schedule_activate = new QPushButton(groupbox_recording);
+		m_pushbutton_schedule_edit = new QPushButton(tr("Edit schedule"), groupbox_recording);
+		// TODO: tooptips
 
 		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), groupbox_recording);
 		m_checkbox_hotkey_enable->setToolTip(tr("The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,\n"
@@ -191,7 +204,9 @@ PageRecord::PageRecord(MainWindow* main_window)
 			m_combobox_hotkey_key->addItem(QString('A' + i));
 		}
 
-		connect(m_pushbutton_start_pause, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
+		connect(m_pushbutton_record, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
+		connect(m_pushbutton_schedule_activate, SIGNAL(clicked()), this, SLOT(OnScheduleActivateDeactivate()));
+		connect(m_pushbutton_schedule_edit, SIGNAL(clicked()), this, SLOT(OnScheduleEdit()));
 		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(OnUpdateHotkeyFields()));
 #if SSR_USE_ALSA
 		connect(m_checkbox_sound_notifications_enable, SIGNAL(clicked()), this, SLOT(OnUpdateSoundNotifications()));
@@ -203,7 +218,14 @@ PageRecord::PageRecord(MainWindow* main_window)
 		connect(m_combobox_hotkey_key, SIGNAL(activated(int)), this, SLOT(OnUpdateHotkey()));
 
 		QVBoxLayout *layout = new QVBoxLayout(groupbox_recording);
-		layout->addWidget(m_pushbutton_start_pause);
+		layout->addWidget(m_pushbutton_record);
+		{
+			QHBoxLayout *layout2 = new QHBoxLayout();
+			layout->addLayout(layout2);
+			layout2->addWidget(m_label_schedule_status, 2);
+			layout2->addWidget(m_pushbutton_schedule_activate, 1);
+			layout2->addWidget(m_pushbutton_schedule_edit, 1);
+		}
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
 			layout->addLayout(layout2);
@@ -246,6 +268,10 @@ PageRecord::PageRecord(MainWindow* main_window)
 				m_label_info_file_size = new QLabel(groupbox_information);
 				QLabel *label_bit_rate = new QLabel(tr("Bit rate:"), groupbox_information);
 				m_label_info_bit_rate = new QLabel(groupbox_information);
+				m_checkbox_show_recording_area = new QCheckBox(tr("Show recording area"), groupbox_information);
+				m_checkbox_show_recording_area->setToolTip(tr("When enabled, the recorded area is marked on the screen."));
+
+				connect(m_checkbox_show_recording_area, SIGNAL(clicked()), this, SLOT(OnUpdateRecordingFrame()));
 
 				QGridLayout *layout = new QGridLayout(groupbox_information);
 				layout->addWidget(label_total_time, 0, 0);
@@ -264,6 +290,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 				layout->addWidget(m_label_info_file_size, 6, 1);
 				layout->addWidget(label_bit_rate, 7, 0);
 				layout->addWidget(m_label_info_bit_rate, 7, 1);
+				layout->addWidget(m_checkbox_show_recording_area, 9, 0, 1, 2);
 				layout->setColumnStretch(1, 1);
 				layout->setRowStretch(8, 1);
 			}
@@ -342,14 +369,14 @@ PageRecord::PageRecord(MainWindow* main_window)
 	QPushButton *button_cancel = new QPushButton(g_icon_cancel, tr("Cancel recording"), this);
 	QPushButton *button_save = new QPushButton(g_icon_save, tr("Save recording"), this);
 
-	if(g_option_systray) {
+	if(CommandLineOptions::GetSysTray()) {
 		m_systray_icon = new QSystemTrayIcon(g_icon_ssr_idle, m_main_window);
 		QMenu *menu = new QMenu(m_main_window);
 		m_systray_action_start_pause = menu->addAction(QString(), this, SLOT(OnRecordStartPause()));
 		m_systray_action_start_pause->setIconVisibleInMenu(true);
-		m_systray_action_cancel = menu->addAction(g_icon_cancel, tr("Cancel recording"), this, SLOT(OnCancel()));
+		m_systray_action_cancel = menu->addAction(g_icon_cancel, tr("Cancel recording"), this, SLOT(OnRecordCancel()));
 		m_systray_action_cancel->setIconVisibleInMenu(true);
-		m_systray_action_save = menu->addAction(g_icon_save, tr("Save recording"), this, SLOT(OnSave()));
+		m_systray_action_save = menu->addAction(g_icon_save, tr("Save recording"), this, SLOT(OnRecordSave()));
 		m_systray_action_save->setIconVisibleInMenu(true);
 		menu->addSeparator();
 		m_systray_action_show_hide = menu->addAction(QString(), m_main_window, SLOT(OnShowHide()));
@@ -361,8 +388,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_systray_icon = NULL;
 	}
 
-	connect(button_cancel, SIGNAL(clicked()), this, SLOT(OnCancel()));
-	connect(button_save, SIGNAL(clicked()), this, SLOT(OnSave()));
+	connect(button_cancel, SIGNAL(clicked()), this, SLOT(OnRecordCancel()));
+	connect(button_save, SIGNAL(clicked()), this, SLOT(OnRecordSave()));
 	if(m_systray_icon != NULL)
 		connect(m_systray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), m_main_window, SLOT(OnSysTrayActivated(QSystemTrayIcon::ActivationReason)));
 
@@ -376,14 +403,22 @@ PageRecord::PageRecord(MainWindow* main_window)
 		layout2->addWidget(button_save);
 	}
 
-	UpdateSysTray();
-	UpdateRecordPauseButton();
-	UpdatePreview();
+	m_stdin_notifier = new QSocketNotifier(0, QSocketNotifier::Read, this);
+	connect(m_stdin_notifier, SIGNAL(activated(int)), this, SLOT(OnStdin()));
 
+	m_timer_schedule = new QTimer(this);
+	m_timer_schedule->setSingleShot(true);
 	m_timer_update_info = new QTimer(this);
+	connect(m_timer_schedule, SIGNAL(timeout()), this, SLOT(OnScheduleTimer()));
 	connect(m_timer_update_info, SIGNAL(timeout()), this, SLOT(OnUpdateInformation()));
 	connect(&m_hotkey_start_pause, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()), Qt::QueuedConnection);
 	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(OnNewLogLine(Logger::enum_type,QString)), Qt::QueuedConnection);
+
+	UpdateSysTray();
+	UpdateRecordButton();
+	UpdateSchedule();
+	UpdatePreview();
+	OnUpdateRecordingFrame();
 
 	if(m_systray_icon != NULL)
 		m_systray_icon->show();
@@ -417,19 +452,33 @@ void PageRecord::UpdateShowHide() {
 
 void PageRecord::LoadSettings(QSettings *settings) {
 	SetHotkeyEnabled(settings->value("record/hotkey_enable", true).toBool());
-	SetHotkeyCtrlEnabled(settings->value("record/hotkey_ctrl", true).toBool());
+	SetHotkeyCtrlEnabled(settings->value("record/hotkey_ctrl", false).toBool());
 	SetHotkeyShiftEnabled(settings->value("record/hotkey_shift", false).toBool());
 	SetHotkeyAltEnabled(settings->value("record/hotkey_alt", false).toBool());
-	SetHotkeySuperEnabled(settings->value("record/hotkey_super", false).toBool());
+	SetHotkeySuperEnabled(settings->value("record/hotkey_super", true).toBool());
 	SetHotkeyKey(settings->value("record/hotkey_key", 'r' - 'a').toUInt());
 #if SSR_USE_ALSA
 	SetSoundNotificationsEnabled(settings->value("record/sound_notifications_enable", false).toBool());
 #endif
+	SetShowRecordingArea(settings->value("record/show_recording_area", false).toBool());
 	SetPreviewFrameRate(settings->value("record/preview_frame_rate", 10).toUInt());
+	SetScheduleTimeZone(StringToEnum(settings->value("record/schedule_time_zone", QString()).toString(), SCHEDULE_TIME_ZONE_LOCAL));
+	unsigned int num_entries = clamp(settings->value("record/schedule_num_entries", 0).toUInt(), 0u, 1000u);
+	m_schedule_entries.clear();
+	m_schedule_entries.resize(num_entries);
+	Qt::TimeSpec spec = SCHEDULE_TIME_ZONE_TIMESPECS[GetScheduleTimeZone()];
+	for(unsigned int i = 0; i < num_entries; ++i) {
+		QString timestring = settings->value(QString("record/schedule_entry%1_time").arg(i), QString()).toString();
+		QString actionstring = settings->value(QString("record/schedule_entry%1_action").arg(i), QString()).toString();
+		m_schedule_entries[i].time = QDateTime::fromString(timestring, "yyyy-MM-dd hh:mm:ss");
+		m_schedule_entries[i].time.setTimeSpec(spec);
+		m_schedule_entries[i].action = StringToEnum(actionstring, SCHEDULE_ACTION_START);
+	}
 	OnUpdateHotkeyFields();
 #if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
 #endif
+	OnUpdateRecordingFrame();
 }
 
 void PageRecord::SaveSettings(QSettings *settings) {
@@ -442,7 +491,14 @@ void PageRecord::SaveSettings(QSettings *settings) {
 #if SSR_USE_ALSA
 	settings->setValue("record/sound_notifications_enable", AreSoundNotificationsEnabled());
 #endif
+	settings->setValue("record/show_recording_area", GetShowRecordingArea());
 	settings->setValue("record/preview_frame_rate", GetPreviewFrameRate());
+	settings->setValue("record/schedule_time_zone", EnumToString(GetScheduleTimeZone()));
+	settings->setValue("record/schedule_num_entries", (unsigned int) m_schedule_entries.size());
+	for(unsigned int i = 0; i < m_schedule_entries.size(); ++i) {
+		settings->setValue(QString("record/schedule_entry%1_time").arg(i), m_schedule_entries[i].time.toString("yyyy-MM-dd hh:mm:ss"));
+		settings->setValue(QString("record/schedule_entry%1_action").arg(i), EnumToString(m_schedule_entries[i].action));
+	}
 }
 
 bool PageRecord::TryStartPage() {
@@ -481,6 +537,9 @@ void PageRecord::StartPage() {
 	// get the video input settings
 	m_video_area = page_input->GetVideoArea();
 	m_video_area_follow_fullscreen = page_input->GetVideoAreaFollowFullscreen();
+#if SSR_USE_V4L2
+	m_v4l2_device = page_input->GetVideoV4L2Device();
+#endif
 	m_video_x = page_input->GetVideoX();
 	m_video_y = page_input->GetVideoY();
 #if SSR_USE_OPENGL_RECORDING
@@ -591,6 +650,9 @@ void PageRecord::StartPage() {
 		default: break; // to keep GCC happy
 	}
 
+	// only show the recording frame option when using a fixed rectangle
+	GroupVisible({m_checkbox_show_recording_area}, (m_video_area == PageInput::VIDEO_AREA_FIXED));
+
 	// hide the audio previewer if there is no audio
 	GroupVisible({m_label_mic_icon, m_audio_previewer}, m_audio_enabled);
 
@@ -638,9 +700,13 @@ void PageRecord::StartPage() {
 #endif
 
 	UpdateInput();
+	OnUpdateRecordingFrame();
 
 	OnUpdateInformation();
 	m_timer_update_info->start(1000);
+
+	m_schedule_active = false;
+	UpdateSchedule();
 
 }
 
@@ -648,6 +714,9 @@ void PageRecord::StopPage(bool save) {
 
 	if(!m_page_started)
 		return;
+
+	m_schedule_active = false;
+	UpdateSchedule();
 
 	StopOutput(true);
 	StopInput();
@@ -686,6 +755,7 @@ void PageRecord::StopPage(bool save) {
 #if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
 #endif
+	OnUpdateRecordingFrame();
 
 	m_timer_update_info->stop();
 	OnUpdateInformation();
@@ -771,8 +841,9 @@ void PageRecord::StartOutput() {
 		m_output_started = true;
 		m_recorded_something = true;
 		UpdateSysTray();
-		UpdateRecordPauseButton();
+		UpdateRecordButton();
 		UpdateInput();
+		OnUpdateRecordingFrame();
 
 	} catch(...) {
 		Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Something went wrong during initialization."));
@@ -814,8 +885,9 @@ void PageRecord::StopOutput(bool final) {
 
 	m_output_started = false;
 	UpdateSysTray();
-	UpdateRecordPauseButton();
+	UpdateRecordButton();
 	UpdateInput();
+	OnUpdateRecordingFrame();
 
 }
 
@@ -838,6 +910,11 @@ void PageRecord::StartInput() {
 		Logger::LogInfo("[PageRecord::StartInput] " + tr("Starting input ..."));
 
 		// start the video input
+		if(m_video_area == PageInput::VIDEO_AREA_SCREEN || m_video_area == PageInput::VIDEO_AREA_FIXED || m_video_area == PageInput::VIDEO_AREA_CURSOR) {
+			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor,
+										   m_video_area == PageInput::VIDEO_AREA_CURSOR, m_video_area_follow_fullscreen));
+			connect(m_x11_input.get(), SIGNAL(CurrentRectangleChanged()), this, SLOT(OnUpdateRecordingFrame()), Qt::QueuedConnection);
+		}
 #if SSR_USE_OPENGL_RECORDING
 		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
 			if(m_gl_inject_input == NULL) {
@@ -845,13 +922,14 @@ void PageRecord::StartInput() {
 				throw GLInjectException();
 			}
 			m_gl_inject_input->SetCapturing(true);
-		} else {
-#else
-		{
-#endif
-			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor,
-										   m_video_area == PageInput::VIDEO_AREA_CURSOR, m_video_area_follow_fullscreen));
 		}
+#endif
+#if SSR_USE_V4L2
+		if(m_video_area == PageInput::VIDEO_AREA_V4L2) {
+			m_v4l2_input.reset(new V4L2Input(m_v4l2_device, m_video_in_width, m_video_in_height));
+			m_v4l2_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+		}
+#endif
 
 		// start the audio input
 		if(m_audio_enabled) {
@@ -877,6 +955,9 @@ void PageRecord::StartInput() {
 		if(m_gl_inject_input != NULL)
 			m_gl_inject_input->SetCapturing(false);
 #endif
+#if SSR_USE_V4L2
+		m_v4l2_input.reset();
+#endif
 #if SSR_USE_ALSA
 		m_alsa_input.reset();
 #endif
@@ -901,6 +982,9 @@ void PageRecord::StopInput() {
 #if SSR_USE_OPENGL_RECORDING
 	if(m_gl_inject_input != NULL)
 		m_gl_inject_input->SetCapturing(false);
+#endif
+#if SSR_USE_V4L2
+	m_v4l2_input.reset();
 #endif
 #if SSR_USE_ALSA
 	m_alsa_input.reset();
@@ -958,15 +1042,16 @@ void PageRecord::UpdateInput() {
 	// get sources
 	VideoSource *video_source = NULL;
 	AudioSource *audio_source = NULL;
-#if SSR_USE_OPENGL_RECORDING
-	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
-		video_source = m_gl_inject_input.get();
-	} else {
-#else
-	{
-#endif
+	if(m_video_area == PageInput::VIDEO_AREA_SCREEN || m_video_area == PageInput::VIDEO_AREA_FIXED|| m_video_area == PageInput::VIDEO_AREA_CURSOR)
 		video_source = m_x11_input.get();
-	}
+#if SSR_USE_OPENGL_RECORDING
+	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
+		video_source = m_gl_inject_input.get();
+#endif
+#if SSR_USE_V4L2
+	if(m_video_area == PageInput::VIDEO_AREA_V4L2)
+		video_source = m_v4l2_input.get();
+#endif
 	if(m_audio_enabled) {
 #if SSR_USE_ALSA
 		if(m_audio_backend == PageInput::AUDIO_BACKEND_ALSA)
@@ -1026,14 +1111,33 @@ void PageRecord::UpdateSysTray() {
 	}
 }
 
-void PageRecord::UpdateRecordPauseButton() {
+void PageRecord::UpdateRecordButton() {
 	if(m_output_started) {
-		m_pushbutton_start_pause->setIcon(g_icon_pause);
-		m_pushbutton_start_pause->setText(tr("Pause recording"));
+		m_pushbutton_record->setIcon(g_icon_pause);
+		m_pushbutton_record->setText(tr("Pause recording"));
 	} else {
-		m_pushbutton_start_pause->setIcon(g_icon_record);
-		m_pushbutton_start_pause->setText(tr("Start recording"));
+		m_pushbutton_record->setIcon(g_icon_record);
+		m_pushbutton_record->setText(tr("Start recording"));
 	}
+}
+
+void PageRecord::UpdateSchedule() {
+	if(!m_page_started)
+		return;
+	if(m_schedule_active) {
+		m_pushbutton_schedule_activate->setText(tr("Deactivate schedule"));
+		m_schedule_position = 0;
+		QDateTime now = QDateTime::currentDateTimeUtc();
+		while(m_schedule_position < m_schedule_entries.size()) {
+			ScheduleEntry &entry = m_schedule_entries[m_schedule_position];
+			if(now < entry.time)
+				break;
+			++m_schedule_position;
+		}
+	} else {
+		m_pushbutton_schedule_activate->setText(tr("Activate schedule"));
+	}
+	OnScheduleTimer();
 }
 
 void PageRecord::UpdatePreview() {
@@ -1045,6 +1149,17 @@ void PageRecord::UpdatePreview() {
 		m_stacked_layout_preview->setCurrentWidget(m_preview_page1);
 		m_pushbutton_preview_start_stop->setText(tr("Start preview"));
 	}
+}
+
+QString PageRecord::ReadStdinCommand() {
+	for(int i = 0; i < m_stdin_buffer.size(); ++i) {
+		if(m_stdin_buffer[i] == '\n') {
+			QString command = QString::fromUtf8(m_stdin_buffer.data(), i);
+			m_stdin_buffer = QByteArray(m_stdin_buffer.data() + i + 1, m_stdin_buffer.size() - i - 1);
+			return command;
+		}
+	}
+	return QString();
 }
 
 void PageRecord::OnUpdateHotkeyFields() {
@@ -1082,18 +1197,156 @@ void PageRecord::OnUpdateSoundNotifications() {
 }
 #endif
 
-void PageRecord::OnRecordStartPause() {
-	if(QApplication::activeModalWidget() != NULL || QApplication::activePopupWidget() != NULL)
+void PageRecord::OnUpdateRecordingFrame() {
+	if(m_page_started && m_video_area == PageInput::VIDEO_AREA_FIXED && GetShowRecordingArea()) {
+		if(m_recording_frame == NULL)
+			m_recording_frame.reset(new RecordingFrameWindow(this, true));
+		if(m_x11_input == NULL) {
+			m_recording_frame->SetRectangle(QRect(m_video_x, m_video_y, m_video_in_width, m_video_in_height));
+		} else {
+			unsigned int x, y, width, height;
+			m_x11_input->GetCurrentRectangle(&x, &y, &width, &height);
+			m_recording_frame->SetRectangle(QRect(x, y, width, height));
+		}
+	} else {
+		m_recording_frame.reset();
+	}
+}
+
+void PageRecord::OnRecordStart() {
+	if(m_main_window->IsBusy())
 		return;
 	if(!TryStartPage())
 		return;
 	if(m_wait_saving)
 		return;
-	if(m_output_started) {
-		StopOutput(false);
-	} else {
+	if(!m_output_started)
 		StartOutput();
+}
+
+void PageRecord::OnRecordPause() {
+	if(m_main_window->IsBusy())
+		return;
+	if(!m_page_started)
+		return;
+	if(m_wait_saving)
+		return;
+	if(m_output_started)
+		StopOutput(false);
+}
+
+void PageRecord::OnRecordStartPause() {
+	if(m_page_started && m_output_started) {
+		OnRecordPause();
+	} else {
+		OnRecordStart();
 	}
+}
+
+
+void PageRecord::OnRecordCancel(bool confirm) {
+	if(m_main_window->IsBusy())
+		return;
+	if(!m_page_started)
+		return;
+	if(m_wait_saving)
+		return;
+	if(m_output_manager != NULL && confirm) {
+		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to cancel this recording?"),
+					  BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
+			return;
+		}
+	}
+	StopPage(false);
+	m_main_window->GoPageOutput();
+}
+
+void PageRecord::OnRecordSave(bool confirm) {
+	if(m_main_window->IsBusy())
+		return;
+	if(!m_page_started)
+		return;
+	if(m_wait_saving)
+		return;
+	if(!m_recorded_something && confirm) {
+		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save."),
+				   BUTTON_OK, BUTTON_OK);
+		return;
+	}
+	StopPage(true);
+	m_main_window->GoPageDone();
+}
+
+void PageRecord::OnScheduleTimer() {
+	if(!m_page_started)
+		return;
+	if(m_schedule_active) {
+		QDateTime now = QDateTime::currentDateTimeUtc();
+		while(m_schedule_position < m_schedule_entries.size()) {
+			ScheduleEntry &entry = m_schedule_entries[m_schedule_position];
+			if(now < entry.time)
+				break;
+			Logger::LogInfo("[PageRecord::OnScheduleTimer] " + tr("Triggering scheduled action '%1' ...").arg(EnumToString(entry.action)));
+			switch(entry.action) {
+				case SCHEDULE_ACTION_START: OnRecordStart(); break;
+				case SCHEDULE_ACTION_PAUSE: OnRecordPause(); break;
+				default: break; // to keep GCC happy
+			}
+			++m_schedule_position;
+		}
+		if(m_schedule_position < m_schedule_entries.size()) {
+			ScheduleEntry &entry = m_schedule_entries[m_schedule_position];
+			int64_t msec = now.msecsTo(entry.time);
+			m_label_schedule_status->setText(tr("Schedule: %1 in %2").arg(SCHEDULE_ACTION_TEXT[entry.action]).arg(ReadableTime(msec * 1000)));
+			if(msec < 1000) {
+				m_timer_schedule->start(msec);
+			} else {
+				m_timer_schedule->start((msec - 100) % 1000 + 100);
+			}
+		} else {
+			m_label_schedule_status->setText(tr("Schedule: (none)"));
+			m_timer_schedule->stop();
+		}
+	} else {
+		m_label_schedule_status->setText(tr("Schedule: (inactive)"));
+		m_timer_schedule->stop();
+	}
+}
+
+void PageRecord::OnScheduleActivate() {
+	if(m_main_window->IsBusy())
+		return;
+	if(!TryStartPage())
+		return;
+	if(!m_schedule_active) {
+		m_schedule_active = true;
+		UpdateSchedule();
+	}
+}
+
+void PageRecord::OnScheduleDeactivate() {
+	if(m_main_window->IsBusy())
+		return;
+	if(!m_page_started)
+		return;
+	if(m_schedule_active) {
+		m_schedule_active = false;
+		UpdateSchedule();
+	}
+}
+
+void PageRecord::OnScheduleActivateDeactivate() {
+	if(m_page_started && m_schedule_active) {
+		OnScheduleDeactivate();
+	} else {
+		OnScheduleActivate();
+	}
+}
+
+void PageRecord::OnScheduleEdit() {
+	DialogRecordSchedule dialog(this);
+	dialog.exec();
+	UpdateSchedule();
 }
 
 void PageRecord::OnPreviewStartStop() {
@@ -1108,35 +1361,78 @@ void PageRecord::OnPreviewStartStop() {
 	}
 	UpdatePreview();
 	UpdateInput();
+	OnUpdateRecordingFrame();
 }
 
-void PageRecord::OnCancel() {
-	if(!m_page_started)
+void PageRecord::OnStdin() {
+
+	// get available length
+	int len, res;
+	do {
+		res = ioctl(0, FIONREAD, &len);
+	} while(res == -1 && errno == EINTR);
+	if(res == -1) {
+		Logger::LogError("[PageRecord::OnStdin] " + tr("Standard input read error (%1).").arg("ioctl"));
+		m_stdin_notifier->setEnabled(false);
 		return;
-	if(m_wait_saving)
+	}
+	if(len == 0) {
+		Logger::LogInfo("[PageRecord::OnStdin] " + tr("Standard input closed (%1).").arg("ioctl"));
+		m_stdin_notifier->setEnabled(false);
 		return;
-	if(m_output_manager != NULL) {
-		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION, tr("Are you sure that you want to cancel this recording?"),
-					  BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
-			return;
+	}
+
+	// read data
+	QByteArray buffer(len, 0);
+	ssize_t bytes;
+	do {
+		bytes = read(0, buffer.data(), buffer.size());
+	} while(bytes == -1 && errno == EINTR);
+	if(bytes == -1) {
+		Logger::LogError("[PageRecord::OnStdin] " + tr("Standard input read error (%1).").arg("read"));
+		m_stdin_notifier->setEnabled(false);
+		return;
+	}
+	if(bytes == 0) {
+		Logger::LogInfo("[PageRecord::OnStdin] " + tr("Standard input closed (%1).").arg("read"));
+		m_stdin_notifier->setEnabled(false);
+		return;
+	}
+	m_stdin_buffer.append(buffer.data(), bytes);
+
+	// process commands
+	if(!m_stdin_reentrant) {
+		m_stdin_reentrant = true;
+		for( ; ; ) {
+			QString command = ReadStdinCommand();
+			if(command.isNull())
+				break;
+			Logger::LogInfo("[PageRecord::OnStdin] " + tr("Received command '%1'.").arg(command));
+			if(command == "record-start") {
+				OnRecordStart();
+			} else if(command == "record-pause") {
+				OnRecordPause();
+			} else if(command == "record-cancel") {
+				OnRecordCancel(false);
+			} else if(command == "record-save") {
+				OnRecordSave(false);
+			} else if(command == "schedule-activate") {
+				OnScheduleActivate();
+			} else if(command == "schedule-deactivate") {
+				OnScheduleDeactivate();
+			} else if(command == "window-show") {
+				m_main_window->OnShow();
+			} else if(command == "window-hide") {
+				m_main_window->OnHide();
+			} else if(command == "quit") {
+				m_main_window->Quit();
+			} else {
+				Logger::LogError("[PageRecord::OnStdin] " + tr("Unknown command."));
+			}
 		}
+		m_stdin_reentrant = false;
 	}
-	StopPage(false);
-	m_main_window->GoPageOutput();
-}
 
-void PageRecord::OnSave() {
-	if(!m_page_started)
-		return;
-	if(m_wait_saving)
-		return;
-	if(!m_recorded_something) {
-		MessageBox(QMessageBox::Information, this, MainWindow::WINDOW_CAPTION, tr("You haven't recorded anything, there is nothing to save.\n\nThe start button is at the top ;)."),
-				   BUTTON_OK, BUTTON_OK);
-		return;
-	}
-	StopPage(true);
-	m_main_window->GoPageDone();
 }
 
 void PageRecord::OnUpdateInformation() {
@@ -1148,12 +1444,16 @@ void PageRecord::OnUpdateInformation() {
 		double fps_out = 0.0;
 		uint64_t bit_rate = 0, total_bytes = 0;
 
+		if(m_x11_input != NULL)
+			fps_in = m_x11_input->GetFPS();
 #if SSR_USE_OPENGL_RECORDING
 		if(m_gl_inject_input != NULL)
 			fps_in = m_gl_inject_input->GetFPS();
 #endif
-		if(m_x11_input != NULL)
-			fps_in = m_x11_input->GetFPS();
+#if SSR_USE_V4L2
+		if(m_v4l2_input != NULL)
+			fps_in = m_v4l2_input->GetFPS();
+#endif
 
 		if(m_output_manager != NULL) {
 			total_time = (m_output_manager->GetSynchronizer() == NULL)? 0 : m_output_manager->GetSynchronizer()->GetTotalTime();
@@ -1187,7 +1487,7 @@ void PageRecord::OnUpdateInformation() {
 		m_label_info_file_size->setText(ReadableSizeIEC(total_bytes, "B"));
 		m_label_info_bit_rate->setText(ReadableSizeSI(bit_rate, "bit/s"));
 
-		if(!g_option_statsfile.isNull()) {
+		if(!CommandLineOptions::GetStatsFile().isNull()) {
 			QString str = QString() +
 					"capturing\t" + ((m_input_started)? "1" : "0") + "\n"
 					"recording\t" + ((m_output_started)? "1" : "0") + "\n"
@@ -1201,9 +1501,9 @@ void PageRecord::OnUpdateInformation() {
 					"file_name\t" + file_name + "\n"
 					"file_size\t" + QString::number(total_bytes) + "\n"
 					"bit_rate\t" + QString::number(bit_rate) + "\n";
-			QByteArray data = str.toLocal8Bit();
-			QByteArray old_file = g_option_statsfile.toLocal8Bit();
-			QByteArray new_file = (g_option_statsfile + "-new").toLocal8Bit();
+			QByteArray data = str.toUtf8();
+			QByteArray old_file = QFile::encodeName(CommandLineOptions::GetStatsFile());
+			QByteArray new_file = QFile::encodeName(CommandLineOptions::GetStatsFile() + "-new");
 			// Qt doesn't get the permissions right (you can only change the permissions after creating the file, that's too late),
 			// and it doesn't allow renaming a file over another file, so don't bother with QFile and just use POSIX and C functions.
 			int fd = open(new_file.constData(), O_WRONLY | O_CREAT | O_CLOEXEC, 0600);
@@ -1225,8 +1525,8 @@ void PageRecord::OnUpdateInformation() {
 		m_label_info_file_size->clear();
 		m_label_info_bit_rate->clear();
 
-		if(!g_option_statsfile.isNull()) {
-			QByteArray old_file = g_option_statsfile.toLocal8Bit();
+		if(!CommandLineOptions::GetStatsFile().isNull()) {
+			QByteArray old_file = QFile::encodeName(CommandLineOptions::GetStatsFile());
 			remove(old_file.constData());
 		}
 
@@ -1257,9 +1557,10 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString string) {
 	QTextCharFormat format;
 	bool should_scroll = (m_textedit_log->verticalScrollBar()->value() >= m_textedit_log->verticalScrollBar()->maximum());
 	switch(type) {
-		case Logger::TYPE_INFO:     format.setForeground(m_textedit_log->palette().foreground());  break;
+		case Logger::TYPE_INFO:     format.setForeground(m_textedit_log->palette().windowText());  break;
 		case Logger::TYPE_WARNING:  format.setForeground(Qt::darkYellow);                          break;
 		case Logger::TYPE_ERROR:    format.setForeground(Qt::red);                                 break;
+		case Logger::TYPE_STDERR:   format.setForeground(Qt::gray);                                break;
 	}
 	cursor.movePosition(QTextCursor::End);
 	if(cursor.position() != 0)

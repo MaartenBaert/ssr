@@ -1,4 +1,4 @@
-.TH SIMPLESCREENRECORDER "1" "March 2015" "SimpleScreenRecorder" "SimpleScreenRecorder Manual"
+.TH SIMPLESCREENRECORDER "1" "May 2020" "SimpleScreenRecorder" "SimpleScreenRecorder Manual"
 .SH NAME
 simplescreenrecorder \- A feature-rich screen recorder that supports X11 and OpenGL.
 .SH SYNOPSIS
@@ -13,13 +13,18 @@ are supported.
 .SH OPTIONS
 .TP
 \fB\-\-help\fR
-Show help message.
+Show this help message.
 .TP
 \fB\-\-version\fR
-Show version and quit.
+Show version information.
 .TP
-\fB\-\-logfile\fR
-Write log to \fI\,~/.ssr/log\-DATE_TIME.txt\/\fP instead of stdout.
+\fB\-\-settingsfile\fR=\fI\,FILE\/\fR
+Load and save program settings to \fI\,FILE\/\fR. If omitted,
+\fI\,~/.ssr/settings.conf\/\fP is used.
+.TP
+\fB\-\-logfile\fR[=\fI\,FILE\/\fR]
+Write log messages to \fI\,FILE\/\fR. If \fI\,FILE\/\fR is omitted,
+\fI\,~/.ssr/log-DATE_TIME.txt\/\fP is used.
 .TP
 \fB\-\-statsfile\fR[=\fI\,FILE\/\fR]
 Write recording statistics to \fI\,FILE\/\fR. If \fI\,FILE\/\fR is omitted,
@@ -27,14 +32,51 @@ Write recording statistics to \fI\,FILE\/\fR. If \fI\,FILE\/\fR is omitted,
 be updated continuously and deleted when the recording
 page is closed.
 .TP
-\fB\-\-syncdiagram\fR
-Show synchronization diagram (for debugging).
-.TP
 \fB\-\-no\-systray\fR
 Don't show the system tray icon.
 .TP
 \fB\-\-start\-hidden\fR
 Start the application in hidden form.
+.TP
+\fB\-\-start\-recording\fR
+Start the recording immediately.
+.TP
+\fB\-\-activate\-schedule\fR
+Activate the recording schedule immediately.
+.TP
+\fB\-\-syncdiagram\fR
+Show synchronization diagram (for debugging).
+.TP
+\fB\-\-benchmark\fR
+Run the internal benchmark.
+.SH "COMMANDS ACCEPTED THROUGH STDIN"
+.TP
+\fBrecord-start\fR
+Start the recording.
+.TP
+\fBrecord-pause\fR
+Pause the recording.
+.TP
+\fBrecord-cancel\fR
+Cancel the recording and delete the output file.
+.TP
+\fBrecord-save\fR
+Finish the recording and save the output file.
+.TP
+\fBschedule-activate\fR
+Activate the recording schedule.
+.TP
+\fBschedule-deactivate\fR
+Deactivate the recording schedule.
+.TP
+\fBwindow-show\fR
+Show the application window.
+.TP
+\fBwindow-hide\fR
+Hide the application window.
+.TP
+\fBquit\fR
+Quit the application.
 .SH "FILE LOCATIONS"
 The files used by SimpleScreenRecorder can be found in the following locations:
 .PP
@@ -69,4 +111,4 @@ Translations:
 .SH "SEE ALSO"
 More documentation can be found at:
 .br
-http://www.maartenbaert.be/simplescreenrecorder/
+https://www.maartenbaert.be/simplescreenrecorder/

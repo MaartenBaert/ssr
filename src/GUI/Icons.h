@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -21,7 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Global.h"
 
 extern QIcon g_icon_ssr, g_icon_ssr_idle, g_icon_ssr_error, g_icon_ssr_paused, g_icon_ssr_recording;
-extern QIcon g_icon_go_home, g_icon_go_previous, g_icon_go_next;
+extern QIcon g_icon_go_home, g_icon_go_previous, g_icon_go_next, g_icon_folder_open;
 extern QIcon g_icon_pause, g_icon_record;
 extern QIcon g_icon_cancel, g_icon_save, g_icon_quit;
 extern QIcon g_icon_microphone;

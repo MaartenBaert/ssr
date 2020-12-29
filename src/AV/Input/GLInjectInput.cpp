@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -40,6 +40,116 @@ static QString ShellEscape(QString str) {
 
 // The highest expected latency between GLInject and the input thread.
 const int64_t GLInjectInput::MAX_COMMUNICATION_LATENCY = 100000;
+
+bool ExecuteDetached(const char* command, const char* working_directory) {
+
+	// set up feedback pipe
+	int feedback_pipe[2];
+	if(pipe2(feedback_pipe, O_CLOEXEC) == -1) {
+		return false;
+	}
+
+	// fork process
+	pid_t pid1 = fork();
+	if(pid1 == -1) {
+
+		// fork failed
+		close(feedback_pipe[0]);
+		close(feedback_pipe[1]);
+		return false;
+
+	} else if(pid1 == 0) {
+
+		// we are the first child
+		close(feedback_pipe[0]);
+		setsid();
+
+		// fork again
+		pid_t pid2 = fork();
+		if(pid2 == -1) {
+
+			// fork failed, send feedback
+			char buf = 1;
+			ssize_t wres = write(feedback_pipe[1], &buf, 1); Q_UNUSED(wres);
+			close(feedback_pipe[1]);
+			_exit(EXIT_FAILURE);
+
+		} else if(pid2 == 0) {
+
+			// we are the second child
+			int devnull;
+			do {
+				devnull = open("/dev/null", O_RDWR);
+			} while(devnull == -1 && errno == EINTR);
+			if(devnull == -1) {
+
+				// failed, send feedback
+				char buf = 1;
+				ssize_t wres = write(feedback_pipe[1], &buf, 1); Q_UNUSED(wres);
+				close(feedback_pipe[1]);
+				_exit(EXIT_FAILURE);
+
+			}
+
+			// redirect stdin, stdout and stderr to /dev/null
+			int res;
+			do { res = dup2(devnull, STDIN_FILENO); } while(res == -1 && errno == EINTR);
+			do { res = dup2(devnull, STDOUT_FILENO); } while(res == -1 && errno == EINTR);
+			do { res = dup2(devnull, STDERR_FILENO); } while(res == -1 && errno == EINTR);
+			do { res = close(devnull); } while(res == -1 && errno == EINTR);
+
+			// try to change working directory
+			if(working_directory != NULL) {
+				if(chdir(working_directory) == -1) {
+
+					// failed, send feedback
+					char buf = 1;
+					ssize_t wres = write(feedback_pipe[1], &buf, 1); Q_UNUSED(wres);
+					close(feedback_pipe[1]);
+					_exit(EXIT_FAILURE);
+
+				}
+			}
+
+			// try to execute command
+			do {
+				res = execl("/bin/sh", "/bin/sh", "-c", command, (char*) NULL);
+			} while(res == -1 and errno == EINTR);
+
+			// failed, send feedback
+			char buf = 1;
+			ssize_t wres = write(feedback_pipe[1], &buf, 1); Q_UNUSED(wres);
+			close(feedback_pipe[1]);
+			_exit(EXIT_FAILURE);
+
+		} else {
+
+			// we are still the first child
+			close(feedback_pipe[1]);
+			_exit(EXIT_SUCCESS);
+
+		}
+
+	} else {
+
+		// we are still the original
+		close(feedback_pipe[1]);
+		char buf;
+		ssize_t num;
+		do {
+			num = read(feedback_pipe[0], &buf, 1);
+		} while(num == -1 && errno == EINTR);
+		close(feedback_pipe[0]);
+
+		// wait for first process
+		int res, status;
+		do { res = waitpid(pid1, &status, 0); } while(res == -1 && errno == EINTR);
+
+		return (num == 0);
+
+	}
+
+}
 
 GLInjectInput::GLInjectInput(const QString& channel, bool relax_permissions, bool record_cursor, bool limit_fps, unsigned int target_fps) {
 
@@ -103,11 +213,10 @@ bool GLInjectInput::LaunchApplication(const QString& channel, bool relax_permiss
 		full_command += "SSR_STREAM_RELAX_PERMISSIONS=1 ";
 	full_command += command;
 
-	// execute it
-	QStringList args;
-	args.push_back("-c");
-	args.push_back(full_command);
-	return QProcess::startDetached("/bin/sh", args, working_directory);
+	// execute
+	QByteArray encoded_working_directory = QFile::encodeName(working_directory);
+	QByteArray encoded_full_command = full_command.toLocal8Bit();
+	return ExecuteDetached(encoded_full_command.constData(), (encoded_working_directory.isEmpty())? NULL : encoded_working_directory.constData());
 
 }
 
@@ -236,7 +345,7 @@ void GLInjectInput::InputThread() {
 
 			// push the frame
 			// we can do this even when we don't have the lock because only this thread will change the stream reader
-			PushVideoFrame(width, height, (uint8_t*) data, stride, AV_PIX_FMT_BGRA, timestamp);
+			PushVideoFrame(width, height, (uint8_t*) data, stride, AV_PIX_FMT_BGRA, SWS_CS_DEFAULT, timestamp);
 
 			// go to the next frame
 			{

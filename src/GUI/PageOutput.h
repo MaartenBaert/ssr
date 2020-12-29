@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -103,6 +103,7 @@ private:
 	QComboBox *m_combobox_container;
 	QLabel *m_label_container_av;
 	QComboBox *m_combobox_container_av;
+	QLabel *m_label_container_warning;
 
 	QComboBox *m_combobox_video_codec;
 	QLabel *m_label_video_codec_av;
@@ -142,7 +143,7 @@ private:
 	void SaveProfileSettings(QSettings* settings);
 
 public:
-	void PageStart();
+	void StartPage();
 	bool Validate();
 
 	QString GetFileProtocol();

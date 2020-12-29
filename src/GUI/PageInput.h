@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -78,10 +78,16 @@ class RecordingFrameWindow : public QWidget {
 	Q_OBJECT
 
 private:
+	bool m_outside;
 	QPixmap m_texture;
 
 public:
-	RecordingFrameWindow(QWidget* parent);
+	static constexpr int BORDER_WIDTH = 4;
+
+public:
+	RecordingFrameWindow(QWidget* parent, bool outside);
+
+	void SetRectangle(const QRect& r);
 
 private:
 	void UpdateMask();
@@ -104,6 +110,9 @@ public:
 		VIDEO_AREA_CURSOR,
 #if SSR_USE_OPENGL_RECORDING
 		VIDEO_AREA_GLINJECT,
+#endif
+#if SSR_USE_V4L2
+		VIDEO_AREA_V4L2,
 #endif
 		VIDEO_AREA_COUNT // must be last
 	};
@@ -154,6 +163,9 @@ private:
 #if SSR_USE_OPENGL_RECORDING
 	QPushButton *m_pushbutton_video_opengl_settings;
 #endif
+#if SSR_USE_V4L2
+	QLineEdit *m_lineedit_v4l2_device;
+#endif
 	QLabel *m_label_video_x, *m_label_video_y, *m_label_video_w, *m_label_video_h;
 	QSpinBoxWithSignal *m_spinbox_video_x, *m_spinbox_video_y, *m_spinbox_video_w, *m_spinbox_video_h;
 	QSpinBox *m_spinbox_video_frame_rate;
@@ -192,6 +204,8 @@ private:
 	void SaveProfileSettings(QSettings* settings);
 
 public:
+	bool Validate();
+
 #if SSR_USE_ALSA
 	QString GetALSASourceName();
 #endif
@@ -259,6 +273,9 @@ public:
 	inline enum_video_area GetVideoArea() { return (enum_video_area) clamp(m_buttongroup_video_area->checkedId(), 0, VIDEO_AREA_COUNT - 1); }
 	inline unsigned int GetVideoAreaScreen() { return m_combobox_screens->currentIndex(); }
 	inline bool GetVideoAreaFollowFullscreen() { return m_checkbox_follow_fullscreen->isChecked(); }
+#if SSR_USE_V4L2
+	inline QString GetVideoV4L2Device() { return m_lineedit_v4l2_device->text(); }
+#endif
 	inline unsigned int GetVideoX() { return m_spinbox_video_x->value(); }
 	inline unsigned int GetVideoY() { return m_spinbox_video_y->value(); }
 	inline unsigned int GetVideoW() { return m_spinbox_video_w->value(); }
@@ -293,6 +310,9 @@ public:
 	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
 	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_screens->count() - 1)); }
 	inline void SetVideoAreaFollowFullscreen(bool follow_fulscreen) { m_checkbox_follow_fullscreen->setChecked(follow_fulscreen); }
+#if SSR_USE_V4L2
+	inline void SetVideoV4L2Device(const QString& device) { m_lineedit_v4l2_device->setText(device); }
+#endif
 	inline void SetVideoX(unsigned int x) { m_spinbox_video_x->setValue(x); }
 	inline void SetVideoY(unsigned int y) { m_spinbox_video_y->setValue(y); }
 	inline void SetVideoW(unsigned int w) { m_spinbox_video_w->setValue(w); }

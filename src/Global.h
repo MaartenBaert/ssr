@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -29,6 +29,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QAction>
 #include <QApplication>
+#include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QFileDialog>
@@ -42,6 +43,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QDateTimeEdit>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -66,10 +68,16 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <ctime>
 #include <stdint.h>
 
+#include <fcntl.h>
 #include <pwd.h>
-#include <random>
+#include <strings.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
 #include <sys/shm.h>
+#include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
+#include <termios.h>
 #include <unistd.h>
 
 #include <array>
@@ -78,6 +86,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <limits>
 #include <memory>
 #include <mutex>
+#include <random>
 #include <set>
 #include <sstream>
 #include <thread>
@@ -85,12 +94,59 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QX11Info>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/Xfixes.h>
+#include <X11/extensions/Xinerama.h>
 #include <X11/extensions/XShm.h>
+#include <X11/extensions/XInput2.h>
+#include <X11/keysym.h>
+#include <X11/keysymdef.h>
 
-// Replacement for Qt::WindowTransparentForInput.
+// replacement for Qt::WindowTransparentForInput.
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <X11/extensions/shape.h>
 #endif
+
+// replacement for QX11Info::isPlatformX11()
+inline bool IsPlatformX11() {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	if(!QX11Info::isPlatformX11())
+		return false;
+#endif
+	char *v = getenv("XDG_SESSION_TYPE");
+	if(v != NULL) {
+		if(strcasecmp(v, "x11") == 0)
+			return true;
+		if(strcasecmp(v, "wayland") == 0 || strcasecmp(v, "mir") == 0)
+			return false;
+	}
+	char *d = getenv("DISPLAY");
+	return (d != NULL);
+}
+
+// replacement for QFontMetrics::width()
+inline int GetTextWidth(const QFontMetrics& font, const QString& str) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+	return font.horizontalAdvance(str);
+#else
+	return QFontMetrics(font).width(str);
+#endif
+}
+inline int GetTextWidth(const QFont& font, const QString& str) {
+	return GetTextWidth(QFontMetrics(font), str);
+}
+
+// replacement for QString::split() with QString::SkipEmptyParts
+inline QStringList SplitSkipEmptyParts(const QString& str, QChar sep) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+	return str.split(sep, Qt::SkipEmptyParts);
+#else
+	return str.split(sep, QString::SkipEmptyParts);
+#endif
+}
+
+// undefine problematic Xlib macros
+#undef Bool
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -114,9 +170,19 @@ extern "C" {
 #error SSR_USE_FFMPEG_VERSIONS should be defined!
 #endif
 
+// Whether the JACK metadata API should be used. Does not work with really old JACK versions.
+#ifndef SSR_USE_JACK_METADATA
+#error SSR_USE_JACK_METADATA should be defined!
+#endif
+
 // Whether OpenGL recording should be used.
 #ifndef SSR_USE_OPENGL_RECORDING
 #error SSR_USE_OPENGL_RECORDING should be defined!
+#endif
+
+// Whether V4L2 should be used.
+#ifndef SSR_USE_V4L2
+#error SSR_USE_V4L2 should be defined!
 #endif
 
 // Whether ALSA should be used.
@@ -138,6 +204,9 @@ extern "C" {
 #ifndef SSR_SYSTEM_DIR
 #error SSR_SYSTEM_DIR should be defined!
 #endif
+
+// Maximum allowed image size (to avoid 32-bit integer overflow)
+#define SSR_MAX_IMAGE_SIZE 20000
 
 // generic macro to test version numbers
 #define TEST_MAJOR_MINOR(major, minor, required_major, required_minor) (major > required_major || (major == required_major && minor >= required_minor))
@@ -279,6 +348,14 @@ public:
 		return "SSRStreamException";
 	}
 };
+#if SSR_USE_V4L2
+class V4L2Exception : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "V4L2Exception";
+	}
+};
+#endif
 #if SSR_USE_ALSA
 class ALSAException : public std::exception {
 public:

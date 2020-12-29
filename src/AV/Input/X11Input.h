@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -23,7 +23,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 
-class X11Input : public VideoSource {
+class X11Input : public QObject, public VideoSource {
+	Q_OBJECT
 
 private:
 	struct Rect {
@@ -32,7 +33,7 @@ private:
 		inline Rect(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) : m_x1(x1), m_y1(y1), m_x2(x2), m_y2(y2) {}
 	};
 	struct SharedData {
-		unsigned int m_current_width, m_current_height;
+		unsigned int m_current_x, m_current_y, m_current_width, m_current_height;
 	};
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
@@ -67,6 +68,10 @@ public:
 	X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor, bool follow_fullscreen);
 	~X11Input();
 
+	// Reads the current recording rectangle.
+	// This function is thread-safe.
+	void GetCurrentRectangle(unsigned int* x, unsigned int* y, unsigned int* width, unsigned int* height);
+
 	// Reads the current size of the stream.
 	// This function is thread-safe.
 	void GetCurrentSize(unsigned int* width, unsigned int* height);
@@ -90,5 +95,8 @@ private:
 
 private:
 	void InputThread();
+
+signals:
+	void CurrentRectangleChanged();
 
 };

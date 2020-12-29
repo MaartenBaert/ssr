@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -77,7 +77,7 @@ int64_t VideoPreviewer::GetNextVideoTimestamp() {
 	return lock->m_next_frame_time;
 }
 
-void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp) {
+void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int colorspace, int64_t timestamp) {
 	Q_UNUSED(timestamp);
 
 	QSize image_size;
@@ -114,8 +114,8 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	uint8_t *image_data = image_buffer->GetData();
 
 	// scale the image
-	m_fast_scaler.Scale(width, height, format, &data, &stride,
-						image_size.width(), image_size.height(), AV_PIX_FMT_BGRA, &image_data, &image_stride);
+	m_fast_scaler.Scale(width, height, format, colorspace, &data, &stride,
+						image_size.width(), image_size.height(), AV_PIX_FMT_BGRA, SWS_CS_DEFAULT, &image_data, &image_stride);
 
 	// set the alpha channel to 0xff (just to be sure)
 	// Some applications (e.g. firefox) generate alpha values that are not 0xff.

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
@@ -115,7 +115,7 @@ GLXFrameGrabber::GLXFrameGrabber(Display* display, Window window, GLXDrawable dr
 	m_warn_too_small = true;
 	m_warn_too_large = true;
 
-	m_stream_writer = NULL;
+	m_stream_writer = NULL; // will be created when we get the first frame
 
 	try {
 		Init();
@@ -156,17 +156,6 @@ void GLXFrameGrabber::Init() {
 		}
 	}
 
-	// create stream writer
-	{
-		std::string channel;
-		const char *ssr_channel = getenv("SSR_CHANNEL");
-		if(ssr_channel != NULL)
-			channel = ssr_channel;
-		std::ostringstream source;
-		source << "glx" << std::setw(4) << std::setfill('0') << m_id;
-		m_stream_writer = new SSRVideoStreamWriter(channel, source.str());
-	}
-
 }
 
 void GLXFrameGrabber::Free() {
@@ -182,6 +171,17 @@ void GLXFrameGrabber::Free() {
 }
 
 void GLXFrameGrabber::GrabFrame() {
+
+	// create stream writer
+	if(m_stream_writer == NULL) {
+		std::string channel;
+		const char *ssr_channel = getenv("SSR_CHANNEL");
+		if(ssr_channel != NULL)
+			channel = ssr_channel;
+		std::ostringstream source;
+		source << "glx" << std::setw(4) << std::setfill('0') << m_id;
+		m_stream_writer = new SSRVideoStreamWriter(channel, source.str());
+	}
 
 	// get the OpenGL version
 	if(m_gl_version == (unsigned int) -1)
@@ -206,7 +206,7 @@ void GLXFrameGrabber::GrabFrame() {
 		}
 		return;
 	}
-	if(width > 10000 || height > 10000) {
+	if(width > SSR_MAX_IMAGE_SIZE || height > SSR_MAX_IMAGE_SIZE) {
 		if(m_warn_too_large) {
 			m_warn_too_large = false;
 			GLINJECT_PRINT("[GLXFrameGrabber " << m_id << "] Error: Frame is too large!");

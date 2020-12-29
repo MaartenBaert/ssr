@@ -130,6 +130,49 @@ If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will 
     </message>
 </context>
 <context>
+    <name>DialogRecordSchedule</name>
+    <message>
+        <source>Recording schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time zone:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UTC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Κλείσιμο</translation>
+    </message>
+</context>
+<context>
     <name>Logger</name>
     <message>
         <source>Error: Resample ratio is out of range!</source>
@@ -929,6 +972,10 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -945,6 +992,10 @@ You can also change this option manually in the NVIDIA control panel.</source>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
         <translation>Δεν μπόρεσα να απενεργοποιήσω την λειτουργία flipping για κάποιο λόγο - Συγγνώμη!. Δοκιμάστε την να απενεργοποιήσετε από τον πίνακα ελέγχου και ρυθμίσεων της NVIDIA.</translation>
+    </message>
+    <message>
+        <source>You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. Several features will most likely not work properly. In order to solve this, you should log out, choose a X11/Xorg session at the login screen, and then log back in.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1658,7 +1709,7 @@ Are you sure that you want to quit?</source>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
-        <translation>Δεν έχετε εγγράψει κάτι, δεν υπάρχει κάτι για να αποθηκευτεί.
+        <translation type="obsolete">Δεν έχετε εγγράψει κάτι, δεν υπάρχει κάτι για να αποθηκευτεί.
 
 Το πλήκτρο έναρξης είναι στην κορυφή ;).</translation>
     </message>
@@ -1672,6 +1723,64 @@ The start button is at the top ;).</source>
     </message>
     <message>
         <source>Show window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,
+even when the SimpleScreenRecorder window is not visible. This way you can create recordings without having the
+SimpleScreenRecorder window show up in the final video.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When enabled, a sound will be played when the recording is started or paused, or when an error occurs.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deactivate schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Activate schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You haven&apos;t recorded anything, there is nothing to save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Triggering scheduled action &apos;%1&apos; ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Schedule: %1 in %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Schedule: (none)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Schedule: (inactive)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard input read error (%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard input closed (%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Received command &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown command.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1697,6 +1806,14 @@ The start button is at the top ;).</source>
     <message>
         <source>Continue</source>
         <translation>Συνέχεια</translation>
+    </message>
+    <message>
+        <source>Skip this page next time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go directly to the input page when the program is started.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1806,6 +1923,25 @@ The start button is at the top ;).</source>
     <message>
         <source>No, never</source>
         <translation type="obsolete">Όχι πάντα</translation>
+    </message>
+</context>
+<context>
+    <name>RecordScheduleEntryWidget</name>
+    <message>
+        <source>Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Action:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

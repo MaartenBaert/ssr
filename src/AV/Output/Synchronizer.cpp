@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -19,8 +19,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Synchronizer.h"
 
-#include "Main.h"
 #include "Logger.h"
+#include "CommandLineOptions.h"
 #include "OutputManager.h"
 #include "OutputSettings.h"
 #include "VideoEncoder.h"
@@ -252,7 +252,7 @@ void Synchronizer::Init() {
 	}
 
 	// create sync diagram
-	if(g_option_syncdiagram) {
+	if(CommandLineOptions::GetSyncDiagram()) {
 		m_sync_diagram.reset(new SyncDiagram(4));
 		m_sync_diagram->SetChannelName(0, SyncDiagram::tr("Video in"));
 		m_sync_diagram->SetChannelName(1, SyncDiagram::tr("Audio in"));
@@ -313,7 +313,7 @@ int64_t Synchronizer::GetNextVideoTimestamp() {
 	return videolock->m_next_timestamp;
 }
 
-void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp) {
+void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int colorspace, int64_t timestamp) {
 	assert(m_output_format->m_video_enabled);
 
 	// add new block to sync diagram
@@ -341,8 +341,8 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	std::unique_ptr<AVFrameWrapper> converted_frame = CreateVideoFrame(m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format, NULL);
 
 	// scale and convert the frame to the right format
-	videolock->m_fast_scaler.Scale(width, height, format, &data, &stride,
-			m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format,
+	videolock->m_fast_scaler.Scale(width, height, format, colorspace, &data, &stride,
+			m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format, m_output_format->m_video_colorspace,
 			converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
 
 	SharedLock lock(&m_shared_data);
@@ -464,6 +464,8 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 				data += n * channels * sizeof(float);
 			} else if(format == AV_SAMPLE_FMT_S16) {
 				data += n * channels * sizeof(int16_t);
+			} else if(format == AV_SAMPLE_FMT_S32) {
+				data += n * channels * sizeof(int32_t);
 			} else {
 				assert(false);
 			}
@@ -531,6 +533,10 @@ void Synchronizer::ReadAudioSamples(unsigned int channels, unsigned int sample_r
 		audiolock->m_temp_input_buffer.Alloc(sample_count * m_output_format->m_audio_channels);
 		data_float = audiolock->m_temp_input_buffer.GetData();
 		SampleChannelRemap(sample_count, (const int16_t*) data, channels, audiolock->m_temp_input_buffer.GetData(), m_output_format->m_audio_channels);
+	} else if(format == AV_SAMPLE_FMT_S32) {
+		audiolock->m_temp_input_buffer.Alloc(sample_count * m_output_format->m_audio_channels);
+		data_float = audiolock->m_temp_input_buffer.GetData();
+		SampleChannelRemap(sample_count, (const int32_t*) data, channels, audiolock->m_temp_input_buffer.GetData(), m_output_format->m_audio_channels);
 	} else {
 		assert(false);
 	}

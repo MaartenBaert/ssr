@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file contains code from x11grab.c (part of ffmpeg/libav). The copyright information for x11grab.c is:
 >> FFmpeg/Libav integration:
@@ -35,12 +35,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AVWrapper.h"
 #include "Synchronizer.h"
 #include "VideoEncoder.h"
-
-#include "VideoPreviewer.h"
-
-#include <X11/Xutil.h>
-#include <X11/extensions/Xfixes.h>
-#include <X11/extensions/Xinerama.h>
 
 /*
 The code in this file is based on the MIT-SHM example code and the x11grab device in libav/ffmpeg (which is GPL):
@@ -189,6 +183,8 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 
 	{
 		SharedLock lock(&m_shared_data);
+		lock->m_current_x = m_x;
+		lock->m_current_y = m_y;
 		lock->m_current_width = m_width;
 		lock->m_current_height = m_height;
 	}
@@ -197,8 +193,8 @@ X11Input::X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned 
 		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Width or height is zero!"));
 		throw X11Exception();
 	}
-	if(m_width > 10000 || m_height > 10000) {
-		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
+	if(m_width > SSR_MAX_IMAGE_SIZE || m_height > SSR_MAX_IMAGE_SIZE) {
+		Logger::LogError("[X11Input::Init] " + Logger::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(SSR_MAX_IMAGE_SIZE));
 		throw X11Exception();
 	}
 
@@ -223,6 +219,14 @@ X11Input::~X11Input() {
 	// free everything
 	Free();
 
+}
+
+void X11Input::GetCurrentRectangle(unsigned int *x, unsigned int *y, unsigned int *width, unsigned int *height) {
+	SharedLock lock(&m_shared_data);
+	*x = lock->m_current_x;
+	*y = lock->m_current_y;
+	*width = lock->m_current_width;
+	*height = lock->m_current_height;
 }
 
 void X11Input::GetCurrentSize(unsigned int *width, unsigned int *height) {
@@ -388,7 +392,7 @@ void X11Input::UpdateScreenConfiguration() {
 			m_screen_bbox.m_y2 = rect.m_y2;
 	}
 	if(m_screen_bbox.m_x1 >= m_screen_bbox.m_x2 || m_screen_bbox.m_y1 >= m_screen_bbox.m_y2 ||
-	   m_screen_bbox.m_x2 - m_screen_bbox.m_x1 > 10000 || m_screen_bbox.m_y2 - m_screen_bbox.m_y1 > 10000) {
+	   m_screen_bbox.m_x2 - m_screen_bbox.m_x1 > SSR_MAX_IMAGE_SIZE || m_screen_bbox.m_y2 - m_screen_bbox.m_y1 > SSR_MAX_IMAGE_SIZE) {
 		Logger::LogError("[X11Input::UpdateScreenConfiguration] " + Logger::tr("Error: Invalid screen bounding box!") + "\n"
 						   "    x1 = " + QString::number(m_screen_bbox.m_x1) + ", y1 = " + QString::number(m_screen_bbox.m_y1)
 						   + ", x2 = " + QString::number(m_screen_bbox.m_x2) + ", y2 = " + QString::number(m_screen_bbox.m_y2));
@@ -498,8 +502,13 @@ void X11Input::InputThread() {
 			// save current size
 			{
 				SharedLock lock(&m_shared_data);
-				lock->m_current_width = grab_width;
-				lock->m_current_height = grab_height;
+				if(lock->m_current_x != grab_x || lock->m_current_y != grab_y || lock->m_current_width != grab_width || lock->m_current_height != grab_height) {
+					lock->m_current_x = grab_x;
+					lock->m_current_y = grab_y;
+					lock->m_current_width = grab_width;
+					lock->m_current_height = grab_height;
+					emit CurrentRectangleChanged();
+				}
 			}
 
 			// get the image
@@ -550,7 +559,7 @@ void X11Input::InputThread() {
 			uint8_t *image_data = (uint8_t*) m_x11_image->data;
 			int image_stride = m_x11_image->bytes_per_line;
 			AVPixelFormat x11_image_format = X11ImageGetPixelFormat(m_x11_image);
-			PushVideoFrame(grab_width, grab_height, image_data, image_stride, x11_image_format, timestamp);
+			PushVideoFrame(grab_width, grab_height, image_data, image_stride, x11_image_format, SWS_CS_DEFAULT, timestamp);
 			last_timestamp = timestamp;
 
 		}

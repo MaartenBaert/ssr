@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -211,9 +211,9 @@ void* SSRVideoStreamReader::GetFrame(int64_t* timestamp, unsigned int* width, un
 	// verify the size (should never happen unless someone is messing with the files)
 	if(*width < 2 || *height < 2)
 		return NULL;
-	if(*width > 10000 || *height > 10000)
+	if(*width > SSR_MAX_IMAGE_SIZE || *height > SSR_MAX_IMAGE_SIZE)
 		return NULL;
-	if(abs(*stride) > 10000 * 4)
+	if(abs(*stride) > SSR_MAX_IMAGE_SIZE * 4)
 		return NULL;
 
 	// read frame

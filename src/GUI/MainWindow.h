@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -60,7 +60,9 @@ public:
 	void LoadSettings();
 	void SaveSettings();
 
+	bool IsBusy();
 	bool Validate();
+	void Quit();
 
 protected:
 	virtual void closeEvent(QCloseEvent* event) override;
@@ -74,12 +76,15 @@ public:
 	inline void SetNVidiaDisableFlipping(enum_nvidia_disable_flipping flipping) { m_nvidia_disable_flipping = (enum_nvidia_disable_flipping) clamp((unsigned int) flipping, 0u, (unsigned int) NVIDIA_DISABLE_FLIPPING_COUNT - 1); }
 
 public slots:
+	void GoPageStart();
 	void GoPageWelcome();
 	void GoPageInput();
 	void GoPageOutput();
 	void GoPageRecord();
 	void GoPageDone();
 
+	void OnShow();
+	void OnHide();
 	void OnShowHide();
 	void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 

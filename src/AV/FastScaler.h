@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -35,8 +35,8 @@ private:
 public:
 	FastScaler();
 	~FastScaler();
-	void Scale(unsigned int in_width, unsigned int in_height, AVPixelFormat in_format, const uint8_t* const* in_data, const int* in_stride,
-			   unsigned int out_width, unsigned int out_height, AVPixelFormat out_format, uint8_t* const* out_data, const int* out_stride);
+	void Scale(unsigned int in_width, unsigned int in_height, AVPixelFormat in_format, int in_colorspace, const uint8_t* const* in_data, const int* in_stride,
+			   unsigned int out_width, unsigned int out_height, AVPixelFormat out_format, int out_colorspace, uint8_t* const* out_data, const int* out_stride);
 
 private:
 	void Convert_BGRA_YUV444(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]);

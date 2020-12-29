@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -22,8 +22,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 template<typename IN, typename OUT> OUT SampleCast(IN x);
 template<> inline int16_t SampleCast<int16_t, int16_t>(int16_t x) { return x; }
+template<> inline int16_t SampleCast<int32_t, int16_t>(int32_t x) { return (x + (1 << 15)) >> 16; }
 template<> inline int16_t SampleCast<float  , int16_t>(float   x) { return lrint(fmin(fmax(x * 32768.0f, -32768.0f), 32767.0f)); }
 template<> inline float   SampleCast<int16_t, float  >(int16_t x) { return (float) x * (1.0f / 32768.0f); }
+template<> inline float   SampleCast<int32_t, float  >(int32_t x) { return (float) x * (1.0f / 2147483648.0f); }
 template<> inline float   SampleCast<float  , float  >(float   x) { return x; }
 
 template<typename IN> IN SampleMix(IN a, IN b);

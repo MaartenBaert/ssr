@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -26,9 +26,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Icons.h"
 #include "MainWindow.h"
 
-#include <QX11Info>
-#include <X11/Xlib.h>
-
 ENUMSTRINGS(PageInput::enum_video_area) = {
 	{PageInput::VIDEO_AREA_SCREEN, "screen"},
 	{PageInput::VIDEO_AREA_FIXED, "fixed"},
@@ -36,7 +33,11 @@ ENUMSTRINGS(PageInput::enum_video_area) = {
 #if SSR_USE_OPENGL_RECORDING
 	{PageInput::VIDEO_AREA_GLINJECT, "glinject"},
 #endif
+#if SSR_USE_V4L2
+	{PageInput::VIDEO_AREA_V4L2, "v4l2"},
+#endif
 };
+
 ENUMSTRINGS(PageInput::enum_audio_backend) = {
 #if SSR_USE_ALSA
 	{PageInput::AUDIO_BACKEND_ALSA, "alsa"},
@@ -74,12 +75,16 @@ static QRect CombineScreenGeometries(const std::vector<QRect>& screen_geometries
 }
 
 static QPoint GetMousePhysicalCoordinates() {
-	Window root, child;
-	int root_x, root_y;
-	int win_x, win_y;
-	unsigned int mask_return;
-	XQueryPointer(QX11Info::display(), QX11Info::appRootWindow(), &root, &child, &root_x, &root_y, &win_x, &win_y, &mask_return);
-	return QPoint(root_x, root_y);
+	if(IsPlatformX11()) {
+		Window root, child;
+		int root_x, root_y;
+		int win_x, win_y;
+		unsigned int mask_return;
+		XQueryPointer(QX11Info::display(), QX11Info::appRootWindow(), &root, &child, &root_x, &root_y, &win_x, &win_y, &mask_return);
+		return QPoint(root_x, root_y);
+	} else {
+		return QPoint(0, 0); // TODO: implement for wayland
+	}
 }
 
 static QRect MapToLogicalCoordinates(const QRect& rect) {
@@ -152,10 +157,12 @@ void QSpinBoxWithSignal::focusOutEvent(QFocusEvent* event) {
 #define TRANSPARENT_WINDOW_ATTRIBUTES() {\
 	setAttribute(Qt::WA_X11DoNotAcceptFocus); \
 	int shape_event_base, shape_error_base; \
-	if(XShapeQueryExtension(QX11Info::display(), &shape_event_base, &shape_error_base)) { \
-		Region region = XCreateRegion(); \
-		XShapeCombineRegion(QX11Info::display(), winId(), ShapeInput, 0, 0, region, ShapeSet); \
-		XDestroyRegion(region); \
+	if(IsPlatformX11()) { \
+		if(XShapeQueryExtension(QX11Info::display(), &shape_event_base, &shape_error_base)) { \
+			Region region = XCreateRegion(); \
+			XShapeCombineRegion(QX11Info::display(), winId(), ShapeInput, 0, 0, region, ShapeSet); \
+			XDestroyRegion(region); \
+		} \
 	} \
 }
 
@@ -181,9 +188,10 @@ void ScreenLabelWindow::paintEvent(QPaintEvent* event) {
 	painter.drawText(0, 0, width(), height(), Qt::AlignHCenter | Qt::AlignVCenter | Qt::TextSingleLine, m_text);
 }
 
-RecordingFrameWindow::RecordingFrameWindow(QWidget* parent)
+RecordingFrameWindow::RecordingFrameWindow(QWidget* parent, bool outside)
 	: QWidget(parent, TRANSPARENT_WINDOW_FLAGS) {
 	TRANSPARENT_WINDOW_ATTRIBUTES();
+	m_outside = outside;
 	QImage image(16, 16, QImage::Format_RGB32);
 	for(size_t j = 0; j < (size_t) image.height(); ++j) {
 		uint32_t *row = (uint32_t*) image.scanLine(j);
@@ -196,13 +204,31 @@ RecordingFrameWindow::RecordingFrameWindow(QWidget* parent)
 	UpdateMask();
 }
 
-void RecordingFrameWindow::UpdateMask() {
-	if(QX11Info::isCompositingManagerRunning()) {
-		clearMask();
-		setWindowOpacity(0.25);
+void RecordingFrameWindow::SetRectangle(const QRect& r) {
+	QRect rect = MapToLogicalCoordinates(ValidateRubberBandRectangle(r));
+	if(m_outside)
+		rect.adjust(-RecordingFrameWindow::BORDER_WIDTH, -RecordingFrameWindow::BORDER_WIDTH,
+					RecordingFrameWindow::BORDER_WIDTH, RecordingFrameWindow::BORDER_WIDTH);
+	if(rect.isEmpty()) {
+		hide();
 	} else {
-		setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(3, 3, width() - 6, height() - 6)));
-		setWindowOpacity(1.0);
+		setGeometry(rect);
+		show();
+	}
+}
+
+void RecordingFrameWindow::UpdateMask() {
+	if(m_outside) {
+		setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(BORDER_WIDTH, BORDER_WIDTH, width() - 2 * BORDER_WIDTH, height() - 2 * BORDER_WIDTH)));
+		setWindowOpacity(0.5);
+	} else {
+		if(QX11Info::isCompositingManagerRunning()) {
+			clearMask();
+			setWindowOpacity(0.25);
+		} else {
+			setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(BORDER_WIDTH, BORDER_WIDTH, width() - 2 * BORDER_WIDTH, height() - 2 * BORDER_WIDTH)));
+			setWindowOpacity(1.0);
+		}
 	}
 }
 
@@ -220,7 +246,14 @@ void RecordingFrameWindow::paintEvent(QPaintEvent* event) {
 	painter.setPen(QColor(0, 0, 0, 128));
 	painter.setBrush(Qt::NoBrush);
 	painter.drawTiledPixmap(0, 0, width(), height(), m_texture);
-	painter.drawRect(QRectF(0.5, 0.5, (qreal) width() - 1.0, (qreal) height() - 1.0));
+	if(m_outside) {
+		painter.drawRect(QRectF((qreal) BORDER_WIDTH - 0.5,
+								(qreal) BORDER_WIDTH - 0.5,
+								(qreal) (width() - 2 * BORDER_WIDTH) + 1.0,
+								(qreal) (height() - 2 * BORDER_WIDTH) + 1.0));
+	} else {
+		painter.drawRect(QRectF(0.5, 0.5, (qreal) width() - 1.0, (qreal) height() - 1.0));
+	}
 }
 
 PageInput::PageInput(MainWindow* main_window)
@@ -246,11 +279,17 @@ PageInput::PageInput(MainWindow* main_window)
 #if SSR_USE_OPENGL_RECORDING
 			QRadioButton *radio_area_glinject = new QRadioButton(tr("Record OpenGL"), groupbox_video);
 #endif
+#if SSR_USE_V4L2
+			QRadioButton *radio_area_v4l2 = new QRadioButton(tr("Record V4L2 device"), groupbox_video);
+#endif
 			m_buttongroup_video_area->addButton(radio_area_screen, VIDEO_AREA_SCREEN);
 			m_buttongroup_video_area->addButton(radio_area_fixed, VIDEO_AREA_FIXED);
 			m_buttongroup_video_area->addButton(radio_area_cursor, VIDEO_AREA_CURSOR);
 #if SSR_USE_OPENGL_RECORDING
 			m_buttongroup_video_area->addButton(radio_area_glinject, VIDEO_AREA_GLINJECT);
+#endif
+#if SSR_USE_V4L2
+			m_buttongroup_video_area->addButton(radio_area_v4l2, VIDEO_AREA_V4L2);
 #endif
 			m_combobox_screens = new QComboBoxWithSignal(groupbox_video);
 			m_combobox_screens->setToolTip(tr("Select what monitor should be recorded in a multi-monitor configuration."));
@@ -266,27 +305,31 @@ PageInput::PageInput(MainWindow* main_window)
 			m_pushbutton_video_opengl_settings = new QPushButton(tr("OpenGL settings..."), groupbox_video);
 			m_pushbutton_video_opengl_settings->setToolTip(tr("Change the settings for OpenGL recording."));
 #endif
+#if SSR_USE_V4L2
+			m_lineedit_v4l2_device = new QLineEdit(groupbox_video);
+			m_lineedit_v4l2_device->setToolTip(tr("The V4L2 device to record (e.g. /dev/video0)."));
+#endif
 			m_label_video_x = new QLabel(tr("Left:"), groupbox_video);
 			m_spinbox_video_x = new QSpinBoxWithSignal(groupbox_video);
-			m_spinbox_video_x->setRange(0, 10000);
+			m_spinbox_video_x->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_x->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_spinbox_video_x->setToolTip(tr("The x coordinate of the upper-left corner of the recorded rectangle.\n"
 											 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
 			m_label_video_y = new QLabel(tr("Top:"), groupbox_video);
 			m_spinbox_video_y = new QSpinBoxWithSignal(groupbox_video);
-			m_spinbox_video_y->setRange(0, 10000);
+			m_spinbox_video_y->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_y->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_spinbox_video_y->setToolTip(tr("The y coordinate of the upper-left corner of the recorded rectangle.\n"
 											 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
 			m_label_video_w = new QLabel(tr("Width:"), groupbox_video);
 			m_spinbox_video_w = new QSpinBoxWithSignal(groupbox_video);
-			m_spinbox_video_w->setRange(0, 10000);
+			m_spinbox_video_w->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_spinbox_video_w->setToolTip(tr("The width of the recorded rectangle.\n"
 											 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
 			m_label_video_h = new QLabel(tr("Height:"), groupbox_video);
 			m_spinbox_video_h = new QSpinBoxWithSignal(groupbox_video);
-			m_spinbox_video_h->setRange(0, 10000);
+			m_spinbox_video_h->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_spinbox_video_h->setToolTip(tr("The height of the recorded rectangle.\n"
 											 "Hint: You can also change this value with the scroll wheel or the up/down arrows."));
@@ -299,11 +342,11 @@ PageInput::PageInput(MainWindow* main_window)
 			m_checkbox_scale->setToolTip(tr("Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster."));
 			m_label_video_scaled_w = new QLabel(tr("Scaled width:"), groupbox_video);
 			m_spinbox_video_scaled_w = new QSpinBox(groupbox_video);
-			m_spinbox_video_scaled_w->setRange(0, 10000);
+			m_spinbox_video_scaled_w->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_scaled_w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_label_video_scaled_h = new QLabel(tr("Scaled height:"), groupbox_video);
 			m_spinbox_video_scaled_h = new QSpinBox(groupbox_video);
-			m_spinbox_video_scaled_h->setRange(0, 10000);
+			m_spinbox_video_scaled_h->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_scaled_h->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_checkbox_record_cursor = new QCheckBox(tr("Record cursor"), groupbox_video);
 
@@ -347,6 +390,14 @@ PageInput::PageInput(MainWindow* main_window)
 			}
 #if SSR_USE_OPENGL_RECORDING
 			layout->addWidget(radio_area_glinject);
+#endif
+#if SSR_USE_V4L2
+			{
+				QHBoxLayout *layout2 = new QHBoxLayout();
+				layout->addLayout(layout2);
+				layout2->addWidget(radio_area_v4l2);
+				layout2->addWidget(m_lineedit_v4l2_device);
+			}
 #endif
 			{
 				QHBoxLayout *layout2 = new QHBoxLayout();
@@ -579,6 +630,9 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	SetVideoArea(StringToEnum(settings->value("input/video_area", QString()).toString(), VIDEO_AREA_SCREEN));
 	SetVideoAreaScreen(settings->value("input/video_area_screen", 0).toUInt());
 	SetVideoAreaFollowFullscreen(settings->value("input/video_area_follow_fullscreen", false).toBool());
+#if SSR_USE_V4L2
+	SetVideoV4L2Device(settings->value("input/video_v4l2_device", "/dev/video0").toString());
+#endif
 	SetVideoX(settings->value("input/video_x", 0).toUInt());
 	SetVideoY(settings->value("input/video_y", 0).toUInt());
 	SetVideoW(settings->value("input/video_w", 800).toUInt());
@@ -621,6 +675,9 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/video_area", EnumToString(GetVideoArea()));
 	settings->setValue("input/video_area_screen", GetVideoAreaScreen());
 	settings->setValue("input/video_area_follow_fullscreen", GetVideoAreaFollowFullscreen());
+#if SSR_USE_V4L2
+	settings->setValue("input/video_v4l2_device", GetVideoV4L2Device());
+#endif
 	settings->setValue("input/video_x", GetVideoX());
 	settings->setValue("input/video_y", GetVideoY());
 	settings->setValue("input/video_w", GetVideoW());
@@ -650,6 +707,12 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/glinject_auto_launch", GetGLInjectAutoLaunch());
 	settings->setValue("input/glinject_limit_fps", GetGLInjectLimitFPS());
 #endif
+}
+
+bool PageInput::Validate() {
+	if(m_grabbing)
+		return false;
+	return true;
 }
 
 #if SSR_USE_ALSA
@@ -730,65 +793,67 @@ static Window X11FindRealWindow(Display* display, Window window) {
 void PageInput::mousePressEvent(QMouseEvent* event) {
 	if(m_grabbing) {
 		if(event->button() == Qt::LeftButton) {
-			QPoint mouse_physical = GetMousePhysicalCoordinates();
-			if(m_selecting_window) {
-				// As expected, Qt does not provide any functions to find the window at a specific position, so I have to use Xlib directly.
-				// I'm not completely sure whether this is the best way to do this, but it appears to work. XQueryPointer returns the window
-				// currently below the mouse along with the mouse position, but apparently this may not work correctly when the mouse pointer
-				// is also grabbed (even though it works fine in my test), so I use XTranslateCoordinates instead. Originally I wanted to
-				// show the rubber band when the mouse hovers over a window (instead of having to click it), but this doesn't work correctly
-				// since X will simply return a handle the rubber band itself (even though it should be transparent to mouse events).
-				Window selected_window;
-				int x, y;
-				if(XTranslateCoordinates(QX11Info::display(), QX11Info::appRootWindow(), QX11Info::appRootWindow(), mouse_physical.x(), mouse_physical.y(), &x, &y, &selected_window)) {
-					XWindowAttributes attributes;
-					if(selected_window != None && XGetWindowAttributes(QX11Info::display(), selected_window, &attributes)) {
+			if(IsPlatformX11()) {
+				QPoint mouse_physical = GetMousePhysicalCoordinates();
+				if(m_selecting_window) {
+					// As expected, Qt does not provide any functions to find the window at a specific position, so I have to use Xlib directly.
+					// I'm not completely sure whether this is the best way to do this, but it appears to work. XQueryPointer returns the window
+					// currently below the mouse along with the mouse position, but apparently this may not work correctly when the mouse pointer
+					// is also grabbed (even though it works fine in my test), so I use XTranslateCoordinates instead. Originally I wanted to
+					// show the rubber band when the mouse hovers over a window (instead of having to click it), but this doesn't work correctly
+					// since X will simply return a handle the rubber band itself (even though it should be transparent to mouse events).
+					Window selected_window;
+					int x, y;
+					if(XTranslateCoordinates(QX11Info::display(), QX11Info::appRootWindow(), QX11Info::appRootWindow(), mouse_physical.x(), mouse_physical.y(), &x, &y, &selected_window)) {
+						XWindowAttributes attributes;
+						if(selected_window != None && XGetWindowAttributes(QX11Info::display(), selected_window, &attributes)) {
 
-						// naive outer/inner rectangle, this won't work for window decorations
-						m_select_window_outer_rect = QRect(attributes.x, attributes.y, attributes.width + 2 * attributes.border_width, attributes.height + 2 * attributes.border_width);
-						m_select_window_inner_rect = QRect(attributes.x + attributes.border_width, attributes.y + attributes.border_width, attributes.width, attributes.height);
+							// naive outer/inner rectangle, this won't work for window decorations
+							m_select_window_outer_rect = QRect(attributes.x, attributes.y, attributes.width + 2 * attributes.border_width, attributes.height + 2 * attributes.border_width);
+							m_select_window_inner_rect = QRect(attributes.x + attributes.border_width, attributes.y + attributes.border_width, attributes.width, attributes.height);
 
-						// try to find the real window (rather than the decorations added by the window manager)
-						Window real_window = X11FindRealWindow(QX11Info::display(), selected_window);
-						if(real_window != None) {
-							Atom actual_type;
-							int actual_format;
-							unsigned long items, bytes_left;
-							long *data = NULL;
-							int result = XGetWindowProperty(QX11Info::display(), real_window, XInternAtom(QX11Info::display(), "_NET_FRAME_EXTENTS", true),
-															0, 4, false, AnyPropertyType, &actual_type, &actual_format, &items, &bytes_left, (unsigned char**) &data);
-							if(result == Success) {
-								if(items == 4 && bytes_left == 0 && actual_format == 32) { // format 32 means 'long', even if long is 64-bit ...
-									Window child;
-									// the attributes of the real window only store the *relative* position which is not what we need, so use XTranslateCoordinates again
-									if(XTranslateCoordinates(QX11Info::display(), real_window, QX11Info::appRootWindow(), 0, 0, &x, &y, &child)
-											 && XGetWindowAttributes(QX11Info::display(), real_window, &attributes)) {
+							// try to find the real window (rather than the decorations added by the window manager)
+							Window real_window = X11FindRealWindow(QX11Info::display(), selected_window);
+							if(real_window != None) {
+								Atom actual_type;
+								int actual_format;
+								unsigned long items, bytes_left;
+								long *data = NULL;
+								int result = XGetWindowProperty(QX11Info::display(), real_window, XInternAtom(QX11Info::display(), "_NET_FRAME_EXTENTS", true),
+																0, 4, false, AnyPropertyType, &actual_type, &actual_format, &items, &bytes_left, (unsigned char**) &data);
+								if(result == Success) {
+									if(items == 4 && bytes_left == 0 && actual_format == 32) { // format 32 means 'long', even if long is 64-bit ...
+										Window child;
+										// the attributes of the real window only store the *relative* position which is not what we need, so use XTranslateCoordinates again
+										if(XTranslateCoordinates(QX11Info::display(), real_window, QX11Info::appRootWindow(), 0, 0, &x, &y, &child)
+												 && XGetWindowAttributes(QX11Info::display(), real_window, &attributes)) {
 
-										// finally!
-										m_select_window_inner_rect = QRect(x, y, attributes.width, attributes.height);
-										m_select_window_outer_rect = m_select_window_inner_rect.adjusted(-data[0], -data[2], data[1], data[3]);
+											// finally!
+											m_select_window_inner_rect = QRect(x, y, attributes.width, attributes.height);
+											m_select_window_outer_rect = m_select_window_inner_rect.adjusted(-data[0], -data[2], data[1], data[3]);
 
-									} else {
+										} else {
 
-										// I doubt this will ever be needed, but do it anyway
-										m_select_window_inner_rect = m_select_window_outer_rect.adjusted(data[0], data[2], -data[1], -data[3]);
+											// I doubt this will ever be needed, but do it anyway
+											m_select_window_inner_rect = m_select_window_outer_rect.adjusted(data[0], data[2], -data[1], -data[3]);
 
+										}
 									}
 								}
+								if(data != NULL)
+									XFree(data);
 							}
-							if(data != NULL)
-								XFree(data);
+
+							// pick the inner rectangle if the users clicks inside the window, or the outer rectangle otherwise
+							m_rubber_band_rect = (m_select_window_inner_rect.contains(mouse_physical))? m_select_window_inner_rect : m_select_window_outer_rect;
+							UpdateRubberBand();
+
 						}
-
-						// pick the inner rectangle if the users clicks inside the window, or the outer rectangle otherwise
-						m_rubber_band_rect = (m_select_window_inner_rect.contains(mouse_physical))? m_select_window_inner_rect : m_select_window_outer_rect;
-						UpdateRubberBand();
-
 					}
+				} else {
+					m_rubber_band_rect = QRect(mouse_physical, mouse_physical);
+					UpdateRubberBand();
 				}
-			} else {
-				m_rubber_band_rect = QRect(mouse_physical, mouse_physical);
-				UpdateRubberBand();
 			}
 		} else {
 			StopGrabbing();
@@ -815,7 +880,7 @@ void PageInput::mouseReleaseEvent(QMouseEvent* event) {
 
 void PageInput::mouseMoveEvent(QMouseEvent* event) {
 	if(m_grabbing) {
-		if(m_rubber_band != NULL) {
+		if(m_rubber_band != NULL && IsPlatformX11()) {
 			QPoint mouse_physical = GetMousePhysicalCoordinates();
 			if(m_selecting_window) {
 				// pick the inner rectangle if the user clicks inside the window, or the outer rectangle otherwise
@@ -875,14 +940,8 @@ void PageInput::StopGrabbing() {
 
 void PageInput::UpdateRubberBand() {
 	if(m_rubber_band == NULL)
-		m_rubber_band.reset(new RecordingFrameWindow(this));
-	QRect rect = MapToLogicalCoordinates(ValidateRubberBandRectangle(m_rubber_band_rect));
-	if(rect.isNull()) {
-		m_rubber_band->hide();
-	} else {
-		m_rubber_band->setGeometry(rect);
-		m_rubber_band->show();
-	}
+		m_rubber_band.reset(new RecordingFrameWindow(this, false));
+	m_rubber_band->SetRectangle(m_rubber_band_rect);
 }
 
 void PageInput::SetVideoAreaFromRubberBand() {
@@ -948,14 +1007,8 @@ void PageInput::LoadPulseAudioSources() {
 void PageInput::OnUpdateRecordingFrame() {
 	if(m_spinbox_video_x->hasFocus() || m_spinbox_video_y->hasFocus() || m_spinbox_video_w->hasFocus() || m_spinbox_video_h->hasFocus()) {
 		if(m_recording_frame == NULL)
-			m_recording_frame.reset(new RecordingFrameWindow(this));
-		QRect rect = MapToLogicalCoordinates(ValidateRubberBandRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH())));
-		if(rect.isNull()) {
-			m_recording_frame->hide();
-		} else {
-			m_recording_frame->setGeometry(rect);
-			m_recording_frame->show();
-		}
+			m_recording_frame.reset(new RecordingFrameWindow(this, false));
+		m_recording_frame->SetRectangle(QRect(GetVideoX(), GetVideoY(), GetVideoW(), GetVideoH()));
 	} else {
 		m_recording_frame.reset();
 	}
@@ -971,6 +1024,10 @@ void PageInput::OnUpdateVideoAreaFields() {
 #if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings->setEnabled(false);
 #endif
+#if SSR_USE_V4L2
+			m_lineedit_v4l2_device->setEnabled(false);
+#endif
+			m_checkbox_record_cursor->setEnabled(true);
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, false);
 			int sc = m_combobox_screens->currentIndex();
@@ -995,6 +1052,10 @@ void PageInput::OnUpdateVideoAreaFields() {
 #if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings->setEnabled(false);
 #endif
+#if SSR_USE_V4L2
+			m_lineedit_v4l2_device->setEnabled(false);
+#endif
+			m_checkbox_record_cursor->setEnabled(true);
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
 			break;
@@ -1005,6 +1066,10 @@ void PageInput::OnUpdateVideoAreaFields() {
 #if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings->setEnabled(false);
 #endif
+#if SSR_USE_V4L2
+			m_lineedit_v4l2_device->setEnabled(false);
+#endif
+			m_checkbox_record_cursor->setEnabled(true);
 			if(m_checkbox_follow_fullscreen->isChecked()) {
 				m_pushbutton_video_select_rectangle->setEnabled(false);
 				m_pushbutton_video_select_window->setEnabled(false);
@@ -1033,8 +1098,28 @@ void PageInput::OnUpdateVideoAreaFields() {
 			m_pushbutton_video_select_rectangle->setEnabled(false);
 			m_pushbutton_video_select_window->setEnabled(false);
 			m_pushbutton_video_opengl_settings->setEnabled(true);
+#if SSR_USE_V4L2
+			m_lineedit_v4l2_device->setEnabled(false);
+#endif
+			m_checkbox_record_cursor->setEnabled(true);
 			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y,
 						  m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, false);
+			break;
+		}
+#endif
+#if SSR_USE_V4L2
+		case VIDEO_AREA_V4L2: {
+			m_combobox_screens->setEnabled(false);
+			m_checkbox_follow_fullscreen->setEnabled(false);
+			m_pushbutton_video_select_rectangle->setEnabled(false);
+			m_pushbutton_video_select_window->setEnabled(false);
+#if SSR_USE_OPENGL_RECORDING
+			m_pushbutton_video_opengl_settings->setEnabled(false);
+#endif
+			m_lineedit_v4l2_device->setEnabled(true);
+			m_checkbox_record_cursor->setEnabled(false);
+			GroupEnabled({m_label_video_x, m_spinbox_video_x, m_label_video_y, m_spinbox_video_y}, false);
+			GroupEnabled({m_label_video_w, m_spinbox_video_w, m_label_video_h, m_spinbox_video_h}, true);
 			break;
 		}
 #endif
@@ -1150,5 +1235,7 @@ void PageInput::OnGLInjectDialog() {
 #endif
 
 void PageInput::OnContinue() {
+	if(!Validate())
+		return;
 	m_main_window->GoPageOutput();
 }

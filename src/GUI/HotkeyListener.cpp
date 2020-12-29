@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -20,9 +20,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "HotkeyListener.h"
 
 #include "Logger.h"
-
-#include <X11/keysym.h>
-#include <X11/extensions/XInput2.h>
 
 /*
 In theory, global hotkeys are pretty easy to implement since X11 has functions specifically for this purpose (XGrabKey/XUngrabKey).

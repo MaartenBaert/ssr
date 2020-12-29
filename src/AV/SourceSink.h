@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -72,7 +72,7 @@ class VideoSource : private BaseSource {
 protected:
 	VideoSource() {}
 	int64_t CalculateNextVideoTimestamp();
-	void PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp);
+	void PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int colorspace, int64_t timestamp);
 	void PushVideoPing(int64_t timestamp);
 };
 
@@ -84,7 +84,7 @@ public:
 	inline void ConnectVideoSource(VideoSource* source, int priority = 0) { ConnectBaseSource(source, priority); }
 public:
 	virtual int64_t GetNextVideoTimestamp() { return SINK_TIMESTAMP_NONE; }
-	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int64_t timestamp) = 0;
+	virtual void ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int colorspace, int64_t timestamp) = 0;
 	virtual void ReadVideoPing(int64_t timestamp) {}
 };
 

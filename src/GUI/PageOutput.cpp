@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -24,7 +24,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "HiddenScrollArea.h"
 #include "Icons.h"
 #include "Logger.h"
-#include "Main.h"
 #include "MainWindow.h"
 #include "PageInput.h"
 
@@ -127,7 +126,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 		ContainerData c;
 		c.name = format->long_name;
 		c.avname = format->name;
-		c.suffixes = QString(format->extensions).split(',', QString::SkipEmptyParts);
+		c.suffixes = SplitSkipEmptyParts(format->extensions, ',');
 		if(c.suffixes.isEmpty()) {
 			c.filter = "";
 		} else {
@@ -225,6 +224,8 @@ PageOutput::PageOutput(MainWindow* main_window)
 				m_combobox_container_av->addItem(c.avname);
 			}
 			m_combobox_container_av->setToolTip(tr("For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work."));
+			m_label_container_warning = new QLabel(tr("Warning: This format will produce unreadable files if the recording is interrupted! Consider using MKV instead."), groupbox_file);
+			m_label_container_warning->setWordWrap(true);
 
 			connect(m_combobox_container, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
 			connect(m_combobox_container_av, SIGNAL(activated(int)), this, SLOT(OnUpdateSuffixAndContainerFields()));
@@ -244,6 +245,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 			layout->addWidget(m_combobox_container, 2, 1, 1, 2);
 			layout->addWidget(m_label_container_av, 3, 0);
 			layout->addWidget(m_combobox_container_av, 3, 1, 1, 2);
+			layout->addWidget(m_label_container_warning, 4, 0, 1, 3);
 		}
 		QGroupBox *groupbox_video = new QGroupBox(tr("Video"), scrollarea_contents);
 		{
@@ -277,7 +279,7 @@ PageOutput::PageOutput(MainWindow* main_window)
 			m_label_h264_crf_value = new QLabel(groupbox_video);
 			m_label_h264_crf_value->setNum(m_slider_h264_crf->value());
 			m_label_h264_crf_value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			m_label_h264_crf_value->setMinimumWidth(QFontMetrics(m_label_h264_crf_value->font()).width("99") + 2);
+			m_label_h264_crf_value->setMinimumWidth(GetTextWidth(m_label_h264_crf_value->font(), "99") + 2);
 			m_label_h264_preset = new QLabel(tr("Preset:", "libx264 setting: don't translate this unless you can come up with something sensible"), groupbox_video);
 			m_combobox_h264_preset = new QComboBox(groupbox_video);
 			for(unsigned int i = 0; i < H264_PRESET_COUNT; ++i) {
@@ -450,12 +452,12 @@ void PageOutput::LoadProfileSettings(QSettings* settings) {
 	}
 
 	// choose default file name
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-	QString dir_videos = QDesktopServices::storageLocation(QDesktopServices::MoviesLocation);
-	QString dir_documents = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
-#else
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	QString dir_videos = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
 	QString dir_documents = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+#else
+	QString dir_videos = QDesktopServices::storageLocation(QDesktopServices::MoviesLocation);
+	QString dir_documents = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
 #endif
 	QString dir_home = QDir::homePath();
 	QString best_dir = (QDir(dir_videos).exists())? dir_videos : (QDir(dir_documents).exists())? dir_documents : dir_home;
@@ -513,7 +515,7 @@ void PageOutput::SaveProfileSettings(QSettings* settings) {
 
 }
 
-void PageOutput::PageStart() {
+void PageOutput::StartPage() {
 
 	// only show audio settings if audio is enabled
 	m_groupbox_audio->setVisible(m_main_window->GetPageInput()->GetAudioEnabled());
@@ -624,6 +626,9 @@ void PageOutput::OnUpdateContainerFields() {
 
 	// show/hide fields
 	GroupVisible({m_label_container_av, m_combobox_container_av}, (container == CONTAINER_OTHER));
+
+	// show/hide warning
+	m_label_container_warning->setVisible(GetContainerAVName() == "mp4");
 
 	// mark uninstalled or unsupported codecs
 	for(unsigned int i = 0; i < VIDEO_CODEC_OTHER; ++i) {

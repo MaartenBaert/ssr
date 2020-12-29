@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -72,6 +72,15 @@ void AudioPreviewer::ReadAudioSamples(unsigned int channels, unsigned int sample
 	switch(format) {
 		case AV_SAMPLE_FMT_S16: {
 			const int16_t *data_in = (const int16_t*) data;
+			for(size_t i = 0; i < sample_count; ++i) {
+				for(unsigned int c = 0; c < channels; ++c) {
+					lock->m_channel_data[c].Analyze(*(data_in++));
+				}
+			}
+			break;
+		}
+		case AV_SAMPLE_FMT_S32: {
+			const int32_t *data_in = (const int32_t*) data;
 			for(size_t i = 0; i < sample_count; ++i) {
 				for(unsigned int c = 0; c < channels; ++c) {
 					lock->m_channel_data[c].Analyze(*(data_in++));

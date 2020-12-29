@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -23,6 +23,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.h"
 
+#include "TempBuffer.h"
+
 // Artificial delay after the first samples have been received (in microseconds). Any samples received during this time will be dropped.
 // This is needed because the first samples sometimes have weird timestamps, especially when PulseAudio is active
 // (I've seen one situation where PulseAudio instantly 'captures' 2 seconds of silence when the recording is started).
@@ -45,6 +47,8 @@ ALSAInput::ALSAInput(const QString& source_name, unsigned int sample_rate) {
 
 	m_source_name = source_name;
 	m_sample_rate = sample_rate;
+	m_sample_format = AV_SAMPLE_FMT_S16; // default, may change later
+	m_convert_24_to_32 = false;
 	m_channels = 2; // always 2 channels because the synchronizer and encoder don't support anything else at this point
 	m_period_size = 1024; // number of samples per period
 	m_buffer_size = m_period_size * 8; // number of samples in the buffer
@@ -83,11 +87,12 @@ std::vector<ALSAInput::Source> ALSAInput::GetSourceList() {
 	*/
 
 	// these ALSA plugins are blacklisted because they are always defined but rarely useful
-	// 'pulse' is also blacklisted because the native PulseAudio backend is more reliable
+	// 'pulse' and 'jack' are also blacklisted because the native backends are more reliable
 	std::vector<std::string> plugin_blacklist = {
 		"cards", "default", "sysdefault", "hw", "plughw", "plug", "dmix", "dsnoop", "shm", "tee", "file", "null",
 		"front", "rear", "center_lfe", "side", "surround40", "surround41", "surround50", "surround51", "surround71",
-		"iec958", "spdif", "hdmi", "modem", "phoneline", "pulse",
+		"iec958", "spdif", "hdmi", "modem", "phoneline", "oss", "pulse", "jack", "speex", "speexrate", "samplerate",
+		"upmix", "vdownmix", "usbstream",
 	};
 	std::sort(plugin_blacklist.begin(), plugin_blacklist.end());
 
@@ -247,6 +252,7 @@ std::vector<ALSAInput::Source> ALSAInput::GetSourceList() {
 void ALSAInput::Init() {
 
 	snd_pcm_hw_params_t *alsa_hw_params = NULL;
+	snd_pcm_format_mask_t *alsa_format_mask = NULL;
 
 	try {
 
@@ -255,8 +261,13 @@ void ALSAInput::Init() {
 			throw std::bad_alloc();
 		}
 
+		// allocate format mask structure
+		if(snd_pcm_format_mask_malloc(&alsa_format_mask) < 0) {
+			throw std::bad_alloc();
+		}
+
 		// open PCM device
-		if(snd_pcm_open(&m_alsa_pcm, m_source_name.toUtf8().constData(), SND_PCM_STREAM_CAPTURE, 0) < 0) {
+		if(snd_pcm_open(&m_alsa_pcm, m_source_name.toUtf8().constData(), SND_PCM_STREAM_CAPTURE, SND_PCM_NONBLOCK) < 0) {
 			Logger::LogError("[ALSAInput::Init] " + Logger::tr("Error: Can't open PCM device!"));
 			throw ALSAException();
 		}
@@ -272,10 +283,46 @@ void ALSAInput::Init() {
 		}
 
 		// set sample format
-		if(snd_pcm_hw_params_set_format(m_alsa_pcm, alsa_hw_params, SND_PCM_FORMAT_S16_LE) < 0) {
+		snd_pcm_format_mask_none(alsa_format_mask);
+		snd_pcm_format_mask_set(alsa_format_mask, SND_PCM_FORMAT_S16_LE);
+		snd_pcm_format_mask_set(alsa_format_mask, SND_PCM_FORMAT_S24_LE);
+		snd_pcm_format_mask_set(alsa_format_mask, SND_PCM_FORMAT_S32_LE);
+		snd_pcm_format_mask_set(alsa_format_mask, SND_PCM_FORMAT_FLOAT_LE);
+		if(snd_pcm_hw_params_set_format_mask(m_alsa_pcm, alsa_hw_params, alsa_format_mask) < 0) {
+			Logger::LogError("[ALSAInput::Init] " + Logger::tr("Error: Can't set sample format mask!"));
+			throw ALSAException();
+		}
+		snd_pcm_format_t sample_format;
+		if(snd_pcm_hw_params_set_format_first(m_alsa_pcm, alsa_hw_params, &sample_format) < 0) {
 			Logger::LogError("[ALSAInput::Init] " + Logger::tr("Error: Can't set sample format!"));
 			throw ALSAException();
 		}
+		const char *format_str = NULL;
+		switch(sample_format) {
+			case SND_PCM_FORMAT_S16_LE: {
+				m_sample_format = AV_SAMPLE_FMT_S16;
+				format_str = "s16";
+				break;
+			}
+			case SND_PCM_FORMAT_S24_LE: {
+				m_sample_format = AV_SAMPLE_FMT_S32;
+				m_convert_24_to_32 = true;
+				format_str = "s24";
+				break;
+			}
+			case SND_PCM_FORMAT_S32_LE: {
+				m_sample_format = AV_SAMPLE_FMT_S32;
+				format_str = "s32";
+				break;
+			}
+			case SND_PCM_FORMAT_FLOAT_LE: {
+				m_sample_format = AV_SAMPLE_FMT_FLT;
+				format_str = "f32";
+				break;
+			}
+			default: assert(false);
+		}
+		Logger::LogInfo("[ALSAInput::InputThread] " + Logger::tr("Using sample format %1.").arg(format_str));
 
 		// set sample rate
 		unsigned int rate = m_sample_rate;
@@ -335,11 +382,19 @@ void ALSAInput::Init() {
 			throw ALSAException();
 		}
 
+		// free format mask structure
+		snd_pcm_format_mask_free(alsa_format_mask);
+		alsa_format_mask = NULL;
+
 		// free parameter structure
 		snd_pcm_hw_params_free(alsa_hw_params);
 		alsa_hw_params = NULL;
 
 	} catch(...) {
+		if(alsa_format_mask != NULL) {
+			snd_pcm_format_mask_free(alsa_format_mask);
+			alsa_format_mask = NULL;
+		}
 		if(alsa_hw_params != NULL) {
 			snd_pcm_hw_params_free(alsa_hw_params);
 			alsa_hw_params = NULL;
@@ -372,36 +427,67 @@ void ALSAInput::InputThread() {
 
 		Logger::LogInfo("[ALSAInput::InputThread] " + Logger::tr("Input thread started."));
 
-		std::vector<uint16_t> buffer(m_period_size * m_channels);
+		// allocate buffer
+		TempBuffer<uint8_t> buffer;
+		switch(m_sample_format) {
+			case AV_SAMPLE_FMT_S16: buffer.Alloc(m_period_size * m_channels * sizeof(int16_t)); break;
+			case AV_SAMPLE_FMT_S32: buffer.Alloc(m_period_size * m_channels * sizeof(int32_t)); break;
+			case AV_SAMPLE_FMT_FLT: buffer.Alloc(m_period_size * m_channels * sizeof(float)); break;
+			default: assert(false);
+		}
+
 		bool has_first_samples = false;
 		int64_t first_timestamp = 0; // value won't be used, but GCC gives a warning otherwise
 
 		while(!m_should_stop) {
 
+			// wait for new samples
+			int wait = snd_pcm_wait(m_alsa_pcm, 100);
+			if(wait < 0) {
+				if(wait == -EPIPE) {
+					ALSARecoverAfterOverrun(m_alsa_pcm);
+					PushAudioHole();
+					continue;
+				} else {
+					Logger::LogError("[ALSAInput::InputThread] " + Logger::tr("Error: Can't wait for new samples!"));
+					throw ALSAException();
+				}
+			} else if(wait == 0) {
+				continue;
+			}
+
+			int64_t timestamp = hrt_time_micro();
+
 			// read the samples
-			snd_pcm_sframes_t samples_read = snd_pcm_readi(m_alsa_pcm, buffer.data(), m_period_size);
+			snd_pcm_sframes_t samples_read = snd_pcm_readi(m_alsa_pcm, buffer.GetData(), m_period_size);
 			if(samples_read < 0) {
 				if(samples_read == -EPIPE) {
 					ALSARecoverAfterOverrun(m_alsa_pcm);
 					PushAudioHole();
+					continue;
 				} else {
 					Logger::LogError("[ALSAInput::InputThread] " + Logger::tr("Error: Can't read samples!"));
 					throw ALSAException();
 				}
+			} else if(samples_read == 0) {
 				continue;
 			}
-			if(samples_read <= 0)
-				continue;
-
-			int64_t timestamp = hrt_time_micro();
 
 			// skip the first samples
 			if(has_first_samples) {
 				if(timestamp > first_timestamp + START_DELAY) {
 
+					// convert if needed
+					if(m_convert_24_to_32) {
+						int32_t *samples = (int32_t*) buffer.GetData();
+						for(unsigned int i = 0; i < (unsigned int) samples_read * m_channels; ++i) {
+							samples[i] <<= 8;
+						}
+					}
+
 					// push the samples
 					int64_t time = timestamp - (int64_t) samples_read * (int64_t) 1000000 / (int64_t) m_sample_rate;
-					PushAudioSamples(m_channels, m_sample_rate, AV_SAMPLE_FMT_S16, samples_read, (uint8_t*) buffer.data(), time);
+					PushAudioSamples(m_channels, m_sample_rate, m_sample_format, samples_read, buffer.GetData(), time);
 
 				}
 			} else {

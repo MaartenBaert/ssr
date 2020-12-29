@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 Original code written by Jason Gedge and placed in the public domain.
 http://gedgedev.blogspot.be/2010/12/elided-labels-in-qt.html
