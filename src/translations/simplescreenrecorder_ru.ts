@@ -1287,7 +1287,12 @@ You can also change this option manually in the NVIDIA control panel.</source>
         <translation>Запись сохранена. Теперь можно начать редактирование или перекодировать запись для достижения меньшего размера файла (настройки по умолчанию оптимизированы для обеспечения высокой скорости и качества, но не для уменьшения размера).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageDone.cpp" line="33"/>
+        <location filename="../GUI/PageDone.cpp" line="34"/>
+        <source>Open folder</source>
+        <translation>Открыть папку</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageDone.cpp" line="37"/>
         <source>Back to the start screen</source>
         <translation>Вернуться к главному экрану</translation>
     </message>
@@ -1327,6 +1332,11 @@ You can also change this option manually in the NVIDIA control panel.</source>
         <location filename="../GUI/PageInput.cpp" line="250"/>
         <source>Record OpenGL</source>
         <translation>Запись OpenGL</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageInput.cpp" line="253"/>
+        <source>Record V4L2 device</source>
+        <translation>Запись устройства V4L2</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="259"/>
@@ -1760,6 +1770,12 @@ Note that not all codecs are supported by all containers, and that not all media
 If the original file name is &apos;test.mkv&apos;, the video will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
         <translation>Если флажок установлен, текущая дата и время будут добавлены к имени файла автоматически.
 Если исходное имя файла «test.mkv», видео будет сохранено как «test-ГГГГ-ММ-ДД_ЧЧ.ММ.СС.mkv».</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageOutput.cpp" line="227"/>
+        <source>Warning: This format will produce unreadable files if the recording is interrupted! Consider using MKV instead.</source>
+        <translation>Предупреждение: этот формат приведет к созданию нечитаемых файлов, если запись будет прервана!
+Вместо этого рассмотрите возможность использования MKV.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="265"/>
