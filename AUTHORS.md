@@ -43,6 +43,7 @@ Translations
 - Brazilian Portuguese: Paulo Milliet Roque, Rafael Ferreira
 - Russian: Dima Koshel, Vladi105, Olesya Gerasimenko
 - Serbian: Zvicko
+- Slovakian: Jose Riha
 - Swedish: Åke Engelbrektson
 - Ukrainian: Rom Gyrfalco
 - Simplified Chinese: Weitian Leung

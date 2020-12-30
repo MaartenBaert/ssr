@@ -187,10 +187,6 @@ If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will 
         <translation></translation>
     </message>
     <message>
-        <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
         <translation></translation>
@@ -830,10 +826,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <source>Error: Can&apos;t create .ssr directory!</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Error: Can&apos;t watch channel directory!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -976,6 +968,86 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Warning: No fast pixel format conversion available (%1,%2 -&gt; %3,%4), using swscale instead. This is not a problem, but performance will be worse.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t set sample format mask!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t wait for new samples!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t open V4L2 device!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t read capabilities of V4L2 device!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: V4L2 device does not support video capture!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: V4L2 device does not support streaming io!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t set capture format!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: V4L2 device does not support YUYV pixel format!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: Resolution %1x%2 is not supported, using %3x%4 instead. The video will be scaled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Using color space %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer request failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer query failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer mmap failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer queue failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Failed to start stream!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer dequeue failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer requeue failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t create configuration directory!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Detected fractional screen scale factor, scaling was disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -1007,6 +1079,10 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <source>Back to the start screen</source>
         <translation>Πίσω στην αρχική οθόνη</translation>
+    </message>
+    <message>
+        <source>Open folder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1234,6 +1310,14 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     </message>
     <message>
         <source>Record the entire screen on which the cursor is located, rather than following the cursor position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Record V4L2 device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The V4L2 device to record (e.g. /dev/video0).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1504,6 +1588,10 @@ If the original file name is &apos;test.mkv&apos;, the video will be saved as &a
     </message>
     <message>
         <source>Bit rate (in kbit/s):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: This format will produce unreadable files if the recording is interrupted! Consider using MKV instead.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1781,6 +1869,14 @@ SimpleScreenRecorder window show up in the final video.</source>
     </message>
     <message>
         <source>Unknown command.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show recording area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When enabled, the recorded area is marked on the screen.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

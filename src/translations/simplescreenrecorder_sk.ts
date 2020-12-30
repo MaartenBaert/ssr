@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="sk_SK">
+<TS version="2.0" language="sk_SK">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -1368,12 +1368,12 @@ Je možné, že váš systém nepoužíva PulseAudio.</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../GUI/MainWindow.cpp" line="78"/>
+        <location filename="../GUI/MainWindow.cpp" line="74"/>
         <source>You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. Several features will most likely not work properly. In order to solve this, you should log out, choose a X11/Xorg session at the login screen, and then log back in.</source>
         <translation>Používate grafický systém odlišný od X11 (napr. Wayland) a tento momentálne SimpleScreenRecorder nepodporuje. Nejaké funkcie nemusia pracovať správne. Pre vyriešenie sa odhláste, vyberte reláciu X11/Xorg na obrazovke prihlásenia a opäť sa prihláste.</translation>
     </message>
     <message>
-        <location filename="../GUI/MainWindow.cpp" line="90"/>
+        <location filename="../GUI/MainWindow.cpp" line="86"/>
         <source>SimpleScreenRecorder has detected that you are using the proprietary NVIDIA driver with flipping enabled. This is known to cause glitches during recording. It is recommended to disable flipping. Do you want me to do this for you?
 
 You can also change this option manually in the NVIDIA control panel.</source>
@@ -1384,7 +1384,7 @@ You can also change this option manually in the NVIDIA control panel.</source>
 Túto funkciu môžete takisto vypnúť ručne v nástroji NVIDIA X Server Settings.</translation>
     </message>
     <message>
-        <location filename="../GUI/MainWindow.cpp" line="108"/>
+        <location filename="../GUI/MainWindow.cpp" line="104"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
         <translatorcomment>NVIDIA X Server Settings is the name of the tool in my system, I hope it&apos;s the same across distributions</translatorcomment>
