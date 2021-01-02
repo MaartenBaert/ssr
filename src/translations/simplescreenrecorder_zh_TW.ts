@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_TW">
+<TS version="2.1" language="zh_TW">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -1384,7 +1384,7 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageDone.cpp" line="31"/>
         <source>The recording has been saved. You can edit the video now, or re-encode it with better settings to make the file smaller (the default settings are optimized for quality and speed, not file size).</source>
-        <translation>影片已存檔，你現在可以編輯影片或是變更設定重新編碼以減少體積（預設為優化品質和速度，並非檔案大小）。</translation>
+        <translation>影片已儲存，你現在可以編輯影片，或是變更設定重新編碼以減少檔案大小（預設為最佳化品質和速度，並非檔案大小）。</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="35"/>
@@ -1422,7 +1422,7 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="283"/>
         <source>Record V4L2 device</source>
-        <translation type="unfinished"></translation>
+        <translation>錄製 V4L2 裝置</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="295"/>
@@ -1475,7 +1475,7 @@ the client area of the window will be recorded.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="310"/>
         <source>The V4L2 device to record (e.g. /dev/video0).</source>
-        <translation type="unfinished"></translation>
+        <translation>要錄製的 V4L2 裝置（例如 /dev/video0）。</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
@@ -1735,7 +1735,7 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageOutput.cpp" line="193"/>
         <source>Save as:</source>
-        <translation>另存新檔：</translation>
+        <translation>儲存為：</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="195"/>
@@ -1891,7 +1891,7 @@ but results in larger files. The quality shouldn&apos;t be affected too much.</s
         <location filename="../GUI/PageOutput.cpp" line="290"/>
         <source>CPU used:</source>
         <comment>libvpx setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation>CPU 佔用：</translation>
+        <translation>CPU used:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="292"/>
@@ -1968,7 +1968,7 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageOutput.cpp" line="354"/>
         <source>The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.</source>
-        <translation>音頻位元率（kbit/s），值越高品質越好，通常用 128。</translation>
+        <translation>音訊位元率（kbit/s），值越高品質越好，通常用 128。</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="379"/>
@@ -1995,7 +1995,7 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageOutput.cpp" line="690"/>
         <source>Save recording as</source>
-        <translation>儲存錄製為</translation>
+        <translation>儲存錄製品為</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="528"/>
@@ -2025,8 +2025,8 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
         <source>The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,
 even when the SimpleScreenRecorder window is not visible. This way you can create recordings without having the
 SimpleScreenRecorder window show up in the final video.</source>
-        <translation>錄製熱鍵是全域的鍵盤快速鍵，可用於隨時開始或暫停錄製，
-即使 SimpleScreenRecorder 視窗不可見。如此一來您可以在
+        <translation>錄製熱鍵是全域的鍵盤快速鍵，即使 SimpleScreenRecorder
+視窗不可見，也可隨時開始或暫停錄製。如此一來您可以在
 SimpleScreenRecorder 視窗不出現在最終影片的情況下錄影。</translation>
     </message>
     <message>
@@ -2119,12 +2119,12 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="271"/>
         <source>Show recording area</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示錄製區域</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="272"/>
         <source>When enabled, the recorded area is marked on the screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>如果啟用，會在螢幕上標示錄製區域。</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="297"/>
@@ -2156,7 +2156,7 @@ The program that you are recording will not receive the key press.</source>
         <location filename="../GUI/PageRecord.cpp" line="370"/>
         <location filename="../GUI/PageRecord.cpp" line="379"/>
         <source>Save recording</source>
-        <translation>錄製存檔</translation>
+        <translation>儲存錄製品</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="384"/>
@@ -2167,7 +2167,7 @@ The program that you are recording will not receive the key press.</source>
         <location filename="../GUI/PageRecord.cpp" line="435"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
-        <translation>您尚未儲存錄製，離開的話會遺失。
+        <translation>您尚未儲存錄製品，離開的話會遺失。
 您確定要退出程式嗎？</translation>
     </message>
     <message>
