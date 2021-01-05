@@ -658,7 +658,6 @@ void PageRecord::StartPage() {
 
 	Logger::LogInfo("[PageRecord::StartPage] " + tr("Starting page ..."));
 
-
 	try {
 
 #if SSR_USE_OPENGL_RECORDING
@@ -783,6 +782,16 @@ void PageRecord::StartOutput() {
 
 			// set the file name
 			m_output_settings.file = GetNewSegmentFile(m_file_base, m_add_timestamp);
+
+			// log the file name
+			{
+				QString file_name;
+				if(m_file_protocol.isNull())
+					file_name = m_output_settings.file;
+				else
+					file_name = "(" + m_file_protocol + ")";
+				Logger::LogInfo("[PageRecord::StartOutput] " + tr("Output file: %1").arg(file_name));
+			}
 
 			// for X11 recording, update the video size (if possible)
 			if(m_x11_input != NULL)
