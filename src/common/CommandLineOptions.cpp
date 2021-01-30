@@ -38,6 +38,7 @@ void PrintOptionHelp() {
 		"                        /dev/shm/simplescreenrecorder-stats-PID is used. It will\n"
 		"                        be updated continuously and deleted when the recording\n"
 		"                        page is closed.\n"
+		"  --no-redirect-stderr  Don't redirect stderr to the log.\n"
 		"  --no-systray          Don't show the system tray icon.\n"
 		"  --start-hidden        Start the application in hidden form.\n"
 		"  --start-recording     Start the recording immediately.\n"
@@ -107,6 +108,7 @@ CommandLineOptions::CommandLineOptions() {
 	m_settings_file = DefaultSettingsFile();
 	m_log_file = QString();
 	m_stats_file = QString();
+	m_redirect_stderr = true;
 	m_systray = true;
 	m_start_hidden = false;
 	m_start_recording = false;
@@ -167,6 +169,9 @@ void CommandLineOptions::Parse() {
 				} else {
 					m_stats_file = value;
 				}
+			} else if(option == "--no-redirect-stderr") {
+				CheckOptionHasNoValue(option, value);
+				m_redirect_stderr = false;
 			} else if(option == "--no-systray") {
 				CheckOptionHasNoValue(option, value);
 				m_systray = false;

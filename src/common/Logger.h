@@ -45,6 +45,7 @@ public:
 	~Logger();
 
 	void SetLogFile(const QString& filename);
+	void RedirectStderr();
 
 	// These functions are thread-safe.
 	static void LogInfo(const QString& str);
@@ -57,8 +58,6 @@ signals:
 	void NewLine(Logger::enum_type type, QString str);
 
 private:
-	void Init();
-	void Free();
 	void CaptureThread();
 
 };

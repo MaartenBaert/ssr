@@ -87,9 +87,12 @@ int main(int argc, char* argv[]) {
 		return 0;
 	}
 
-	// open the log file
+	// configure the logger
 	if(!CommandLineOptions::GetLogFile().isEmpty()) {
 		logger.SetLogFile(CommandLineOptions::GetLogFile());
+	}
+	if(CommandLineOptions::GetRedirectStderr()) {
+		logger.RedirectStderr();
 	}
 
 	// start main program
