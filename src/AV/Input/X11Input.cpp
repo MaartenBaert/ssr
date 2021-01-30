@@ -352,6 +352,8 @@ void X11Input::FreeImage() {
 
 void X11Input::UpdateScreenConfiguration() {
 
+	Logger::LogInfo("[X11Input::Init] " + Logger::tr("Detecting screen configuration ..."));
+
 	// get screen rectangles
 	m_screen_rects.clear();
 	int event_base, error_base;
@@ -378,6 +380,14 @@ void X11Input::UpdateScreenConfiguration() {
 		return;
 	}
 
+	// log the screen rectangles
+	for(size_t i = 0; i < m_screen_rects.size(); ++i) {
+		Rect &rect = m_screen_rects[i];
+		Logger::LogInfo("[X11Input::Init] " + Logger::tr("Screen %1:").arg(i)
+						+ " x1 = " + QString::number(rect.m_x1) + ", y1 = " + QString::number(rect.m_y1)
+						+ ", x2 = " + QString::number(rect.m_x2) + ", y2 = " + QString::number(rect.m_y2));
+	}
+
 	// calculate bounding box
 	m_screen_bbox = m_screen_rects[0];
 	for(size_t i = 1; i < m_screen_rects.size(); ++i) {
@@ -394,8 +404,8 @@ void X11Input::UpdateScreenConfiguration() {
 	if(m_screen_bbox.m_x1 >= m_screen_bbox.m_x2 || m_screen_bbox.m_y1 >= m_screen_bbox.m_y2 ||
 	   m_screen_bbox.m_x2 - m_screen_bbox.m_x1 > SSR_MAX_IMAGE_SIZE || m_screen_bbox.m_y2 - m_screen_bbox.m_y1 > SSR_MAX_IMAGE_SIZE) {
 		Logger::LogError("[X11Input::UpdateScreenConfiguration] " + Logger::tr("Error: Invalid screen bounding box!") + "\n"
-						   "    x1 = " + QString::number(m_screen_bbox.m_x1) + ", y1 = " + QString::number(m_screen_bbox.m_y1)
-						   + ", x2 = " + QString::number(m_screen_bbox.m_x2) + ", y2 = " + QString::number(m_screen_bbox.m_y2));
+						 "    x1 = " + QString::number(m_screen_bbox.m_x1) + ", y1 = " + QString::number(m_screen_bbox.m_y1)
+						 + ", x2 = " + QString::number(m_screen_bbox.m_x2) + ", y2 = " + QString::number(m_screen_bbox.m_y2));
 		throw X11Exception();
 	}
 
@@ -432,6 +442,14 @@ void X11Input::UpdateScreenConfiguration() {
 			}
 		}
 		m_screen_dead_space = std::move(result);
+	}
+
+	// log the dead space rectangles
+	for(size_t i = 0; i < m_screen_dead_space.size(); ++i) {
+		Rect &rect = m_screen_dead_space[i];
+		Logger::LogInfo("[X11Input::Init] " + Logger::tr("Dead space %1:").arg(i)
+						+ " x1 = " + QString::number(rect.m_x1) + ", y1 = " + QString::number(rect.m_y1)
+						+ ", x2 = " + QString::number(rect.m_x2) + ", y2 = " + QString::number(rect.m_y2));
 	}
 
 	/*qDebug() << "m_screen_dead_space:";
