@@ -59,6 +59,6 @@ do
 	fi
 done
 
-echo "ssr-glinject: LD_PRELOAD = $LD_PRELOAD:libssr-glinject.so"
-echo "ssr-glinject: command = $@"
+echo "ssr-glinject: LD_PRELOAD = $LD_PRELOAD:libssr-glinject.so" >& 2
+echo "ssr-glinject: command = $@" >& 2
 LD_PRELOAD="$LD_PRELOAD:libssr-glinject.so" "$@"
