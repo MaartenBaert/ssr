@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sv_SE">
+<TS version="2.1" language="sv_SE">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -160,52 +160,52 @@ Det hindrar programmet från att ta CPU-tid i anspråk, för bildrutor som inte 
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="78"/>
         <source>Recording schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Inspelningsschema</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="80"/>
         <source>Time zone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidszon:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="82"/>
         <source>Local time</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokal tid</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="83"/>
         <source>UTC</source>
-        <translation type="unfinished"></translation>
+        <translation>UTC</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="85"/>
         <source>Current time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuell tid:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="102"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="103"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="104"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytta upp</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="105"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytta ner</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="107"/>
         <source>Close</source>
-        <translation type="unfinished">Stäng</translation>
+        <translation>Stäng</translation>
     </message>
 </context>
 <context>
@@ -232,7 +232,7 @@ Det hindrar programmet från att ta CPU-tid i anspråk, för bildrutor som inte 
     <message>
         <location filename="../AV/FastScaler.cpp" line="129"/>
         <source>Warning: No fast pixel format conversion available (%1,%2 -&gt; %3,%4), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varning! Ingen fast pixelformatkonvertering tillgänglig (%1,%2 -&gt; %3,%4), använder swscale istället. Detta är inget problem, men prestanda blir sämre.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="138"/>
@@ -337,7 +337,7 @@ Det hindrar programmet från att ta CPU-tid i anspråk, för bildrutor som inte 
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="292"/>
         <source>Error: Can&apos;t set sample format mask!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kan inte att ställa in exempelformatmask!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="297"/>
@@ -416,7 +416,7 @@ Det hindrar programmet från att ta CPU-tid i anspråk, för bildrutor som inte 
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="452"/>
         <source>Error: Can&apos;t wait for new samples!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kan inte vänta på nya prover!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="469"/>
@@ -544,7 +544,8 @@ Det är möjligt att ditt system inte använder PulseAudio. Försök med ALSA is
         <location filename="../AV/Input/PulseAudioInput.cpp" line="68"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kunde inte ansluta! Orsak: %1
+Det är möjligt att ditt system inte använder PulseAudio.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="82"/>
@@ -579,17 +580,17 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="297"/>
         <source>Error: Could not get source info! Reason: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kunde inte hämta källinfo! Orsak: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="302"/>
         <source>Stream is a monitor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Strömmen är en bildskärm.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="304"/>
         <source>Stream is not a monitor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Strömmen är inte en bildskärm.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="349"/>
@@ -754,77 +755,77 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="99"/>
         <source>Error: Can&apos;t open V4L2 device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kan inte öppna V4L2-enhet!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="107"/>
         <source>Error: Can&apos;t read capabilities of V4L2 device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kan inte läsa kapacitet för V4L2-enhet!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="111"/>
         <source>Error: V4L2 device does not support video capture!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: V4L2-enhet stödjer inte videoinspelning!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="115"/>
         <source>Error: V4L2 device does not support streaming io!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: V4L2-enhet stödjer inte strömnings-IO!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="132"/>
         <source>Error: Can&apos;t set capture format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kan inte ange inspelningsformat!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="136"/>
         <source>Error: V4L2 device does not support YUYV pixel format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: V4L2-enhet stödjer inte YUYV-pixelformat!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="140"/>
         <source>Warning: Resolution %1x%2 is not supported, using %3x%4 instead. The video will be scaled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varning! Upplösningen %1x%2 stöds inte, använder %3x%4 i stället. Videon kommer att skalas.</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="183"/>
         <source>Using color space %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Använder färgrymd %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="193"/>
         <source>Error: Buffer request failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Buffertbegäran misslyckades!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="203"/>
         <source>Error: Buffer query failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Buffertförfrågan misslyckades!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="209"/>
         <source>Error: Buffer mmap failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Buffert mmap misslyckades!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="222"/>
         <source>Error: Buffer queue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Buffertkö misslyckades!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="230"/>
         <source>Error: Failed to start stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kunde inte starta ström!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="273"/>
         <source>Error: Buffer dequeue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Buffertavköande misslyckades!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="288"/>
         <source>Error: Buffer requeue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Buffertåterköande misslyckades!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="257"/>
@@ -868,12 +869,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <location filename="../AV/Input/X11Input.cpp" line="371"/>
         <source>Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.</source>
         <comment>Don&apos;t translate &apos;Xinerama&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Varning! Xinerama stöds inte av X-server, flerskärmsstöd kanske inte fungerar korrekt.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="377"/>
         <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varning! Inga bildskärmar identifierade, flerskärmsstöd kanske inte fungerar korrekt.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="396"/>
@@ -923,12 +924,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
         <source>Error: Sending of audio frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Sändning av ljudbild misslyckades!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Receiving of audio packet failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Mottagning av ljudpaket misslyckades!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="210"/>
@@ -996,7 +997,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <location filename="../AV/Output/Muxer.cpp" line="100"/>
         <location filename="../AV/Output/Muxer.cpp" line="124"/>
         <source>Error: Can&apos;t copy parameters to stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kan inte kopiera parametrar till ström!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="146"/>
@@ -1053,7 +1054,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="295"/>
         <source>Error: Can&apos;t create new codec context!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kan inte skapa ny kodekkontext!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="307"/>
@@ -1184,12 +1185,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="229"/>
         <source>Error: Sending of video frame failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Sändning av videobildruta misslyckades!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="250"/>
         <source>Error: Receiving of video packet failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Mottagning av videopaket misslyckades!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="263"/>
@@ -1288,7 +1289,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="89"/>
         <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kommandoradsalternativet &quot;%1&quot; kräver ett värde!</translation>
     </message>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="97"/>
@@ -1308,7 +1309,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="248"/>
         <source>Error: Can&apos;t create configuration directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: Kan inte skapa konfigurationsmapp!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="96"/>
@@ -1327,42 +1328,42 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="70"/>
         <source>Stopping fragment thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoppar fragmenttråd ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="347"/>
         <source>Fragment thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fragmenttråd startad.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="365"/>
         <source>Next fragment ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nästa fragment ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="369"/>
         <source>Finishing ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Slutför ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="381"/>
         <source>Fragment thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fragmenttråd stoppad.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="385"/>
         <source>Exception &apos;%1&apos; in fragment thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Undantag &quot;%1&quot; i fragmenttråd.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="388"/>
         <source>Unknown exception in fragment thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Okänt undantag i fragmenttråd.</translation>
     </message>
     <message>
         <location filename="../common/ScreenScaling.cpp" line="120"/>
         <source>Detected fractional screen scale factor, scaling was disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifierade fraktionerad skärmskalningsfaktor, skalning inaktiverades.</translation>
     </message>
 </context>
 <context>
@@ -1370,7 +1371,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="74"/>
         <source>You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. Several features will most likely not work properly. In order to solve this, you should log out, choose a X11/Xorg session at the login screen, and then log back in.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du använder ett icke-X11-fönstersystem (t.ex. Wayland) som för närvarande inte stöds av SimpleScreenRecorder. Flera funktioner kommer sannolikt inte att fungera korrekt. För att kunna lösa detta bör du logga ut, välja en X11/Xorg-session vid inloggningsskärmen och sedan logga in igen.</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="86"/>
@@ -1399,7 +1400,7 @@ Du kan också ändra denna inställning i NVIDIAs kontrollpanel.</translation>
     <message>
         <location filename="../GUI/PageDone.cpp" line="35"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna mapp</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="38"/>
@@ -1436,17 +1437,17 @@ Du kan också ändra denna inställning i NVIDIAs kontrollpanel.</translation>
     <message>
         <location filename="../GUI/PageInput.cpp" line="271"/>
         <source>Input profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Indataprofil</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="280"/>
         <source>Record OpenGL</source>
-        <translation type="unfinished"></translation>
+        <translation>Spela in OpenGL</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="283"/>
         <source>Record V4L2 device</source>
-        <translation type="unfinished"></translation>
+        <translation>Spela in V4L2-enhet</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="295"/>
@@ -1456,12 +1457,12 @@ Du kan också ändra denna inställning i NVIDIAs kontrollpanel.</translation>
     <message>
         <location filename="../GUI/PageInput.cpp" line="296"/>
         <source>Record entire screen with cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Spela in hela skärmen med muspekare</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="297"/>
         <source>Record the entire screen on which the cursor is located, rather than following the cursor position.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spela in hela den skärm där muspekaren befinner sig, hellre än att följa muspekarpositionen.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="298"/>
@@ -1499,7 +1500,7 @@ Tips: Om du klickar på en fönsterram, spelas hela fönstret in (inkl. ramen). 
     <message>
         <location filename="../GUI/PageInput.cpp" line="310"/>
         <source>The V4L2 device to record (e.g. /dev/video0).</source>
-        <translation type="unfinished"></translation>
+        <translation>V4L2-enhet att spela i (t.ex. /dev/video0).</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
@@ -1609,7 +1610,7 @@ ALSA-gränssnittet fungerar också i system som använder PulseAudio, men det ä
     <message>
         <location filename="../GUI/PageInput.cpp" line="459"/>
         <source>The audio backend that will be used for recording.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ljudmjukvara som kommer att användas för inspelning.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="462"/>
@@ -1739,12 +1740,12 @@ En &apos;monitor&apos; är en källa som spelar in ljud, som spelas upp av andra
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
         <source>Output profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Utdataprofil</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="191"/>
         <source>File</source>
-        <translation>Arkiv</translation>
+        <translation>Fil</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="193"/>
@@ -1764,7 +1765,7 @@ En &apos;monitor&apos; är en källa som spelar in ljud, som spelas upp av andra
     <message>
         <location filename="../GUI/PageOutput.cpp" line="197"/>
         <source>Separate file per segment</source>
-        <translation type="unfinished">Separera fil per segment</translation>
+        <translation>Separera fil per segment</translation>
     </message>
     <message>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
@@ -1780,7 +1781,7 @@ Om ursprungsfilens namn är &apos;test.mkv&apos;, kommer segmenten att sparas so
     <message>
         <location filename="../GUI/PageOutput.cpp" line="208"/>
         <source>(not installed)</source>
-        <translation type="unfinished"></translation>
+        <translation>(inte installerat)</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="211"/>
@@ -1853,29 +1854,30 @@ Notera att inte alla kodekar stöds av alla behållare och att inte alla mediasp
     <message>
         <location filename="../GUI/PageOutput.cpp" line="198"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.If unchecked, all recorded segments will be combined into a single video file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Om markerat, skapas en separat videofil varje gång du pausar och återupptar inspelningen. Om det är avmarkerat kommer alla inspelade segment att kombineras till en enda videofil.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="200"/>
         <source>Add timestamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till tidsstämpel</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="201"/>
         <source>If checked, the current date and time will be appended to the file name automatically.
 If the original file name is &apos;test.mkv&apos;, the video will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Om markerat kommer aktuellt datum och tid att läggas till i filnamnet automatiskt.
+Om det ursprungliga filnamnet är &apos;test.mkv&apos; kommer videon att sparas som &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="227"/>
         <source>Warning: This format will produce unreadable files if the recording is interrupted! Consider using MKV instead.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varning! Detta format kommer att producera oläsbara filer om inspelningen avbryts! Överväg att använda MKV istället.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="268"/>
         <location filename="../GUI/PageOutput.cpp" line="352"/>
         <source>Bit rate (in kbit/s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Bithastighet (i kbit/s):</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="270"/>
@@ -2042,7 +2044,7 @@ Om du dessutom bara spelar in din egen röst (ingen musik), spelar kvaliteten ä
     <message>
         <location filename="../GUI/PageRecord.cpp" line="182"/>
         <source>Edit schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera schema</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="185"/>
@@ -2054,7 +2056,9 @@ Om du dessutom bara spelar in din egen röst (ingen musik), spelar kvaliteten ä
         <source>The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,
 even when the SimpleScreenRecorder window is not visible. This way you can create recordings without having the
 SimpleScreenRecorder window show up in the final video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inspelningsgenvägen är ett globalt kortkommando som kan användas för att starta eller pausa inspelningen när som helst,
+även när SimpleScreenRecorder inte syns. På så sätt kan du skapa inspelningar utan att 
+SimpleScreenRecorder-fönstret dyker upp i den slutliga videon.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="190"/>
@@ -2064,7 +2068,7 @@ SimpleScreenRecorder window show up in the final video.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="191"/>
         <source>When enabled, a sound will be played when the recording is started or paused, or when an error occurs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vid aktivering kommer ett ljud att spelas upp när inspelningen startas eller pausas, eller när ett fel inträffar.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="193"/>
@@ -2146,12 +2150,12 @@ Program som du spelar in, påverkas inte av denna tangenttryckning.</translation
     <message>
         <location filename="../GUI/PageRecord.cpp" line="271"/>
         <source>Show recording area</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa inspelningsområde</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="272"/>
         <source>When enabled, the recorded area is marked on the screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vid aktivering markeras det inspelade området på skärmen.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="297"/>
@@ -2309,12 +2313,12 @@ Vill du verkligen avsluta?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1128"/>
         <source>Deactivate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaktivera schema</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1138"/>
         <source>Activate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivera schema</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1147"/>
@@ -2339,49 +2343,49 @@ Vill du verkligen avsluta?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1272"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du har inte spelat in något, det finns inget att spara.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1289"/>
         <source>Triggering scheduled action &apos;%1&apos; ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Utlöser schemalagd åtgärd &quot;%1&quot; ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1300"/>
         <source>Schedule: %1 in %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Schema: %1 i %2</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1307"/>
         <source>Schedule: (none)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schema: (inget)</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1311"/>
         <source>Schedule: (inactive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schema: (inaktiv)</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1375"/>
         <location filename="../GUI/PageRecord.cpp" line="1392"/>
         <source>Standard input read error (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Läsfel för indata (%1).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1380"/>
         <location filename="../GUI/PageRecord.cpp" line="1397"/>
         <source>Standard input closed (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardindata stängd (%1).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1410"/>
         <source>Received command &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tog emot kommando &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1430"/>
         <source>Unknown command.</source>
-        <translation type="unfinished"></translation>
+        <translation>Okänt kommando.</translation>
     </message>
     <message>
         <source>You haven&apos;t recorded anything, there is nothing to save.
@@ -2419,12 +2423,12 @@ Två: Nästan alla inställningar har en knappbeskrivning. Hovra med muspekaren 
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="52"/>
         <source>Skip this page next time</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoppa över den här sidan nästa gång</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="53"/>
         <source>Go directly to the input page when the program is started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gå direkt till indatasidan när programmet startas.</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="76"/>
@@ -2505,33 +2509,33 @@ Två: Nästan alla inställningar har en knappbeskrivning. Hovra med muspekaren 
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
         <location filename="../common/Dialogs.cpp" line="73"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Avbryt</translation>
+        <translation>&amp;Avbryt</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="37"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Ja</translation>
+        <translation>&amp;Ja</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="38"/>
         <source>Yes, always</source>
-        <translation type="unfinished">Ja, alltid</translation>
+        <translation>Ja, alltid</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="39"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Nej</translation>
+        <translation>&amp;Nej</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
-        <translation type="unfinished">Nej, aldrig</translation>
+        <translation>Nej, aldrig</translation>
     </message>
 </context>
 <context>
@@ -2566,22 +2570,22 @@ Två: Nästan alla inställningar har en knappbeskrivning. Hovra med muspekaren 
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="39"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="40"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Paus</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="46"/>
         <source>Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="51"/>
         <source>Action:</source>
-        <translation type="unfinished"></translation>
+        <translation>Åtgärd:</translation>
     </message>
 </context>
 <context>
