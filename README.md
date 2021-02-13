@@ -134,9 +134,18 @@ If you have a 64-bit system and you want to compile the 32-bit GLInject library,
 
 ### Debian / Ubuntu
 
-    sudo apt-get install build-essential cmake pkg-config qt4-qmake libqt4-dev desktop-file-utils \
-    libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev libjack-jackd2-dev \
-    libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxfixes-dev libxext-dev libxi-dev libxinerama-dev libv4l-dev
+For newer versions (with Qt5):
+
+    sudo apt-get install build-essential cmake pkg-config desktop-file-utils libgl1-mesa-dev libglu1-mesa-dev \
+    qt5-qmake qttools5-dev qtbase5-dev libqt5x11extras5-dev libavformat-dev libavcodec-dev libavutil-dev \
+    libswscale-dev libasound2-dev libpulse-dev libjack-dev libx11-dev libxext-dev libxfixes-dev libxi-dev \
+    libxinerama-dev libv4l-dev
+
+For older versions (with Qt4):
+
+    sudo apt-get install build-essential cmake3 pkg-config desktop-file-utils libgl1-mesa-dev libglu1-mesa-dev \
+    qt4-qmake libqt4-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libasound2-dev libpulse-dev \
+    libjack-dev libx11-dev libxext-dev libxfixes-dev libxi-dev libxinerama-dev libv4l-dev
 
 Extra dependencies for 32-bit GLInject on 64-bit systems:
 
