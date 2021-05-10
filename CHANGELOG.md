@@ -12,7 +12,7 @@ Version 0.4.3
 - Added V4L2 support (most webcams and capture cards).
 - Added option to mark recorded area on screen during recording.
 - Added JACK metadata.
-- Optionally support XDG config directory (~/.config/simplescreenrecorder) instead of home directory (~/.ssr).
+- Optionally support XDG config directory (`~/.config/simplescreenrecorder`) instead of home directory (`~/.ssr`).
 - Bugfixes.
 
 Version 0.4.2
