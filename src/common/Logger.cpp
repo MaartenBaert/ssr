@@ -80,7 +80,8 @@ void Logger::LogInfo(const QString& str) {
 	assert(s_instance != NULL);
 	std::lock_guard<std::mutex> lock(s_instance->m_mutex); Q_UNUSED(lock);
 	QByteArray buf = (str + "\n").toLocal8Bit();
-	write((s_instance->m_original_stderr == -1)? 2 : s_instance->m_original_stderr, buf.constData(), buf.size());
+	ssize_t res = write((s_instance->m_original_stderr == -1)? 2 : s_instance->m_original_stderr, buf.constData(), buf.size());
+	Q_UNUSED(res);
 	if(s_instance->m_log_file.isOpen())
 		s_instance->m_log_file.write((LogFormatTime() + " (I) " + str + "\n").toLocal8Bit());
 	emit s_instance->NewLine(TYPE_INFO, str);
@@ -90,7 +91,8 @@ void Logger::LogWarning(const QString& str) {
 	assert(s_instance != NULL);
 	std::lock_guard<std::mutex> lock(s_instance->m_mutex); Q_UNUSED(lock);
 	QByteArray buf = ("\033[1;33m" + str + "\033[0m\n").toLocal8Bit();
-	write((s_instance->m_original_stderr == -1)? 2 : s_instance->m_original_stderr, buf.constData(), buf.size());
+	ssize_t res = write((s_instance->m_original_stderr == -1)? 2 : s_instance->m_original_stderr, buf.constData(), buf.size());
+	Q_UNUSED(res);
 	if(s_instance->m_log_file.isOpen())
 		s_instance->m_log_file.write((LogFormatTime() + " (W) " + str + "\n").toLocal8Bit());
 	emit s_instance->NewLine(TYPE_WARNING, str);
@@ -100,7 +102,8 @@ void Logger::LogError(const QString& str) {
 	assert(s_instance != NULL);
 	std::lock_guard<std::mutex> lock(s_instance->m_mutex); Q_UNUSED(lock);
 	QByteArray buf = ("\033[1;31m" + str + "\033[0m\n").toLocal8Bit();
-	write((s_instance->m_original_stderr == -1)? 2 : s_instance->m_original_stderr, buf.constData(), buf.size());
+	ssize_t res = write((s_instance->m_original_stderr == -1)? 2 : s_instance->m_original_stderr, buf.constData(), buf.size());
+	Q_UNUSED(res);
 	if(s_instance->m_log_file.isOpen())
 		s_instance->m_log_file.write((LogFormatTime() + " (E) " + str + "\n").toLocal8Bit());
 	emit s_instance->NewLine(TYPE_ERROR, str);
@@ -121,7 +124,8 @@ void Logger::CaptureThread() {
 			if(buffer[pos] == '\n') {
 				std::lock_guard<std::mutex> lock(m_mutex); Q_UNUSED(lock);
 				std::string buf = "\033[2m" + std::string(buffer.GetData(), pos) + "\033[0m\n";
-				write(m_original_stderr, buf.data(), buf.size());
+				ssize_t res = write(m_original_stderr, buf.data(), buf.size());
+				Q_UNUSED(res);
 				QString str = QString::fromLocal8Bit(buffer.GetData(), pos);
 				if(m_log_file.isOpen())
 					m_log_file.write((LogFormatTime() + " (S) " + str + "\n").toLocal8Bit());
