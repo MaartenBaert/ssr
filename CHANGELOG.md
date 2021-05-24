@@ -6,6 +6,13 @@ Git master
 
 - ?
 
+Version 0.4.4
+-------------
+
+- Some minor improvements.
+- Updated translations.
+- Bugfixes.
+
 Version 0.4.3
 -------------
 
