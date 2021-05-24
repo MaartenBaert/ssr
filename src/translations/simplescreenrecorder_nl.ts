@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="nl_NL">
+<TS version="2.1" language="nl_NL">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -233,52 +233,52 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="78"/>
         <source>Recording schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Opnameplanning</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="80"/>
         <source>Time zone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tijdzone:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="82"/>
         <source>Local time</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokale tijd</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="83"/>
         <source>UTC</source>
-        <translation type="unfinished"></translation>
+        <translation>UTC</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="85"/>
         <source>Current time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige tijd:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="102"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="103"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderen</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="104"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Verplaats omhoog</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="105"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Verplaats omlaag</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="107"/>
         <source>Close</source>
-        <translation type="unfinished">Sluiten</translation>
+        <translation>Sluiten</translation>
     </message>
 </context>
 <context>
@@ -305,7 +305,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
     <message>
         <location filename="../AV/FastScaler.cpp" line="129"/>
         <source>Warning: No fast pixel format conversion available (%1,%2 -&gt; %3,%4), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Geen snelle pixelformaatconversie beschikbaar (%1,%2 -&gt; %3,%4), swscale wordt gebruikt in de plaats. Dit is geen probleem, maar performantie zal slechter zijn.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="138"/>
@@ -426,7 +426,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="292"/>
         <source>Error: Can&apos;t set sample format mask!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan sampleformaatmasker niet instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="297"/>
@@ -498,14 +498,14 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <location filename="../AV/Input/JACKInput.cpp" line="251"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="335"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="263"/>
-        <location filename="../AV/Input/X11Input.cpp" line="447"/>
+        <location filename="../AV/Input/X11Input.cpp" line="465"/>
         <source>Input thread started.</source>
         <translation>Input thread gestart.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="452"/>
         <source>Error: Can&apos;t wait for new samples!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan niet wachten op nieuwe samples!</translation>
     </message>
     <message>
         <source>Error: Can&apos;t check whether samples are available!</source>
@@ -522,7 +522,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <location filename="../AV/Input/JACKInput.cpp" line="302"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="428"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="294"/>
-        <location filename="../AV/Input/X11Input.cpp" line="567"/>
+        <location filename="../AV/Input/X11Input.cpp" line="585"/>
         <source>Input thread stopped.</source>
         <translation>Input thread gestopt.</translation>
     </message>
@@ -532,7 +532,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <location filename="../AV/Input/JACKInput.cpp" line="306"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="432"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="298"/>
-        <location filename="../AV/Input/X11Input.cpp" line="571"/>
+        <location filename="../AV/Input/X11Input.cpp" line="589"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
         <translation>Exceptie &apos;%1&apos; in input thread.</translation>
     </message>
@@ -542,7 +542,7 @@ Dit verhindert dat de applicatie CPU-tijd gebruikt voor beelden die niet opgenom
         <location filename="../AV/Input/JACKInput.cpp" line="309"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="435"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="301"/>
-        <location filename="../AV/Input/X11Input.cpp" line="574"/>
+        <location filename="../AV/Input/X11Input.cpp" line="592"/>
         <source>Unknown exception in input thread.</source>
         <translation>Onbekende exceptie in input thread.</translation>
     </message>
@@ -760,77 +760,77 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt.</translation>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="99"/>
         <source>Error: Can&apos;t open V4L2 device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan V4L2 apparaat niet openen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="107"/>
         <source>Error: Can&apos;t read capabilities of V4L2 device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan mogelijkheden van V4L2 apparaat niet uitlezen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="111"/>
         <source>Error: V4L2 device does not support video capture!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: V4L2 apparaat ondersteunt geen video-opname!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="115"/>
         <source>Error: V4L2 device does not support streaming io!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: V4L2 apparaat ondersteunt geen streaming io!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="132"/>
         <source>Error: Can&apos;t set capture format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan opnameformaat niet instellen!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="136"/>
         <source>Error: V4L2 device does not support YUYV pixel format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: V4L2 apparaat ondersteunt het YUYV pixelformaat niet!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="140"/>
         <source>Warning: Resolution %1x%2 is not supported, using %3x%4 instead. The video will be scaled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Resolutie %1x%2 wordt niet ondersteund, %3x%4 wordt gebruikt in de plaats. De video zal geschaald worden.</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="183"/>
         <source>Using color space %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik kleurruimte %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="193"/>
         <source>Error: Buffer request failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Buffer request mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="203"/>
         <source>Error: Buffer query failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Buffer query mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="209"/>
         <source>Error: Buffer mmap failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Buffer mmap mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="222"/>
         <source>Error: Buffer queue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Buffer queue mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="230"/>
         <source>Error: Failed to start stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Starten van stream mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="273"/>
         <source>Error: Buffer dequeue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Buffer dequeue mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="288"/>
         <source>Error: Buffer requeue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Buffer requeue mislukt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="257"/>
@@ -866,7 +866,7 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt.</translation>
         <translation type="obsolete">Waarschuwing: XFixes wordt niet ondersteund door de server, de cursor is verborgen.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="396"/>
+        <location filename="../AV/Input/X11Input.cpp" line="406"/>
         <source>Error: Invalid screen bounding box!</source>
         <translation>Fout: Ongeldige schermrechthoek!</translation>
     </message>
@@ -876,25 +876,40 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt.</translation>
         <translation>Fout: Kan server niet vastmaken aan gedeeld geheugen!</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="371"/>
+        <location filename="../AV/Input/X11Input.cpp" line="355"/>
+        <source>Detecting screen configuration ...</source>
+        <translation>Schermconfiguratie detecteren ...</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="373"/>
         <source>Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.</source>
         <comment>Don&apos;t translate &apos;Xinerama&apos;</comment>
         <translation>Waarschuwing: Xinerama wordt niet ondersteund door de X server, multi-monitor ondersteuning werkt mogelijk niet correct.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="377"/>
+        <location filename="../AV/Input/X11Input.cpp" line="379"/>
         <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
         <translation>Waarschuwing: Geen monitors gedetecteerd, multi-monitor ondersteuning werkt mogelijk niet correct.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="518"/>
+        <location filename="../AV/Input/X11Input.cpp" line="386"/>
+        <source>Screen %1:</source>
+        <translation>Scherm %1:</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="450"/>
+        <source>Dead space %1:</source>
+        <translation>Dode ruimte %1:</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="536"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation>Fout: Kan geen afbeelding krijgen (met gedeeld geheugen)!
     Meestal betekent dit dat het opgenomen gebied niet volledig binnen het scherm is. Of heb je de schermresolutie veranderd?</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="529"/>
+        <location filename="../AV/Input/X11Input.cpp" line="547"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation>Fout: Kan geen afbeelding krijgen (zonder gedeeld geheugen)!
@@ -1281,37 +1296,37 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt.</translation>
         <translation>CPU-eigenschappen</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="89"/>
+        <location filename="../common/CommandLineOptions.cpp" line="90"/>
         <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Command-line optie &apos;%1&apos; vereist een waarde!</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="97"/>
+        <location filename="../common/CommandLineOptions.cpp" line="98"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation>Fout: Command-line optie &apos;%1&apos; neemt geen waarde aan!</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="190"/>
+        <location filename="../common/CommandLineOptions.cpp" line="195"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation>Fout: Onbekende command-line optie &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="198"/>
+        <location filename="../common/CommandLineOptions.cpp" line="203"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation>Fout: Onbekend command-line argument &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="248"/>
+        <location filename="../common/CommandLineOptions.cpp" line="253"/>
         <source>Error: Can&apos;t create configuration directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout: Kan configuratiemap niet aanmaken!</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="96"/>
+        <location filename="../Main.cpp" line="99"/>
         <source>SSR started</source>
         <translation>SSR gestart</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="130"/>
+        <location filename="../Main.cpp" line="133"/>
         <source>SSR stopped</source>
         <translation>SSR gestopt</translation>
     </message>
@@ -1526,7 +1541,7 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt.</translation>
     <message>
         <location filename="../common/ScreenScaling.cpp" line="120"/>
         <source>Detected fractional screen scale factor, scaling was disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fractionele schermschaalfactor gedetecteerd, schalen werd uitgeschakeld.</translation>
     </message>
 </context>
 <context>
@@ -1534,7 +1549,7 @@ Het is mogelijk dat je systeem geen PulseAudio gebruikt.</translation>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="74"/>
         <source>You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. Several features will most likely not work properly. In order to solve this, you should log out, choose a X11/Xorg session at the login screen, and then log back in.</source>
-        <translation type="unfinished"></translation>
+        <translation>U gebruikt een niet-X11 venstersysteem (bijvoorbeeld Wayland) dat momenteel niet wordt ondersteund door SimpleScreenRecorder. Sommige functies zullen waarschijnlijk niet correct werken. Om dit op te lossen moet u uitloggen, een X11/Xorg sessie selecteren vanaf het loginscherm, en daarna terug inloggen.</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="86"/>
@@ -1563,7 +1578,7 @@ Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translat
     <message>
         <location filename="../GUI/PageDone.cpp" line="35"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Map openen</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="38"/>
@@ -1610,7 +1625,7 @@ Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translat
     <message>
         <location filename="../GUI/PageInput.cpp" line="283"/>
         <source>Record V4L2 device</source>
-        <translation type="unfinished"></translation>
+        <translation>Neem V4L2 apparaat op</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="295"/>
@@ -1664,7 +1679,7 @@ enkel het client-gedeelte (binnenkant) van het venster opgenomen.</translation>
     <message>
         <location filename="../GUI/PageInput.cpp" line="310"/>
         <source>The V4L2 device to record (e.g. /dev/video0).</source>
-        <translation type="unfinished"></translation>
+        <translation>Het V4L2 apparaat dat wordt opgenomen (bijvoorbeeld /dev/video0).</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
@@ -2115,7 +2130,7 @@ Als de originele bestandsnaam &apos;test.mkv&apos; is, zal de video worden opges
     <message>
         <location filename="../GUI/PageOutput.cpp" line="227"/>
         <source>Warning: This format will produce unreadable files if the recording is interrupted! Consider using MKV instead.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: Dit formaat zal tot onleesbare bestanden leiden als de opname wordt onderbroken! Het is aangeraden om MKV te gebruiken in de plaats.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="268"/>
@@ -2249,7 +2264,12 @@ Als de originele bestandsnaam &apos;test.mkv&apos; is, zullen de segmenten worde
     <message>
         <location filename="../GUI/PageRecord.cpp" line="182"/>
         <source>Edit schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Planning aanpassen</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="183"/>
+        <source>The recording schedule can be used to automatically start or pause the recording at a predefined time.</source>
+        <translation>De opnameplanning kan worden gebruikt om automatisch de opname te starten of te pauzeren op een vooraf gedefinieerd tijdstip.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="185"/>
@@ -2261,7 +2281,9 @@ Als de originele bestandsnaam &apos;test.mkv&apos; is, zullen de segmenten worde
         <source>The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,
 even when the SimpleScreenRecorder window is not visible. This way you can create recordings without having the
 SimpleScreenRecorder window show up in the final video.</source>
-        <translation type="unfinished"></translation>
+        <translation>De opname-sneltoets is een globale toetsenbordsnelkoppeling die kan worden gebruikt om de opname te starten of te pauzeren
+op eender welk moment, zelfs wanneer het SimpleScreenRecorder-venster niet zichtbaar is. Op deze manier is het mogelijk om
+opnames te maken zonder dat het SimpleScreenRecorder venster zichtbaar is in de uiteindelijke video.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="190"/>
@@ -2271,7 +2293,7 @@ SimpleScreenRecorder window show up in the final video.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="191"/>
         <source>When enabled, a sound will be played when the recording is started or paused, or when an error occurs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indien ingeschakeld zal een geluid worden afgespeeld wanneer de opname wordt gestart op gepauzeerd, of wanneer er zich een fout voordoet.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="193"/>
@@ -2353,12 +2375,12 @@ Het programma dat je aan het opnemen bent zal de toets niet ontvangen.</translat
     <message>
         <location filename="../GUI/PageRecord.cpp" line="271"/>
         <source>Show recording area</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon opnameregio</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="272"/>
         <source>When enabled, the recorded area is marked on the screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indien ingeschakeld zal de opgenomen regio worden gemarkeerd op het scherm.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="297"/>
@@ -2415,104 +2437,109 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation>Toon venster</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1013"/>
+        <location filename="../GUI/PageRecord.cpp" line="793"/>
+        <source>Output file: %1</source>
+        <translation>Outputbestand: %1</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="1022"/>
         <source>Encoding remaining data ...</source>
         <translation>Overblijvende data encoderen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1272"/>
+        <location filename="../GUI/PageRecord.cpp" line="1281"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>U heeft nog niets opgenomen, er is niets om op te slaan.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1289"/>
+        <location filename="../GUI/PageRecord.cpp" line="1298"/>
         <source>Triggering scheduled action &apos;%1&apos; ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Geplande actie &apos;%1&apos; wordt uitgevoerd ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1300"/>
+        <location filename="../GUI/PageRecord.cpp" line="1309"/>
         <source>Schedule: %1 in %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Planning: %1 over %2</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1307"/>
+        <location filename="../GUI/PageRecord.cpp" line="1316"/>
         <source>Schedule: (none)</source>
-        <translation type="unfinished"></translation>
+        <translation>Planning: (geen)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1311"/>
+        <location filename="../GUI/PageRecord.cpp" line="1320"/>
         <source>Schedule: (inactive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Planning: (inactief)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1375"/>
-        <location filename="../GUI/PageRecord.cpp" line="1392"/>
+        <location filename="../GUI/PageRecord.cpp" line="1384"/>
+        <location filename="../GUI/PageRecord.cpp" line="1401"/>
         <source>Standard input read error (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaardinput leesfout (%1).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1380"/>
-        <location filename="../GUI/PageRecord.cpp" line="1397"/>
+        <location filename="../GUI/PageRecord.cpp" line="1389"/>
+        <location filename="../GUI/PageRecord.cpp" line="1406"/>
         <source>Standard input closed (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaardinput gesloten (%1).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1410"/>
+        <location filename="../GUI/PageRecord.cpp" line="1419"/>
         <source>Received command &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Commando &apos;%1&apos; ontvangen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1430"/>
+        <location filename="../GUI/PageRecord.cpp" line="1439"/>
         <source>Unknown command.</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekend commando.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="780"/>
+        <location filename="../GUI/PageRecord.cpp" line="779"/>
         <source>Starting output ...</source>
         <translation>Output starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="795"/>
+        <location filename="../GUI/PageRecord.cpp" line="804"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
         <translation>Fout: Kan de grootte van de OpenGL-applicatie niet krijgen omdat de GLInject input niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="839"/>
+        <location filename="../GUI/PageRecord.cpp" line="848"/>
         <source>Started output.</source>
         <translation>Output gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="860"/>
+        <location filename="../GUI/PageRecord.cpp" line="869"/>
         <source>Stopping output ...</source>
         <translation>Output stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="878"/>
+        <location filename="../GUI/PageRecord.cpp" line="887"/>
         <source>Stopped output.</source>
         <translation>Output gestopt.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="910"/>
+        <location filename="../GUI/PageRecord.cpp" line="919"/>
         <source>Starting input ...</source>
         <translation>Input starten ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="921"/>
+        <location filename="../GUI/PageRecord.cpp" line="930"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
         <translation>Fout: Kan de GLInject input niet starten omdat deze niet aangemaakt is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="947"/>
+        <location filename="../GUI/PageRecord.cpp" line="956"/>
         <source>Started input.</source>
         <translation>Input gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="979"/>
+        <location filename="../GUI/PageRecord.cpp" line="988"/>
         <source>Stopping input ...</source>
         <translation>Input stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="997"/>
+        <location filename="../GUI/PageRecord.cpp" line="1006"/>
         <source>Stopped input.</source>
         <translation>Input gestopt.</translation>
     </message>
@@ -2526,17 +2553,17 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Er ging iets fout tijdens de GLInject initialisatie.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="691"/>
+        <location filename="../GUI/PageRecord.cpp" line="690"/>
         <source>Started page.</source>
         <translation>Pagina gestart.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="724"/>
+        <location filename="../GUI/PageRecord.cpp" line="723"/>
         <source>Stopping page ...</source>
         <translation>Pagina stoppen ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="751"/>
+        <location filename="../GUI/PageRecord.cpp" line="750"/>
         <source>Stopped page.</source>
         <translation>Pagina gestopt.</translation>
     </message>
@@ -2545,14 +2572,14 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Kan de grootte van de OpenGL-applicatie niet krijgen omdat GLInject niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="800"/>
+        <location filename="../GUI/PageRecord.cpp" line="809"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation>Fout: Kon de grootte van de OpenGL-applicatie niet krijgen. Ofwel is de applicatie niet correct gestart, ofwel heeft de applicatie nog geen OpenGL-venster gemaakt. Als je wil beginnen met opnemen voordat de applicatie is gestart, dan moet je schalen inschakelen en manueel de videogrootte instellen.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="682"/>
-        <location filename="../GUI/PageRecord.cpp" line="849"/>
-        <location filename="../GUI/PageRecord.cpp" line="952"/>
+        <location filename="../GUI/PageRecord.cpp" line="681"/>
+        <location filename="../GUI/PageRecord.cpp" line="858"/>
+        <location filename="../GUI/PageRecord.cpp" line="961"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation>Fout: Er ging iets fout tijdens de initialisatie.</translation>
     </message>
@@ -2561,44 +2588,44 @@ Weet je zeker dat je het programma wilt sluiten?</translation>
         <translation type="obsolete">Fout: Kan geen GLInject input maken omdat GLInject niet gestart is.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1107"/>
-        <location filename="../GUI/PageRecord.cpp" line="1117"/>
+        <location filename="../GUI/PageRecord.cpp" line="1116"/>
+        <location filename="../GUI/PageRecord.cpp" line="1126"/>
         <source>Pause recording</source>
         <translation>Opname pauzeren</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1110"/>
-        <location filename="../GUI/PageRecord.cpp" line="1120"/>
+        <location filename="../GUI/PageRecord.cpp" line="1119"/>
+        <location filename="../GUI/PageRecord.cpp" line="1129"/>
         <source>Start recording</source>
         <translation>Opname starten</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1128"/>
+        <location filename="../GUI/PageRecord.cpp" line="1137"/>
         <source>Deactivate schedule</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/PageRecord.cpp" line="1138"/>
-        <source>Activate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Planning deactiveren</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1147"/>
+        <source>Activate schedule</source>
+        <translation>Planning activeren</translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="1156"/>
         <source>Stop preview</source>
         <translation>Voorbeeld stoppen</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1150"/>
+        <location filename="../GUI/PageRecord.cpp" line="1159"/>
         <source>Start preview</source>
         <translation>Voorbeeld starten</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1191"/>
+        <location filename="../GUI/PageRecord.cpp" line="1200"/>
         <source>Error: Something went wrong while creating the synth.</source>
         <translation>Fout: Er ging iets fout bij het maken van de synth.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1255"/>
+        <location filename="../GUI/PageRecord.cpp" line="1264"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>Weet je zeker dat je deze opname wilt annuleren?</translation>
     </message>
@@ -2636,12 +2663,12 @@ De startknop staat bovenaan ;).</translation>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="52"/>
         <source>Skip this page next time</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze pagina volgende keer overslaan</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="53"/>
         <source>Go directly to the input page when the program is started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ga direct naar de inputpagina wanneer het programma wordt gestart.</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="76"/>
@@ -3417,22 +3444,22 @@ Je kan deze optie ook manueel veranderen in het NVIDIA-controlepaneel.</translat
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="39"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="40"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Pauze</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="46"/>
         <source>Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tijd:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="51"/>
         <source>Action:</source>
-        <translation type="unfinished"></translation>
+        <translation>Actie:</translation>
     </message>
 </context>
 <context>

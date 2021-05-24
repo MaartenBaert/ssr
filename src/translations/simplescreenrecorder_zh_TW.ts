@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="zh_TW">
+<TS version="2.0" language="zh_TW">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -406,7 +406,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/JACKInput.cpp" line="251"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="335"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="263"/>
-        <location filename="../AV/Input/X11Input.cpp" line="447"/>
+        <location filename="../AV/Input/X11Input.cpp" line="465"/>
         <source>Input thread started.</source>
         <translation>輸入線程已啟動。</translation>
     </message>
@@ -426,7 +426,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/JACKInput.cpp" line="302"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="428"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="294"/>
-        <location filename="../AV/Input/X11Input.cpp" line="567"/>
+        <location filename="../AV/Input/X11Input.cpp" line="585"/>
         <source>Input thread stopped.</source>
         <translation>輸入線程已停止。</translation>
     </message>
@@ -436,7 +436,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/JACKInput.cpp" line="306"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="432"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="298"/>
-        <location filename="../AV/Input/X11Input.cpp" line="571"/>
+        <location filename="../AV/Input/X11Input.cpp" line="589"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -446,7 +446,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/JACKInput.cpp" line="309"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="435"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="301"/>
-        <location filename="../AV/Input/X11Input.cpp" line="574"/>
+        <location filename="../AV/Input/X11Input.cpp" line="592"/>
         <source>Unknown exception in input thread.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -731,18 +731,28 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="371"/>
+        <location filename="../AV/Input/X11Input.cpp" line="355"/>
+        <source>Detecting screen configuration ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="373"/>
         <source>Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.</source>
         <comment>Don&apos;t translate &apos;Xinerama&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="377"/>
+        <location filename="../AV/Input/X11Input.cpp" line="379"/>
         <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="396"/>
+        <location filename="../AV/Input/X11Input.cpp" line="386"/>
+        <source>Screen %1:</source>
+        <translation type="unfinished">螢幕 %1:</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="406"/>
         <source>Error: Invalid screen bounding box!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -752,13 +762,18 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="518"/>
+        <location filename="../AV/Input/X11Input.cpp" line="450"/>
+        <source>Dead space %1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="536"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="529"/>
+        <location filename="../AV/Input/X11Input.cpp" line="547"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation type="unfinished"></translation>
@@ -1119,37 +1134,37 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <translation>CPU 功能</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="89"/>
+        <location filename="../common/CommandLineOptions.cpp" line="90"/>
         <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="97"/>
+        <location filename="../common/CommandLineOptions.cpp" line="98"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="190"/>
+        <location filename="../common/CommandLineOptions.cpp" line="195"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="198"/>
+        <location filename="../common/CommandLineOptions.cpp" line="203"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="248"/>
+        <location filename="../common/CommandLineOptions.cpp" line="253"/>
         <source>Error: Can&apos;t create configuration directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="96"/>
+        <location filename="../Main.cpp" line="99"/>
         <source>SSR started</source>
         <translation>SSR 已啟動</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="130"/>
+        <location filename="../Main.cpp" line="133"/>
         <source>SSR stopped</source>
         <translation>SSR 已停止</translation>
     </message>
@@ -2016,6 +2031,11 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
         <translation>編輯排程</translation>
     </message>
     <message>
+        <location filename="../GUI/PageRecord.cpp" line="183"/>
+        <source>The recording schedule can be used to automatically start or pause the recording at a predefined time.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../GUI/PageRecord.cpp" line="185"/>
         <source>Enable recording hotkey</source>
         <translation>啟用錄製熱鍵</translation>
@@ -2186,173 +2206,178 @@ Are you sure that you want to quit?</source>
         <translation>正在開始頁面...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="691"/>
+        <location filename="../GUI/PageRecord.cpp" line="690"/>
         <source>Started page.</source>
         <translation>已開始頁面。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="724"/>
+        <location filename="../GUI/PageRecord.cpp" line="723"/>
         <source>Stopping page ...</source>
         <translation>正在停止頁面...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1013"/>
+        <location filename="../GUI/PageRecord.cpp" line="793"/>
+        <source>Output file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="1022"/>
         <source>Encoding remaining data ...</source>
         <translation>正在編碼剩餘的資料...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1272"/>
+        <location filename="../GUI/PageRecord.cpp" line="1281"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.</source>
         <translation>您尚未進行錄製，無需存檔。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1289"/>
+        <location filename="../GUI/PageRecord.cpp" line="1298"/>
         <source>Triggering scheduled action &apos;%1&apos; ...</source>
         <translation>正在觸發排程的動作「%1」...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1300"/>
+        <location filename="../GUI/PageRecord.cpp" line="1309"/>
         <source>Schedule: %1 in %2</source>
         <translation>排程：%2 後%1</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1307"/>
+        <location filename="../GUI/PageRecord.cpp" line="1316"/>
         <source>Schedule: (none)</source>
         <translation>排程：（無）</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1311"/>
+        <location filename="../GUI/PageRecord.cpp" line="1320"/>
         <source>Schedule: (inactive)</source>
         <translation>排程：（非使用中）</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1375"/>
-        <location filename="../GUI/PageRecord.cpp" line="1392"/>
+        <location filename="../GUI/PageRecord.cpp" line="1384"/>
+        <location filename="../GUI/PageRecord.cpp" line="1401"/>
         <source>Standard input read error (%1).</source>
         <translation>標準輸入讀取錯誤 (%1)。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1380"/>
-        <location filename="../GUI/PageRecord.cpp" line="1397"/>
+        <location filename="../GUI/PageRecord.cpp" line="1389"/>
+        <location filename="../GUI/PageRecord.cpp" line="1406"/>
         <source>Standard input closed (%1).</source>
         <translation>標準輸入已關閉 (%1)。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1410"/>
+        <location filename="../GUI/PageRecord.cpp" line="1419"/>
         <source>Received command &apos;%1&apos;.</source>
         <translation>收到指令「%1」。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1430"/>
+        <location filename="../GUI/PageRecord.cpp" line="1439"/>
         <source>Unknown command.</source>
         <translation>未知指令。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="751"/>
+        <location filename="../GUI/PageRecord.cpp" line="750"/>
         <source>Stopped page.</source>
         <translation>已停止頁面。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="780"/>
+        <location filename="../GUI/PageRecord.cpp" line="779"/>
         <source>Starting output ...</source>
         <translation>正在開始輸出...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="795"/>
+        <location filename="../GUI/PageRecord.cpp" line="804"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
         <translation>錯誤：無法獲取 OpenGL 應用程式的大小，因為 GLInject 輸入沒有啟動。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="800"/>
+        <location filename="../GUI/PageRecord.cpp" line="809"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation>錯誤：無法獲取 OpenGL 應用程式的大小。可能是應用程式沒有正確啟動，或者應用程式還沒建立 OpenGL 視窗。如果您要在啟動應用程式前開始錄製，您必須啟用縮放並手動輸入視訊大小。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="839"/>
+        <location filename="../GUI/PageRecord.cpp" line="848"/>
         <source>Started output.</source>
         <translation>已開始輸出。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="921"/>
+        <location filename="../GUI/PageRecord.cpp" line="930"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
         <translation>錯誤：無法啟動 GLInject 輸入，因為還沒有建立。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="682"/>
-        <location filename="../GUI/PageRecord.cpp" line="849"/>
-        <location filename="../GUI/PageRecord.cpp" line="952"/>
+        <location filename="../GUI/PageRecord.cpp" line="681"/>
+        <location filename="../GUI/PageRecord.cpp" line="858"/>
+        <location filename="../GUI/PageRecord.cpp" line="961"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation>錯誤：啟動時發生錯誤。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="860"/>
+        <location filename="../GUI/PageRecord.cpp" line="869"/>
         <source>Stopping output ...</source>
         <translation>正在停止輸出...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="878"/>
+        <location filename="../GUI/PageRecord.cpp" line="887"/>
         <source>Stopped output.</source>
         <translation>已停止輸出。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="910"/>
+        <location filename="../GUI/PageRecord.cpp" line="919"/>
         <source>Starting input ...</source>
         <translation>正在開始輸入...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="947"/>
+        <location filename="../GUI/PageRecord.cpp" line="956"/>
         <source>Started input.</source>
         <translation>已開始輸入。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="979"/>
+        <location filename="../GUI/PageRecord.cpp" line="988"/>
         <source>Stopping input ...</source>
         <translation>正在停止輸入...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="997"/>
+        <location filename="../GUI/PageRecord.cpp" line="1006"/>
         <source>Stopped input.</source>
         <translation>已停止輸入。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1107"/>
-        <location filename="../GUI/PageRecord.cpp" line="1117"/>
+        <location filename="../GUI/PageRecord.cpp" line="1116"/>
+        <location filename="../GUI/PageRecord.cpp" line="1126"/>
         <source>Pause recording</source>
         <translation>暫停錄製</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1110"/>
-        <location filename="../GUI/PageRecord.cpp" line="1120"/>
+        <location filename="../GUI/PageRecord.cpp" line="1119"/>
+        <location filename="../GUI/PageRecord.cpp" line="1129"/>
         <source>Start recording</source>
         <translation>開始錄製</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1128"/>
+        <location filename="../GUI/PageRecord.cpp" line="1137"/>
         <source>Deactivate schedule</source>
         <translation>停用排程</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1138"/>
+        <location filename="../GUI/PageRecord.cpp" line="1147"/>
         <source>Activate schedule</source>
         <translation>啟用排程</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1147"/>
+        <location filename="../GUI/PageRecord.cpp" line="1156"/>
         <source>Stop preview</source>
         <translation>停止預覽</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1150"/>
+        <location filename="../GUI/PageRecord.cpp" line="1159"/>
         <source>Start preview</source>
         <translation>開始預覽</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1191"/>
+        <location filename="../GUI/PageRecord.cpp" line="1200"/>
         <source>Error: Something went wrong while creating the synth.</source>
         <translation>錯誤：建立 synth 時發生錯誤。</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1255"/>
+        <location filename="../GUI/PageRecord.cpp" line="1264"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>您確定要取消本次錄製嗎？</translation>
     </message>

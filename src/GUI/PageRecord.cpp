@@ -180,7 +180,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_label_schedule_status = new QLabel(groupbox_recording);
 		m_pushbutton_schedule_activate = new QPushButton(groupbox_recording);
 		m_pushbutton_schedule_edit = new QPushButton(tr("Edit schedule"), groupbox_recording);
-		// TODO: tooptips
+		m_pushbutton_schedule_edit->setToolTip(tr("The recording schedule can be used to automatically start or pause the recording at a predefined time."));
 
 		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), groupbox_recording);
 		m_checkbox_hotkey_enable->setToolTip(tr("The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,\n"

@@ -408,7 +408,7 @@ Cela empêche l&apos;application de gaspiller du temps CPU pour des trames qui n
         <location filename="../AV/Input/JACKInput.cpp" line="251"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="335"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="263"/>
-        <location filename="../AV/Input/X11Input.cpp" line="447"/>
+        <location filename="../AV/Input/X11Input.cpp" line="465"/>
         <source>Input thread started.</source>
         <translation>Flux d&apos;entrée démarré.</translation>
     </message>
@@ -428,7 +428,7 @@ Cela empêche l&apos;application de gaspiller du temps CPU pour des trames qui n
         <location filename="../AV/Input/JACKInput.cpp" line="302"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="428"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="294"/>
-        <location filename="../AV/Input/X11Input.cpp" line="567"/>
+        <location filename="../AV/Input/X11Input.cpp" line="585"/>
         <source>Input thread stopped.</source>
         <translation>Flux d&apos;entrée arrêté.</translation>
     </message>
@@ -438,7 +438,7 @@ Cela empêche l&apos;application de gaspiller du temps CPU pour des trames qui n
         <location filename="../AV/Input/JACKInput.cpp" line="306"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="432"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="298"/>
-        <location filename="../AV/Input/X11Input.cpp" line="571"/>
+        <location filename="../AV/Input/X11Input.cpp" line="589"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
         <translation>Exception &apos;%1&apos; sur le flux d&apos;entrée.</translation>
     </message>
@@ -448,7 +448,7 @@ Cela empêche l&apos;application de gaspiller du temps CPU pour des trames qui n
         <location filename="../AV/Input/JACKInput.cpp" line="309"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="435"/>
         <location filename="../AV/Input/V4L2Input.cpp" line="301"/>
-        <location filename="../AV/Input/X11Input.cpp" line="574"/>
+        <location filename="../AV/Input/X11Input.cpp" line="592"/>
         <source>Unknown exception in input thread.</source>
         <translation>Une exception inconnue sur le flux d&apos;entrée.</translation>
     </message>
@@ -866,18 +866,28 @@ Il est possible que votre système n&apos;utilise pas PulseAudio.</translation>
         <translation>Avertissement: Xfixes n&apos;est pas pris en charge par le serveur X, le curseur a été caché.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="371"/>
+        <location filename="../AV/Input/X11Input.cpp" line="355"/>
+        <source>Detecting screen configuration ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="373"/>
         <source>Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.</source>
         <comment>Don&apos;t translate &apos;Xinerama&apos;</comment>
         <translation>Avertissement : Xinerama n&apos;est pas supporté par le serveur X, le support multi-moniteur pourrait ne pas fonctionner correctement.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="377"/>
+        <location filename="../AV/Input/X11Input.cpp" line="379"/>
         <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
         <translation>Avertissement : aucun moniteur détecté, la prise en charge de plusieurs moniteurs pourrait ne pas fonctionner correctement.</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="396"/>
+        <location filename="../AV/Input/X11Input.cpp" line="386"/>
+        <source>Screen %1:</source>
+        <translation type="unfinished">Écran %1:</translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="406"/>
         <source>Error: Invalid screen bounding box!</source>
         <translation>Erreur : zone de délimitation de l&apos;écran invalide !</translation>
     </message>
@@ -887,14 +897,19 @@ Il est possible que votre système n&apos;utilise pas PulseAudio.</translation>
         <translation>Erreur : impossible au serveur de joindre la mémoire partagée !</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="518"/>
+        <location filename="../AV/Input/X11Input.cpp" line="450"/>
+        <source>Dead space %1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AV/Input/X11Input.cpp" line="536"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation>Erreur : impossible d&apos;obtenir d&apos;image (utilisation de la mémoire partagée)!
 Habituellement, cela signifie que la zone d&apos;enregistrement n&apos;est pas complètement à l&apos;intérieur de l&apos;écran. Ou avez-vous changé la résolution de l&apos;écran ?</translation>
     </message>
     <message>
-        <location filename="../AV/Input/X11Input.cpp" line="529"/>
+        <location filename="../AV/Input/X11Input.cpp" line="547"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
         <translation>Erreur : impossible d&apos;obtenir d&apos;image (pas d&apos;utilisation de la mémoire partagée)!
@@ -1289,37 +1304,37 @@ Habituellement, cela signifie que la zone d&apos;enregistrement n&apos;est pas c
         <translation>Attention : XInput2 n&apos;est pas pris en charge par le serveur X, les raccourcis peuvent ne pas fonctionner dans certaines applications.</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="89"/>
+        <location filename="../common/CommandLineOptions.cpp" line="90"/>
         <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
         <translation>Erreur : l&apos;option &apos;%1&apos; en ligne de commande nécessite une valeur !</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="97"/>
+        <location filename="../common/CommandLineOptions.cpp" line="98"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
         <translation>Erreur : l&apos;option &apos;%1&apos; en ligne de commande ne prend pas de valeur !</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="190"/>
+        <location filename="../common/CommandLineOptions.cpp" line="195"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
         <translation>Erreur : option inconnue &apos;%1&apos; dans la ligne de commande !</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="198"/>
+        <location filename="../common/CommandLineOptions.cpp" line="203"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
         <translation>Erreur : argument inconnu &apos;%1&apos; dans la ligne de commande !</translation>
     </message>
     <message>
-        <location filename="../common/CommandLineOptions.cpp" line="248"/>
+        <location filename="../common/CommandLineOptions.cpp" line="253"/>
         <source>Error: Can&apos;t create configuration directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="96"/>
+        <location filename="../Main.cpp" line="99"/>
         <source>SSR started</source>
         <translation>SSR démarré</translation>
     </message>
     <message>
-        <location filename="../Main.cpp" line="130"/>
+        <location filename="../Main.cpp" line="133"/>
         <source>SSR stopped</source>
         <translation>SSR arrêté</translation>
     </message>
@@ -2049,6 +2064,11 @@ Et si vous enregistrer simplement votre propre voix (pas de musique), la qualit�
         <translation>Éditer la planification</translation>
     </message>
     <message>
+        <location filename="../GUI/PageRecord.cpp" line="183"/>
+        <source>The recording schedule can be used to automatically start or pause the recording at a predefined time.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../GUI/PageRecord.cpp" line="185"/>
         <source>Enable recording hotkey</source>
         <translation>Activer le raccourci d&apos;enregistrement</translation>
@@ -2221,173 +2241,178 @@ Are you sure that you want to quit?</source>
         <translation>La page de démarrage ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="682"/>
-        <location filename="../GUI/PageRecord.cpp" line="849"/>
-        <location filename="../GUI/PageRecord.cpp" line="952"/>
+        <location filename="../GUI/PageRecord.cpp" line="681"/>
+        <location filename="../GUI/PageRecord.cpp" line="858"/>
+        <location filename="../GUI/PageRecord.cpp" line="961"/>
         <source>Error: Something went wrong during initialization.</source>
         <translation>Erreur : quelque chose s&apos;est mal passé lors de l&apos;initialisation.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="691"/>
+        <location filename="../GUI/PageRecord.cpp" line="690"/>
         <source>Started page.</source>
         <translation>La page de démarrage.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="724"/>
+        <location filename="../GUI/PageRecord.cpp" line="723"/>
         <source>Stopping page ...</source>
         <translation>Arrêt de la page ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="751"/>
+        <location filename="../GUI/PageRecord.cpp" line="750"/>
         <source>Stopped page.</source>
         <translation>Page arrêtée.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="780"/>
+        <location filename="../GUI/PageRecord.cpp" line="779"/>
         <source>Starting output ...</source>
         <translation>Démarrage de la sortie ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="795"/>
+        <location filename="../GUI/PageRecord.cpp" line="793"/>
+        <source>Output file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/PageRecord.cpp" line="804"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
         <translation>Erreur : impossible d&apos;obtenir la taille de l&apos;application OpenGL parce que l&apos;entrée de GLInject n&apos;a pas été créée.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="800"/>
+        <location filename="../GUI/PageRecord.cpp" line="809"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
         <translation>Erreur : impossible d&apos;obtenir la taille de l&apos;application OpenGL. Soit l&apos;application n&apos;a pas démarré correctement, ou l&apos;application n&apos;a pas encore créé une fenêtre OpenGL. Si vous voulez commencer l&apos;enregistrement avant de démarrer l&apos;application, vous devez activer l&apos;échelle et entrez la taille de la vidéo manuellement.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="839"/>
+        <location filename="../GUI/PageRecord.cpp" line="848"/>
         <source>Started output.</source>
         <translation>Sortie démarrée.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="860"/>
+        <location filename="../GUI/PageRecord.cpp" line="869"/>
         <source>Stopping output ...</source>
         <translation>Arrêt de la sortie ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="878"/>
+        <location filename="../GUI/PageRecord.cpp" line="887"/>
         <source>Stopped output.</source>
         <translation>Sortie arrêtée.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="910"/>
+        <location filename="../GUI/PageRecord.cpp" line="919"/>
         <source>Starting input ...</source>
         <translation>Démarrage de l&apos;entrée ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="921"/>
+        <location filename="../GUI/PageRecord.cpp" line="930"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
         <translation>Erreur : impossible de démarrer l&apos;entrée de GLInject parce qu&apos;elle n&apos;a pas été créée.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="947"/>
+        <location filename="../GUI/PageRecord.cpp" line="956"/>
         <source>Started input.</source>
         <translation>Entrée démarrée.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="979"/>
+        <location filename="../GUI/PageRecord.cpp" line="988"/>
         <source>Stopping input ...</source>
         <translation>Arrêt de l&apos;entrée ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="997"/>
+        <location filename="../GUI/PageRecord.cpp" line="1006"/>
         <source>Stopped input.</source>
         <translation>Entrée arrêtée.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1013"/>
+        <location filename="../GUI/PageRecord.cpp" line="1022"/>
         <source>Encoding remaining data ...</source>
         <translation>Coder des données restantes ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1107"/>
-        <location filename="../GUI/PageRecord.cpp" line="1117"/>
+        <location filename="../GUI/PageRecord.cpp" line="1116"/>
+        <location filename="../GUI/PageRecord.cpp" line="1126"/>
         <source>Pause recording</source>
         <translation>Suspendre l&apos;enregistrement</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1110"/>
-        <location filename="../GUI/PageRecord.cpp" line="1120"/>
+        <location filename="../GUI/PageRecord.cpp" line="1119"/>
+        <location filename="../GUI/PageRecord.cpp" line="1129"/>
         <source>Start recording</source>
         <translation>Démarrer l&apos;enregistrement</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1128"/>
+        <location filename="../GUI/PageRecord.cpp" line="1137"/>
         <source>Deactivate schedule</source>
         <translation>Désactiver la planification</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1138"/>
+        <location filename="../GUI/PageRecord.cpp" line="1147"/>
         <source>Activate schedule</source>
         <translation>Activer la planification</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1147"/>
+        <location filename="../GUI/PageRecord.cpp" line="1156"/>
         <source>Stop preview</source>
         <translation>Arrêter l&apos;aperçu</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1150"/>
+        <location filename="../GUI/PageRecord.cpp" line="1159"/>
         <source>Start preview</source>
         <translation>Démarrer l&apos;aperçu</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1191"/>
+        <location filename="../GUI/PageRecord.cpp" line="1200"/>
         <source>Error: Something went wrong while creating the synth.</source>
         <translation>Erreur : quelque chose s&apos;est mal passé lors de la création du synthé.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1255"/>
+        <location filename="../GUI/PageRecord.cpp" line="1264"/>
         <source>Are you sure that you want to cancel this recording?</source>
         <translation>Êtes-vous sûr de vouloir annuler cet enregistrement ?</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1272"/>
+        <location filename="../GUI/PageRecord.cpp" line="1281"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.</source>
         <translation>Vous n&apos;avez rien enregistré, il n&apos;y a rien à sauvegarder.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1289"/>
+        <location filename="../GUI/PageRecord.cpp" line="1298"/>
         <source>Triggering scheduled action &apos;%1&apos; ...</source>
         <translation>Déclenchement d&apos;une action planifiée &apos;%1&apos; ...</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1300"/>
+        <location filename="../GUI/PageRecord.cpp" line="1309"/>
         <source>Schedule: %1 in %2</source>
         <translation>Planification : %1 de %2</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1307"/>
+        <location filename="../GUI/PageRecord.cpp" line="1316"/>
         <source>Schedule: (none)</source>
         <translation>Planification : (aucune)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1311"/>
+        <location filename="../GUI/PageRecord.cpp" line="1320"/>
         <source>Schedule: (inactive)</source>
         <translation>Planification : (inactif)</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1375"/>
-        <location filename="../GUI/PageRecord.cpp" line="1392"/>
+        <location filename="../GUI/PageRecord.cpp" line="1384"/>
+        <location filename="../GUI/PageRecord.cpp" line="1401"/>
         <source>Standard input read error (%1).</source>
         <translation>Erreur de lecture d&apos;entrée standard (%1).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1380"/>
-        <location filename="../GUI/PageRecord.cpp" line="1397"/>
+        <location filename="../GUI/PageRecord.cpp" line="1389"/>
+        <location filename="../GUI/PageRecord.cpp" line="1406"/>
         <source>Standard input closed (%1).</source>
         <translation>Entrée standard fermée (%1).</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1410"/>
+        <location filename="../GUI/PageRecord.cpp" line="1419"/>
         <source>Received command &apos;%1&apos;.</source>
         <translation>Commande &apos;%1&apos; reçue.</translation>
     </message>
     <message>
-        <location filename="../GUI/PageRecord.cpp" line="1430"/>
+        <location filename="../GUI/PageRecord.cpp" line="1439"/>
         <source>Unknown command.</source>
         <translation>Commande inconnue.</translation>
     </message>

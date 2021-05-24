@@ -1048,6 +1048,18 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <source>Detected fractional screen scale factor, scaling was disabled.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Detecting screen configuration ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Screen %1:</source>
+        <translation type="unfinished">Οθόνη %1:</translation>
+    </message>
+    <message>
+        <source>Dead space %1:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -1877,6 +1889,14 @@ SimpleScreenRecorder window show up in the final video.</source>
     </message>
     <message>
         <source>When enabled, the recorded area is marked on the screen.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The recording schedule can be used to automatically start or pause the recording at a predefined time.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
