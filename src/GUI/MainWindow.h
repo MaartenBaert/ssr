@@ -41,6 +41,7 @@ public:
 	static const QString WINDOW_CAPTION;
 
 private:
+	bool m_force_quit;
 	enum_nvidia_disable_flipping m_nvidia_disable_flipping;
 	bool m_nvidia_reenable_flipping;
 
@@ -62,7 +63,6 @@ public:
 
 	bool IsBusy();
 	bool Validate();
-	void Quit();
 
 protected:
 	virtual void closeEvent(QCloseEvent* event) override;
@@ -87,5 +87,5 @@ public slots:
 	void OnHide();
 	void OnShowHide();
 	void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
-
+	void Quit();
 };

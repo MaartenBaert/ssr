@@ -42,6 +42,7 @@ const QString MainWindow::WINDOW_CAPTION = "SimpleScreenRecorder";
 MainWindow::MainWindow()
 	: QMainWindow() {
 
+	m_force_quit = false;
 	m_nvidia_reenable_flipping = false;
 	m_old_geometry = QRect();
 
@@ -184,6 +185,7 @@ bool MainWindow::Validate() {
 }
 
 void MainWindow::Quit() {
+	m_force_quit = true;
 	SaveSettings();
 	if(m_nvidia_reenable_flipping) {
 		NVidiaSetFlipping(true);
@@ -196,8 +198,12 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 		event->ignore();
 		return;
 	}
-	event->accept();
-	Quit();
+	if (m_force_quit || !CommandLineOptions::GetSysTray()) {
+		event->accept();
+		Quit();
+	} else {
+		OnHide();
+	}
 }
 
 void MainWindow::GoPageStart() {
