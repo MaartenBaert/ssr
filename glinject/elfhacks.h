@@ -44,6 +44,12 @@ extern "C" {
 #ifdef __i386__
 # define __elf32
 #endif
+#ifdef __loongarch64
+# define __elf64
+#endif
+#ifdef __loongarch32
+# define __elf32
+#endif
 
 #if defined(__elf64)
 # define ELFW_R_SYM ELF64_R_SYM
