@@ -201,10 +201,20 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 }
 
 void MainWindow::GoPageStart() {
-	if(m_page_welcome->GetSkipPage()) {
-		m_stacked_layout->setCurrentWidget(m_page_input);
+	QString page = CommandLineOptions::GetStartPage();
+	if(page == "input") {
+		GoPageInput();
+	} else if(page == "output") {
+		GoPageOutput();
+	} else if(page == "record") {
+		GoPageRecord();
 	} else {
-		m_stacked_layout->setCurrentWidget(m_page_welcome);
+		//even though page is not welcome.
+		if(m_page_welcome->GetSkipPage()) {
+			m_stacked_layout->setCurrentWidget(m_page_input);
+		} else {
+			m_stacked_layout->setCurrentWidget(m_page_welcome);
+		}
 	}
 }
 void MainWindow::GoPageWelcome() {

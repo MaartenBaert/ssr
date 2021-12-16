@@ -42,6 +42,9 @@ void PrintOptionHelp() {
 		"  --no-systray          Don't show the system tray icon.\n"
 		"  --start-hidden        Start the application in hidden form.\n"
 		"  --start-recording     Start the recording immediately.\n"
+		"  --start-page=PAGE     Start the application at the defined PAGE, which should\n"
+		"                        be welcome, input, output or record. If omitted, PAGE\n"
+		"                        will be set to welcome.\n"
 		"  --activate-schedule   Activate the recording schedule immediately.\n"
 		"  --syncdiagram         Show synchronization diagram (for debugging).\n"
 		"  --benchmark           Run the internal benchmark.\n"
@@ -108,6 +111,7 @@ CommandLineOptions::CommandLineOptions() {
 	m_settings_file = DefaultSettingsFile();
 	m_log_file = QString();
 	m_stats_file = QString();
+	m_start_page = QString();
 	m_redirect_stderr = true;
 	m_systray = true;
 	m_start_hidden = false;
@@ -181,6 +185,12 @@ void CommandLineOptions::Parse() {
 			} else if(option == "--start-recording") {
 				CheckOptionHasNoValue(option, value);
 				m_start_recording = true;
+			} else if(option == "--start-page") {
+				if(value.isNull()) {
+					m_start_page = "welcome";
+				} else {
+					m_start_page = value;
+				}
 			} else if(option == "--activate-schedule") {
 				CheckOptionHasNoValue(option, value);
 				m_activate_schedule = true;

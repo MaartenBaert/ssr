@@ -33,6 +33,7 @@ private:
 	QString m_settings_file;
 	QString m_log_file;
 	QString m_stats_file;
+	QString m_start_page;
 	bool m_redirect_stderr;
 	bool m_systray;
 	bool m_start_hidden;
@@ -55,6 +56,7 @@ public:
 	inline static const QString& GetSettingsFile() { return GetInstance()->m_settings_file; }
 	inline static const QString& GetLogFile() { return GetInstance()->m_log_file; }
 	inline static const QString& GetStatsFile() { return GetInstance()->m_stats_file; }
+	inline static const QString& GetStartPage() { return GetInstance()->m_start_page; }
 	inline static bool GetRedirectStderr() { return GetInstance()->m_redirect_stderr; }
 	inline static bool GetSysTray() { return GetInstance()->m_systray; }
 	inline static bool GetStartHidden() { return GetInstance()->m_start_hidden; }
