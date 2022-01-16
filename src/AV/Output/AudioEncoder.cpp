@@ -34,7 +34,7 @@ const std::vector<AudioEncoder::SampleFormatData> AudioEncoder::SUPPORTED_SAMPLE
 
 const unsigned int AudioEncoder::DEFAULT_FRAME_SAMPLES = 1024;
 
-AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec_context, AVCodec* codec, AVDictionary** options)
+AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec_context, const AVCodec* codec, AVDictionary** options)
 	: BaseEncoder(muxer, stream, codec_context, codec, options) {
 
 #if !SSR_USE_AVCODEC_ENCODE_AUDIO2
@@ -77,7 +77,7 @@ unsigned int AudioEncoder::GetSampleRate() {
 }
 
 bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
+	const AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL)
 		return false;
 	if(!av_codec_is_encoder(codec))
@@ -93,7 +93,7 @@ bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
 	return false;
 }
 
-void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
 								 unsigned int bit_rate, unsigned int channels, unsigned int sample_rate) {
 
 	if(channels == 0) {

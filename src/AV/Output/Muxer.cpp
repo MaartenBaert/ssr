@@ -87,7 +87,7 @@ Muxer::~Muxer() {
 
 VideoEncoder* Muxer::AddVideoEncoder(const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 									 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate) {
-	AVCodec *codec = FindCodec(codec_name);
+	const AVCodec *codec = FindCodec(codec_name);
 	AVCodecContext *codec_context = NULL;
 	AVStream *stream = AddStream(codec, &codec_context);
 	VideoEncoder *encoder;
@@ -111,7 +111,7 @@ VideoEncoder* Muxer::AddVideoEncoder(const QString& codec_name, const std::vecto
 
 AudioEncoder* Muxer::AddAudioEncoder(const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
 									 unsigned int bit_rate, unsigned int channels, unsigned int sample_rate) {
-	AVCodec *codec = FindCodec(codec_name);
+	const AVCodec *codec = FindCodec(codec_name);
 	AVCodecContext *codec_context = NULL;
 	AVStream *stream = AddStream(codec, &codec_context);
 	AudioEncoder *encoder;
@@ -194,7 +194,7 @@ unsigned int Muxer::GetQueuedPacketCount(unsigned int stream_index) {
 void Muxer::Init() {
 
 	// get the format we want (this is just a pointer, we don't have to free this)
-	AVOutputFormat *format = av_guess_format(m_container_name.toUtf8().constData(), NULL, NULL);
+	const AVOutputFormat *format = av_guess_format(m_container_name.toUtf8().constData(), NULL, NULL);
 	if(format == NULL) {
 		Logger::LogError("[Muxer::Init] " + Logger::tr("Error: Can't find chosen output format!"));
 		throw LibavException();
@@ -261,8 +261,8 @@ void Muxer::Free() {
 	}
 }
 
-AVCodec* Muxer::FindCodec(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
+const AVCodec* Muxer::FindCodec(const QString& codec_name) {
+	const AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL) {
 		Logger::LogError("[Muxer::FindCodec] " + Logger::tr("Error: Can't find codec!"));
 		throw LibavException();
@@ -270,7 +270,7 @@ AVCodec* Muxer::FindCodec(const QString& codec_name) {
 	return codec;
 }
 
-AVStream* Muxer::AddStream(AVCodec* codec, AVCodecContext** codec_context) {
+AVStream* Muxer::AddStream(const AVCodec* codec, AVCodecContext** codec_context) {
 	assert(!m_started);
 	assert(m_format_context->nb_streams < MUXER_MAX_STREAMS);
 

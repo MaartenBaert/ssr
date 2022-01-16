@@ -34,7 +34,7 @@ const std::vector<VideoEncoder::PixelFormatData> VideoEncoder::SUPPORTED_PIXEL_F
 	{"rgb", AV_PIX_FMT_RGB24, false},
 };
 
-VideoEncoder::VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options)
+VideoEncoder::VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options)
 	: BaseEncoder(muxer, stream, codec_context, codec, options) {
 
 #if !SSR_USE_AVCODEC_ENCODE_VIDEO2
@@ -95,7 +95,7 @@ unsigned int VideoEncoder::GetFrameRate() {
 }
 
 bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
+	const AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL)
 		return false;
 	if(!av_codec_is_encoder(codec))
@@ -111,7 +111,7 @@ bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
 	return false;
 }
 
-void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
 								 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate) {
 
 	if(width == 0 || height == 0) {
