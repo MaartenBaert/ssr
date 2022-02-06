@@ -40,7 +40,7 @@ private:
 #endif
 
 public:
-	AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options);
+	AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options);
 	~AudioEncoder();
 
 	// Returns the required frame size, i.e. the number of samples (for each channel).
@@ -57,7 +57,7 @@ public:
 
 public:
 	static bool AVCodecIsSupported(const QString& codec_name);
-	static void PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+	static void PrepareStream(AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
 							  unsigned int bit_rate, unsigned int channels, unsigned int sample_rate);
 
 private:
