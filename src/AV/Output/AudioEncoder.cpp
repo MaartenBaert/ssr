@@ -77,7 +77,8 @@ unsigned int AudioEncoder::GetSampleRate() {
 }
 
 bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
+	// we have to break const correctness for compatibility with older ffmpeg versions
+	AVCodec *codec = (AVCodec*) avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL)
 		return false;
 	if(!av_codec_is_encoder(codec))
