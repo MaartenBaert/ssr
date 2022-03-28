@@ -44,6 +44,11 @@ extern "C" {
 #ifdef __i386__
 # define __elf32
 #endif
+#if __riscv_xlen == 64
+# define __elf64
+#elif __riscv_xlen == 32
+# define __elf32
+#endif
 
 #if defined(__elf64)
 # define ELFW_R_SYM ELF64_R_SYM

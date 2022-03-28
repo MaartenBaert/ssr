@@ -70,7 +70,7 @@ static QString GetNewSegmentFile(const QString& file, bool add_timestamp) {
 		if(counter != 1) {
 			if(!newfile.isEmpty())
 				newfile += "-";
-			newfile += "(" + QString::number(counter) + ")";
+			newfile += QString::number(counter);
 		}
 		if(!fi.suffix().isEmpty())
 			newfile += "." + fi.suffix();
