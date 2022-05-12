@@ -8,6 +8,8 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #pragma once
 
+#include <stdint.h>
+
 /*
 A captured video stream is transmitted to SimpleScreenRecorder using shared memory files (i.e. files in /dev/shm).
 The system is entirely lock-free and thread-safe, but supports only a single reader and a single writer.

@@ -28,6 +28,7 @@ if(LRELEASE)
 		pl
 		pt_BR
 		ru
+		sk
 		sr
 		sv
 		uk
