@@ -38,6 +38,8 @@ enum_button MessageBox(QMessageBox::Icon icon, QWidget* parent, const QString& t
 		{BUTTON_YES_ALWAYS, QDialogButtonBox::tr("Yes, always"), QMessageBox::YesRole   , NULL},
 		{BUTTON_NO        , QDialogButtonBox::tr("&No")        , QMessageBox::NoRole    , NULL},
 		{BUTTON_NO_NEVER  , QDialogButtonBox::tr("No, never")  , QMessageBox::NoRole    , NULL},
+		{BUTTON_DISCARD   , QDialogButtonBox::tr("Discard")    , QMessageBox::AcceptRole, NULL},
+		{BUTTON_SAVE      , QDialogButtonBox::tr("Save")       , QMessageBox::YesRole   , NULL}
 	};
 
 	// add buttons

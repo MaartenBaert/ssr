@@ -2207,9 +2207,9 @@ Tyto klávesy budou odchyceny a nebudou předány nahrávané aplikaci.</transla
     <message>
         <location filename="../GUI/PageRecord.cpp" line="435"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
-Are you sure that you want to quit?</source>
+What would you like to do with it?</source>
         <translation>Aktuální nahrávka dosud nebyla uložena a pokud program ukončíte nyní, bude ztracena.
-Opravdu chcete program ukončit? </translation>
+Co s ní chcete dělat?</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="447"/>
@@ -2550,6 +2550,11 @@ Tlačítko Spustit nahrávání je nahoře ;).</translation>
         <location filename="../common/Dialogs.cpp" line="40"/>
         <source>No, never</source>
         <translation type="unfinished">Ne, nikdy</translation>
+    </message>
+    <message>
+        <location filename="../common/Dialogs.cpp" line="41"/>
+        <source>Discard</source>
+        <translation type="unfinished">Zahodit</translation>
     </message>
 </context>
 <context>
