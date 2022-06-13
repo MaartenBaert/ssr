@@ -431,9 +431,17 @@ PageRecord::~PageRecord() {
 
 bool PageRecord::ShouldBlockClose() {
 	if(m_output_manager != NULL) {
-		if(MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
+		enum_button answer = MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 					  tr("You have not saved the current recording yet, if you quit now it will be lost.\n"
-						 "Are you sure that you want to quit?"), BUTTON_YES | BUTTON_NO, BUTTON_YES) != BUTTON_YES) {
+						 "What would you like to do with it?"), BUTTON_SAVE | BUTTON_DISCARD | BUTTON_CANCEL);
+		if(answer == BUTTON_DISCARD) {
+			return false;
+		}
+		if(answer == BUTTON_CANCEL) {
+			return true;
+		}
+		if(answer == BUTTON_SAVE) {
+			OnRecordSave();
 			return true;
 		}
 	}

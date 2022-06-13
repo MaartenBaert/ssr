@@ -29,6 +29,8 @@ enum enum_button : int {
 	BUTTON_YES_ALWAYS = 0x0008,
 	BUTTON_NO         = 0x0010,
 	BUTTON_NO_NEVER   = 0x0020,
+	BUTTON_DISCARD    = 0x0040,
+	BUTTON_SAVE       = 0x0080,
 };
 
 // Shows a standard Qt dialog with translated buttons.
