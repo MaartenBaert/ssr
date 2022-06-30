@@ -32,6 +32,7 @@ if(LRELEASE)
 		sr
 		sv
 		uk
+		uz
 		zh_CN
 		zh_TW
 	)
