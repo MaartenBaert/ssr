@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-	<id>simplescreenrecorder.desktop</id>
+	<id>be.maartenbaert.simplescreenrecorder</id>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0+</project_license>
 	<name>SimpleScreenRecorder</name>
@@ -15,19 +15,25 @@
 			<li>Can also do live streaming (experimental).</li>
 		</ul>
 	</description>
+	<launchable type="desktop-id">simplescreenrecorder.desktop</launchable>
+	<icon type="stock">simplescreenrecorder</icon>
 	<screenshots>
 		<screenshot type="default">
-			<image>http://files.maartenbaert.be/simplescreenrecorder/screenshot01.png</image>
+			<image>https://files.maartenbaert.be/simplescreenrecorder/screenshot01.png</image>
 			<caption>The input settings page</caption>
 		</screenshot>
 		<screenshot type="default">
-			<image>http://files.maartenbaert.be/simplescreenrecorder/screenshot02.png</image>
+			<image>https://files.maartenbaert.be/simplescreenrecorder/screenshot02.png</image>
 			<caption>The output settings page</caption>
 		</screenshot>
 		<screenshot type="default">
-			<image>http://files.maartenbaert.be/simplescreenrecorder/screenshot03.png</image>
+			<image>https://files.maartenbaert.be/simplescreenrecorder/screenshot03.png</image>
 			<caption>The recording page</caption>
 		</screenshot>
 	</screenshots>
-	<url type="homepage">http://www.maartenbaert.be/simplescreenrecorder/</url>
+	<url type="homepage">https://www.maartenbaert.be/simplescreenrecorder/</url>
+	<content_rating type="oars-1.0">
+	  <content_attribute id="social-audio">intense</content_attribute>
+	  <content_attribute id="social-contacts">intense</content_attribute>
+	</content_rating>
 </component>
