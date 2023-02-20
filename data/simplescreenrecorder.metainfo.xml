@@ -15,6 +15,14 @@
 			<li>Can also do live streaming (experimental).</li>
 		</ul>
 	</description>
+
+	<categories>
+		<category>AudioVideo</category>
+		<category>Video</category>
+		<category>Recorder</category>
+		<category>Qt</category>
+	</categories>
+
 	<screenshots>
 		<screenshot type="default">
 			<image>http://files.maartenbaert.be/simplescreenrecorder/screenshot01.png</image>
