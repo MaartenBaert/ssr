@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -20,7 +20,21 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+// Buttons that can be used with the MessageBox function.
+enum enum_button : int {
+	BUTTON_NONE       = 0x0000,
+	BUTTON_OK         = 0x0001,
+	BUTTON_CANCEL     = 0x0002,
+	BUTTON_YES        = 0x0004,
+	BUTTON_YES_ALWAYS = 0x0008,
+	BUTTON_NO         = 0x0010,
+	BUTTON_NO_NEVER   = 0x0020,
+	BUTTON_DISCARD    = 0x0040,
+	BUTTON_SAVE       = 0x0080,
+};
+
 // Shows a standard Qt dialog with translated buttons.
-QMessageBox::StandardButton MessageBox(QMessageBox::Icon icon, QWidget* parent, const QString& title, const QString& text,
-									   QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-									   QMessageBox::StandardButton defaultButton = QMessageBox::NoButton);
+enum_button MessageBox(QMessageBox::Icon icon, QWidget* parent, const QString& title, const QString& text, int buttons = BUTTON_OK, enum_button default_button = BUTTON_NONE);
+
+// Shows a simple dialog that asks the user to enter a string.
+QString InputBox(QWidget* parent, const QString& title, const QString& text, const QString& value);

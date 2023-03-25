@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
 #include "SourceSink.h"
 
 BaseSource::BaseSource() {
@@ -36,7 +35,7 @@ BaseSink::BaseSink() {
 BaseSink::~BaseSink() {
 	// Classes that inherit a sink should disconnect themselves in the destructor before doing anything else,
 	// otherwise inputs may try to send data to partially destructed sinks.
-	Q_ASSERT(m_source == NULL);
+	assert(m_source == NULL);
 }
 void BaseSink::ConnectBaseSource(BaseSource* source, int priority) {
 	if(m_source == source && m_priority == priority)
@@ -69,10 +68,10 @@ int64_t VideoSource::CalculateNextVideoTimestamp() {
 	return SINK_TIMESTAMP_NONE;
 }
 
-void VideoSource::PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
+void VideoSource::PushVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int colorspace, int64_t timestamp) {
 	SharedLock lock(&m_shared_data);
 	for(SinkData &s : lock->m_sinks) {
-		static_cast<VideoSink*>(s.sink)->ReadVideoFrame(width, height, data, stride, format, timestamp);
+		static_cast<VideoSink*>(s.sink)->ReadVideoFrame(width, height, data, stride, format, colorspace, timestamp);
 	}
 }
 

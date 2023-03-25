@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -25,36 +25,42 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class AudioEncoder : public BaseEncoder {
 
 private:
-	static const std::vector<AVSampleFormat> SUPPORTED_SAMPLE_FORMATS;
+	struct SampleFormatData {
+		QString m_name;
+		AVSampleFormat m_format;
+	};
 
 private:
-	unsigned int m_bit_rate;
-	unsigned int m_sample_rate;
+	static const std::vector<SampleFormatData> SUPPORTED_SAMPLE_FORMATS;
+	static const unsigned int DEFAULT_FRAME_SAMPLES;
 
-	unsigned int m_opt_threads;
-
+private:
 #if !SSR_USE_AVCODEC_ENCODE_AUDIO2
 	std::vector<uint8_t> m_temp_buffer;
 #endif
 
 public:
-	AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
-				 unsigned int bit_rate, unsigned int sample_rate);
+	AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options);
 	~AudioEncoder();
 
 	// Returns the required frame size, i.e. the number of samples (for each channel).
-	unsigned int GetRequiredFrameSamples();
+	unsigned int GetFrameSize();
 
 	// Returns the required sample format.
-	AVSampleFormat GetRequiredSampleFormat();
+	AVSampleFormat GetSampleFormat();
 
-	inline unsigned int GetSampleRate() { return m_sample_rate; }
+	// Returns the number of audio channels.
+	unsigned int GetChannels();
+
+	// Returns the audio sample rate.
+	unsigned int GetSampleRate();
 
 public:
 	static bool AVCodecIsSupported(const QString& codec_name);
+	static void PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+							  unsigned int bit_rate, unsigned int channels, unsigned int sample_rate);
 
 private:
-	virtual void FillCodecContext(AVCodec* codec) override;
-	virtual bool EncodeFrame(AVFrame* frame) override;
+	virtual bool EncodeFrame(AVFrameWrapper* frame) override;
 
 };

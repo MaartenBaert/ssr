@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
@@ -9,10 +9,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include "Global.h"
 #include "GLInject.h"
 
-#include "GLFrameGrabber.h"
-
-GLInject g_glinject;
-int g_glinject_ready = 0;
+#include "GLXFrameGrabber.h"
 
 GLInject::GLInject() {
 
@@ -22,43 +19,54 @@ GLInject::GLInject() {
 	fprintf(stderr, "[SSR-GLInject] Library loaded (32-bit).\n");
 #endif
 
-	g_glinject_ready = 1;
-	fprintf(stderr, "[SSR-GLInject] Library successfully initialized.\n");
-
 }
 
 GLInject::~GLInject() {
 
-	while(!m_frame_grabbers.empty()) {
-		delete m_frame_grabbers.back();
-		m_frame_grabbers.pop_back();
+	while(!m_glx_frame_grabbers.empty()) {
+		delete m_glx_frame_grabbers.back();
+		m_glx_frame_grabbers.pop_back();
 	}
 
 	fprintf(stderr, "[SSR-GLInject] Library unloaded.\n");
 
 }
 
-GLFrameGrabber* GLInject::NewGrabber(Display* display, Window window, GLXDrawable drawable) {
-	if(!g_glinject_ready) {
-		fprintf(stderr, "[SSR-GLInject] Error: NewGrabber called before GLInject was initialized.\n");
-		exit(-181818181);
+GLXFrameGrabber* GLInject::NewGLXFrameGrabber(Display* display, Window window, GLXDrawable drawable) {
+	GLXFrameGrabber *fg = FindGLXFrameGrabber(display, drawable);
+	if(fg == NULL) {
+		fg = new GLXFrameGrabber(display, window, drawable);
+		m_glx_frame_grabbers.push_back(fg);
 	}
-	GLFrameGrabber *fg = FindGrabber(display, drawable);
-	if(fg != NULL)
-		return fg;
-	m_frame_grabbers.push_back(NULL);
-	m_frame_grabbers.back() = new GLFrameGrabber(display, window, drawable);
-	return m_frame_grabbers.back();
+	return fg;
 }
 
-GLFrameGrabber* GLInject::FindGrabber(Display* display, GLXDrawable drawable) {
-	if(!g_glinject_ready) {
-		fprintf(stderr, "[SSR-GLInject] Error: FindGrabber called before GLInject was initialized.\n");
-		exit(-181818181);
-	}
-	for(unsigned int i = 0; i < m_frame_grabbers.size(); ++i) {
-		if(m_frame_grabbers[i]->GetX11Display() == display && m_frame_grabbers[i]->GetGLXDrawable() == drawable)
-			return m_frame_grabbers[i];
+GLXFrameGrabber* GLInject::FindGLXFrameGrabber(Display* display, GLXDrawable drawable) {
+	for(unsigned int i = 0; i < m_glx_frame_grabbers.size(); ++i) {
+		if(m_glx_frame_grabbers[i]->GetX11Display() == display && m_glx_frame_grabbers[i]->GetGLXDrawable() == drawable)
+			return m_glx_frame_grabbers[i];
 	}
 	return NULL;
+}
+
+void GLInject::DeleteGLXFrameGrabberByWindow(Display* display, Window window) {
+	for(unsigned int i = m_glx_frame_grabbers.size(); i > 0; ) {
+		--i;
+		if(m_glx_frame_grabbers[i]->GetX11Display() == display && m_glx_frame_grabbers[i]->GetX11Window() == window) {
+			delete m_glx_frame_grabbers[i];
+			m_glx_frame_grabbers[i] = m_glx_frame_grabbers.back();
+			m_glx_frame_grabbers.pop_back();
+		}
+	}
+}
+
+void GLInject::DeleteGLXFrameGrabberByDrawable(Display* display, GLXDrawable drawable) {
+	for(unsigned int i = m_glx_frame_grabbers.size(); i > 0; ) {
+		--i;
+		if(m_glx_frame_grabbers[i]->GetX11Display() == display && m_glx_frame_grabbers[i]->GetGLXDrawable() == drawable) {
+			delete m_glx_frame_grabbers[i];
+			m_glx_frame_grabbers[i] = m_glx_frame_grabbers.back();
+			m_glx_frame_grabbers.pop_back();
+		}
+	}
 }

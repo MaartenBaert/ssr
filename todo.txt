@@ -1,38 +1,33 @@
 Testing:
+- New GLInject implementation.
+- Refactored output backend.
+- Input + output profiles.
 
 In progress:
-- JACK support.
-- Resampler.
 
 Todo:
 - Highlight mouse clicks (optional) [https://github.com/MaartenBaert/ssr/issues/10]
-- Play start/stop sound (optional). [https://github.com/MaartenBaert/ssr/issues/26]
 - Command-line options for recording + skipping pages + systray.
-- Move SHM from GLFrameGrabber to GLInject.
-- Multiple audio inputs.
+- Multiple audio inputs/outputs.
 - X11Input should track resolution changes.
-- Input + output profiles.
 - Show recorded area while recording.
+- Check disk space (Muxer).
+- Record active monitor [https://github.com/MaartenBaert/ssr/issues/337]
+- Add shadowplay-like functionality
 
 Wishlist:
 - Improve interface for small screens.
-- Check disk space (Muxer).
-- FPS counter of GLInject (overlay + option to record?)
-- Built-in re-encoding after recording
+- FPS counter of GLInject. (overlay + option to record?)
+- Built-in re-encoding after recording.
 - clean up Global.h
-- QuickLZ-based codec. (-> QuickLZ beta?)
-- Better support for multiple GLInject windows.
 - Easier GLInject application selection (as an alternative to entering the command).
 - Timelapse recording, i.e. recording at a slow speed but playing it back faster (without sound obviously).
-- maybe rewrite YUVConverter in assembly instead of using GCC vector extensions
-- Multiple synchronization methods.
-- Multiple audio streams (output).
+- Cursor highlighting.
+- Webcam support (V4L2 input)
 
 Not sure yet:
-- Keep encoders completely inside the muxer.
 - Fixed cursor position when using 'follow cursor'?
-- skip microphone startup click?
 - redesigned interface? (https://github.com/swick/glc2/issues/1)
-- equalizer?
+- audio effects (equalizer, noise gate, duck)?
 - if possible, force fixed size on OpenGL applications? (optional of course)
 - Planar sample/pixel formats for inputs (source/sink). (why?)

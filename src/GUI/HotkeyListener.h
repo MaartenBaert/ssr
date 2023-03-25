@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -20,30 +20,79 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
-// Currently this class supports only one hotkey, and it's global because there can be only one X11 event filter.
-class HotkeyListener : public QObject {
+struct Hotkey {
+	unsigned int m_keycode, m_modifiers;
+	inline bool operator==(const Hotkey& other) const { return (m_keycode == other.m_keycode && m_modifiers == other.m_modifiers); }
+	inline bool operator<(const Hotkey& other) const { return (m_keycode < other.m_keycode || (m_keycode == other.m_keycode && m_modifiers < other.m_modifiers)); }
+};
+
+class HotkeyCallback;
+typedef std::multimap<Hotkey, HotkeyCallback*>::iterator HotkeyIterator;
+
+class HotkeyCallback : public QObject {
 	Q_OBJECT
 
 private:
-	unsigned int m_keycode, m_modifiers;
+	bool m_is_bound;
+	HotkeyIterator m_iterator;
 
 public:
-	HotkeyListener();
+	HotkeyCallback();
+	~HotkeyCallback();
 
 	// X11 modifiers:
 	// - Ctrl = ControlMask
 	// - Shift = ShiftMask
 	// - Alt = Mod1Mask
 	// - Super = Mod4Mask
-	void EnableHotkey(unsigned int keysym, unsigned int modifiers);
-	void DisableHotkey();
+	void Bind(unsigned int keysym, unsigned int modifiers);
+	void Unbind();
 
-	bool EventFilter(void* message);
-	static bool StaticEventFilter(void* message);
+public: // internal
+	void Trigger();
 
 signals:
-	void Triggered();
+	void Triggered(); // important: always use a queued connection for consistent results
 
 };
 
-extern HotkeyListener g_hotkey_listener;
+class HotkeyListener : public QObject {
+	Q_OBJECT
+
+private:
+	std::multimap<Hotkey, HotkeyCallback*> m_callbacks;
+
+	Display *m_x11_display;
+	int m_x11_screen;
+	Window m_x11_root;
+
+	bool m_has_xinput2;
+	int m_xinput2_opcode;
+	unsigned int m_xinput2_raw_modifiers;
+	unsigned long m_xinput2_ignore_serial;
+	std::set<int> m_xinput2_master_keyboards;
+
+	static HotkeyListener *s_instance;
+
+public:
+	HotkeyListener();
+	~HotkeyListener();
+
+private:
+	void Init();
+	void Free();
+
+	void GrabHotkey(const Hotkey& hotkey, bool enable);
+	void ProcessHotkey(const Hotkey& hotkey);
+
+public:
+	inline static HotkeyListener* GetInstance() { assert(s_instance != NULL); return s_instance; }
+
+public: // internal
+	HotkeyIterator BindCallback(unsigned int keysym, unsigned int modifiers, HotkeyCallback* callback);
+	void UnbindCallback(HotkeyIterator it);
+
+private slots:
+	void ProcessEvents();
+
+};

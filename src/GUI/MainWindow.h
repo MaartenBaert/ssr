@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -30,9 +30,22 @@ class MainWindow : public QMainWindow {
 	Q_OBJECT
 
 public:
+	enum enum_nvidia_disable_flipping {
+		NVIDIA_DISABLE_FLIPPING_ASK,
+		NVIDIA_DISABLE_FLIPPING_YES,
+		NVIDIA_DISABLE_FLIPPING_NO,
+		NVIDIA_DISABLE_FLIPPING_COUNT // must be last
+	};
+
+public:
 	static const QString WINDOW_CAPTION;
 
 private:
+	enum_nvidia_disable_flipping m_nvidia_disable_flipping;
+	bool m_nvidia_reenable_flipping;
+
+	QRect m_old_geometry;
+
 	QStackedLayout *m_stacked_layout;
 	PageWelcome *m_page_welcome;
 	PageInput *m_page_input;
@@ -47,6 +60,10 @@ public:
 	void LoadSettings();
 	void SaveSettings();
 
+	bool IsBusy();
+	bool Validate();
+	void Quit();
+
 protected:
 	virtual void closeEvent(QCloseEvent* event) override;
 
@@ -54,11 +71,21 @@ public:
 	inline PageInput* GetPageInput() { return m_page_input; }
 	inline PageOutput* GetPageOutput() { return m_page_output; }
 
+	inline enum_nvidia_disable_flipping GetNVidiaDisableFlipping() { return m_nvidia_disable_flipping; }
+
+	inline void SetNVidiaDisableFlipping(enum_nvidia_disable_flipping flipping) { m_nvidia_disable_flipping = (enum_nvidia_disable_flipping) clamp((unsigned int) flipping, 0u, (unsigned int) NVIDIA_DISABLE_FLIPPING_COUNT - 1); }
+
 public slots:
+	void GoPageStart();
 	void GoPageWelcome();
 	void GoPageInput();
 	void GoPageOutput();
 	void GoPageRecord();
 	void GoPageDone();
+
+	void OnShow();
+	void OnHide();
+	void OnShowHide();
+	void OnSysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
 };

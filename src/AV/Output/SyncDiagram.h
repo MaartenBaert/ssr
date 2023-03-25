@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -32,7 +32,7 @@ private:
 	};
 	struct TimeChannel {
 		QString m_name;
-		double m_current_time, m_time_shift;
+		double m_current_time, m_time_shift, m_time_shift_v;
 		std::deque<TimeBlock> m_time_blocks;
 	};
 	struct SharedData {
@@ -55,6 +55,7 @@ public:
 	SyncDiagram(size_t channels);
 	~SyncDiagram();
 
+	// These functions are thread-safe.
 	void SetChannelName(size_t channel, const QString& name);
 	void SetCurrentTime(size_t channel, double current_time);
 	void AddBlock(size_t channel, double time_begin, double time_end, const QColor& color);

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Global.h"
 
+#include "SampleCast.h"
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 
@@ -27,11 +28,21 @@ class AudioPreviewer : public QWidget, public AudioSink {
 	Q_OBJECT
 
 private:
+	struct ChannelData {
+		float m_current_peak, m_current_rms;
+		float m_next_peak, m_next_rms;
+		inline ChannelData() { m_current_peak = m_current_rms = m_next_peak = m_next_rms = 0.0f; }
+		template<typename IN>
+		inline void Analyze(IN sample) {
+			float val = fabs(SampleCast<IN, float>(sample));
+			m_next_peak = fmax(m_next_peak, val);
+			m_next_rms += val * val;
+		}
+	};
 	struct SharedData {
-		double m_current_low[2], m_current_high[2];
-		double m_next_low[2], m_next_high[2];
+		std::vector<ChannelData> m_channel_data;
+		unsigned int m_next_samples;
 		int64_t m_next_frame_time;
-		bool m_is_visible;
 		unsigned int m_frame_rate;
 	};
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
@@ -55,12 +66,10 @@ public:
 	// This function is thread-safe.
 	virtual void ReadAudioSamples(unsigned int channels, unsigned int sample_rate, AVSampleFormat format, unsigned int sample_count, const uint8_t* data, int64_t timestamp) override;
 
-	virtual QSize minimumSizeHint() const override { return QSize(100, 17); }
-	virtual QSize sizeHint() const override { return QSize(100, 17); }
+	virtual QSize minimumSizeHint() const override { return QSize(100, 21); }
+	virtual QSize sizeHint() const override { return QSize(100, 21); }
 
 protected:
-	virtual void showEvent(QShowEvent* event) override;
-	virtual void hideEvent(QHideEvent* event) override;
 	virtual void paintEvent(QPaintEvent* event) override;
 
 signals:

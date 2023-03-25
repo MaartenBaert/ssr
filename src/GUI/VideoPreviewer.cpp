@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
 #include "VideoPreviewer.h"
 
 #include "Logger.h"
+#include "AVWrapper.h"
 
 QSize CalculateScaledSize(QSize in, QSize out) {
-	Q_ASSERT(in.width() > 0 && in.height() > 0);
+	assert(in.width() > 0 && in.height() > 0);
 	if(in.width() <= out.width() && in.height() <= out.height())
 		return in;
 	if(in.width() * out.height() > out.width() * in.height())
@@ -77,7 +77,7 @@ int64_t VideoPreviewer::GetNextVideoTimestamp() {
 	return lock->m_next_frame_time;
 }
 
-void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, PixelFormat format, int64_t timestamp) {
+void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int colorspace, int64_t timestamp) {
 	Q_UNUSED(timestamp);
 
 	QSize image_size;
@@ -110,23 +110,23 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	// allocate the image
 	int image_stride = grow_align16(image_size.width() * 4);
 	std::shared_ptr<TempBuffer<uint8_t> > image_buffer = std::make_shared<TempBuffer<uint8_t> >();
-	image_buffer->alloc(image_stride * image_size.height());
-	uint8_t *image_data = image_buffer->data();
+	image_buffer->Alloc(image_stride * image_size.height());
+	uint8_t *image_data = image_buffer->GetData();
 
 	// scale the image
-	m_fast_scaler.Scale(width, height, format, &data, &stride,
-						image_size.width(), image_size.height(), PIX_FMT_BGRA, &image_data, &image_stride);
+	m_fast_scaler.Scale(width, height, format, colorspace, &data, &stride,
+						image_size.width(), image_size.height(), AV_PIX_FMT_BGRA, SWS_CS_DEFAULT, &image_data, &image_stride);
 
 	// set the alpha channel to 0xff (just to be sure)
 	// Some applications (e.g. firefox) generate alpha values that are not 0xff.
 	// I'm not sure whether Qt cares about this, apparently Qt 4.8 with the 'native' back-end doesn't,
 	// but I'm not sure about the other back-ends.
-	for(int y = 0; y < image_size.height(); ++y) {
+	/*for(int y = 0; y < image_size.height(); ++y) {
 		uint8_t *row = image_data + image_stride * y;
 		for(int x = 0; x < image_size.width(); ++x) {
 			row[x * 4 + 3] = 0xff; // third byte is alpha because we're little-endian
 		}
-	}
+	}*/
 
 	// store the image
 	SharedLock lock(&m_shared_data);
@@ -153,7 +153,12 @@ void VideoPreviewer::hideEvent(QHideEvent *event) {
 void VideoPreviewer::resizeEvent(QResizeEvent* event) {
 	Q_UNUSED(event);
 	SharedLock lock(&m_shared_data);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	qreal ratio = devicePixelRatioF();
+	lock->m_widget_size = QSize(lrint((qreal) (width() - 2) * ratio), lrint((qreal) (height() - 2) * ratio));
+#else
 	lock->m_widget_size = QSize(width() - 2, height() - 2);
+#endif
 }
 
 void VideoPreviewer::paintEvent(QPaintEvent* event) {
@@ -175,20 +180,34 @@ void VideoPreviewer::paintEvent(QPaintEvent* event) {
 	if(image_buffer != NULL) {
 
 		// create image (data is not copied)
-		QImage img(image_buffer->data(), image_size.width(), image_size.height(), image_stride, QImage::Format_RGB32);
+		QImage img(image_buffer->GetData(), image_size.width(), image_size.height(), image_stride, QImage::Format_RGB32);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+		img.setDevicePixelRatio(devicePixelRatioF());
+#endif
 
 		// draw the image
 		// Scaling is only used if the widget was resized after the image was captured, which is unlikely
 		// except when the video is paused. That's good because the quality after Qt's scaling is horrible.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+		qreal ratio = devicePixelRatioF();
+		QSize widget_size = QSize(lrint((qreal) (width() - 2) * ratio), lrint((qreal) (height() - 2) * ratio));
+		QSize out_size = CalculateScaledSize(source_size, widget_size);
+		QPoint draw_pos(1 + lrint((qreal) (widget_size.width() - out_size.width()) / (2.0 * ratio) - 0.4999),
+						1 + lrint((qreal) (widget_size.height() - out_size.height()) / (2.0 * ratio) - 0.4999));
+		QSize draw_size(lrint((qreal) out_size.width() / ratio - 0.4999), lrint((qreal) out_size.height() / ratio - 0.4999));
+#else
 		QSize out_size = CalculateScaledSize(source_size, QSize(width() - 2, height() - 2));
-		QPoint out_pos((width() - out_size.width()) / 2, (height() - out_size.height()) / 2);
-		QRect out_rect(out_pos, out_size);
-		painter.drawImage(out_rect, img);
+		QPoint draw_pos((width() - out_size.width()) / 2, (height() - out_size.height()) / 2);
+		QSize draw_size = out_size;
+#endif
+		QRect draw_rect(draw_pos, draw_size);
+		painter.drawImage(draw_rect, img);
 
 		// draw the border
 		painter.setPen(Qt::black);
 		painter.setBrush(Qt::NoBrush);
-		painter.drawRect(out_rect.adjusted(-1, -1, 0, 0));
+		painter.setRenderHint(QPainter::Antialiasing);
+		painter.drawRect(QRectF(draw_rect).adjusted(-0.5, -0.5, 0.5, 0.5));
 
 	}
 

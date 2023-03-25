@@ -1,0 +1,35 @@
+.TH SSR-GLINJECT "1" "March 2015" "SimpleScreenRecorder" "SimpleScreenRecorder Manual"
+.SH NAME
+ssr-glinject \- Run a command while injecting the SimpleScreenRecorder GLInject library.
+.SH SYNOPSIS
+.B ssr-glinject
+[\fI\,OPTIONS\/\fR] [\fI\,--\/\fR] \fI\,COMMAND\/\fR
+.SH DESCRIPTION
+This script uses LD_PRELOAD to inject the GLInject library into the given
+command, so that SimpleScreenRecorder can record it. It should be safe to use
+this on all applications (including command-line programs and shell scripts).
+If the program doesn't use OpenGL, it should have no effect. If you find a
+program that crashes or behaves incorrectly when GLInject is used, please submit
+a bug report.
+.SH OPTIONS
+.TP
+\fB\-\-help\fR
+Show help message.
+.TP
+\fB\-\-glx\-debug\fR
+Enables GLX debugging. This may reduce the performance
+and print lots of error messages, but it is useful to
+track down bugs.
+.TP
+\fB\-\-relax\-permissions\fR
+Uses mode 666 instead of 600 for shared memory, so that
+other users can record the stream. This is insecure and
+should not be used on a computer that can be accessed by
+other users that you don't trust.
+.TP
+\fB\-\-channel\fR=\fI\,CHANNEL\/\fR
+Channel name to use. The default is 'channel\-USERNAME'.
+.SH "SEE ALSO"
+More documentation can be found at:
+.br
+https://www.maartenbaert.be/simplescreenrecorder/

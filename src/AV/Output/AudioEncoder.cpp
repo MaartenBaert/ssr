@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -17,136 +17,198 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
 #include "AudioEncoder.h"
 
 #include "Logger.h"
 #include "AVWrapper.h"
 #include "Muxer.h"
 
-const std::vector<AVSampleFormat> AudioEncoder::SUPPORTED_SAMPLE_FORMATS = {
-	AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_FLT,
+const std::vector<AudioEncoder::SampleFormatData> AudioEncoder::SUPPORTED_SAMPLE_FORMATS = {
+	{"f32i", AV_SAMPLE_FMT_FLT},
+	{"s16i", AV_SAMPLE_FMT_S16},
 #if SSR_USE_AVUTIL_PLANAR_SAMPLE_FMT
-	AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_FLTP,
+	{"f32p", AV_SAMPLE_FMT_FLTP},
+	{"s16p", AV_SAMPLE_FMT_S16P},
 #endif
 };
 
-AudioEncoder::AudioEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
-						   unsigned int bit_rate, unsigned int sample_rate)
-	: BaseEncoder(muxer) {
-	try {
+const unsigned int AudioEncoder::DEFAULT_FRAME_SAMPLES = 1024;
 
-		m_bit_rate = bit_rate;
-		m_sample_rate = sample_rate;
+AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec_context, AVCodec* codec, AVDictionary** options)
+	: BaseEncoder(muxer, stream, codec_context, codec, options) {
 
-		m_opt_threads = 1;
-
-		if(m_sample_rate == 0) {
-			Logger::LogError("[AudioEncoder::Init] " + QObject::tr("Error: Sample rate it zero."));
-			throw LibavException();
-		}
-
-		// start the encoder
-		AVDictionary *options = NULL;
-		try {
-			for(unsigned int i = 0; i < codec_options.size(); ++i) {
-				if(codec_options[i].first == "threads")
-					m_opt_threads = codec_options[i].second.toUInt();
-				av_dict_set(&options, codec_options[i].first.toAscii().constData(), codec_options[i].second.toAscii().constData(), 0);
-			}
-			CreateCodec(codec_name, &options);
-			av_dict_free(&options);
-		} catch(...) {
-			av_dict_free(&options);
-			throw;
-		}
-
-	#if !SSR_USE_AVCODEC_ENCODE_AUDIO2
-		// allocate a temporary buffer
-		if(GetCodecContext()->frame_size <= 1) {
-			// This is really weird, the old API uses the size of the *output* buffer to determine the number of
-			// input samples if the number of input samples (i.e. frame_size) is not fixed (i.e. frame_size <= 1).
-			m_temp_buffer.resize(1024 * GetCodecContext()->channels * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
-		} else {
-			m_temp_buffer.resize(std::max(FF_MIN_BUFFER_SIZE, 256 * 1024));
-		}
-	#endif
-
-		GetMuxer()->RegisterEncoder(GetStreamIndex(), this);
-
-	} catch(...) {
-		Destruct();
-		throw;
+#if !SSR_USE_AVCODEC_ENCODE_AUDIO2
+	// allocate a temporary buffer
+	if(GetCodecContext()->frame_size <= 1) {
+		// This is really weird, the old API uses the size of the *output* buffer to determine the number of
+		// input samples if the number of input samples (i.e. frame_size) is not fixed (i.e. frame_size <= 1).
+		m_temp_buffer.resize(DEFAULT_FRAME_SAMPLES * GetCodecContext()->channels * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
+	} else {
+		m_temp_buffer.resize(std::max(FF_MIN_BUFFER_SIZE, 256 * 1024));
 	}
+#endif
+
+	StartThread();
+
 }
 
 AudioEncoder::~AudioEncoder() {
-	Destruct(); // destruct the base class first
+	StopThread();
 }
 
-unsigned int AudioEncoder::GetRequiredFrameSamples() {
+unsigned int AudioEncoder::GetFrameSize() {
 #if SSR_USE_AVCODEC_ENCODE_AUDIO2
-	return (GetCodecContext()->codec->capabilities & CODEC_CAP_VARIABLE_FRAME_SIZE)? 1024 : GetCodecContext()->frame_size;
+	return (GetCodecContext()->codec->capabilities & AV_CODEC_CAP_VARIABLE_FRAME_SIZE)? DEFAULT_FRAME_SAMPLES : GetCodecContext()->frame_size;
 #else
-	return (GetCodecContext()->frame_size <= 1)? 1024 : GetCodecContext()->frame_size;
+	return (GetCodecContext()->frame_size <= 1)? DEFAULT_FRAME_SAMPLES : GetCodecContext()->frame_size;
 #endif
 }
 
-AVSampleFormat AudioEncoder::GetRequiredSampleFormat() {
+AVSampleFormat AudioEncoder::GetSampleFormat() {
 	return GetCodecContext()->sample_fmt;
 }
 
+unsigned int AudioEncoder::GetChannels() {
+	return GetCodecContext()->channels;
+}
+
+unsigned int AudioEncoder::GetSampleRate() {
+	return GetCodecContext()->sample_rate;
+}
+
 bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
+	// we have to break const correctness for compatibility with older ffmpeg versions
+	AVCodec *codec = (AVCodec*) avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL)
 		return false;
+	if(!av_codec_is_encoder(codec))
+		return false;
+	if(codec->type != AVMEDIA_TYPE_AUDIO)
+		return false;
 	for(unsigned int i = 0; i < SUPPORTED_SAMPLE_FORMATS.size(); ++i) {
-		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i]))
+		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i].m_format)) {
+			//qDebug() << codec_name << "supported by" << SUPPORTED_SAMPLE_FORMATS[i].m_name;
 			return true;
+		}
 	}
 	return false;
 }
 
-void AudioEncoder::FillCodecContext(AVCodec* codec) {
-	Q_UNUSED(codec);
+void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+								 unsigned int bit_rate, unsigned int channels, unsigned int sample_rate) {
 
-	GetCodecContext()->time_base.num = 1;
-	GetCodecContext()->time_base.den = m_sample_rate;
-	GetCodecContext()->bit_rate = m_bit_rate;
-	GetCodecContext()->sample_rate = m_sample_rate;
-	GetCodecContext()->channels = 2;
-	GetCodecContext()->sample_fmt = AV_SAMPLE_FMT_NONE;
-	for(unsigned int i = 0; i < SUPPORTED_SAMPLE_FORMATS.size(); ++i) {
-		if(AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i])) {
-			GetCodecContext()->sample_fmt = SUPPORTED_SAMPLE_FORMATS[i];
-			break;
-		}
-	}
-	if(GetCodecContext()->sample_fmt == AV_SAMPLE_FMT_NONE) {
-		Logger::LogError("[AudioEncoder::FillCodecContext] " + QObject::tr("Error: Encoder requires an unsupported sample format!"));
+	if(channels == 0) {
+		Logger::LogError("[AudioEncoder::PrepareStream] " + Logger::tr("Error: Channel count is zero."));
 		throw LibavException();
 	}
-	GetCodecContext()->thread_count = m_opt_threads;
+	if(sample_rate == 0) {
+		Logger::LogError("[AudioEncoder::PrepareStream] " + Logger::tr("Error: Sample rate is zero."));
+		throw LibavException();
+	}
+
+	codec_context->bit_rate = bit_rate;
+	codec_context->channels = channels;
+	codec_context->channel_layout = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
+	codec_context->sample_rate = sample_rate;
+	codec_context->time_base.num = 1;
+	codec_context->time_base.den = sample_rate;
+#if SSR_USE_AVSTREAM_TIME_BASE
+	stream->time_base = codec_context->time_base;
+#endif
+	codec_context->thread_count = 1;
+
+	// parse options
+	QString sample_format_name;
+	for(unsigned int i = 0; i < codec_options.size(); ++i) {
+		const QString &key = codec_options[i].first, &value = codec_options[i].second;
+		if(key == "threads") {
+			codec_context->thread_count = ParseCodecOptionInt(key, value, 1, 100);
+		} else if(key == "qscale") {
+			codec_context->flags |= AV_CODEC_FLAG_QSCALE;
+			codec_context->global_quality = lrint(ParseCodecOptionDouble(key, value, -1.0e6, 1.0e6, FF_QP2LAMBDA));
+		} else if(key == "sampleformat") {
+			sample_format_name = value;
+		} else {
+			av_dict_set(options, key.toUtf8().constData(), value.toUtf8().constData(), 0);
+		}
+	}
+
+	// choose the sample format
+	codec_context->sample_fmt = AV_SAMPLE_FMT_NONE;
+	for(unsigned int i = 0; i < SUPPORTED_SAMPLE_FORMATS.size(); ++i) {
+		if(!sample_format_name.isEmpty() && sample_format_name != SUPPORTED_SAMPLE_FORMATS[i].m_name)
+			continue;
+		if(!AVCodecSupportsSampleFormat(codec, SUPPORTED_SAMPLE_FORMATS[i].m_format))
+			continue;
+		Logger::LogInfo("[AudioEncoder::PrepareStream] " + Logger::tr("Using sample format %1.").arg(SUPPORTED_SAMPLE_FORMATS[i].m_name));
+		codec_context->sample_fmt = SUPPORTED_SAMPLE_FORMATS[i].m_format;
+		break;
+	}
+	if(codec_context->sample_fmt == AV_SAMPLE_FMT_NONE) {
+		Logger::LogError("[AudioEncoder::PrepareStream] " + Logger::tr("Error: Encoder requires an unsupported sample format!"));
+		throw LibavException();
+	}
 
 }
 
-bool AudioEncoder::EncodeFrame(AVFrame* frame) {
+bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 
-#if SSR_USE_AVFRAME_FORMAT
 	if(frame != NULL) {
-		Q_ASSERT(frame->format == GetCodecContext()->sample_fmt);
-	}
+#if SSR_USE_AVFRAME_NB_SAMPLES
+		assert((unsigned int) frame->GetFrame()->nb_samples == GetFrameSize());
 #endif
+#if SSR_USE_AVFRAME_CHANNELS
+		assert(frame->GetFrame()->channels == GetCodecContext()->channels);
+#endif
+#if SSR_USE_AVFRAME_SAMPLE_RATE
+		assert(frame->GetFrame()->sample_rate == GetCodecContext()->sample_rate);
+#endif
+#if SSR_USE_AVFRAME_FORMAT
+		assert(frame->GetFrame()->format == GetCodecContext()->sample_fmt);
+#endif
+	}
 
-#if SSR_USE_AVCODEC_ENCODE_AUDIO2
+#if SSR_USE_AVCODEC_SEND_RECEIVE
+
+	// send a frame
+	AVFrame *avframe = (frame == NULL)? NULL : frame->Release();
+	try {
+		if(avcodec_send_frame(GetCodecContext(), avframe) < 0) {
+			Logger::LogError("[AudioEncoder::EncodeFrame] " + Logger::tr("Error: Sending of audio frame failed!"));
+			throw LibavException();
+		}
+	} catch(...) {
+		av_frame_free(&avframe);
+		throw;
+	}
+	av_frame_free(&avframe);
+
+	// try to receive a packet
+	for( ; ; ) {
+		std::unique_ptr<AVPacketWrapper> packet(new AVPacketWrapper());
+		int res = avcodec_receive_packet(GetCodecContext(), packet->GetPacket());
+		if(res == 0) { // we have a packet, send the packet to the muxer
+			GetMuxer()->AddPacket(GetStream()->index, std::move(packet));
+			IncrementPacketCounter();
+		} else if(res == AVERROR(EAGAIN)) { // we have no packet
+			return true;
+		} else if(res == AVERROR_EOF) { // this is the end of the stream
+			return false;
+		} else {
+			Logger::LogError("[AudioEncoder::EncodeFrame] " + Logger::tr("Error: Receiving of audio packet failed!"));
+			throw LibavException();
+		}
+	}
+
+#elif SSR_USE_AVCODEC_ENCODE_AUDIO2
 
 	// allocate a packet
 	std::unique_ptr<AVPacketWrapper> packet(new AVPacketWrapper());
 
 	// encode the frame
 	int got_packet;
-	if(avcodec_encode_audio2(GetCodecContext(), packet->GetPacket(), frame, &got_packet) < 0) {
-		Logger::LogError("[AudioEncoder::EncodeFrame] " + QObject::tr("Error: Encoding of audio frame failed!"));
+	if(avcodec_encode_audio2(GetCodecContext(), packet->GetPacket(), (frame == NULL)? NULL : frame->GetFrame(), &got_packet) < 0) {
+		Logger::LogError("[AudioEncoder::EncodeFrame] " + Logger::tr("Error: Encoding of audio frame failed!"));
 		throw LibavException();
 	}
 
@@ -154,7 +216,8 @@ bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 	if(got_packet) {
 
 		// send the packet to the muxer
-		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));
+		GetMuxer()->AddPacket(GetStream()->index, std::move(packet));
+		IncrementPacketCounter();
 		return true;
 
 	} else {
@@ -164,10 +227,10 @@ bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 #else
 
 	// encode the frame
-	short *data = (frame == NULL)? NULL : (short*) frame->data[0];
+	short *data = (frame == NULL)? NULL : (short*) frame->GetFrame()->data[0];
 	int bytes_encoded = avcodec_encode_audio(GetCodecContext(), m_temp_buffer.data(), m_temp_buffer.size(), data);
 	if(bytes_encoded < 0) {
-		Logger::LogError("[AudioEncoder::EncodeFrame] " + QObject::tr("Error: Encoding of audio frame failed!"));
+		Logger::LogError("[AudioEncoder::EncodeFrame] " + Logger::tr("Error: Encoding of audio frame failed!"));
 		throw LibavException();
 	}
 
@@ -186,7 +249,8 @@ bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 			packet->GetPacket()->pts = GetCodecContext()->coded_frame->pts;
 
 		// send the packet to the muxer
-		GetMuxer()->AddPacket(GetStreamIndex(), std::move(packet));
+		GetMuxer()->AddPacket(GetStream()->index, std::move(packet));
+		IncrementPacketCounter();
 		return true;
 
 	} else {
@@ -196,4 +260,3 @@ bool AudioEncoder::EncodeFrame(AVFrame* frame) {
 #endif
 
 }
-

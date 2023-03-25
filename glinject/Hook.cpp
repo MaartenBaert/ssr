@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
@@ -9,167 +9,313 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include "Global.h"
 
 #include "GLInject.h"
-#include "GLFrameGrabber.h"
-#include "elfhacks.h"
+#include "GLXFrameGrabber.h"
+#include "plthook.h"
 
-GLXWindow glinject_my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list);
-void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable);
-GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name);
-int glinject_my_XNextEvent(Display* display, XEvent* event_return);
+#include <dlfcn.h>
+#include <link.h>
 
-void *(*g_glinject_real_dlsym)(void*, const char*) = NULL;
-void *(*g_glinject_real_dlvsym)(void*, const char*, const char*) = NULL;
-GLXWindow (*g_glinject_real_glXCreateWindow)(Display*, GLXFBConfig, Window, const int*) = NULL;
-void (*g_glinject_real_glXSwapBuffers)(Display*, GLXDrawable) = NULL;
-GLXextFuncPtr (*g_glinject_real_glXGetProcAddressARB)(const GLubyte*) = NULL;
-int (*g_glinject_real_XNextEvent)(Display*, XEvent*) = NULL;
+#include <GL/glx.h>
+#include <X11/X.h>
 
-int g_glinject_hooks_initialized = 0;
+// global variable from the standard library that holds all environment variables
+extern char **environ;
 
-GLFrameGrabber::HotkeyInfo g_hotkey_info;
-bool g_hotkey_pressed = false;
+// return type of glXGetProcAddressARB
+typedef void (*GLXextFuncPtr)(void);
 
-void glinject_init_hooks() {
+// hook replacement function prototypes
+void*         glinject_hook_dlsym(void* handle, const char* symbol);
+void*         glinject_hook_dlvsym(void* handle, const char* symbol, const char* version);
+int           glinject_hook_execl(const char* filename, const char* arg, ...);
+int           glinject_hook_execlp(const char* filename, const char* arg, ...);
+int           glinject_hook_execle(const char* filename, const char* arg, ...);
+int           glinject_hook_execv(const char* filename, char* const argv[]);
+int           glinject_hook_execve(const char* filename, char* const argv[], char* const envp[]);
+int           glinject_hook_execvp(const char* filename, char* const argv[]);
+int           glinject_hook_execvpe(const char* filename, char* const argv[], char* const envp[]);
+GLXWindow     glinject_hook_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list);
+void          glinject_hook_glXDestroyWindow(Display* dpy, GLXWindow win);
+int           glinject_hook_XDestroyWindow(Display* dpy, Window win);
+void          glinject_hook_glXSwapBuffers(Display* dpy, GLXDrawable drawable);
+GLXextFuncPtr glinject_hook_glXGetProcAddressARB(const GLubyte *proc_name);
 
-	if(g_glinject_hooks_initialized)
+// hook table
+struct GLInjectHook {
+	const char *name;
+	void *address;
+};
+std::initializer_list<GLInjectHook> glinject_hook_table = {
+	{"dlsym"               , (void*) &glinject_hook_dlsym},
+	{"dlvsym"              , (void*) &glinject_hook_dlvsym},
+	{"execl"               , (void*) &glinject_hook_execl},
+	{"execlp"              , (void*) &glinject_hook_execlp},
+	{"execle"              , (void*) &glinject_hook_execle},
+	{"execv"               , (void*) &glinject_hook_execv},
+	{"execve"              , (void*) &glinject_hook_execve},
+	{"execvp"              , (void*) &glinject_hook_execvp},
+	{"execvpe"             , (void*) &glinject_hook_execvpe},
+	{"glXCreateWindow"     , (void*) &glinject_hook_glXCreateWindow},
+	{"glXDestroyWindow"    , (void*) &glinject_hook_glXDestroyWindow},
+	{"XDestroyWindow"      , (void*) &glinject_hook_XDestroyWindow},
+	{"glXSwapBuffers"      , (void*) &glinject_hook_glXSwapBuffers},
+	{"glXGetProcAddressARB", (void*) &glinject_hook_glXGetProcAddressARB},
+};
+
+// main glinject object and mutex
+static GLInject *g_glinject = NULL;
+static std::mutex g_glinject_mutex;
+
+// hook initializer
+static struct GLInjectHooksInitializer {
+	GLInjectHooksInitializer() {
+
+		// get the link table of the glinject library (we can use any global variable for this)
+		Dl_info glinject_dlinfo;
+		struct link_map *glinject_lmap = NULL;
+		if(dladdr1((void*) &glinject_hook_table, &glinject_dlinfo, (void**) &glinject_lmap, RTLD_DL_LINKMAP) == 0) {
+			GLINJECT_PRINT("Error: Failed to get link map of glinject library!");
+			return;
+		}
+
+		// replace PLT entries everywhere except in the glinject library
+		void *mainhandle = dlopen(NULL, RTLD_NOW);
+		if(mainhandle == NULL) {
+			GLINJECT_PRINT("Error: Failed to get main program handle!");
+			return;
+		}
+		struct link_map *lmap = NULL;
+		if(dlinfo(mainhandle, RTLD_DI_LINKMAP, &lmap) != 0) {
+			GLINJECT_PRINT("Error: Failed to get link map of main program!");
+			return;
+		}
+		while(lmap) {
+			if(lmap != glinject_lmap) {
+				plthook_t *plthook;
+				if(plthook_open_by_linkmap(&plthook, lmap) == 0) {
+					for(const GLInjectHook &hook : glinject_hook_table) {
+						void *oldfunc;
+						if(plthook_replace(plthook, hook.name, hook.address, &oldfunc) == 0) {
+							GLINJECT_PRINT("Hooked " << hook.name << " PLT entry in '" << lmap->l_name << "'.");
+						}
+					}
+					plthook_close(plthook);
+				}
+			}
+			lmap = lmap->l_next;
+		}
+		dlclose(mainhandle);
+
+	}
+} glinject_hooks_initializer;
+
+void GLInjectInit();
+void GLInjectFree();
+
+void GLInjectInit() {
+	if(g_glinject != NULL)
 		return;
-
-	// part 1: get dlsym and dlvsym
-	eh_obj_t libdl;
-	if(eh_find_obj(&libdl, "*/libdl.so*")) {
-		fprintf(stderr, "[SSR-GLInject] Can't open libdl.so!\n");
-		exit(-181818181);
-	}
-	if(eh_find_sym(&libdl, "dlsym", (void **) &g_glinject_real_dlsym)) {
-		fprintf(stderr, "[SSR-GLInject] Can't get dlsym address!\n");
-		eh_destroy_obj(&libdl);
-		exit(-181818181);
-	}
-	if(eh_find_sym(&libdl, "dlvsym", (void **) &g_glinject_real_dlvsym)) {
-		fprintf(stderr, "[SSR-GLInject] Can't get dlvsym address!\n");
-		eh_destroy_obj(&libdl);
-		exit(-181818181);
-	}
-	eh_destroy_obj(&libdl);
-
-	// part 2: get everything else
-	g_glinject_real_glXCreateWindow = (GLXWindow (*)(Display*, GLXFBConfig, Window, const int*)) g_glinject_real_dlsym(RTLD_NEXT, "glXCreateWindow");
-	if(g_glinject_real_glXCreateWindow == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get glXCreateWindow address!\n");
-		exit(-181818181);
-	}
-	g_glinject_real_glXSwapBuffers = (void (*)(Display*, GLXDrawable)) g_glinject_real_dlsym(RTLD_NEXT, "glXSwapBuffers");
-	if(g_glinject_real_glXSwapBuffers == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get glXSwapBuffers address!\n");
-		exit(-181818181);
-	}
-	g_glinject_real_glXGetProcAddressARB = (GLXextFuncPtr (*)(const GLubyte*)) g_glinject_real_dlsym(RTLD_NEXT, "glXGetProcAddressARB");
-	if(g_glinject_real_glXGetProcAddressARB == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get glXGetProcAddressARB address!\n");
-		exit(-181818181);
-	}
-	g_glinject_real_XNextEvent = (int (*)(Display*, XEvent*)) g_glinject_real_dlsym(RTLD_NEXT, "XNextEvent");
-	if(g_glinject_real_XNextEvent == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Can't get XNextEvent address!\n");
-		exit(-181818181);
-	}
-
-	g_glinject_hooks_initialized = 1;
+	g_glinject = new GLInject();
+	atexit(GLInjectFree);
 }
 
-struct Hook {
-	const char* name;
-	void* address;
-};
-Hook hook_table[] = {
-	{"glXCreateWindow", (void*) &glinject_my_glXCreateWindow},
-	{"glXSwapBuffers", (void*) &glinject_my_glXSwapBuffers},
-	{"glXGetProcAddressARB", (void*) &glinject_my_glXGetProcAddressARB},
-	{"XNextEvent", (void*) &glinject_my_XNextEvent}
-};
+void GLInjectFree() {
+	if(g_glinject != NULL) {
+		delete g_glinject;
+		g_glinject = NULL;
+	}
+}
 
-GLXWindow glinject_my_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
-	GLXWindow res = g_glinject_real_glXCreateWindow(dpy, config, win, attrib_list);
+void FilterEnviron(const char* filename, std::vector<char*>* out, char* const* in) {
+	const char* exec_blacklist[] = {
+		"ping",
+		"/bin/ping",
+		"/usr/bin/ping",
+	};
+	bool filter = false;
+	for(unsigned int i = 0; i < sizeof(exec_blacklist) / sizeof(const char*); ++i) {
+		if(strcmp(exec_blacklist[i], filename) == 0) {
+			filter = true;
+			break;
+		}
+	}
+	while(*in != NULL) {
+		if(!filter || strncmp(*in, "LD_PRELOAD=", 11) != 0)
+			out->push_back(*in);
+		++in;
+	}
+	out->push_back(NULL);
+}
+
+void* glinject_hook_dlsym(void* handle, const char* symbol) {
+	const char *str = "(In glinject_hook_dlsym)\n";
+	write(2, str, strlen(str));
+	for(const GLInjectHook &hook : glinject_hook_table) {
+		if(strcmp(hook.name, symbol) == 0) {
+			std::lock_guard<std::mutex> lock(g_glinject_mutex);
+			GLINJECT_PRINT("Hooked dlsym(" << symbol << ").");
+			return hook.address;
+		}
+	}
+	return dlsym(handle, symbol);
+}
+
+void* glinject_hook_dlvsym(void* handle, const char* symbol, const char* version) {
+	const char *str = "(In glinject_hook_dlvsym)\n";
+	write(2, str, strlen(str));
+	for(const GLInjectHook &hook : glinject_hook_table) {
+		if(strcmp(hook.name, symbol) == 0) {
+			std::lock_guard<std::mutex> lock(g_glinject_mutex);
+			GLINJECT_PRINT("Hooked dlvsym(" << symbol << ").");
+			return hook.address;
+		}
+	}
+	return dlvsym(handle, symbol, version);
+}
+
+int glinject_hook_execl(const char* filename, const char* arg, ...) {
+	const char *str = "(In glinject_hook_execl)\n";
+	write(2, str, strlen(str));
+	std::vector<char*> args;
+	args.push_back((char*) arg);
+	va_list vl;
+	va_start(vl, arg);
+	while(args.back() != NULL) {
+		args.push_back(va_arg(vl, char*));
+	}
+	va_end(vl);
+	std::vector<char*> filtered_environ;
+	FilterEnviron(filename, &filtered_environ, environ);
+	return execve(filename, args.data(), filtered_environ.data());
+}
+
+int glinject_hook_execlp(const char* filename, const char* arg, ...) {
+	const char *str = "(In glinject_hook_execlp)\n";
+	write(2, str, strlen(str));
+	std::vector<char*> args;
+	args.push_back((char*) arg);
+	va_list vl;
+	va_start(vl, arg);
+	while(args.back() != NULL) {
+		args.push_back(va_arg(vl, char*));
+	}
+	va_end(vl);
+	std::vector<char*> filtered_environ;
+	FilterEnviron(filename, &filtered_environ, environ);
+	return execvpe(filename, args.data(), filtered_environ.data());
+}
+
+int glinject_hook_execle(const char* filename, const char* arg, ...) {
+	const char *str = "(In glinject_hook_execle)\n";
+	write(2, str, strlen(str));
+	std::vector<char*> args;
+	args.push_back((char*) arg);
+	va_list vl;
+	va_start(vl, arg);
+	while(args.back() != NULL) {
+		args.push_back(va_arg(vl, char*));
+	}
+	char *const *envp = va_arg(vl, char* const*);
+	va_end(vl);
+	std::vector<char*> filtered_environ;
+	FilterEnviron(filename, &filtered_environ, envp);
+	return execvpe(filename, args.data(), filtered_environ.data());
+}
+
+int glinject_hook_execv(const char* filename, char* const argv[]) {
+	const char *str = "(In glinject_hook_execv)\n";
+	write(2, str, strlen(str));
+	std::vector<char*> filtered_environ;
+	FilterEnviron(filename, &filtered_environ, environ);
+	return execve(filename, argv, filtered_environ.data());
+}
+
+int glinject_hook_execve(const char* filename, char* const argv[], char* const envp[]) {
+	const char *str = "(In glinject_hook_execve)\n";
+	write(2, str, strlen(str));
+	std::vector<char*> filtered_environ;
+	FilterEnviron(filename, &filtered_environ, envp);
+	return execve(filename, argv, filtered_environ.data());
+}
+
+int glinject_hook_execvp(const char* filename, char* const argv[]) {
+	const char *str = "(In glinject_hook_execvp)\n";
+	write(2, str, strlen(str));
+	std::vector<char*> filtered_environ;
+	FilterEnviron(filename, &filtered_environ, environ);
+	return execvpe(filename, argv, filtered_environ.data());
+}
+
+int glinject_hook_execvpe(const char* filename, char* const argv[], char* const envp[]) {
+	const char *str = "(In glinject_hook_execvpe)\n";
+	write(2, str, strlen(str));
+	std::vector<char*> filtered_environ;
+	FilterEnviron(filename, &filtered_environ, envp);
+	return execvpe(filename, argv, filtered_environ.data());
+}
+
+GLXWindow glinject_hook_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
+	const char *str = "(In glinject_hook_glXCreateWindow)\n";
+	write(2, str, strlen(str));
+	GLXWindow res = glXCreateWindow(dpy, config, win, attrib_list);
 	if(res == 0)
 		return 0;
-	g_glinject.NewGrabber(dpy, win, res);
-	return res;
-}
-
-void glinject_my_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
-	GLFrameGrabber *fg = g_glinject.FindGrabber(dpy, drawable);
-	if(fg == NULL) {
-		fprintf(stderr, "[SSR-GLInject] Warning: glXSwapBuffers called without existing frame grabber, creating one assuming window == drawable.\n");
-		fg = g_glinject.NewGrabber(dpy, drawable, drawable);
-	}
-	g_hotkey_info = fg->GetHotkeyInfo();
-	if(g_hotkey_pressed) {
-		fg->TriggerHotkey();
-		g_hotkey_pressed = false;
-	}
-	fg->GrabFrame();
-	g_glinject_real_glXSwapBuffers(dpy, drawable);
-}
-
-GLXextFuncPtr glinject_my_glXGetProcAddressARB(const GLubyte *proc_name) {
-	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
-		if(strcmp(hook_table[i].name, (const char*) proc_name) == 0) {
-			fprintf(stderr, "[SSR-GLInject] Hooked: glXGetProcAddressARB(%s).\n", proc_name);
-			return (GLXextFuncPtr) hook_table[i].address;
-		}
-	}
-	return g_glinject_real_glXGetProcAddressARB(proc_name);
-}
-
-int glinject_my_XNextEvent(Display* display, XEvent* event_return) {
-	int res = g_glinject_real_XNextEvent(display, event_return);
-	if(g_hotkey_info.enabled && event_return->type == KeyPress && event_return->xkey.keycode == g_hotkey_info.keycode
-			&& (event_return->xkey.state & ~LockMask & ~Mod2Mask) == g_hotkey_info.modifiers) {
-		g_hotkey_pressed = true;
+	{
+		std::lock_guard<std::mutex> lock(g_glinject_mutex);
+		GLInjectInit();
+		g_glinject->NewGLXFrameGrabber(dpy, win, res);
 	}
 	return res;
 }
 
-// override existing functions
-
-extern "C" GLXWindow glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
-	glinject_init_hooks();
-	return glinject_my_glXCreateWindow(dpy, config, win, attrib_list);
+void glinject_hook_glXDestroyWindow(Display* dpy, GLXWindow win) {
+	const char *str = "(In glinject_hook_glXDestroyWindow)\n";
+	write(2, str, strlen(str));
+	glXDestroyWindow(dpy, win);
+	{
+		std::lock_guard<std::mutex> lock(g_glinject_mutex);
+		GLInjectInit();
+		g_glinject->DeleteGLXFrameGrabberByDrawable(dpy, win);
+	}
 }
 
-extern "C" void glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
-	glinject_init_hooks();
-	glinject_my_glXSwapBuffers(dpy, drawable);
+int glinject_hook_XDestroyWindow(Display* dpy, Window win) {
+	const char *str = "(In glinject_hook_XDestroyWindow)\n";
+	write(2, str, strlen(str));
+	int res = XDestroyWindow(dpy, win);
+	{
+		std::lock_guard<std::mutex> lock(g_glinject_mutex);
+		GLInjectInit();
+		g_glinject->DeleteGLXFrameGrabberByWindow(dpy, win);
+	}
+	return res;
 }
 
-extern "C" GLXextFuncPtr glXGetProcAddressARB(const GLubyte *proc_name) {
-	glinject_init_hooks();
-	return glinject_my_glXGetProcAddressARB(proc_name);
+void glinject_hook_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
+	const char *str = "(In glinject_hook_glXSwapBuffers)\n";
+	write(2, str, strlen(str));
+	{
+		std::lock_guard<std::mutex> lock(g_glinject_mutex);
+		GLInjectInit();
+		GLXFrameGrabber *fg = g_glinject->FindGLXFrameGrabber(dpy, drawable);
+		if(fg == NULL) {
+			GLINJECT_PRINT("Warning: glXSwapBuffers called without existing frame grabber, creating one assuming window == drawable.");
+			fg = g_glinject->NewGLXFrameGrabber(dpy, drawable, drawable);
+		}
+		fg->GrabFrame();
+	}
+	glXSwapBuffers(dpy, drawable);
 }
 
-extern "C" int XNextEvent(Display* display, XEvent* event_return) {
-	glinject_init_hooks();
-	return glinject_my_XNextEvent(display, event_return);
-}
-
-extern "C" void* dlsym(void* handle, const char* symbol) {
-	glinject_init_hooks();
-	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
-		if(strcmp(hook_table[i].name, symbol) == 0) {
-			fprintf(stderr, "[SSR-GLInject] Hooked: dlsym(%s).\n", symbol);
-			return hook_table[i].address;
+GLXextFuncPtr glinject_hook_glXGetProcAddressARB(const GLubyte *proc_name) {
+	const char *str = "(In glinject_hook_glXGetProcAddressARB)\n";
+	write(2, str, strlen(str));
+	for(const GLInjectHook &hook : glinject_hook_table) {
+		if(strcmp(hook.name, (const char*) proc_name) == 0) {
+			std::lock_guard<std::mutex> lock(g_glinject_mutex);
+			GLINJECT_PRINT("Hooked glXGetProcAddressARB(" << proc_name << ").");
+			return (GLXextFuncPtr) hook.address;
 		}
 	}
-	return g_glinject_real_dlsym(handle, symbol);
-}
-
-extern "C" void* dlvsym(void* handle, const char* symbol, const char* version) {
-	glinject_init_hooks();
-	for(unsigned int i = 0; i < sizeof(hook_table) / sizeof(Hook); ++i) {
-		if(strcmp(hook_table[i].name, symbol) == 0) {
-			fprintf(stderr, "[SSR-GLInject] Hooked: dlvsym(%s,%s).\n", symbol, version);
-			return hook_table[i].address;
-		}
-	}
-	return g_glinject_real_dlvsym(handle, symbol, version);
+	return glXGetProcAddressARB(proc_name);
 }

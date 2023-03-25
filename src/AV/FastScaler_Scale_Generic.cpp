@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
 #include "FastScaler_Scale_Generic.h"
 
 #include "TempBuffer.h"
@@ -28,10 +27,14 @@ void Scale_BGRA_Generic(unsigned int in_w, unsigned int in_h, const uint8_t* in_
 
 	// no scaling?
 	if(in_w == out_w && in_h == out_h) {
-		for(unsigned int out_j = 0; out_j < out_h; ++out_j) {
-			memcpy(out_data, in_data, in_w * 4);
-			in_data += in_stride;
-			out_data += out_stride;
+		if(in_stride == out_stride) {
+			memcpy(out_data, in_data, in_stride * in_h);
+		} else {
+			for(unsigned int out_j = 0; out_j < out_h; ++out_j) {
+				memcpy(out_data, in_data, in_w * 4);
+				in_data += in_stride;
+				out_data += out_stride;
+			}
 		}
 		return;
 	}
@@ -60,9 +63,9 @@ void Scale_BGRA_Generic(unsigned int in_w, unsigned int in_h, const uint8_t* in_
 	if(mx != 0 || my != 0) {
 		unsigned int mipmap_w = ((in_w - 1) >> mx) + 1, mipmap_h = ((in_h - 1) >> my) + 1;
 		int mipmap_stride = grow_align16(mipmap_w * 4);
-		mipmap.alloc(mipmap_stride * mipmap_h);
-		mipmap_function(in_w, in_h, in_data, in_stride, mipmap.data(), mipmap_stride, mx, my);
-		in_data = mipmap.data();
+		mipmap.Alloc(mipmap_stride * mipmap_h);
+		mipmap_function(in_w, in_h, in_data, in_stride, mipmap.GetData(), mipmap_stride, mx, my);
+		in_data = mipmap.GetData();
 		in_stride = mipmap_stride;
 	}
 

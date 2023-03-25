@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -19,6 +19,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 #include "Global.h"
+
+#if SSR_USE_ALSA
 
 #include "MutexDataPair.h"
 
@@ -40,18 +42,18 @@ private:
 	typedef MutexDataPair<SharedData>::Lock SharedLock;
 
 private:
-	QString m_device_name;
+	QString m_sink_name;
 	unsigned int m_sample_rate;
 
 	snd_pcm_t *m_alsa_pcm;
-	unsigned int m_alsa_period_size, m_alsa_buffer_size;
+	unsigned int m_period_size, m_buffer_size;
 
 	std::thread m_thread;
 	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
-	SimpleSynth(const QString& device_name, unsigned int sample_rate);
+	SimpleSynth(const QString& sink_name, unsigned int sample_rate);
 	~SimpleSynth();
 
 	// This function is thread-safe.
@@ -64,3 +66,5 @@ private:
 	void SynthThread();
 
 };
+
+#endif

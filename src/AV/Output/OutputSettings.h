@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -35,6 +35,21 @@ struct OutputSettings {
 	QString audio_codec_avname;
 	unsigned int audio_kbit_rate;
 	std::vector<std::pair<QString, QString> > audio_options;
-	unsigned int audio_sample_rate;
+	unsigned int audio_channels, audio_sample_rate;
+
+};
+
+struct OutputFormat {
+
+	bool m_video_enabled;
+	unsigned int m_video_width, m_video_height;
+	unsigned int m_video_frame_rate;
+	AVPixelFormat m_video_pixel_format;
+	int m_video_colorspace;
+
+	bool m_audio_enabled;
+	unsigned int m_audio_channels, m_audio_sample_rate;
+	unsigned int m_audio_frame_size;
+	AVSampleFormat m_audio_sample_format;
 
 };

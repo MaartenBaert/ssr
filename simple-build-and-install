@@ -1,8 +1,12 @@
 #!/bin/bash
 # Run this if you just want to build and install the program and you don't care about all the details.
-# Any additional arguments will be passed on to 'configure'.
-# If you want to modify configure.ac or Makefile.am, you will need the correct version of autotools, and you should
-# run configure (or this script) with --enable-maintainer-mode.
+# Any additional arguments will be passed on to 'cmake'.
+# The following environment variables can be set to TRUE or FALSE to override the auto-detected values:
+#  - ENABLE_32BIT_GLINJECT
+#  - ENABLE_X86_ASM
+#  - ENABLE_FFMPEG_VERSIONS
+#  - WITH_QT5
+#  - WITH_GLINJECT
 
 set -e
 cd "$( dirname "${BASH_SOURCE[0]}" )"
@@ -12,109 +16,122 @@ if [ x"$( whoami )" = x"root" ]; then
 	exit 1
 fi
 
-echo "Detecting x86/x64 ..."
-case "$( uname -m )" in
-	"i386" )	ENABLE_X86_ASM="--enable-x86-asm" ;;
-	"i486" )	ENABLE_X86_ASM="--enable-x86-asm" ;;
-	"i586" )	ENABLE_X86_ASM="--enable-x86-asm" ;;
-	"i686" )	ENABLE_X86_ASM="--enable-x86-asm" ;;
-	"x86_64" )	ENABLE_X86_ASM="--enable-x86-asm" ;;
-	* )			ENABLE_X86_ASM="--disable-x86-asm --disable-glinjectlib" ;;
-esac
-echo "x86/x64 = $ENABLE_X86_ASM"
+export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig"
 
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig
-
-echo "Detecting ffmpeg/libav ..."
-if ! pkg-config --exists libavcodec; then
-	echo "Error: libavcodec development package not found, make sure ffmpeg or libav development packages are installed."
-	exit 1
+if [ -z "$ENABLE_32BIT_GLINJECT" ] || [ -z "$ENABLE_X86_ASM" ] || [ -z "$WITH_GLINJECT" ]; then
+	echo "Detecting architecture ..."
+	case "$( uname -m )" in
+		"i386"|"i486"|"i586"|"i686")
+			: ${ENABLE_32BIT_GLINJECT:="FALSE"}
+			: ${ENABLE_X86_ASM:="TRUE"}
+			: ${WITH_GLINJECT:="TRUE"}
+			;;
+		"x86_64")
+			: ${ENABLE_32BIT_GLINJECT:="TRUE"}
+			: ${ENABLE_X86_ASM:="TRUE"}
+			: ${WITH_GLINJECT:="TRUE"}
+			;;
+		*)
+			: ${ENABLE_32BIT_GLINJECT:="FALSE"}
+			: ${ENABLE_X86_ASM:="FALSE"}
+			: ${WITH_GLINJECT:="FALSE"}
+			;;
+	esac
 fi
-LIBAVCODEC_INCLUDE_DIR=`pkg-config --variable=includedir libavcodec`
-HAS_FFMPEG=$( grep -c "This file is part of FFmpeg." ${LIBAVCODEC_INCLUDE_DIR}/libavcodec/avcodec.h || true )
-HAS_LIBAV=$( grep -c "This file is part of Libav." ${LIBAVCODEC_INCLUDE_DIR}/libavcodec/avcodec.h || true )
-if [ $HAS_FFMPEG -gt 0 ]; then
-	if [ $HAS_LIBAV -gt 0 ]; then
-		echo "Fatal: Detected ffmpeg AND libav, this should not happen!"
-		exit 1
-	else
-		echo "Detected ffmpeg."
-		ENABLE_FFMPEG_VERSIONS="--enable-ffmpeg-versions"
-	fi
-else
-	if [ $HAS_LIBAV -gt 0 ]; then
-		echo "Detected libav."
-		ENABLE_FFMPEG_VERSIONS="--disable-ffmpeg-versions"
-	else
-		echo "Fatal: Detection failed."
+
+if [ -z "$ENABLE_FFMPEG_VERSIONS" ]; then
+	echo "Detecting ffmpeg/libav ..."
+	if ! pkg-config --exists libavcodec; then
+		echo "  Error: libavcodec development package not found, make sure ffmpeg or libav development packages are installed."
 		exit 1
 	fi
+	LIBAVCODEC_INCLUDE_DIR="$( pkg-config --variable=includedir libavcodec )"
+	HAS_FFMPEG=$( grep -c "This file is part of FFmpeg." $LIBAVCODEC_INCLUDE_DIR/libavcodec/avcodec.h || true )
+	HAS_LIBAV=$( grep -c "This file is part of Libav." $LIBAVCODEC_INCLUDE_DIR/libavcodec/avcodec.h || true )
+	if [ $HAS_FFMPEG -gt 0 ]; then
+		if [ $HAS_LIBAV -gt 0 ]; then
+			echo "  Error: Detected ffmpeg AND libav, this should not happen!"
+			exit 1
+		else
+			echo "  Detected ffmpeg."
+			ENABLE_FFMPEG_VERSIONS="TRUE"
+		fi
+	else
+		if [ $HAS_LIBAV -gt 0 ]; then
+			echo "  Detected libav."
+			ENABLE_FFMPEG_VERSIONS="FALSE"
+		else
+			echo "  Error: Detection failed."
+			exit 1
+		fi
+	fi
 fi
 
-CONFIGURE_OPTIONS="--disable-assert $ENABLE_X86_ASM $ENABLE_FFMPEG_VERSIONS"
+if [ -z "$WITH_QT5" ]; then
+	echo "Detecting Qt version ..."
+	if pkg-config --exists "Qt5Gui >= 5.7"; then
+		echo "  Detected Qt5 (version $( pkg-config --modversion Qt5Gui ))."
+		WITH_QT5="TRUE"
+	elif pkg-config --exists "QtGui >= 4.8"; then
+		echo "  Detected Qt4 (version $( pkg-config --modversion QtGui ))."
+		WITH_QT5="FALSE"
+	else
+		echo "  Error: Qt development package not found, make sure that either Qt4 (4.8 or newer) or Qt5 (5.7 or newer) is installed."
+		exit 1
+	fi
+fi
 
-export CPPFLAGS=""
-export CFLAGS="-Wall -O2 -pipe"
-export CXXFLAGS="-Wall -O2 -pipe"
-export LDFLAGS=""
+echo "Auto-detected options:"
+echo "  ENABLE_32BIT_GLINJECT = $ENABLE_32BIT_GLINJECT"
+echo "  ENABLE_X86_ASM = $ENABLE_X86_ASM"
+echo "  ENABLE_FFMPEG_VERSIONS = $ENABLE_FFMPEG_VERSIONS"
+echo "  WITH_QT5 = $WITH_QT5"
+echo "  WITH_GLINJECT = $WITH_GLINJECT"
 
-export CPPFLAGS="$CPPFLAGS `pkg-config --cflags-only-I libavformat libavcodec libavutil libswscale`"
-export LDFLAGS="$LDFLAGS `pkg-config --libs-only-L libavformat libavcodec libavutil libswscale`"
+PREFIX="/usr"
 
-mkdir -p build
-cd build
-echo "Configuring ..."
-if [ x"$( uname -m )" = x"x86_64" ]; then
+OPTIONS=()
+OPTIONS+=("-DENABLE_32BIT_GLINJECT=$ENABLE_32BIT_GLINJECT")
+OPTIONS+=("-DENABLE_X86_ASM=$ENABLE_X86_ASM")
+OPTIONS+=("-DENABLE_FFMPEG_VERSIONS=$ENABLE_FFMPEG_VERSIONS")
+OPTIONS+=("-DWITH_QT5=$WITH_QT5")
+OPTIONS+=("-DWITH_GLINJECT=$WITH_GLINJECT")
 
-  if [ -d "/usr/lib32" ]; then
-    LIB32DIR=/usr/lib32
-  else
-    LIB32DIR=/usr/lib
-  fi
-
-  if [ -d "/usr/lib64" ]; then
-    LIB64DIR=/usr/lib64
-  else
-    LIB64DIR=/usr/lib
-  fi
-
-  if [ x"$LIB32DIR" == x"$LIB64DIR" ]; then
-    echo "Fatal: Same lib directories found for 32-bit and 64-bit. This should not happen!"
-    exit 1
-  fi
-
-  PKG_CONFIG_PATH="$LIB64DIR/pkgconfig" \
-    ../configure --prefix=/usr --libdir=$LIB64DIR $CONFIGURE_OPTIONS "$@"
+if [ x"$WITH_QT5" == x"TRUE" ]; then
+	export QT_SELECT="qt5"
 else
-  ../configure --prefix=/usr $CONFIGURE_OPTIONS "$@"
+	export QT_SELECT="qt4"
+	OPTIONS+=("-DCMAKE_AUTOMOC_MOC_OPTIONS=-D_SYS_SYSMACROS_H_OUTER")
 fi
+
+echo "Entering build-release directory ..."
+rm -rf build-release
+mkdir build-release
+cd build-release
+
+echo "Running cmake ..."
+cmake -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_BUILD_TYPE=Release "${OPTIONS[@]}" "$@" ..
 
 echo "Compiling ..."
-make -j "$( grep -c "^processor" /proc/cpuinfo )"
-cd ..
+make -j "$( nproc )"
 
-if [ x"$( uname -m )" = x"x86_64" ]; then
-	mkdir -p build32
-	cd build32
-	echo "Configuring 32-bit GLInject library ..."
-	CC="gcc -m32" CXX="g++ -m32" PKG_CONFIG_PATH="$LIB32DIR/pkgconfig" \
-		../configure --prefix=/usr --libdir=$LIB32DIR --disable-ssrprogram $CONFIGURE_OPTIONS "$@"
-	echo "Compiling 32-bit GLInject library ..."
-	make -j "$( grep -c "^processor" /proc/cpuinfo )"
-	cd ..
+if [ x"$WITH_GLINJECT" == x"TRUE" ]; then
+	echo "Removing old GLInject libraries ..."
+	sudo rm -f "/usr/lib/libssr-glinject."*
+	sudo rm -f "/usr/lib64/libssr-glinject."*
+	sudo rm -f "/usr/lib/x86_64-linux-gnu/libssr-glinject."*
+	if [ x"$ENABLE_32BIT_GLINJECT" == x"TRUE" ]; then
+		sudo rm -f "/usr/lib32/libssr-glinject."*
+		sudo rm -f "/usr/lib/i386-linux-gnu/libssr-glinject."*
+		sudo rm -f "/usr/lib/i686-linux-gnu/libssr-glinject."*
+	fi
 fi
 
-cd build
 echo "Installing ..."
 sudo make install
-cd ..
 
-if [ x$( uname -m ) = x"x86_64" ]; then
-	cd build32
-	echo "Installing 32-bit GLInject library ..."
-	sudo make install
-	cd ..
-fi
+echo "Leaving build-release directory ..."
+cd ..
 
 echo "Running post-install script ..."
 sudo ./postinstall

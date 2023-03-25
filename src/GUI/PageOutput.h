@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -19,6 +19,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 #include "Global.h"
+
+#include "ProfileBox.h"
 
 class MainWindow;
 
@@ -81,8 +83,6 @@ private:
 		inline bool operator<(const AudioCodecData& other) const { return (avname < other.avname); }
 	};
 
-	static const QString H264_PRESET_STRINGS[H264_PRESET_COUNT];
-
 private:
 	MainWindow *m_main_window;
 
@@ -93,12 +93,18 @@ private:
 	std::vector<VideoCodecData> m_video_codecs, m_video_codecs_av;
 	std::vector<AudioCodecData> m_audio_codecs, m_audio_codecs_av;
 
-	QGroupBox *m_groupbox_audio;
+	ProfileBox *m_profile_box;
+
+	QComboBox *m_combobox_profiles;
+	QPushButton *m_pushbutton_profile_save, *m_pushbutton_profile_new, *m_pushbutton_profile_delete;
+
+	QLineEdit *m_lineedit_file;
+	QCheckBox *m_checkbox_separate_files, *m_checkbox_add_timestamp;
 	QComboBox *m_combobox_container;
 	QLabel *m_label_container_av;
 	QComboBox *m_combobox_container_av;
-	QLineEdit *m_lineedit_file;
-	QCheckBox *m_checkbox_separate_files;
+	QLabel *m_label_container_warning;
+
 	QComboBox *m_combobox_video_codec;
 	QLabel *m_label_video_codec_av;
 	QComboBox *m_combobox_video_codec_av;
@@ -114,6 +120,8 @@ private:
 	QLabel *m_label_video_options;
 	QLineEdit *m_lineedit_video_options;
 	QCheckBox *m_checkbox_video_allow_frame_skipping;
+
+	QGroupBox *m_groupbox_audio;
 	QComboBox *m_combobox_audio_codec;
 	QLabel *m_label_audio_codec_av;
 	QComboBox *m_combobox_audio_codec_av;
@@ -128,25 +136,46 @@ public:
 	void LoadSettings(QSettings* settings);
 	void SaveSettings(QSettings* settings);
 
-	void PageStart();
+private:
+	static void LoadProfileSettingsCallback(QSettings* settings, void* userdata);
+	static void SaveProfileSettingsCallback(QSettings* settings, void* userdata);
+	void LoadProfileSettings(QSettings* settings);
+	void SaveProfileSettings(QSettings* settings);
+
+public:
+	void StartPage();
+	bool Validate();
 
 	QString GetFileProtocol();
 	QString GetContainerAVName();
 	QString GetVideoCodecAVName();
 	QString GetAudioCodecAVName();
-	QString GetH264PresetName();
 
 private:
-	enum_container FindContainer(const QString& name, enum_container fallback);
 	unsigned int FindContainerAV(const QString& name);
-	enum_video_codec FindVideoCodec(const QString& name, enum_video_codec fallback);
 	unsigned int FindVideoCodecAV(const QString& name);
-	enum_audio_codec FindAudioCodec(const QString& name, enum_audio_codec fallback);
 	unsigned int FindAudioCodecAV(const QString& name);
 
+private:
+	void LoadProfiles();
+	void LoadProfilesFromDir(const QString& path, bool can_delete);
+	void UpdateProfileFields();
+
+public slots:
+	void OnUpdateSuffixAndContainerFields();
+	void OnUpdateContainerFields();
+	void OnUpdateVideoCodecFields();
+	void OnUpdateAudioCodecFields();
+
+private slots:
+	void OnBrowse();
+	void OnContinue();
+
 public:
+	inline unsigned int GetProfile() { return m_profile_box->GetProfile(); }
 	inline QString GetFile() { return m_lineedit_file->text(); }
 	inline bool GetSeparateFiles() { return m_checkbox_separate_files->isChecked(); }
+	inline bool GetAddTimestamp() { return m_checkbox_add_timestamp->isChecked(); }
 	inline enum_container GetContainer() { return (enum_container) clamp(m_combobox_container->currentIndex(), 0, CONTAINER_COUNT - 1); }
 	inline unsigned int GetContainerAV() { return clamp(m_combobox_container_av->currentIndex(), 0, (int) m_containers_av.size() - 1); }
 	inline enum_video_codec GetVideoCodec() { return (enum_video_codec) clamp(m_combobox_video_codec->currentIndex(), 0, VIDEO_CODEC_COUNT - 1); }
@@ -162,10 +191,12 @@ public:
 	inline unsigned int GetAudioKBitRate() { return m_lineedit_audio_kbit_rate->text().toUInt(); }
 	inline QString GetAudioOptions() { return m_lineedit_audio_options->text(); }
 
+	inline void SetProfile(unsigned int profile) { m_profile_box->SetProfile(profile); }
 	inline void SetContainer(enum_container container) { m_combobox_container->setCurrentIndex(clamp((unsigned int) container, 0u, (unsigned int) CONTAINER_COUNT - 1)); }
 	inline void SetContainerAV(unsigned int container) { m_combobox_container_av->setCurrentIndex(clamp(container, 0u, (unsigned int) m_containers_av.size() - 1)); }
 	inline void SetFile(const QString& file) { m_lineedit_file->setText(file); }
 	inline void SetSeparateFiles(bool separate_files) { m_checkbox_separate_files->setChecked(separate_files); }
+	inline void SetAddTimestamp(bool add_timestamp) { m_checkbox_add_timestamp->setChecked(add_timestamp); }
 	inline void SetVideoCodec(enum_video_codec video_codec) { m_combobox_video_codec->setCurrentIndex(clamp((unsigned int) video_codec, 0u, (unsigned int) VIDEO_CODEC_COUNT - 1)); }
 	inline void SetVideoCodecAV(unsigned int video_codec_av) { m_combobox_video_codec_av->setCurrentIndex(clamp(video_codec_av, 0u, (unsigned int) m_video_codecs_av.size() - 1)); }
 	inline void SetVideoKBitRate(unsigned int kbit_rate) { m_lineedit_video_kbit_rate->setText(QString::number(kbit_rate)); }
@@ -178,15 +209,5 @@ public:
 	inline void SetAudioCodecAV(unsigned int audio_codec_av) { m_combobox_audio_codec_av->setCurrentIndex(clamp(audio_codec_av, 0u, (unsigned int) m_audio_codecs_av.size() - 1)); }
 	inline void SetAudioKBitRate(unsigned int kbit_rate) { m_lineedit_audio_kbit_rate->setText(QString::number(kbit_rate)); }
 	inline void SetAudioOptions(const QString& options) { m_lineedit_audio_options->setText(options); }
-
-public slots:
-	void OnUpdateSuffixAndContainerFields();
-	void OnUpdateContainerFields();
-	void OnUpdateVideoCodecFields();
-	void OnUpdateAudioCodecFields();
-
-private slots:
-	void OnBrowse();
-	void OnContinue();
 
 };

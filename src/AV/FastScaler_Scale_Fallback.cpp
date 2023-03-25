@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
 #include "FastScaler_Scale.h"
 
 #include "FastScaler_Scale_Generic.h"
@@ -120,23 +119,25 @@ void MipMap_BGRA_Fallback_Dynamic(unsigned int in_w, unsigned int in_h, const ui
 
 void MipMap_BGRA_Fallback(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 						  uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) {
-	Q_ASSERT(mx + my <= 8);
-	switch((mx << 8) | my) {
-		case 0x0000: Q_ASSERT(false); break;
-		case 0x0001: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 1); break;
-		case 0x0002: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 2); break;
-		case 0x0100: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 0); break;
-		case 0x0101: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 1); break;
-		case 0x0102: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 2); break;
-		case 0x0103: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 3); break;
-		case 0x0200: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 0); break;
-		case 0x0201: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 1); break;
-		case 0x0202: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 2); break;
-		case 0x0203: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 3); break;
-		case 0x0301: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 1); break;
-		case 0x0302: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 2); break;
-		case 0x0303: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 3); break;
-		default:     MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, mx, my); break;
+	assert(mx + my <= 8);
+	switch((mx << 4) | my) {
+		case 0x00: assert(false); break;
+		case 0x01: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 1); break;
+		case 0x02: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 2); break;
+		case 0x03: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 3); break;
+		case 0x10: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 0); break;
+		case 0x11: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 1); break;
+		case 0x12: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 2); break;
+		case 0x13: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 3); break;
+		case 0x20: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 0); break;
+		case 0x21: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 1); break;
+		case 0x22: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 2); break;
+		case 0x23: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 3); break;
+		case 0x30: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 0); break;
+		case 0x31: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 1); break;
+		case 0x32: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 2); break;
+		case 0x33: MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 3); break;
+		default:   MipMap_BGRA_Fallback_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, mx, my); break;
 	}
 }
 
@@ -149,15 +150,15 @@ Uses 'wannabe-SIMD' like the mipmapper. It's slightly less efficient here becaus
 void Bilinear_BGRA_Fallback(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 							unsigned int out_w, unsigned int out_h, uint8_t* out_data, int out_stride,
 							unsigned int mx, unsigned int my) {
-	Q_ASSERT(in_w > 1 && in_h > 1); //TODO// support size 1?
-	Q_ASSERT(out_w > 1 && out_h > 1); //TODO// support size 1?
-	Q_ASSERT(in_w < (1 << 28) && in_h < (1 << 28));
-	Q_ASSERT(out_w < (1 << 28) && out_w < (1 << 28));
+	assert(in_w > 1 && in_h > 1); //TODO// support size 1?
+	assert(out_w > 1 && out_h > 1); //TODO// support size 1?
+	assert(in_w < (1 << 28) && in_h < (1 << 28));
+	assert(out_w < (1 << 28) && out_h < (1 << 28));
 
 	// precompute horizontal offsets and fractions
 	TempBuffer<unsigned int> x_offset_table, x_fraction_table;
-	x_offset_table.alloc(out_w);
-	x_fraction_table.alloc(out_w);
+	x_offset_table.Alloc(out_w);
+	x_fraction_table.Alloc(out_w);
 	for(unsigned int out_i = 0; out_i < out_w; ++out_i) {
 		Bilinear_MapIndex(out_i, in_w, out_w, mx, x_offset_table[out_i], x_fraction_table[out_i]);
 	}
@@ -170,7 +171,7 @@ void Bilinear_BGRA_Fallback(unsigned int in_w, unsigned int in_h, const uint8_t*
 		unsigned int y_offset, y_fraction;
 		Bilinear_MapIndex(out_j, in_h, out_h, my, y_offset, y_fraction);
 		unsigned int y_fraction_inv = 256 - y_fraction;
-		unsigned int *x_offset_ptr = x_offset_table.data(), *x_fraction_ptr = x_fraction_table.data();
+		unsigned int *x_offset_ptr = x_offset_table.GetData(), *x_fraction_ptr = x_fraction_table.GetData();
 		const uint32_t *in1 = (const uint32_t*) (in_data + in_stride * (int) y_offset);
 		const uint32_t *in2 = (const uint32_t*) (in_data + in_stride * ((int) y_offset + 1));
 		uint32_t *out = (uint32_t*) (out_data + out_stride * (int) out_j);

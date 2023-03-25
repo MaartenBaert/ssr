@@ -1,0 +1,64 @@
+#!/bin/bash
+
+set -e
+
+usage() {
+	echo "Usage: ssr-glinject [OPTIONS] [--] COMMAND" >& 2
+	echo "" >& 2
+	echo "Options:" >& 2
+	echo "  --help               Show this help message." >& 2
+	echo "  --glx-debug          Enables GLX debugging. This may reduce the performance" >& 2
+	echo "                       and print lots of error messages, but it is useful to" >& 2
+	echo "                       track down bugs." >& 2
+	echo "  --relax-permissions  Uses mode 666 instead of 600 for shared memory, so that" >& 2
+	echo "                       other users can record the stream. This is insecure and" >& 2
+	echo "                       should not be used on a computer that can be accessed by" >& 2
+	echo "                       other users that you don't trust." >& 2
+	echo "  --channel=CHANNEL    Channel name to use. The default is 'channel-USERNAME'." >& 2
+	echo "" >& 2
+	echo "This script uses LD_PRELOAD to inject the GLInject library into the given" >& 2
+	echo "command, so that SimpleScreenRecorder can record it. It should be safe to use" >& 2
+	echo "this on all applications (including command-line programs and shell scripts)." >& 2
+	echo "If the program doesn't use OpenGL, it should have no effect. If you find a" >& 2
+	echo "program that crashes or behaves incorrectly when GLInject is used, please submit" >& 2
+	echo "a bug report." >& 2
+}
+
+export SSR_GLX_DEBUG=0
+export SSR_STREAM_RELAX_PERMISSIONS=0
+
+while [ $# -gt 0 ]
+do
+	if [ x"$1" = x"--" ]
+	then
+		shift
+		break
+	elif [ x"$1" = x"--help" ]
+	then
+		usage
+		exit
+	elif [ x"$1" = x"--glx-debug" ]
+	then
+		export SSR_GLX_DEBUG=1
+		shift
+	elif [ x"$1" = x"--relax-permissions" ]
+	then
+		export SSR_STREAM_RELAX_PERMISSIONS=1
+		shift
+	elif [ x"${1:0:10}" = x"--channel=" ]
+	then
+		export SSR_CHANNEL="${1:10}"
+		shift
+	elif [ x"${1:0:1}" = x"-" ]
+	then
+		echo "ssr-glinject: Unknown option '$1'!" >& 2
+		usage
+		exit 1
+	else
+		break
+	fi
+done
+
+echo "ssr-glinject: LD_PRELOAD = $LD_PRELOAD:libssr-glinject.so" >& 2 || true
+echo "ssr-glinject: command = $@" >& 2 || true
+LD_PRELOAD="$LD_PRELOAD:libssr-glinject.so" exec "$@"

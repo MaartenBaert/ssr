@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -25,45 +25,40 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class VideoEncoder : public BaseEncoder {
 
 private:
-	static const size_t THROTTLE_THRESHOLD_FRAMES, THROTTLE_THRESHOLD_PACKETS;
-	static const std::vector<PixelFormat> SUPPORTED_PIXEL_FORMATS;
+	struct PixelFormatData {
+		QString m_name;
+		AVPixelFormat m_format;
+		bool m_is_yuv;
+	};
 
 private:
-	unsigned int m_bit_rate;
-	unsigned int m_width, m_height, m_frame_rate;
+	static const std::vector<PixelFormatData> SUPPORTED_PIXEL_FORMATS;
 
-	unsigned int m_opt_threads;
-	unsigned int m_opt_minrate, m_opt_maxrate, m_opt_bufsize;
-
-#if !SSR_USE_AVCODEC_PRIVATE_CRF
-	unsigned int m_opt_crf;
-#endif
-#if !SSR_USE_AVCODEC_PRIVATE_PRESET
-	QString m_opt_preset;
-#endif
-
+private:
 #if !SSR_USE_AVCODEC_ENCODE_VIDEO2
 	std::vector<uint8_t> m_temp_buffer;
 #endif
 
 public:
-	VideoEncoder(Muxer* muxer, const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
-				 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate);
+	VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options);
 	~VideoEncoder();
 
-	// Returns an additional delay (in us) between frames, based on the queue size, to avoid memory problems.
-	// As long as the queues are relatively small, this function will just return 0.
-	int64_t GetFrameDelay();
+	// Returns the required pixel format.
+	AVPixelFormat GetPixelFormat();
+	
+	// Returns the required color space.
+	int GetColorSpace();
 
-	inline unsigned int GetWidth() { return m_width; }
-	inline unsigned int GetHeight() { return m_height; }
-	inline unsigned int GetFrameRate() { return m_frame_rate; }
+	unsigned int GetWidth();
+	unsigned int GetHeight();
+	unsigned int GetFrameRate();
 
 public:
 	static bool AVCodecIsSupported(const QString& codec_name);
+	static void PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+							  unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate);
 
 private:
-	virtual void FillCodecContext(AVCodec* codec) override;
-	virtual bool EncodeFrame(AVFrame* frame) override;
+	virtual bool EncodeFrame(AVFrameWrapper* frame) override;
 
 };

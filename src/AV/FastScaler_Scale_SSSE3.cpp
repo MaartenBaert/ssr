@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
 #include "FastScaler_Scale.h"
 
 #include "FastScaler_Scale_Generic.h"
@@ -25,10 +24,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #if SSR_USE_X86_ASM
 
-#include <xmmintrin.h>
-#include <emmintrin.h>
-#include <pmmintrin.h>
-#include <tmmintrin.h>
+#include <xmmintrin.h> // sse
+#include <emmintrin.h> // sse2
+#include <pmmintrin.h> // sse3
+#include <tmmintrin.h> // ssse3
 
 /*
 ==== SSSE3 MipMapper ====
@@ -49,7 +48,7 @@ It's important that this function is force-inlined because this allows the compi
 inline __attribute__((always_inline))
 void MipMap_BGRA_SSSE3_Dynamic(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 							   uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) {
-	Q_ASSERT((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0);
+	assert((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0);
 	__m128i v_mask = _mm_set1_epi16(0xff);
 	__m128i v_offset = _mm_set1_epi16(1u << (mx + my - 1));
 	const uint64_t mask = vec4x16(0xff);
@@ -204,23 +203,25 @@ void MipMap_BGRA_SSSE3_Dynamic(unsigned int in_w, unsigned int in_h, const uint8
 
 void MipMap_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 				  uint8_t* out_data, int out_stride, unsigned int mx, unsigned int my) {
-	Q_ASSERT(mx + my <= 8);
-	switch((mx << 8) | my) {
-		case 0x0000: Q_ASSERT(false); break;
-		case 0x0001: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 1); break;
-		case 0x0002: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 2); break;
-		case 0x0100: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 0); break;
-		case 0x0101: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 1); break;
-		case 0x0102: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 2); break;
-		case 0x0103: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 3); break;
-		case 0x0200: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 0); break;
-		case 0x0201: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 1); break;
-		case 0x0202: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 2); break;
-		case 0x0203: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 3); break;
-		case 0x0301: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 1); break;
-		case 0x0302: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 2); break;
-		case 0x0303: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 3); break;
-		default:     MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, mx, my); break;
+	assert(mx + my <= 8);
+	switch((mx << 4) | my) {
+		case 0x00: assert(false); break;
+		case 0x01: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 1); break;
+		case 0x02: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 2); break;
+		case 0x03: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 0, 3); break;
+		case 0x10: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 0); break;
+		case 0x11: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 1); break;
+		case 0x12: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 2); break;
+		case 0x13: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 1, 3); break;
+		case 0x20: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 0); break;
+		case 0x21: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 1); break;
+		case 0x22: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 2); break;
+		case 0x23: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 2, 3); break;
+		case 0x30: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 0); break;
+		case 0x31: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 1); break;
+		case 0x32: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 2); break;
+		case 0x33: MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, 3, 3); break;
+		default:   MipMap_BGRA_SSSE3_Dynamic(in_w, in_h, in_data, in_stride, out_data, out_stride, mx, my); break;
 	}
 }
 
@@ -234,17 +235,17 @@ and the shuffles are also more efficient than just shifting.
 void Bilinear_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 						 unsigned int out_w, unsigned int out_h, uint8_t* out_data, int out_stride,
 						 unsigned int mx, unsigned int my) {
-	Q_ASSERT(in_w > 1 && in_h > 1); //TODO// support size 1?
-	Q_ASSERT(out_w > 1 && out_h > 1); //TODO// support size 1?
-	Q_ASSERT(in_w < (1 << 28) && in_h < (1 << 28));
-	Q_ASSERT(out_w < (1 << 28) && out_w < (1 << 28));
-	Q_ASSERT((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0);
+	assert(in_w > 1 && in_h > 1); //TODO// support size 1?
+	assert(out_w > 1 && out_h > 1); //TODO// support size 1?
+	assert(in_w < (1 << 28) && in_h < (1 << 28));
+	assert(out_w < (1 << 28) && out_h < (1 << 28));
+	assert((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0);
 
 	// precompute horizontal offsets and fractions
 	TempBuffer<unsigned int> x_offset_table;
 	TempBuffer<uint64_t> x_fraction_table;
-	x_offset_table.alloc(out_w);
-	x_fraction_table.alloc(out_w);
+	x_offset_table.Alloc(out_w);
+	x_fraction_table.Alloc(out_w);
 	for(unsigned int out_i = 0; out_i < out_w; ++out_i) {
 		unsigned int x_fraction;
 		Bilinear_MapIndex(out_i, in_w, out_w, mx, x_offset_table[out_i], x_fraction);
@@ -252,13 +253,13 @@ void Bilinear_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in
 	}
 
 	// constants
-	__m128i v_128       = _mm_set1_epi16(128);
-	__m128i v_256       = _mm_set1_epi16(256);
-	__m128i v_shuffle1  = _mm_setr_epi8(0, 255, 1, 255, 2, 255, 3, 255, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle2  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 0, 255, 1, 255, 2, 255, 3, 255);
-	__m128i v_shuffle3  = _mm_setr_epi8(4, 255, 5, 255, 6, 255, 7, 255, 255, 255, 255, 255, 255, 255, 255, 255);
-	__m128i v_shuffle4  = _mm_setr_epi8(255, 255, 255, 255, 255, 255, 255, 255, 4, 255, 5, 255, 6, 255, 7, 255);
-	__m128i v_shuffle5  = _mm_setr_epi8(1, 3, 5, 7, 9, 11, 13, 15, 255, 255, 255, 255, 255, 255, 255, 255);
+	__m128i v_128      = _mm_set1_epi16(128);
+	__m128i v_256      = _mm_set1_epi16(256);
+	__m128i v_shuffle1 = _mm_setr_epi8( 0, -1,  1, -1,  2, -1,  3, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+	__m128i v_shuffle2 = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1,  0, -1,  1, -1,  2, -1,  3, -1);
+	__m128i v_shuffle3 = _mm_setr_epi8( 4, -1,  5, -1,  6, -1 , 7, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+	__m128i v_shuffle4 = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1,  4, -1,  5, -1,  6, -1,  7, -1);
+	__m128i v_shuffle5 = _mm_setr_epi8( 1,  3,  5,  7,  9, 11, 13, 15, -1, -1, -1, -1, -1, -1, -1, -1);
 
 	// scale
 	for(unsigned int out_j = 0; out_j < out_h; ++out_j) {
@@ -266,8 +267,8 @@ void Bilinear_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in
 		Bilinear_MapIndex(out_j, in_h, out_h, my, y_offset, y_fraction);
 		__m128i vy_fraction = _mm_set1_epi16(y_fraction);
 		__m128i vy_fraction_inv = _mm_sub_epi16(v_256, vy_fraction);
-		unsigned int *x_offset_ptr = x_offset_table.data();
-		uint64_t *x_fraction_ptr = x_fraction_table.data();
+		unsigned int *x_offset_ptr = x_offset_table.GetData();
+		uint64_t *x_fraction_ptr = x_fraction_table.GetData();
 		const uint32_t *in1 = (const uint32_t*) (in_data + in_stride * (int) y_offset);
 		const uint32_t *in2 = (const uint32_t*) (in_data + in_stride * ((int) y_offset + 1));
 		uint32_t *out = (uint32_t*) (out_data + out_stride * (int) out_j);

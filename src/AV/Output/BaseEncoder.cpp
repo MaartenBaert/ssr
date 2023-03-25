@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2013 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -17,19 +17,47 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
 #include "BaseEncoder.h"
 
 #include "Logger.h"
 #include "AVWrapper.h"
 #include "Muxer.h"
 
-BaseEncoder::BaseEncoder(Muxer* muxer) {
+int ParseCodecOptionInt(const QString& key, const QString& value, int min, int max, int multiply) {
+	bool parsed;
+	int value_int = value.toInt(&parsed);
+	if(!parsed) {
+		Logger::LogError("[ParseCodecOptionInt] " + Logger::tr("Error: Option '%1' could not be parsed!").arg(key));
+		throw LibavException();
+	}
+	return clamp(value_int, min, max) * multiply;
+}
+double ParseCodecOptionDouble(const QString& key, const QString& value, double min, double max, double multiply) {
+	bool parsed;
+	double value_double = value.toDouble(&parsed);
+	if(!parsed) {
+		Logger::LogError("[ParseCodecOptionDouble] " + Logger::tr("Error: Option '%1' could not be parsed!").arg(key));
+		throw LibavException();
+	}
+	return clamp(value_double, min, max) * multiply;
+}
 
-	m_destructed = false;
+BaseEncoder::BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options) {
+
 	m_muxer = muxer;
+	m_stream = stream;
+	m_codec_context = codec_context;
+	m_codec_opened = false;
 
-	m_codec_context = NULL;
+	// initialize shared data
+	{
+		SharedLock lock(&m_shared_data);
+		lock->m_total_frames = 0;
+		lock->m_total_packets = 0;
+		lock->m_stats_actual_frame_rate = 0.0;
+		lock->m_stats_previous_pts = AV_NOPTS_VALUE;
+		lock->m_stats_previous_frames = 0;
+	}
 
 	// initialize thread signals
 	m_should_stop = false;
@@ -37,78 +65,41 @@ BaseEncoder::BaseEncoder(Muxer* muxer) {
 	m_is_done = false;
 	m_error_occurred = false;
 
-	{
-		SharedLock lock(&m_shared_data);
-		lock->m_total_frames = 0;
-		lock->m_stats_actual_frame_rate = 0.0;
-		lock->m_stats_previous_pts = AV_NOPTS_VALUE;
-		lock->m_stats_previous_frames = 0;
+	try {
+		Init(codec, options);
+	} catch(...) {
+		Free();
+		throw;
 	}
 
 }
 
 BaseEncoder::~BaseEncoder() {
-	Q_ASSERT(m_destructed);
+	Free();
 }
 
-// Why not a real destructor? The problem is that a real destructor gets called *after* the derived class has already been destructed.
+// Why can't this be done in the constructor/destructor? The problem is that a real destructor gets called *after* the derived class has already been destructed.
 // This means virtual function calls, like EncodeFrame, will fail. This is a problem since the encoder thread doesn't know that the derived class is gone.
-// To fix this, the derived class should call Destruct() in its destructor.
-void BaseEncoder::Destruct() {
+// A similar thing can happen with the constructor. To fix this, the derived class should call StartThread() and StopThread() manually.
+
+void BaseEncoder::StartThread() {
+
+	// start encoder thread
+	m_thread = std::thread(&BaseEncoder::EncoderThread, this);
+
+}
+
+void BaseEncoder::StopThread() {
 
 	// tell the thread to stop
-	// normally the muxer should have stopped the thread already, unless the muxer wasn't actually started
 	if(m_thread.joinable()) {
-		Logger::LogInfo("[BaseEncoder::Stop] " + QObject::tr("Stopping encoder thread ..."));
+		Logger::LogInfo("[BaseEncoder::~BaseEncoder] " + Logger::tr("Stopping encoder thread ..."));
 		m_should_stop = true;
 		m_thread.join();
 	}
 
 	// free everything
-	if(m_codec_context != NULL) {
-		avcodec_close(m_codec_context);
-		m_codec_context = NULL;
-	}
-
-	m_destructed = true;
-
-}
-
-void BaseEncoder::CreateCodec(const QString& codec_name, AVDictionary **options) {
-
-	// get the codec we want
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toAscii().constData());
-	if(codec == NULL) {
-		Logger::LogError("[BaseEncoder::CreateCodec] " + QObject::tr("Error: Can't find codec!"));
-		throw LibavException();
-	}
-	m_delayed_packets = ((codec->capabilities & CODEC_CAP_DELAY) != 0);
-
-	Logger::LogInfo("[BaseEncoder::CreateCodec] " + QObject::tr("Using codec %1 (%2).").arg(codec->name).arg(codec->long_name));
-
-	// create stream and get codec context
-	AVStream *stream = m_muxer->CreateStream(codec);
-	m_codec_context = stream->codec;
-	m_stream_index = stream->index;
-
-	// if the codec is experimental, allow it
-	if(codec->capabilities & CODEC_CAP_EXPERIMENTAL) {
-		Logger::LogWarning("[BaseEncoder::CreateCodec] " + QObject::tr("Warning: This codec is considered experimental by libav/ffmpeg."));
-		m_codec_context->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
-	}
-
-	// set things like image size, frame rate, sample rate, bit rate ...
-	FillCodecContext(codec);
-	stream->sample_aspect_ratio = m_codec_context->sample_aspect_ratio;
-
-	// open codec
-	if(avcodec_open2(m_codec_context, codec, options) < 0) {
-		Logger::LogError("[BaseEncoder::CreateCodec] " + QObject::tr("Error: Can't open codec!"));
-		throw LibavException();
-	}
-
-	// start encoder thread
-	m_thread = std::thread(&BaseEncoder::EncoderThread, this);
+	Free();
 
 }
 
@@ -122,14 +113,22 @@ uint64_t BaseEncoder::GetTotalFrames() {
 	return lock->m_total_frames;
 }
 
+unsigned int BaseEncoder::GetFrameLatency() {
+	SharedLock lock(&m_shared_data);
+	return (lock->m_total_frames > lock->m_total_packets)? lock->m_total_frames - lock->m_total_packets : 0;
+}
+
 unsigned int BaseEncoder::GetQueuedFrameCount() {
 	SharedLock lock(&m_shared_data);
 	return lock->m_frame_queue.size();
 }
 
+unsigned int BaseEncoder::GetQueuedPacketCount() {
+	return GetMuxer()->GetQueuedPacketCount(GetStream()->index);
+}
+
 void BaseEncoder::AddFrame(std::unique_ptr<AVFrameWrapper> frame) {
-	Q_ASSERT(m_muxer->IsStarted());
-	Q_ASSERT(frame->GetFrame()->pts != (int64_t) AV_NOPTS_VALUE);
+	assert(frame->GetFrame()->pts != (int64_t) AV_NOPTS_VALUE);
 	SharedLock lock(&m_shared_data);
 	++lock->m_total_frames;
 	if(lock->m_stats_previous_pts == (int64_t) AV_NOPTS_VALUE) {
@@ -153,11 +152,40 @@ void BaseEncoder::Stop() {
 	m_should_stop = true;
 }
 
+void BaseEncoder::IncrementPacketCounter() {
+	SharedLock lock(&m_shared_data);
+	++lock->m_total_packets;
+}
+
+void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
+
+	// open codec
+	if(avcodec_open2(m_codec_context, codec, options) < 0) {
+		Logger::LogError("[BaseEncoder::Init] " + Logger::tr("Error: Can't open codec!"));
+		throw LibavException();
+	}
+	m_codec_opened = true;
+
+	// show a warning for every option that wasn't recognized
+	AVDictionaryEntry *t = NULL;
+	while((t = av_dict_get(*options, "", t, AV_DICT_IGNORE_SUFFIX)) != NULL) {
+		Logger::LogWarning("[BaseEncoder::Init] " + Logger::tr("Warning: Codec option '%1' was not recognised!").arg(t->key));
+	}
+
+}
+
+void BaseEncoder::Free() {
+	if(m_codec_opened) {
+		avcodec_close(m_codec_context);
+		m_codec_opened = false;
+	}
+}
+
 void BaseEncoder::EncoderThread() {
 
 	try {
 
-		Logger::LogInfo("[BaseEncoder::EncoderThread] " + QObject::tr("Encoder thread started."));
+		Logger::LogInfo("[BaseEncoder::EncoderThread] " + Logger::tr("Encoder thread started."));
 
 		// normal encoding
 		while(!m_should_stop) {
@@ -175,35 +203,39 @@ void BaseEncoder::EncoderThread() {
 				if(m_should_finish) {
 					break;
 				}
-				usleep(10000);
+				usleep(20000);
 				continue;
 			}
 
 			// encode the frame
-			EncodeFrame(frame->GetFrame());
+			EncodeFrame(frame.get());
 
 		}
 
 		// flush the encoder
-		if(!m_should_stop && m_delayed_packets) {
-			Logger::LogInfo("[BaseEncoder::EncoderThread] " + QObject::tr("Flushing encoder ..."));
-			while(!m_should_stop && EncodeFrame(NULL));
+		if(!m_should_stop && (m_codec_context->codec->capabilities & AV_CODEC_CAP_DELAY)) {
+			Logger::LogInfo("[BaseEncoder::EncoderThread] " + Logger::tr("Flushing encoder ..."));
+			while(!m_should_stop) {
+				if(!EncodeFrame(NULL)) {
+					break;
+				}
+			}
 		}
 
 		// tell the others that we're done
 		m_is_done = true;
 
-		Logger::LogInfo("[BaseEncoder::EncoderThread] " + QObject::tr("Encoder thread stopped."));
+		Logger::LogInfo("[BaseEncoder::EncoderThread] " + Logger::tr("Encoder thread stopped."));
 
 	} catch(const std::exception& e) {
 		m_error_occurred = true;
-		Logger::LogError("[BaseEncoder::EncoderThread] " + QObject::tr("Exception '%1' in encoder thread.").arg(e.what()));
+		Logger::LogError("[BaseEncoder::EncoderThread] " + Logger::tr("Exception '%1' in encoder thread.").arg(e.what()));
 	} catch(...) {
 		m_error_occurred = true;
-		Logger::LogError("[BaseEncoder::EncoderThread] " + QObject::tr("Unknown exception in encoder thread."));
+		Logger::LogError("[BaseEncoder::EncoderThread] " + Logger::tr("Unknown exception in encoder thread."));
 	}
 
 	// always end the stream, even if there was an error, otherwise the muxer will wait forever
-	m_muxer->EndStream(m_stream_index);
+	m_muxer->EndStream(m_stream->index);
 
 }

@@ -9,17 +9,14 @@ if [ x"$( whoami )" = x"root" ]; then
 	exit 1
 fi
 
-cd build
-echo "Uninstalling ..."
-sudo make uninstall
-cd ..
+echo "Entering build-release directory ..."
+cd build-release
 
-if [ x$( uname -m ) = x"x86_64" ]; then
-	cd build32
-	echo "Uninstalling 32-bit GLInject library ..."
-	sudo make uninstall
-	cd ..
-fi
+echo "Uninstalling ..."
+sudo xargs rm < install_manifest.txt
+
+echo "Leaving build-release directory ..."
+cd ..
 
 echo "Running post-install script ..."
 sudo ./postinstall
