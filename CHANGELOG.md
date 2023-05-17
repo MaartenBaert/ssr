@@ -6,6 +6,12 @@ Git master
 
 - ?
 
+Version 0.4.5
+-------------
+
+- Switch to PLT hooks to make GLInject work with new dlopen/dlsym in libc
+- Fix for compatibility with newer FFmpeg versions
+
 Version 0.4.4
 -------------
 
