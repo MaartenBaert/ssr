@@ -16,6 +16,9 @@ BuildRequires:  gcc-c++
 BuildRequires:  desktop-file-utils
 BuildRequires:  cmake3
 BuildRequires:  ffmpeg-devel
+BuildRequires:  qt5-qtx11extras-devel
+BuildRequires:  qt5-linguist
+BuildRequires:  jack-audio-connection-kit-devel
 BuildRequires:  pkgconfig(Qt5) >= 5.7.0
 BuildRequires:  pkgconfig(Qt5X11Extras)
 BuildRequires:  pkgconfig(alsa)
