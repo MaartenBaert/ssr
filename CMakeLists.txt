@@ -7,7 +7,7 @@ endif(POLICY CMP0072)
 
 set(CMAKE_CXX_STANDARD 11)
 
-project(simplescreenrecorder VERSION 0.4.4)
+project(simplescreenrecorder VERSION 0.4.5)
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|i386|i686")
 	set(PROCESSOR_IS_X86 TRUE)
