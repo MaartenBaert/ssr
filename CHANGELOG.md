@@ -4,7 +4,7 @@ SimpleScreenRecorder changes
 Git master
 ----------
 
-- ?
+- update CMakeLists.txt
 
 Version 0.4.5
 -------------
