@@ -176,7 +176,7 @@ void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
 
 void BaseEncoder::Free() {
 	if(m_codec_opened) {
-		avcodec_close(m_codec_context);
+		avcodec_free_context(&m_codec_context);
 		m_codec_opened = false;
 	}
 }
