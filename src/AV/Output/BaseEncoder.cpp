@@ -42,7 +42,7 @@ double ParseCodecOptionDouble(const QString& key, const QString& value, double m
 	return clamp(value_double, min, max) * multiply;
 }
 
-BaseEncoder::BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options) {
+BaseEncoder::BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options) {
 
 	m_muxer = muxer;
 	m_stream = stream;
@@ -157,7 +157,7 @@ void BaseEncoder::IncrementPacketCounter() {
 	++lock->m_total_packets;
 }
 
-void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
+void BaseEncoder::Init(const AVCodec* codec, AVDictionary** options) {
 
 	// open codec
 	if(avcodec_open2(m_codec_context, codec, options) < 0) {
@@ -176,7 +176,7 @@ void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
 
 void BaseEncoder::Free() {
 	if(m_codec_opened) {
-		avcodec_close(m_codec_context);
+		avcodec_free_context(&m_codec_context);
 		m_codec_opened = false;
 	}
 }
