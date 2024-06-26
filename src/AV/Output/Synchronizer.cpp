@@ -180,7 +180,7 @@ static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int channels, u
 	frame->GetFrame()->nb_samples = samples;
 #endif
 #if SSR_USE_AVFRAME_CHANNELS
-	frame->GetFrame()->channels = channels;
+	frame->GetFrame()->ch_layout.nb_channels = channels;
 #endif
 #if SSR_USE_AVFRAME_SAMPLE_RATE
 	frame->GetFrame()->sample_rate = sample_rate;
