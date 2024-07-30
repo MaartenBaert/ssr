@@ -41,6 +41,7 @@
 #endif
 #include <stdio.h>
 #include <stdarg.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -84,6 +85,8 @@
 #elif defined __i386__ || defined __i386
 #define R_JUMP_SLOT   R_386_JMP_SLOT
 #define R_GLOBAL_DATA R_386_GLOB_DAT
+#define R_PC_RELATIVE R_386_PC32
+#define PC_RELATIVE_OFFSET 4
 #define USE_REL
 #elif defined __arm__ || defined __arm
 #define R_JUMP_SLOT   R_ARM_JUMP_SLOT
@@ -312,7 +315,7 @@ int plthook_open_by_address(plthook_t **plthook_out, void *address)
 
 int plthook_open_by_linkmap(plthook_t **plthook_out, void *linkmap)
 {
-	return plthook_open_real(plthook_out, (struct link_map*)linkmap);
+    return plthook_open_real(plthook_out, (struct link_map*)linkmap);
 }
 
 static int plthook_open_executable(plthook_t **plthook_out)
@@ -731,6 +734,23 @@ static int check_rel(const plthook_t *plthook, const Elf_Plt_Rel *plt, Elf_Xword
     return -1;
 }
 
+static int check_rel_adv(const plthook_t *plthook, const Elf_Plt_Rel *plt, Elf_Xword r_type, const char **name_out, void ***addr_out, unsigned int *reltype_out)
+{
+    if (ELF_R_TYPE(plt->r_info) == r_type) {
+        size_t idx = ELF_R_SYM(plt->r_info);
+        idx = plthook->dynsym[idx].st_name;
+        if (idx + 1 > plthook->dynstr_size) {
+            set_errmsg("too big section header string table index: %" SIZE_T_FMT, idx);
+            return PLTHOOK_INVALID_FILE_FORMAT;
+        }
+        *name_out = plthook->dynstr + idx;
+        *addr_out = (void**)(plthook->plt_addr_base + plt->r_offset);
+        *reltype_out = r_type;
+        return 0;
+    }
+    return -1;
+}
+
 int plthook_enum(plthook_t *plthook, unsigned int *pos, const char **name_out, void ***addr_out)
 {
     while (*pos < plthook->rela_plt_cnt) {
@@ -745,6 +765,43 @@ int plthook_enum(plthook_t *plthook, unsigned int *pos, const char **name_out, v
     while (*pos < plthook->rela_plt_cnt + plthook->rela_dyn_cnt) {
         const Elf_Plt_Rel *plt = plthook->rela_dyn + (*pos - plthook->rela_plt_cnt);
         int rv = check_rel(plthook, plt, R_GLOBAL_DATA, name_out, addr_out);
+        (*pos)++;
+        if (rv >= 0) {
+            return rv;
+        }
+    }
+#endif
+    *name_out = NULL;
+    *addr_out = NULL;
+    return EOF;
+}
+
+int plthook_enum_adv(plthook_t *plthook, unsigned int *pos, const char **name_out, void ***addr_out, unsigned int *reltype_out)
+{
+    // fprintf(stderr, "plthook_enum: started, pos = %u, plthook->rela_plt_cnt = %lu, plthook->rela_dyn_cnt = %lu\n", *pos, plthook->rela_plt_cnt, plthook->rela_dyn_cnt);
+    while (*pos < plthook->rela_plt_cnt) {
+        const Elf_Plt_Rel *plt = plthook->rela_plt + *pos;
+        int rv = check_rel_adv(plthook, plt, R_JUMP_SLOT, name_out, addr_out, reltype_out);
+        // fprintf(stderr, "plthook_enum: check_rel returned %d\n", rv);
+        (*pos)++;
+        if (rv >= 0) {
+            return rv;
+        }
+    }
+
+#ifdef R_GLOBAL_DATA
+    while (*pos < plthook->rela_plt_cnt + plthook->rela_dyn_cnt) {
+        const Elf_Plt_Rel *plt = plthook->rela_dyn + (*pos - plthook->rela_plt_cnt);
+        int rv = check_rel_adv(plthook, plt, R_GLOBAL_DATA, name_out, addr_out, reltype_out);
+#ifdef R_PC_RELATIVE
+        if (rv == -1) {
+            rv = check_rel_adv(plthook, plt, R_PC_RELATIVE, name_out, addr_out, reltype_out);
+            // if (rv == 0) {
+            //     fprintf(stderr, "plthook_enum: found R_PC_RELATIVE (%s, %p, %p)\n", *name_out, *addr_out, **addr_out);
+            //     rv = -1;
+            // }
+        }
+#endif
         (*pos)++;
         if (rv >= 0) {
             return rv;
@@ -796,6 +853,74 @@ int plthook_replace(plthook_t *plthook, const char *funcname, void *funcaddr, vo
     if (rv == EOF) {
         set_errmsg("no such function: %s", funcname);
         rv = PLTHOOK_FUNCTION_NOT_FOUND;
+    }
+    return rv;
+}
+
+int plthook_replace_adv(plthook_t *plthook, const char *funcname, void *funcaddr, void **oldfunc, void *expect)
+{
+    size_t funcnamelen = strlen(funcname);
+    unsigned int pos = 0;
+    const char *name;
+    void **addr;
+    unsigned int reltype;
+    int rv;
+    unsigned int found = 0;
+
+    if (plthook == NULL) {
+        set_errmsg("invalid argument: The first argument is null.");
+        return PLTHOOK_INVALID_ARGUMENT;
+    }
+    while ((rv = plthook_enum_adv(plthook, &pos, &name, &addr, &reltype)) == 0) {
+        if (strncmp(name, funcname, funcnamelen) == 0) {
+            if (name[funcnamelen] == '\0' || name[funcnamelen] == '@') {
+                int prot = get_memory_permission(addr);
+                if (prot == 0) {
+                    return PLTHOOK_INTERNAL_ERROR;
+                }
+                if (!(prot & PROT_WRITE)) {
+                    if (mprotect(ALIGN_ADDR(addr), page_size, PROT_READ | PROT_WRITE) != 0) {
+                        set_errmsg("Could not change the process memory permission at %p: %s",
+                                   ALIGN_ADDR(addr), strerror(errno));
+                        return PLTHOOK_INTERNAL_ERROR;
+                    }
+                }
+#ifdef R_PC_RELATIVE
+                if (reltype == R_PC_RELATIVE) {
+                    if (oldfunc) {
+                        *oldfunc = (void*)(((char*)addr + PC_RELATIVE_OFFSET) + (ptrdiff_t)*addr);
+                    }
+                    *addr = (void*) ((char*)funcaddr - ((char*)addr + PC_RELATIVE_OFFSET));
+                } else {
+#endif
+                if (oldfunc) {
+                    *oldfunc = *addr;
+                }
+                *addr = funcaddr;
+#ifdef R_PC_RELATIVE
+                }
+#endif
+                if (!(prot & PROT_WRITE)) {
+                    mprotect(ALIGN_ADDR(addr), page_size, prot);
+                }
+#ifdef R_PC_RELATIVE
+                if (reltype == R_PC_RELATIVE) {
+                    if (oldfunc && *oldfunc != expect && *oldfunc != funcaddr) {
+                        fprintf(stderr, "PLTHOOKS WARNING: relocation of %s at %p was %p, expected %p, changed to %p\n", funcname, addr, *oldfunc, expect, funcaddr);
+                    }
+                }
+#endif
+                found++;
+            }
+        }
+    }
+    if (rv == EOF) {
+        if (found == 0) {
+            set_errmsg("no such function: %s", funcname);
+            rv = PLTHOOK_FUNCTION_NOT_FOUND;
+        } else {
+            rv = 0;
+        }
     }
     return rv;
 }
