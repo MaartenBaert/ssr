@@ -69,7 +69,11 @@ AVSampleFormat AudioEncoder::GetSampleFormat() {
 }
 
 unsigned int AudioEncoder::GetChannels() {
+#if LIBAVCODEC_VERSION_MAJOR < 61
 	return GetCodecContext()->channels;
+#else
+	return GetCodecContext()->ch_layout.nb_channels;
+#endif
 }
 
 unsigned int AudioEncoder::GetSampleRate() {
@@ -107,8 +111,13 @@ void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 	}
 
 	codec_context->bit_rate = bit_rate;
+#if LIBAVCODEC_VERSION_MAJOR < 61
 	codec_context->channels = channels;
 	codec_context->channel_layout = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
+#else
+	codec_context->ch_layout.nb_channels = channels;
+	codec_context->ch_layout.u.mask = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
+#endif
 	codec_context->sample_rate = sample_rate;
 	codec_context->time_base.num = 1;
 	codec_context->time_base.den = sample_rate;

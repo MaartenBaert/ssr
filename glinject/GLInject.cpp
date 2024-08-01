@@ -14,9 +14,9 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 GLInject::GLInject() {
 
 #ifdef __x86_64__
-	fprintf(stderr, "[SSR-GLInject] Library loaded (64-bit).\n");
+	GLINJECT_PRINT("[SSR-GLInject] GLInject started (64-bit).");
 #else
-	fprintf(stderr, "[SSR-GLInject] Library loaded (32-bit).\n");
+	GLINJECT_PRINT("[SSR-GLInject] GLInject started (32-bit).");
 #endif
 
 }
@@ -28,7 +28,7 @@ GLInject::~GLInject() {
 		m_glx_frame_grabbers.pop_back();
 	}
 
-	fprintf(stderr, "[SSR-GLInject] Library unloaded.\n");
+	GLINJECT_PRINT("[SSR-GLInject] GLInject stopped.");
 
 }
 

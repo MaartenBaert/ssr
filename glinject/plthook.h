@@ -56,7 +56,9 @@ int plthook_open_by_handle(plthook_t **plthook_out, void *handle);
 int plthook_open_by_address(plthook_t **plthook_out, void *address);
 int plthook_open_by_linkmap(plthook_t **plthook_out, void *linkmap);
 int plthook_enum(plthook_t *plthook, unsigned int *pos, const char **name_out, void ***addr_out);
+int plthook_enum_adv(plthook_t *plthook, unsigned int *pos, const char **name_out, void ***addr_out, unsigned int *reltype_out);
 int plthook_replace(plthook_t *plthook, const char *funcname, void *funcaddr, void **oldfunc);
+int plthook_replace_adv(plthook_t *plthook, const char *funcname, void *funcaddr, void **oldfunc, void *expect);
 void plthook_close(plthook_t *plthook);
 const char *plthook_error(void);
 
