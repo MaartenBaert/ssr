@@ -769,11 +769,24 @@ void PageRecord::StopPage(bool save) {
 
 }
 
+PageRecord* g_pagerecord_obj;
+void OnExitSignal(int signum) {
+	if(g_pagerecord_obj)
+		g_pagerecord_obj->OnRecordSave(false);
+
+	exit(signum);
+}
+
 void PageRecord::StartOutput() {
 	assert(m_page_started);
 
 	if(m_output_started)
 		return;
+
+	// register exit signals handlers
+	g_pagerecord_obj = this;
+	signal(SIGTERM, OnExitSignal);
+	signal(SIGINT, OnExitSignal);
 
 #if SSR_USE_ALSA
 	if(m_simple_synth != NULL) {
