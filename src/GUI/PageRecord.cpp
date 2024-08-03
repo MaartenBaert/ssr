@@ -381,7 +381,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		menu->addSeparator();
 		m_systray_action_show_hide = menu->addAction(QString(), m_main_window, SLOT(OnShowHide()));
 		m_systray_action_show_hide->setIconVisibleInMenu(true);
-		m_systray_action_quit = menu->addAction(g_icon_quit, tr("Quit"), m_main_window, SLOT(close()));
+		m_systray_action_quit = menu->addAction(g_icon_quit, tr("Quit"), m_main_window, SLOT(Quit()));
 		m_systray_action_quit->setIconVisibleInMenu(true);
 		m_systray_icon->setContextMenu(menu);
 	} else {
