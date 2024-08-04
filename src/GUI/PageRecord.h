@@ -74,8 +74,9 @@ private:
 	enum_schedule_time_zone m_schedule_time_zone;
 	std::vector<ScheduleEntry> m_schedule_entries;
 
-	PageInput::enum_video_area m_video_area;
-	bool m_video_area_follow_fullscreen;
+	PageInput::enum_video_backend m_video_backend;
+	PageInput::enum_video_x11_area m_video_x11_area;
+	bool m_video_x11_follow_fullscreen;
 #if SSR_USE_V4L2
 	QString m_v4l2_device;
 #endif

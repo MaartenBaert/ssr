@@ -543,30 +543,30 @@ void PageRecord::StartPage() {
 	PageOutput *page_output = m_main_window->GetPageOutput();
 
 	// get the video input settings
-	m_video_area = page_input->GetVideoArea();
-	m_video_area_follow_fullscreen = page_input->GetVideoAreaFollowFullscreen();
+	m_video_backend = page_input->GetVideoBackend();
+	m_video_x11_area = page_input->GetVideoX11Area();
+	m_video_x11_follow_fullscreen = page_input->GetVideoX11FollowFullscreen();
 #if SSR_USE_V4L2
 	m_v4l2_device = page_input->GetVideoV4L2Device();
 #endif
-	m_video_x = page_input->GetVideoX();
-	m_video_y = page_input->GetVideoY();
-#if SSR_USE_OPENGL_RECORDING
-	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
-		m_video_in_width = 0;
-		m_video_in_height = 0;
-	} else {
-#else
-	{
-#endif
-		m_video_in_width = page_input->GetVideoW();
-		m_video_in_height = page_input->GetVideoH();
+	m_video_x = page_input->GetVideoX11X();
+	m_video_y = page_input->GetVideoX11Y();
+	m_video_in_width = 0;
+	m_video_in_height = 0;
+	if(m_video_backend == PageInput::VIDEO_BACKEND_X11) {
+		m_video_in_width = page_input->GetVideoX11Width();
+		m_video_in_height = page_input->GetVideoX11Height();
 	}
-	m_video_in_width = page_input->GetVideoW();
-	m_video_in_height = page_input->GetVideoH();
+#if SSR_USE_V4L2
+	if(m_video_backend == PageInput::VIDEO_BACKEND_V4L2) {
+		m_video_in_width = page_input->GetVideoV4L2Width();
+		m_video_in_height = page_input->GetVideoV4L2Height();
+	}
+#endif
 	m_video_frame_rate = page_input->GetVideoFrameRate();
 	m_video_scaling = page_input->GetVideoScalingEnabled();
-	m_video_scaled_width = page_input->GetVideoScaledW();
-	m_video_scaled_height = page_input->GetVideoScaledH();
+	m_video_scaled_width = page_input->GetVideoScaledWeight();
+	m_video_scaled_height = page_input->GetVideoScaledHeight();
 	m_video_record_cursor = page_input->GetVideoRecordCursor();
 
 	// get the audio input settings
@@ -659,7 +659,7 @@ void PageRecord::StartPage() {
 	}
 
 	// only show the recording frame option when using a fixed rectangle
-	GroupVisible({m_checkbox_show_recording_area}, (m_video_area == PageInput::VIDEO_AREA_FIXED));
+	GroupVisible({m_checkbox_show_recording_area}, (m_video_backend == PageInput::VIDEO_BACKEND_X11 && m_video_x11_area == PageInput::VIDEO_X11_AREA_FIXED));
 
 	// hide the audio previewer if there is no audio
 	GroupVisible({m_label_mic_icon, m_audio_previewer}, m_audio_enabled);
@@ -670,7 +670,7 @@ void PageRecord::StartPage() {
 
 #if SSR_USE_OPENGL_RECORDING
 		// for OpenGL recording, create the input now
-		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
+		if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT) {
 			if(glinject_auto_launch)
 				GLInjectInput::LaunchApplication(glinject_channel, glinject_relax_permissions, glinject_command, glinject_working_directory);
 			m_gl_inject_input.reset(new GLInjectInput(glinject_channel, glinject_relax_permissions, m_video_record_cursor, glinject_limit_fps, m_video_frame_rate));
@@ -807,7 +807,7 @@ void PageRecord::StartOutput() {
 
 #if SSR_USE_OPENGL_RECORDING
 			// for OpenGL recording, detect the video size
-			if(m_video_area == PageInput::VIDEO_AREA_GLINJECT && !m_video_scaling) {
+			if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT && !m_video_scaling) {
 				if(m_gl_inject_input == NULL) {
 					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application because the GLInject input has not been created."));
 					throw GLInjectException();
@@ -829,7 +829,7 @@ void PageRecord::StartOutput() {
 				m_output_settings.video_width = m_video_scaled_width / 2 * 2;
 				m_output_settings.video_height = m_video_scaled_height / 2 * 2;
 #if SSR_USE_OPENGL_RECORDING
-			} else if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
+			} else if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT) {
 				// The input size is the size of the OpenGL application and can't be changed. The output size is set to the current size of the application.
 				m_output_settings.video_width = m_video_in_width / 2 * 2;
 				m_output_settings.video_height = m_video_in_height / 2 * 2;
@@ -927,13 +927,13 @@ void PageRecord::StartInput() {
 		Logger::LogInfo("[PageRecord::StartInput] " + tr("Starting input ..."));
 
 		// start the video input
-		if(m_video_area == PageInput::VIDEO_AREA_SCREEN || m_video_area == PageInput::VIDEO_AREA_FIXED || m_video_area == PageInput::VIDEO_AREA_CURSOR) {
+		if(m_video_backend == PageInput::VIDEO_BACKEND_X11) {
 			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor,
-										   m_video_area == PageInput::VIDEO_AREA_CURSOR, m_video_area_follow_fullscreen));
+										   m_video_x11_area == PageInput::VIDEO_X11_AREA_CURSOR, m_video_x11_follow_fullscreen));
 			connect(m_x11_input.get(), SIGNAL(CurrentRectangleChanged()), this, SLOT(OnUpdateRecordingFrame()), Qt::QueuedConnection);
 		}
 #if SSR_USE_OPENGL_RECORDING
-		if(m_video_area == PageInput::VIDEO_AREA_GLINJECT) {
+		if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT) {
 			if(m_gl_inject_input == NULL) {
 				Logger::LogError("[PageRecord::StartInput] " + tr("Error: Could not start the GLInject input because it has not been created."));
 				throw GLInjectException();
@@ -942,7 +942,7 @@ void PageRecord::StartInput() {
 		}
 #endif
 #if SSR_USE_V4L2
-		if(m_video_area == PageInput::VIDEO_AREA_V4L2) {
+		if(m_video_backend == PageInput::VIDEO_BACKEND_V4L2) {
 			m_v4l2_input.reset(new V4L2Input(m_v4l2_device, m_video_in_width, m_video_in_height));
 			m_v4l2_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 		}
@@ -1059,14 +1059,14 @@ void PageRecord::UpdateInput() {
 	// get sources
 	VideoSource *video_source = NULL;
 	AudioSource *audio_source = NULL;
-	if(m_video_area == PageInput::VIDEO_AREA_SCREEN || m_video_area == PageInput::VIDEO_AREA_FIXED|| m_video_area == PageInput::VIDEO_AREA_CURSOR)
+	if(m_video_backend == PageInput::VIDEO_BACKEND_X11)
 		video_source = m_x11_input.get();
 #if SSR_USE_OPENGL_RECORDING
-	if(m_video_area == PageInput::VIDEO_AREA_GLINJECT)
+	if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT)
 		video_source = m_gl_inject_input.get();
 #endif
 #if SSR_USE_V4L2
-	if(m_video_area == PageInput::VIDEO_AREA_V4L2)
+	if(m_video_backend == PageInput::VIDEO_BACKEND_V4L2)
 		video_source = m_v4l2_input.get();
 #endif
 	if(m_audio_enabled) {
@@ -1215,7 +1215,7 @@ void PageRecord::OnUpdateSoundNotifications() {
 #endif
 
 void PageRecord::OnUpdateRecordingFrame() {
-	if(m_page_started && m_video_area == PageInput::VIDEO_AREA_FIXED && GetShowRecordingArea()) {
+	if(m_page_started && m_video_backend == PageInput::VIDEO_BACKEND_X11 && m_video_x11_area == PageInput::VIDEO_X11_AREA_FIXED && GetShowRecordingArea()) {
 		if(m_recording_frame == NULL)
 			m_recording_frame.reset(new RecordingFrameWindow(this, true));
 		if(m_x11_input == NULL) {
