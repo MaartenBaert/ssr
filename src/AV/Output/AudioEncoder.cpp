@@ -42,7 +42,7 @@ AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec
 	if(GetCodecContext()->frame_size <= 1) {
 		// This is really weird, the old API uses the size of the *output* buffer to determine the number of
 		// input samples if the number of input samples (i.e. frame_size) is not fixed (i.e. frame_size <= 1).
-		m_temp_buffer.resize(DEFAULT_FRAME_SAMPLES * GetCodecContext()->channels * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
+		m_temp_buffer.resize(DEFAULT_FRAME_SAMPLES * GetChannels() * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
 	} else {
 		m_temp_buffer.resize(std::max(FF_MIN_BUFFER_SIZE, 256 * 1024));
 	}
@@ -167,7 +167,11 @@ bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 		assert((unsigned int) frame->GetFrame()->nb_samples == GetFrameSize());
 #endif
 #if SSR_USE_AVFRAME_CHANNELS
-		assert(frame->GetFrame()->channels == GetCodecContext()->channels);
+#  if LIBAVCODEC_VERSION_MAJOR < 61
+		assert(frame->GetFrame()->channels == GetChannels());
+#  else
+		assert(frame->GetFrame()->ch_layout.nb_channels == GetChannels());
+#  endif /* LIBAVCODEC_VERSION_MAJOR < 61 */
 #endif
 #if SSR_USE_AVFRAME_SAMPLE_RATE
 		assert(frame->GetFrame()->sample_rate == GetCodecContext()->sample_rate);
