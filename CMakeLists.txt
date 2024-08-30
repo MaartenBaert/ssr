@@ -88,11 +88,11 @@ if(WITH_SIMPLESCREENRECORDER)
 		DESTINATION ${CMAKE_INSTALL_FULL_MANDIR}/man1
 	)
 	install(
-		FILES data/simplescreenrecorder.desktop
+		FILES data/be.maartenbaert.simplescreenrecorder.desktop
 		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/applications
 	)
 	install(
-		FILES data/simplescreenrecorder.metainfo.xml
+		FILES data/be.maartenbaert.simplescreenrecorder.metainfo.xml
 		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/metainfo
 	)
 
