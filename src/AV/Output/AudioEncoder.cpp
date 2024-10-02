@@ -115,8 +115,11 @@ void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 	codec_context->channels = channels;
 	codec_context->channel_layout = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
 #else
-	codec_context->ch_layout.nb_channels = channels;
-	codec_context->ch_layout.u.mask = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
+	if(channels == 1) {
+		av_channel_layout_from_mask(&codec_context->ch_layout, AV_CH_LAYOUT_MONO);
+	} else {
+		av_channel_layout_from_mask(&codec_context->ch_layout, AV_CH_LAYOUT_STEREO);
+	}
 #endif
 	codec_context->sample_rate = sample_rate;
 	codec_context->time_base.num = 1;
