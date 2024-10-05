@@ -257,6 +257,8 @@ inline void atomic_thread_fence_replacement(memory_order) {
 // avformat_free_context: lavf 52.96.0 / 52.96.0
 #define SSR_USE_AVFORMAT_FREE_CONTEXT              TEST_AV_VERSION(LIBAVFORMAT, 52, 96, 52, 96)
 
+// AVChannelLayout, ch_layout: lavc 59.24.100 / ???
+#define SSR_USE_AV_CHANNEL_LAYOUT                  TEST_AV_VERSION(LIBAVCODEC, 59, 24, 999, 999)
 // av_codec_iterate: lavc 58.10.100 / ???
 #define SSR_USE_AV_CODEC_ITERATE                   TEST_AV_VERSION(LIBAVCODEC, 58, 10, 999, 999)
 // av_lockmgr_register deprecated: lavc 58.9.100 / ???
