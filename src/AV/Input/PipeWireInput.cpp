@@ -227,7 +227,7 @@ void PipeWireInput::OnProcess(void *userdata) {
 	struct spa_buffer *buf;
 
 	if((b = pw_stream_dequeue_buffer(input->m_stream)) == nullptr) {
-		pw_log_warn("out of buffers: %m");
+		Logger::LogWarning("[PipeWireInput::OnProcess] " + Logger::tr("Warning: Failed to dequeue buffer!"));
 		return;
 	}
 

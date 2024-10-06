@@ -22,7 +22,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "SourceSink.h"
 #include "MutexDataPair.h"
-#include <libavutil/pixfmt.h>
 
 #if SSR_USE_PIPEWIRE
 
