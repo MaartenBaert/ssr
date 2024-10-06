@@ -318,7 +318,7 @@ int64_t Synchronizer::GetNextVideoTimestamp() {
 	return videolock->m_next_timestamp;
 }
 
-void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int colorspace, int64_t timestamp) {
+void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* const* data, const int* stride, AVPixelFormat format, int colorspace, int64_t timestamp) {
 	assert(m_output_format->m_video_enabled);
 
 	// add new block to sync diagram
@@ -346,7 +346,7 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	std::unique_ptr<AVFrameWrapper> converted_frame = CreateVideoFrame(m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format, NULL);
 
 	// scale and convert the frame to the right format
-	videolock->m_fast_scaler.Scale(width, height, format, colorspace, &data, &stride,
+	videolock->m_fast_scaler.Scale(width, height, format, colorspace, data, stride,
 			m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format, m_output_format->m_video_colorspace,
 			converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
 

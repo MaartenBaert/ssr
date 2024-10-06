@@ -281,7 +281,9 @@ void V4L2Input::InputThread() {
 			++m_frame_counter;
 
 			// push the frame
-			PushVideoFrame(m_width, m_height, (uint8_t*) m_v4l2_buffers[buf.index].m_data, m_v4l2_bytes_per_line, AV_PIX_FMT_YUYV422, m_colorspace, timestamp);
+			const uint8_t *image_data[1] = {(uint8_t*) m_v4l2_buffers[buf.index].m_data};
+			int image_stride[1] = {(int) m_v4l2_bytes_per_line};
+			PushVideoFrame(m_width, m_height, image_data, image_stride, AV_PIX_FMT_YUYV422, m_colorspace, timestamp);
 
 			// requeue the buffer
 			if(v4l2_ioctl(m_v4l2_device, VIDIOC_QBUF, &buf) < 0) {

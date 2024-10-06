@@ -200,11 +200,13 @@ void PipeWireInput::InputThread() {
 
 		struct pw_loop *loop = pw_main_loop_get_loop(m_loop);
 
-		while (!m_should_stop) {
+		while(!m_should_stop) {
 			int result = pw_loop_iterate(loop, 100);
-			if (result < 0) {
+			if(result < 0) {
 				Logger::LogError("[PipewireInput::InputThread] " + Logger::tr("Error in main loop: %1").arg(spa_strerror(result)));
 				break;
+			} else if(result == 0) {
+				PushVideoPing(hrt_time_micro() - 100000);
 			}
 		}
 
@@ -239,15 +241,16 @@ void PipeWireInput::OnProcess(void *userdata) {
 	if(input->m_pixel_format == AV_PIX_FMT_NONE) {
 		Logger::LogError("[PipeWireInput::OnProcess] " + Logger::tr("Error: Unknown pixel format!"));
 	} else {
-		if(buf->n_datas == 1) {
-			input->PushVideoFrame(
-				input->m_width, input->m_height,
-				static_cast<uint8_t*>(buf->datas[0].data), // TODO planes
-				buf->datas[0].chunk->stride,
-				input->m_pixel_format, input->m_colorspace, timestamp);
-		} else {
-			Logger::LogError("[PipeWireInput::OnProcess] " + Logger::tr("Error: Planar data is not supported yet!"));
+		std::vector<const uint8_t*> image_data(buf->n_datas);
+		std::vector<int> image_stride(buf->n_datas);
+		for(size_t i = 0; i < buf->n_datas; ++i) {
+			image_data[i] = (uint8_t*) buf->datas[i].data + buf->datas[i].chunk->offset % buf->datas[i].maxsize;
+			image_stride[i] = buf->datas[i].chunk->stride;
 		}
+		input->PushVideoFrame(
+			input->m_width, input->m_height,
+			image_data.data(), image_stride.data(),
+			input->m_pixel_format, input->m_colorspace, timestamp);
 	}
 
 	pw_stream_queue_buffer(input->m_stream, b);

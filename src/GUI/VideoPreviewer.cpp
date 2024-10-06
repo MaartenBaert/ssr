@@ -77,7 +77,7 @@ int64_t VideoPreviewer::GetNextVideoTimestamp() {
 	return lock->m_next_frame_time;
 }
 
-void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int colorspace, int64_t timestamp) {
+void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* const* data, const int* stride, AVPixelFormat format, int colorspace, int64_t timestamp) {
 	Q_UNUSED(timestamp);
 
 	QSize image_size;
@@ -114,7 +114,7 @@ void VideoPreviewer::ReadVideoFrame(unsigned int width, unsigned int height, con
 	uint8_t *image_data = image_buffer->GetData();
 
 	// scale the image
-	m_fast_scaler.Scale(width, height, format, colorspace, &data, &stride,
+	m_fast_scaler.Scale(width, height, format, colorspace, data, stride,
 						image_size.width(), image_size.height(), AV_PIX_FMT_BGRA, SWS_CS_DEFAULT, &image_data, &image_stride);
 
 	// set the alpha channel to 0xff (just to be sure)
