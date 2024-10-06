@@ -112,6 +112,9 @@ public:
 #if SSR_USE_V4L2
 		VIDEO_BACKEND_V4L2,
 #endif
+#if SSR_USE_PIPEWIRE
+		VIDEO_BACKEND_PIPEWIRE,
+#endif
 		VIDEO_BACKEND_COUNT // must be last
 	};
 	enum enum_video_x11_area {
@@ -176,6 +179,12 @@ private:
 	QLineEdit *m_lineedit_video_v4l2_device;
 	QLabel *m_label_video_v4l2_width, *m_label_video_v4l2_height;
 	QSpinBoxWithSignal *m_spinbox_video_v4l2_width, *m_spinbox_video_v4l2_height;
+#endif
+#if SSR_USE_PIPEWIRE
+	QLabel *m_label_video_pipewire_source;
+	QLineEdit *m_lineedit_video_pipewire_source;
+	QLabel *m_label_video_pipewire_width, *m_label_video_pipewire_height;
+	QSpinBoxWithSignal *m_spinbox_video_pipewire_width, *m_spinbox_video_pipewire_height;
 #endif
 	QSpinBox *m_spinbox_video_frame_rate;
 	QCheckBox *m_checkbox_scale;
@@ -292,6 +301,11 @@ public:
 	inline unsigned int GetVideoV4L2Width() { return m_spinbox_video_v4l2_width->value(); }
 	inline unsigned int GetVideoV4L2Height() { return m_spinbox_video_v4l2_height->value(); }
 #endif
+#if SSR_USE_V4L2
+	inline QString GetVideoPipeWireSource() { return m_lineedit_video_pipewire_source->text(); }
+	inline unsigned int GetVideoPipeWireWidth() { return m_spinbox_video_pipewire_width->value(); }
+	inline unsigned int GetVideoPipeWireHeight() { return m_spinbox_video_pipewire_height->value(); }
+#endif
 	inline unsigned int GetVideoFrameRate() { return m_spinbox_video_frame_rate->value(); }
 	inline bool GetVideoScalingEnabled() { return m_checkbox_scale->isChecked(); }
 	inline unsigned int GetVideoScaledWeight() { return m_spinbox_video_scaled_weight->value(); }
@@ -331,6 +345,11 @@ public:
 	inline void SetVideoV4L2Device(const QString& device) { m_lineedit_video_v4l2_device->setText(device); }
 	inline void SetVideoV4L2Width(unsigned int width) { m_spinbox_video_v4l2_width->setValue(width); }
 	inline void SetVideoV4L2Height(unsigned int height) { m_spinbox_video_v4l2_height->setValue(height); }
+#endif
+#if SSR_USE_PIPEWIRE
+	inline void SetVideoPipeWireSource(const QString& source) { m_lineedit_video_pipewire_source->setText(source); }
+	inline void SetVideoPipeWireWidth(unsigned int width) { m_spinbox_video_pipewire_width->setValue(width); }
+	inline void SetVideoPipeWireHeight(unsigned int height) { m_spinbox_video_pipewire_height->setValue(height); }
 #endif
 	inline void SetVideoFrameRate(unsigned int frame_rate) { m_spinbox_video_frame_rate->setValue(frame_rate); }
 	inline void SetVideoScalingEnabled(bool enable) { m_checkbox_scale->setChecked(enable); }

@@ -35,6 +35,9 @@ ENUMSTRINGS(PageInput::enum_video_backend) = {
 #if SSR_USE_V4L2
 	{PageInput::VIDEO_BACKEND_V4L2, "v4l2"},
 #endif
+#if SSR_USE_PIPEWIRE
+	{PageInput::VIDEO_BACKEND_PIPEWIRE, "pipewire"},
+#endif
 };
 
 ENUMSTRINGS(PageInput::enum_video_x11_area) = {
@@ -286,6 +289,9 @@ PageInput::PageInput(MainWindow* main_window)
 #if SSR_USE_V4L2
 			m_combobox_video_backend->addItem("V4L2");
 #endif
+#if SSR_USE_PIPEWIRE
+			m_combobox_video_backend->addItem("PipeWire");
+#endif
 			m_combobox_video_backend->setToolTip(tr("The video backend that will be used for recording."));
 			m_buttongroup_video_x11_area = new QButtonGroup(groupbox_video);
 			m_radio_area_screen = new QRadioButton(tr("Record the entire screen"), groupbox_video);
@@ -346,6 +352,21 @@ PageInput::PageInput(MainWindow* main_window)
 			m_spinbox_video_v4l2_height->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_v4l2_height->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_spinbox_video_v4l2_height->setToolTip(tr("The height of the video."));
+#endif
+#if SSR_USE_PIPEWIRE
+			m_label_video_pipewire_source = new QLabel(tr("Source:"), groupbox_video);
+			m_lineedit_video_pipewire_source = new QLineEdit(groupbox_video);
+			m_lineedit_video_pipewire_source->setToolTip(tr("The PipeWire source to record.")); // TODO
+			m_label_video_pipewire_width = new QLabel(tr("Width:"), groupbox_video);
+			m_spinbox_video_pipewire_width = new QSpinBoxWithSignal(groupbox_video);
+			m_spinbox_video_pipewire_width->setRange(0, SSR_MAX_IMAGE_SIZE);
+			m_spinbox_video_pipewire_width->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+			m_spinbox_video_pipewire_width->setToolTip(tr("The width of the video."));
+			m_label_video_pipewire_height = new QLabel(tr("Height:"), groupbox_video);
+			m_spinbox_video_pipewire_height = new QSpinBoxWithSignal(groupbox_video);
+			m_spinbox_video_pipewire_height->setRange(0, SSR_MAX_IMAGE_SIZE);
+			m_spinbox_video_pipewire_height->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+			m_spinbox_video_pipewire_height->setToolTip(tr("The height of the video."));
 #endif
 			QLabel *label_frame_rate = new QLabel(tr("Frame rate:"), groupbox_video);
 			m_spinbox_video_frame_rate = new QSpinBox(groupbox_video);
@@ -445,6 +466,22 @@ PageInput::PageInput(MainWindow* main_window)
 				layout2->addWidget(m_spinbox_video_v4l2_width, 1, 1);
 				layout2->addWidget(m_label_video_v4l2_height, 1, 2);
 				layout2->addWidget(m_spinbox_video_v4l2_height, 1, 3);
+			}
+#endif
+#if SSR_USE_PIPEWIRE
+			{
+				QHBoxLayout *layout2 = new QHBoxLayout();
+				layout->addLayout(layout2);
+				layout2->addWidget(m_label_video_pipewire_source);
+				layout2->addWidget(m_lineedit_video_pipewire_source);
+			}
+			{
+				QGridLayout *layout2 = new QGridLayout();
+				layout->addLayout(layout2);
+				layout2->addWidget(m_label_video_pipewire_width, 1, 0);
+				layout2->addWidget(m_spinbox_video_pipewire_width, 1, 1);
+				layout2->addWidget(m_label_video_pipewire_height, 1, 2);
+				layout2->addWidget(m_spinbox_video_pipewire_height, 1, 3);
 			}
 #endif
 			{
@@ -662,6 +699,11 @@ void PageInput::LoadProfileSettings(QSettings* settings) {
 	SetVideoV4L2Width(settings->value("input/video_v4l2_width", 800).toUInt());
 	SetVideoV4L2Height(settings->value("input/video_v4l2_height", 600).toUInt());
 #endif
+#if SSR_USE_PIPEWIRE
+	SetVideoPipeWireSource(settings->value("input/video_pipewire_source", "").toString()); // TODO
+	SetVideoPipeWireWidth(settings->value("input/video_pipewire_width", 800).toUInt());
+	SetVideoPipeWireHeight(settings->value("input/video_pipewire_height", 600).toUInt());
+#endif
 	SetVideoFrameRate(settings->value("input/video_frame_rate", 30).toUInt());
 	SetVideoScalingEnabled(settings->value("input/video_scale", false).toBool());
 	SetVideoScaledWidth(settings->value("input/video_scaled_width", 854).toUInt());
@@ -709,6 +751,11 @@ void PageInput::SaveProfileSettings(QSettings* settings) {
 	settings->setValue("input/video_v4l2_device", GetVideoV4L2Device());
 	settings->setValue("input/video_v4l2_width", GetVideoV4L2Width());
 	settings->setValue("input/video_v4l2_height", GetVideoV4L2Height());
+#endif
+#if SSR_USE_PIPEWIRE
+	settings->setValue("input/video_pipewire_source", GetVideoPipeWireSource());
+	settings->setValue("input/video_pipewire_width", GetVideoPipeWireWidth());
+	settings->setValue("input/video_pipewire_height", GetVideoPipeWireHeight());
 #endif
 	settings->setValue("input/video_frame_rate", GetVideoFrameRate());
 	settings->setValue("input/video_scale", GetVideoScalingEnabled());
@@ -1062,6 +1109,12 @@ void PageInput::OnUpdateVideoAreaFields() {
 			m_label_video_v4l2_device, m_lineedit_video_v4l2_device,
 			m_label_video_v4l2_width, m_label_video_v4l2_height, m_spinbox_video_v4l2_width, m_spinbox_video_v4l2_height,
 		}, (backend == VIDEO_BACKEND_V4L2)},
+#endif
+#if SSR_USE_PIPEWIRE
+		{{
+			m_label_video_pipewire_source, m_lineedit_video_pipewire_source,
+			m_label_video_pipewire_width, m_label_video_pipewire_height, m_spinbox_video_pipewire_width, m_spinbox_video_pipewire_height,
+		}, (backend == VIDEO_BACKEND_PIPEWIRE)},
 #endif
 	});
 #if SSR_USE_OPENGL_RECORDING

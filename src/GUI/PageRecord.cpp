@@ -41,6 +41,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #if SSR_USE_V4L2
 #include "V4L2Input.h"
 #endif
+#if SSR_USE_PIPEWIRE
+#include "PipeWireInput.h"
+#endif
 #if SSR_USE_ALSA
 #include "ALSAInput.h"
 #endif
@@ -549,6 +552,9 @@ void PageRecord::StartPage() {
 #if SSR_USE_V4L2
 	m_v4l2_device = page_input->GetVideoV4L2Device();
 #endif
+#if SSR_USE_PIPEWIRE
+	m_pipewire_source = page_input->GetVideoPipeWireSource();
+#endif
 	m_video_x = page_input->GetVideoX11X();
 	m_video_y = page_input->GetVideoX11Y();
 	m_video_in_width = 0;
@@ -561,6 +567,12 @@ void PageRecord::StartPage() {
 	if(m_video_backend == PageInput::VIDEO_BACKEND_V4L2) {
 		m_video_in_width = page_input->GetVideoV4L2Width();
 		m_video_in_height = page_input->GetVideoV4L2Height();
+	}
+#endif
+#if SSR_USE_PIPEWIRE
+	if(m_video_backend == PageInput::VIDEO_BACKEND_PIPEWIRE) {
+		m_video_in_width = page_input->GetVideoPipeWireWidth();
+		m_video_in_height = page_input->GetVideoPipeWireHeight();
 	}
 #endif
 	m_video_frame_rate = page_input->GetVideoFrameRate();
@@ -947,6 +959,12 @@ void PageRecord::StartInput() {
 			m_v4l2_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 		}
 #endif
+#if SSR_USE_PIPEWIRE
+		if(m_video_backend == PageInput::VIDEO_BACKEND_PIPEWIRE) {
+			m_pipewire_input.reset(new PipeWireInput(m_pipewire_source, m_video_in_width, m_video_in_height, m_video_frame_rate));
+			m_pipewire_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+		}
+#endif
 
 		// start the audio input
 		if(m_audio_enabled) {
@@ -975,6 +993,9 @@ void PageRecord::StartInput() {
 #if SSR_USE_V4L2
 		m_v4l2_input.reset();
 #endif
+#if SSR_USE_PIPEWIRE
+		m_pipewire_input.reset();
+#endif
 #if SSR_USE_ALSA
 		m_alsa_input.reset();
 #endif
@@ -1002,6 +1023,9 @@ void PageRecord::StopInput() {
 #endif
 #if SSR_USE_V4L2
 	m_v4l2_input.reset();
+#endif
+#if SSR_USE_PIPEWIRE
+	m_pipewire_input.reset();
 #endif
 #if SSR_USE_ALSA
 	m_alsa_input.reset();
@@ -1068,6 +1092,10 @@ void PageRecord::UpdateInput() {
 #if SSR_USE_V4L2
 	if(m_video_backend == PageInput::VIDEO_BACKEND_V4L2)
 		video_source = m_v4l2_input.get();
+#endif
+#if SSR_USE_PIPEWIRE
+	if(m_video_backend == PageInput::VIDEO_BACKEND_PIPEWIRE)
+		video_source = m_pipewire_input.get();
 #endif
 	if(m_audio_enabled) {
 #if SSR_USE_ALSA
@@ -1470,6 +1498,10 @@ void PageRecord::OnUpdateInformation() {
 #if SSR_USE_V4L2
 		if(m_v4l2_input != NULL)
 			fps_in = m_v4l2_input->GetFPS();
+#endif
+#if SSR_USE_PIPEWIRE
+		if(m_pipewire_input != NULL)
+			fps_in = m_pipewire_input->GetFPS();
 #endif
 
 		if(m_output_manager != NULL) {

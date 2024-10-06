@@ -42,6 +42,9 @@ class GLInjectInput;
 #if SSR_USE_V4L2
 class V4L2Input;
 #endif
+#if SSR_USE_PIPEWIRE
+class PipeWireInput;
+#endif
 #if SSR_USE_ALSA
 class ALSAInput;
 #endif
@@ -80,6 +83,9 @@ private:
 #if SSR_USE_V4L2
 	QString m_v4l2_device;
 #endif
+#if SSR_USE_PIPEWIRE
+	QString m_pipewire_source;
+#endif
 	unsigned int m_video_x, m_video_y, m_video_in_width, m_video_in_height;
 	unsigned int m_video_frame_rate;
 	bool m_video_scaling;
@@ -108,6 +114,9 @@ private:
 #endif
 #if SSR_USE_V4L2
 	std::unique_ptr<V4L2Input> m_v4l2_input;
+#endif
+#if SSR_USE_PIPEWIRE
+	std::unique_ptr<PipeWireInput> m_pipewire_input;
 #endif
 #if SSR_USE_ALSA
 	std::unique_ptr<ALSAInput> m_alsa_input;
