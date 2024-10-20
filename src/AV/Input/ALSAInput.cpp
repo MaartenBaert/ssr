@@ -92,7 +92,7 @@ std::vector<ALSAInput::Source> ALSAInput::GetSourceList() {
 		"cards", "default", "sysdefault", "hw", "plughw", "plug", "dmix", "dsnoop", "shm", "tee", "file", "null",
 		"front", "rear", "center_lfe", "side", "surround40", "surround41", "surround50", "surround51", "surround71",
 		"iec958", "spdif", "hdmi", "modem", "phoneline", "oss", "pulse", "jack", "speex", "speexrate", "samplerate",
-		"upmix", "vdownmix", "usbstream",
+		"lavrate", "a52", "upmix", "vdownmix", "usbstream",
 	};
 	std::sort(plugin_blacklist.begin(), plugin_blacklist.end());
 

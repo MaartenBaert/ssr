@@ -176,7 +176,9 @@ void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
 
 void BaseEncoder::Free() {
 	if(m_codec_opened) {
+#if !SSR_USE_AVCODEC_CLOSE_DEPRECATED
 		avcodec_close(m_codec_context);
+#endif
 		m_codec_opened = false;
 	}
 }

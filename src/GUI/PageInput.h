@@ -104,17 +104,24 @@ class PageInput : public QWidget {
 	Q_OBJECT
 
 public:
-	enum enum_video_area {
-		VIDEO_AREA_SCREEN,
-		VIDEO_AREA_FIXED,
-		VIDEO_AREA_CURSOR,
+	enum enum_video_backend {
+		VIDEO_BACKEND_X11,
 #if SSR_USE_OPENGL_RECORDING
-		VIDEO_AREA_GLINJECT,
+		VIDEO_BACKEND_GLINJECT,
 #endif
 #if SSR_USE_V4L2
-		VIDEO_AREA_V4L2,
+		VIDEO_BACKEND_V4L2,
 #endif
-		VIDEO_AREA_COUNT // must be last
+#if SSR_USE_PIPEWIRE
+		VIDEO_BACKEND_PIPEWIRE,
+#endif
+		VIDEO_BACKEND_COUNT // must be last
+	};
+	enum enum_video_x11_area {
+		VIDEO_X11_AREA_SCREEN,
+		VIDEO_X11_AREA_FIXED,
+		VIDEO_X11_AREA_CURSOR,
+		VIDEO_X11_AREA_COUNT // must be last
 	};
 	enum enum_audio_backend {
 #if SSR_USE_ALSA
@@ -156,22 +163,33 @@ private:
 
 	ProfileBox *m_profile_box;
 
-	QButtonGroup *m_buttongroup_video_area;
-	QComboBoxWithSignal *m_combobox_screens;
-	QCheckBox *m_checkbox_follow_fullscreen;
-	QPushButton *m_pushbutton_video_select_rectangle, *m_pushbutton_video_select_window;
+	QComboBox *m_combobox_video_backend;
+	QButtonGroup *m_buttongroup_video_x11_area;
+	QRadioButton *m_radio_area_screen, *m_radio_area_fixed, *m_radio_area_cursor;
+	QComboBoxWithSignal *m_combobox_x11_screens;
+	QCheckBox *m_checkbox_video_x11_follow_fullscreen;
+	QPushButton *m_pushbutton_video_x11_select_rectangle, *m_pushbutton_video_x11_select_window;
+	QLabel *m_label_video_x11_x, *m_label_video_x11_y, *m_label_video_x11_width, *m_label_video_x11_height;
+	QSpinBoxWithSignal *m_spinbox_video_x11_x, *m_spinbox_video_x11_y, *m_spinbox_video_x11_width, *m_spinbox_video_x11_height;
 #if SSR_USE_OPENGL_RECORDING
 	QPushButton *m_pushbutton_video_opengl_settings;
 #endif
 #if SSR_USE_V4L2
-	QLineEdit *m_lineedit_v4l2_device;
+	QLabel *m_label_video_v4l2_device;
+	QLineEdit *m_lineedit_video_v4l2_device;
+	QLabel *m_label_video_v4l2_width, *m_label_video_v4l2_height;
+	QSpinBoxWithSignal *m_spinbox_video_v4l2_width, *m_spinbox_video_v4l2_height;
 #endif
-	QLabel *m_label_video_x, *m_label_video_y, *m_label_video_w, *m_label_video_h;
-	QSpinBoxWithSignal *m_spinbox_video_x, *m_spinbox_video_y, *m_spinbox_video_w, *m_spinbox_video_h;
+#if SSR_USE_PIPEWIRE
+	QLabel *m_label_video_pipewire_source;
+	QLineEdit *m_lineedit_video_pipewire_source;
+	QLabel *m_label_video_pipewire_width, *m_label_video_pipewire_height;
+	QSpinBoxWithSignal *m_spinbox_video_pipewire_width, *m_spinbox_video_pipewire_height;
+#endif
 	QSpinBox *m_spinbox_video_frame_rate;
 	QCheckBox *m_checkbox_scale;
-	QLabel *m_label_video_scaled_w, *m_label_video_scaled_h;
-	QSpinBox *m_spinbox_video_scaled_w, *m_spinbox_video_scaled_h;
+	QLabel *m_label_video_scaled_width, *m_label_video_scaled_height;
+	QSpinBox *m_spinbox_video_scaled_weight, *m_spinbox_video_scaled_height;
 	QCheckBox *m_checkbox_record_cursor;
 
 	QCheckBox *m_checkbox_audio_enable;
@@ -270,20 +288,28 @@ private slots:
 
 public:
 	inline unsigned int GetProfile() { return m_profile_box->GetProfile(); }
-	inline enum_video_area GetVideoArea() { return (enum_video_area) clamp(m_buttongroup_video_area->checkedId(), 0, VIDEO_AREA_COUNT - 1); }
-	inline unsigned int GetVideoAreaScreen() { return m_combobox_screens->currentIndex(); }
-	inline bool GetVideoAreaFollowFullscreen() { return m_checkbox_follow_fullscreen->isChecked(); }
+	inline enum_video_backend GetVideoBackend() { return (enum_video_backend) clamp(m_combobox_video_backend->currentIndex(), 0, VIDEO_BACKEND_COUNT - 1); }
+	inline enum_video_x11_area GetVideoX11Area() { return (enum_video_x11_area) clamp(m_buttongroup_video_x11_area->checkedId(), 0, VIDEO_X11_AREA_COUNT - 1); }
+	inline unsigned int GetVideoX11Screen() { return m_combobox_x11_screens->currentIndex(); }
+	inline bool GetVideoX11FollowFullscreen() { return m_checkbox_video_x11_follow_fullscreen->isChecked(); }
+	inline unsigned int GetVideoX11X() { return m_spinbox_video_x11_x->value(); }
+	inline unsigned int GetVideoX11Y() { return m_spinbox_video_x11_y->value(); }
+	inline unsigned int GetVideoX11Width() { return m_spinbox_video_x11_width->value(); }
+	inline unsigned int GetVideoX11Height() { return m_spinbox_video_x11_height->value(); }
 #if SSR_USE_V4L2
-	inline QString GetVideoV4L2Device() { return m_lineedit_v4l2_device->text(); }
+	inline QString GetVideoV4L2Device() { return m_lineedit_video_v4l2_device->text(); }
+	inline unsigned int GetVideoV4L2Width() { return m_spinbox_video_v4l2_width->value(); }
+	inline unsigned int GetVideoV4L2Height() { return m_spinbox_video_v4l2_height->value(); }
 #endif
-	inline unsigned int GetVideoX() { return m_spinbox_video_x->value(); }
-	inline unsigned int GetVideoY() { return m_spinbox_video_y->value(); }
-	inline unsigned int GetVideoW() { return m_spinbox_video_w->value(); }
-	inline unsigned int GetVideoH() { return m_spinbox_video_h->value(); }
+#if SSR_USE_V4L2
+	inline QString GetVideoPipeWireSource() { return m_lineedit_video_pipewire_source->text(); }
+	inline unsigned int GetVideoPipeWireWidth() { return m_spinbox_video_pipewire_width->value(); }
+	inline unsigned int GetVideoPipeWireHeight() { return m_spinbox_video_pipewire_height->value(); }
+#endif
 	inline unsigned int GetVideoFrameRate() { return m_spinbox_video_frame_rate->value(); }
 	inline bool GetVideoScalingEnabled() { return m_checkbox_scale->isChecked(); }
-	inline unsigned int GetVideoScaledW() { return m_spinbox_video_scaled_w->value(); }
-	inline unsigned int GetVideoScaledH() { return m_spinbox_video_scaled_h->value(); }
+	inline unsigned int GetVideoScaledWeight() { return m_spinbox_video_scaled_weight->value(); }
+	inline unsigned int GetVideoScaledHeight() { return m_spinbox_video_scaled_height->value(); }
 	inline bool GetVideoRecordCursor() { return m_checkbox_record_cursor->isChecked(); }
 	inline bool GetAudioEnabled() { return m_checkbox_audio_enable->isChecked(); }
 	inline enum_audio_backend GetAudioBackend() { return (enum_audio_backend) clamp(m_combobox_audio_backend->currentIndex(), 0, AUDIO_BACKEND_COUNT - 1); }
@@ -307,20 +333,28 @@ public:
 #endif
 
 	inline void SetProfile(unsigned int profile) { m_profile_box->SetProfile(profile); }
-	inline void SetVideoArea(enum_video_area area) { QAbstractButton *b = m_buttongroup_video_area->button(area); if(b != NULL) b->setChecked(true); }
-	inline void SetVideoAreaScreen(unsigned int screen) { m_combobox_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_screens->count() - 1)); }
-	inline void SetVideoAreaFollowFullscreen(bool follow_fulscreen) { m_checkbox_follow_fullscreen->setChecked(follow_fulscreen); }
+	inline void SetVideoBackend(enum_video_backend backend) { m_combobox_video_backend->setCurrentIndex(clamp((int) backend, 0, VIDEO_BACKEND_COUNT - 1)); }
+	inline void SetVideoX11Area(enum_video_x11_area area) { QAbstractButton *b = m_buttongroup_video_x11_area->button(area); if(b != NULL) b->setChecked(true); }
+	inline void SetVideoX11Screen(unsigned int screen) { m_combobox_x11_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_x11_screens->count() - 1)); }
+	inline void SetVideoX11FollowFullscreen(bool follow_fulscreen) { m_checkbox_video_x11_follow_fullscreen->setChecked(follow_fulscreen); }
+	inline void SetVideoX11X(unsigned int x) { m_spinbox_video_x11_x->setValue(x); }
+	inline void SetVideoX11Y(unsigned int y) { m_spinbox_video_x11_y->setValue(y); }
+	inline void SetVideoX11Width(unsigned int width) { m_spinbox_video_x11_width->setValue(width); }
+	inline void SetVideoX11Height(unsigned int height) { m_spinbox_video_x11_height->setValue(height); }
 #if SSR_USE_V4L2
-	inline void SetVideoV4L2Device(const QString& device) { m_lineedit_v4l2_device->setText(device); }
+	inline void SetVideoV4L2Device(const QString& device) { m_lineedit_video_v4l2_device->setText(device); }
+	inline void SetVideoV4L2Width(unsigned int width) { m_spinbox_video_v4l2_width->setValue(width); }
+	inline void SetVideoV4L2Height(unsigned int height) { m_spinbox_video_v4l2_height->setValue(height); }
 #endif
-	inline void SetVideoX(unsigned int x) { m_spinbox_video_x->setValue(x); }
-	inline void SetVideoY(unsigned int y) { m_spinbox_video_y->setValue(y); }
-	inline void SetVideoW(unsigned int w) { m_spinbox_video_w->setValue(w); }
-	inline void SetVideoH(unsigned int h) { m_spinbox_video_h->setValue(h); }
+#if SSR_USE_PIPEWIRE
+	inline void SetVideoPipeWireSource(const QString& source) { m_lineedit_video_pipewire_source->setText(source); }
+	inline void SetVideoPipeWireWidth(unsigned int width) { m_spinbox_video_pipewire_width->setValue(width); }
+	inline void SetVideoPipeWireHeight(unsigned int height) { m_spinbox_video_pipewire_height->setValue(height); }
+#endif
 	inline void SetVideoFrameRate(unsigned int frame_rate) { m_spinbox_video_frame_rate->setValue(frame_rate); }
 	inline void SetVideoScalingEnabled(bool enable) { m_checkbox_scale->setChecked(enable); }
-	inline void SetVideoScaledW(unsigned int scaled_w) { m_spinbox_video_scaled_w->setValue(scaled_w); }
-	inline void SetVideoScaledH(unsigned int scaled_h) { m_spinbox_video_scaled_h->setValue(scaled_h); }
+	inline void SetVideoScaledWidth(unsigned int scaled_w) { m_spinbox_video_scaled_weight->setValue(scaled_w); }
+	inline void SetVideoScaledHeight(unsigned int scaled_h) { m_spinbox_video_scaled_height->setValue(scaled_h); }
 	inline void SetVideoRecordCursor(bool show) { m_checkbox_record_cursor->setChecked(show); }
 	inline void SetAudioEnabled(bool enable) { m_checkbox_audio_enable->setChecked(enable); }
 	inline void SetAudioBackend(enum_audio_backend backend) { m_combobox_audio_backend->setCurrentIndex(clamp((int) backend, 0, AUDIO_BACKEND_COUNT - 1)); }
