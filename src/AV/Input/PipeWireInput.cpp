@@ -19,7 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PipeWireInput.h"
 
-#if SSR_USE_V4L2
+#if SSR_USE_PIPEWIRE
 
 #include "Logger.h"
 #include "AVWrapper.h"
