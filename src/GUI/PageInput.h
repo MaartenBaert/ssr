@@ -301,7 +301,7 @@ public:
 	inline unsigned int GetVideoV4L2Width() { return m_spinbox_video_v4l2_width->value(); }
 	inline unsigned int GetVideoV4L2Height() { return m_spinbox_video_v4l2_height->value(); }
 #endif
-#if SSR_USE_V4L2
+#if SSR_USE_PIPEWIRE
 	inline QString GetVideoPipeWireSource() { return m_lineedit_video_pipewire_source->text(); }
 	inline unsigned int GetVideoPipeWireWidth() { return m_spinbox_video_pipewire_width->value(); }
 	inline unsigned int GetVideoPipeWireHeight() { return m_spinbox_video_pipewire_height->value(); }
