@@ -31,3 +31,9 @@ void FastResampler_FirFilter2_C1_SSE2(unsigned int channels, unsigned int filter
 void FastResampler_FirFilter2_C2_SSE2(unsigned int channels, unsigned int filter_length, float* coef1, float* coef2, float frac, float* input, float* output);
 void FastResampler_FirFilter2_Cn_SSE2(unsigned int channels, unsigned int filter_length, float* coef1, float* coef2, float frac, float* input, float* output);
 #endif
+
+#if SSR_USE_LOONGARCH_ASM
+void FastResampler_FirFilter2_C1_LSX(unsigned int channels, unsigned int filter_length, float* coef1, float* coef2, float frac, float* input, float* output);
+void FastResampler_FirFilter2_C2_LSX(unsigned int channels, unsigned int filter_length, float* coef1, float* coef2, float frac, float* input, float* output);
+void FastResampler_FirFilter2_Cn_LSX(unsigned int channels, unsigned int filter_length, float* coef1, float* coef2, float frac, float* input, float* output);
+#endif

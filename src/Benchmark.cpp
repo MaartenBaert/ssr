@@ -114,7 +114,7 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 	}
 
 	// run test
-	unsigned int time_swscale = 0, time_fallback = 0, time_ssse3 = 0;
+	unsigned int time_swscale = 0, time_fallback = 0, time_ssse3 = 0, time_lsx = 0;
 	{
 		SwsContext *sws = sws_getCachedContext(NULL,
 											   in_w, in_h, AV_PIX_FMT_BGRA,
@@ -158,21 +158,37 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 		time_ssse3 = (t2 - t1) / run_size;
 	}
 #endif
+#if SSR_USE_LOONGARCH_ASM
+	if(CPUFeatures::HasLSX()) {
+		int64_t t1 = hrt_time_micro();
+		for(unsigned int i = 0; i < run_size; ++i) {
+			unsigned int ii = i % queue_size;
+			Scale_BGRA_LSX(in_w, in_h, queue_in[ii]->m_data[0], queue_in[ii]->m_stride[0],
+							 out_w, out_h, queue_out[ii]->m_data[0], queue_out[ii]->m_stride[0]);
+		}
+		int64_t t2 = hrt_time_micro();
+		time_lsx = (t2 - t1) / run_size;
+	}
+#endif
 
 	// print result
 	QString in_size = QString("%1x%2").arg(in_w).arg(in_h);
 	QString out_size = QString("%1x%2").arg(out_w).arg(out_h);
-	Logger::LogInfo("[BenchmarkScale] " + Logger::tr("BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)")
+	Logger::LogInfo("[BenchmarkScale] " + Logger::tr("BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)  |  LSX %8 us (%9%)")
 					.arg(in_size, 9).arg(out_size, 9)
 					.arg(time_swscale, 6)
 					.arg(time_fallback, 6).arg(100 * time_fallback / time_swscale, 3)
-					.arg(time_ssse3, 6).arg(100 * time_ssse3 / time_fallback, 3));
+					.arg(time_ssse3, 6).arg(100 * time_ssse3 / time_fallback, 3)
+                                        .arg(time_lsx, 6).arg(100 * time_lsx / time_fallback, 3));
 
 }
 
 void BenchmarkConvert(unsigned int w, unsigned int h, AVPixelFormat in_format, AVPixelFormat out_format, const QString& in_format_name, const QString& out_format_name, NewImageFunc in_image, NewImageFunc out_image, ConvertFunc fallback
 #if SSR_USE_X86_ASM
 , ConvertFunc ssse3
+#endif
+#if SSR_USE_LOONGARCH_ASM
+, ConvertFunc lsx
 #endif
 ) {
 
@@ -195,7 +211,7 @@ void BenchmarkConvert(unsigned int w, unsigned int h, AVPixelFormat in_format, A
 	}
 
 	// run test
-	unsigned int time_swscale = 0, time_fallback = 0, time_ssse3 = 0;
+	unsigned int time_swscale = 0, time_fallback = 0, time_ssse3 = 0, time_lsx = 0;
 	{
 		SwsContext *sws = sws_getCachedContext(NULL,
 											   w, h, in_format,
@@ -237,14 +253,26 @@ void BenchmarkConvert(unsigned int w, unsigned int h, AVPixelFormat in_format, A
 		time_ssse3 = (t2 - t1) / run_size;
 	}
 #endif
+#if SSR_USE_LOONGARCH_ASM
+	if(CPUFeatures::HasLSX()) {
+		int64_t t1 = hrt_time_micro();
+		for(unsigned int i = 0; i < run_size; ++i) {
+			unsigned int ii = i % queue_size;
+			lsx(w, h, queue_in[ii]->m_data[0], queue_in[ii]->m_stride[0], queue_out[ii]->m_data.data(), queue_out[ii]->m_stride.data());
+		}
+		int64_t t2 = hrt_time_micro();
+		time_lsx = (t2 - t1) / run_size;
+	}
+#endif
 
 	// print result
 	QString size = QString("%1x%2").arg(w).arg(h);
-	Logger::LogInfo("[BenchmarkConvert] " + Logger::tr("%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)")
+	Logger::LogInfo("[BenchmarkConvert] " + Logger::tr("%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)  |  LSX %10 us (%11%)")
 					.arg(in_format_name).arg(size, 9).arg(out_format_name).arg(size, 9)
 					.arg(time_swscale, 6)
 					.arg(time_fallback, 6).arg(100 * time_fallback / time_swscale, 3)
-					.arg(time_ssse3, 6).arg(100 * time_ssse3 / time_fallback, 3));
+					.arg(time_ssse3, 6).arg(100 * time_ssse3 / time_fallback, 3)
+					.arg(time_lsx, 6).arg(100 * time_lsx / time_fallback, 3));
 
 }
 
@@ -264,6 +292,12 @@ void Benchmark() {
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV420P, "BGRA", "YUV420", NewImageBGRA, NewImageYUV420, Convert_BGRA_YUV420_Fallback           , Convert_BGRA_YUV420_SSSE3           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_NV12   , "BGRA", "NV12  ", NewImageBGRA, NewImageNV12  , Convert_BGRA_NV12_Fallback             , Convert_BGRA_NV12_SSSE3             );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGR24  , "BGRA", "BGR   ", NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>, PlaneWrapper<Convert_BGRA_BGR_SSSE3>);
+#elif SSR_USE_LOONGARCH_ASM
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV444P, "BGRA", "YUV444", NewImageBGRA, NewImageYUV444, Convert_BGRA_YUV444_Fallback           , Convert_BGRA_YUV444_LSX           );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV422P, "BGRA", "YUV422", NewImageBGRA, NewImageYUV422, Convert_BGRA_YUV422_Fallback           , Convert_BGRA_YUV422_LSX           );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV420P, "BGRA", "YUV420", NewImageBGRA, NewImageYUV420, Convert_BGRA_YUV420_Fallback           , Convert_BGRA_YUV420_LSX           );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_NV12   , "BGRA", "NV12  ", NewImageBGRA, NewImageNV12  , Convert_BGRA_NV12_Fallback             , Convert_BGRA_NV12_LSX             );
+	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGR24  , "BGRA", "BGR   ", NewImageBGRA, NewImageBGR   , PlaneWrapper<Convert_BGRA_BGR_Fallback>, PlaneWrapper<Convert_BGRA_BGR_LSX>);
 #else
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV444P, "BGRA", "YUV444", NewImageBGRA, NewImageYUV444, Convert_BGRA_YUV444_Fallback           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV422P, "BGRA", "YUV422", NewImageBGRA, NewImageYUV422, Convert_BGRA_YUV422_Fallback           );

@@ -165,6 +165,14 @@ void FastScaler::Convert_BGRA_YUV444(unsigned int width, unsigned int height, co
 		return;
 	}
 #endif
+#if SSR_USE_LOONGARCH_ASM
+	if(CPUFeatures::HasLSX()) {
+		Convert_BGRA_YUV444_LSX(width, height, in_data, in_stride, out_data, out_stride);
+	} else {
+		Convert_BGRA_YUV444_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+	}
+	return;
+#endif
 
 	Convert_BGRA_YUV444_Fallback(width, height, in_data, in_stride, out_data, out_stride);
 
@@ -189,6 +197,14 @@ void FastScaler::Convert_BGRA_YUV422(unsigned int width, unsigned int height, co
 		}
 		return;
 	}
+#endif
+#if SSR_USE_LOONGARCH_ASM
+	if(CPUFeatures::HasLSX()) {
+		Convert_BGRA_YUV422_LSX(width, height, in_data, in_stride, out_data, out_stride);
+	} else {
+		Convert_BGRA_YUV422_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+	}
+	return;
 #endif
 
 	Convert_BGRA_YUV422_Fallback(width, height, in_data, in_stride, out_data, out_stride);
@@ -215,6 +231,14 @@ void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, co
 		return;
 	}
 #endif
+#if SSR_USE_LOONGARCH_ASM
+	if(CPUFeatures::HasLSX()) {
+		Convert_BGRA_YUV420_LSX(width, height, in_data, in_stride, out_data, out_stride);
+	} else {
+		Convert_BGRA_YUV420_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+	}
+	return;
+#endif
 
 	Convert_BGRA_YUV420_Fallback(width, height, in_data, in_stride, out_data, out_stride);
 
@@ -239,6 +263,14 @@ void FastScaler::Convert_BGRA_NV12(unsigned int width, unsigned int height, cons
 		return;
 	}
 #endif
+#if SSR_USE_LOONGARCH_ASM
+	if(CPUFeatures::HasLSX()) {
+		Convert_BGRA_NV12_LSX(width, height, in_data, in_stride, out_data, out_stride);
+	} else {
+		Convert_BGRA_NV12_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+	}
+	return;
+#endif
 
 	Convert_BGRA_NV12_Fallback(width, height, in_data, in_stride, out_data, out_stride);
 
@@ -260,6 +292,14 @@ void FastScaler::Convert_BGRA_BGR(unsigned int width, unsigned int height, const
 		}
 		return;
 	}
+#endif
+#if SSR_USE_LOONGARCH_ASM
+	if(CPUFeatures::HasLSX()) {
+		Convert_BGRA_BGR_LSX(width, height, in_data, in_stride, out_data, out_stride);
+	} else {
+		Convert_BGRA_BGR_Fallback(width, height, in_data, in_stride, out_data, out_stride);
+	}
+	return;
 #endif
 
 	Convert_BGRA_BGR_Fallback(width, height, in_data, in_stride, out_data, out_stride);
@@ -283,6 +323,14 @@ void FastScaler::Scale_BGRA(unsigned int in_width, unsigned int in_height, const
 		}
 		return;
 	}
+#endif
+#if SSR_USE_LOONGARCH_ASM
+	if(CPUFeatures::HasLSX()) {
+		Scale_BGRA_LSX(in_width, in_height, in_data, in_stride, out_width, out_height, out_data, out_stride);
+	} else {
+		Scale_BGRA_Fallback(in_width, in_height, in_data, in_stride, out_width, out_height, out_data, out_stride);
+	}
+	return;
 #endif
 
 	Scale_BGRA_Fallback(in_width, in_height, in_data, in_stride, out_width, out_height, out_data, out_stride);

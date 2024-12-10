@@ -106,12 +106,21 @@ FastResampler::FastResampler(unsigned int channels, float gain) {
 		}
 	} else {
 #endif
+#if SSR_USE_LOONGARCH_ASM
+	if(CPUFeatures::HasLSX()) {
+		switch(m_channels) {
+			case 1:  m_firfilter2_ptr = &FastResampler_FirFilter2_C1_LSX; break;
+			case 2:  m_firfilter2_ptr = &FastResampler_FirFilter2_C2_LSX; break;
+			default: m_firfilter2_ptr = &FastResampler_FirFilter2_Cn_LSX; break;
+		}
+	} else {
+#endif
 		switch(m_channels) {
 			case 1:  m_firfilter2_ptr = &FastResampler_FirFilter2_C1_Fallback; break;
 			case 2:  m_firfilter2_ptr = &FastResampler_FirFilter2_C2_Fallback; break;
 			default: m_firfilter2_ptr = &FastResampler_FirFilter2_Cn_Fallback; break;
 		}
-#if SSR_USE_X86_ASM
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
 	}
 #endif
 

@@ -32,6 +32,10 @@ else()
 	find_package(Qt4 4.8 COMPONENTS QtGui REQUIRED)
 endif()
 
+if(WITH_SIMDE)
+	find_package(SIMDE 0.8.3 REQUIRED)
+endif()
+
 set(sources
 	AV/Input/ALSAInput.cpp
 	AV/Input/ALSAInput.h
@@ -164,6 +168,23 @@ if(ENABLE_X86_ASM)
 
 endif()
 
+if(ENABLE_LOONGARCH_ASM)
+
+	list(APPEND sources
+		AV/FastResampler_FirFilter_LSX.cpp
+		AV/FastScaler_Convert_LSX.cpp
+		AV/FastScaler_Scale_LSX.cpp
+	)
+
+	set_source_files_properties(
+		AV/FastResampler_FirFilter_LSX.cpp
+		AV/FastScaler_Convert_LSX.cpp
+		AV/FastScaler_Scale_LSX.cpp
+		PROPERTIES COMPILE_FLAGS -mlsx
+	)
+
+endif()
+
 set(res_input
 	../data/resources/resources.qrc
 )
@@ -235,6 +256,7 @@ target_link_libraries(simplescreenrecorder PRIVATE
 
 target_compile_definitions(simplescreenrecorder PRIVATE
 	-DSSR_USE_X86_ASM=$<BOOL:${ENABLE_X86_ASM}>
+	-DSSR_USE_LOONGARCH_ASM=$<BOOL:$<AND:$<BOOL:${ENABLE_LOONGARCH_ASM}>,$<BOOL:${WITH_SIMDE}>>>
 	-DSSR_USE_FFMPEG_VERSIONS=$<BOOL:${ENABLE_FFMPEG_VERSIONS}>
 	-DSSR_USE_JACK_METADATA=$<BOOL:${ENABLE_JACK_METADATA}>
 	-DSSR_USE_OPENGL_RECORDING=$<BOOL:${WITH_OPENGL_RECORDING}>
