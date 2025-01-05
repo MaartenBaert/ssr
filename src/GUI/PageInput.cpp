@@ -209,7 +209,7 @@ void RecordingFrameWindow::SetRectangle(const QRect& r) {
 
 void RecordingFrameWindow::UpdateMask() {
 	auto *x11App = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
-    if (x11App) {
+	if (x11App) {
 		Display *display = x11App->display();
 		const char* compositeExt = "COMPOSITE";
 		if(m_outside) {
@@ -851,80 +851,6 @@ static Window X11FindRealWindow(Display* display, Window window) {
 	return real_window;
 
 }
-
-/* void PageInput::mousePressEvent(QMouseEvent* event) {
-	if(m_grabbing) {
-		if(event->button() == Qt::LeftButton) {
-			if(IsPlatformX11()) {
-				QPoint mouse_physical = GetMousePhysicalCoordinates();
-				if(m_selecting_window) {
-					// As expected, Qt does not provide any functions to find the window at a specific position, so I have to use Xlib directly.
-					// I'm not completely sure whether this is the best way to do this, but it appears to work. XQueryPointer returns the window
-					// currently below the mouse along with the mouse position, but apparently this may not work correctly when the mouse pointer
-					// is also grabbed (even though it works fine in my test), so I use XTranslateCoordinates instead. Originally I wanted to
-					// show the rubber band when the mouse hovers over a window (instead of having to click it), but this doesn't work correctly
-					// since X will simply return a handle the rubber band itself (even though it should be transparent to mouse events).
-					Window selected_window;
-					int x, y;
-					if(XTranslateCoordinates(QX11Info::display(), QX11Info::appRootWindow(), QX11Info::appRootWindow(), mouse_physical.x(), mouse_physical.y(), &x, &y, &selected_window)) {
-						XWindowAttributes attributes;
-						if(selected_window != None && XGetWindowAttributes(QX11Info::display(), selected_window, &attributes)) {
-
-							// naive outer/inner rectangle, this won't work for window decorations
-							m_select_window_outer_rect = QRect(attributes.x, attributes.y, attributes.width + 2 * attributes.border_width, attributes.height + 2 * attributes.border_width);
-							m_select_window_inner_rect = QRect(attributes.x + attributes.border_width, attributes.y + attributes.border_width, attributes.width, attributes.height);
-
-							// try to find the real window (rather than the decorations added by the window manager)
-							Window real_window = X11FindRealWindow(QX11Info::display(), selected_window);
-							if(real_window != None) {
-								Atom actual_type;
-								int actual_format;
-								unsigned long items, bytes_left;
-								long *data = NULL;
-								int result = XGetWindowProperty(QX11Info::display(), real_window, XInternAtom(QX11Info::display(), "_NET_FRAME_EXTENTS", true),
-																0, 4, false, AnyPropertyType, &actual_type, &actual_format, &items, &bytes_left, (unsigned char**) &data);
-								if(result == Success) {
-									if(items == 4 && bytes_left == 0 && actual_format == 32) { // format 32 means 'long', even if long is 64-bit ...
-										Window child;
-										// the attributes of the real window only store the *relative* position which is not what we need, so use XTranslateCoordinates again
-										if(XTranslateCoordinates(QX11Info::display(), real_window, QX11Info::appRootWindow(), 0, 0, &x, &y, &child)
-												 && XGetWindowAttributes(QX11Info::display(), real_window, &attributes)) {
-
-											// finally!
-											m_select_window_inner_rect = QRect(x, y, attributes.width, attributes.height);
-											m_select_window_outer_rect = m_select_window_inner_rect.adjusted(-data[0], -data[2], data[1], data[3]);
-
-										} else {
-
-											// I doubt this will ever be needed, but do it anyway
-											m_select_window_inner_rect = m_select_window_outer_rect.adjusted(data[0], data[2], -data[1], -data[3]);
-
-										}
-									}
-								}
-								if(data != NULL)
-									XFree(data);
-							}
-
-							// pick the inner rectangle if the users clicks inside the window, or the outer rectangle otherwise
-							m_rubber_band_rect = (m_select_window_inner_rect.contains(mouse_physical))? m_select_window_inner_rect : m_select_window_outer_rect;
-							UpdateRubberBand();
-
-						}
-					}
-				} else {
-					m_rubber_band_rect = QRect(mouse_physical, mouse_physical);
-					UpdateRubberBand();
-				}
-			}
-		} else {
-			StopGrabbing();
-		}
-		event->accept();
-		return;
-	}
-	event->ignore();
-} */
 
 void PageInput::mousePressEvent(QMouseEvent* event) {
     if (m_grabbing) {

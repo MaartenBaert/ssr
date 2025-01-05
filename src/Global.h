@@ -99,9 +99,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <X11/keysymdef.h>
 
 inline bool IsPlatformX11() {
-	if (auto *x11Application = qGuiApp->nativeInterface<QNativeInterface::QX11Application>())
-    	return true;
-	return false;
+	if (auto *x11Application = qGuiApp->nativeInterface<QNativeInterface::QX11Application>()) {
+		return true;
+	}
+    return false;
 }
 
 // replacement for QFontMetrics::width()
