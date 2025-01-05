@@ -539,11 +539,12 @@ bool PageOutput::Validate() {
 }
 
 QString PageOutput::GetFileProtocol() {
-	QRegExp protocol_regex("^([a-z0-9]+)://", Qt::CaseInsensitive, QRegExp::RegExp);
-	if(protocol_regex.indexIn(GetFile()) < 0) {
+	QRegularExpression protocolRegex("^([a-z0-9]+)://", QRegularExpression::CaseInsensitiveOption);
+	QRegularExpressionMatch match = protocolRegex.match(GetFile());
+	if (!match.hasMatch()) {
 		return QString();
 	}
-	return protocol_regex.cap(1);
+	return match.captured(1);
 }
 
 QString PageOutput::GetContainerAVName() {

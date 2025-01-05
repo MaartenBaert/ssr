@@ -204,7 +204,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		// Note: The choice of keys is currently rather limited, because capturing key presses session-wide is a bit harder than it looks.
 		// For example, applications are not allowed to capture the F1-F12 keys (on Ubuntu at least). The A-Z keys don't have this limitation apparently.
 		for(unsigned int i = 0; i < 26; ++i) {
-			m_combobox_hotkey_key->addItem(QString('A' + i));
+			m_combobox_hotkey_key->addItem(QString(QChar::fromLatin1('A' + i)));
 		}
 
 		connect(m_pushbutton_record, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
@@ -311,7 +311,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 					label_preview_note->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding);
 
 					QGridLayout *layout = new QGridLayout(m_preview_page1);
-					layout->setMargin(0);
+					layout->setContentsMargins(0, 0, 0, 0);
 					layout->addWidget(label_preview_frame_rate, 0, 0);
 					layout->addWidget(m_spinbox_preview_frame_rate, 0, 1);
 					layout->addWidget(label_preview_note, 1, 0, 1, 2);
@@ -324,7 +324,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 					m_audio_previewer = new AudioPreviewer(m_preview_page2);
 
 					QVBoxLayout *layout = new QVBoxLayout(m_preview_page2);
-					layout->setMargin(0);
+					layout->setContentsMargins(0, 0, 0, 0);
 					layout->addWidget(m_video_previewer);
 					{
 						QHBoxLayout *layout2 = new QHBoxLayout();

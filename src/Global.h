@@ -22,15 +22,14 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QtGui>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-
 #include <QProcess>
 #include <QTimer>
+
+#include <QGuiApplication>
 
 #include <QAction>
 #include <QApplication>
 #include <QDesktopServices>
-#include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QInputDialog>
@@ -59,8 +58,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QHBoxLayout>
 #include <QStackedLayout>
 #include <QVBoxLayout>
-
-#endif
 
 #include <cassert>
 #include <cstdio>
@@ -92,7 +89,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <thread>
 #include <vector>
 
-#include <QX11Info>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/Xfixes.h>
@@ -102,26 +98,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
 
-// replacement for Qt::WindowTransparentForInput.
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include <X11/extensions/shape.h>
-#endif
-
-// replacement for QX11Info::isPlatformX11()
 inline bool IsPlatformX11() {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
-	if(!QX11Info::isPlatformX11())
-		return false;
-#endif
-	char *v = getenv("XDG_SESSION_TYPE");
-	if(v != NULL) {
-		if(strcasecmp(v, "x11") == 0)
-			return true;
-		if(strcasecmp(v, "wayland") == 0 || strcasecmp(v, "mir") == 0)
-			return false;
-	}
-	char *d = getenv("DISPLAY");
-	return (d != NULL);
+	if (auto *x11Application = qGuiApp->nativeInterface<QNativeInterface::QX11Application>())
+    	return true;
+	return false;
 }
 
 // replacement for QFontMetrics::width()

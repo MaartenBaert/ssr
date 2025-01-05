@@ -55,7 +55,7 @@ RecordScheduleEntryWidget::RecordScheduleEntryWidget(QWidget* parent)
 	}
 
 	QHBoxLayout *layout = new QHBoxLayout(this);
-	layout->setMargin(5);
+	layout->setContentsMargins(5, 5, 5, 5);
 	layout->addWidget(label_time);
 	layout->addWidget(m_datetimeedit_time);
 	layout->addSpacing(10);

@@ -27,3 +27,6 @@ build-*
 src/simplescreenrecorder
 
 private-*
+
+build
+.vscode

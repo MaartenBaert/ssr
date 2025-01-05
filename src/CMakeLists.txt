@@ -8,6 +8,7 @@ find_package(AVCodec REQUIRED)
 find_package(AVUtil REQUIRED)
 find_package(SWScale REQUIRED)
 find_package(X11 REQUIRED)
+find_package(Qt6 6.2 COMPONENTS Core Gui Widgets REQUIRED)
 
 if(WITH_V4L2)
 	find_package(V4L2 REQUIRED)
@@ -24,12 +25,6 @@ if(WITH_PULSEAUDIO)
 endif()
 if(WITH_JACK)
 	find_package(Jack REQUIRED)
-endif()
-
-if(WITH_QT5)
-	find_package(Qt5 5.7 COMPONENTS Core Gui Widgets X11Extras REQUIRED)
-else()
-	find_package(Qt4 4.8 COMPONENTS QtGui REQUIRED)
 endif()
 
 set(sources
@@ -168,20 +163,12 @@ set(res_input
 	../data/resources/resources.qrc
 )
 
-if(WITH_QT5)
-	qt5_add_resources(res_output ${res_input})
-	set(QT_LIBS
-		Qt5::Core
-		Qt5::Gui
-		Qt5::Widgets
-		Qt5::X11Extras
-	)
-else()
-	qt4_add_resources(res_output ${res_input})
-	set(QT_LIBS
-		Qt4::QtGui
-	)
-endif()
+qt6_add_resources(res_output ${res_input})
+set(QT_LIBS
+	Qt6::Core
+	Qt6::Gui
+	Qt6::Widgets
+)
 
 set_property(SOURCE ${res_output} PROPERTY SKIP_AUTOMOC ON)
 

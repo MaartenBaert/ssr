@@ -83,20 +83,26 @@ static QRect CombineScreenGeometries(const std::vector<QRect>& screen_geometries
 }
 
 static QPoint GetMousePhysicalCoordinates() {
-	if(IsPlatformX11()) {
-		Window root, child;
-		int root_x, root_y;
-		int win_x, win_y;
-		unsigned int mask_return;
-		XQueryPointer(QX11Info::display(), QX11Info::appRootWindow(), &root, &child, &root_x, &root_y, &win_x, &win_y, &mask_return);
-		return QPoint(root_x, root_y);
-	} else {
-		return QPoint(0, 0); // TODO: implement for wayland
-	}
+    if (IsPlatformX11()) {
+        auto *x11App = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
+        if (x11App) {
+			Display *display = x11App->display();
+            Window root = DefaultRootWindow(display);
+
+            Window child;
+            int root_x, root_y;
+            int win_x, win_y;
+            unsigned int mask_return;
+
+            if (XQueryPointer(display, root, &root, &child, &root_x, &root_y, &win_x, &win_y, &mask_return)) {
+                return QPoint(root_x, root_y);
+            }
+        }
+    }
+    return QPoint(0, 0); // TODO: Implement for Wayland
 }
 
 static QRect MapToLogicalCoordinates(const QRect& rect) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	for(QScreen *screen :  QApplication::screens()) {
 		QRect geometry = screen->geometry();
 		qreal ratio = screen->devicePixelRatio();
@@ -109,7 +115,6 @@ static QRect MapToLogicalCoordinates(const QRect& rect) {
 						lrint((qreal) rect.height() / ratio - 0.4999));
 		}
 	}
-#endif
 	return rect;
 };
 
@@ -147,34 +152,11 @@ void QSpinBoxWithSignal::focusOutEvent(QFocusEvent* event) {
 	QSpinBox::focusOutEvent(event);
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-
 #define TRANSPARENT_WINDOW_FLAGS (Qt::Window | Qt::BypassWindowManagerHint | Qt::FramelessWindowHint | \
 		Qt::WindowStaysOnTopHint | Qt::WindowTransparentForInput | Qt::WindowDoesNotAcceptFocus)
 
 #define TRANSPARENT_WINDOW_ATTRIBUTES() {\
 }
-
-#else
-
-#define TRANSPARENT_WINDOW_FLAGS (Qt::Window | Qt::X11BypassWindowManagerHint | Qt::FramelessWindowHint | \
-		Qt::WindowStaysOnTopHint)
-
-// Replacement for Qt::WindowTransparentForInput based on X11 'shape' extension as described here:
-// http://shallowsky.com/blog/programming/translucent-window-click-thru.html
-#define TRANSPARENT_WINDOW_ATTRIBUTES() {\
-	setAttribute(Qt::WA_X11DoNotAcceptFocus); \
-	int shape_event_base, shape_error_base; \
-	if(IsPlatformX11()) { \
-		if(XShapeQueryExtension(QX11Info::display(), &shape_event_base, &shape_error_base)) { \
-			Region region = XCreateRegion(); \
-			XShapeCombineRegion(QX11Info::display(), winId(), ShapeInput, 0, 0, region, ShapeSet); \
-			XDestroyRegion(region); \
-		} \
-	} \
-}
-
-#endif
 
 ScreenLabelWindow::ScreenLabelWindow(QWidget* parent, const QString &text)
 	: QWidget(parent, TRANSPARENT_WINDOW_FLAGS) {
@@ -226,16 +208,21 @@ void RecordingFrameWindow::SetRectangle(const QRect& r) {
 }
 
 void RecordingFrameWindow::UpdateMask() {
-	if(m_outside) {
-		setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(BORDER_WIDTH, BORDER_WIDTH, width() - 2 * BORDER_WIDTH, height() - 2 * BORDER_WIDTH)));
-		setWindowOpacity(0.5);
-	} else {
-		if(QX11Info::isCompositingManagerRunning()) {
-			clearMask();
-			setWindowOpacity(0.25);
-		} else {
+	auto *x11App = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
+    if (x11App) {
+		Display *display = x11App->display();
+		const char* compositeExt = "COMPOSITE";
+		if(m_outside) {
 			setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(BORDER_WIDTH, BORDER_WIDTH, width() - 2 * BORDER_WIDTH, height() - 2 * BORDER_WIDTH)));
-			setWindowOpacity(1.0);
+			setWindowOpacity(0.5);
+		} else {
+			if(XQueryExtension(display, compositeExt, nullptr, nullptr, nullptr)) {
+				clearMask();
+				setWindowOpacity(0.25);
+			} else {
+				setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(BORDER_WIDTH, BORDER_WIDTH, width() - 2 * BORDER_WIDTH, height() - 2 * BORDER_WIDTH)));
+				setWindowOpacity(1.0);
+			}
 		}
 	}
 }
@@ -865,7 +852,7 @@ static Window X11FindRealWindow(Display* display, Window window) {
 
 }
 
-void PageInput::mousePressEvent(QMouseEvent* event) {
+/* void PageInput::mousePressEvent(QMouseEvent* event) {
 	if(m_grabbing) {
 		if(event->button() == Qt::LeftButton) {
 			if(IsPlatformX11()) {
@@ -937,6 +924,83 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 		return;
 	}
 	event->ignore();
+} */
+
+void PageInput::mousePressEvent(QMouseEvent* event) {
+    if (m_grabbing) {
+        if (event->button() == Qt::LeftButton) {
+            if (IsPlatformX11()) {
+                QPoint mouse_physical = GetMousePhysicalCoordinates();
+                if (m_selecting_window) {
+                    // As expected, Qt does not provide any functions to find the window at a specific position, so I have to use Xlib directly.
+					// I'm not completely sure whether this is the best way to do this, but it appears to work. XQueryPointer returns the window
+					// currently below the mouse along with the mouse position, but apparently this may not work correctly when the mouse pointer
+					// is also grabbed (even though it works fine in my test), so I use XTranslateCoordinates instead. Originally I wanted to
+					// show the rubber band when the mouse hovers over a window (instead of having to click it), but this doesn't work correctly
+					// since X will simply return a handle the rubber band itself (even though it should be transparent to mouse events).
+                    auto *x11App = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
+                    if (x11App) {
+                        Display *display = x11App->display();
+                        Window root = DefaultRootWindow(display);
+
+                        Window selected_window;
+                        int x, y;
+                        if (XTranslateCoordinates(display, root, root, mouse_physical.x(), mouse_physical.y(), &x, &y, &selected_window)) {
+                            XWindowAttributes attributes;
+                            if (selected_window != None && XGetWindowAttributes(display, selected_window, &attributes)) {
+
+                                // naive outer/inner rectangle, this won't work for window decorations
+                                m_select_window_outer_rect = QRect(attributes.x, attributes.y, attributes.width + 2 * attributes.border_width, attributes.height + 2 * attributes.border_width);
+                                m_select_window_inner_rect = QRect(attributes.x + attributes.border_width, attributes.y + attributes.border_width, attributes.width, attributes.height);
+
+                                // try to find the real window (rather than the decorations added by the window manager)
+                                Window real_window = X11FindRealWindow(display, selected_window);
+                                if (real_window != None) {
+                                    Atom actual_type;
+                                    int actual_format;
+                                    unsigned long items, bytes_left;
+                                    long *data = NULL;
+                                    int result = XGetWindowProperty(display, real_window, XInternAtom(display, "_NET_FRAME_EXTENTS", true),
+                                                                    0, 4, false, AnyPropertyType, &actual_type, &actual_format, &items, &bytes_left, (unsigned char**) &data);
+                                    if (result == Success) {
+                                        if (items == 4 && bytes_left == 0 && actual_format == 32) { // формат 32 означает 'long', даже если long 64-бит ...
+                                            Window child;
+                                            // the attributes of the real window only store the *relative* position which is not what we need, so use XTranslateCoordinates again
+                                            if (XTranslateCoordinates(display, real_window, root, 0, 0, &x, &y, &child)
+                                                     && XGetWindowAttributes(display, real_window, &attributes)) {
+
+                                                // finally!
+                                                m_select_window_inner_rect = QRect(x, y, attributes.width, attributes.height);
+                                                m_select_window_outer_rect = m_select_window_inner_rect.adjusted(-data[0], -data[2], data[1], data[3]);
+
+                                            } else {
+                                                // I doubt this will ever be needed, but do it anyway
+                                                m_select_window_inner_rect = m_select_window_outer_rect.adjusted(data[0], data[2], -data[1], -data[3]);
+                                            }
+                                        }
+                                    }
+                                    if (data != NULL)
+                                        XFree(data);
+                                }
+
+                                // pick the inner rectangle if the users clicks inside the window, or the outer rectangle otherwise
+                                m_rubber_band_rect = (m_select_window_inner_rect.contains(mouse_physical)) ? m_select_window_inner_rect : m_select_window_outer_rect;
+                                UpdateRubberBand();
+                            }
+                        }
+                    }
+                } else {
+                    m_rubber_band_rect = QRect(mouse_physical, mouse_physical);
+                    UpdateRubberBand();
+                }
+            }
+        } else {
+            StopGrabbing();
+        }
+        event->accept();
+        return;
+    }
+    event->ignore();
 }
 
 void PageInput::mouseReleaseEvent(QMouseEvent* event) {
