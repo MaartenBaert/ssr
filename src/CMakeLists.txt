@@ -97,8 +97,6 @@ set(sources
 	common/NVidia.cpp
 	common/NVidia.h
 	common/QueueBuffer.h
-	common/ScreenScaling.cpp
-	common/ScreenScaling.h
 	common/TempBuffer.h
 	GUI/AudioPreviewer.cpp
 	GUI/AudioPreviewer.h

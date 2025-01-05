@@ -26,14 +26,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Icons.h"
 #include "Logger.h"
 #include "MainWindow.h"
-#include "ScreenScaling.h"
 
 int main(int argc, char* argv[]) {
 
 	XInitThreads();
-
-	// Workarounds for broken screen scaling.
-	ScreenScalingFix();
 
 	QApplication application(argc, argv);
 
@@ -92,9 +88,6 @@ int main(int argc, char* argv[]) {
 	// detect CPU features
 	CPUFeatures::Detect();
 #endif
-
-	// show screen scaling message
-	ScreenScalingMessage();
 
 	// load icons
 	LoadIcons();
