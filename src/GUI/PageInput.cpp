@@ -87,7 +87,7 @@ static QPoint GetMousePhysicalCoordinates() {
         auto *x11App = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
         if (x11App) {
 			Display *display = x11App->display();
-            Window root = DefaultRootWindow(display);
+			Window root = DefaultRootWindow(display);
 
             Window child;
             int root_x, root_y;

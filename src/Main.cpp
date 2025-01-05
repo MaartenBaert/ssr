@@ -37,17 +37,6 @@ int main(int argc, char* argv[]) {
 
 	QApplication application(argc, argv);
 
-	// SSR uses two separate character encodings:
-	// - UTF-8: Used for all internal strings.
-	//   Used by QString::fromAscii and QString::toAscii, and all implicit conversions from C-strings to QString. Also used for translations.
-	// - Local character encoding: Used for file names and logs. In practice this will almost always be UTF-8 as well.
-	//   Used by QString::fromLocal8Bit and QString::toLocal8Bit.
-	// If it is not clear what encoding an external library uses, I use the local encoding for file names and UTF-8 for everything else.
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-#endif
-
 	// set the application name
 	QCoreApplication::setOrganizationName("SimpleScreenRecorder");
 	QCoreApplication::setApplicationName("SimpleScreenRecorder");
