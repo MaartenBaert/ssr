@@ -60,17 +60,11 @@ ENUMSTRINGS(PageInput::enum_audio_backend) = {
 
 static std::vector<QRect> GetScreenGeometries() {
 	std::vector<QRect> screen_geometries;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	for(QScreen *screen :  QApplication::screens()) {
 		QRect geometry = screen->geometry();
 		qreal ratio = screen->devicePixelRatio();
 		screen_geometries.emplace_back(geometry.x(), geometry.y(), lrint((qreal) geometry.width() * ratio), lrint((qreal) geometry.height() * ratio));
 	}
-#else
-	for(int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
-		screen_geometries.push_back(QApplication::desktop()->screenGeometry(i));
-	}
-#endif
 	return screen_geometries;
 }
 
@@ -209,14 +203,14 @@ void RecordingFrameWindow::SetRectangle(const QRect& r) {
 
 void RecordingFrameWindow::UpdateMask() {
 	auto *x11App = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
+	int event_base, error_base;
 	if (x11App) {
 		Display *display = x11App->display();
-		const char* compositeExt = "COMPOSITE";
 		if(m_outside) {
 			setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(BORDER_WIDTH, BORDER_WIDTH, width() - 2 * BORDER_WIDTH, height() - 2 * BORDER_WIDTH)));
 			setWindowOpacity(0.5);
 		} else {
-			if(XQueryExtension(display, compositeExt, nullptr, nullptr, nullptr)) {
+			if(XQueryExtension(display, "Composite", &event_base, &error_base, &error_base)) {
 				clearMask();
 				setWindowOpacity(0.25);
 			} else {
