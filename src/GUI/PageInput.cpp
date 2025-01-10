@@ -367,7 +367,7 @@ PageInput::PageInput(MainWindow* main_window)
 			m_checkbox_record_cursor = new QCheckBox(tr("Record cursor"), groupbox_video);
 
 			connect(m_combobox_video_backend, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoAreaFields()));
-			connect(m_buttongroup_video_x11_area, SIGNAL(buttonClicked(int)), this, SLOT(OnUpdateVideoAreaFields()));
+			connect(m_buttongroup_video_x11_area, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(OnUpdateVideoAreaFields()));
 			connect(m_combobox_x11_screens, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoAreaFields()));
 			connect(m_combobox_x11_screens, SIGNAL(popupShown()), this, SLOT(OnIdentifyScreens()));
 			connect(m_combobox_x11_screens, SIGNAL(popupHidden()), this, SLOT(OnStopIdentifyScreens()));
