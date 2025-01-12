@@ -26,6 +26,7 @@ option(WITH_ALSA "Build with ALSA support." TRUE)
 option(WITH_PULSEAUDIO "Build with PulseAudio support." TRUE)
 option(WITH_JACK "Build with JACK support." TRUE)
 option(WITH_QT5 "Build with Qt5 (instead of Qt4)." FALSE)
+option(WITH_QT6 "Build with Qt6 (instead of Qt4/5)." FALSE)
 option(WITH_SIMPLESCREENRECORDER "Build the 'simplescreenrecorder' executable." TRUE)
 option(WITH_GLINJECT "Build the 'libssr-glinject' library. Required for OpenGL recording." TRUE)
 

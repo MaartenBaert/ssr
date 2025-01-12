@@ -54,9 +54,15 @@ int main(int argc, char* argv[]) {
 
 	// load Qt translations
 	QTranslator translator_qt;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	if(translator_qt.load(QLocale::system(), "qt", "_", QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
+		QApplication::installTranslator(&translator_qt);
+	}
+#else
 	if(translator_qt.load(QLocale::system(), "qt", "_", QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
 		QApplication::installTranslator(&translator_qt);
 	}
+#endif
 
 	// load SSR translations
 	QTranslator translator_ssr;

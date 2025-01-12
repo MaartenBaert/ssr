@@ -29,8 +29,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QAction>
 #include <QApplication>
+#include <QGuiApplication>
 #include <QDesktopServices>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QDesktopWidget>
+#endif
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QInputDialog>
@@ -92,7 +95,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <thread>
 #include <vector>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QX11Info>
+#endif
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/Xfixes.h>
@@ -109,7 +115,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 // replacement for QX11Info::isPlatformX11()
 inline bool IsPlatformX11() {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	if(qGuiApp->nativeInterface<QNativeInterface::QX11Application>() == nullptr)
+		return false;
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
 	if(!QX11Info::isPlatformX11())
 		return false;
 #endif
@@ -122,6 +131,21 @@ inline bool IsPlatformX11() {
 	}
 	char *d = getenv("DISPLAY");
 	return (d != NULL);
+}
+
+// replacement for QX11Info::isCompositingManagerRunning()
+inline bool IsCompositingWindowManager() {
+	if(IsPlatformX11()) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		auto *x11_app = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
+		Display *display = x11_app->display();
+		int major_opcode, first_event, first_error;
+		return XQueryExtension(display, "Composite", &major_opcode, &first_event, &first_error);
+#else
+		return QX11Info::isCompositingManagerRunning();
+#endif
+	}
+	return true;
 }
 
 // replacement for QFontMetrics::width()
