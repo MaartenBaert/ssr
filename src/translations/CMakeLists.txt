@@ -26,6 +26,7 @@ if(LRELEASE)
 		id
 		it
 		ja
+		ko
 		lt
 		nl
 		pl
