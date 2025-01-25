@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sk_SK">
+<TS version="2.1" language="sk_SK">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -53,7 +53,7 @@
 &lt;p&gt;Another warning: OpenGL recording is experimental, it may not work or even crash the program you are recording. If you are worried about losing program data, make a backup first!&lt;/p&gt;
 
 &lt;p&gt;If you want to record Steam games, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;read this first&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Upozornenie: Nahrávanie OpenGL pracuje na princípu &quot;injektáže&quot; knižnice do nahrávanej aplikácie . Táto knižnica nahrádza niektoré systémové funkcie vlastnými za účelom zachytenia snímky ešte pred jej zobrazením na obrazovke. Ak nahrávate hru, ktorá obsahuje funkcie pre detekciu podvádzania (anti-cheat a anti-hack ochrana), je tu (teoretické) riziko, že hra toto vyhodnotí ako podvádzanie. Vzhľadom na to, že by takáto skutočnosť mohla viesť až k zablokovaniu vášho herného účtu, je dobré sa *vopred* uistiť, že k ničomu takému nedôjde. Každopádne, varovali sme Vás :-).&lt;/p&gt;
+        <translation>&lt;p&gt;Upozornenie: Nahrávanie OpenGL pracuje na princípe vloženia knižnice do nahrávanej aplikácie . Táto knižnica nahrádza niektoré systémové funkcie vlastnými za účelom zachytenia snímky ešte pred jej zobrazením na obrazovke. Ak nahrávate hru, ktorá obsahuje funkcie pre detekciu podvádzania (anti-cheatovacia a anti-hackovacia ochrana), je tu (teoretické) riziko, že hra toto vyhodnotí ako podvádzanie. Vzhľadom na to, že by takáto skutočnosť mohla viesť až k zablokovaniu Vášho herného účtu, je dobré sa *vopred* uistiť, že k ničomu takému nedôjde. Každopádne, varovali sme Vás :-).&lt;/p&gt;
 
 &lt;p&gt;Ďalšie upozornenie: Nahrávanie OpenGL je experimentálne a nemusí fungovať správne, prípadne môže viesť až k pádu nahrávanej aplikácie. Ak sa bojíte prípadnej straty údajov, včas a pravidelne zálohujte!&lt;/p&gt;
 
@@ -867,7 +867,7 @@ Je možné, že váš systém nepoužíva PulseAudio.</translation>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="355"/>
         <source>Detecting screen configuration ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zisťujem nastavenie obrazovky ...</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="373"/>
@@ -883,7 +883,7 @@ Je možné, že váš systém nepoužíva PulseAudio.</translation>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="386"/>
         <source>Screen %1:</source>
-        <translation type="unfinished">Obrazovka %1:</translation>
+        <translation>Obrazovka %1:</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="406"/>
@@ -898,7 +898,7 @@ Je možné, že váš systém nepoužíva PulseAudio.</translation>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="450"/>
         <source>Dead space %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepokrytý priestor %1:</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="536"/>
@@ -1454,12 +1454,12 @@ Túto funkciu môžete takisto vypnúť ručne v nástroji NVIDIA X Server Setti
     <message>
         <location filename="../GUI/PageInput.cpp" line="280"/>
         <source>Record OpenGL</source>
-        <translation>Nahrať OpenGL</translation>
+        <translation>Nahrávať OpenGL</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="283"/>
         <source>Record V4L2 device</source>
-        <translation>Nahrať zariadenie V4L2</translation>
+        <translation>Nahrávať zariadenie V4L2</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="295"/>
@@ -1869,7 +1869,7 @@ Je dôležité vedieť, že nie všetky kodeky sú podporované všetkými konta
         <source>If checked, the current date and time will be appended to the file name automatically.
 If the original file name is &apos;test.mkv&apos;, the video will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
         <translation>Ak je táto voľba aktivovaná, bude k názvu súboru automaticky pripájaný dátum a čas.
-Ak bol pôvodný názov súboru &apos;test.mkv&apos;, video bude uložené ako &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</translation>
+Ak bol pôvodný názov súboru &apos;test.mkv&apos;, video bude uložené ako &apos;test-RRRR-MM-DD_HH.MM.SS.mkv&apos;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="227"/>
@@ -2029,7 +2029,7 @@ pretože veľkosť zvukových dát je zanedbateľná v porovnaní s objemom obra
     <message>
         <location filename="../GUI/PageOutput.cpp" line="528"/>
         <source>You did not select an output file!</source>
-        <translation>Nebol vybraný výstupný súbor!</translation>
+        <translation>Nevybrali ste súbor s výstupom!</translation>
     </message>
 </context>
 <context>
@@ -2047,7 +2047,7 @@ pretože veľkosť zvukových dát je zanedbateľná v porovnaní s objemom obra
     <message>
         <location filename="../GUI/PageRecord.cpp" line="183"/>
         <source>The recording schedule can be used to automatically start or pause the recording at a predefined time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plán nahrávania môžete použiť na automatické spustenie alebo zastavenie nahrávania vo vopred určenom čase.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="185"/>
@@ -2116,12 +2116,12 @@ Tieto klávesy budú odchytené a nebudú zaregistrované nahrávanou aplikácio
     <message>
         <location filename="../GUI/PageRecord.cpp" line="256"/>
         <source>FPS in:</source>
-        <translation>Vstup snímky/s:</translation>
+        <translation>FPS vstupu:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="258"/>
         <source>FPS out:</source>
-        <translation>Výstup snímky/s:</translation>
+        <translation>FPS výstupu:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="260"/>
@@ -2247,7 +2247,7 @@ Naozaj chcete program ukončiť?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="793"/>
         <source>Output file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Výstupný súbor: %1</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="804"/>
@@ -2482,7 +2482,7 @@ Naozaj chcete program ukončiť?</translation>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="159"/>
         <source>Enter a name for the new profile:</source>
-        <translation>Zadejte názov nového profilu:</translation>
+        <translation>Zadajte názov nového profilu:</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
