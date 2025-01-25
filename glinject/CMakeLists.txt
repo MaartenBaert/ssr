@@ -46,6 +46,7 @@ if(ENABLE_32BIT_GLINJECT)
 	install(TARGETS ssr-glinject32 LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIB32DIR})
 
 	set_target_properties(ssr-glinject32 PROPERTIES COMPILE_FLAGS -m32 LINK_FLAGS -m32)
+	set_target_properties(ssr-glinject32 PROPERTIES COMPILE_FLAGS -m64 LINK_FLAGS -m64)
 	set_target_properties(ssr-glinject32 PROPERTIES OUTPUT_NAME ssr-glinject LIBRARY_OUTPUT_DIRECTORY "lib32")
 
 endif()
