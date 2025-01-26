@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -30,7 +30,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 const int64_t PulseAudioInput::START_DELAY = 100000;
 
 static void PulseAudioIterate(pa_mainloop* mainloop) {
-	if(pa_mainloop_prepare(mainloop, 1000) < 0) {
+	if(pa_mainloop_prepare(mainloop, 100000) < 0) {
 		Logger::LogError("[PulseAudioIterate] " + Logger::tr("Error: pa_mainloop_prepare failed!", "Don't translate 'pa_mainloop_prepare'"));
 		throw PulseAudioException();
 	}

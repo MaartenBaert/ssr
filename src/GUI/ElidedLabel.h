@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 Original code written by Jason Gedge and placed in the public domain.
 http://gedgedev.blogspot.be/2010/12/elided-labels-in-qt.html
@@ -34,9 +34,9 @@ private:
 	QString m_cached_elided_text;
 
 public:
-	ElidedLabel(QWidget* parent = NULL, Qt::WindowFlags f = 0);
-	ElidedLabel(const QString& txt, QWidget* parent = NULL, Qt::WindowFlags f = 0);
-	ElidedLabel(const QString& txt, Qt::TextElideMode elideMode = Qt::ElideRight, QWidget* parent = NULL, Qt::WindowFlags f = 0);
+	ElidedLabel(QWidget* parent = NULL, Qt::WindowFlags f = Qt::WindowFlags());
+	ElidedLabel(const QString& txt, QWidget* parent = NULL, Qt::WindowFlags f = Qt::WindowFlags());
+	ElidedLabel(const QString& txt, Qt::TextElideMode elideMode = Qt::ElideRight, QWidget* parent = NULL, Qt::WindowFlags f = Qt::WindowFlags());
 
 public:
 	// Set the elide mode used for displaying text.

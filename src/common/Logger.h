@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -27,17 +27,25 @@ public:
 	enum enum_type {
 		TYPE_INFO,
 		TYPE_WARNING,
-		TYPE_ERROR
+		TYPE_ERROR,
+		TYPE_STDERR
 	};
 
 private:
 	std::mutex m_mutex;
+	QFile m_log_file;
+
+	std::thread m_capture_thread;
+	int m_capture_pipe[2], m_shutdown_pipe[2], m_original_stderr;
 
 	static Logger *s_instance;
 
 public:
 	Logger();
 	~Logger();
+
+	void SetLogFile(const QString& filename);
+	void RedirectStderr();
 
 	// These functions are thread-safe.
 	static void LogInfo(const QString& str);
@@ -48,6 +56,9 @@ public:
 
 signals:
 	void NewLine(Logger::enum_type type, QString str);
+
+private:
+	void CaptureThread();
 
 };
 

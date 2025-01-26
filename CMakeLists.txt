@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 cmake_policy(VERSION 3.1)
 
+if(POLICY CMP0072)
+	cmake_policy(SET CMP0072 NEW)
+endif(POLICY CMP0072)
+
 set(CMAKE_CXX_STANDARD 11)
 
-project(simplescreenrecorder VERSION 0.3.11)
+project(simplescreenrecorder VERSION 0.4.4)
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|i386|i686")
 	set(PROCESSOR_IS_X86 TRUE)
@@ -14,11 +18,15 @@ endif()
 option(ENABLE_32BIT_GLINJECT "Build the 32-bit version of 'libssr-glinject' on 64-bit systems (in addition to the 64-bit version). Required for OpenGL recording of 32-bit applications on 64-bit systems." FALSE)
 option(ENABLE_X86_ASM "Allow x86/x64 assembly or intrinsics." ${PROCESSOR_IS_X86})
 option(ENABLE_FFMPEG_VERSIONS "Use FFmpeg version numbers for feature support tests. Enable when using FFmpeg, disable when using Libav." TRUE)
+option(ENABLE_JACK_METADATA "Use the JACK metadata API. May not work with very old JACK versions." TRUE)
 option(WITH_OPENGL_RECORDING "Build with OpenGL recording support." TRUE)
+option(WITH_V4L2 "Build with V4L2 support." TRUE)
+option(WITH_PIPEWIRE "Build with PipeWire support." TRUE)
 option(WITH_ALSA "Build with ALSA support." TRUE)
 option(WITH_PULSEAUDIO "Build with PulseAudio support." TRUE)
 option(WITH_JACK "Build with JACK support." TRUE)
 option(WITH_QT5 "Build with Qt5 (instead of Qt4)." FALSE)
+option(WITH_QT6 "Build with Qt6 (instead of Qt4/5)." FALSE)
 option(WITH_SIMPLESCREENRECORDER "Build the 'simplescreenrecorder' executable." TRUE)
 option(WITH_GLINJECT "Build the 'libssr-glinject' library. Required for OpenGL recording." TRUE)
 
@@ -86,8 +94,8 @@ if(WITH_SIMPLESCREENRECORDER)
 		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/applications
 	)
 	install(
-		FILES data/simplescreenrecorder.appdata.xml
-		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/appdata
+		FILES data/simplescreenrecorder.metainfo.xml
+		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/metainfo
 	)
 
 	# icons

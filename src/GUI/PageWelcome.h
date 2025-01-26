@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -28,11 +28,20 @@ class PageWelcome : public QWidget {
 private:
 	MainWindow *m_main_window;
 
+	QCheckBox *m_checkbox_skip_page;
+
 public:
 	PageWelcome(MainWindow* main_window);
 
+	void LoadSettings(QSettings* settings);
+	void SaveSettings(QSettings* settings);
+
 private slots:
 	void AboutDialog();
+
+public:
+	inline bool GetSkipPage() { return m_checkbox_skip_page->isChecked(); }
+	inline void SetSkipPage(bool enable) { m_checkbox_skip_page->setChecked(enable); }
 
 };
 

@@ -130,6 +130,49 @@ If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will 
     </message>
 </context>
 <context>
+    <name>DialogRecordSchedule</name>
+    <message>
+        <source>Recording schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time zone:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UTC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Κλείσιμο</translation>
+    </message>
+</context>
+<context>
     <name>Logger</name>
     <message>
         <source>Error: Resample ratio is out of range!</source>
@@ -141,10 +184,6 @@ If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will 
     </message>
     <message>
         <source>Resample ratio is %1 (was %2).</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
         <translation></translation>
     </message>
     <message>
@@ -787,10 +826,6 @@ It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA 
         <translation></translation>
     </message>
     <message>
-        <source>Error: Can&apos;t create .ssr directory!</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Error: Can&apos;t watch channel directory!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -929,6 +964,102 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: No fast pixel format conversion available (%1,%2 -&gt; %3,%4), using swscale instead. This is not a problem, but performance will be worse.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t set sample format mask!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t wait for new samples!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t open V4L2 device!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t read capabilities of V4L2 device!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: V4L2 device does not support video capture!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: V4L2 device does not support streaming io!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t set capture format!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: V4L2 device does not support YUYV pixel format!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: Resolution %1x%2 is not supported, using %3x%4 instead. The video will be scaled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Using color space %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer request failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer query failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer mmap failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer queue failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Failed to start stream!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer dequeue failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Buffer requeue failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Can&apos;t create configuration directory!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Detected fractional screen scale factor, scaling was disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Detecting screen configuration ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Screen %1:</source>
+        <translation type="unfinished">Οθόνη %1:</translation>
+    </message>
+    <message>
+        <source>Dead space %1:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -946,6 +1077,10 @@ You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
         <translation>Δεν μπόρεσα να απενεργοποιήσω την λειτουργία flipping για κάποιο λόγο - Συγγνώμη!. Δοκιμάστε την να απενεργοποιήσετε από τον πίνακα ελέγχου και ρυθμίσεων της NVIDIA.</translation>
     </message>
+    <message>
+        <source>You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. Several features will most likely not work properly. In order to solve this, you should log out, choose a X11/Xorg session at the login screen, and then log back in.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PageDone</name>
@@ -956,6 +1091,10 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <source>Back to the start screen</source>
         <translation>Πίσω στην αρχική οθόνη</translation>
+    </message>
+    <message>
+        <source>Open folder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1183,6 +1322,14 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     </message>
     <message>
         <source>Record the entire screen on which the cursor is located, rather than following the cursor position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Record V4L2 device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The V4L2 device to record (e.g. /dev/video0).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1455,6 +1602,10 @@ If the original file name is &apos;test.mkv&apos;, the video will be saved as &a
         <source>Bit rate (in kbit/s):</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Warning: This format will produce unreadable files if the recording is interrupted! Consider using MKV instead.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PageRecord</name>
@@ -1658,7 +1809,7 @@ Are you sure that you want to quit?</source>
         <source>You haven&apos;t recorded anything, there is nothing to save.
 
 The start button is at the top ;).</source>
-        <translation>Δεν έχετε εγγράψει κάτι, δεν υπάρχει κάτι για να αποθηκευτεί.
+        <translation type="obsolete">Δεν έχετε εγγράψει κάτι, δεν υπάρχει κάτι για να αποθηκευτεί.
 
 Το πλήκτρο έναρξης είναι στην κορυφή ;).</translation>
     </message>
@@ -1672,6 +1823,80 @@ The start button is at the top ;).</source>
     </message>
     <message>
         <source>Show window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,
+even when the SimpleScreenRecorder window is not visible. This way you can create recordings without having the
+SimpleScreenRecorder window show up in the final video.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When enabled, a sound will be played when the recording is started or paused, or when an error occurs.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deactivate schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Activate schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You haven&apos;t recorded anything, there is nothing to save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Triggering scheduled action &apos;%1&apos; ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Schedule: %1 in %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Schedule: (none)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Schedule: (inactive)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard input read error (%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard input closed (%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Received command &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown command.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show recording area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When enabled, the recorded area is marked on the screen.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The recording schedule can be used to automatically start or pause the recording at a predefined time.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1697,6 +1922,14 @@ The start button is at the top ;).</source>
     <message>
         <source>Continue</source>
         <translation>Συνέχεια</translation>
+    </message>
+    <message>
+        <source>Skip this page next time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go directly to the input page when the program is started.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1806,6 +2039,25 @@ The start button is at the top ;).</source>
     <message>
         <source>No, never</source>
         <translation type="obsolete">Όχι πάντα</translation>
+    </message>
+</context>
+<context>
+    <name>RecordScheduleEntryWidget</name>
+    <message>
+        <source>Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Action:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

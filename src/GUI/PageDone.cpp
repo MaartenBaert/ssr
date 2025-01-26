@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -21,6 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Icons.h"
 #include "MainWindow.h"
+#include "PageOutput.h"
 
 PageDone::PageDone(MainWindow* main_window)
 	: QWidget(main_window->centralWidget()) {
@@ -30,13 +31,27 @@ PageDone::PageDone(MainWindow* main_window)
 	QLabel *label_done = new QLabel(tr("The recording has been saved. You can edit the video now, or re-encode it with better settings to "
 									   "make the file smaller (the default settings are optimized for quality and speed, not file size)."), this);
 	label_done->setWordWrap(true);
+
+	QPushButton *button_open_folder = new QPushButton(g_icon_folder_open, tr("Open folder"), this);
+	connect(button_open_folder, SIGNAL(clicked()), this, SLOT(OnOpenFolder()));
+
 	QPushButton *button_back = new QPushButton(g_icon_go_home, tr("Back to the start screen"), this);
+	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageStart()));
 
-	connect(button_back, SIGNAL(clicked()), m_main_window, SLOT(GoPageWelcome()));
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(label_done);
+	{
+		QHBoxLayout *layout2 = new QHBoxLayout();
+		layout->addLayout(layout2);
+		layout2->addWidget(button_open_folder);
+		layout2->addStretch();
+	}
+	layout->addStretch();
+	layout->addWidget(button_back);
 
-	QVBoxLayout *layout_page = new QVBoxLayout(this);
-	layout_page->addWidget(label_done);
-	layout_page->addStretch();
-	layout_page->addWidget(button_back);
+}
 
+void PageDone::OnOpenFolder() {
+	QFileInfo fi(m_main_window->GetPageOutput()->GetFile());
+	QDesktopServices::openUrl(QUrl::fromLocalFile(fi.absolutePath()));
 }

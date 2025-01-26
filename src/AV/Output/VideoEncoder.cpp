@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -59,6 +59,28 @@ AVPixelFormat VideoEncoder::GetPixelFormat() {
 	return GetCodecContext()->pix_fmt;
 }
 
+int VideoEncoder::GetColorSpace() {
+	switch(GetCodecContext()->colorspace) {
+		case AVCOL_SPC_BT709:
+			return SWS_CS_ITU709;
+		case AVCOL_SPC_FCC:
+			return SWS_CS_FCC;
+		case AVCOL_SPC_BT470BG:
+			return SWS_CS_ITU601;
+		case AVCOL_SPC_SMPTE170M:
+			return SWS_CS_SMPTE170M;
+		case AVCOL_SPC_SMPTE240M:
+			return SWS_CS_SMPTE240M;
+#ifdef SWS_CS_BT2020
+		case AVCOL_SPC_BT2020_NCL:
+		case AVCOL_SPC_BT2020_CL:
+			return SWS_CS_BT2020;
+#endif
+		default:
+			return SWS_CS_DEFAULT;
+	}
+}
+
 unsigned int VideoEncoder::GetWidth() {
 	return GetCodecContext()->width;
 }
@@ -73,7 +95,8 @@ unsigned int VideoEncoder::GetFrameRate() {
 }
 
 bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
+	// we have to break const correctness for compatibility with older ffmpeg versions
+	AVCodec *codec = (AVCodec*) avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL)
 		return false;
 	if(!av_codec_is_encoder(codec))
@@ -96,8 +119,8 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 		Logger::LogError("[VideoEncoder::PrepareStream] " + Logger::tr("Error: Width or height is zero!"));
 		throw LibavException();
 	}
-	if(width > 10000 || height > 10000) {
-		Logger::LogError("[VideoEncoder::PrepareStream] " + Logger::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(10000));
+	if(width > SSR_MAX_IMAGE_SIZE || height > SSR_MAX_IMAGE_SIZE) {
+		Logger::LogError("[VideoEncoder::PrepareStream] " + Logger::tr("Error: Width or height is too large, the maximum width and height is %1!").arg(SSR_MAX_IMAGE_SIZE));
 		throw LibavException();
 	}
 	if(width % 2 != 0 || height % 2 != 0) {

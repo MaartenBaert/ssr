@@ -6,6 +6,49 @@ Git master
 
 - ?
 
+Version 0.4.4
+-------------
+
+- Some minor improvements.
+- Updated translations.
+- Bugfixes.
+
+Version 0.4.3
+-------------
+
+- Added V4L2 support (most webcams and capture cards).
+- Added option to mark recorded area on screen during recording.
+- Added JACK metadata.
+- Optionally support XDG config directory (`~/.config/simplescreenrecorder`) instead of home directory (`~/.ssr`).
+- Bugfixes.
+
+Version 0.4.2
+-------------
+
+- Improved X11/Wayland detection.
+- Changed ALSA input to use non-blocking API. This seems to reduce the latency in some cases.
+- Added support for s24, s32 and f32 sample formats for ALSA input.
+- Added 'open folder' button after saving the recording.
+- Several minor improvements.
+
+Version 0.4.1
+-------------
+
+- Added warning for Wayland users.
+- Internal error messages from FFmpeg and other libraries are now shown in the log window.
+- Fixed blocked continue button after selecting a window.
+
+Version 0.4.0
+-------------
+
+- Added high-DPI monitor support.
+- Added option to skip the welcome screen.
+- Increased maximum video size to 20000x20000.
+- Added more command-line options.
+- Added recording schedule.
+- Add command-line control over stdin.
+- Many bugfixes.
+
 Version 0.3.11
 --------------
 
@@ -23,11 +66,11 @@ Version 0.3.10
 Version 0.3.9
 -------------
 
-- Switch to CMake build system.
-- Add RGB24 support.
+- Switched to CMake build system.
+- Added RGB24 support.
 - Automatically add scroll bars when the screen resolution is too low to display the complete window.
-- Improve PulseAudio latency handling of monitors.
-- Add a separate checkbox to enable timestamps.
+- Improved PulseAudio latency handling of monitors.
+- Added a separate checkbox to enable timestamps.
 - Provide a default file name, so now all options are set to a sensible default value.
 - Use base-10 units for bitrate for consistency with FFmpeg (1 kbit/s = 1000 bit/s).
 - Minor bugfixes.

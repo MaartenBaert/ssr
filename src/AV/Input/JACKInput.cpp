@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -24,6 +24,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SampleCast.h"
 
 #include "Logger.h"
+
+#if SSR_USE_JACK_METADATA
+#include <jack/metadata.h>
+#endif
 
 // Size of the ring buffer (samples).
 const unsigned int JACKInput::RING_BUFFER_SIZE = 1024 * 32;
@@ -81,6 +85,16 @@ void JACKInput::Init() {
 			throw JACKException();
 		}
 	}
+
+#if SSR_USE_JACK_METADATA
+	if(m_channels == 1) {
+		jack_set_property(m_jack_client, jack_port_uuid(m_jack_ports[0]), JACK_METADATA_PRETTY_NAME, "Input Mono", "text/plain");
+	}
+	if(m_channels == 2) {
+		jack_set_property(m_jack_client, jack_port_uuid(m_jack_ports[0]), JACK_METADATA_PRETTY_NAME, "Input Left", "text/plain");
+		jack_set_property(m_jack_client, jack_port_uuid(m_jack_ports[1]), JACK_METADATA_PRETTY_NAME, "Input Right", "text/plain");
+	}
+#endif
 
 	if(jack_set_process_callback(m_jack_client, ProcessCallback, this) != 0) {
 		Logger::LogError("[JACKInput::Init] " + Logger::tr("Error: Could not set JACK process callback!"));

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -211,6 +211,7 @@ void OutputManager::Init() {
 			m_output_format.m_video_height = lock->m_video_encoder->GetHeight();
 			m_output_format.m_video_frame_rate = lock->m_video_encoder->GetFrameRate();
 			m_output_format.m_video_pixel_format = lock->m_video_encoder->GetPixelFormat();
+			m_output_format.m_video_colorspace = lock->m_video_encoder->GetColorSpace();
 		} else {
 			m_output_format.m_video_enabled = false;
 		}

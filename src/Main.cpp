@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -17,49 +17,25 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Main.h"
+#include "Global.h"
 
 #include "Benchmark.h"
+#include "CommandLineOptions.h"
 #include "CPUFeatures.h"
 #include "HotkeyListener.h"
 #include "Icons.h"
 #include "Logger.h"
 #include "MainWindow.h"
-
-bool g_option_logfile = false;
-QString g_option_statsfile = QString();
-bool g_option_syncdiagram = false;
-bool g_option_systray = true;
-bool g_option_start_hidden = false;
-bool g_option_benchmark = false;
-
-void PrintOptionHelp() {
-	Logger::LogInfo(
-				"Usage: simplescreenrecorder [OPTIONS]\n"
-				"\n"
-				"Options:\n"
-				"  --help              Show this help message.\n"
-				"  --version           Show version information.\n"
-				"  --logfile           Write log to ~/.ssr/log-DATE_TIME.txt instead of stdout.\n"
-				"  --statsfile[=FILE]  Write recording statistics to FILE. If FILE is omitted,\n"
-				"                      /dev/shm/simplescreenrecorder-stats-PID is used. It will\n"
-				"                      be updated continuously and deleted when the recording\n"
-				"                      page is closed.\n"
-				"  --syncdiagram       Show synchronization diagram (for debugging).\n"
-				"  --no-systray        Don't show the system tray icon.\n"
-				"  --start-hidden      Start the application in hidden form.\n"
-	);
-}
+#include "ScreenScaling.h"
 
 int main(int argc, char* argv[]) {
 
 	XInitThreads();
 
-	QApplication application(argc, argv);
+	// Workarounds for broken screen scaling.
+	ScreenScalingFix();
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-	application.setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
+	QApplication application(argc, argv);
 
 	// SSR uses two separate character encodings:
 	// - UTF-8: Used for all internal strings.
@@ -78,9 +54,15 @@ int main(int argc, char* argv[]) {
 
 	// load Qt translations
 	QTranslator translator_qt;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	if(translator_qt.load(QLocale::system(), "qt", "_", QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
+		QApplication::installTranslator(&translator_qt);
+	}
+#else
 	if(translator_qt.load(QLocale::system(), "qt", "_", QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
 		QApplication::installTranslator(&translator_qt);
 	}
+#endif
 
 	// load SSR translations
 	QTranslator translator_ssr;
@@ -98,113 +80,28 @@ int main(int argc, char* argv[]) {
 	Logger logger;
 	Q_UNUSED(logger);
 
-	// load icons
-	LoadIcons();
-
-	// read command-line arguments
-	QStringList args = QCoreApplication::arguments();
-	for(int i = 1; i < args.count(); ++i) {
-		QString arg = args[i];
-		if(arg.startsWith("-")) {
-
-			// split into option and value
-			QString option, value;
-			int p = arg.indexOf('=');
-			if(p < 0) {
-				option = arg;
-			} else {
-				option = arg.mid(0, p);
-				value = arg.mid(p + 1);
-				if(value.isNull())
-					value = "";
-			}
-
-#define NOVALUE \
-			if(!value.isNull()) { \
-				Logger::LogError("[main] " + Logger::tr("Error: Command-line option '%1' does not take a value!").arg(option)); \
-				PrintOptionHelp(); \
-				return 1; \
-			}
-
-			// handle options
-			if(option == "--help") {
-				PrintOptionHelp();
-				return 0;
-			} else if(option == "--version") {
-				Logger::LogInfo(GetVersionInfo());
-				return 0;
-			} else if(option == "--logfile") {
-				NOVALUE
-				g_option_logfile = true;
-			} else if(option == "--statsfile") {
-				if(value.isNull()) {
-					g_option_statsfile = "/dev/shm/simplescreenrecorder-stats-" + QString::number(QCoreApplication::applicationPid());
-				} else {
-					g_option_statsfile = value;
-				}
-			} else if(option == "--syncdiagram") {
-				NOVALUE
-				g_option_syncdiagram = true;
-			} else if(option == "--no-systray") {
-				NOVALUE
-				g_option_systray = false;
-			} else if(option == "--start-hidden") {
-				NOVALUE
-				g_option_start_hidden = true;
-			} else if(option == "--benchmark") {
-				NOVALUE
-				g_option_benchmark = true;
-			} else {
-				Logger::LogError("[main] " + Logger::tr("Error: Unknown command-line option '%1'!").arg(option));
-				PrintOptionHelp();
-				return 1;
-			}
-
-#undef NOVALUE
-
-		} else {
-
-			// handle other arguments
-			Logger::LogError("[main] " + Logger::tr("Error: Unknown command-line argument '%1'!").arg(arg));
-			PrintOptionHelp();
-			return 1;
-
-		}
+	// parse command line options
+	CommandLineOptions command_line_options;
+	try {
+		command_line_options.Parse();
+	} catch(const CommandLineException&) {
+		return 1;
 	}
 
-	// redirect stdout and stderr to a log file
-	if(g_option_logfile) {
-
-		// delete logs from versions < 0.2.3 (should be removed at some point in the future)
-		{
-			QDir dir(GetApplicationUserDir());
-			dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
-			dir.setNameFilters(QStringList("log-*.txt"));
-			for(QFileInfo fileinfo : dir.entryInfoList()) {
-				QFile(fileinfo.filePath()).remove();
-			}
-		}
-
-		// delete old logs
-		QDateTime now = QDateTime::currentDateTime();
-		QDir dir(GetApplicationUserDir("logs"));
-		dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
-		dir.setNameFilters(QStringList("log-*.txt"));
-		for(QFileInfo fileinfo : dir.entryInfoList()) {
-			if(fileinfo.lastModified().daysTo(now) > 30) {
-				QFile(fileinfo.filePath()).remove();
-			}
-		}
-
-		// open new log
-		QString file = dir.path() + "/log-" + now.toString("yyyy-MM-dd_hh.mm.ss") + ".txt";
-		FILE *f = fopen(file.toLocal8Bit().constData(), "a");
-		dup2(fileno(f), 1); // redirect stdout
-		dup2(fileno(f), 2); // redirect stderr
-
+	// do we need to continue?
+	if(!CommandLineOptions::GetBenchmark() && !CommandLineOptions::GetGui()) {
+		return 0;
 	}
 
-	// start logging
+	// configure the logger
+	if(!CommandLineOptions::GetLogFile().isEmpty()) {
+		logger.SetLogFile(CommandLineOptions::GetLogFile());
+	}
+	if(CommandLineOptions::GetRedirectStderr()) {
+		logger.RedirectStderr();
+	}
+
+	// start main program
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");
 	Logger::LogInfo(GetVersionInfo());
 
@@ -213,15 +110,18 @@ int main(int argc, char* argv[]) {
 	CPUFeatures::Detect();
 #endif
 
+	// show screen scaling message
+	ScreenScalingMessage();
+
+	// load icons
+	LoadIcons();
+
 	// start the program
-	int ret;
-	if(g_option_benchmark) {
-
-		// run benchmark
+	int ret = 0;
+	if(CommandLineOptions::GetBenchmark()) {
 		Benchmark();
-		ret = 0;
-
-	} else {
+	}
+	if(CommandLineOptions::GetGui()) {
 
 		// create hotkey listener
 		HotkeyListener hotkey_listener;
@@ -235,46 +135,8 @@ int main(int argc, char* argv[]) {
 
 	}
 
-	// stop logging
+	// stop main program
 	Logger::LogInfo("==================== " + Logger::tr("SSR stopped") + " ====================");
 
 	return ret;
-}
-
-QString GetApplicationSystemDir(const QString& subdir) {
-	QString dir = SSR_SYSTEM_DIR;
-	if(!subdir.isEmpty())
-		dir += "/" + subdir;
-	return dir;
-}
-
-QString GetApplicationUserDir(const QString& subdir) {
-	QString dir = QDir::homePath() + "/.ssr";
-	if(!subdir.isEmpty())
-		dir += "/" + subdir;
-	if(!QDir::root().mkpath(dir)) {
-		Logger::LogError("[GetApplicationUserDir] " + Logger::tr("Error: Can't create .ssr directory!"));
-		throw 0;
-	}
-	return dir;
-}
-
-// see definition of AV_VERSION_INT() in libavutil/version.h
-inline QString av_version(unsigned int ver) {
-	return QString::number((ver >> 16) & 0xff) + "." + QString::number((ver >> 8) & 0xff) + "." + QString::number(ver & 0xff);
-}
-
-QString GetVersionInfo() {
-	return QString() +
-			"SimpleScreenRecorder " + SSR_VERSION + "\n"
-#ifdef __clang__
-			"Compiled with Clang " + QString::number(__clang_major__) + "." + QString::number(__clang_minor__) + "." + QString::number(__clang_patchlevel__) + "\n"
-#else
-			"Compiled with GCC " + QString::number(__GNUC__) + "." + QString::number(__GNUC_MINOR__) + "." + QString::number(__GNUC_PATCHLEVEL__) + "\n"
-#endif
-			"Qt: header " + QT_VERSION_STR + ", lib " + qVersion() + "\n"
-			"libavformat: header " + av_version(LIBAVFORMAT_VERSION_INT) + ", lib " + av_version(avformat_version()) + "\n"
-			"libavcodec: header " + av_version(LIBAVCODEC_VERSION_INT) + ", lib " + av_version(avcodec_version()) + "\n"
-			"libavutil: header " + av_version(LIBAVUTIL_VERSION_INT) + ", lib " + av_version(avutil_version()) + "\n"
-			"libswscale: header " + av_version(LIBSWSCALE_VERSION_INT) + ", lib " + av_version(swscale_version());
 }

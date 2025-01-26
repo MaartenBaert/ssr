@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -45,6 +45,9 @@ public:
 
 	// Returns the required pixel format.
 	AVPixelFormat GetPixelFormat();
+	
+	// Returns the required color space.
+	int GetColorSpace();
 
 	unsigned int GetWidth();
 	unsigned int GetHeight();

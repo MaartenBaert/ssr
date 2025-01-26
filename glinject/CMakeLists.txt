@@ -5,14 +5,14 @@ find_package(X11 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 set(sources
-	elfhacks.c
-	elfhacks.h
 	GLInject.cpp
 	GLInject.h
 	Global.h
 	GLXFrameGrabber.cpp
 	GLXFrameGrabber.h
 	Hook.cpp
+	plthook_elf.c
+	plthook.h
 	ShmStructs.h
 	SSRVideoStreamWriter.cpp
 	SSRVideoStreamWriter.h

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -17,29 +17,8 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "NVidia.h"
+#pragma once
+#include "Global.h"
 
-bool NVidiaGetFlipping() {
-	QString program = "nvidia-settings";
-	QStringList args;
-	args << "-tq" << "AllowFlipping";
-	QProcess p;
-	p.start(program, args);
-	p.waitForFinished();
-	if(p.exitCode() != 0)
-		return false;
-	QString result = p.readAll();
-	return (result.trimmed() == "1");
-}
-
-bool NVidiaSetFlipping(bool enable) {
-	QString program = "nvidia-settings";
-	QStringList args;
-	args << "-a" << ((enable)? "AllowFlipping=1" : "AllowFlipping=0");
-	QProcess p;
-	p.start(program, args);
-	p.waitForFinished();
-	if(p.exitCode() != 0)
-		return false;
-	return (NVidiaGetFlipping() == enable);
-}
+void ScreenScalingFix();
+void ScreenScalingMessage();

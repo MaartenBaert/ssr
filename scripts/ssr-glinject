@@ -7,6 +7,9 @@ usage() {
 	echo "" >& 2
 	echo "Options:" >& 2
 	echo "  --help               Show this help message." >& 2
+	echo "  --hook-debug         Print details related to the function hooking process." >& 2
+	echo "  --hook-advanced      Use advanced hooking techniques that can handle more" >& 2
+	echo "                       unusual situations, but are more likely to break things." >& 2
 	echo "  --glx-debug          Enables GLX debugging. This may reduce the performance" >& 2
 	echo "                       and print lots of error messages, but it is useful to" >& 2
 	echo "                       track down bugs." >& 2
@@ -24,6 +27,8 @@ usage() {
 	echo "a bug report." >& 2
 }
 
+export SSR_HOOK_DEBUG=0
+export SSR_HOOK_ADVANCED=0
 export SSR_GLX_DEBUG=0
 export SSR_STREAM_RELAX_PERMISSIONS=0
 
@@ -37,6 +42,14 @@ do
 	then
 		usage
 		exit
+	elif [ x"$1" = x"--hook-debug" ]
+	then
+		export SSR_HOOK_DEBUG=1
+		shift
+	elif [ x"$1" = x"--hook-advanced" ]
+	then
+		export SSR_HOOK_ADVANCED=1
+		shift
 	elif [ x"$1" = x"--glx-debug" ]
 	then
 		export SSR_GLX_DEBUG=1
@@ -59,6 +72,6 @@ do
 	fi
 done
 
-echo "ssr-glinject: LD_PRELOAD = $LD_PRELOAD:libssr-glinject.so"
-echo "ssr-glinject: command = $@"
-LD_PRELOAD="$LD_PRELOAD:libssr-glinject.so" "$@"
+echo "ssr-glinject: LD_PRELOAD = $LD_PRELOAD:libssr-glinject.so" >& 2 || true
+echo "ssr-glinject: command = $@" >& 2 || true
+LD_PRELOAD="$LD_PRELOAD:libssr-glinject.so" exec "$@"

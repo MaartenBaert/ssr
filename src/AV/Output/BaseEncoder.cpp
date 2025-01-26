@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -176,7 +176,9 @@ void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
 
 void BaseEncoder::Free() {
 	if(m_codec_opened) {
+#if !SSR_USE_AVCODEC_CLOSE_DEPRECATED
 		avcodec_close(m_codec_context);
+#endif
 		m_codec_opened = false;
 	}
 }

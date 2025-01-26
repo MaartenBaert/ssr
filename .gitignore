@@ -20,11 +20,15 @@ libtool
 .libs
 .dirstamp
 stamp-h1
+.cache
+compile_commands.json
 
+build
 build-*
 src/simplescreenrecorder
 
 private-*
+.vscode
 
 # Snap packaging specific rules
 /snap/.snapcraft/

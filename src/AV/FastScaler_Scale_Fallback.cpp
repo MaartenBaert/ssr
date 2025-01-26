@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -153,7 +153,7 @@ void Bilinear_BGRA_Fallback(unsigned int in_w, unsigned int in_h, const uint8_t*
 	assert(in_w > 1 && in_h > 1); //TODO// support size 1?
 	assert(out_w > 1 && out_h > 1); //TODO// support size 1?
 	assert(in_w < (1 << 28) && in_h < (1 << 28));
-	assert(out_w < (1 << 28) && out_w < (1 << 28));
+	assert(out_w < (1 << 28) && out_h < (1 << 28));
 
 	// precompute horizontal offsets and fractions
 	TempBuffer<unsigned int> x_offset_table, x_fraction_table;

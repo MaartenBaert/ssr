@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -19,8 +19,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PageWelcome.h"
 
+#include "CommandLineOptions.h"
 #include "Icons.h"
-#include "Main.h"
 #include "MainWindow.h"
 
 PageWelcome::PageWelcome(MainWindow* main_window)
@@ -43,12 +43,14 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 								  "need to know. One, the default settings are usually fine. If you don't know what something does, just use the default. "
 								  "Two, almost all settings have tooltips. Just hover the mouse over something to find out what it does.</p>\n\n"
 								  "<p>For more information:<br>\n"
-								  "%1</p>").arg("<a href=\"http://www.maartenbaert.be/simplescreenrecorder/\">http://www.maartenbaert.be/simplescreenrecorder/</a>"));
+								  "%1</p>").arg("<a href=\"https://www.maartenbaert.be/simplescreenrecorder/\">https://www.maartenbaert.be/simplescreenrecorder/</a>"));
 		label_welcome->setWordWrap(true);
 		label_welcome->setTextFormat(Qt::RichText);
 		label_welcome->setTextInteractionFlags(Qt::TextBrowserInteraction);
 		label_welcome->setOpenExternalLinks(true);
 		QPushButton *button_about = new QPushButton(tr("About SimpleScreenRecorder"), scrollarea_contents);
+		m_checkbox_skip_page = new QCheckBox(tr("Skip this page next time"), scrollarea_contents);
+		m_checkbox_skip_page->setToolTip(tr("Go directly to the input page when the program is started."));
 
 		connect(button_about, SIGNAL(clicked()), this, SLOT(AboutDialog()));
 
@@ -68,6 +70,7 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 			layout2->addWidget(button_about);
 			layout2->addStretch();
 		}
+		layout->addWidget(m_checkbox_skip_page);
 		layout->addStretch();
 	}
 	QPushButton *button_continue = new QPushButton(g_icon_go_next, tr("Continue"), this);
@@ -86,6 +89,15 @@ PageWelcome::PageWelcome(MainWindow* main_window)
 	}
 	layout->addSpacing(style()->pixelMetric(QStyle::PM_LayoutBottomMargin));
 
+}
+
+
+void PageWelcome::LoadSettings(QSettings* settings) {
+	SetSkipPage(settings->value("welcome/skip_page", false).toBool());
+}
+
+void PageWelcome::SaveSettings(QSettings* settings) {
+	settings->setValue("welcome/skip_page", GetSkipPage());
 }
 
 void PageWelcome::AboutDialog() {
@@ -109,8 +121,8 @@ DialogAbout::DialogAbout(PageWelcome* parent)
 	html_about.replace("%SOURCECODE%", tr("The source code of this program can be found at:"));
 	html_about.replace("%USES%", tr("This program uses:"));
 	html_about.replace("%USES_QT%", tr("%1 for the graphical user interface").arg("<a href=\"https://qt-project.org/\">Qt</a>"));
-	html_about.replace("%USES_LIBAV_FFMPEG%", tr("%1 or %2 (depending on your distribution) for video/audio encoding").arg("<a href=\"http://libav.org/\">libav</a>").arg("<a href=\"http://ffmpeg.org/\">ffmpeg</a>"));
-	html_about.replace("%USES_ELFHACKS%", tr("%1 for hooking system functions for OpenGL recording").arg("<a href=\"https://github.com/nullkey/elfhacks\">elfhacks</a>"));
+	html_about.replace("%USES_FFMPEG%", tr("%1 for video/audio encoding").arg("<a href=\"https://ffmpeg.org/\">FFmpeg</a>"));
+	html_about.replace("%USES_PLTHOOK%", tr("%1 for hooking system functions for OpenGL recording").arg("<a href=\"https://github.com/kubo/plthook\">PLTHook</a>"));
 	html_about.replace("%VERSION%", SSR_VERSION);
 	html_about.replace("%VERSIONINFO%", GetVersionInfo().replace("\n", "<br>\n"));
 

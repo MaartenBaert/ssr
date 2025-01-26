@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2017 Maarten Baert <maarten-baert@hotmail.com>
+Copyright (c) 2012-2020 Maarten Baert <maarten-baert@hotmail.com>
 
 This file is part of SimpleScreenRecorder.
 
@@ -45,8 +45,8 @@ FastScaler::~FastScaler() {
 	}
 }
 
-void FastScaler::Scale(unsigned int in_width, unsigned int in_height, AVPixelFormat in_format, const uint8_t* const* in_data, const int* in_stride,
-					   unsigned int out_width, unsigned int out_height, AVPixelFormat out_format, uint8_t* const* out_data, const int* out_stride) {
+void FastScaler::Scale(unsigned int in_width, unsigned int in_height, AVPixelFormat in_format, int in_colorspace, const uint8_t* const* in_data, const int* in_stride,
+					   unsigned int out_width, unsigned int out_height, AVPixelFormat out_format, int out_colorspace, uint8_t* const* out_data, const int* out_stride) {
 
 	// faster BGRA scaling
 	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_BGRA) {
@@ -55,7 +55,7 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, AVPixelFor
 	}
 
 	// faster BGRA to YUV444 conversion
-	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV444P) {
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV444P && out_colorspace == SWS_CS_ITU709) {
 		if(in_width == out_width && in_height == out_height) {
 			Convert_BGRA_YUV444(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
 		} else {
@@ -69,7 +69,7 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, AVPixelFor
 	}
 
 	// faster BGRA to YUV422 conversion
-	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV422P) {
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV422P && out_colorspace == SWS_CS_ITU709) {
 		if(in_width == out_width && in_height == out_height) {
 			Convert_BGRA_YUV422(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
 		} else {
@@ -83,7 +83,7 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, AVPixelFor
 	}
 
 	// faster BGRA to YUV420 conversion
-	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV420P) {
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_YUV420P && out_colorspace == SWS_CS_ITU709) {
 		if(in_width == out_width && in_height == out_height) {
 			Convert_BGRA_YUV420(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
 		} else {
@@ -97,7 +97,7 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, AVPixelFor
 	}
 
 	// faster BGRA to NV12 conversion
-	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_NV12) {
+	if(in_format == AV_PIX_FMT_BGRA && out_format == AV_PIX_FMT_NV12 && out_colorspace == SWS_CS_ITU709) {
 		if(in_width == out_width && in_height == out_height) {
 			Convert_BGRA_NV12(in_width, in_height, in_data[0], in_stride[0], out_data, out_stride);
 		} else {
@@ -126,8 +126,8 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, AVPixelFor
 
 	if(m_warn_swscale) {
 		m_warn_swscale = false;
-		Logger::LogWarning("[FastScaler::Scale] " + Logger::tr("Warning: Pixel format is not supported (%1 -> %2), using swscale instead. "
-															   "This is not a problem, but performance will be worse.").arg(in_format).arg(out_format));
+		Logger::LogWarning("[FastScaler::Scale] " + Logger::tr("Warning: No fast pixel format conversion available (%1,%2 -> %3,%4), using swscale instead. "
+															   "This is not a problem, but performance will be worse.").arg(in_format).arg(in_colorspace).arg(out_format).arg(out_colorspace));
 	}
 
 	m_sws_context = sws_getCachedContext(m_sws_context,
@@ -139,8 +139,8 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, AVPixelFor
 		throw LibavException();
 	}
 	sws_setColorspaceDetails(m_sws_context,
-							 sws_getCoefficients(SWS_CS_DEFAULT), 0, //TODO// need to change this for actual YUV inputs (e.g. webcam)
-							 sws_getCoefficients(SWS_CS_ITU709), 0,
+							 sws_getCoefficients(in_colorspace), 0,
+							 sws_getCoefficients(out_colorspace), 0,
 							 0, 1 << 16, 1 << 16);
 	sws_scale(m_sws_context, in_data, in_stride, 0, in_height, out_data, out_stride);
 
