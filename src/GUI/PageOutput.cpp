@@ -539,11 +539,20 @@ bool PageOutput::Validate() {
 }
 
 QString PageOutput::GetFileProtocol() {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	QRegularExpression protocol_regex("^([a-z0-9]+)://", QRegularExpression::CaseInsensitiveOption);
+	QRegularExpressionMatch match = protocol_regex.match(GetFile());
+	if(!match.hasMatch()) {
+		return QString();
+	}
+	return match.captured(1);
+#else
 	QRegExp protocol_regex("^([a-z0-9]+)://", Qt::CaseInsensitive, QRegExp::RegExp);
 	if(protocol_regex.indexIn(GetFile()) < 0) {
 		return QString();
 	}
 	return protocol_regex.cap(1);
+#endif
 }
 
 QString PageOutput::GetContainerAVName() {

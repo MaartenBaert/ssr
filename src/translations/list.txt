@@ -11,6 +11,7 @@ simplescreenrecorder_hu.ts
 simplescreenrecorder_id.ts
 simplescreenrecorder_it.ts
 simplescreenrecorder_ja.ts
+simplescreenrecorder_ko.ts
 simplescreenrecorder_lt.ts
 simplescreenrecorder_nl.ts
 simplescreenrecorder_pl.ts

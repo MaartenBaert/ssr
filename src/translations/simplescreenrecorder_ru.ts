@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>DialogAbout</name>
     <message>
@@ -228,7 +228,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/FastScaler.cpp" line="129"/>
         <source>Warning: No fast pixel format conversion available (%1,%2 -&gt; %3,%4), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Предупреждение: быстрое преобразование формата пикселов недоступно (%1,%2 -&gt; %3,%4), используется swscale. Это не ошибка, но снижает производительность.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="138"/>
@@ -333,7 +333,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="292"/>
         <source>Error: Can&apos;t set sample format mask!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: не удалось установить маску формата сэмплов!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="297"/>
@@ -412,7 +412,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="452"/>
         <source>Error: Can&apos;t wait for new samples!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: не удалось дождаться новых сэмплов!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="469"/>
@@ -751,77 +751,77 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="99"/>
         <source>Error: Can&apos;t open V4L2 device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: не удалось открыть устройство V4L2!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="107"/>
         <source>Error: Can&apos;t read capabilities of V4L2 device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: не удалось считать возможности устройства V4L2!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="111"/>
         <source>Error: V4L2 device does not support video capture!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: устройство V4L2 не поддерживает захват видео!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="115"/>
         <source>Error: V4L2 device does not support streaming io!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: устройство V4L2 не поддерживает потоковую передачу ввода-вывода!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="132"/>
         <source>Error: Can&apos;t set capture format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: не удалось установить формат захвата!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="136"/>
         <source>Error: V4L2 device does not support YUYV pixel format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: устройство V4L2 не поддерживает формат пикселов YUYV!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="140"/>
         <source>Warning: Resolution %1x%2 is not supported, using %3x%4 instead. The video will be scaled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Предупреждение: разрешение %1x%2 не поддерживается, используется %3x%4. Видео будет растянуто.</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="183"/>
         <source>Using color space %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Используется цветовое пространство %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="193"/>
         <source>Error: Buffer request failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: сбой запроса буфера!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="203"/>
         <source>Error: Buffer query failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: сбой запроса к буферу!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="209"/>
         <source>Error: Buffer mmap failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: сбой mmap буфера!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="222"/>
         <source>Error: Buffer queue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: сбой очереди буфера!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="230"/>
         <source>Error: Failed to start stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: не удалось запустить поток данных!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="273"/>
         <source>Error: Buffer dequeue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: сбой вывода буфера из очереди!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="288"/>
         <source>Error: Buffer requeue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: сбой возврата буфера в очередь!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="257"/>
@@ -864,7 +864,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="355"/>
         <source>Detecting screen configuration ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Обнаружение конфигурации экрана…</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="373"/>
@@ -880,7 +880,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="386"/>
         <source>Screen %1:</source>
-        <translation type="unfinished">Экран %1:</translation>
+        <translation>Экран %1:</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="406"/>
@@ -895,7 +895,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="450"/>
         <source>Dead space %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пустое пространство %1:</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="536"/>
@@ -1300,7 +1300,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="253"/>
         <source>Error: Can&apos;t create configuration directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: не удалось создать каталог конфигурации!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="99"/>
@@ -1374,7 +1374,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../common/ScreenScaling.cpp" line="120"/>
         <source>Detected fractional screen scale factor, scaling was disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Обнаружен дробный коэффициент масштабирования экрана. Растяжение отключено.</translation>
     </message>
 </context>
 <context>
@@ -1512,7 +1512,7 @@ the client area of the window will be recorded.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="310"/>
         <source>The V4L2 device to record (e.g. /dev/video0).</source>
-        <translation type="unfinished"></translation>
+        <translation>Устройство V4L2 для записи (например, /dev/video0).</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
@@ -2085,7 +2085,7 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageRecord.cpp" line="183"/>
         <source>The recording schedule can be used to automatically start or pause the recording at a predefined time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Расписание записи позволяет автоматически начать или приостановить запись в заранее заданное время.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="185"/>
@@ -2189,12 +2189,12 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="271"/>
         <source>Show recording area</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать область записи</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="272"/>
         <source>When enabled, the recorded area is marked on the screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Если этот параметр включён, на экране отмечена область записи.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="297"/>
@@ -2285,7 +2285,7 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="793"/>
         <source>Output file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходной файл: %1</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="804"/>

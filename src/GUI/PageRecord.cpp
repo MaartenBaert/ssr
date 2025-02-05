@@ -204,7 +204,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		// Note: The choice of keys is currently rather limited, because capturing key presses session-wide is a bit harder than it looks.
 		// For example, applications are not allowed to capture the F1-F12 keys (on Ubuntu at least). The A-Z keys don't have this limitation apparently.
 		for(unsigned int i = 0; i < 26; ++i) {
-			m_combobox_hotkey_key->addItem(QString('A' + i));
+			m_combobox_hotkey_key->addItem(QString(QChar::fromLatin1('A' + i)));
 		}
 
 		connect(m_pushbutton_record, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
@@ -311,7 +311,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 					label_preview_note->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding);
 
 					QGridLayout *layout = new QGridLayout(m_preview_page1);
-					layout->setMargin(0);
+					layout->setContentsMargins(0, 0, 0, 0);
 					layout->addWidget(label_preview_frame_rate, 0, 0);
 					layout->addWidget(m_spinbox_preview_frame_rate, 0, 1);
 					layout->addWidget(label_preview_note, 1, 0, 1, 2);
@@ -324,7 +324,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 					m_audio_previewer = new AudioPreviewer(m_preview_page2);
 
 					QVBoxLayout *layout = new QVBoxLayout(m_preview_page2);
-					layout->setMargin(0);
+					layout->setContentsMargins(0, 0, 0, 0);
 					layout->addWidget(m_video_previewer);
 					{
 						QHBoxLayout *layout2 = new QHBoxLayout();
@@ -477,12 +477,20 @@ void PageRecord::LoadSettings(QSettings *settings) {
 	unsigned int num_entries = clamp(settings->value("record/schedule_num_entries", 0).toUInt(), 0u, 1000u);
 	m_schedule_entries.clear();
 	m_schedule_entries.resize(num_entries);
-	Qt::TimeSpec spec = SCHEDULE_TIME_ZONE_TIMESPECS[GetScheduleTimeZone()];
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	QTimeZone timezone = SCHEDULE_TIME_ZONE_QTIMEZONES[GetScheduleTimeZone()];
+#else
+	Qt::TimeSpec spec = SCHEDULE_TIME_ZONE_QTIMESPECS[GetScheduleTimeZone()];
+#endif
 	for(unsigned int i = 0; i < num_entries; ++i) {
 		QString timestring = settings->value(QString("record/schedule_entry%1_time").arg(i), QString()).toString();
 		QString actionstring = settings->value(QString("record/schedule_entry%1_action").arg(i), QString()).toString();
 		m_schedule_entries[i].time = QDateTime::fromString(timestring, "yyyy-MM-dd hh:mm:ss");
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		m_schedule_entries[i].time.setTimeZone(timezone);
+#else
 		m_schedule_entries[i].time.setTimeSpec(spec);
+#endif
 		m_schedule_entries[i].action = StringToEnum(actionstring, SCHEDULE_ACTION_START);
 	}
 	OnUpdateHotkeyFields();

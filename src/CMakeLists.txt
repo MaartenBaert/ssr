@@ -26,7 +26,9 @@ if(WITH_JACK)
 	find_package(Jack REQUIRED)
 endif()
 
-if(WITH_QT5)
+if(WITH_QT6)
+	find_package(Qt6 6.2 COMPONENTS Core Gui Widgets REQUIRED)
+elseif(WITH_QT5)
 	find_package(Qt5 5.7 COMPONENTS Core Gui Widgets X11Extras REQUIRED)
 else()
 	find_package(Qt4 4.8 COMPONENTS QtGui REQUIRED)
@@ -189,7 +191,14 @@ set(res_input
 	../data/resources/resources.qrc
 )
 
-if(WITH_QT5)
+if(WITH_QT6)
+	qt6_add_resources(res_output ${res_input})
+	set(QT_LIBS
+		Qt6::Core
+		Qt6::Gui
+		Qt6::Widgets
+	)
+elseif(WITH_QT5)
 	qt5_add_resources(res_output ${res_input})
 	set(QT_LIBS
 		Qt5::Core

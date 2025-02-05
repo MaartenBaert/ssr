@@ -84,15 +84,26 @@ static QRect CombineScreenGeometries(const std::vector<QRect>& screen_geometries
 
 static QPoint GetMousePhysicalCoordinates() {
 	if(IsPlatformX11()) {
+		Display *display;
+		Window app_root;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		auto *x11_app = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
+		display = x11_app->display();
+		app_root = DefaultRootWindow(display);
+#else
+		display = QX11Info::display();
+		app_root = QX11Info::appRootWindow();
+#endif
 		Window root, child;
 		int root_x, root_y;
 		int win_x, win_y;
 		unsigned int mask_return;
-		XQueryPointer(QX11Info::display(), QX11Info::appRootWindow(), &root, &child, &root_x, &root_y, &win_x, &win_y, &mask_return);
-		return QPoint(root_x, root_y);
-	} else {
-		return QPoint(0, 0); // TODO: implement for wayland
+		if(XQueryPointer(display, app_root, &root, &child, &root_x, &root_y, &win_x, &win_y, &mask_return)) {
+			return QPoint(root_x, root_y);
+		}
 	}
+	// TODO: implement for wayland
+	return QPoint(0, 0);
 }
 
 static QRect MapToLogicalCoordinates(const QRect& rect) {
@@ -226,11 +237,12 @@ void RecordingFrameWindow::SetRectangle(const QRect& r) {
 }
 
 void RecordingFrameWindow::UpdateMask() {
+	static bool compositing = IsCompositingWindowManager();
 	if(m_outside) {
 		setMask(QRegion(0, 0, width(), height()).subtracted(QRegion(BORDER_WIDTH, BORDER_WIDTH, width() - 2 * BORDER_WIDTH, height() - 2 * BORDER_WIDTH)));
 		setWindowOpacity(0.5);
 	} else {
-		if(QX11Info::isCompositingManagerRunning()) {
+		if(compositing) {
 			clearMask();
 			setWindowOpacity(0.25);
 		} else {
@@ -386,7 +398,11 @@ PageInput::PageInput(MainWindow* main_window)
 			m_checkbox_record_cursor = new QCheckBox(tr("Record cursor"), groupbox_video);
 
 			connect(m_combobox_video_backend, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoAreaFields()));
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+			connect(m_buttongroup_video_x11_area, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(OnUpdateVideoAreaFields()));
+#else
 			connect(m_buttongroup_video_x11_area, SIGNAL(buttonClicked(int)), this, SLOT(OnUpdateVideoAreaFields()));
+#endif
 			connect(m_combobox_x11_screens, SIGNAL(activated(int)), this, SLOT(OnUpdateVideoAreaFields()));
 			connect(m_combobox_x11_screens, SIGNAL(popupShown()), this, SLOT(OnIdentifyScreens()));
 			connect(m_combobox_x11_screens, SIGNAL(popupHidden()), this, SLOT(OnStopIdentifyScreens()));
@@ -877,31 +893,40 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 					// is also grabbed (even though it works fine in my test), so I use XTranslateCoordinates instead. Originally I wanted to
 					// show the rubber band when the mouse hovers over a window (instead of having to click it), but this doesn't work correctly
 					// since X will simply return a handle the rubber band itself (even though it should be transparent to mouse events).
+					Display *display;
+					Window app_root;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+					auto *x11_app = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
+					display = x11_app->display();
+#else
+					display = QX11Info::display();
+					app_root = QX11Info::appRootWindow();
+#endif
 					Window selected_window;
 					int x, y;
-					if(XTranslateCoordinates(QX11Info::display(), QX11Info::appRootWindow(), QX11Info::appRootWindow(), mouse_physical.x(), mouse_physical.y(), &x, &y, &selected_window)) {
+					if(XTranslateCoordinates(display, app_root, app_root, mouse_physical.x(), mouse_physical.y(), &x, &y, &selected_window)) {
 						XWindowAttributes attributes;
-						if(selected_window != None && XGetWindowAttributes(QX11Info::display(), selected_window, &attributes)) {
+						if(selected_window != None && XGetWindowAttributes(display, selected_window, &attributes)) {
 
 							// naive outer/inner rectangle, this won't work for window decorations
 							m_select_window_outer_rect = QRect(attributes.x, attributes.y, attributes.width + 2 * attributes.border_width, attributes.height + 2 * attributes.border_width);
 							m_select_window_inner_rect = QRect(attributes.x + attributes.border_width, attributes.y + attributes.border_width, attributes.width, attributes.height);
 
 							// try to find the real window (rather than the decorations added by the window manager)
-							Window real_window = X11FindRealWindow(QX11Info::display(), selected_window);
+							Window real_window = X11FindRealWindow(display, selected_window);
 							if(real_window != None) {
 								Atom actual_type;
 								int actual_format;
 								unsigned long items, bytes_left;
 								long *data = NULL;
-								int result = XGetWindowProperty(QX11Info::display(), real_window, XInternAtom(QX11Info::display(), "_NET_FRAME_EXTENTS", true),
+								int result = XGetWindowProperty(display, real_window, XInternAtom(display, "_NET_FRAME_EXTENTS", true),
 																0, 4, false, AnyPropertyType, &actual_type, &actual_format, &items, &bytes_left, (unsigned char**) &data);
 								if(result == Success) {
 									if(items == 4 && bytes_left == 0 && actual_format == 32) { // format 32 means 'long', even if long is 64-bit ...
 										Window child;
 										// the attributes of the real window only store the *relative* position which is not what we need, so use XTranslateCoordinates again
-										if(XTranslateCoordinates(QX11Info::display(), real_window, QX11Info::appRootWindow(), 0, 0, &x, &y, &child)
-												 && XGetWindowAttributes(QX11Info::display(), real_window, &attributes)) {
+										if(XTranslateCoordinates(display, real_window, app_root, 0, 0, &x, &y, &child)
+												 && XGetWindowAttributes(display, real_window, &attributes)) {
 
 											// finally!
 											m_select_window_inner_rect = QRect(x, y, attributes.width, attributes.height);
@@ -1224,7 +1249,7 @@ void PageInput::OnFocusChange(QWidget* old, QWidget* now) {
 	}
 }
 
-#if QT_VERSION_MAJOR >= 5
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 void PageInput::OnScreenAdded(QScreen* screen) {
 	connect(screen, SIGNAL(geometryChanged()), this, SLOT(OnUpdateScreenConfiguration()));
 	connect(screen, SIGNAL(physicalDotsPerInchChanged()), this, SLOT(OnUpdateScreenConfiguration()));
