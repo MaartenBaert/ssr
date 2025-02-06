@@ -19,12 +19,21 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "FastScaler_Convert.h"
 
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
+
 #if SSR_USE_X86_ASM
 
 #include <xmmintrin.h> // sse
 #include <emmintrin.h> // sse2
 #include <pmmintrin.h> // sse3
 #include <tmmintrin.h> // ssse3
+
+#else
+
+#define SIMDE_ENABLE_NATIVE_ALIASES
+#include <simde/x86/ssse3.h>
+
+#endif
 
 /*
 ==== SSSE3 BGRA-to-YUV444/YUV420 Converter ====

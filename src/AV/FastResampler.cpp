@@ -97,8 +97,14 @@ FastResampler::FastResampler(unsigned int channels, float gain) {
 	m_filter_rows = 0;
 
 	// CPU feature detection
+	bool use_asm = false;
 #if SSR_USE_X86_ASM
-	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2()) {
+	use_asm = CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2();
+#elif SSR_USE_LOONGARCH_ASM
+	use_asm = CPUFeatures::HasLSX();
+#endif
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
+	if(use_asm) {
 		switch(m_channels) {
 			case 1:  m_firfilter2_ptr = &FastResampler_FirFilter2_C1_SSE2; break;
 			case 2:  m_firfilter2_ptr = &FastResampler_FirFilter2_C2_SSE2; break;
@@ -111,7 +117,7 @@ FastResampler::FastResampler(unsigned int channels, float gain) {
 			case 2:  m_firfilter2_ptr = &FastResampler_FirFilter2_C2_Fallback; break;
 			default: m_firfilter2_ptr = &FastResampler_FirFilter2_Cn_Fallback; break;
 		}
-#if SSR_USE_X86_ASM
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
 	}
 #endif
 

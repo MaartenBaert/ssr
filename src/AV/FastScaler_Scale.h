@@ -23,7 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 void Scale_BGRA_Fallback(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 						 unsigned int out_w, unsigned int out_h, uint8_t* out_data, int out_stride);
 
-#if SSR_USE_X86_ASM
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
 void Scale_BGRA_SSSE3(unsigned int in_w, unsigned int in_h, const uint8_t* in_data, int in_stride,
 					  unsigned int out_w, unsigned int out_h, uint8_t* out_data, int out_stride);
 #endif
