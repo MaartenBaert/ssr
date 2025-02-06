@@ -164,6 +164,38 @@ if(ENABLE_X86_ASM)
 		PROPERTIES COMPILE_FLAGS -mssse3
 	)
 
+elseif(ENABLE_LOONGARCH_ASM)
+
+	list(APPEND sources
+		AV/FastResampler_FirFilter_SSE2.cpp
+		AV/FastScaler_Convert_SSSE3.cpp
+		AV/FastScaler_Scale_SSSE3.cpp
+		AV/simde/check.h
+		AV/simde/debug-trap.h
+		AV/simde/hedley.h
+		AV/simde/simde-align.h
+		AV/simde/simde-arch.h
+		AV/simde/simde-common.h
+		AV/simde/simde-constify.h
+		AV/simde/simde-detect-clang.h
+		AV/simde/simde-diagnostic.h
+		AV/simde/simde-features.h
+		AV/simde/simde-math.h
+		AV/simde/simde-f16.h
+		AV/simde/x86/mmx.h
+		AV/simde/x86/sse.h
+		AV/simde/x86/sse2.h
+		AV/simde/x86/sse3.h
+		AV/simde/x86/ssse3.h
+	)
+
+	set_source_files_properties(
+		AV/FastResampler_FirFilter_SSE2.cpp
+		AV/FastScaler_Convert_SSSE3.cpp
+		AV/FastScaler_Scale_SSSE3.cpp
+		PROPERTIES COMPILE_FLAGS -mlsx
+	)
+
 endif()
 
 set(res_input
@@ -244,6 +276,7 @@ target_link_libraries(simplescreenrecorder PRIVATE
 
 target_compile_definitions(simplescreenrecorder PRIVATE
 	-DSSR_USE_X86_ASM=$<BOOL:${ENABLE_X86_ASM}>
+	-DSSR_USE_LOONGARCH_ASM=$<BOOL:${ENABLE_LOONGARCH_ASM}>
 	-DSSR_USE_FFMPEG_VERSIONS=$<BOOL:${ENABLE_FFMPEG_VERSIONS}>
 	-DSSR_USE_JACK_METADATA=$<BOOL:${ENABLE_JACK_METADATA}>
 	-DSSR_USE_OPENGL_RECORDING=$<BOOL:${WITH_OPENGL_RECORDING}>

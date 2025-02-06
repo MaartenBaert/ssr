@@ -1,0 +1,5 @@
+This is a slightly modified version of the simde directory in
+https://github.com/simd-everywhere/simde/commit/c50e83eea53f45eff503af58e6c86d0e928222f3
+
+Modifications:
+1. Unused files have removed.
