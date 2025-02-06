@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
 	Logger::LogInfo("==================== " + Logger::tr("SSR started") + " ====================");
 	Logger::LogInfo(GetVersionInfo());
 
-#if SSR_USE_X86_ASM
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
 	// detect CPU features
 	CPUFeatures::Detect();
 #endif

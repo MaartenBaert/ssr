@@ -74,3 +74,28 @@ void CPUFeatures::Detect() {
 }
 
 #endif // SSR_USE_X86_ASM
+
+#if SSR_USE_LOONGARCH_ASM
+
+#include <sys/auxv.h>
+
+#define LA_HWCAP_LSX    (1<<4)
+#define LA_HWCAP_LASX   (1<<5)
+
+bool CPUFeatures::s_lsx  = false;
+bool CPUFeatures::s_lasx = false;
+
+void CPUFeatures::Detect() {
+
+	QString str = "[CPUFeatures::Detect] " + Logger::tr("CPU features") + ":";
+
+	int flags = 0;
+	int flag  = (int)getauxval(AT_HWCAP);
+
+	if (flag & LA_HWCAP_LSX)  {s_lsx  = true; str += " lsx";}
+	if (flag & LA_HWCAP_LASX) {s_lasx = true; str += " lasx";}
+
+	Logger::LogInfo(str);
+}
+
+#endif // SSR_USE_LOONGARCH_ASM
