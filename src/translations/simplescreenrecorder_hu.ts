@@ -55,7 +55,7 @@
 &lt;p&gt;If you want to record Steam games, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;read this first&lt;/a&gt;.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Figyelmeztetés: az OpenGL alkalmazások felvétele egy programkönyvtár beültetésével történik abba a programba, amely rögzítésre fog kerülni. Ez a programkönyvtár felül fog bírálni néhány rendszerfüggvényt annak érdekében, hogy a képkockákat a képernyőn való megjelenítésük előtt rögzítse. Ha olyan játékról szeretne felvételt készíteni, amely megpróbálja a kliens oldalon felismerni a csalási kísérleteket, akkor (elméletileg) lehetséges, hogy a játék ezt csalásnak fogja gondolni. Ez akár a kitiltásához is vezethet, ezért a rögzítési kísérlet *előtt* jó ötlet lehet meggyőződni arról, hogy a rögzíteni kívánt program nem fogja kitiltani önt. Mi figyelmeztettük :).&lt;/p&gt;
 
-&lt;p&gt;Egy másik figyelmeztetés: az OpenGL rögzítés kísérleti funkció, előfordulhat, hogy nem működik, vagy akár az éppen rögzített programot összeomlásához is vezethet. Ha aggódik a program adatainak elvesztésével kapcsolatban, akkor először készítsen biztonsági mentést!&lt;/p&gt;
+&lt;p&gt;Egy másik figyelmeztetés: az OpenGL rögzítés kísérleti funkció, előfordulhat, hogy nem működik, vagy akár az éppen rögzített program összeomlásához is vezethet. Ha aggódik a program adatainak elvesztésével kapcsolatban, akkor először készítsen biztonsági mentést!&lt;/p&gt;
 
 &lt;p&gt;Ha Steam játékokat szeretne rögzíteni, akkor &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;először ezt olvassa el&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
@@ -146,7 +146,7 @@ Ez még azokra a felhasználókra is alkalmazható, akik távolról jelentkeznek
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
         <translation>Ha be van jelölve, akkor a beültetett programkönyvtár le fogja lassítani az alkalmazást, így a képkockasebesség nem lesz magasabb a rögzítés képkockasebességénél.
-Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkockáknál, amelyek nem lesznek rögzítve, és ez néha simább videót eredményez (ez az alkalmazástól függ).</translation>
+Ez megakadályozza az alkalmazást a processzoridő pazarlásában azoknál a képkockáknál, amelyek nem lesznek rögzítve, és ez néha simább videót eredményez (ez az alkalmazástól függ).</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="120"/>
@@ -159,52 +159,52 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="78"/>
         <source>Recording schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Felvételi ütemezés</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="80"/>
         <source>Time zone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Időzóna:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="82"/>
         <source>Local time</source>
-        <translation type="unfinished"></translation>
+        <translation>Helyi idő</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="83"/>
         <source>UTC</source>
-        <translation type="unfinished"></translation>
+        <translation>UTC</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="85"/>
         <source>Current time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelenlegi idő:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="102"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Hozzáadás</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="103"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Eltávolítás</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="104"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozgatás fel</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="105"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozgatás le</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="107"/>
         <source>Close</source>
-        <translation type="unfinished">Bezárás</translation>
+        <translation>Bezárás</translation>
     </message>
 </context>
 <context>
@@ -231,7 +231,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/FastScaler.cpp" line="129"/>
         <source>Warning: No fast pixel format conversion available (%1,%2 -&gt; %3,%4), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Figyelmeztetés: nem érhető el gyors képpontformátum-átalakítás (%1,%2 -&gt; %3,%4), szoftveres méretezés használata helyette. Ez nem probléma, de a teljesítmény rosszabb lesz.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="138"/>
@@ -262,7 +262,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
         <location filename="../AV/Input/ALSAInput.cpp" line="37"/>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation>Hiba: nem lehet visszaállítani az eszközt a túlfutás után!</translation>
+        <translation>Hiba: nem lehet helyreállítani az eszközt a túlfutás után!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="41"/>
@@ -319,7 +319,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
         <location filename="../AV/Input/ALSAInput.cpp" line="271"/>
         <location filename="../AV/SimpleSynth.cpp" line="124"/>
         <source>Error: Can&apos;t open PCM device!</source>
-        <translation>Hiba: nem nyitható meg a PCM-eszköz!</translation>
+        <translation>Hiba: nem lehet megnyitni a PCM-eszközt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="275"/>
@@ -336,7 +336,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="292"/>
         <source>Error: Can&apos;t set sample format mask!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: nem lehet beállítani a mintavételezés formátummaszkját!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="297"/>
@@ -354,7 +354,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
         <location filename="../AV/Input/ALSAInput.cpp" line="334"/>
         <location filename="../AV/SimpleSynth.cpp" line="151"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation>Figyelmeztetés: a(z) %1 mintavételi gyakoriság nem támogatott, %2 használata helyette. Ez nem probléma.</translation>
+        <translation>Figyelmeztetés: a(z) %1 mintavételezési gyakoriság nem támogatott, %2 használata helyette. Ez nem probléma.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="343"/>
@@ -415,7 +415,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="452"/>
         <source>Error: Can&apos;t wait for new samples!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: nem lehet várni az új mintákra!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="469"/>
@@ -460,7 +460,7 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="75"/>
         <source>Error: Could not connect to JACK!</source>
-        <translation>Hiba: nem sikerült kapcsolódni a JACK kiszolgálóhoz!</translation>
+        <translation>Hiba: nem sikerült kapcsolódni a JACK-kiszolgálóhoz!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="84"/>
@@ -490,19 +490,19 @@ Ez megakadályozza az alkalmazást a processzoridő pazarlásában azok képkock
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="117"/>
         <source>Error: Could not activate JACK client!</source>
-        <translation>Hiba: nem sikerült aktiválni a JACK klienst!</translation>
+        <translation>Hiba: nem sikerült aktiválni a JACK-klienst!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="125"/>
         <location filename="../AV/Input/JACKInput.cpp" line="136"/>
         <location filename="../AV/Input/JACKInput.cpp" line="265"/>
         <source>Connecting port %1 to %2.</source>
-        <translation>%1 port kapcsolása ide: %2.</translation>
+        <translation>A(z) %1 port kapcsolása ide: %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="269"/>
         <source>Disconnecting port %1 from %2.</source>
-        <translation>%1 port leválasztása innen: %2.</translation>
+        <translation>A(z) %1 port leválasztása innen: %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="34"/>
@@ -610,42 +610,42 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="64"/>
         <source>Created video stream reader.</source>
-        <translation>Videó adatfolyam olvasó létrehozva.</translation>
+        <translation>Videoadatfolyam-olvasó létrehozva.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="69"/>
         <source>Error: Can&apos;t open video stream file!</source>
-        <translation>Hiba: nem lehet megnyitni a videó adatfolyam fájlt!</translation>
+        <translation>Hiba: nem lehet megnyitni a videoadatfolyam-fájlt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="76"/>
         <source>Error: Can&apos;t resize video stream file!</source>
-        <translation>Hiba: nem lehet átméretezni a videó adatfolyam fájlt!</translation>
+        <translation>Hiba: nem lehet átméretezni a videoadatfolyam-fájlt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="83"/>
         <source>Error: Can&apos;t memory-map video stream file!</source>
-        <translation>Hiba: nem lehet leképezni a memóriába a videó adatfolyam fájlt!</translation>
+        <translation>Hiba: nem lehet leképezni a memóriába a videoadatfolyam-fájlt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="92"/>
         <source>Error: Can&apos;t open video frame file!</source>
-        <translation>Hiba: nem lehet megnyitni a videoképkocka fájlt!</translation>
+        <translation>Hiba: nem lehet megnyitni a videoképkocka-fájlt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="142"/>
         <source>Destroyed video stream reader.</source>
-        <translation>Videó adatfolyam olvasó megsemmisítve.</translation>
+        <translation>Videoadatfolyam-olvasó megsemmisítve.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="238"/>
         <source>Error: Size of video frame file is incorrect!</source>
-        <translation>Hiba: a videoképkocka fájl mérete hibás!</translation>
+        <translation>Hiba: a videoképkocka-fájl mérete hibás!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="247"/>
         <source>Error: Can&apos;t memory-map video frame file!</source>
-        <translation>Hiba: nem lehet leképezni a memóriába a videoképkocka fájlt!</translation>
+        <translation>Hiba: nem lehet leképezni a memóriába a videoképkocka-fájlt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="94"/>
@@ -720,17 +720,17 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="241"/>
         <source>Added stream %1.</source>
-        <translation>%1 adatfolyam hozzáadva.</translation>
+        <translation>A(z) %1 adatfolyam hozzáadva.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="249"/>
         <source>Removed stream %1.</source>
-        <translation>%1 adatfolyam eltávolítva.</translation>
+        <translation>A(z) %1 adatfolyam eltávolítva.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="275"/>
         <source>Deleted abandoned stream %1.</source>
-        <translation>Elhagyott %1 adatfolyam törölve.</translation>
+        <translation>A(z) %1 elhagyott adatfolyam törölve.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="68"/>
@@ -754,77 +754,77 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="99"/>
         <source>Error: Can&apos;t open V4L2 device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: nem lehet megnyitni a V4L2-eszközt!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="107"/>
         <source>Error: Can&apos;t read capabilities of V4L2 device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: nem lehet olvasni a V4L2-eszköz képességeit!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="111"/>
         <source>Error: V4L2 device does not support video capture!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: a V4L2-eszköz nem támogatja a videorögzítést!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="115"/>
         <source>Error: V4L2 device does not support streaming io!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: a V4L2-eszköz nem támogatja a bemenet/kimenet műsorszórását!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="132"/>
         <source>Error: Can&apos;t set capture format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: nem lehet beállítani a rögzítés formátumát!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="136"/>
         <source>Error: V4L2 device does not support YUYV pixel format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: a V4L2-eszköz nem támogatja a YUYV képpontformátumot!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="140"/>
         <source>Warning: Resolution %1x%2 is not supported, using %3x%4 instead. The video will be scaled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Figyelmeztetés: a(z) %1x%2 felbontás nem támogatott, %3x%4 használata helyette. A videó át lesz méretezve.</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="183"/>
         <source>Using color space %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 színtér használata.</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="193"/>
         <source>Error: Buffer request failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: a pufferkérés nem sikerült!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="203"/>
         <source>Error: Buffer query failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: a pufferlekérdezés nem sikerült!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="209"/>
         <source>Error: Buffer mmap failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: a puffer mmap hívása nem sikerült!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="222"/>
         <source>Error: Buffer queue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: a puffer sorba állítása nem sikerült!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="230"/>
         <source>Error: Failed to start stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: nem sikerült az adatfolyam elindítása!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="273"/>
         <source>Error: Buffer dequeue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: a puffer sorba állításának megszüntetése nem sikerült!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="288"/>
         <source>Error: Buffer requeue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: a puffer újra sorba állítása nem sikerült!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="257"/>
@@ -867,7 +867,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="355"/>
         <source>Detecting screen configuration ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Képernyő-beállítások felismerése…</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="373"/>
@@ -883,7 +883,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="386"/>
         <source>Screen %1:</source>
-        <translation type="unfinished">%1:. kijelző</translation>
+        <translation>%1. kijelző:</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="406"/>
@@ -898,7 +898,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="450"/>
         <source>Dead space %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>%1. halott terület:</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="536"/>
@@ -955,7 +955,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
         <location filename="../AV/Output/BaseEncoder.cpp" line="30"/>
         <location filename="../AV/Output/BaseEncoder.cpp" line="39"/>
         <source>Error: Option &apos;%1&apos; could not be parsed!</source>
-        <translation>Hiba: a(z) „%1” kapcsoló feldolgozása nem sikerült!</translation>
+        <translation>Hiba: a(z) „%1” kapcsolót nem sikerült feldolgozni!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
@@ -1118,7 +1118,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="355"/>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
-        <translation>Figyelmeztetés: videopuffer túlcsordulás, néhány képkocka el fog veszni. A hangbemenet túl lassúnak tűnik.</translation>
+        <translation>Figyelmeztetés: videopuffer-túlcsordulás, néhány képkocka el fog veszni. A hangbemenet túl lassúnak tűnik.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="412"/>
@@ -1148,7 +1148,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="554"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
-        <translation>Figyelmeztetés: hangpuffer túlcsordulás, új szakasz indítása a hang és a videó szinkronban tartásához (néhány videó és/vagy hang elveszhet). A videobemenet túl lassúnak tűnik.</translation>
+        <translation>Figyelmeztetés: hangpuffer-túlcsordulás, új szakasz indítása a hang és a videó szinkronban tartásához (néhány videó és/vagy hang elveszhet). A videobemenet túl lassúnak tűnik.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="590"/>
@@ -1232,7 +1232,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
         <location filename="../AV/SimpleSynth.cpp" line="64"/>
         <source>Error: Can&apos;t recover device after underrun!</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation>Hiba: nem lehet visszaállítani az eszközt az aláfutás után!</translation>
+        <translation>Hiba: nem lehet helyreállítani az eszközt az aláfutás után!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="91"/>
@@ -1283,7 +1283,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="90"/>
         <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: a(z) „%1” parancssori kapcsoló értéket igényel!</translation>
     </message>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="98"/>
@@ -1303,7 +1303,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="253"/>
         <source>Error: Can&apos;t create configuration directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: nem lehet létrehozni beállítási könyvtárat!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="99"/>
@@ -1377,7 +1377,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../common/ScreenScaling.cpp" line="120"/>
         <source>Detected fractional screen scale factor, scaling was disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tört képernyő-méretezési tényező észlelve, a méretezés le lett tiltva.</translation>
     </message>
 </context>
 <context>
@@ -1385,7 +1385,7 @@ Lehetséges, hogy a rendszere nem PulseAudio háttérprogramot használ.</transl
     <message>
         <location filename="../GUI/MainWindow.cpp" line="74"/>
         <source>You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. Several features will most likely not work properly. In order to solve this, you should log out, choose a X11/Xorg session at the login screen, and then log back in.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ön nem X11 ablakkezelő rendszert használ (például Wayland), amelyet a SimpleScreenRecorder jelenleg nem támogat. Több funkció valószínűleg nem fog megfelelően működni. Ennek megoldása érdekében ki kell jelentkeznie, a bejelentkezési képernyőn X11/Xorg munkamenetet kell választania, majd újra be kell jelentkeznie.</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="86"/>
@@ -1401,7 +1401,7 @@ Ezt a beállítást kézzel is megváltoztathatja az NVIDIA vezérlőpultján.</
         <location filename="../GUI/MainWindow.cpp" line="104"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation>Nem tudtam letiltani a tükrözést valamilyen oknál fogva - elnézést! Próbálja meg letiltani az NVIDIA vezérlőpultján.</translation>
+        <translation>Nem tudtam letiltani a tükrözést valamilyen oknál fogva – elnézést! Próbálja meg letiltani az NVIDIA vezérlőpultján.</translation>
     </message>
 </context>
 <context>
@@ -1414,7 +1414,7 @@ Ezt a beállítást kézzel is megváltoztathatja az NVIDIA vezérlőpultján.</
     <message>
         <location filename="../GUI/PageDone.cpp" line="35"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa megnyitása</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="38"/>
@@ -1461,7 +1461,7 @@ Ezt a beállítást kézzel is megváltoztathatja az NVIDIA vezérlőpultján.</
     <message>
         <location filename="../GUI/PageInput.cpp" line="283"/>
         <source>Record V4L2 device</source>
-        <translation type="unfinished"></translation>
+        <translation>V4L2-eszköz rögzítése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="295"/>
@@ -1471,7 +1471,7 @@ Ezt a beállítást kézzel is megváltoztathatja az NVIDIA vezérlőpultján.</
     <message>
         <location filename="../GUI/PageInput.cpp" line="296"/>
         <source>Record entire screen with cursor</source>
-        <translation>Teljes képernyő rögzítése kurzorral</translation>
+        <translation>Kurzorral rendelkező teljes képernyő rögzítése</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="297"/>
@@ -1514,7 +1514,7 @@ Tipp: ha rákattint egy ablak keretére, akkor a teljes ablak rögzítésre ker�
     <message>
         <location filename="../GUI/PageInput.cpp" line="310"/>
         <source>The V4L2 device to record (e.g. /dev/video0).</source>
-        <translation type="unfinished"></translation>
+        <translation>A rögzítendő V4L2-eszköz (például /dev/video0).</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
@@ -1697,7 +1697,7 @@ A „monitor” egy olyan forrás, amely a más alkalmazások által lejátszott
         <location filename="../GUI/PageInput.cpp" line="964"/>
         <source>All screens: %1x%2</source>
         <comment>This appears in the screen selection combobox</comment>
-        <translation>Minden kijelző: %1x%2</translation>
+        <translation>Összes kijelző: %1x%2</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="968"/>
@@ -1779,7 +1779,7 @@ A „monitor” egy olyan forrás, amely a más alkalmazások által lejátszott
     <message>
         <location filename="../GUI/PageOutput.cpp" line="197"/>
         <source>Separate file per segment</source>
-        <translation type="unfinished">Fájl szétválasztása szakaszonként</translation>
+        <translation>Fájl szétválasztása szakaszonként</translation>
     </message>
     <message>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.
@@ -1844,8 +1844,8 @@ Vegye figyelembe, hogy nem minden konténer támogat minden kodeket, és hogy ne
 - H.264 (libx264) is by far the best codec - high quality and very fast.
 - VP8 (libvpx) is quite good but also quite slow.
 - Theora (libtheora) isn&apos;t really recommended because the quality isn&apos;t very good.</source>
-        <translation>A kodek, amely a videó adatfolyam tömörítéséhez lesz használva.
-- H.264 (libx264): kiemelkedően a legjobb kodek - kiváló minőségű és nagyon gyors.
+        <translation>A kodek, amely a video-adatfolyam tömörítéséhez lesz használva.
+- H.264 (libx264): kiemelkedően a legjobb kodek – kiváló minőségű és nagyon gyors.
 - VP8 (libvpx): elég jó, de meglehetősen lassú.
 - Theora (libtheora): nem igazán ajánlott, mert a minősége nem túl jó.</translation>
     </message>
@@ -1883,7 +1883,7 @@ If the original file name is &apos;test.mkv&apos;, the video will be saved as &a
     <message>
         <location filename="../GUI/PageOutput.cpp" line="227"/>
         <source>Warning: This format will produce unreadable files if the recording is interrupted! Consider using MKV instead.</source>
-        <translation type="unfinished"></translation>
+        <translation>Figyelmeztetés: ez a formátum olvashatatlan fájlokat fog eredményezni, ha a felvétel megszakad! Fontolja meg az MKV használatát helyette.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="268"/>
@@ -1915,7 +1915,7 @@ A megengedett tartomány 0-51 között van (a 0 jelenti a veszteségmentest, az 
         <location filename="../GUI/PageOutput.cpp" line="283"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation>Alapbeállítás:</translation>
+        <translation>Előbeállítás:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="288"/>
@@ -2062,24 +2062,26 @@ Ha az eredeti fájlnév „próba.mkv”, akkor a szakaszok „próba-ÉÉÉÉ-H
     <message>
         <location filename="../GUI/PageRecord.cpp" line="182"/>
         <source>Edit schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Ütemezés szerkesztése</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="183"/>
         <source>The recording schedule can be used to automatically start or pause the recording at a predefined time.</source>
-        <translation type="unfinished"></translation>
+        <translation>A felvételi ütemezés a rögzítés automatikus elindításához vagy szüneteltetéséhez használható egy előre meghatározott időpontban.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="185"/>
         <source>Enable recording hotkey</source>
-        <translation>Felvétel gyorsbillentyű engedélyezése</translation>
+        <translation>Felvételi gyorsbillentyű engedélyezése</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="186"/>
         <source>The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,
 even when the SimpleScreenRecorder window is not visible. This way you can create recordings without having the
 SimpleScreenRecorder window show up in the final video.</source>
-        <translation type="unfinished"></translation>
+        <translation>A felvételi gyorsbillentyű egy globális gyorsbillentyű, amelyet a felvétel tetszőleges időben történő
+elindításához vagy szüneteltetéséhez használhat, még akkor is, ha a SimpleScreenRecorder ablaka nem
+látható. Így anélkül készíthet felvételeket, hogy a SimpleScreenRecorder ablaka megjelenne a végleges videóban.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="190"/>
@@ -2089,7 +2091,7 @@ SimpleScreenRecorder window show up in the final video.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="191"/>
         <source>When enabled, a sound will be played when the recording is started or paused, or when an error occurs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha engedélyezve van, akkor hang kerül lejátszásra a felvétel indításakor vagy szüneteltetésekor, illetve hiba esetén.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="193"/>
@@ -2170,12 +2172,12 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="271"/>
         <source>Show recording area</source>
-        <translation type="unfinished"></translation>
+        <translation>Felvételi terület megjelenítése</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="272"/>
         <source>When enabled, the recorded area is marked on the screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha engedélyezve van, akkor a felvett terület megjelölésre kerül a képernyőn.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="297"/>
@@ -2190,7 +2192,7 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="305"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
-        <translation>Megjegyzés: Az előnézet további processzoridőt igényel (különösen magas képkockasebességeknél).</translation>
+        <translation>Megjegyzés: az előnézet további processzoridőt igényel (különösen magas képkockasebességeknél).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="354"/>
@@ -2256,7 +2258,7 @@ Biztosan ki akar lépni?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="793"/>
         <source>Output file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kimeneti fájl: %1</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1022"/>
@@ -2266,49 +2268,49 @@ Biztosan ki akar lépni?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1281"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem rögzített semmit, nincs mit menteni.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1298"/>
         <source>Triggering scheduled action &apos;%1&apos; ...</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” ütemezett művelet aktiválása…</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1309"/>
         <source>Schedule: %1 in %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ütemezés: %1, ekkor: %2</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1316"/>
         <source>Schedule: (none)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ütemezés: (nincs)</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1320"/>
         <source>Schedule: (inactive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ütemezés: (inaktív)</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1384"/>
         <location filename="../GUI/PageRecord.cpp" line="1401"/>
         <source>Standard input read error (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabványos bemenet olvasási hiba (%1).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1389"/>
         <location filename="../GUI/PageRecord.cpp" line="1406"/>
         <source>Standard input closed (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabványos bemenet lezárva (%1).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1419"/>
         <source>Received command &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fogadott parancs: „%1”.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1439"/>
         <source>Unknown command.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ismeretlen parancs.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="750"/>
@@ -2385,12 +2387,12 @@ Biztosan ki akar lépni?</translation>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1137"/>
         <source>Deactivate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Ütemezés deaktiválása</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1147"/>
         <source>Activate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Ütemezés aktiválása</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1156"/>
@@ -2446,12 +2448,12 @@ A kezdés gomb felül van ;).</translation>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="52"/>
         <source>Skip this page next time</source>
-        <translation type="unfinished"></translation>
+        <translation>Legközelebb ugorja át ezt az oldalt</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="53"/>
         <source>Go directly to the input page when the program is started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugrás közvetlenül a beviteli oldalra a program indításakor.</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="76"/>
@@ -2532,7 +2534,7 @@ A kezdés gomb felül van ;).</translation>
         <location filename="../common/Dialogs.cpp" line="35"/>
         <location filename="../common/Dialogs.cpp" line="72"/>
         <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
+        <translation>&amp;Rendben</translation>
     </message>
     <message>
         <location filename="../common/Dialogs.cpp" line="36"/>
@@ -2565,7 +2567,7 @@ A kezdés gomb felül van ;).</translation>
     <name>QMessageBox</name>
     <message>
         <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
+        <translation type="obsolete">&amp;Rendben</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -2593,22 +2595,22 @@ A kezdés gomb felül van ;).</translation>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="39"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Indítás</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="40"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Szüneteltetés</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="46"/>
         <source>Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Idő:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="51"/>
         <source>Action:</source>
-        <translation type="unfinished"></translation>
+        <translation>Művelet:</translation>
     </message>
 </context>
 <context>
