@@ -69,7 +69,7 @@ MainWindow::MainWindow()
 	GoPageStart();
 
 	QShortcut *shortcut = new QShortcut(QKeySequence::Close, this);
-	connect(shortcut, SIGNAL(activated()), this, SIGNAL(close()));
+	connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
 
 	// warning for non-X11 window systems (e.g. Wayland)
 	if(!IsPlatformX11()) {
