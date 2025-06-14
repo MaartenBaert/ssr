@@ -41,6 +41,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QMenu>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QShortcut>
 #include <QSystemTrayIcon>
 
 #include <QButtonGroup>

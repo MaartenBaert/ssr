@@ -30,7 +30,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "PageOutput.h"
 #include "PageRecord.h"
 #include "PageDone.h"
-#include <QShortcut>
 
 ENUMSTRINGS(MainWindow::enum_nvidia_disable_flipping) = {
 	{MainWindow::NVIDIA_DISABLE_FLIPPING_ASK, "ask"},
@@ -42,9 +41,6 @@ const QString MainWindow::WINDOW_CAPTION = "SimpleScreenRecorder";
 
 MainWindow::MainWindow()
 	: QMainWindow() {
-
-	QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+W"), this);
-	connect(shortcut, &QShortcut::activated, this, &QMainWindow::close);
 
 	m_nvidia_reenable_flipping = false;
 	m_old_geometry = QRect();
@@ -71,6 +67,9 @@ MainWindow::MainWindow()
 	LoadSettings();
 
 	GoPageStart();
+
+	QShortcut *shortcut = new QShortcut(QKeySequence::Close, this);
+	connect(shortcut, SIGNAL(activated()), this, SIGNAL(close()));
 
 	// warning for non-X11 window systems (e.g. Wayland)
 	if(!IsPlatformX11()) {
