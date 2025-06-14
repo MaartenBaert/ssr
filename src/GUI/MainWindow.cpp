@@ -68,6 +68,9 @@ MainWindow::MainWindow()
 
 	GoPageStart();
 
+	QShortcut *shortcut = new QShortcut(QKeySequence::Close, this);
+	connect(shortcut, SIGNAL(activated()), this, SIGNAL(close()));
+
 	// warning for non-X11 window systems (e.g. Wayland)
 	if(!IsPlatformX11()) {
 		MessageBox(QMessageBox::Warning, NULL, MainWindow::WINDOW_CAPTION,
