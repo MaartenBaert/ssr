@@ -48,3 +48,20 @@ public:
 };
 
 #endif // SSR_USE_X86_ASM
+
+#if SSR_USE_LOONGARCH_ASM
+
+class CPUFeatures {
+
+private:
+	static bool s_lsx, s_lasx;
+
+public:
+	static void Detect();
+
+	inline static bool HasLSX()  { return s_lsx; }
+	inline static bool HasLASX() { return s_lasx; }
+
+};
+
+#endif // SSR_USE_LOONGARCH_ASM

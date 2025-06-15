@@ -31,8 +31,13 @@ FastScaler::FastScaler() {
 
 #if SSR_USE_X86_ASM
 	m_warn_alignment = true;
+	m_use_asm = CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3();
 #endif
 
+#if SSR_USE_LOONGARCH_ASM
+	m_warn_alignment = true;
+	m_use_asm = CPUFeatures::HasLSX();
+#endif
 	m_warn_swscale = true;
 	m_sws_context = NULL;
 
@@ -148,8 +153,8 @@ void FastScaler::Scale(unsigned int in_width, unsigned int in_height, AVPixelFor
 
 void FastScaler::Convert_BGRA_YUV444(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
 
-#if SSR_USE_X86_ASM
-	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
+	if(m_use_asm) {
 		if((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0 &&
 		   (uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0 &&
 		   (uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0) {
@@ -173,8 +178,8 @@ void FastScaler::Convert_BGRA_YUV444(unsigned int width, unsigned int height, co
 void FastScaler::Convert_BGRA_YUV422(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
 	assert(width % 2 == 0);
 
-#if SSR_USE_X86_ASM
-	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
+	if(m_use_asm) {
 		if((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0 &&
 		   (uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0 &&
 		   (uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0) {
@@ -198,8 +203,8 @@ void FastScaler::Convert_BGRA_YUV422(unsigned int width, unsigned int height, co
 void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[3], const int out_stride[3]) {
 	assert(width % 2 == 0 && height % 2 == 0);
 
-#if SSR_USE_X86_ASM
-	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
+	if(m_use_asm) {
 		if((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0 &&
 		   (uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0 &&
 		   (uintptr_t) out_data[2] % 16 == 0 && out_stride[2] % 16 == 0) {
@@ -223,8 +228,8 @@ void FastScaler::Convert_BGRA_YUV420(unsigned int width, unsigned int height, co
 void FastScaler::Convert_BGRA_NV12(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* const out_data[2], const int out_stride[2]) {
 	assert(width % 2 == 0 && height % 2 == 0);
 
-#if SSR_USE_X86_ASM
-	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
+	if(m_use_asm) {
 		if((uintptr_t) out_data[0] % 16 == 0 && out_stride[0] % 16 == 0 &&
 		   (uintptr_t) out_data[1] % 16 == 0 && out_stride[1] % 16 == 0) {
 			Convert_BGRA_NV12_SSSE3(width, height, in_data, in_stride, out_data, out_stride);
@@ -246,8 +251,8 @@ void FastScaler::Convert_BGRA_NV12(unsigned int width, unsigned int height, cons
 
 void FastScaler::Convert_BGRA_BGR(unsigned int width, unsigned int height, const uint8_t* in_data, int in_stride, uint8_t* out_data, int out_stride) {
 
-#if SSR_USE_X86_ASM
-	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
+	if(m_use_asm) {
 		if((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0) {
 			Convert_BGRA_BGR_SSSE3(width, height, in_data, in_stride, out_data, out_stride);
 		} else {
@@ -269,8 +274,8 @@ void FastScaler::Convert_BGRA_BGR(unsigned int width, unsigned int height, const
 void FastScaler::Scale_BGRA(unsigned int in_width, unsigned int in_height, const uint8_t* in_data, int in_stride,
 							unsigned int out_width, unsigned int out_height, uint8_t* out_data, int out_stride) {
 
-#if SSR_USE_X86_ASM
-	if(CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3()) {
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
+	if(m_use_asm) {
 		if((uintptr_t) out_data % 16 == 0 && out_stride % 16 == 0) {
 			Scale_BGRA_SSSE3(in_width, in_height, in_data, in_stride, out_width, out_height, out_data, out_stride);
 		} else {
