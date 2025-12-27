@@ -9,14 +9,18 @@ set(CMAKE_CXX_STANDARD 11)
 
 project(simplescreenrecorder VERSION 0.4.4)
 
+set(PROCESSOR_IS_X86 FALSE)
+set(PROCESSOR_IS_LOONGARCH FALSE)
+
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|i386|i686")
 	set(PROCESSOR_IS_X86 TRUE)
-else()
-	set(PROCESSOR_IS_X86 FALSE)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "loongarch")
+	set(PROCESSOR_IS_LOONGARCH TRUE)
 endif()
 
 option(ENABLE_32BIT_GLINJECT "Build the 32-bit version of 'libssr-glinject' on 64-bit systems (in addition to the 64-bit version). Required for OpenGL recording of 32-bit applications on 64-bit systems." FALSE)
 option(ENABLE_X86_ASM "Allow x86/x64 assembly or intrinsics." ${PROCESSOR_IS_X86})
+option(ENABLE_LOONGARCH_ASM "Allow loongarch assembly or intrinsics." ${PROCESSOR_IS_LOONGARCH})
 option(ENABLE_FFMPEG_VERSIONS "Use FFmpeg version numbers for feature support tests. Enable when using FFmpeg, disable when using Libav." TRUE)
 option(ENABLE_JACK_METADATA "Use the JACK metadata API. May not work with very old JACK versions." TRUE)
 option(WITH_OPENGL_RECORDING "Build with OpenGL recording support." TRUE)
@@ -29,6 +33,7 @@ option(WITH_QT5 "Build with Qt5 (instead of Qt4)." FALSE)
 option(WITH_QT6 "Build with Qt6 (instead of Qt4/5)." FALSE)
 option(WITH_SIMPLESCREENRECORDER "Build the 'simplescreenrecorder' executable." TRUE)
 option(WITH_GLINJECT "Build the 'libssr-glinject' library. Required for OpenGL recording." TRUE)
+option(WITH_SIMDE "Build with SIMDE support." ${PROCESSOR_IS_LOONGARCH})
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
