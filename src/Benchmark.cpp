@@ -100,6 +100,9 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 	bool use_ssse3 = (CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3());
 #endif
 
+#if SSR_USE_LOONGARCH_ASM
+	bool use_ssse3 = CPUFeatures::HasLSX();
+#endif
 	// the queue needs to use enough memory to make sure that the CPU cache is flushed
 	unsigned int pixels = std::max(in_w * in_h, out_w * out_h);
 	unsigned int queue_size = 1 + 20000000 / pixels;
@@ -146,7 +149,7 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 		int64_t t2 = hrt_time_micro();
 		time_fallback = (t2 - t1) / run_size;
 	}
-#if SSR_USE_X86_ASM
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
 	if(use_ssse3) {
 		int64_t t1 = hrt_time_micro();
 		for(unsigned int i = 0; i < run_size; ++i) {
@@ -171,7 +174,7 @@ void BenchmarkScale(unsigned int in_w, unsigned int in_h, unsigned int out_w, un
 }
 
 void BenchmarkConvert(unsigned int w, unsigned int h, AVPixelFormat in_format, AVPixelFormat out_format, const QString& in_format_name, const QString& out_format_name, NewImageFunc in_image, NewImageFunc out_image, ConvertFunc fallback
-#if SSR_USE_X86_ASM
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
 , ConvertFunc ssse3
 #endif
 ) {
@@ -181,6 +184,9 @@ void BenchmarkConvert(unsigned int w, unsigned int h, AVPixelFormat in_format, A
 	bool use_ssse3 = (CPUFeatures::HasMMX() && CPUFeatures::HasSSE() && CPUFeatures::HasSSE2() && CPUFeatures::HasSSE3() && CPUFeatures::HasSSSE3());
 #endif
 
+#if SSR_USE_LOONGARCH_ASM
+	bool use_ssse3 = CPUFeatures::HasLSX();
+#endif
 	// the queue needs to use enough memory to make sure that the CPU cache is flushed
 	unsigned int pixels = w * h;
 	unsigned int queue_size = 1 + 20000000 / pixels;
@@ -226,7 +232,7 @@ void BenchmarkConvert(unsigned int w, unsigned int h, AVPixelFormat in_format, A
 		int64_t t2 = hrt_time_micro();
 		time_fallback = (t2 - t1) / run_size;
 	}
-#if SSR_USE_X86_ASM
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
 	if(use_ssse3) {
 		int64_t t1 = hrt_time_micro();
 		for(unsigned int i = 0; i < run_size; ++i) {
@@ -258,7 +264,7 @@ void Benchmark() {
 	BenchmarkScale(1920, 1080, 640, 360); // mipmap + downscaling
 
 	Logger::LogInfo("[Benchmark] " + Logger::tr("Starting converter benchmark ..."));
-#if SSR_USE_X86_ASM
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV444P, "BGRA", "YUV444", NewImageBGRA, NewImageYUV444, Convert_BGRA_YUV444_Fallback           , Convert_BGRA_YUV444_SSSE3           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV422P, "BGRA", "YUV422", NewImageBGRA, NewImageYUV422, Convert_BGRA_YUV422_Fallback           , Convert_BGRA_YUV422_SSSE3           );
 	BenchmarkConvert(1920, 1080, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV420P, "BGRA", "YUV420", NewImageBGRA, NewImageYUV420, Convert_BGRA_YUV420_Fallback           , Convert_BGRA_YUV420_SSSE3           );

@@ -25,11 +25,12 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 class FastScaler {
 
 private:
-#if SSR_USE_X86_ASM
+#if SSR_USE_X86_ASM || SSR_USE_LOONGARCH_ASM
 	bool m_warn_alignment;
 #endif
 
 	bool m_warn_swscale;
+	bool m_use_asm;
 	SwsContext *m_sws_context;
 
 public:
