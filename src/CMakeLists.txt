@@ -146,6 +146,8 @@ set(sources
 	MqttClientInterface.h
 	MqttClientSimple.cpp
 	MqttClientSimple.h
+	MqttConfig.cpp
+	MqttConfig.h
 	Benchmark.cpp
 	Benchmark.h
 	Global.h

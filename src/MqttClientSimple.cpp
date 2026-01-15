@@ -40,10 +40,10 @@ MqttClientSimple::MqttClientSimple(PageRecord* page_record)
 	  m_keepalive_timer(nullptr),
 	  m_connected(false),
 	  m_should_reconnect(false),
-	  m_broker_host("localhost"),
-	  m_broker_port(1883),
-	  m_use_tls(false),
 	  m_last_recording_state(false) {
+	
+	m_config = MqttConfig::defaultConfig();
+	m_config_manager.reset(new MqttConfig());
 	
 	m_client_id = GenerateClientId();
 	
@@ -70,8 +70,7 @@ MqttClientSimple::MqttClientSimple(PageRecord* page_record)
 	connect(m_reconnect_timer, &QTimer::timeout, this, &MqttClientSimple::OnReconnectTimer);
 	connect(m_keepalive_timer, &QTimer::timeout, this, &MqttClientSimple::OnKeepaliveTimer);
 	
-	m_reconnect_timer->setInterval(RECONNECT_INTERVAL_MS);
-	m_keepalive_timer->setInterval(KEEPALIVE_INTERVAL_MS);
+	// Timer intervals will be set from config
 }
 
 MqttClientSimple::~MqttClientSimple() {
@@ -86,46 +85,78 @@ MqttClientSimple::~MqttClientSimple() {
 }
 
 void MqttClientSimple::LoadSettings(QSettings* settings) {
-	settings->beginGroup("MQTT");
+	// First try to load from YAML config file
+	LoadConfigFromFile();
 	
-	// Load from settings file
-	m_broker_host = settings->value("broker_host", "localhost").toString();
-	m_broker_port = settings->value("broker_port", 1883).toInt();
-	m_username = settings->value("username", "").toString();
-	m_password = settings->value("password", "").toString();
-	m_use_tls = settings->value("use_tls", false).toBool();
-	m_ca_cert = settings->value("ca_cert", "").toString();
-	m_client_cert = settings->value("client_cert", "").toString();
-	m_client_key = settings->value("client_key", "").toString();
-	
-	bool auto_connect = settings->value("auto_connect", false).toBool();
-	settings->endGroup();
+	// If YAML config not loaded or doesn't have auto_connect, check old settings
+	if (!m_config_manager->hasConfig() || !m_config.auto_connect) {
+		settings->beginGroup("MQTT");
+		
+		// Load legacy settings for backward compatibility
+		MqttConfig::ConnectionConfig legacy_config = m_config;
+		legacy_config.broker_host = settings->value("broker_host", "localhost").toString();
+		legacy_config.broker_port = settings->value("broker_port", 1883).toInt();
+		legacy_config.username = settings->value("username", "").toString();
+		legacy_config.password = settings->value("password", "").toString();
+		legacy_config.use_tls = settings->value("use_tls", false).toBool();
+		legacy_config.ca_cert = settings->value("ca_cert", "").toString();
+		legacy_config.client_cert = settings->value("client_cert", "").toString();
+		legacy_config.client_key = settings->value("client_key", "").toString();
+		legacy_config.auto_connect = settings->value("auto_connect", false).toBool();
+		
+		settings->endGroup();
+		
+		// Only apply legacy settings if YAML config wasn't loaded
+		if (!m_config_manager->hasConfig()) {
+			ApplyConfig(legacy_config);
+		}
+	}
 	
 	// Override with command line options if provided
 	CommandLineOptions* cmd = CommandLineOptions::GetInstance();
 	if (!cmd->GetMqttBroker().isEmpty()) {
-		m_broker_host = cmd->GetMqttBroker();
+		m_config.broker_host = cmd->GetMqttBroker();
 	}
 	if (cmd->GetMqttPort() != 1883) {
-		m_broker_port = cmd->GetMqttPort();
+		m_config.broker_port = cmd->GetMqttPort();
 	}
 	if (!cmd->GetMqttUsername().isEmpty()) {
-		m_username = cmd->GetMqttUsername();
+		m_config.username = cmd->GetMqttUsername();
 	}
 	if (!cmd->GetMqttPassword().isEmpty()) {
-		m_password = cmd->GetMqttPassword();
+		m_config.password = cmd->GetMqttPassword();
 	}
 	if (cmd->GetMqttTls()) {
-		m_use_tls = true;
+		m_config.use_tls = true;
 	}
 	
+	// Update timer intervals from config
+	m_reconnect_timer->setInterval(m_config.reconnect_interval * 1000);
+	m_keepalive_timer->setInterval(m_config.keepalive_interval * 1000);
+	
 	// Auto-connect if enabled
-	if (auto_connect && cmd->GetMqttAutoConnect() && !m_broker_host.isEmpty()) {
+	if (m_config.auto_connect && cmd->GetMqttAutoConnect() && !m_config.broker_host.isEmpty()) {
 		Connect();
 	}
 }
 
+void MqttClientSimple::LoadConfigFromFile(const QString& config_path) {
+	if (m_config_manager->loadConfig(config_path)) {
+		m_config = m_config_manager->config();
+		Logger::LogInfo("[MQTT] Configuration loaded from YAML file");
+	}
+}
+
+bool MqttClientSimple::SaveConfigToFile(const QString& config_path) {
+	m_config_manager->setConfig(m_config);
+	return m_config_manager->saveConfig(config_path);
+}
+
 void MqttClientSimple::SaveSettings(QSettings* settings) {
+	// Save to YAML config file
+	SaveConfigToFile();
+	
+	// Also save legacy settings for backward compatibility
 	settings->beginGroup("MQTT");
 	
 	// Don't save command line overrides
@@ -133,32 +164,32 @@ void MqttClientSimple::SaveSettings(QSettings* settings) {
 	
 	// Only save values that weren't overridden by command line
 	if (cmd->GetMqttBroker().isEmpty()) {
-		settings->setValue("broker_host", m_broker_host);
+		settings->setValue("broker_host", m_config.broker_host);
 	}
 	if (cmd->GetMqttPort() == 1883) {
-		settings->setValue("broker_port", m_broker_port);
+		settings->setValue("broker_port", m_config.broker_port);
 	}
 	if (cmd->GetMqttUsername().isEmpty()) {
-		settings->setValue("username", m_username);
+		settings->setValue("username", m_config.username);
 	}
 	if (cmd->GetMqttPassword().isEmpty()) {
-		settings->setValue("password", m_password);
+		settings->setValue("password", m_config.password);
 	}
 	if (!cmd->GetMqttTls()) {
-		settings->setValue("use_tls", m_use_tls);
+		settings->setValue("use_tls", m_config.use_tls);
 	}
 	
 	// Always save certificate paths
-	settings->setValue("ca_cert", m_ca_cert);
-	settings->setValue("client_cert", m_client_cert);
-	settings->setValue("client_key", m_client_key);
+	settings->setValue("ca_cert", m_config.ca_cert);
+	settings->setValue("client_cert", m_config.client_cert);
+	settings->setValue("client_key", m_config.client_key);
 	settings->setValue("auto_connect", IsConnected() || m_reconnect_timer->isActive());
 	
 	settings->endGroup();
 }
 
 bool MqttClientSimple::IsEnabled() const {
-	return !m_broker_host.isEmpty();
+	return !m_config.broker_host.isEmpty();
 }
 
 bool MqttClientSimple::IsConnected() const {
@@ -166,7 +197,7 @@ bool MqttClientSimple::IsConnected() const {
 }
 
 void MqttClientSimple::Connect() {
-	if (m_broker_host.isEmpty()) {
+	if (m_config.broker_host.isEmpty()) {
 		Logger::LogError("[MQTT] Cannot connect: broker host not specified");
 		return;
 	}
@@ -178,26 +209,26 @@ void MqttClientSimple::Connect() {
 	
 	SetupMosquitto();
 	
-	Logger::LogInfo("[MQTT] Connecting to " + m_broker_host + ":" + QString::number(m_broker_port) + "...");
+	Logger::LogInfo("[MQTT] Connecting to " + m_config.broker_host + ":" + QString::number(m_config.broker_port) + "...");
 	
 	// Set username/password if provided
-	if (!m_username.isEmpty()) {
+	if (!m_config.username.isEmpty()) {
 		int rc = mosquitto_username_pw_set(m_mosquitto, 
-			m_username.toUtf8().constData(),
-			m_password.isEmpty() ? nullptr : m_password.toUtf8().constData());
+			m_config.username.toUtf8().constData(),
+			m_config.password.isEmpty() ? nullptr : m_config.password.toUtf8().constData());
 		if (rc != MOSQ_ERR_SUCCESS) {
 			Logger::LogError("[MQTT] Failed to set username/password: " + QString(mosquitto_strerror(rc)));
 		}
 	}
 	
 	// Set TLS options if enabled
-	if (m_use_tls) {
-		if (!m_ca_cert.isEmpty()) {
+	if (m_config.use_tls) {
+		if (!m_config.ca_cert.isEmpty()) {
 			int rc = mosquitto_tls_set(m_mosquitto,
-				m_ca_cert.toUtf8().constData(),
+				m_config.ca_cert.toUtf8().constData(),
 				nullptr,
-				m_client_cert.toUtf8().constData(),
-				m_client_key.toUtf8().constData(),
+				m_config.client_cert.toUtf8().constData(),
+				m_config.client_key.toUtf8().constData(),
 				nullptr);
 			if (rc != MOSQ_ERR_SUCCESS) {
 				Logger::LogError("[MQTT] Failed to set TLS options: " + QString(mosquitto_strerror(rc)));
@@ -210,9 +241,9 @@ void MqttClientSimple::Connect() {
 	
 	// Connect to broker
 	int rc = mosquitto_connect(m_mosquitto,
-		m_broker_host.toUtf8().constData(),
-		m_broker_port,
-		60); // Keepalive interval in seconds
+		m_config.broker_host.toUtf8().constData(),
+		m_config.broker_port,
+		m_config.keepalive_interval);
 	
 	if (rc != MOSQ_ERR_SUCCESS) {
 		Logger::LogError("[MQTT] Failed to initiate connection: " + QString(mosquitto_strerror(rc)));
@@ -250,8 +281,17 @@ void MqttClientSimple::Disconnect() {
 	emit ConnectionStateChanged(false);
 }
 
+
+void MqttClientSimple::ApplyConfig(const MqttConfig::ConnectionConfig& config) {
+	m_config = config;
+	
+	// Update timer intervals
+	m_reconnect_timer->setInterval(m_config.reconnect_interval * 1000);
+	m_keepalive_timer->setInterval(m_config.keepalive_interval * 1000);
+}
+
 void MqttClientSimple::PublishStatus(const QString& status, const QString& session_id, const QString& topic) {
-	if (!m_connected || !m_mosquitto) return;
+	if (!m_connected || !m_mosquitto || !m_config.publish_status) return;
 	
 	QJsonObject json;
 	json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
@@ -266,14 +306,14 @@ void MqttClientSimple::PublishStatus(const QString& status, const QString& sessi
 	
 	QJsonDocument doc(json);
 	QByteArray payload = doc.toJson();
-	QString base_topic = GetBaseTopic();
+	QString full_topic = GetFullTopic("status");
 	
 	int rc = mosquitto_publish(m_mosquitto,
 		nullptr,
-		(base_topic + "status").toUtf8().constData(),
+		full_topic.toUtf8().constData(),
 		payload.size(),
 		payload.constData(),
-		1, // QoS 1
+		m_config.qos_status,
 		false); // Not retained
 	
 	if (rc != MOSQ_ERR_SUCCESS) {
@@ -286,7 +326,7 @@ void MqttClientSimple::PublishStatus(const QString& status, const QString& sessi
 }
 
 void MqttClientSimple::PublishRecordingState(bool recording) {
-	if (!m_connected || !m_mosquitto) return;
+	if (!m_connected || !m_mosquitto || !m_config.publish_recording_state) return;
 	
 	if (m_last_recording_state == recording) {
 		return;
@@ -301,15 +341,15 @@ void MqttClientSimple::PublishRecordingState(bool recording) {
 	
 	QJsonDocument doc(json);
 	QByteArray payload = doc.toJson();
-	QString base_topic = GetBaseTopic();
+	QString full_topic = GetFullTopic("recording/state");
 	
 	int rc = mosquitto_publish(m_mosquitto,
 		nullptr,
-		(base_topic + "recording/state").toUtf8().constData(),
+		full_topic.toUtf8().constData(),
 		payload.size(),
 		payload.constData(),
-		1, // QoS 1
-		true); // Retained
+		m_config.qos_recording_state,
+		m_config.retain_recording_state);
 	
 	if (rc != MOSQ_ERR_SUCCESS) {
 		Logger::LogError("[MQTT] Failed to publish recording state: " + QString(mosquitto_strerror(rc)));
@@ -320,7 +360,7 @@ void MqttClientSimple::PublishRecordingState(bool recording) {
 }
 
 void MqttClientSimple::PublishRecordingEvent(const QString& event, const QString& session_id, const QString& topic) {
-	if (!m_connected || !m_mosquitto) return;
+	if (!m_connected || !m_mosquitto || !m_config.publish_recording_events) return;
 	
 	QJsonObject json;
 	json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
@@ -335,14 +375,14 @@ void MqttClientSimple::PublishRecordingEvent(const QString& event, const QString
 	
 	QJsonDocument doc(json);
 	QByteArray payload = doc.toJson();
-	QString base_topic = GetBaseTopic();
+	QString full_topic = GetFullTopic("recording/events");
 	
 	int rc = mosquitto_publish(m_mosquitto,
 		nullptr,
-		(base_topic + "recording/events").toUtf8().constData(),
+		full_topic.toUtf8().constData(),
 		payload.size(),
 		payload.constData(),
-		1, // QoS 1
+		m_config.qos_recording_events,
 		false); // Not retained
 	
 	if (rc != MOSQ_ERR_SUCCESS) {
@@ -351,7 +391,7 @@ void MqttClientSimple::PublishRecordingEvent(const QString& event, const QString
 }
 
 void MqttClientSimple::PublishLedState(const QString& led, bool state) {
-	if (!m_connected || !m_mosquitto) return;
+	if (!m_connected || !m_mosquitto || !m_config.publish_led_states) return;
 	
 	QJsonObject json;
 	json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
@@ -361,15 +401,15 @@ void MqttClientSimple::PublishLedState(const QString& led, bool state) {
 	
 	QJsonDocument doc(json);
 	QByteArray payload = doc.toJson();
-	QString base_topic = GetBaseTopic();
+	QString full_topic = GetFullTopic("device/led/" + led);
 	
 	int rc = mosquitto_publish(m_mosquitto,
 		nullptr,
-		(base_topic + "device/led/" + led).toUtf8().constData(),
+		full_topic.toUtf8().constData(),
 		payload.size(),
 		payload.constData(),
-		1, // QoS 1
-		true); // Retained
+		m_config.qos_led_states,
+		m_config.retain_led_states);
 	
 	if (rc != MOSQ_ERR_SUCCESS) {
 		Logger::LogError("[MQTT] Failed to publish LED state: " + QString(mosquitto_strerror(rc)));
@@ -386,11 +426,11 @@ void MqttClientSimple::PublishError(const QString& error) {
 	
 	QJsonDocument doc(json);
 	QByteArray payload = doc.toJson();
-	QString base_topic = GetBaseTopic();
+	QString full_topic = GetFullTopic("error");
 	
 	int rc = mosquitto_publish(m_mosquitto,
 		nullptr,
-		(base_topic + "error").toUtf8().constData(),
+		full_topic.toUtf8().constData(),
 		payload.size(),
 		payload.constData(),
 		1, // QoS 1
@@ -410,23 +450,43 @@ void MqttClientSimple::SubscribeToTopics() {
 	
 	QString base_topic = GetBaseTopic();
 	
-	// Subscribe to control topics
-	const char* topics[] = {
-		"control/recording/start",
-		"control/recording/stop",
-		"control/recording/toggle",
-		"control/topic/change",
-		"device/button/recording",
-		"device/button/onair"
-	};
+	// Subscribe to control topics based on configuration
+	if (m_config.subscribe_recording_control) {
+		const char* recording_topics[] = {
+			"control/recording/start",
+			"control/recording/stop",
+			"control/recording/toggle"
+		};
+		
+		for (const char* topic : recording_topics) {
+			QString full_topic = base_topic + topic;
+			int rc = mosquitto_subscribe(m_mosquitto, nullptr, full_topic.toUtf8().constData(), m_config.qos_control_messages);
+			if (rc != MOSQ_ERR_SUCCESS) {
+				Logger::LogError("[MQTT] Failed to subscribe to " + full_topic + ": " + QString(mosquitto_strerror(rc)));
+			}
+		}
+	}
 	
-	int qos = 1; // QoS 1
-	
-	for (const char* topic : topics) {
-		QString full_topic = base_topic + topic;
-		int rc = mosquitto_subscribe(m_mosquitto, nullptr, full_topic.toUtf8().constData(), qos);
+	if (m_config.subscribe_topic_change) {
+		QString full_topic = base_topic + "control/topic/change";
+		int rc = mosquitto_subscribe(m_mosquitto, nullptr, full_topic.toUtf8().constData(), m_config.qos_control_messages);
 		if (rc != MOSQ_ERR_SUCCESS) {
 			Logger::LogError("[MQTT] Failed to subscribe to " + full_topic + ": " + QString(mosquitto_strerror(rc)));
+		}
+	}
+	
+	if (m_config.subscribe_button_events) {
+		const char* button_topics[] = {
+			"device/button/recording",
+			"device/button/onair"
+		};
+		
+		for (const char* topic : button_topics) {
+			QString full_topic = base_topic + topic;
+			int rc = mosquitto_subscribe(m_mosquitto, nullptr, full_topic.toUtf8().constData(), m_config.qos_control_messages);
+			if (rc != MOSQ_ERR_SUCCESS) {
+				Logger::LogError("[MQTT] Failed to subscribe to " + full_topic + ": " + QString(mosquitto_strerror(rc)));
+			}
 		}
 	}
 }
@@ -444,19 +504,19 @@ void MqttClientSimple::PublishConnectionState(bool connected) {
 	json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
 	json["connected"] = connected;
 	json["client_id"] = m_client_id;
-	json["broker"] = m_broker_host + ":" + QString::number(m_broker_port);
+	json["broker"] = m_config.broker_host + ":" + QString::number(m_config.broker_port);
 	
 	QJsonDocument doc(json);
 	QByteArray payload = doc.toJson();
-	QString base_topic = GetBaseTopic();
+	QString full_topic = GetFullTopic("connection");
 	
 	int rc = mosquitto_publish(m_mosquitto,
 		nullptr,
-		(base_topic + "connection").toUtf8().constData(),
+		full_topic.toUtf8().constData(),
 		payload.size(),
 		payload.constData(),
 		1, // QoS 1
-		true); // Retained
+		m_config.retain_connection_state);
 	
 	if (rc != MOSQ_ERR_SUCCESS) {
 		Logger::LogError("[MQTT] Failed to publish connection state: " + QString(mosquitto_strerror(rc)));
@@ -487,7 +547,18 @@ QString MqttClientSimple::GenerateClientId() const {
 }
 
 QString MqttClientSimple::GetBaseTopic() const {
-	return "recording/" + m_client_id + "/";
+	QString topic = m_config.base_topic;
+	if (!topic.endsWith('/')) {
+		topic += '/';
+	}
+	if (m_config.use_client_id_in_topic) {
+		topic += m_client_id + '/';
+	}
+	return topic;
+}
+
+QString MqttClientSimple::GetFullTopic(const QString& relative_topic) const {
+	return GetBaseTopic() + relative_topic;
 }
 
 // Static callback functions
@@ -589,14 +660,14 @@ void MqttClientSimple::OnLog(int level, const char* str) {
 }
 
 void MqttClientSimple::OnReconnectTimer() {
-	if (!m_connected && m_should_reconnect && !m_broker_host.isEmpty() && m_mosquitto) {
+	if (!m_connected && m_should_reconnect && !m_config.broker_host.isEmpty() && m_mosquitto) {
 		Logger::LogInfo("[MQTT] Attempting to reconnect...");
 		Connect();
 	}
 }
 
 void MqttClientSimple::OnKeepaliveTimer() {
-	if (m_connected && m_mosquitto) {
+	if (m_connected && m_mosquitto && m_config.publish_keepalive) {
 		// Publish a keepalive message
 		QJsonObject json;
 		json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
@@ -605,11 +676,11 @@ void MqttClientSimple::OnKeepaliveTimer() {
 		
 		QJsonDocument doc(json);
 		QByteArray payload = doc.toJson();
-		QString base_topic = GetBaseTopic();
+		QString full_topic = GetFullTopic("keepalive");
 		
 		int rc = mosquitto_publish(m_mosquitto,
 			nullptr,
-			(base_topic + "keepalive").toUtf8().constData(),
+			full_topic.toUtf8().constData(),
 			payload.size(),
 			payload.constData(),
 			0, // QoS 0

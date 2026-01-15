@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DialogMqttSettings.h"
 #include "MqttClientInterface.h"
+#include "MqttClientSimple.h"
 #include "Icons.h"
 #include "Dialogs.h"
 #include "Logger.h"
@@ -172,19 +173,39 @@ void DialogMqttSettings::SetupUi() {
 void DialogMqttSettings::LoadSettings() {
 	if (!m_mqtt_client) return;
 	
-	QSettings settings;
-	settings.beginGroup("MQTT");
-	
-	m_edit_broker_host->setText(settings.value("broker_host", "localhost").toString());
-	m_spinbox_broker_port->setValue(settings.value("broker_port", 1883).toInt());
-	m_checkbox_use_tls->setChecked(settings.value("use_tls", false).toBool());
-	m_edit_username->setText(settings.value("username", "").toString());
-	m_edit_password->setText(settings.value("password", "").toString());
-	m_edit_ca_cert->setText(settings.value("ca_cert", "").toString());
-	m_edit_client_cert->setText(settings.value("client_cert", "").toString());
-	m_edit_client_key->setText(settings.value("client_key", "").toString());
-	
-	settings.endGroup();
+	// Try to cast to MqttClientSimple to access YAML config
+	MqttClientSimple* mqtt_simple = dynamic_cast<MqttClientSimple*>(m_mqtt_client);
+	if (mqtt_simple && mqtt_simple->GetConfigManager()) {
+		// Load from YAML config
+		MqttConfig::ConnectionConfig config = mqtt_simple->GetConfig();
+		
+		m_edit_broker_host->setText(config.broker_host);
+		m_spinbox_broker_port->setValue(config.broker_port);
+		m_checkbox_use_tls->setChecked(config.use_tls);
+		m_edit_username->setText(config.username);
+		m_edit_password->setText(config.password);
+		m_edit_ca_cert->setText(config.ca_cert);
+		m_edit_client_cert->setText(config.client_cert);
+		m_edit_client_key->setText(config.client_key);
+		
+		// Load additional YAML-only settings if we have UI for them
+		// (we would need to add UI elements for these)
+	} else {
+		// Fall back to legacy QSettings
+		QSettings settings;
+		settings.beginGroup("MQTT");
+		
+		m_edit_broker_host->setText(settings.value("broker_host", "localhost").toString());
+		m_spinbox_broker_port->setValue(settings.value("broker_port", 1883).toInt());
+		m_checkbox_use_tls->setChecked(settings.value("use_tls", false).toBool());
+		m_edit_username->setText(settings.value("username", "").toString());
+		m_edit_password->setText(settings.value("password", "").toString());
+		m_edit_ca_cert->setText(settings.value("ca_cert", "").toString());
+		m_edit_client_cert->setText(settings.value("client_cert", "").toString());
+		m_edit_client_key->setText(settings.value("client_key", "").toString());
+		
+		settings.endGroup();
+	}
 	
 	// Update certificate group visibility
 	OnUseTlsChanged(m_checkbox_use_tls->isChecked() ? Qt::Checked : Qt::Unchecked);
@@ -193,19 +214,43 @@ void DialogMqttSettings::LoadSettings() {
 void DialogMqttSettings::SaveSettings() {
 	if (!m_mqtt_client) return;
 	
-	QSettings settings;
-	settings.beginGroup("MQTT");
-	
-	settings.setValue("broker_host", m_edit_broker_host->text());
-	settings.setValue("broker_port", m_spinbox_broker_port->value());
-	settings.setValue("use_tls", m_checkbox_use_tls->isChecked());
-	settings.setValue("username", m_edit_username->text());
-	settings.setValue("password", m_edit_password->text());
-	settings.setValue("ca_cert", m_edit_ca_cert->text());
-	settings.setValue("client_cert", m_edit_client_cert->text());
-	settings.setValue("client_key", m_edit_client_key->text());
-	
-	settings.endGroup();
+	// Try to cast to MqttClientSimple to save to YAML config
+	MqttClientSimple* mqtt_simple = dynamic_cast<MqttClientSimple*>(m_mqtt_client);
+	if (mqtt_simple && mqtt_simple->GetConfigManager()) {
+		// Save to YAML config
+		MqttConfig::ConnectionConfig config = mqtt_simple->GetConfig();
+		
+		// Update config with UI values
+		config.broker_host = m_edit_broker_host->text();
+		config.broker_port = m_spinbox_broker_port->value();
+		config.use_tls = m_checkbox_use_tls->isChecked();
+		config.username = m_edit_username->text();
+		config.password = m_edit_password->text();
+		config.ca_cert = m_edit_ca_cert->text();
+		config.client_cert = m_edit_client_cert->text();
+		config.client_key = m_edit_client_key->text();
+		
+		// Apply the updated config
+		mqtt_simple->ApplyConfig(config);
+		
+		// Save to YAML file
+		mqtt_simple->SaveConfigToFile();
+	} else {
+		// Fall back to legacy QSettings
+		QSettings settings;
+		settings.beginGroup("MQTT");
+		
+		settings.setValue("broker_host", m_edit_broker_host->text());
+		settings.setValue("broker_port", m_spinbox_broker_port->value());
+		settings.setValue("use_tls", m_checkbox_use_tls->isChecked());
+		settings.setValue("username", m_edit_username->text());
+		settings.setValue("password", m_edit_password->text());
+		settings.setValue("ca_cert", m_edit_ca_cert->text());
+		settings.setValue("client_cert", m_edit_client_cert->text());
+		settings.setValue("client_key", m_edit_client_key->text());
+		
+		settings.endGroup();
+	}
 }
 
 void DialogMqttSettings::UpdateConnectionStatus() {
@@ -272,9 +317,16 @@ void DialogMqttSettings::OnConnect() {
 	// Save settings first
 	SaveSettings();
 	
-	// Update MQTT client settings
-	QSettings settings;
-	m_mqtt_client->LoadSettings(&settings);
+	// Try to cast to MqttClientSimple to reload YAML config
+	MqttClientSimple* mqtt_simple = dynamic_cast<MqttClientSimple*>(m_mqtt_client);
+	if (mqtt_simple) {
+		// Reload config from YAML file
+		mqtt_simple->LoadConfigFromFile();
+	} else {
+		// Fall back to legacy QSettings
+		QSettings settings;
+		m_mqtt_client->LoadSettings(&settings);
+	}
 	
 	// Connect
 	m_mqtt_client->Connect();
@@ -294,9 +346,16 @@ void DialogMqttSettings::OnTest() {
 	// Save settings first
 	SaveSettings();
 	
-	// Update MQTT client settings
-	QSettings settings;
-	m_mqtt_client->LoadSettings(&settings);
+	// Try to cast to MqttClientSimple to reload YAML config
+	MqttClientSimple* mqtt_simple = dynamic_cast<MqttClientSimple*>(m_mqtt_client);
+	if (mqtt_simple) {
+		// Reload config from YAML file
+		mqtt_simple->LoadConfigFromFile();
+	} else {
+		// Fall back to legacy QSettings
+		QSettings settings;
+		m_mqtt_client->LoadSettings(&settings);
+	}
 	
 	// Test connection
 	if (m_mqtt_client->IsConnected()) {

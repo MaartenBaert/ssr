@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "MqttClientInterface.h"
+#include "MqttConfig.h"
 
 #include <QTimer>
 #include <memory>
@@ -42,20 +43,16 @@ private:
 	bool m_connected;
 	bool m_should_reconnect;
 	QString m_client_id;
-	QString m_broker_host;
-	int m_broker_port;
-	QString m_username;
-	QString m_password;
-	bool m_use_tls;
-	QString m_ca_cert;
-	QString m_client_cert;
-	QString m_client_key;
+	MqttConfig::ConnectionConfig m_config;
 
 	// Last published values
 	QString m_last_status;
 	QString m_last_session_id;
 	QString m_last_topic;
 	bool m_last_recording_state;
+	
+	// Configuration manager
+	std::unique_ptr<MqttConfig> m_config_manager;
 
 public:
 	MqttClientSimple(PageRecord* page_record);
@@ -64,6 +61,8 @@ public:
 	// MqttClientInterface implementation
 	void LoadSettings(QSettings* settings) override;
 	void SaveSettings(QSettings* settings) override;
+	void LoadConfigFromFile(const QString& config_path = QString());
+	bool SaveConfigToFile(const QString& config_path = QString());
 	
 	bool IsEnabled() const override;
 	bool IsConnected() const override;
@@ -84,6 +83,13 @@ private:
 
 	QString GenerateClientId() const;
 	QString GetBaseTopic() const;
+	QString GetFullTopic(const QString& relative_topic) const;
+	
+public:
+	// Configuration helpers
+	void ApplyConfig(const MqttConfig::ConnectionConfig& config);
+	const MqttConfig::ConnectionConfig& GetConfig() const { return m_config; }
+	MqttConfig* GetConfigManager() { return m_config_manager.get(); }
 	
 	// Static callback functions
 	static void OnConnectCallback(struct mosquitto* mosq, void* userdata, int rc);
