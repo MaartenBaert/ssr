@@ -34,7 +34,7 @@ const std::vector<AudioEncoder::SampleFormatData> AudioEncoder::SUPPORTED_SAMPLE
 
 const unsigned int AudioEncoder::DEFAULT_FRAME_SAMPLES = 1024;
 
-AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec_context, AVCodec* codec, AVDictionary** options)
+AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec_context, const AVCodec* codec, AVDictionary** options)
 	: BaseEncoder(muxer, stream, codec_context, codec, options) {
 
 #if !SSR_USE_AVCODEC_ENCODE_AUDIO2
@@ -42,7 +42,7 @@ AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec
 	if(GetCodecContext()->frame_size <= 1) {
 		// This is really weird, the old API uses the size of the *output* buffer to determine the number of
 		// input samples if the number of input samples (i.e. frame_size) is not fixed (i.e. frame_size <= 1).
-		m_temp_buffer.resize(DEFAULT_FRAME_SAMPLES * GetChannels() * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
+		m_temp_buffer.resize(DEFAULT_FRAME_SAMPLES * GetCodecContext()->ch_layout.nb_channels * av_get_bits_per_sample(GetCodecContext()->codec_id) / 8);
 	} else {
 		m_temp_buffer.resize(std::max(FF_MIN_BUFFER_SIZE, 256 * 1024));
 	}
@@ -53,6 +53,7 @@ AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec
 }
 
 AudioEncoder::~AudioEncoder() {
+    av_channel_layout_uninit(&GetCodecContext()->ch_layout);
 	StopThread();
 }
 
@@ -82,7 +83,7 @@ unsigned int AudioEncoder::GetSampleRate() {
 
 bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
 	// we have to break const correctness for compatibility with older ffmpeg versions
-	AVCodec *codec = (AVCodec*) avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
+	const AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
 	if(codec == NULL)
 		return false;
 	if(!av_codec_is_encoder(codec))
@@ -98,7 +99,7 @@ bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
 	return false;
 }
 
-void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
 								 unsigned int bit_rate, unsigned int channels, unsigned int sample_rate) {
 
 	if(channels == 0) {
@@ -115,8 +116,11 @@ void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 	codec_context->channels = channels;
 	codec_context->channel_layout = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
 #else
-	codec_context->ch_layout.nb_channels = channels;
-	codec_context->ch_layout.u.mask = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
+    if(channels == 1) {
+        av_channel_layout_from_mask(&codec_context->ch_layout, AV_CH_LAYOUT_MONO);
+    } else {
+        av_channel_layout_from_mask(&codec_context->ch_layout, AV_CH_LAYOUT_STEREO);
+    }
 #endif
 	codec_context->sample_rate = sample_rate;
 	codec_context->time_base.num = 1;
