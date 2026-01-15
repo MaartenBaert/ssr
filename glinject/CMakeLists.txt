@@ -33,6 +33,24 @@ set(link_libraries
 	${CMAKE_DL_LIBS}
 )
 
+get_filename_component(X11_X11_LIB_file ${X11_X11_LIB} NAME)
+get_filename_component(X11_Xfixes_LIB_file ${X11_Xfixes_LIB} NAME)
+
+set(OPENGL_LIBRARIES_files "")
+foreach(path IN LISTS OPENGL_LIBRARIES)
+	get_filename_component(name "${OPENGL_LIBRARIES}" NAME)
+	list(APPEND OPENGL_LIBRARIES_files "${name}")
+endforeach()
+
+set(link_libraries_32bit
+	${CMAKE_THREAD_LIBS_INIT}
+	${X11_X11_LIB_file}
+	${X11_Xfixes_LIB_file}
+	${OPENGL_LIBRARIES_files}
+	-lrt
+	${CMAKE_DL_LIBS}
+)
+
 add_library(ssr-glinject SHARED ${sources})
 target_include_directories(ssr-glinject PRIVATE ${include_directories})
 target_link_libraries(ssr-glinject PRIVATE ${link_libraries})
@@ -42,7 +60,7 @@ if(ENABLE_32BIT_GLINJECT)
 
 	add_library(ssr-glinject32 SHARED ${sources})
 	target_include_directories(ssr-glinject32 PRIVATE ${include_directories})
-	target_link_libraries(ssr-glinject32 PRIVATE ${link_libraries})
+	target_link_libraries(ssr-glinject32 PRIVATE ${link_libraries_32bit})
 	install(TARGETS ssr-glinject32 LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIB32DIR})
 
 	set_target_properties(ssr-glinject32 PROPERTIES COMPILE_FLAGS -m32 LINK_FLAGS -m32)

@@ -29,8 +29,11 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QAction>
 #include <QApplication>
+#include <QGuiApplication>
 #include <QDesktopServices>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QDesktopWidget>
+#endif
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QInputDialog>
@@ -38,6 +41,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QMenu>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QShortcut>
 #include <QSystemTrayIcon>
 
 #include <QButtonGroup>
@@ -92,7 +96,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <thread>
 #include <vector>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QX11Info>
+#endif
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/Xfixes.h>
@@ -109,7 +116,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 // replacement for QX11Info::isPlatformX11()
 inline bool IsPlatformX11() {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	if(qGuiApp->nativeInterface<QNativeInterface::QX11Application>() == nullptr)
+		return false;
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
 	if(!QX11Info::isPlatformX11())
 		return false;
 #endif
@@ -122,6 +132,21 @@ inline bool IsPlatformX11() {
 	}
 	char *d = getenv("DISPLAY");
 	return (d != NULL);
+}
+
+// replacement for QX11Info::isCompositingManagerRunning()
+inline bool IsCompositingWindowManager() {
+	if(IsPlatformX11()) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		auto *x11_app = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
+		Display *display = x11_app->display();
+		int major_opcode, first_event, first_error;
+		return XQueryExtension(display, "Composite", &major_opcode, &first_event, &first_error);
+#else
+		return QX11Info::isCompositingManagerRunning();
+#endif
+	}
+	return true;
 }
 
 // replacement for QFontMetrics::width()
@@ -257,6 +282,11 @@ inline void atomic_thread_fence_replacement(memory_order) {
 // avformat_free_context: lavf 52.96.0 / 52.96.0
 #define SSR_USE_AVFORMAT_FREE_CONTEXT              TEST_AV_VERSION(LIBAVFORMAT, 52, 96, 52, 96)
 
+// avcodec_close deprecated: lavc 60.39.100 / ???
+// - ffmpeg: missing, commit: https://github.com/FFmpeg/FFmpeg/commit/1cc24d749569a42510399a29b034f7a77bdec34e
+#define SSR_USE_AVCODEC_CLOSE_DEPRECATED           TEST_AV_VERSION(LIBAVCODEC, 60, 39, 999, 999)
+// AVChannelLayout, ch_layout: lavc 59.24.100 / ???
+#define SSR_USE_AV_CHANNEL_LAYOUT                  TEST_AV_VERSION(LIBAVCODEC, 59, 24, 999, 999)
 // av_codec_iterate: lavc 58.10.100 / ???
 #define SSR_USE_AV_CODEC_ITERATE                   TEST_AV_VERSION(LIBAVCODEC, 58, 10, 999, 999)
 // av_lockmgr_register deprecated: lavc 58.9.100 / ???
@@ -353,6 +383,14 @@ class V4L2Exception : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
 		return "V4L2Exception";
+	}
+};
+#endif
+#if SSR_USE_PIPEWIRE
+class PipeWireException : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "PipeWireException";
 	}
 };
 #endif

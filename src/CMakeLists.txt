@@ -12,6 +12,10 @@ find_package(X11 REQUIRED)
 if(WITH_V4L2)
 	find_package(V4L2 REQUIRED)
 endif()
+if(WITH_PIPEWIRE)
+	find_package(PipeWire REQUIRED)
+	find_package(SPA REQUIRED)
+endif()
 if(WITH_ALSA)
 	find_package(ALSA REQUIRED)
 endif()
@@ -22,7 +26,9 @@ if(WITH_JACK)
 	find_package(Jack REQUIRED)
 endif()
 
-if(WITH_QT5)
+if(WITH_QT6)
+	find_package(Qt6 6.2 COMPONENTS Core Gui Widgets REQUIRED)
+elseif(WITH_QT5)
 	find_package(Qt5 5.7 COMPONENTS Core Gui Widgets X11Extras REQUIRED)
 else()
 	find_package(Qt4 4.8 COMPONENTS QtGui REQUIRED)
@@ -35,6 +41,8 @@ set(sources
 	AV/Input/GLInjectInput.h
 	AV/Input/JACKInput.cpp
 	AV/Input/JACKInput.h
+	AV/Input/PipeWireInput.cpp
+	AV/Input/PipeWireInput.h
 	AV/Input/PulseAudioInput.cpp
 	AV/Input/PulseAudioInput.h
 	AV/Input/SSRVideoStream.h
@@ -162,7 +170,14 @@ set(res_input
 	../data/resources/resources.qrc
 )
 
-if(WITH_QT5)
+if(WITH_QT6)
+	qt6_add_resources(res_output ${res_input})
+	set(QT_LIBS
+		Qt6::Core
+		Qt6::Gui
+		Qt6::Widgets
+	)
+elseif(WITH_QT5)
 	qt5_add_resources(res_output ${res_input})
 	set(QT_LIBS
 		Qt5::Core
@@ -195,6 +210,8 @@ target_include_directories(simplescreenrecorder PRIVATE
 	${X11_Xi_INCLUDE_PATH}
 	${X11_Xinerama_INCLUDE_PATH}
 	$<$<BOOL:${WITH_V4L2}>:${V4L2_INCLUDE_DIRS}>
+	$<$<BOOL:${WITH_PIPEWIRE}>:${PIPEWIRE_INCLUDE_DIRS}>
+	$<$<BOOL:${WITH_PIPEWIRE}>:${SPA_INCLUDE_DIRS}>
 	$<$<BOOL:${WITH_ALSA}>:${ALSA_INCLUDE_DIRS}>
 	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_INCLUDE_DIRS}>
 	$<$<BOOL:${WITH_JACK}>:${JACK_INCLUDE_DIRS}>
@@ -219,6 +236,7 @@ target_link_libraries(simplescreenrecorder PRIVATE
 	${X11_Xi_LIB}
 	${X11_Xinerama_LIB}
 	$<$<BOOL:${WITH_V4L2}>:${V4L2_LIBRARIES}>
+	$<$<BOOL:${WITH_PIPEWIRE}>:${PIPEWIRE_LIBRARIES}>
 	$<$<BOOL:${WITH_ALSA}>:${ALSA_LIBRARIES}>
 	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_LIBRARIES}>
 	$<$<BOOL:${WITH_JACK}>:${JACK_LIBRARIES}>
@@ -230,6 +248,7 @@ target_compile_definitions(simplescreenrecorder PRIVATE
 	-DSSR_USE_JACK_METADATA=$<BOOL:${ENABLE_JACK_METADATA}>
 	-DSSR_USE_OPENGL_RECORDING=$<BOOL:${WITH_OPENGL_RECORDING}>
 	-DSSR_USE_V4L2=$<BOOL:${WITH_V4L2}>
+	-DSSR_USE_PIPEWIRE=$<BOOL:${WITH_PIPEWIRE}>
 	-DSSR_USE_ALSA=$<BOOL:${WITH_ALSA}>
 	-DSSR_USE_PULSEAUDIO=$<BOOL:${WITH_PULSEAUDIO}>
 	-DSSR_USE_JACK=$<BOOL:${WITH_JACK}>

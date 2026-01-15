@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.1)
-cmake_policy(VERSION 3.1)
+cmake_minimum_required(VERSION 3.5)
+cmake_policy(VERSION 3.5)
 
 if(POLICY CMP0072)
 	cmake_policy(SET CMP0072 NEW)
@@ -21,10 +21,12 @@ option(ENABLE_FFMPEG_VERSIONS "Use FFmpeg version numbers for feature support te
 option(ENABLE_JACK_METADATA "Use the JACK metadata API. May not work with very old JACK versions." TRUE)
 option(WITH_OPENGL_RECORDING "Build with OpenGL recording support." TRUE)
 option(WITH_V4L2 "Build with V4L2 support." TRUE)
+option(WITH_PIPEWIRE "Build with PipeWire support." TRUE)
 option(WITH_ALSA "Build with ALSA support." TRUE)
 option(WITH_PULSEAUDIO "Build with PulseAudio support." TRUE)
 option(WITH_JACK "Build with JACK support." TRUE)
 option(WITH_QT5 "Build with Qt5 (instead of Qt4)." FALSE)
+option(WITH_QT6 "Build with Qt6 (instead of Qt4/5)." FALSE)
 option(WITH_SIMPLESCREENRECORDER "Build the 'simplescreenrecorder' executable." TRUE)
 option(WITH_GLINJECT "Build the 'libssr-glinject' library. Required for OpenGL recording." TRUE)
 
@@ -88,11 +90,11 @@ if(WITH_SIMPLESCREENRECORDER)
 		DESTINATION ${CMAKE_INSTALL_FULL_MANDIR}/man1
 	)
 	install(
-		FILES data/simplescreenrecorder.desktop
+		FILES data/be.maartenbaert.simplescreenrecorder.desktop
 		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/applications
 	)
 	install(
-		FILES data/simplescreenrecorder.metainfo.xml
+		FILES data/be.maartenbaert.simplescreenrecorder.metainfo.xml
 		DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/metainfo
 	)
 

@@ -23,7 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 bool g_disable_screen_scaling = false;
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 
 static const char legacyDevicePixelEnvVar[] = "QT_DEVICE_PIXEL_RATIO";
 static const char scaleFactorEnvVar[] = "QT_SCALE_FACTOR";
@@ -75,12 +75,13 @@ std::vector<double> GetScreenScaleFactors() {
 
 void ScreenScalingFix() {
 
-	// Workarounds for broken screen scaling. SSR tries to support screen scaling, but the Qt implementation is
+	// Workarounds for broken screen scaling. SSR tries to support screen scaling, but the Qt5 implementation is
 	// somewhat broken, especially for non-integer scale factors. So when we detect that a fractional screen scale
 	// factor is being used, we forcibly disable it. The Qt code that determines the scale factors is located in the
 	// (undocumented) QHighDpiScaling class, we replicate the same logic here to detect potential problems.
+	// In Qt6 the problems appear to have been fixed.
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 
 	// Check whether the global scale factor is fractional.
 	double global_factor = GetGlobalScaleFactor();
@@ -112,6 +113,7 @@ void ScreenScalingFix() {
 	QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
 #endif
+
 }
 
 void ScreenScalingMessage() {

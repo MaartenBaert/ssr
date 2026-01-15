@@ -42,7 +42,12 @@ struct ScheduleEntry {
 	enum_schedule_action action;
 };
 
-extern const Qt::TimeSpec SCHEDULE_TIME_ZONE_TIMESPECS[SCHEDULE_TIME_ZONE_COUNT];
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+extern const QTimeZone SCHEDULE_TIME_ZONE_QTIMEZONES[SCHEDULE_TIME_ZONE_COUNT];
+#else
+extern const Qt::TimeSpec SCHEDULE_TIME_ZONE_QTIMESPECS[SCHEDULE_TIME_ZONE_COUNT];
+#endif
+
 extern const QString SCHEDULE_ACTION_TEXT[SCHEDULE_ACTION_COUNT];
 
 class RecordScheduleEntryWidget : public QWidget {
@@ -58,11 +63,16 @@ public:
 	RecordScheduleEntryWidget(QWidget* parent = NULL);
 	~RecordScheduleEntryWidget();
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	inline void Print(const QString& str) { qDebug() << "timezone" << str << m_datetimeedit_time->dateTime() << m_datetimeedit_time->timeZone(); }
+	inline void SetTimeZone(QTimeZone spec) { m_datetimeedit_time->setTimeZone(spec); m_datetimeedit_time->setDateTime(m_datetimeedit_time->dateTime()); }
+	inline void SetTime(const QDateTime& time) { m_datetimeedit_time->setTimeZone(time.timeZone()); m_datetimeedit_time->setDateTime(time); }
+#else
 	inline void Print(const QString& str) { qDebug() << "timespec" << str << m_datetimeedit_time->dateTime() << m_datetimeedit_time->timeSpec(); }
-
 	inline void SetTimeSpec(Qt::TimeSpec spec) { m_datetimeedit_time->setTimeSpec(spec); m_datetimeedit_time->setDateTime(m_datetimeedit_time->dateTime()); }
-
 	inline void SetTime(const QDateTime& time) { m_datetimeedit_time->setTimeSpec(time.timeSpec()); m_datetimeedit_time->setDateTime(time); }
+#endif
+
 	inline void SetAction(enum_schedule_action action) { m_combobox_action->setCurrentIndex(clamp((int) action, 0, (int) SCHEDULE_ACTION_COUNT - 1)); }
 
 	inline QDateTime GetTime() { return m_datetimeedit_time->dateTime(); }

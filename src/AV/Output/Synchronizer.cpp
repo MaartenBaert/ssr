@@ -27,6 +27,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "AudioEncoder.h"
 #include "SampleCast.h"
 #include "SyncDiagram.h"
+#include <libavutil/channel_layout.h>
 
 // The amount of filtering applied to audio timestamps to reduce noise. Higher values reduce timestamp noise (and associated drift correction),
 // but if the value is too high, it will take more time to detect gaps.
@@ -180,10 +181,10 @@ static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int channels, u
 	frame->GetFrame()->nb_samples = samples;
 #endif
 #if SSR_USE_AVFRAME_CHANNELS
-#if LIBAVCODEC_VERSION_MAJOR < 61
-	frame->GetFrame()->channels = channels;
+#if SSR_USE_AV_CHANNEL_LAYOUT
+	av_channel_layout_default(&frame->GetFrame()->ch_layout, channels);
 #else
-	frame->GetFrame()->ch_layout.nb_channels = channels;
+	frame->GetFrame()->channels = channels;
 #endif
 #endif
 #if SSR_USE_AVFRAME_SAMPLE_RATE
@@ -317,7 +318,7 @@ int64_t Synchronizer::GetNextVideoTimestamp() {
 	return videolock->m_next_timestamp;
 }
 
-void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* data, int stride, AVPixelFormat format, int colorspace, int64_t timestamp) {
+void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const uint8_t* const* data, const int* stride, AVPixelFormat format, int colorspace, int64_t timestamp) {
 	assert(m_output_format->m_video_enabled);
 
 	// add new block to sync diagram
@@ -345,7 +346,7 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	std::unique_ptr<AVFrameWrapper> converted_frame = CreateVideoFrame(m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format, NULL);
 
 	// scale and convert the frame to the right format
-	videolock->m_fast_scaler.Scale(width, height, format, colorspace, &data, &stride,
+	videolock->m_fast_scaler.Scale(width, height, format, colorspace, data, stride,
 			m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format, m_output_format->m_video_colorspace,
 			converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
 

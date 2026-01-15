@@ -31,10 +31,18 @@ ENUMSTRINGS(enum_schedule_action) = {
 	{SCHEDULE_ACTION_PAUSE, "pause"},
 };
 
-const Qt::TimeSpec SCHEDULE_TIME_ZONE_TIMESPECS[SCHEDULE_TIME_ZONE_COUNT] = {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+const QTimeZone SCHEDULE_TIME_ZONE_QTIMEZONES[SCHEDULE_TIME_ZONE_COUNT] = {
+	QTimeZone::LocalTime,
+	QTimeZone::UTC,
+};
+#else
+const Qt::TimeSpec SCHEDULE_TIME_ZONE_QTIMESPECS[SCHEDULE_TIME_ZONE_COUNT] = {
 	Qt::LocalTime,
 	Qt::UTC,
 };
+#endif
+
 const QString SCHEDULE_ACTION_TEXT[SCHEDULE_ACTION_COUNT] {
 	RecordScheduleEntryWidget::tr("Start"),
 	RecordScheduleEntryWidget::tr("Pause"),
@@ -55,7 +63,7 @@ RecordScheduleEntryWidget::RecordScheduleEntryWidget(QWidget* parent)
 	}
 
 	QHBoxLayout *layout = new QHBoxLayout(this);
-	layout->setMargin(5);
+	layout->setContentsMargins(5, 5, 5, 5);
 	layout->addWidget(label_time);
 	layout->addWidget(m_datetimeedit_time);
 	layout->addSpacing(10);
@@ -161,10 +169,18 @@ DialogRecordSchedule::~DialogRecordSchedule() {
 
 void DialogRecordSchedule::OnTimeZoneChanged() {
 	m_clock_time = QDateTime();
-	Qt::TimeSpec spec = SCHEDULE_TIME_ZONE_TIMESPECS[m_combobox_timezone->currentIndex()];
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	QTimeZone timezone = SCHEDULE_TIME_ZONE_QTIMEZONES[m_combobox_timezone->currentIndex()];
+#else
+	Qt::TimeSpec spec = SCHEDULE_TIME_ZONE_QTIMESPECS[m_combobox_timezone->currentIndex()];
+#endif
 	for(unsigned int i = 0; i < m_widgetrack_schedule->GetWidgetCount(); ++i) {
 		RecordScheduleEntryWidget *widget = static_cast<RecordScheduleEntryWidget*>(m_widgetrack_schedule->GetWidget(i));
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		widget->SetTimeZone(timezone);
+#else
 		widget->SetTimeSpec(spec);
+#endif
 	}
 	OnUpdateTime();
 }
@@ -173,8 +189,13 @@ void DialogRecordSchedule::OnUpdateTime() {
 	QDateTime now = QDateTime::currentDateTimeUtc();
 	if(m_clock_time.isNull() || now > m_clock_time || now.msecsTo(m_clock_time) > 100)
 		m_clock_time = now.addMSecs(-now.time().msec());
-	Qt::TimeSpec spec = SCHEDULE_TIME_ZONE_TIMESPECS[m_combobox_timezone->currentIndex()];
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	QTimeZone timezone = SCHEDULE_TIME_ZONE_QTIMEZONES[m_combobox_timezone->currentIndex()];
+	m_label_time->setText(m_clock_time.toTimeZone(timezone).toString("yyyy-MM-dd hh:mm:ss t"));
+#else
+	Qt::TimeSpec spec = SCHEDULE_TIME_ZONE_QTIMESPECS[m_combobox_timezone->currentIndex()];
 	m_label_time->setText(m_clock_time.toTimeSpec(spec).toString("yyyy-MM-dd hh:mm:ss t"));
+#endif
 	m_clock_time = m_clock_time.addSecs(1);
 	m_timer_clock->start(now.msecsTo(m_clock_time));
 }
@@ -183,9 +204,17 @@ void DialogRecordSchedule::OnAdd() {
 	unsigned int selected = m_widgetrack_schedule->GetSelected();
 	unsigned int index = (selected == WidgetRack::NO_SELECTION)? m_widgetrack_schedule->GetWidgetCount() : selected + 1;
 	RecordScheduleEntryWidget *widget = new RecordScheduleEntryWidget(m_widgetrack_schedule->viewport());
-	Qt::TimeSpec spec = SCHEDULE_TIME_ZONE_TIMESPECS[m_combobox_timezone->currentIndex()];
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	QTimeZone timezone = SCHEDULE_TIME_ZONE_QTIMEZONES[m_combobox_timezone->currentIndex()];
+#else
+	Qt::TimeSpec spec = SCHEDULE_TIME_ZONE_QTIMESPECS[m_combobox_timezone->currentIndex()];
+#endif
 	if(selected == WidgetRack::NO_SELECTION) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		QDateTime time = QDateTime::currentDateTimeUtc().toTimeZone(timezone).addSecs(60);
+#else
 		QDateTime time = QDateTime::currentDateTimeUtc().toTimeSpec(spec).addSecs(60);
+#endif
 		time.setTime(QTime(time.time().hour(), 0, 0, 0));
 		widget->SetTime(time.addSecs(60 * 60));
 	} else {

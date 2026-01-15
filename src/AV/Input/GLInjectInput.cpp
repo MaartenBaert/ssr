@@ -345,7 +345,9 @@ void GLInjectInput::InputThread() {
 
 			// push the frame
 			// we can do this even when we don't have the lock because only this thread will change the stream reader
-			PushVideoFrame(width, height, (uint8_t*) data, stride, AV_PIX_FMT_BGRA, SWS_CS_DEFAULT, timestamp);
+			const uint8_t *image_data[1] = {(uint8_t*) data};
+			int image_stride[1] = {stride};
+			PushVideoFrame(width, height, image_data, image_stride, AV_PIX_FMT_BGRA, SWS_CS_DEFAULT, timestamp);
 
 			// go to the next frame
 			{

@@ -574,8 +574,8 @@ void X11Input::InputThread() {
 			++m_frame_counter;
 
 			// push the frame
-			uint8_t *image_data = (uint8_t*) m_x11_image->data;
-			int image_stride = m_x11_image->bytes_per_line;
+			const uint8_t *image_data[1] = {(uint8_t*) m_x11_image->data};
+			int image_stride[1] = {m_x11_image->bytes_per_line};
 			AVPixelFormat x11_image_format = X11ImageGetPixelFormat(m_x11_image);
 			PushVideoFrame(grab_width, grab_height, image_data, image_stride, x11_image_format, SWS_CS_DEFAULT, timestamp);
 			last_timestamp = timestamp;
