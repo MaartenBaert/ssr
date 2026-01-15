@@ -41,6 +41,12 @@ private:
 	bool m_sync_diagram;
 	bool m_benchmark;
 	bool m_gui;
+	QString m_mqtt_broker;
+	int m_mqtt_port;
+	QString m_mqtt_username;
+	QString m_mqtt_password;
+	bool m_mqtt_tls;
+	bool m_mqtt_auto_connect;
 
 	static CommandLineOptions *s_instance;
 
@@ -63,6 +69,12 @@ public:
 	inline static bool GetSyncDiagram() { return GetInstance()->m_sync_diagram; }
 	inline static bool GetBenchmark() { return GetInstance()->m_benchmark; }
 	inline static bool GetGui() { return GetInstance()->m_gui; }
+	inline static const QString& GetMqttBroker() { return GetInstance()->m_mqtt_broker; }
+	inline static int GetMqttPort() { return GetInstance()->m_mqtt_port; }
+	inline static const QString& GetMqttUsername() { return GetInstance()->m_mqtt_username; }
+	inline static const QString& GetMqttPassword() { return GetInstance()->m_mqtt_password; }
+	inline static bool GetMqttTls() { return GetInstance()->m_mqtt_tls; }
+	inline static bool GetMqttAutoConnect() { return GetInstance()->m_mqtt_auto_connect; }
 
 };
 

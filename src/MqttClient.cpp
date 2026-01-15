@@ -1,0 +1,540 @@
+/*
+Copyright (c) 2012-2024 Maarten Baert <maarten-baert@hotmail.com>
+
+This file is part of SimpleScreenRecorder.
+
+SimpleScreenRecorder is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+SimpleScreenRecorder is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "MqttClient.h"
+#include "PageRecord.h"
+#include "Logger.h"
+
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QDateTime>
+#include <QHostInfo>
+#include <QSslConfiguration>
+#include <QSslCertificate>
+#include <QSslKey>
+#include <QFile>
+
+MqttClient::MqttClient(PageRecord* page_record)
+	: m_page_record(page_record),
+	  m_client(nullptr),
+	  m_reconnect_timer(nullptr),
+	  m_keepalive_timer(nullptr),
+	  m_connected(false),
+	  m_broker_host("localhost"),
+	  m_broker_port(1883),
+	  m_use_tls(false),
+	  m_last_recording_state(false),
+	  m_sub_recording_start(nullptr),
+	  m_sub_recording_stop(nullptr),
+	  m_sub_recording_toggle(nullptr),
+	  m_sub_topic_change(nullptr),
+	  m_sub_button_recording(nullptr),
+	  m_sub_button_onair(nullptr) {
+	
+	m_client_id = GenerateClientId();
+	
+	m_client = new QMqttClient(this);
+	m_reconnect_timer = new QTimer(this);
+	m_keepalive_timer = new QTimer(this);
+	
+	connect(m_client, &QMqttClient::connected, this, &MqttClient::OnClientConnected);
+	connect(m_client, &QMqttClient::disconnected, this, &MqttClient::OnClientDisconnected);
+	connect(m_client, &QMqttClient::errorChanged, this, &MqttClient::OnClientError);
+	connect(m_client, &QMqttClient::messageReceived, this, &MqttClient::OnClientMessageReceived);
+	
+	connect(m_reconnect_timer, &QTimer::timeout, this, &MqttClient::OnReconnectTimer);
+	connect(m_keepalive_timer, &QTimer::timeout, this, &MqttClient::OnKeepaliveTimer);
+	
+	m_reconnect_timer->setInterval(RECONNECT_INTERVAL_MS);
+	m_keepalive_timer->setInterval(KEEPALIVE_INTERVAL_MS);
+}
+
+MqttClient::~MqttClient() {
+	Disconnect();
+}
+
+void MqttClient::LoadSettings(QSettings* settings) {
+	settings->beginGroup("MQTT");
+	
+	// Load from settings file
+	m_broker_host = settings->value("broker_host", "localhost").toString();
+	m_broker_port = settings->value("broker_port", 1883).toInt();
+	m_username = settings->value("username", "").toString();
+	m_password = settings->value("password", "").toString();
+	m_use_tls = settings->value("use_tls", false).toBool();
+	m_ca_cert = settings->value("ca_cert", "").toString();
+	m_client_cert = settings->value("client_cert", "").toString();
+	m_client_key = settings->value("client_key", "").toString();
+	
+	bool auto_connect = settings->value("auto_connect", false).toBool();
+	settings->endGroup();
+	
+	// Override with command line options if provided
+	CommandLineOptions* cmd = CommandLineOptions::GetInstance();
+	if (!cmd->GetMqttBroker().isEmpty()) {
+		m_broker_host = cmd->GetMqttBroker();
+	}
+	if (cmd->GetMqttPort() != 1883) {
+		m_broker_port = cmd->GetMqttPort();
+	}
+	if (!cmd->GetMqttUsername().isEmpty()) {
+		m_username = cmd->GetMqttUsername();
+	}
+	if (!cmd->GetMqttPassword().isEmpty()) {
+		m_password = cmd->GetMqttPassword();
+	}
+	if (cmd->GetMqttTls()) {
+		m_use_tls = true;
+	}
+	
+	// Auto-connect if enabled
+	if (auto_connect && cmd->GetMqttAutoConnect() && !m_broker_host.isEmpty()) {
+		Connect();
+	}
+}
+
+void MqttClient::SaveSettings(QSettings* settings) {
+	settings->beginGroup("MQTT");
+	
+	// Don't save command line overrides
+	CommandLineOptions* cmd = CommandLineOptions::GetInstance();
+	
+	// Only save values that weren't overridden by command line
+	if (cmd->GetMqttBroker().isEmpty()) {
+		settings->setValue("broker_host", m_broker_host);
+	}
+	if (cmd->GetMqttPort() == 1883) {
+		settings->setValue("broker_port", m_broker_port);
+	}
+	if (cmd->GetMqttUsername().isEmpty()) {
+		settings->setValue("username", m_username);
+	}
+	if (cmd->GetMqttPassword().isEmpty()) {
+		settings->setValue("password", m_password);
+	}
+	if (!cmd->GetMqttTls()) {
+		settings->setValue("use_tls", m_use_tls);
+	}
+	
+	// Always save certificate paths
+	settings->setValue("ca_cert", m_ca_cert);
+	settings->setValue("client_cert", m_client_cert);
+	settings->setValue("client_key", m_client_key);
+	settings->setValue("auto_connect", IsConnected() || m_reconnect_timer->isActive());
+	
+	settings->endGroup();
+}
+
+bool MqttClient::IsEnabled() const {
+	return !m_broker_host.isEmpty();
+}
+
+bool MqttClient::IsConnected() const {
+	return m_connected;
+}
+
+void MqttClient::Connect() {
+	if (m_broker_host.isEmpty()) {
+		Logger::LogError("[MQTT] Cannot connect: broker host not specified");
+		return;
+	}
+	
+	SetupClient();
+	
+	Logger::LogInfo("[MQTT] Connecting to " + m_broker_host + ":" + QString::number(m_broker_port) + "...");
+	m_client->connectToHost();
+	
+	m_reconnect_timer->start();
+}
+
+void MqttClient::Disconnect() {
+	m_reconnect_timer->stop();
+	m_keepalive_timer->stop();
+	
+	if (m_client->state() != QMqttClient::Disconnected) {
+		Logger::LogInfo("[MQTT] Disconnecting...");
+		m_client->disconnectFromHost();
+	}
+	
+	m_connected = false;
+}
+
+void MqttClient::PublishStatus(const QString& status, const QString& session_id, const QString& topic) {
+	if (!m_connected) return;
+	
+	QJsonObject json;
+	json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
+	json["status"] = status;
+	if (!session_id.isEmpty()) {
+		json["session_id"] = session_id;
+	}
+	if (!topic.isEmpty()) {
+		json["topic"] = topic;
+	}
+	json["client_id"] = m_client_id;
+	
+	QJsonDocument doc(json);
+	QString base_topic = GetBaseTopic();
+	m_client->publish(base_topic + "status", doc.toJson(), 1, false);
+	
+	m_last_status = status;
+	m_last_session_id = session_id;
+	m_last_topic = topic;
+}
+
+void MqttClient::PublishRecordingState(bool recording) {
+	if (!m_connected) return;
+	
+	if (m_last_recording_state == recording) {
+		return;
+	}
+	
+	m_last_recording_state = recording;
+	
+	QJsonObject json;
+	json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
+	json["recording"] = recording;
+	json["client_id"] = m_client_id;
+	
+	QJsonDocument doc(json);
+	QString base_topic = GetBaseTopic();
+	m_client->publish(base_topic + "recording/state", doc.toJson(), 1, true);
+	
+	// Also publish LED state for compatibility with existing systems
+	PublishLedState("recording", recording);
+}
+
+void MqttClient::PublishRecordingEvent(const QString& event, const QString& session_id, const QString& topic) {
+	if (!m_connected) return;
+	
+	QJsonObject json;
+	json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
+	json["event"] = event;
+	if (!session_id.isEmpty()) {
+		json["session_id"] = session_id;
+	}
+	if (!topic.isEmpty()) {
+		json["topic"] = topic;
+	}
+	json["client_id"] = m_client_id;
+	
+	QJsonDocument doc(json);
+	QString base_topic = GetBaseTopic();
+	m_client->publish(base_topic + "recording/events", doc.toJson(), 1, false);
+}
+
+void MqttClient::PublishLedState(const QString& led, bool state) {
+	if (!m_connected) return;
+	
+	QJsonObject json;
+	json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
+	json["led"] = led;
+	json["state"] = state;
+	json["client_id"] = m_client_id;
+	
+	QJsonDocument doc(json);
+	QString base_topic = GetBaseTopic();
+	m_client->publish(base_topic + "device/led/" + led, doc.toJson(), 1, true);
+}
+
+void MqttClient::PublishError(const QString& error) {
+	if (!m_connected) return;
+	
+	QJsonObject json;
+	json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
+	json["error"] = error;
+	json["client_id"] = m_client_id;
+	
+	QJsonDocument doc(json);
+	QString base_topic = GetBaseTopic();
+	m_client->publish(base_topic + "error", doc.toJson(), 1, false);
+}
+
+void MqttClient::SetupClient() {
+	m_client->setHostname(m_broker_host);
+	m_client->setPort(m_broker_port);
+	m_client->setClientId(m_client_id);
+	m_client->setKeepAlive(60);
+	
+	if (!m_username.isEmpty()) {
+		m_client->setUsername(m_username);
+		if (!m_password.isEmpty()) {
+			m_client->setPassword(m_password);
+		}
+	}
+	
+	if (m_use_tls) {
+		QSslConfiguration sslConfig;
+		sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+		
+		if (!m_ca_cert.isEmpty() && QFile::exists(m_ca_cert)) {
+			QFile caFile(m_ca_cert);
+			if (caFile.open(QIODevice::ReadOnly)) {
+				QSslCertificate caCert(&caFile, QSsl::Pem);
+				sslConfig.addCaCertificate(caCert);
+				caFile.close();
+			}
+		}
+		
+		if (!m_client_cert.isEmpty() && QFile::exists(m_client_cert) &&
+			!m_client_key.isEmpty() && QFile::exists(m_client_key)) {
+			QFile certFile(m_client_cert);
+			QFile keyFile(m_client_key);
+			if (certFile.open(QIODevice::ReadOnly) && keyFile.open(QIODevice::ReadOnly)) {
+				QSslCertificate clientCert(&certFile, QSsl::Pem);
+				QSslKey clientKey(&keyFile, QSsl::Rsa, QSsl::Pem);
+				sslConfig.setLocalCertificate(clientCert);
+				sslConfig.setPrivateKey(clientKey);
+				certFile.close();
+				keyFile.close();
+			}
+		}
+		
+		m_client->setTransport(sslConfig, QMqttClient::SecureSocket);
+	} else {
+		m_client->setTransport(QSslConfiguration(), QMqttClient::NonSecureSocket);
+	}
+}
+
+void MqttClient::SubscribeToTopics() {
+	if (!m_connected) return;
+	
+	QString base_topic = GetBaseTopic();
+	
+	m_sub_recording_start = m_client->subscribe(base_topic + "control/recording/start", 1);
+	m_sub_recording_stop = m_client->subscribe(base_topic + "control/recording/stop", 1);
+	m_sub_recording_toggle = m_client->subscribe(base_topic + "control/recording/toggle", 1);
+	m_sub_topic_change = m_client->subscribe(base_topic + "control/topic/change", 1);
+	m_sub_button_recording = m_client->subscribe(base_topic + "device/button/recording", 1);
+	m_sub_button_onair = m_client->subscribe(base_topic + "device/button/onair", 1);
+	
+	if (m_sub_recording_start) {
+		connect(m_sub_recording_start, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
+	}
+	if (m_sub_recording_stop) {
+		connect(m_sub_recording_stop, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
+	}
+	if (m_sub_recording_toggle) {
+		connect(m_sub_recording_toggle, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
+	}
+	if (m_sub_topic_change) {
+		connect(m_sub_topic_change, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
+	}
+	if (m_sub_button_recording) {
+		connect(m_sub_button_recording, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
+	}
+	if (m_sub_button_onair) {
+		connect(m_sub_button_onair, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
+	}
+}
+
+void MqttClient::UnsubscribeFromTopics() {
+	if (m_sub_recording_start) {
+		m_sub_recording_start->unsubscribe();
+		m_sub_recording_start = nullptr;
+	}
+	if (m_sub_recording_stop) {
+		m_sub_recording_stop->unsubscribe();
+		m_sub_recording_stop = nullptr;
+	}
+	if (m_sub_recording_toggle) {
+		m_sub_recording_toggle->unsubscribe();
+		m_sub_recording_toggle = nullptr;
+	}
+	if (m_sub_topic_change) {
+		m_sub_topic_change->unsubscribe();
+		m_sub_topic_change = nullptr;
+	}
+	if (m_sub_button_recording) {
+		m_sub_button_recording->unsubscribe();
+		m_sub_button_recording = nullptr;
+	}
+	if (m_sub_button_onair) {
+		m_sub_button_onair->unsubscribe();
+		m_sub_button_onair = nullptr;
+	}
+}
+
+void MqttClient::PublishConnectionState(bool connected) {
+	QJsonObject json;
+	json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
+	json["connected"] = connected;
+	json["client_id"] = m_client_id;
+	json["broker"] = m_broker_host + ":" + QString::number(m_broker_port);
+	
+	QJsonDocument doc(json);
+	QString base_topic = GetBaseTopic();
+	m_client->publish(base_topic + "connection", doc.toJson(), 1, true);
+}
+
+QString MqttClient::GenerateClientId() const {
+	QString hostname = QHostInfo::localHostName();
+	QString username = qgetenv("USER");
+	if (username.isEmpty()) {
+		username = qgetenv("USERNAME");
+	}
+	
+	QString client_id = "ssr_";
+	if (!hostname.isEmpty()) {
+		client_id += hostname + "_";
+	}
+	if (!username.isEmpty()) {
+		client_id += username + "_";
+	}
+	client_id += QString::number(QDateTime::currentSecsSinceEpoch() % 1000000);
+	
+	return client_id;
+}
+
+QString MqttClient::GetBaseTopic() const {
+	return "recording/" + m_client_id + "/";
+}
+
+void MqttClient::OnClientConnected() {
+	m_connected = true;
+	m_reconnect_timer->stop();
+	m_keepalive_timer->start();
+	
+	Logger::LogInfo("[MQTT] Connected to broker");
+	
+	PublishConnectionState(true);
+	SubscribeToTopics();
+	
+	// Publish initial status
+	PublishStatus("connected");
+	PublishRecordingState(false);
+}
+
+void MqttClient::OnClientDisconnected() {
+	m_connected = false;
+	m_keepalive_timer->stop();
+	m_reconnect_timer->start();
+	
+	UnsubscribeFromTopics();
+	
+	Logger::LogWarning("[MQTT] Disconnected from broker");
+}
+
+void MqttClient::OnClientError(QMqttClient::ClientError error) {
+	QString error_str;
+	switch (error) {
+		case QMqttClient::NoError: error_str = "NoError"; break;
+		case QMqttClient::InvalidProtocolVersion: error_str = "InvalidProtocolVersion"; break;
+		case QMqttClient::IdRejected: error_str = "IdRejected"; break;
+		case QMqttClient::ServerUnavailable: error_str = "ServerUnavailable"; break;
+		case QMqttClient::BadUsernameOrPassword: error_str = "BadUsernameOrPassword"; break;
+		case QMqttClient::NotAuthorized: error_str = "NotAuthorized"; break;
+		case QMqttClient::TransportInvalid: error_str = "TransportInvalid"; break;
+		case QMqttClient::ProtocolViolation: error_str = "ProtocolViolation"; break;
+		case QMqttClient::UnknownError: error_str = "UnknownError"; break;
+		case QMqttClient::Mqtt5SpecificError: error_str = "Mqtt5SpecificError"; break;
+		default: error_str = "UnknownErrorCode"; break;
+	}
+	
+	Logger::LogError("[MQTT] Error: " + error_str);
+	PublishError("Connection error: " + error_str);
+}
+
+void MqttClient::OnClientMessageReceived(const QMqttMessage& message) {
+	QString topic = message.topic().name();
+	QString payload = QString::fromUtf8(message.payload());
+	
+	Logger::LogDebug("[MQTT] Received message on topic: " + topic + " payload: " + payload);
+	
+	QString base_topic = GetBaseTopic();
+	QString relative_topic = topic;
+	if (topic.startsWith(base_topic)) {
+		relative_topic = topic.mid(base_topic.length());
+	}
+	
+	try {
+		QJsonDocument doc = QJsonDocument::fromJson(payload.toUtf8());
+		QJsonObject json;
+		if (!doc.isNull() && doc.isObject()) {
+			json = doc.object();
+		}
+		
+		if (relative_topic == "control/recording/start") {
+			emit RecordingStartRequested();
+		} else if (relative_topic == "control/recording/stop") {
+			emit RecordingStopRequested();
+		} else if (relative_topic == "control/recording/toggle") {
+			emit RecordingToggleRequested();
+		} else if (relative_topic == "control/topic/change") {
+			QString new_topic = json.value("topic").toString();
+			if (new_topic.isEmpty()) {
+				new_topic = json.value("new_topic").toString();
+			}
+			if (new_topic.isEmpty()) {
+				new_topic = payload.trimmed();
+			}
+			if (!new_topic.isEmpty()) {
+				emit TopicChangeRequested(new_topic);
+			}
+		} else if (relative_topic == "device/button/recording") {
+			QString action = json.value("action").toString();
+			if (action.isEmpty()) {
+				action = payload.trimmed().toLower();
+			}
+			
+			if (action == "pressed" || action == "down" || action == "1" || action == "true") {
+				emit ButtonRecordingPressed();
+			} else if (action == "released" || action == "up" || action == "0" || action == "false") {
+				emit ButtonRecordingReleased();
+			} else if (action == "toggle" || action == "click") {
+				emit RecordingToggleRequested();
+			}
+		} else if (relative_topic == "device/button/onair") {
+			QString action = json.value("action").toString();
+			if (action.isEmpty()) {
+				action = payload.trimmed().toLower();
+			}
+			
+			if (action == "pressed" || action == "down" || action == "1" || action == "true") {
+				emit ButtonOnAirPressed();
+			} else if (action == "released" || action == "up" || action == "0" || action == "false") {
+				emit ButtonOnAirReleased();
+			}
+		}
+	} catch (const std::exception& e) {
+		Logger::LogError("[MQTT] Error processing message: " + QString(e.what()));
+	}
+}
+
+void MqttClient::OnReconnectTimer() {
+	if (!m_connected && !m_broker_host.isEmpty()) {
+		Logger::LogInfo("[MQTT] Attempting to reconnect...");
+		m_client->connectToHost();
+	}
+}
+
+void MqttClient::OnKeepaliveTimer() {
+	if (m_connected) {
+		// Publish a keepalive message
+		QJsonObject json;
+		json["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
+		json["type"] = "keepalive";
+		json["client_id"] = m_client_id;
+		
+		QJsonDocument doc(json);
+		QString base_topic = GetBaseTopic();
+		m_client->publish(base_topic + "keepalive", doc.toJson(), 0, false);
+	}
+}

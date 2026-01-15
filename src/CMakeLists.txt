@@ -30,6 +30,8 @@ if(WITH_QT6)
 	find_package(Qt6 6.2 COMPONENTS Core Gui Widgets REQUIRED)
 elseif(WITH_QT5)
 	find_package(Qt5 5.7 COMPONENTS Core Gui Widgets X11Extras REQUIRED)
+	find_package(PkgConfig REQUIRED)
+	pkg_check_modules(MOSQUITTO REQUIRED libmosquitto)
 else()
 	find_package(Qt4 4.8 COMPONENTS QtGui REQUIRED)
 endif()
@@ -111,6 +113,8 @@ set(sources
 	GUI/AudioPreviewer.h
 	GUI/DialogGLInject.cpp
 	GUI/DialogGLInject.h
+	GUI/DialogMqttSettings.cpp
+	GUI/DialogMqttSettings.h
 	GUI/DialogRecordSchedule.cpp
 	GUI/DialogRecordSchedule.h
 	GUI/ElidedLabel.cpp
@@ -139,6 +143,9 @@ set(sources
 	GUI/VideoPreviewer.h
 	GUI/WidgetRack.cpp
 	GUI/WidgetRack.h
+	MqttClientInterface.h
+	MqttClientSimple.cpp
+	MqttClientSimple.h
 	Benchmark.cpp
 	Benchmark.h
 	Global.h
@@ -199,7 +206,7 @@ add_executable(simplescreenrecorder
 	${res_output}
 )
 
-target_include_directories(simplescreenrecorder PRIVATE
+	target_include_directories(simplescreenrecorder PRIVATE
 	${AVFORMAT_INCLUDE_DIRS}
 	${AVCODEC_INCLUDE_DIRS}
 	${AVUTIL_INCLUDE_DIRS}
@@ -215,6 +222,7 @@ target_include_directories(simplescreenrecorder PRIVATE
 	$<$<BOOL:${WITH_ALSA}>:${ALSA_INCLUDE_DIRS}>
 	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_INCLUDE_DIRS}>
 	$<$<BOOL:${WITH_JACK}>:${JACK_INCLUDE_DIRS}>
+	${MOSQUITTO_INCLUDE_DIRS}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/AV
 	${CMAKE_CURRENT_SOURCE_DIR}/AV/Input
@@ -223,7 +231,7 @@ target_include_directories(simplescreenrecorder PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/GUI
 )
 
-target_link_libraries(simplescreenrecorder PRIVATE
+	target_link_libraries(simplescreenrecorder PRIVATE
 	${AVFORMAT_LIBRARIES}
 	${AVCODEC_LIBRARIES}
 	${AVUTIL_LIBRARIES}
@@ -240,6 +248,7 @@ target_link_libraries(simplescreenrecorder PRIVATE
 	$<$<BOOL:${WITH_ALSA}>:${ALSA_LIBRARIES}>
 	$<$<BOOL:${WITH_PULSEAUDIO}>:${PULSEAUDIO_LIBRARIES}>
 	$<$<BOOL:${WITH_JACK}>:${JACK_LIBRARIES}>
+	${MOSQUITTO_LIBRARIES}
 )
 
 target_compile_definitions(simplescreenrecorder PRIVATE
