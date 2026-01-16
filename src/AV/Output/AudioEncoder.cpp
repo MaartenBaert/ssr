@@ -34,7 +34,7 @@ const std::vector<AudioEncoder::SampleFormatData> AudioEncoder::SUPPORTED_SAMPLE
 
 const unsigned int AudioEncoder::DEFAULT_FRAME_SAMPLES = 1024;
 
-AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec_context, AVCodec* codec, AVDictionary** options)
+AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec_context, const AVCodec* codec, AVDictionary** options)
 	: BaseEncoder(muxer, stream, codec_context, codec, options) {
 
 #if !SSR_USE_AVCODEC_ENCODE_AUDIO2
@@ -53,6 +53,9 @@ AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec
 }
 
 AudioEncoder::~AudioEncoder() {
+#if LIBAVCODEC_VERSION_MAJOR >= 61
+	av_channel_layout_uninit(&GetCodecContext()->ch_layout);
+#endif
 	StopThread();
 }
 
@@ -69,10 +72,10 @@ AVSampleFormat AudioEncoder::GetSampleFormat() {
 }
 
 unsigned int AudioEncoder::GetChannels() {
-#if SSR_USE_AV_CHANNEL_LAYOUT
-	return GetCodecContext()->ch_layout.nb_channels;
-#else
+#if LIBAVCODEC_VERSION_MAJOR < 61
 	return GetCodecContext()->channels;
+#else
+	return GetCodecContext()->ch_layout.nb_channels;
 #endif
 }
 
@@ -98,7 +101,7 @@ bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
 	return false;
 }
 
-void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
 								 unsigned int bit_rate, unsigned int channels, unsigned int sample_rate) {
 
 	if(channels == 0) {
@@ -111,11 +114,12 @@ void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 	}
 
 	codec_context->bit_rate = bit_rate;
-#if SSR_USE_AV_CHANNEL_LAYOUT
-	av_channel_layout_default(&codec_context->ch_layout, channels);
-#else
+#if LIBAVCODEC_VERSION_MAJOR < 61
 	codec_context->channels = channels;
 	codec_context->channel_layout = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
+#else
+	codec_context->ch_layout.nb_channels = channels;
+	codec_context->ch_layout.u.mask = (channels == 1)? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
 #endif
 	codec_context->sample_rate = sample_rate;
 	codec_context->time_base.num = 1;
@@ -166,11 +170,15 @@ bool AudioEncoder::EncodeFrame(AVFrameWrapper* frame) {
 		assert((unsigned int) frame->GetFrame()->nb_samples == GetFrameSize());
 #endif
 #if SSR_USE_AVFRAME_CHANNELS
-#if SSR_USE_AV_CHANNEL_LAYOUT
-	assert(frame->GetFrame()->ch_layout.nb_channels == GetCodecContext()->ch_layout.nb_channels);
-#else
-	assert(frame->GetFrame()->channels == GetCodecContext()->channels);
-#endif
+#  if LIBAVCODEC_VERSION_MAJOR < 61
+		assert(frame->GetFrame()->channels == GetChannels());
+#  else
+#    if SSR_USE_AV_CHANNEL_LAYOUT
+		assert(frame->GetFrame()->ch_layout.nb_channels == GetCodecContext()->ch_layout.nb_channels);
+#    else
+		assert(frame->GetFrame()->channels == GetCodecContext()->channels);
+#    endif
+#  endif /* LIBAVCODEC_VERSION_MAJOR < 61 */
 #endif
 #if SSR_USE_AVFRAME_SAMPLE_RATE
 		assert(frame->GetFrame()->sample_rate == GetCodecContext()->sample_rate);

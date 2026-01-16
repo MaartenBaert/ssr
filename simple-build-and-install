@@ -7,9 +7,45 @@
 #  - ENABLE_FFMPEG_VERSIONS
 #  - WITH_QT5
 #  - WITH_GLINJECT
+#  - CMAKE_POLICY_VERSION_MINIMUM (default: 3.5)
+# Use --no-install or -n to build without installing
 
 set -e
 cd "$( dirname "${BASH_SOURCE[0]}" )"
+
+# Parse command line arguments
+NO_INSTALL=false
+CMAKE_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -n|--no-install)
+            NO_INSTALL=true
+            shift
+            ;;
+        -h|--help)
+            echo "Usage: $0 [OPTIONS] [CMAKE_ARGS...]"
+            echo ""
+            echo "Options:"
+            echo "  -n, --no-install    Build without installing"
+            echo "  -h, --help          Show this help message"
+            echo ""
+            echo "Environment variables:"
+            echo "  ENABLE_32BIT_GLINJECT   TRUE or FALSE (default: auto-detected)"
+            echo "  ENABLE_X86_ASM          TRUE or FALSE (default: auto-detected)"
+            echo "  ENABLE_FFMPEG_VERSIONS  TRUE or FALSE (default: auto-detected)"
+            echo "  WITH_QT5                TRUE or FALSE (default: auto-detected)"
+            echo "  WITH_GLINJECT           TRUE or FALSE (default: auto-detected)"
+            echo ""
+            echo "Any additional arguments are passed to cmake."
+            exit 0
+            ;;
+        *)
+            CMAKE_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
 
 if [ x"$( whoami )" = x"root" ]; then
 	echo "Error: don't run this script as root, this will mess up file permissions"
@@ -27,7 +63,7 @@ if [ -z "$ENABLE_32BIT_GLINJECT" ] || [ -z "$ENABLE_X86_ASM" ] || [ -z "$WITH_GL
 			: ${WITH_GLINJECT:="TRUE"}
 			;;
 		"x86_64")
-			: ${ENABLE_32BIT_GLINJECT:="TRUE"}
+			: ${ENABLE_32BIT_GLINJECT:="FALSE"}
 			: ${ENABLE_X86_ASM:="TRUE"}
 			: ${WITH_GLINJECT:="TRUE"}
 			;;
@@ -37,6 +73,18 @@ if [ -z "$ENABLE_32BIT_GLINJECT" ] || [ -z "$ENABLE_X86_ASM" ] || [ -z "$WITH_GL
 			: ${WITH_GLINJECT:="FALSE"}
 			;;
 	esac
+fi
+
+# Check if 32-bit libraries are available if ENABLE_32BIT_GLINJECT is TRUE
+if [ x"$ENABLE_32BIT_GLINJECT" == x"TRUE" ]; then
+    echo "Checking for 32-bit development libraries..."
+    if ! dpkg --print-foreign-architectures 2>/dev/null | grep -q i386 && \
+       ! ls /usr/lib/i386-linux-gnu/ 2>/dev/null && \
+       ! ls /usr/lib32/ 2>/dev/null; then
+        echo "  Warning: 32-bit development libraries not found. Disabling 32-bit GLInject."
+        echo "  To enable 32-bit support, install 32-bit development libraries first."
+        ENABLE_32BIT_GLINJECT="FALSE"
+    fi
 fi
 
 if [ -z "$ENABLE_FFMPEG_VERSIONS" ]; then
@@ -87,6 +135,8 @@ echo "  ENABLE_X86_ASM = $ENABLE_X86_ASM"
 echo "  ENABLE_FFMPEG_VERSIONS = $ENABLE_FFMPEG_VERSIONS"
 echo "  WITH_QT5 = $WITH_QT5"
 echo "  WITH_GLINJECT = $WITH_GLINJECT"
+echo "  CMAKE_POLICY_VERSION_MINIMUM = ${CMAKE_POLICY_VERSION_MINIMUM:-3.5}"
+echo "  NO_INSTALL = $NO_INSTALL"
 
 PREFIX="/usr"
 
@@ -110,10 +160,19 @@ mkdir build-release
 cd build-release
 
 echo "Running cmake ..."
-cmake -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_BUILD_TYPE=Release "${OPTIONS[@]}" "$@" ..
+CMAKE_POLICY_VERSION_MINIMUM="${CMAKE_POLICY_VERSION_MINIMUM:-3.5}" cmake -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_BUILD_TYPE=Release "${OPTIONS[@]}" "${CMAKE_ARGS[@]}" ..
 
 echo "Compiling ..."
 make -j "$( nproc )"
+
+if [ "$NO_INSTALL" = true ]; then
+    echo "Skipping installation (--no-install flag specified)"
+    echo "Build completed successfully. Executable is at: $(pwd)/src/simplescreenrecorder"
+    echo "Leaving build-release directory ..."
+    cd ..
+    echo "Done."
+    exit 0
+fi
 
 if [ x"$WITH_GLINJECT" == x"TRUE" ]; then
 	echo "Removing old GLInject libraries ..."

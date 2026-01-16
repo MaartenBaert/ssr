@@ -45,6 +45,12 @@ void PrintOptionHelp() {
 		"  --activate-schedule   Activate the recording schedule immediately.\n"
 		"  --syncdiagram         Show synchronization diagram (for debugging).\n"
 		"  --benchmark           Run the internal benchmark.\n"
+		"  --mqtt-broker=HOST    Connect to MQTT broker at HOST (default: localhost).\n"
+		"  --mqtt-port=PORT      Connect to MQTT broker on PORT (default: 1883).\n"
+		"  --mqtt-username=USER  MQTT username for authentication.\n"
+		"  --mqtt-password=PASS  MQTT password for authentication.\n"
+		"  --mqtt-tls            Use TLS for MQTT connection.\n"
+		"  --mqtt-no-auto        Don't auto-connect to MQTT broker.\n"
 		"\n"
 		"Commands accepted through stdin:\n"
 		"  record-start          Start the recording.\n"
@@ -116,6 +122,12 @@ CommandLineOptions::CommandLineOptions() {
 	m_sync_diagram = false;
 	m_benchmark = false;
 	m_gui = true;
+	m_mqtt_broker = QString();
+	m_mqtt_port = 1883;
+	m_mqtt_username = QString();
+	m_mqtt_password = QString();
+	m_mqtt_tls = false;
+	m_mqtt_auto_connect = true;
 
 	s_instance = this;
 }
@@ -191,6 +203,31 @@ void CommandLineOptions::Parse() {
 				CheckOptionHasNoValue(option, value);
 				m_benchmark = true;
 				m_gui = false;
+			} else if(option == "--mqtt-broker") {
+				CheckOptionHasValue(option, value);
+				m_mqtt_broker = value;
+			} else if(option == "--mqtt-port") {
+				CheckOptionHasValue(option, value);
+				bool ok;
+				int port = value.toInt(&ok);
+				if(ok && port > 0 && port <= 65535) {
+					m_mqtt_port = port;
+				} else {
+					Logger::LogError("[CommandLineOptions::Parse] " + Logger::tr("Error: Invalid port number '%1'!").arg(value));
+					throw CommandLineException();
+				}
+			} else if(option == "--mqtt-username") {
+				CheckOptionHasValue(option, value);
+				m_mqtt_username = value;
+			} else if(option == "--mqtt-password") {
+				CheckOptionHasValue(option, value);
+				m_mqtt_password = value;
+			} else if(option == "--mqtt-tls") {
+				CheckOptionHasNoValue(option, value);
+				m_mqtt_tls = true;
+			} else if(option == "--mqtt-no-auto") {
+				CheckOptionHasNoValue(option, value);
+				m_mqtt_auto_connect = false;
 			} else {
 				Logger::LogError("[CommandLineOptions::Parse] " + Logger::tr("Error: Unknown command-line option '%1'!").arg(option));
 				PrintOptionHelp();

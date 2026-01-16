@@ -56,6 +56,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SimpleSynth.h"
 #include "VideoPreviewer.h"
 #include "AudioPreviewer.h"
+#include "MqttClientSimple.h"
+#include "MqttClientInterface.h"
+#include "DialogMqttSettings.h"
 
 static QString GetNewSegmentFile(const QString& file, bool add_timestamp) {
 	QFileInfo fi(file);
@@ -176,6 +179,9 @@ PageRecord::PageRecord(MainWindow* main_window)
 
 	m_stdin_reentrant = false;
 
+	// Initialize MQTT client
+	m_mqtt_client.reset(new MqttClientSimple(this));
+
 	QGroupBox *groupbox_recording = new QGroupBox(tr("Recording"), this);
 	{
 		m_pushbutton_record = new QPushButton(groupbox_recording);
@@ -184,6 +190,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 		m_pushbutton_schedule_activate = new QPushButton(groupbox_recording);
 		m_pushbutton_schedule_edit = new QPushButton(tr("Edit schedule"), groupbox_recording);
 		m_pushbutton_schedule_edit->setToolTip(tr("The recording schedule can be used to automatically start or pause the recording at a predefined time."));
+		m_pushbutton_mqtt_settings = new QPushButton(tr("MQTT Settings"), groupbox_recording);
+		m_pushbutton_mqtt_settings->setToolTip(tr("Configure MQTT remote control settings."));
 
 		m_checkbox_hotkey_enable = new QCheckBox(tr("Enable recording hotkey"), groupbox_recording);
 		m_checkbox_hotkey_enable->setToolTip(tr("The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,\n"
@@ -210,6 +218,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 		connect(m_pushbutton_record, SIGNAL(clicked()), this, SLOT(OnRecordStartPause()));
 		connect(m_pushbutton_schedule_activate, SIGNAL(clicked()), this, SLOT(OnScheduleActivateDeactivate()));
 		connect(m_pushbutton_schedule_edit, SIGNAL(clicked()), this, SLOT(OnScheduleEdit()));
+		connect(m_pushbutton_mqtt_settings, SIGNAL(clicked()), this, SLOT(OnMqttSettings()));
 		connect(m_checkbox_hotkey_enable, SIGNAL(clicked()), this, SLOT(OnUpdateHotkeyFields()));
 #if SSR_USE_ALSA
 		connect(m_checkbox_sound_notifications_enable, SIGNAL(clicked()), this, SLOT(OnUpdateSoundNotifications()));
@@ -228,6 +237,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 			layout2->addWidget(m_label_schedule_status, 2);
 			layout2->addWidget(m_pushbutton_schedule_activate, 1);
 			layout2->addWidget(m_pushbutton_schedule_edit, 1);
+			layout2->addWidget(m_pushbutton_mqtt_settings, 1);
 		}
 		{
 			QHBoxLayout *layout2 = new QHBoxLayout();
@@ -409,6 +419,16 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_stdin_notifier = new QSocketNotifier(0, QSocketNotifier::Read, this);
 	connect(m_stdin_notifier, SIGNAL(activated(int)), this, SLOT(OnStdin()));
 
+	// Connect MQTT signals
+	connect(m_mqtt_client.get(), SIGNAL(RecordingStartRequested()), this, SLOT(OnMqttRecordingStart()));
+	connect(m_mqtt_client.get(), SIGNAL(RecordingStopRequested()), this, SLOT(OnMqttRecordingStop()));
+	connect(m_mqtt_client.get(), SIGNAL(RecordingToggleRequested()), this, SLOT(OnMqttRecordingToggle()));
+	connect(m_mqtt_client.get(), SIGNAL(TopicChangeRequested(QString)), this, SLOT(OnMqttTopicChange(QString)));
+	connect(m_mqtt_client.get(), SIGNAL(ButtonRecordingPressed()), this, SLOT(OnMqttButtonRecordingPressed()));
+	connect(m_mqtt_client.get(), SIGNAL(ButtonRecordingReleased()), this, SLOT(OnMqttButtonRecordingReleased()));
+	connect(m_mqtt_client.get(), SIGNAL(ButtonOnAirPressed()), this, SLOT(OnMqttButtonOnAirPressed()));
+	connect(m_mqtt_client.get(), SIGNAL(ButtonOnAirReleased()), this, SLOT(OnMqttButtonOnAirReleased()));
+
 	m_timer_schedule = new QTimer(this);
 	m_timer_schedule->setSingleShot(true);
 	m_timer_update_info = new QTimer(this);
@@ -493,6 +513,12 @@ void PageRecord::LoadSettings(QSettings *settings) {
 #endif
 		m_schedule_entries[i].action = StringToEnum(actionstring, SCHEDULE_ACTION_START);
 	}
+	
+	// Load MQTT settings
+	if (m_mqtt_client) {
+		m_mqtt_client->LoadSettings(settings);
+	}
+	
 	OnUpdateHotkeyFields();
 #if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
@@ -517,6 +543,11 @@ void PageRecord::SaveSettings(QSettings *settings) {
 	for(unsigned int i = 0; i < m_schedule_entries.size(); ++i) {
 		settings->setValue(QString("record/schedule_entry%1_time").arg(i), m_schedule_entries[i].time.toString("yyyy-MM-dd hh:mm:ss"));
 		settings->setValue(QString("record/schedule_entry%1_action").arg(i), EnumToString(m_schedule_entries[i].action));
+	}
+	
+	// Save MQTT settings
+	if (m_mqtt_client) {
+		m_mqtt_client->SaveSettings(settings);
 	}
 }
 
@@ -882,6 +913,13 @@ void PageRecord::StartOutput() {
 		UpdateInput();
 		OnUpdateRecordingFrame();
 
+		// Publish MQTT status
+		if(m_mqtt_client) {
+			m_mqtt_client->PublishRecordingState(true);
+			m_mqtt_client->PublishRecordingEvent("recording_started");
+			m_mqtt_client->PublishStatus("recording");
+		}
+
 	} catch(...) {
 		Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Something went wrong during initialization."));
 	}
@@ -925,6 +963,13 @@ void PageRecord::StopOutput(bool final) {
 	UpdateRecordButton();
 	UpdateInput();
 	OnUpdateRecordingFrame();
+
+	// Publish MQTT status
+	if(m_mqtt_client) {
+		m_mqtt_client->PublishRecordingState(false);
+		m_mqtt_client->PublishRecordingEvent("recording_stopped");
+		m_mqtt_client->PublishStatus("idle");
+	}
 
 }
 
@@ -1626,4 +1671,77 @@ void PageRecord::OnNewLogLine(Logger::enum_type type, QString string) {
 	if(should_scroll)
 		m_textedit_log->verticalScrollBar()->setValue(m_textedit_log->verticalScrollBar()->maximum());
 
+}
+
+// MQTT event handlers
+void PageRecord::OnMqttRecordingStart() {
+	Logger::LogInfo("[MQTT] Received recording start command");
+	if(!m_output_started) {
+		OnRecordStart();
+	}
+}
+
+void PageRecord::OnMqttRecordingStop() {
+	Logger::LogInfo("[MQTT] Received recording stop command");
+	if(m_output_started) {
+		OnRecordPause();
+	}
+}
+
+void PageRecord::OnMqttRecordingToggle() {
+	Logger::LogInfo("[MQTT] Received recording toggle command");
+	OnRecordStartPause();
+}
+
+void PageRecord::OnMqttTopicChange(const QString& topic) {
+	Logger::LogInfo("[MQTT] Received topic change command: " + topic);
+	// TODO: Implement topic change functionality
+	// This would require adding support for topic/session management
+	// For now, just log the event
+	if(m_mqtt_client) {
+		m_mqtt_client->PublishRecordingEvent("topic_changed", QString(), topic);
+	}
+}
+
+void PageRecord::OnMqttButtonRecordingPressed() {
+	Logger::LogInfo("[MQTT] Recording button pressed");
+	// Start recording on button press
+	if(!m_output_started) {
+		OnRecordStart();
+	}
+}
+
+void PageRecord::OnMqttButtonRecordingReleased() {
+	Logger::LogInfo("[MQTT] Recording button released");
+	// Stop recording on button release
+	if(m_output_started) {
+		OnRecordPause();
+	}
+}
+
+void PageRecord::OnMqttButtonOnAirPressed() {
+	Logger::LogInfo("[MQTT] On-air button pressed");
+	// TODO: Implement on-air functionality
+	// This could be used for live streaming or other real-time features
+	if(m_mqtt_client) {
+		m_mqtt_client->PublishRecordingEvent("onair_started");
+	}
+}
+
+void PageRecord::OnMqttButtonOnAirReleased() {
+	Logger::LogInfo("[MQTT] On-air button released");
+	// TODO: Implement on-air functionality
+	if(m_mqtt_client) {
+		m_mqtt_client->PublishRecordingEvent("onair_stopped");
+	}
+}
+
+void PageRecord::OnMqttSettings() {
+	Logger::LogInfo("[MQTT] Opening settings dialog");
+	if(m_mqtt_client) {
+		DialogMqttSettings dialog(m_mqtt_client.get(), this);
+		dialog.exec();
+	} else {
+		Logger::LogError("[MQTT] MQTT client not available");
+	}
 }
