@@ -23,8 +23,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QString>
 #include <QSettings>
 
-class MqttClientInterface : public QObject {
-	Q_OBJECT
+class MqttClientInterface {
 
 public:
 	virtual ~MqttClientInterface() = default;
@@ -57,4 +56,6 @@ signals:
 	void ButtonOnAirPressed();
 	void ButtonOnAirReleased();
 	void ConnectionStateChanged(bool connected);
+
+
 };

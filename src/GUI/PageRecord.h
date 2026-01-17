@@ -70,7 +70,7 @@ private:
 private:
 	MainWindow *m_main_window;
 
-	bool m_page_started, m_input_started, m_output_started, m_previewing;
+	bool m_page_started, m_input_started, m_output_started, m_output_paused, m_previewing;
 	bool m_recorded_something, m_wait_saving, m_error_occurred;
 
 	bool m_schedule_active;
@@ -135,6 +135,10 @@ private:
 #endif
 
 	std::unique_ptr<MqttClientInterface> m_mqtt_client;
+	
+	// MQTT session management
+	QString m_session_id;
+	QString m_topic;
 
 	HotkeyCallback m_hotkey_start_pause;
 
@@ -264,6 +268,8 @@ public slots:
 	void OnMqttRecordingStart();
 	void OnMqttRecordingStop();
 	void OnMqttRecordingToggle();
+	void OnMqttPause();
+	void OnMqttResume();
 	void OnMqttTopicChange(const QString& topic);
 	void OnMqttButtonRecordingPressed();
 	void OnMqttButtonRecordingReleased();

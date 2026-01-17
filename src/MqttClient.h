@@ -24,15 +24,26 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QTimer>
 #include <QSettings>
 
+#include "MqttClientInterface.h"
+
 // Workaround for QtMqtt header bugs in some Qt versions
 #define QT_MQTT_STATIC
+
+// Undefine X11 macros that conflict with QtMqtt
+#ifdef Success
+#undef Success
+#endif
+#ifdef None
+#undef None
+#endif
+
 #include <QtMqtt/QMqttClient>
 #include <QtMqtt/QMqttSubscription>
 #include <QtMqtt/QMqttMessage>
 
 class PageRecord;
 
-class MqttClient : public QObject {
+class MqttClient : public QObject, public MqttClientInterface {
 	Q_OBJECT
 
 private:
@@ -111,7 +122,7 @@ private slots:
 	void OnClientConnected();
 	void OnClientDisconnected();
 	void OnClientError(QMqttClient::ClientError error);
-	void OnClientMessageReceived(const QMqttMessage& message);
+	void OnClientMessageReceived(const QByteArray& message, const QMqttTopicName& topic);
 	void OnReconnectTimer();
 	void OnKeepaliveTimer();
 
@@ -119,6 +130,8 @@ signals:
 	void RecordingStartRequested();
 	void RecordingStopRequested();
 	void RecordingToggleRequested();
+	void RecordingPauseRequested();
+	void RecordingResumeRequested();
 	void TopicChangeRequested(const QString& topic);
 	void ButtonRecordingPressed();
 	void ButtonRecordingReleased();

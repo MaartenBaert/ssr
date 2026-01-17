@@ -168,6 +168,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_page_started = false;
 	m_input_started = false;
 	m_output_started = false;
+	m_output_paused = false;
 	m_previewing = false;
 
 	m_schedule_active = false;
@@ -178,6 +179,10 @@ PageRecord::PageRecord(MainWindow* main_window)
 #endif
 
 	m_stdin_reentrant = false;
+	
+	// Initialize MQTT session variables
+	m_session_id = QString();
+	m_topic = QString();
 
 	// Initialize MQTT client
 	m_mqtt_client.reset(new MqttClient(this));
@@ -420,15 +425,21 @@ PageRecord::PageRecord(MainWindow* main_window)
 	connect(m_stdin_notifier, SIGNAL(activated(int)), this, SLOT(OnStdin()));
 
 	// Connect MQTT signals
-	connect(m_mqtt_client.get(), SIGNAL(RecordingStartRequested()), this, SLOT(OnMqttRecordingStart()));
-	connect(m_mqtt_client.get(), SIGNAL(RecordingStopRequested()), this, SLOT(OnMqttRecordingStop()));
-	connect(m_mqtt_client.get(), SIGNAL(RecordingToggleRequested()), this, SLOT(OnMqttRecordingToggle()));
-	connect(m_mqtt_client.get(), SIGNAL(TopicChangeRequested(QString)), this, SLOT(OnMqttTopicChange(QString)));
-	connect(m_mqtt_client.get(), SIGNAL(ButtonRecordingPressed()), this, SLOT(OnMqttButtonRecordingPressed()));
-	connect(m_mqtt_client.get(), SIGNAL(ButtonRecordingReleased()), this, SLOT(OnMqttButtonRecordingReleased()));
-	connect(m_mqtt_client.get(), SIGNAL(ButtonOnAirPressed()), this, SLOT(OnMqttButtonOnAirPressed()));
-	connect(m_mqtt_client.get(), SIGNAL(ButtonOnAirReleased()), this, SLOT(OnMqttButtonOnAirReleased()));
-	connect(m_mqtt_client.get(), SIGNAL(StatusGetRequested()), this, SLOT(OnMqttStatusGet()));
+	// Cast to QObject since MqttClientInterface is not a QObject
+	QObject* mqtt_client_obj = dynamic_cast<QObject*>(m_mqtt_client.get());
+	if(mqtt_client_obj) {
+		connect(mqtt_client_obj, SIGNAL(RecordingStartRequested()), this, SLOT(OnMqttRecordingStart()));
+		connect(mqtt_client_obj, SIGNAL(RecordingStopRequested()), this, SLOT(OnMqttRecordingStop()));
+		connect(mqtt_client_obj, SIGNAL(RecordingToggleRequested()), this, SLOT(OnMqttRecordingToggle()));
+		connect(mqtt_client_obj, SIGNAL(RecordingPauseRequested()), this, SLOT(OnMqttPause()));
+		connect(mqtt_client_obj, SIGNAL(RecordingResumeRequested()), this, SLOT(OnMqttResume()));
+		connect(mqtt_client_obj, SIGNAL(TopicChangeRequested(QString)), this, SLOT(OnMqttTopicChange(QString)));
+		connect(mqtt_client_obj, SIGNAL(ButtonRecordingPressed()), this, SLOT(OnMqttButtonRecordingPressed()));
+		connect(mqtt_client_obj, SIGNAL(ButtonRecordingReleased()), this, SLOT(OnMqttButtonRecordingReleased()));
+		connect(mqtt_client_obj, SIGNAL(ButtonOnAirPressed()), this, SLOT(OnMqttButtonOnAirPressed()));
+		connect(mqtt_client_obj, SIGNAL(ButtonOnAirReleased()), this, SLOT(OnMqttButtonOnAirReleased()));
+		connect(mqtt_client_obj, SIGNAL(StatusGetRequested()), this, SLOT(OnMqttStatusGet()));
+	}
 
 	m_timer_schedule = new QTimer(this);
 	m_timer_schedule->setSingleShot(true);
@@ -908,16 +919,27 @@ void PageRecord::StartOutput() {
 		Logger::LogInfo("[PageRecord::StartOutput] " + tr("Started output."));
 
 		m_output_started = true;
+		m_output_paused = false;
 		m_recorded_something = true;
 		UpdateSysTray();
 		UpdateRecordButton();
 		UpdateInput();
 		OnUpdateRecordingFrame();
 
+		// Generate session ID if not already set
+		if(m_session_id.isEmpty()) {
+			m_session_id = QString("session_%1").arg(QDateTime::currentSecsSinceEpoch());
+		}
+		
+		// Set default topic if not already set
+		if(m_topic.isEmpty()) {
+			m_topic = tr("Recording %1").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"));
+		}
+
 		// Publish MQTT status
 		if(m_mqtt_client) {
 			m_mqtt_client->PublishRecordingState(true);
-			m_mqtt_client->PublishRecordingEvent("recording_started");
+			m_mqtt_client->PublishRecordingEvent("recording_started", m_session_id, m_topic);
 			m_mqtt_client->PublishStatus("recording");
 			// Publish full status for centralized architecture
 			m_mqtt_client->PublishFullStatus(true, m_session_id, m_topic);
@@ -961,7 +983,12 @@ void PageRecord::StopOutput(bool final) {
 		m_simple_synth->PlaySequence(SEQUENCE_RECORD_STOP.data(), SEQUENCE_RECORD_STOP.size());
 #endif
 
-	m_output_started = false;
+	// Only set m_output_started to false if this is a final stop (not a pause)
+	if(final) {
+		m_output_started = false;
+		m_output_paused = false;
+	}
+	
 	UpdateSysTray();
 	UpdateRecordButton();
 	UpdateInput();
@@ -969,11 +996,19 @@ void PageRecord::StopOutput(bool final) {
 
 	// Publish MQTT status
 	if(m_mqtt_client) {
-		m_mqtt_client->PublishRecordingState(false);
-		m_mqtt_client->PublishRecordingEvent("recording_stopped");
-		m_mqtt_client->PublishStatus("idle");
-		// Publish full status for centralized architecture
-		m_mqtt_client->PublishFullStatus(false, m_session_id, m_topic);
+		if(final) {
+			m_mqtt_client->PublishRecordingState(false);
+			m_mqtt_client->PublishRecordingEvent("recording_stopped");
+			m_mqtt_client->PublishStatus("idle");
+			// Publish full status for centralized architecture
+			m_mqtt_client->PublishFullStatus(false, m_session_id, m_topic);
+		} else {
+			// This is a pause, not a final stop
+			m_mqtt_client->PublishRecordingState(m_output_paused ? false : true);
+			m_mqtt_client->PublishStatus(m_output_paused ? "paused" : "recording");
+			// Publish full status for centralized architecture
+			m_mqtt_client->PublishFullStatus(!m_output_paused, m_session_id, m_topic);
+		}
 	}
 
 }
@@ -1334,8 +1369,20 @@ void PageRecord::OnRecordPause() {
 		return;
 	if(m_wait_saving)
 		return;
-	if(m_output_started)
+	if(m_output_started) {
+		// Toggle pause state
+		m_output_paused = !m_output_paused;
 		StopOutput(false);
+		
+		// Publish appropriate MQTT event
+		if(m_mqtt_client) {
+			if(m_output_paused) {
+				m_mqtt_client->PublishRecordingEvent("paused", m_session_id, m_topic);
+			} else {
+				m_mqtt_client->PublishRecordingEvent("resumed", m_session_id, m_topic);
+			}
+		}
+	}
 }
 
 void PageRecord::OnRecordStartPause() {
@@ -1700,11 +1747,30 @@ void PageRecord::OnMqttRecordingToggle() {
 
 void PageRecord::OnMqttTopicChange(const QString& topic) {
 	Logger::LogInfo("[MQTT] Received topic change command: " + topic);
-	// TODO: Implement topic change functionality
-	// This would require adding support for topic/session management
-	// For now, just log the event
+	
+	// Update the topic
+	QString old_topic = m_topic;
+	m_topic = topic;
+	
+	// Publish MQTT event
 	if(m_mqtt_client) {
-		m_mqtt_client->PublishRecordingEvent("topic_changed", QString(), topic);
+		m_mqtt_client->PublishRecordingEvent("topic_changed", m_session_id, topic);
+		m_mqtt_client->PublishFullStatus(!m_output_paused, m_session_id, m_topic);
+		Logger::LogInfo("[MQTT] Topic changed from '" + old_topic + "' to '" + topic + "'");
+	}
+}
+
+void PageRecord::OnMqttPause() {
+	Logger::LogInfo("[MQTT] Received pause command");
+	if(m_output_started && !m_output_paused) {
+		OnRecordPause();
+	}
+}
+
+void PageRecord::OnMqttResume() {
+	Logger::LogInfo("[MQTT] Received resume command");
+	if(m_output_started && m_output_paused) {
+		OnRecordPause(); // Toggle pause state
 	}
 }
 
@@ -1744,7 +1810,7 @@ void PageRecord::OnMqttButtonOnAirReleased() {
 void PageRecord::OnMqttStatusGet() {
 	Logger::LogInfo("[MQTT] Received status get request");
 	if(m_mqtt_client) {
-		bool is_recording = (m_output_started && !m_output_stopped);
+		bool is_recording = (m_output_started && !m_output_paused);
 		m_mqtt_client->PublishFullStatus(is_recording, m_session_id, m_topic);
 		Logger::LogInfo("[MQTT] Published full status in response to get request");
 	}

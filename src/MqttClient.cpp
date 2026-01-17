@@ -20,6 +20,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "MqttClient.h"
 #include "PageRecord.h"
 #include "Logger.h"
+#include "CommandLineOptions.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -29,6 +30,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QSslConfiguration>
 #include <QSslCertificate>
 #include <QSslKey>
+#include <QSslSocket>
+#include <QTcpSocket>
 #include <QFile>
 
 MqttClient::MqttClient(PageRecord* page_record)
@@ -169,9 +172,19 @@ void MqttClient::Connect() {
 		return;
 	}
 	
+	// Reset any existing connection
+	if (m_client->state() != QMqttClient::Disconnected) {
+		m_client->disconnectFromHost();
+	}
+	
 	SetupClient();
 	
 	Logger::LogInfo("[MQTT] Connecting to " + m_broker_host + ":" + QString::number(m_broker_port) + "...");
+	
+	// Note: We don't call connectToHost() or connectToHostEncrypted() here
+	// because setTransport() in SetupClient() should handle the connection
+	// when we set the hostname and port. Actually, we need to call connectToHost()
+	// but QMqttClient will use the transport we set.
 	m_client->connectToHost();
 	
 	m_reconnect_timer->start();
@@ -249,8 +262,18 @@ void MqttClient::PublishRecordingEvent(const QString& event, const QString& sess
 	json["client_id"] = m_client_id;
 	
 	QJsonDocument doc(json);
-	QString base_topic = GetBaseTopic();
-	m_client->publish(base_topic + "recording/events", doc.toJson(), 1, false);
+	
+	// Publish to centralized events topic
+	if (m_topic_architecture == "centralized" || m_topic_architecture == "both") {
+		QString event_topic = GetCentralizedTopic("events/recording/" + event);
+		m_client->publish(event_topic, doc.toJson(), 1, false);
+	}
+	
+	// Also publish to legacy topic for compatibility
+	if (m_topic_architecture == "legacy" || m_topic_architecture == "both") {
+		QString base_topic = GetBaseTopic();
+		m_client->publish(base_topic + "recording/events", doc.toJson(), 1, false);
+	}
 }
 
 void MqttClient::PublishLedState(const QString& led, bool state) {
@@ -276,8 +299,18 @@ void MqttClient::PublishError(const QString& error) {
 	json["client_id"] = m_client_id;
 	
 	QJsonDocument doc(json);
-	QString base_topic = GetBaseTopic();
-	m_client->publish(base_topic + "error", doc.toJson(), 1, false);
+	
+	// Publish to centralized error topic
+	if (m_topic_architecture == "centralized" || m_topic_architecture == "both") {
+		QString error_topic = GetCentralizedTopic("events/error");
+		m_client->publish(error_topic, doc.toJson(), 1, false);
+	}
+	
+	// Also publish to legacy topic for compatibility
+	if (m_topic_architecture == "legacy" || m_topic_architecture == "both") {
+		QString base_topic = GetBaseTopic();
+		m_client->publish(base_topic + "error", doc.toJson(), 1, false);
+	}
 }
 
 void MqttClient::PublishFullStatus(bool recording, const QString& session_id, const QString& topic) {
@@ -304,6 +337,10 @@ void MqttClient::PublishFullStatus(bool recording, const QString& session_id, co
 		json["file_size_mb"] = 0; // TODO: Get actual file size
 		json["paused"] = false; // TODO: Get actual paused state
 	}
+	
+	// Add system info
+	json["system_time"] = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
+	json["hostname"] = QHostInfo::localHostName();
 	
 	QJsonDocument doc(json);
 	
@@ -360,9 +397,18 @@ void MqttClient::SetupClient() {
 			}
 		}
 		
-		m_client->setTransport(sslConfig, QMqttClient::SecureSocket);
+		// Create SSL socket with configuration
+		QSslSocket* sslSocket = new QSslSocket(m_client);
+		sslSocket->setSslConfiguration(sslConfig);
+		// Set the hostname for certificate verification
+		sslSocket->setPeerVerifyName(m_broker_host);
+		// Set the socket to ignore SSL errors for self-signed certificates
+		sslSocket->ignoreSslErrors();
+		m_client->setTransport(sslSocket, QMqttClient::SecureSocket);
 	} else {
-		m_client->setTransport(QSslConfiguration(), QMqttClient::NonSecureSocket);
+		// For non-SSL connections, create a regular QTcpSocket
+		QTcpSocket* tcpSocket = new QTcpSocket(m_client);
+		m_client->setTransport(tcpSocket, QMqttClient::AbstractSocket);
 	}
 }
 
@@ -379,34 +425,19 @@ void MqttClient::SubscribeToTopics() {
 		m_sub_topic_change = m_client->subscribe(base_topic + "control/topic/change", 1);
 		m_sub_button_recording = m_client->subscribe(base_topic + "device/button/recording", 1);
 		m_sub_button_onair = m_client->subscribe(base_topic + "device/button/onair", 1);
-		
-		if (m_sub_recording_start) {
-			connect(m_sub_recording_start, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
-		}
-		if (m_sub_recording_stop) {
-			connect(m_sub_recording_stop, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
-		}
-		if (m_sub_recording_toggle) {
-			connect(m_sub_recording_toggle, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
-		}
-		if (m_sub_topic_change) {
-			connect(m_sub_topic_change, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
-		}
-		if (m_sub_button_recording) {
-			connect(m_sub_button_recording, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
-		}
-		if (m_sub_button_onair) {
-			connect(m_sub_button_onair, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
-		}
 	}
 	
 	if (m_topic_architecture == "centralized" || m_topic_architecture == "both") {
 		// Subscribe to centralized control topics
 		m_sub_status_get = m_client->subscribe(GetCentralizedTopic("control/status/get"), 1);
 		
-		if (m_sub_status_get) {
-			connect(m_sub_status_get, &QMqttSubscription::messageReceived, this, &MqttClient::OnClientMessageReceived);
-		}
+		// Subscribe to additional centralized control topics
+		m_client->subscribe(GetCentralizedTopic("control/start"), 1);
+		m_client->subscribe(GetCentralizedTopic("control/stop"), 1);
+		m_client->subscribe(GetCentralizedTopic("control/toggle"), 1);
+		m_client->subscribe(GetCentralizedTopic("control/pause"), 1);
+		m_client->subscribe(GetCentralizedTopic("control/resume"), 1);
+		m_client->subscribe(GetCentralizedTopic("control/topic/set"), 1);
 	}
 }
 
@@ -548,16 +579,16 @@ void MqttClient::OnClientError(QMqttClient::ClientError error) {
 	PublishError("Connection error: " + error_str);
 }
 
-void MqttClient::OnClientMessageReceived(const QMqttMessage& message) {
-	QString topic = message.topic().name();
-	QString payload = QString::fromUtf8(message.payload());
+void MqttClient::OnClientMessageReceived(const QByteArray& message, const QMqttTopicName& topic) {
+	QString topic_str = topic.name();
+	QString payload = QString::fromUtf8(message);
 	
-	Logger::LogDebug("[MQTT] Received message on topic: " + topic + " payload: " + payload);
+	Logger::LogInfo("[MQTT] Received message on topic: " + topic_str + " payload: " + payload);
 	
 	// Check if it's a centralized topic
 	QString centralized_root = GetCentralizedTopic("");
-	if (topic.startsWith(centralized_root)) {
-		QString relative_topic = topic.mid(centralized_root.length());
+	if (topic_str.startsWith(centralized_root)) {
+		QString relative_topic = topic_str.mid(centralized_root.length());
 		
 		try {
 			QJsonDocument doc = QJsonDocument::fromJson(payload.toUtf8());
@@ -574,8 +605,15 @@ void MqttClient::OnClientMessageReceived(const QMqttMessage& message) {
 				emit RecordingStopRequested();
 			} else if (relative_topic == "control/toggle") {
 				emit RecordingToggleRequested();
+			} else if (relative_topic == "control/pause") {
+				emit RecordingPauseRequested();
+			} else if (relative_topic == "control/resume") {
+				emit RecordingResumeRequested();
 			} else if (relative_topic == "control/topic/set") {
 				QString new_topic = json.value("topic").toString();
+				if (new_topic.isEmpty()) {
+					new_topic = json.value("new_topic").toString();
+				}
 				if (new_topic.isEmpty()) {
 					new_topic = payload.trimmed();
 				}
@@ -592,9 +630,9 @@ void MqttClient::OnClientMessageReceived(const QMqttMessage& message) {
 	
 	// Legacy topic handling
 	QString base_topic = GetBaseTopic();
-	QString relative_topic = topic;
-	if (topic.startsWith(base_topic)) {
-		relative_topic = topic.mid(base_topic.length());
+	QString relative_topic = topic_str;
+	if (topic_str.startsWith(base_topic)) {
+		relative_topic = topic_str.mid(base_topic.length());
 	}
 	
 	try {
