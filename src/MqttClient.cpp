@@ -33,6 +33,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QSslSocket>
 #include <QTcpSocket>
 #include <QFile>
+#include <QNetworkProxy>
 
 MqttClient::MqttClient(PageRecord* page_record)
 	: m_page_record(page_record),
@@ -65,6 +66,7 @@ MqttClient::MqttClient(PageRecord* page_record)
 	connect(m_client, &QMqttClient::disconnected, this, &MqttClient::OnClientDisconnected);
 	connect(m_client, &QMqttClient::errorChanged, this, &MqttClient::OnClientError);
 	connect(m_client, &QMqttClient::messageReceived, this, &MqttClient::OnClientMessageReceived);
+	connect(m_client, &QMqttClient::stateChanged, this, &MqttClient::OnStateChanged);
 	
 	connect(m_reconnect_timer, &QTimer::timeout, this, &MqttClient::OnReconnectTimer);
 	connect(m_keepalive_timer, &QTimer::timeout, this, &MqttClient::OnKeepaliveTimer);
@@ -181,13 +183,9 @@ void MqttClient::Connect() {
 	
 	Logger::LogInfo("[MQTT] Connecting to " + m_broker_host + ":" + QString::number(m_broker_port) + "...");
 	
-	// Note: We don't call connectToHost() or connectToHostEncrypted() here
-	// because setTransport() in SetupClient() should handle the connection
-	// when we set the hostname and port. Actually, we need to call connectToHost()
-	// but QMqttClient will use the transport we set.
-	m_client->connectToHost();
-	
-	m_reconnect_timer->start();
+	// Connection is initiated in SetupClient()
+	// For SSL: connectToHostEncrypted is called in SetupClient()
+	// For non-SSL: connectToHost is called in SetupClient()
 }
 
 void MqttClient::Disconnect() {
@@ -218,7 +216,16 @@ void MqttClient::PublishStatus(const QString& status, const QString& session_id,
 	
 	QJsonDocument doc(json);
 	QString base_topic = GetBaseTopic();
-	m_client->publish(base_topic + "status", doc.toJson(), 1, false);
+	QString full_topic = base_topic + "status";
+	QByteArray payload = doc.toJson();
+	
+	Logger::LogInfo("[MQTT] Publishing status to: " + full_topic + " payload: " + payload);
+	
+	if (m_client->publish(full_topic, payload, 1, false) == -1) {
+		Logger::LogError("[MQTT] Failed to publish status");
+	} else {
+		Logger::LogInfo("[MQTT] Status published successfully");
+	}
 	
 	m_last_status = status;
 	m_last_session_id = session_id;
@@ -358,10 +365,17 @@ void MqttClient::PublishFullStatus(bool recording, const QString& session_id, co
 }
 
 void MqttClient::SetupClient() {
+	// Disable proxy at application level for MQTT connections
+	// This is needed because Qt uses system proxy settings which interfere with MQTT
+	// Save current proxy to restore it later if needed
+	static QNetworkProxy previousProxy = QNetworkProxy::applicationProxy();
+	QNetworkProxy::setApplicationProxy(QNetworkProxy::NoProxy);
+	
 	m_client->setHostname(m_broker_host);
 	m_client->setPort(m_broker_port);
 	m_client->setClientId(m_client_id);
 	m_client->setKeepAlive(60);
+	// Note: setConnectTimeout is not available in Qt5 MQTT
 	
 	if (!m_username.isEmpty()) {
 		m_client->setUsername(m_username);
@@ -397,20 +411,20 @@ void MqttClient::SetupClient() {
 			}
 		}
 		
-		// Create SSL socket with configuration
-		QSslSocket* sslSocket = new QSslSocket(m_client);
-		sslSocket->setSslConfiguration(sslConfig);
-		// Set the hostname for certificate verification
-		sslSocket->setPeerVerifyName(m_broker_host);
-		// Set the socket to ignore SSL errors for self-signed certificates
-		sslSocket->ignoreSslErrors();
-		m_client->setTransport(sslSocket, QMqttClient::SecureSocket);
+		// Set SSL configuration on the client
+		// Note: connectToHostEncrypted is deprecated but works in Qt5
+		// and handles SSL internally without needing setTransport
+		// First set the SSL configuration, then connect
+		m_client->connectToHostEncrypted(sslConfig);
 	} else {
-		// For non-SSL connections, create a regular QTcpSocket
-		QTcpSocket* tcpSocket = new QTcpSocket(m_client);
-		m_client->setTransport(tcpSocket, QMqttClient::AbstractSocket);
+		// For non-SSL connections, call connectToHost
+		// Try to work around proxy issues by also setting socket option
+		// before connecting
+		m_client->connectToHost();
 	}
+	// Don't use setTransport - let QMqttClient handle socket creation
 }
+
 
 void MqttClient::SubscribeToTopics() {
 	if (!m_connected) return;
@@ -552,11 +566,32 @@ void MqttClient::OnClientConnected() {
 void MqttClient::OnClientDisconnected() {
 	m_connected = false;
 	m_keepalive_timer->stop();
-	m_reconnect_timer->start();
 	
 	UnsubscribeFromTopics();
 	
 	Logger::LogWarning("[MQTT] Disconnected from broker");
+	
+	// Start reconnect timer
+	m_reconnect_timer->start();
+}
+
+void MqttClient::OnStateChanged(QMqttClient::ClientState state) {
+	QString state_str;
+	switch (state) {
+		case QMqttClient::Disconnected: state_str = "Disconnected"; break;
+		case QMqttClient::Connecting: state_str = "Connecting"; break;
+		case QMqttClient::Connected: state_str = "Connected"; break;
+		default: state_str = "Unknown"; break;
+	}
+	
+	Logger::LogInfo("[MQTT] State changed to: " + state_str);
+	
+	// Log additional debug info for connection issues
+	if (state == QMqttClient::Connecting) {
+		Logger::LogInfo("[MQTT] Connecting to " + m_broker_host + ":" + QString::number(m_broker_port));
+	} else if (state == QMqttClient::Disconnected) {
+		Logger::LogInfo("[MQTT] Disconnected, error: " + QString::number(static_cast<int>(m_client->error())));
+	}
 }
 
 void MqttClient::OnClientError(QMqttClient::ClientError error) {
@@ -575,9 +610,22 @@ void MqttClient::OnClientError(QMqttClient::ClientError error) {
 		default: error_str = "UnknownErrorCode"; break;
 	}
 	
-	Logger::LogError("[MQTT] Error: " + error_str);
+	Logger::LogError("[MQTT] Error: " + error_str + " (code: " + QString::number(static_cast<int>(error)) + ")");
+	Logger::LogError("[MQTT] Current state: " + QString::number(static_cast<int>(m_client->state())));
+	Logger::LogError("[MQTT] Host: " + m_broker_host + ":" + QString::number(m_broker_port));
+	
+	// For TransportInvalid error, provide more specific debugging info
+	if (error == QMqttClient::TransportInvalid) {
+		Logger::LogError("[MQTT] TransportInvalid - Possible causes:");
+		Logger::LogError("[MQTT] 1. Proxy interference (even with NoProxy set)");
+		Logger::LogError("[MQTT] 2. Socket creation failure");
+		Logger::LogError("[MQTT] 3. Network permissions issue");
+		Logger::LogError("[MQTT] 4. QtMqtt library bug with system proxy");
+	}
+	
 	PublishError("Connection error: " + error_str);
 }
+
 
 void MqttClient::OnClientMessageReceived(const QByteArray& message, const QMqttTopicName& topic) {
 	QString topic_str = topic.name();

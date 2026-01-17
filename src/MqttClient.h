@@ -122,6 +122,7 @@ private slots:
 	void OnClientConnected();
 	void OnClientDisconnected();
 	void OnClientError(QMqttClient::ClientError error);
+	void OnStateChanged(QMqttClient::ClientState state);
 	void OnClientMessageReceived(const QByteArray& message, const QMqttTopicName& topic);
 	void OnReconnectTimer();
 	void OnKeepaliveTimer();
