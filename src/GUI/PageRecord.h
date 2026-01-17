@@ -269,6 +269,7 @@ public slots:
 	void OnMqttButtonRecordingReleased();
 	void OnMqttButtonOnAirPressed();
 	void OnMqttButtonOnAirReleased();
+	void OnMqttStatusGet();
 
 private slots:
 	void OnStdin();

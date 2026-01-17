@@ -17,6 +17,13 @@ You should have received a copy of the GNU General Public License
 along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Workaround for QtMqtt header bugs in Qt 5.15.x
+// Must be defined before any Qt headers are included
+#ifndef QT_MQTT_STATIC
+#define QT_MQTT_STATIC
+#endif
+
+#pragma once
 #ifndef GLOBAL_H
 #define GLOBAL_H
 

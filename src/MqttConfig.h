@@ -47,6 +47,9 @@ public:
 		// Topic configuration
 		QString base_topic = "recording";
 		bool use_client_id_in_topic = true;
+		QString topic_root = "/ssr/";
+		QString instance_id = "main";
+		QString topic_architecture = "legacy"; // legacy|centralized|both
 		
 		// Publishing configuration
 		bool publish_recording_state = true;
@@ -66,15 +69,21 @@ public:
 		int qos_recording_events = 1;
 		int qos_led_states = 1;
 		int qos_control_messages = 1;
+		int qos_status_get = 1;
 		
 		// Retained messages
 		bool retain_recording_state = true;
 		bool retain_led_states = true;
 		bool retain_connection_state = true;
+		bool retain_full_status = true;
 		
 		// Logging
 		bool log_mqtt_messages = false;
 		int log_level = 1; // 0=error, 1=warning, 2=info, 3=debug
+		
+		// New centralized architecture features
+		bool publish_full_status = true;
+		bool subscribe_status_get = true;
 		
 		// Validation
 		bool isValid() const {

@@ -45,6 +45,7 @@ public:
 	virtual void PublishRecordingEvent(const QString& event, const QString& session_id = QString(), const QString& topic = QString()) = 0;
 	virtual void PublishLedState(const QString& led, bool state) = 0;
 	virtual void PublishError(const QString& error) = 0;
+	virtual void PublishFullStatus(bool recording, const QString& session_id = QString(), const QString& topic = QString()) = 0;
 
 signals:
 	void RecordingStartRequested();

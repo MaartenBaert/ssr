@@ -24,6 +24,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QTimer>
 #include <QSettings>
 
+// Workaround for QtMqtt header bugs in some Qt versions
+#define QT_MQTT_STATIC
 #include <QtMqtt/QMqttClient>
 #include <QtMqtt/QMqttSubscription>
 #include <QtMqtt/QMqttMessage>
@@ -60,6 +62,12 @@ private:
 	QMqttSubscription* m_sub_topic_change;
 	QMqttSubscription* m_sub_button_recording;
 	QMqttSubscription* m_sub_button_onair;
+	QMqttSubscription* m_sub_status_get;
+	
+	// Configuration
+	QString m_topic_root;
+	QString m_instance_id;
+	QString m_topic_architecture;
 
 	// Last published values
 	QString m_last_status;
@@ -85,6 +93,7 @@ public:
 	void PublishRecordingEvent(const QString& event, const QString& session_id = QString(), const QString& topic = QString());
 	void PublishLedState(const QString& led, bool state);
 	void PublishError(const QString& error);
+	void PublishFullStatus(bool recording, const QString& session_id = QString(), const QString& topic = QString());
 
 private:
 	void SetupClient();
@@ -94,6 +103,9 @@ private:
 
 	QString GenerateClientId() const;
 	QString GetBaseTopic() const;
+	QString GetCentralizedTopic(const QString& path) const;
+	QString GetLegacyTopic(const QString& path) const;
+	QString GetFullTopic(const QString& path, bool centralized = false) const;
 
 private slots:
 	void OnClientConnected();
@@ -112,4 +124,5 @@ signals:
 	void ButtonRecordingReleased();
 	void ButtonOnAirPressed();
 	void ButtonOnAirReleased();
+	void StatusGetRequested();
 };

@@ -19,7 +19,6 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DialogMqttSettings.h"
 #include "MqttClientInterface.h"
-#include "MqttClientSimple.h"
 #include "Icons.h"
 #include "Dialogs.h"
 #include "Logger.h"
@@ -36,6 +35,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QFileDialog>
 #include <QSettings>
 #include <QTimer>
+#include <QComboBox>
 
 DialogMqttSettings::DialogMqttSettings(MqttClientInterface* mqtt_client, QWidget* parent)
 	: QDialog(parent),
@@ -48,14 +48,18 @@ DialogMqttSettings::DialogMqttSettings(MqttClientInterface* mqtt_client, QWidget
 	
 	SetupUi();
 	LoadSettings();
-	UpdateConnectionStatus();
 	
 	m_update_timer = new QTimer(this);
-	connect(m_update_timer, &QTimer::timeout, this, &DialogMqttSettings::OnUpdateTimer);
-	m_update_timer->start(1000); // Update every second
+	connect(m_update_timer, SIGNAL(timeout()), this, SLOT(OnUpdateTimer()));
+	m_update_timer->start(1000);
+	
+	UpdateConnectionStatus();
 }
 
 DialogMqttSettings::~DialogMqttSettings() {
+	if (m_update_timer) {
+		m_update_timer->stop();
+	}
 }
 
 void DialogMqttSettings::SetupUi() {
@@ -63,224 +67,224 @@ void DialogMqttSettings::SetupUi() {
 	
 	// Connection settings group
 	QGroupBox* groupbox_connection = new QGroupBox(tr("Connection Settings"), this);
-	{
-		QFormLayout* layout = new QFormLayout(groupbox_connection);
-		
-		m_edit_broker_host = new QLineEdit(groupbox_connection);
-		m_edit_broker_host->setPlaceholderText(tr("localhost"));
-		layout->addRow(tr("Broker Host:"), m_edit_broker_host);
-		
-		m_spinbox_broker_port = new QSpinBox(groupbox_connection);
-		m_spinbox_broker_port->setRange(1, 65535);
-		m_spinbox_broker_port->setValue(1883);
-		layout->addRow(tr("Broker Port:"), m_spinbox_broker_port);
-		
-		m_checkbox_use_tls = new QCheckBox(tr("Use TLS/SSL"), groupbox_connection);
-		layout->addRow(QString(), m_checkbox_use_tls);
-		
-		m_edit_username = new QLineEdit(groupbox_connection);
-		layout->addRow(tr("Username:"), m_edit_username);
-		
-		m_edit_password = new QLineEdit(groupbox_connection);
-		m_edit_password->setEchoMode(QLineEdit::Password);
-		m_checkbox_show_password = new QCheckBox(tr("Show password"), groupbox_connection);
-		QHBoxLayout* password_layout = new QHBoxLayout();
-		password_layout->addWidget(m_edit_password);
-		password_layout->addWidget(m_checkbox_show_password);
-		layout->addRow(tr("Password:"), password_layout);
-		
-		connect(m_checkbox_use_tls, SIGNAL(stateChanged(int)), this, SLOT(OnUseTlsChanged(int)));
-		connect(m_checkbox_show_password, SIGNAL(stateChanged(int)), this, SLOT(OnShowPasswordChanged(int)));
-	}
+	QFormLayout* connection_layout = new QFormLayout(groupbox_connection);
+	
+	m_edit_broker_host = new QLineEdit(this);
+	m_spinbox_broker_port = new QSpinBox(this);
+	m_spinbox_broker_port->setRange(1, 65535);
+	m_spinbox_broker_port->setValue(1883);
+	
+	m_checkbox_use_tls = new QCheckBox(tr("Use TLS"), this);
+	m_edit_username = new QLineEdit(this);
+	m_edit_password = new QLineEdit(this);
+	m_edit_password->setEchoMode(QLineEdit::Password);
+	m_checkbox_show_password = new QCheckBox(tr("Show password"), this);
+	
+	connection_layout->addRow(tr("Broker host:"), m_edit_broker_host);
+	connection_layout->addRow(tr("Broker port:"), m_spinbox_broker_port);
+	connection_layout->addRow(tr(""), m_checkbox_use_tls);
+	connection_layout->addRow(tr("Username:"), m_edit_username);
+	connection_layout->addRow(tr("Password:"), m_edit_password);
+	connection_layout->addRow(tr(""), m_checkbox_show_password);
+	
 	main_layout->addWidget(groupbox_connection);
 	
-	// Certificate settings group (initially hidden)
-	m_groupbox_certificates = new QGroupBox(tr("Certificate Settings"), this);
-	m_groupbox_certificates->setVisible(false);
-	{
-		QFormLayout* layout = new QFormLayout(m_groupbox_certificates);
-		
-		m_edit_ca_cert = new QLineEdit(m_groupbox_certificates);
-		m_button_browse_ca_cert = new QPushButton(tr("Browse..."), m_groupbox_certificates);
-		QHBoxLayout* ca_cert_layout = new QHBoxLayout();
-		ca_cert_layout->addWidget(m_edit_ca_cert);
-		ca_cert_layout->addWidget(m_button_browse_ca_cert);
-		layout->addRow(tr("CA Certificate:"), ca_cert_layout);
-		
-		m_edit_client_cert = new QLineEdit(m_groupbox_certificates);
-		m_button_browse_client_cert = new QPushButton(tr("Browse..."), m_groupbox_certificates);
-		QHBoxLayout* client_cert_layout = new QHBoxLayout();
-		client_cert_layout->addWidget(m_edit_client_cert);
-		client_cert_layout->addWidget(m_button_browse_client_cert);
-		layout->addRow(tr("Client Certificate:"), client_cert_layout);
-		
-		m_edit_client_key = new QLineEdit(m_groupbox_certificates);
-		m_button_browse_client_key = new QPushButton(tr("Browse..."), m_groupbox_certificates);
-		QHBoxLayout* client_key_layout = new QHBoxLayout();
-		client_key_layout->addWidget(m_edit_client_key);
-		client_key_layout->addWidget(m_button_browse_client_key);
-		layout->addRow(tr("Client Key:"), client_key_layout);
-		
-		connect(m_button_browse_ca_cert, SIGNAL(clicked()), this, SLOT(OnBrowseCaCert()));
-		connect(m_button_browse_client_cert, SIGNAL(clicked()), this, SLOT(OnBrowseClientCert()));
-		connect(m_button_browse_client_key, SIGNAL(clicked()), this, SLOT(OnBrowseClientKey()));
-	}
+	// Certificate settings group
+	m_groupbox_certificates = new QGroupBox(tr("TLS Certificates"), this);
+	QFormLayout* cert_layout = new QFormLayout(m_groupbox_certificates);
+	
+	m_edit_ca_cert = new QLineEdit(this);
+	m_edit_client_cert = new QLineEdit(this);
+	m_edit_client_key = new QLineEdit(this);
+	
+	m_button_browse_ca_cert = new QPushButton(tr("Browse..."), this);
+	m_button_browse_client_cert = new QPushButton(tr("Browse..."), this);
+	m_button_browse_client_key = new QPushButton(tr("Browse..."), this);
+	
+	QHBoxLayout* ca_cert_layout = new QHBoxLayout();
+	ca_cert_layout->addWidget(m_edit_ca_cert);
+	ca_cert_layout->addWidget(m_button_browse_ca_cert);
+	
+	QHBoxLayout* client_cert_layout = new QHBoxLayout();
+	client_cert_layout->addWidget(m_edit_client_cert);
+	client_cert_layout->addWidget(m_button_browse_client_cert);
+	
+	QHBoxLayout* client_key_layout = new QHBoxLayout();
+	client_key_layout->addWidget(m_edit_client_key);
+	client_key_layout->addWidget(m_button_browse_client_key);
+	
+	cert_layout->addRow(tr("CA certificate:"), ca_cert_layout);
+	cert_layout->addRow(tr("Client certificate:"), client_cert_layout);
+	cert_layout->addRow(tr("Client key:"), client_key_layout);
+	
 	main_layout->addWidget(m_groupbox_certificates);
+	
+	// Topic configuration group
+	QGroupBox* groupbox_topics = new QGroupBox(tr("Topic Configuration"), this);
+	QFormLayout* topics_layout = new QFormLayout(groupbox_topics);
+	
+	QComboBox* combo_topic_architecture = new QComboBox(this);
+	combo_topic_architecture->addItem(tr("Legacy (recording/{client_id}/...)"), "legacy");
+	combo_topic_architecture->addItem(tr("Centralized (/ssr/...)"), "centralized");
+	combo_topic_architecture->addItem(tr("Both architectures"), "both");
+	combo_topic_architecture->setObjectName("combo_topic_architecture");
+	
+	QLineEdit* edit_topic_root = new QLineEdit(this);
+	edit_topic_root->setText("/ssr/");
+	edit_topic_root->setObjectName("edit_topic_root");
+	
+	QLineEdit* edit_instance_id = new QLineEdit(this);
+	edit_instance_id->setText("main");
+	edit_instance_id->setObjectName("edit_instance_id");
+	
+	topics_layout->addRow(tr("Architecture:"), combo_topic_architecture);
+	topics_layout->addRow(tr("Topic root:"), edit_topic_root);
+	topics_layout->addRow(tr("Instance ID:"), edit_instance_id);
+	
+	main_layout->addWidget(groupbox_topics);
 	
 	// Connection status
 	QGroupBox* groupbox_status = new QGroupBox(tr("Connection Status"), this);
-	{
-		QVBoxLayout* layout = new QVBoxLayout(groupbox_status);
-		
-		m_label_status = new QLabel(groupbox_status);
-		m_label_status->setAlignment(Qt::AlignCenter);
-		m_label_status->setStyleSheet("QLabel { font-weight: bold; }");
-		layout->addWidget(m_label_status);
-		
-		QHBoxLayout* button_layout = new QHBoxLayout();
-		m_button_connect = new QPushButton(tr("Connect"), groupbox_status);
-		m_button_disconnect = new QPushButton(tr("Disconnect"), groupbox_status);
-		m_button_test = new QPushButton(tr("Test Connection"), groupbox_status);
-		
-		button_layout->addWidget(m_button_connect);
-		button_layout->addWidget(m_button_disconnect);
-		button_layout->addWidget(m_button_test);
-		button_layout->addStretch();
-		
-		layout->addLayout(button_layout);
-		
-		connect(m_button_connect, SIGNAL(clicked()), this, SLOT(OnConnect()));
-		connect(m_button_disconnect, SIGNAL(clicked()), this, SLOT(OnDisconnect()));
-		connect(m_button_test, SIGNAL(clicked()), this, SLOT(OnTest()));
-	}
+	QVBoxLayout* status_layout = new QVBoxLayout(groupbox_status);
+	
+	m_label_status = new QLabel(tr("Not connected"), this);
+	m_button_connect = new QPushButton(tr("Connect"), this);
+	m_button_disconnect = new QPushButton(tr("Disconnect"), this);
+	m_button_disconnect->setEnabled(false);
+	
+	QHBoxLayout* button_layout = new QHBoxLayout();
+	button_layout->addWidget(m_button_connect);
+	button_layout->addWidget(m_button_disconnect);
+	button_layout->addStretch();
+	
+	status_layout->addWidget(m_label_status);
+	status_layout->addLayout(button_layout);
+	
 	main_layout->addWidget(groupbox_status);
 	
+	// Test button
+	m_button_test = new QPushButton(tr("Test Connection"), this);
+	main_layout->addWidget(m_button_test);
+	
 	// Dialog buttons
-	QHBoxLayout* button_layout = new QHBoxLayout();
+	QHBoxLayout* dialog_buttons = new QHBoxLayout();
 	m_button_ok = new QPushButton(tr("OK"), this);
 	m_button_cancel = new QPushButton(tr("Cancel"), this);
 	
-	button_layout->addStretch();
-	button_layout->addWidget(m_button_ok);
-	button_layout->addWidget(m_button_cancel);
+	dialog_buttons->addStretch();
+	dialog_buttons->addWidget(m_button_ok);
+	dialog_buttons->addWidget(m_button_cancel);
 	
-	main_layout->addLayout(button_layout);
+	main_layout->addLayout(dialog_buttons);
 	
+	// Connect signals
+	connect(m_checkbox_use_tls, SIGNAL(stateChanged(int)), this, SLOT(OnUseTlsChanged(int)));
+	connect(m_checkbox_show_password, SIGNAL(stateChanged(int)), this, SLOT(OnShowPasswordChanged(int)));
+	connect(m_button_browse_ca_cert, SIGNAL(clicked()), this, SLOT(OnBrowseCaCert()));
+	connect(m_button_browse_client_cert, SIGNAL(clicked()), this, SLOT(OnBrowseClientCert()));
+	connect(m_button_browse_client_key, SIGNAL(clicked()), this, SLOT(OnBrowseClientKey()));
+	connect(m_button_connect, SIGNAL(clicked()), this, SLOT(OnConnect()));
+	connect(m_button_disconnect, SIGNAL(clicked()), this, SLOT(OnDisconnect()));
+	connect(m_button_test, SIGNAL(clicked()), this, SLOT(OnTest()));
 	connect(m_button_ok, SIGNAL(clicked()), this, SLOT(OnAccepted()));
 	connect(m_button_cancel, SIGNAL(clicked()), this, SLOT(OnRejected()));
+	
+	// Initial state
+	OnUseTlsChanged(m_checkbox_use_tls->isChecked() ? Qt::Checked : Qt::Unchecked);
+	OnShowPasswordChanged(m_checkbox_show_password->isChecked() ? Qt::Checked : Qt::Unchecked);
 }
 
 void DialogMqttSettings::LoadSettings() {
 	if (!m_mqtt_client) return;
 	
-	// Try to cast to MqttClientSimple to access YAML config
-	MqttClientSimple* mqtt_simple = dynamic_cast<MqttClientSimple*>(m_mqtt_client);
-	if (mqtt_simple && mqtt_simple->GetConfigManager()) {
-		// Load from YAML config
-		MqttConfig::ConnectionConfig config = mqtt_simple->GetConfig();
-		
-		m_edit_broker_host->setText(config.broker_host);
-		m_spinbox_broker_port->setValue(config.broker_port);
-		m_checkbox_use_tls->setChecked(config.use_tls);
-		m_edit_username->setText(config.username);
-		m_edit_password->setText(config.password);
-		m_edit_ca_cert->setText(config.ca_cert);
-		m_edit_client_cert->setText(config.client_cert);
-		m_edit_client_key->setText(config.client_key);
-		
-		// Load additional YAML-only settings if we have UI for them
-		// (we would need to add UI elements for these)
-	} else {
-		// Fall back to legacy QSettings
-		QSettings settings;
-		settings.beginGroup("MQTT");
-		
-		m_edit_broker_host->setText(settings.value("broker_host", "localhost").toString());
-		m_spinbox_broker_port->setValue(settings.value("broker_port", 1883).toInt());
-		m_checkbox_use_tls->setChecked(settings.value("use_tls", false).toBool());
-		m_edit_username->setText(settings.value("username", "").toString());
-		m_edit_password->setText(settings.value("password", "").toString());
-		m_edit_ca_cert->setText(settings.value("ca_cert", "").toString());
-		m_edit_client_cert->setText(settings.value("client_cert", "").toString());
-		m_edit_client_key->setText(settings.value("client_key", "").toString());
-		
-		settings.endGroup();
+	QSettings settings;
+	settings.beginGroup("MQTT");
+	
+	m_edit_broker_host->setText(settings.value("broker_host", "localhost").toString());
+	m_spinbox_broker_port->setValue(settings.value("broker_port", 1883).toInt());
+	m_checkbox_use_tls->setChecked(settings.value("use_tls", false).toBool());
+	m_edit_username->setText(settings.value("username", "").toString());
+	m_edit_password->setText(settings.value("password", "").toString());
+	m_edit_ca_cert->setText(settings.value("ca_cert", "").toString());
+	m_edit_client_cert->setText(settings.value("client_cert", "").toString());
+	m_edit_client_key->setText(settings.value("client_key", "").toString());
+	
+	// Load new topic settings
+	QComboBox* combo_topic_architecture = findChild<QComboBox*>("combo_topic_architecture");
+	if (combo_topic_architecture) {
+		QString architecture = settings.value("topic_architecture", "legacy").toString();
+		int index = combo_topic_architecture->findData(architecture);
+		if (index >= 0) {
+			combo_topic_architecture->setCurrentIndex(index);
+		}
 	}
 	
-	// Update certificate group visibility
-	OnUseTlsChanged(m_checkbox_use_tls->isChecked() ? Qt::Checked : Qt::Unchecked);
+	QLineEdit* edit_topic_root = findChild<QLineEdit*>("edit_topic_root");
+	if (edit_topic_root) {
+		edit_topic_root->setText(settings.value("topic_root", "/ssr/").toString());
+	}
+	
+	QLineEdit* edit_instance_id = findChild<QLineEdit*>("edit_instance_id");
+	if (edit_instance_id) {
+		edit_instance_id->setText(settings.value("instance_id", "main").toString());
+	}
+	
+	settings.endGroup();
 }
 
 void DialogMqttSettings::SaveSettings() {
 	if (!m_mqtt_client) return;
 	
-	// Try to cast to MqttClientSimple to save to YAML config
-	MqttClientSimple* mqtt_simple = dynamic_cast<MqttClientSimple*>(m_mqtt_client);
-	if (mqtt_simple && mqtt_simple->GetConfigManager()) {
-		// Save to YAML config
-		MqttConfig::ConnectionConfig config = mqtt_simple->GetConfig();
-		
-		// Update config with UI values
-		config.broker_host = m_edit_broker_host->text();
-		config.broker_port = m_spinbox_broker_port->value();
-		config.use_tls = m_checkbox_use_tls->isChecked();
-		config.username = m_edit_username->text();
-		config.password = m_edit_password->text();
-		config.ca_cert = m_edit_ca_cert->text();
-		config.client_cert = m_edit_client_cert->text();
-		config.client_key = m_edit_client_key->text();
-		
-		// Apply the updated config
-		mqtt_simple->ApplyConfig(config);
-		
-		// Save to YAML file
-		mqtt_simple->SaveConfigToFile();
-	} else {
-		// Fall back to legacy QSettings
-		QSettings settings;
-		settings.beginGroup("MQTT");
-		
-		settings.setValue("broker_host", m_edit_broker_host->text());
-		settings.setValue("broker_port", m_spinbox_broker_port->value());
-		settings.setValue("use_tls", m_checkbox_use_tls->isChecked());
-		settings.setValue("username", m_edit_username->text());
-		settings.setValue("password", m_edit_password->text());
-		settings.setValue("ca_cert", m_edit_ca_cert->text());
-		settings.setValue("client_cert", m_edit_client_cert->text());
-		settings.setValue("client_key", m_edit_client_key->text());
-		
-		settings.endGroup();
+	QSettings settings;
+	settings.beginGroup("MQTT");
+	
+	settings.setValue("broker_host", m_edit_broker_host->text());
+	settings.setValue("broker_port", m_spinbox_broker_port->value());
+	settings.setValue("use_tls", m_checkbox_use_tls->isChecked());
+	settings.setValue("username", m_edit_username->text());
+	settings.setValue("password", m_edit_password->text());
+	settings.setValue("ca_cert", m_edit_ca_cert->text());
+	settings.setValue("client_cert", m_edit_client_cert->text());
+	settings.setValue("client_key", m_edit_client_key->text());
+	
+	// Save new topic settings
+	QComboBox* combo_topic_architecture = findChild<QComboBox*>("combo_topic_architecture");
+	if (combo_topic_architecture) {
+		settings.setValue("topic_architecture", combo_topic_architecture->currentData().toString());
 	}
+	
+	QLineEdit* edit_topic_root = findChild<QLineEdit*>("edit_topic_root");
+	if (edit_topic_root) {
+		settings.setValue("topic_root", edit_topic_root->text());
+	}
+	
+	QLineEdit* edit_instance_id = findChild<QLineEdit*>("edit_instance_id");
+	if (edit_instance_id) {
+		settings.setValue("instance_id", edit_instance_id->text());
+	}
+	
+	settings.endGroup();
+	
+	// Reload settings into MQTT client
+	m_mqtt_client->LoadSettings(&settings);
 }
 
 void DialogMqttSettings::UpdateConnectionStatus() {
 	if (!m_mqtt_client) {
 		m_label_status->setText(tr("MQTT client not available"));
-		m_label_status->setStyleSheet("QLabel { color: red; font-weight: bold; }");
 		m_button_connect->setEnabled(false);
 		m_button_disconnect->setEnabled(false);
-		m_button_test->setEnabled(false);
 		return;
 	}
 	
 	if (m_mqtt_client->IsConnected()) {
 		m_label_status->setText(tr("Connected"));
-		m_label_status->setStyleSheet("QLabel { color: green; font-weight: bold; }");
 		m_button_connect->setEnabled(false);
 		m_button_disconnect->setEnabled(true);
-		m_button_test->setEnabled(true);
-	} else if (m_mqtt_client->IsEnabled()) {
-		m_label_status->setText(tr("Disconnected (enabled)"));
-		m_label_status->setStyleSheet("QLabel { color: orange; font-weight: bold; }");
-		m_button_connect->setEnabled(true);
-		m_button_disconnect->setEnabled(false);
-		m_button_test->setEnabled(true);
 	} else {
-		m_label_status->setText(tr("Disabled"));
-		m_label_status->setStyleSheet("QLabel { color: gray; font-weight: bold; }");
+		m_label_status->setText(tr("Disconnected"));
 		m_button_connect->setEnabled(true);
 		m_button_disconnect->setEnabled(false);
-		m_button_test->setEnabled(false);
 	}
 }
 
@@ -292,79 +296,53 @@ void DialogMqttSettings::BrowseCertificate(QLineEdit* edit, const QString& title
 }
 
 void DialogMqttSettings::OnUseTlsChanged(int state) {
-	m_groupbox_certificates->setVisible(state == Qt::Checked);
+	bool use_tls = (state == Qt::Checked);
+	m_groupbox_certificates->setVisible(use_tls);
 }
 
 void DialogMqttSettings::OnShowPasswordChanged(int state) {
-	m_edit_password->setEchoMode(state == Qt::Checked ? QLineEdit::Normal : QLineEdit::Password);
+	bool show = (state == Qt::Checked);
+	m_edit_password->setEchoMode(show ? QLineEdit::Normal : QLineEdit::Password);
 }
 
 void DialogMqttSettings::OnBrowseCaCert() {
-	BrowseCertificate(m_edit_ca_cert, tr("Select CA Certificate"), tr("Certificate Files (*.pem *.crt *.cer);;All Files (*)"));
+	BrowseCertificate(m_edit_ca_cert, tr("Select CA Certificate"), tr("Certificate files (*.pem *.crt *.cer);;All files (*)"));
 }
 
 void DialogMqttSettings::OnBrowseClientCert() {
-	BrowseCertificate(m_edit_client_cert, tr("Select Client Certificate"), tr("Certificate Files (*.pem *.crt *.cer);;All Files (*)"));
+	BrowseCertificate(m_edit_client_cert, tr("Select Client Certificate"), tr("Certificate files (*.pem *.crt *.cer);;All files (*)"));
 }
 
 void DialogMqttSettings::OnBrowseClientKey() {
-	BrowseCertificate(m_edit_client_key, tr("Select Client Key"), tr("Key Files (*.pem *.key);;All Files (*)"));
+	BrowseCertificate(m_edit_client_key, tr("Select Client Key"), tr("Key files (*.pem *.key);;All files (*)"));
 }
 
 void DialogMqttSettings::OnConnect() {
 	if (!m_mqtt_client) return;
 	
-	// Save settings first
 	SaveSettings();
-	
-	// Try to cast to MqttClientSimple to reload YAML config
-	MqttClientSimple* mqtt_simple = dynamic_cast<MqttClientSimple*>(m_mqtt_client);
-	if (mqtt_simple) {
-		// Reload config from YAML file
-		mqtt_simple->LoadConfigFromFile();
-	} else {
-		// Fall back to legacy QSettings
-		QSettings settings;
-		m_mqtt_client->LoadSettings(&settings);
-	}
-	
-	// Connect
 	m_mqtt_client->Connect();
-	UpdateConnectionStatus();
 }
 
 void DialogMqttSettings::OnDisconnect() {
 	if (!m_mqtt_client) return;
 	
 	m_mqtt_client->Disconnect();
-	UpdateConnectionStatus();
 }
 
 void DialogMqttSettings::OnTest() {
 	if (!m_mqtt_client) return;
 	
-	// Save settings first
 	SaveSettings();
 	
-	// Try to cast to MqttClientSimple to reload YAML config
-	MqttClientSimple* mqtt_simple = dynamic_cast<MqttClientSimple*>(m_mqtt_client);
-	if (mqtt_simple) {
-		// Reload config from YAML file
-		mqtt_simple->LoadConfigFromFile();
+	bool was_connected = m_mqtt_client->IsConnected();
+	if (!was_connected) {
+		m_mqtt_client->Connect();
+		// In a real implementation, we would wait for connection
+		// and show a message box with the result
+		Logger::LogInfo("[MQTT] Test connection initiated");
 	} else {
-		// Fall back to legacy QSettings
-		QSettings settings;
-		m_mqtt_client->LoadSettings(&settings);
-	}
-	
-	// Test connection
-	if (m_mqtt_client->IsConnected()) {
-		m_mqtt_client->PublishStatus("test");
-		MessageBox(QMessageBox::Information, this, tr("MQTT Test"),
-				  tr("Test message sent successfully."), BUTTON_OK);
-	} else {
-		MessageBox(QMessageBox::Warning, this, tr("MQTT Test"),
-				  tr("Not connected to MQTT broker. Please connect first."), BUTTON_OK);
+		Logger::LogInfo("[MQTT] Already connected");
 	}
 }
 

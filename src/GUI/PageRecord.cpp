@@ -56,7 +56,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SimpleSynth.h"
 #include "VideoPreviewer.h"
 #include "AudioPreviewer.h"
-#include "MqttClientSimple.h"
+#include "MqttClient.h"
 #include "MqttClientInterface.h"
 #include "DialogMqttSettings.h"
 
@@ -180,7 +180,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_stdin_reentrant = false;
 
 	// Initialize MQTT client
-	m_mqtt_client.reset(new MqttClientSimple(this));
+	m_mqtt_client.reset(new MqttClient(this));
 
 	QGroupBox *groupbox_recording = new QGroupBox(tr("Recording"), this);
 	{
@@ -428,6 +428,7 @@ PageRecord::PageRecord(MainWindow* main_window)
 	connect(m_mqtt_client.get(), SIGNAL(ButtonRecordingReleased()), this, SLOT(OnMqttButtonRecordingReleased()));
 	connect(m_mqtt_client.get(), SIGNAL(ButtonOnAirPressed()), this, SLOT(OnMqttButtonOnAirPressed()));
 	connect(m_mqtt_client.get(), SIGNAL(ButtonOnAirReleased()), this, SLOT(OnMqttButtonOnAirReleased()));
+	connect(m_mqtt_client.get(), SIGNAL(StatusGetRequested()), this, SLOT(OnMqttStatusGet()));
 
 	m_timer_schedule = new QTimer(this);
 	m_timer_schedule->setSingleShot(true);
@@ -918,6 +919,8 @@ void PageRecord::StartOutput() {
 			m_mqtt_client->PublishRecordingState(true);
 			m_mqtt_client->PublishRecordingEvent("recording_started");
 			m_mqtt_client->PublishStatus("recording");
+			// Publish full status for centralized architecture
+			m_mqtt_client->PublishFullStatus(true, m_session_id, m_topic);
 		}
 
 	} catch(...) {
@@ -969,6 +972,8 @@ void PageRecord::StopOutput(bool final) {
 		m_mqtt_client->PublishRecordingState(false);
 		m_mqtt_client->PublishRecordingEvent("recording_stopped");
 		m_mqtt_client->PublishStatus("idle");
+		// Publish full status for centralized architecture
+		m_mqtt_client->PublishFullStatus(false, m_session_id, m_topic);
 	}
 
 }
@@ -1733,6 +1738,15 @@ void PageRecord::OnMqttButtonOnAirReleased() {
 	// TODO: Implement on-air functionality
 	if(m_mqtt_client) {
 		m_mqtt_client->PublishRecordingEvent("onair_stopped");
+	}
+}
+
+void PageRecord::OnMqttStatusGet() {
+	Logger::LogInfo("[MQTT] Received status get request");
+	if(m_mqtt_client) {
+		bool is_recording = (m_output_started && !m_output_stopped);
+		m_mqtt_client->PublishFullStatus(is_recording, m_session_id, m_topic);
+		Logger::LogInfo("[MQTT] Published full status in response to get request");
 	}
 }
 
