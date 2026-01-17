@@ -821,6 +821,7 @@ void PageRecord::StopPage(bool save) {
 	Logger::LogInfo("[PageRecord::StopPage] " + tr("Stopped page."));
 
 	m_page_started = false;
+	m_output_paused = false;
 	UpdateSysTray();
 #if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
@@ -1104,29 +1105,31 @@ void PageRecord::StartInput() {
 void PageRecord::StopInput() {
 	assert(m_page_started);
 
-	if(!m_input_started)
-		return;
-
 	Logger::LogInfo("[PageRecord::StopInput] " + tr("Stopping input ..."));
 
+	// Always reset X11 input to ensure thread is destroyed
 	m_x11_input.reset();
+	
+	// Only reset other inputs if input was started
+	if(m_input_started) {
 #if SSR_USE_OPENGL_RECORDING
-	if(m_gl_inject_input != NULL)
-		m_gl_inject_input->SetCapturing(false);
+		if(m_gl_inject_input != NULL)
+			m_gl_inject_input->SetCapturing(false);
 #endif
 #if SSR_USE_V4L2
-	m_v4l2_input.reset();
+		m_v4l2_input.reset();
 #endif
 #if SSR_USE_PIPEWIRE
-	m_pipewire_input.reset();
+		m_pipewire_input.reset();
 #endif
 #if SSR_USE_ALSA
-	m_alsa_input.reset();
+		m_alsa_input.reset();
 #endif
 #if SSR_USE_PULSEAUDIO
-	m_pulseaudio_input.reset();
+		m_pulseaudio_input.reset();
 #endif
-	// JACK shouldn't stop until the page stops
+		// JACK shouldn't stop until the page stops
+	}
 
 	Logger::LogInfo("[PageRecord::StopInput] " + tr("Stopped input."));
 
@@ -1167,7 +1170,7 @@ void PageRecord::FinishOutput() {
 void PageRecord::UpdateInput() {
 	assert(m_page_started);
 
-	if(m_output_started || m_previewing) {
+	if((m_output_started && !m_output_paused) || m_previewing) {
 		StartInput();
 	} else {
 		StopInput();
@@ -1207,7 +1210,7 @@ void PageRecord::UpdateInput() {
 
 	// connect sinks
 	if(m_output_manager != NULL) {
-		if(m_output_started) {
+		if(m_output_started && !m_output_paused) {
 			m_output_manager->GetSynchronizer()->ConnectVideoSource(video_source, PRIORITY_RECORD);
 			m_output_manager->GetSynchronizer()->ConnectAudioSource(audio_source, PRIORITY_RECORD);
 		} else {
@@ -1232,17 +1235,22 @@ void PageRecord::UpdateSysTray() {
 	if(m_page_started) {
 		if(m_error_occurred) {
 			m_systray_icon->setIcon(g_icon_ssr_error);
-		} else if(m_output_started) {
+		} else if(m_output_started && !m_output_paused) {
 			m_systray_icon->setIcon(g_icon_ssr_recording);
+		} else if(m_output_started && m_output_paused) {
+			m_systray_icon->setIcon(g_icon_ssr_paused);
 		} else {
 			m_systray_icon->setIcon(g_icon_ssr_paused);
 		}
 	} else {
 		m_systray_icon->setIcon(g_icon_ssr_idle);
 	}
-	if(m_page_started && m_output_started) {
+	if(m_page_started && m_output_started && !m_output_paused) {
 		m_systray_action_start_pause->setIcon(g_icon_pause);
 		m_systray_action_start_pause->setText(tr("Pause recording"));
+	} else if(m_page_started && m_output_started && m_output_paused) {
+		m_systray_action_start_pause->setIcon(g_icon_record);
+		m_systray_action_start_pause->setText(tr("Resume recording"));
 	} else {
 		m_systray_action_start_pause->setIcon(g_icon_record);
 		m_systray_action_start_pause->setText(tr("Start recording"));
@@ -1250,9 +1258,12 @@ void PageRecord::UpdateSysTray() {
 }
 
 void PageRecord::UpdateRecordButton() {
-	if(m_output_started) {
+	if(m_output_started && !m_output_paused) {
 		m_pushbutton_record->setIcon(g_icon_pause);
 		m_pushbutton_record->setText(tr("Pause recording"));
+	} else if(m_output_started && m_output_paused) {
+		m_pushbutton_record->setIcon(g_icon_record);
+		m_pushbutton_record->setText(tr("Resume recording"));
 	} else {
 		m_pushbutton_record->setIcon(g_icon_record);
 		m_pushbutton_record->setText(tr("Start recording"));
@@ -1358,8 +1369,16 @@ void PageRecord::OnRecordStart() {
 		return;
 	if(m_wait_saving)
 		return;
-	if(!m_output_started)
+	if(!m_output_started) {
 		StartOutput();
+	} else if(m_output_paused) {
+		// Resume from pause
+		m_output_paused = false;
+		UpdateSysTray();
+		UpdateRecordButton();
+		UpdateInput();
+		OnUpdateRecordingFrame();
+	}
 }
 
 void PageRecord::OnRecordPause() {
@@ -1645,6 +1664,7 @@ void PageRecord::OnUpdateInformation() {
 			QString str = QString() +
 					"capturing\t" + ((m_input_started)? "1" : "0") + "\n"
 					"recording\t" + ((m_output_started)? "1" : "0") + "\n"
+					"paused\t" + ((m_output_paused)? "1" : "0") + "\n"
 					"total_time\t" + QString::number(total_time) + "\n"
 					"frame_rate_in\t" + QString::number(fps_in, 'f', 8) + "\n"
 					"frame_rate_out\t" + QString::number(fps_out, 'f', 8) + "\n"
