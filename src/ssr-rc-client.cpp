@@ -142,30 +142,30 @@ void SSRRCClient::connectToBroker()
 void SSRRCClient::disconnectFromBroker()
 {
     m_reconnectTimer->stop();
-    
+
     if(m_client->state() != QMqttClient::Disconnected) {
         Logger::LogInfo("Disconnecting from MQTT broker...");
         m_client->disconnectFromHost();
-        
+
         // Wait for disconnection with timeout
         QEventLoop loop;
         QTimer timeoutTimer;
         timeoutTimer.setSingleShot(true);
-        
+
         auto connection = QObject::connect(m_client, &QMqttClient::stateChanged,
             [&loop](QMqttClient::ClientState state) {
                 if(state == QMqttClient::Disconnected) {
                     loop.quit();
                 }
             });
-        
+
         QObject::connect(&timeoutTimer, &QTimer::timeout, &loop, &QEventLoop::quit);
-        
+
         timeoutTimer.start(5000); // 5 second timeout
         loop.exec();
-        
+
         QObject::disconnect(connection);
-        
+
         if(timeoutTimer.isActive()) {
             Logger::LogInfo("Successfully disconnected from MQTT broker");
         } else {
@@ -402,11 +402,12 @@ void SSRRCClient::publishCommand(const QString& command, const QString& payload)
     }
 
     QMqttTopicName topic = getFullTopic(command);
+    QString topicStr = topic.name();
     if(m_client->publish(topic, payload.toUtf8(), 1, false) == -1) {
-        Logger::LogError(QString("Failed to publish command: %1").arg(command));
-        emit errorOccurred(QString("Failed to publish command: %1").arg(command));
+        Logger::LogError(QString("Failed to publish command: %1").arg(topicStr));
+        emit errorOccurred(QString("Failed to publish command: %1").arg(topicStr));
     } else {
-        Logger::LogInfo(QString("Published command: %1, payload: %2").arg(command).arg(payload.isEmpty() ? "[empty]" : payload));
+        Logger::LogInfo(QString("Published command: %1, payload: %2").arg(topicStr).arg(payload.isEmpty() ? "[empty]" : payload));
     }
 }
 

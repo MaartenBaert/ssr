@@ -74,7 +74,7 @@ private:
 	QMqttSubscription* m_sub_button_recording;
 	QMqttSubscription* m_sub_button_onair;
 	QMqttSubscription* m_sub_status_get;
-	
+
 	// Configuration
 	QString m_topic_root;
 	QString m_instance_id;
@@ -115,7 +115,6 @@ private:
 	QString GenerateClientId() const;
 	QString GetBaseTopic() const;
 	QString GetCentralizedTopic(const QString& path) const;
-	QString GetLegacyTopic(const QString& path) const;
 	QString GetFullTopic(const QString& path, bool centralized = false) const;
 
 private slots:
