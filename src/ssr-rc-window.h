@@ -60,6 +60,7 @@ private slots:
     void onTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
     void onSettingsChanged();
     void onLoadMQTTSettings();
+    void quitApplication();
 
 private:
     void setupUi();

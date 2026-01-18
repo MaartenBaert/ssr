@@ -22,6 +22,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "GUI/ssr_panel.h"
 #include "MqttConfig.h"
 
+#include <QShortcut>
+
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QApplication>
@@ -32,13 +34,17 @@ SSRRCWindow::SSRRCWindow(QSettings* settings, const QString& mqttConfigPath, QWi
     : QMainWindow(parent)
     , m_settings(settings)
     , m_mqttClient(new SSRRCClient(this))
-    , m_mqttConfigPath(mqttConfigPath)  // Сохранить путь
     , m_trayIcon(nullptr)
     , m_trayMenu(nullptr)
+    , m_mqttConfigPath(mqttConfigPath)
 {
     setupUi();
     createTrayIcon();
     loadSettings();
+
+    // Add keyboard shortcut for quitting (Ctrl+Q)
+    QShortcut *quitShortcut = new QShortcut(QKeySequence("Ctrl+Q"), this);
+    connect(quitShortcut, &QShortcut::activated, qApp, &QApplication::quit);
 
     // Connect signals
     connect(m_mqttClient, &SSRRCClient::statusUpdated,
@@ -58,6 +64,7 @@ SSRRCWindow::SSRRCWindow(QSettings* settings, const QString& mqttConfigPath, QWi
 
 SSRRCWindow::~SSRRCWindow()
 {
+    Logger::LogInfo("SSRRCWindow destructor called");
     saveSettings();
 }
 
@@ -104,8 +111,11 @@ void SSRRCWindow::setupUi()
     m_disconnectButton = new QPushButton("Disconnect", m_connectionGroup);
     m_loadMQTTButton = new QPushButton("Load MQTT Settings", m_connectionGroup);
     m_disconnectButton->setEnabled(false);
+    buttonLayout->addStretch();
     buttonLayout->addWidget(m_connectButton);
     buttonLayout->addWidget(m_disconnectButton);
+    buttonLayout->addWidget(m_loadMQTTButton);
+    buttonLayout->addStretch();
     m_connectionLayout->addRow("", buttonLayout);
 
     m_mainLayout->addWidget(m_connectionGroup);
@@ -223,7 +233,7 @@ void SSRRCWindow::createTrayIcon()
     connect(m_trayShowAction, &QAction::triggered,
             this, [this]() { showNormal(); activateWindow(); });
     connect(m_trayQuitAction, &QAction::triggered,
-            qApp, &QApplication::quit);
+            this, &SSRRCWindow::quitApplication);
     connect(m_trayIcon, &QSystemTrayIcon::activated,
             this, &SSRRCWindow::onTrayIconActivated);
 
@@ -355,10 +365,42 @@ void SSRRCWindow::updateUiState()
 
 void SSRRCWindow::closeEvent(QCloseEvent* event)
 {
+    Logger::LogInfo("Close event received");
+
     if(m_trayIcon && m_trayIcon->isVisible()) {
-        hide();
-        event->ignore();
+        // If tray icon is visible, ask user what to do
+        QMessageBox msgBox(this);
+        msgBox.setWindowTitle("SSR Remote Control");
+        msgBox.setText("What would you like to do?");
+        msgBox.setIcon(QMessageBox::Question);
+        
+        QPushButton *minimizeButton = msgBox.addButton("Minimize to Tray", QMessageBox::YesRole);
+        QPushButton *quitButton = msgBox.addButton("Exit Application", QMessageBox::NoRole);
+        QPushButton *cancelButton = msgBox.addButton("Cancel", QMessageBox::RejectRole);
+        
+        msgBox.setDefaultButton(minimizeButton);
+        msgBox.exec();
+        
+        QAbstractButton *clickedButton = msgBox.clickedButton();
+        
+        if(clickedButton == minimizeButton) {
+            // Minimize to tray
+            Logger::LogInfo("Minimizing to system tray");
+            hide();
+            event->ignore();
+        } else if(clickedButton == quitButton) {
+            // Quit application
+            Logger::LogInfo("Quitting application");
+            event->accept();
+            qApp->quit();
+        } else {
+            // Cancel - keep window open
+            Logger::LogInfo("Close cancelled by user");
+            event->ignore();
+        }
     } else {
+        // No tray icon, just quit
+        Logger::LogInfo("Quitting application (no tray icon)");
         event->accept();
     }
 }
@@ -474,6 +516,14 @@ void SSRRCWindow::onTrayIconActivated(QSystemTrayIcon::ActivationReason reason)
             hide();
         }
     }
+}
+
+void SSRRCWindow::quitApplication()
+{
+    Logger::LogInfo("Quit requested from tray menu");
+    // Save settings before quitting
+    saveSettings();
+    qApp->quit();
 }
 
 void SSRRCWindow::onSettingsChanged()

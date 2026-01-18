@@ -25,6 +25,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QJsonParseError>
 #include <QDateTime>
 #include <QUuid>
+#include <QEventLoop>
+#include <QTimer>
 
 SSRRCClient::SSRRCClient(QObject* parent)
     : QObject(parent)
@@ -62,6 +64,7 @@ SSRRCClient::SSRRCClient(QObject* parent)
 
 SSRRCClient::~SSRRCClient()
 {
+    Logger::LogInfo("SSRRCClient destructor called, disconnecting from broker...");
     disconnectFromBroker();
 }
 
@@ -139,7 +142,38 @@ void SSRRCClient::connectToBroker()
 void SSRRCClient::disconnectFromBroker()
 {
     m_reconnectTimer->stop();
-    m_client->disconnectFromHost();
+    
+    if(m_client->state() != QMqttClient::Disconnected) {
+        Logger::LogInfo("Disconnecting from MQTT broker...");
+        m_client->disconnectFromHost();
+        
+        // Wait for disconnection with timeout
+        QEventLoop loop;
+        QTimer timeoutTimer;
+        timeoutTimer.setSingleShot(true);
+        
+        auto connection = QObject::connect(m_client, &QMqttClient::stateChanged,
+            [&loop](QMqttClient::ClientState state) {
+                if(state == QMqttClient::Disconnected) {
+                    loop.quit();
+                }
+            });
+        
+        QObject::connect(&timeoutTimer, &QTimer::timeout, &loop, &QEventLoop::quit);
+        
+        timeoutTimer.start(5000); // 5 second timeout
+        loop.exec();
+        
+        QObject::disconnect(connection);
+        
+        if(timeoutTimer.isActive()) {
+            Logger::LogInfo("Successfully disconnected from MQTT broker");
+        } else {
+            Logger::LogWarning("Timeout waiting for MQTT disconnection");
+        }
+    } else {
+        Logger::LogInfo("MQTT client already disconnected");
+    }
 }
 
 bool SSRRCClient::isConnected() const
