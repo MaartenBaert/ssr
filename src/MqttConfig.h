@@ -43,26 +43,26 @@ public:
 		bool auto_connect = false;
 		int keepalive_interval = 60;
 		int reconnect_interval = 5;
-		
+
 		// Topic configuration
 		QString base_topic = "recording";
 		bool use_client_id_in_topic = true;
 		QString topic_root = "/ssr/";
 		QString instance_id = "main";
 		QString topic_architecture = "legacy"; // legacy|centralized|both
-		
+
 		// Publishing configuration
 		bool publish_recording_state = true;
 		bool publish_recording_events = true;
 		bool publish_led_states = true;
 		bool publish_status = true;
 		bool publish_keepalive = true;
-		
+
 		// Subscription configuration
 		bool subscribe_recording_control = true;
 		bool subscribe_topic_change = true;
 		bool subscribe_button_events = true;
-		
+
 		// QoS levels
 		int qos_status = 1;
 		int qos_recording_state = 1;
@@ -70,21 +70,21 @@ public:
 		int qos_led_states = 1;
 		int qos_control_messages = 1;
 		int qos_status_get = 1;
-		
+
 		// Retained messages
 		bool retain_recording_state = true;
 		bool retain_led_states = true;
 		bool retain_connection_state = true;
 		bool retain_full_status = true;
-		
+
 		// Logging
 		bool log_mqtt_messages = false;
 		int log_level = 1; // 0=error, 1=warning, 2=info, 3=debug
-		
+
 		// New centralized architecture features
 		bool publish_full_status = true;
 		bool subscribe_status_get = true;
-		
+
 		// Validation
 		bool isValid() const {
 			return !broker_host.isEmpty() && broker_port > 0 && broker_port <= 65535;
@@ -100,46 +100,47 @@ private:
 public:
 	MqttConfig(QObject* parent = nullptr);
 	~MqttConfig();
-	
+
 	// Configuration management
 	bool loadConfig(const QString& config_path = QString());
 	bool saveConfig(const QString& config_path = QString());
 	bool hasConfig() const { return m_config_loaded; }
 	bool isConfigChanged() const { return m_config_changed; }
 	void markConfigChanged() { m_config_changed = true; }
-	
+
 	// Configuration access
 	const ConnectionConfig& config() const { return m_config; }
 	ConnectionConfig& config() { m_config_changed = true; return m_config; }
 	void setConfig(const ConnectionConfig& config) { m_config = config; m_config_changed = true; }
-	
+
 	// Convenience methods
 	QString getConfigPath() const { return m_config_path; }
 	static QString getDefaultConfigPath();
-	
+
 	// Validation
 	bool validateConfig() const;
 	QStringList getValidationErrors() const;
-	
+
 	// YAML serialization
 	static ConnectionConfig fromYaml(const QString& yaml_content, QString* error = nullptr);
 	static QString toYaml(const ConnectionConfig& config);
-	
+
 	// Default configuration
 	static ConnectionConfig defaultConfig();
-	
+	ConnectionConfig& getConfig() { return m_config; }
+
 private:
 	// YAML parsing helpers
 	static QVariant parseYamlValue(const QString& value_str);
 	static QString serializeYamlValue(const QVariant& value);
 	static QVariantMap parseYamlMap(const QStringList& lines, int& current_line);
 	static QStringList serializeYamlMap(const QVariantMap& map, int indent = 0);
-	
+
 	// Configuration file helpers
 	bool ensureConfigDirExists(const QString& config_path);
 	QString readFileContent(const QString& file_path);
 	bool writeFileContent(const QString& file_path, const QString& content);
-	
+
 	// Type conversion
 	static QVariantMap configToVariantMap(const ConnectionConfig& config);
 	static ConnectionConfig variantMapToConfig(const QVariantMap& map);

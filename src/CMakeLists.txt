@@ -37,7 +37,8 @@ else()
     find_package(Qt4 4.8 COMPONENTS QtNetwork REQUIRED)
 endif()
 
-set(sources
+if(WITH_SIMPLESCREENRECORDER)
+    set(sources
  AV/Input/ALSAInput.cpp
  AV/Input/ALSAInput.h
  AV/Input/GLInjectInput.cpp
@@ -155,43 +156,48 @@ set(sources
  Main.cpp
 )
 
-if(ENABLE_X86_ASM)
+    if(ENABLE_X86_ASM)
 
-    list(APPEND sources
+        list(APPEND sources
   AV/FastResampler_FirFilter_SSE2.cpp
   AV/FastScaler_Convert_SSSE3.cpp
   AV/FastScaler_Scale_SSSE3.cpp
  )
 
-    set_source_files_properties(
+        set_source_files_properties(
   AV/FastResampler_FirFilter_SSE2.cpp
   PROPERTIES COMPILE_FLAGS -msse2
  )
 
-    set_source_files_properties(
+        set_source_files_properties(
   AV/FastScaler_Convert_SSSE3.cpp
   AV/FastScaler_Scale_SSSE3.cpp
   PROPERTIES COMPILE_FLAGS -mssse3
  )
 
-endif()
+    endif()
 
-set(res_input
+    set(res_input
  ../data/resources/resources.qrc
 )
 
-if(WITH_QT6)
-    qt6_add_resources(res_output ${res_input})
-    set(QT_LIBS
+endif()
+
+
+if(WITH_SSR_RC OR WITH_SIMPLESCREENRECORDER)
+
+    if(WITH_QT6)
+        qt6_add_resources(res_output ${res_input})
+        set(QT_LIBS
   Qt6::Core
   Qt6::Gui
   Qt6::Widgets
   Qt6::Network
   Qt6::Mqtt
  )
-elseif(WITH_QT5)
-    qt5_add_resources(res_output ${res_input})
-    set(QT_LIBS
+    elseif(WITH_QT5)
+        qt5_add_resources(res_output ${res_input})
+        set(QT_LIBS
   Qt5::Core
   Qt5::Gui
   Qt5::Widgets
@@ -199,22 +205,26 @@ elseif(WITH_QT5)
   Qt5::Network
   Qt5::Mqtt
  )
-else()
-    qt4_add_resources(res_output ${res_input})
-    set(QT_LIBS
+    else()
+        qt4_add_resources(res_output ${res_input})
+        set(QT_LIBS
   Qt4::QtGui
   Qt4::QtNetwork
  )
+    endif()
+
 endif()
 
-set_property(SOURCE ${res_output} PROPERTY SKIP_AUTOMOC ON)
+if(WITH_SIMPLESCREENRECORDER)
 
-add_executable(simplescreenrecorder
+    set_property(SOURCE ${res_output} PROPERTY SKIP_AUTOMOC ON)
+
+    add_executable(simplescreenrecorder
  ${sources}
  ${res_output}
 )
 
-target_include_directories(simplescreenrecorder PRIVATE
+    target_include_directories(simplescreenrecorder PRIVATE
  ${AVFORMAT_INCLUDE_DIRS}
  ${AVCODEC_INCLUDE_DIRS}
  ${AVUTIL_INCLUDE_DIRS}
@@ -238,7 +248,7 @@ target_include_directories(simplescreenrecorder PRIVATE
  ${CMAKE_CURRENT_SOURCE_DIR}/GUI
 )
 
-target_link_libraries(simplescreenrecorder PRIVATE
+    target_link_libraries(simplescreenrecorder PRIVATE
  ${AVFORMAT_LIBRARIES}
  ${AVCODEC_LIBRARIES}
  ${AVUTIL_LIBRARIES}
@@ -257,7 +267,7 @@ target_link_libraries(simplescreenrecorder PRIVATE
  $<$<BOOL:${WITH_JACK}>:${JACK_LIBRARIES}>
 )
 
-target_compile_definitions(simplescreenrecorder PRIVATE
+    target_compile_definitions(simplescreenrecorder PRIVATE
  -DSSR_USE_X86_ASM=$<BOOL:${ENABLE_X86_ASM}>
  -DSSR_USE_FFMPEG_VERSIONS=$<BOOL:${ENABLE_FFMPEG_VERSIONS}>
  -DSSR_USE_JACK_METADATA=$<BOOL:${ENABLE_JACK_METADATA}>
@@ -271,4 +281,77 @@ target_compile_definitions(simplescreenrecorder PRIVATE
  -DSSR_VERSION="${PROJECT_VERSION}"
 )
 
-install(TARGETS simplescreenrecorder RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
+    install(TARGETS simplescreenrecorder RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
+
+endif()
+
+if(WITH_SSR_RC)
+    set(CMAKE_AUTOMOC ON)  # Уже есть в начале файла, но убедитесь
+
+    set(ssr_rc_sources
+    ssr-rc-main.cpp
+    ssr-rc-window.cpp
+    ssr-rc-window.h
+    ssr-rc-client.cpp
+    ssr-rc-client.h
+    GUI/ssr_panel.cpp
+    GUI/ssr_panel.h
+    MqttConfig.cpp
+    MqttConfig.h
+    common/Logger.cpp
+    common/Logger.h
+)
+
+    set_property(SOURCE ${res_output} PROPERTY SKIP_AUTOMOC ON)
+
+    add_executable(ssr-rc
+${ssr_rc_sources}
+${res_output}
+)
+
+
+    target_include_directories(ssr-rc PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/GUI
+    ${CMAKE_CURRENT_SOURCE_DIR}/common
+    # Для Qt6 может понадобиться:
+    $<$<BOOL:${WITH_QT6}>:${Qt6Core_INCLUDE_DIRS}>
+    $<$<BOOL:${WITH_QT6}>:${Qt6Gui_INCLUDE_DIRS}>
+    $<$<BOOL:${WITH_QT6}>:${Qt6Widgets_INCLUDE_DIRS}>
+    $<$<BOOL:${WITH_QT6}>:${Qt6Mqtt_INCLUDE_DIRS}>
+    # Для Qt5:
+    $<$<BOOL:${WITH_QT5}>:${Qt5Core_INCLUDE_DIRS}>
+    $<$<BOOL:${WITH_QT5}>:${Qt5Gui_INCLUDE_DIRS}>
+    $<$<BOOL:${WITH_QT5}>:${Qt5Widgets_INCLUDE_DIRS}>
+    $<$<BOOL:${WITH_QT5}>:${Qt5Mqtt_INCLUDE_DIRS}>
+)
+
+    target_link_libraries(ssr-rc PRIVATE
+    ${QT_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+    # Для X11, если нужно (для трея и т.д.)
+    $<$<BOOL:${WITH_QT5}>:${X11_X11_LIB}>
+    $<$<BOOL:${WITH_QT5}>:${X11_Xext_LIB}>
+)
+
+    target_compile_definitions(ssr-rc PRIVATE
+    -DSSR_RC_VERSION="0.1.0"
+    # Определения для совместимости с Global.h
+    -DSSR_USE_X86_ASM=0
+    -DSSR_USE_FFMPEG_VERSIONS=1
+    -DSSR_USE_JACK_METADATA=0
+    -DSSR_USE_OPENGL_RECORDING=0
+    -DSSR_USE_V4L2=0
+    -DSSR_USE_PIPEWIRE=0
+    -DSSR_USE_ALSA=0
+    -DSSR_USE_PULSEAUDIO=0
+    -DSSR_USE_JACK=0
+    -DSSR_SYSTEM_DIR="${CMAKE_INSTALL_FULL_DATADIR}/simplescreenrecorder"
+)
+
+    install(TARGETS ssr-rc RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
+
+
+    # target_include_directories(ssr-rc PRIVATE)
+
+endif()
