@@ -25,6 +25,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDir>
 #include <QMessageBox>
 
+#include "common/Logger.h"
 #include "ssr-rc-window.h"
 
 int main(int argc, char *argv[])
@@ -48,6 +49,12 @@ int main(int argc, char *argv[])
         QDir::homePath() + "/.config/simplescreenrecorder/mqtt.yaml");
     parser.addOption(mqttConfigOption);
 
+    QCommandLineOption logFileOption("log-file", "Log file", "file", "");
+    parser.addOption(logFileOption);
+
+    QCommandLineOption redirectStderrOption("redirect-stderr", "Redirect stderr to logger");
+    parser.addOption(redirectStderrOption);
+
     QCommandLineOption minimalOption("minimal", "Start minimized to system tray");
     parser.addOption(minimalOption);
 
@@ -55,22 +62,47 @@ int main(int argc, char *argv[])
 
     QString configFile = parser.value(configOption);
     QString mqttConfigFile = parser.value(mqttConfigOption);
+    QString logFile = parser.value(logFileOption);
+
+    // Create logger
+    Logger logger;
+    Q_UNUSED(logger);
+
+    // Configure logger
+    if(!logFile.isEmpty()) {
+        logger.SetLogFile(logFile);
+    }
+    if(parser.isSet(redirectStderrOption)) {
+        logger.RedirectStderr();
+    }
+
+    // Log startup
+    Logger::LogInfo("==================== SSR Remote Control started ====================");
+    Logger::LogInfo(QString("Version: %1").arg(QApplication::applicationVersion()));
 
     // Create config directory if it doesn't exist
     QFileInfo configInfo(configFile);
     if(!configInfo.dir().exists()) {
         configInfo.dir().mkpath(".");
+        Logger::LogInfo(QString("Created config directory: %1").arg(configInfo.dir().absolutePath()));
     }
 
     QSettings settings(configFile, QSettings::IniFormat);
 
-    SSRRCWindow window(&settings);
+    SSRRCWindow window(&settings, mqttConfigFile);
 
     if(parser.isSet(minimalOption)) {
         window.showMinimized();
+        Logger::LogInfo("Started minimized to system tray");
     } else {
         window.show();
+        Logger::LogInfo("Started with main window visible");
     }
 
-    return app.exec();
+    int ret = app.exec();
+
+    // Log shutdown
+    Logger::LogInfo("==================== SSR Remote Control stopped ====================");
+
+    return ret;
 }

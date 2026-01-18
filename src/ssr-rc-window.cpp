@@ -18,6 +18,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "ssr-rc-window.h"
+#include "common/Logger.h"
 #include "GUI/ssr_panel.h"
 #include "MqttConfig.h"
 
@@ -272,7 +273,7 @@ void SSRRCWindow::loadSettingsFromMQTTYaml()
     // Проверить существование файла
     QFileInfo configInfo(configPath);
     if(!configInfo.exists()) {
-        qDebug() << "MQTT YAML config file not found:" << configPath;
+        Logger::LogWarning(QString("MQTT YAML config file not found: %1").arg(configPath));
         QMessageBox::critical(this, "Error", "MQTT YAML config file not found:'" + configPath + "'.");
         return;
     }
@@ -373,31 +374,37 @@ void SSRRCWindow::onConnectClicked()
     m_mqttClient->setInstanceId(m_instanceIdEdit->text());
     m_mqttClient->setAutoConnect(m_autoConnectCheck->isChecked());
 
+    Logger::LogInfo(QString("Connecting to MQTT broker: %1:%2").arg(m_hostEdit->text()).arg(m_portEdit->text()));
     m_mqttClient->connectToBroker();
 }
 
 void SSRRCWindow::onDisconnectClicked()
 {
+    Logger::LogInfo("Disconnecting from MQTT broker");
     m_mqttClient->disconnectFromBroker();
 }
 
 void SSRRCWindow::onStartRecordingClicked()
 {
+    Logger::LogInfo("Sending start recording command");
     m_mqttClient->startRecording();
 }
 
 void SSRRCWindow::onStopRecordingClicked()
 {
+    Logger::LogInfo("Sending stop recording command");
     m_mqttClient->stopRecording();
 }
 
 void SSRRCWindow::onToggleRecordingClicked()
 {
+    Logger::LogInfo("Sending toggle recording command");
     m_mqttClient->toggleRecording();
 }
 
 void SSRRCWindow::onStatusUpdated(const QString& status, const QString& sessionId, const QString& topic)
 {
+    Logger::LogInfo(QString("Status updated: status=%1, sessionId=%2, topic=%3").arg(status).arg(sessionId).arg(topic));
     m_ssrStatusLabel->setText(status);
     m_sessionIdLabel->setText(sessionId);
     m_topicLabel->setText(topic);
@@ -418,6 +425,7 @@ void SSRRCWindow::onStatusUpdated(const QString& status, const QString& sessionI
 
 void SSRRCWindow::onRecordingStateChanged(bool recording)
 {
+    Logger::LogInfo(QString("Recording state changed: %1").arg(recording ? "Recording" : "Stopped"));
     if(recording) {
         m_recordingStatusLabel->setText("Recording");
         m_recordingStatusLabel->setStyleSheet("color: green;");
@@ -429,6 +437,7 @@ void SSRRCWindow::onRecordingStateChanged(bool recording)
 
 void SSRRCWindow::onConnectionStateChanged(bool connected)
 {
+    Logger::LogInfo(QString("Connection state changed: %1").arg(connected ? "Connected" : "Disconnected"));
     updateUiState();
 
     if(connected) {
@@ -442,6 +451,7 @@ void SSRRCWindow::onConnectionStateChanged(bool connected)
 
 void SSRRCWindow::onErrorOccurred(const QString& error)
 {
+    Logger::LogError(QString("Error occurred: %1").arg(error));
     QMessageBox::warning(this, "SSR Remote Control Error", error);
 
     if(m_trayIcon) {

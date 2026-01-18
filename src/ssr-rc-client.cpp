@@ -18,6 +18,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "ssr-rc-client.h"
+#include "common/Logger.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -131,6 +132,7 @@ void SSRRCClient::connectToBroker()
         }
     }
 
+    Logger::LogInfo(QString("Connecting to MQTT broker at %1:%2...").arg(m_brokerHost).arg(m_brokerPort));
     m_client->connectToHost();
 }
 
@@ -200,6 +202,7 @@ void SSRRCClient::onConnected()
     // Request initial status
     requestStatus();
 
+    Logger::LogInfo(QString("Connected to MQTT broker at %1:%2").arg(m_brokerHost).arg(m_brokerPort));
     emit connectionStateChanged(true);
 }
 
@@ -213,6 +216,8 @@ void SSRRCClient::onDisconnected()
     m_subRecordingEvent = nullptr;
     m_subLedState = nullptr;
     m_subError = nullptr;
+
+    Logger::LogInfo("Disconnected from MQTT broker");
 
     // Try to reconnect if auto-connect is enabled
     if(m_autoConnect) {
@@ -240,6 +245,7 @@ void SSRRCClient::onErrorChanged(QMqttClient::ClientError error)
             default: errorStr = QString("Unknown error code: %1").arg((int)error); break;
         }
 
+        Logger::LogError(QString("MQTT client error: %1").arg(errorStr));
         emit errorOccurred(errorStr);
     }
 }
@@ -284,7 +290,7 @@ void SSRRCClient::onMessageReceived(const QByteArray& message, const QMqttTopicN
     else if(topicStr.endsWith("/recording/event")) {
         // Можно обрабатывать события записи (start, stop, pause, resume)
         // Пока просто логируем
-        qDebug() << "Recording event:" << msgStr;
+        Logger::LogInfo(QString("Recording event: %1").arg(msgStr));
     }
     else if(topicStr.endsWith("/led/state")) {
         // Обработка состояния LED (если нужно)
@@ -304,7 +310,7 @@ void SSRRCClient::onMessageReceived(const QByteArray& message, const QMqttTopicN
 void SSRRCClient::onReconnectTimer()
 {
     if(m_autoConnect && !m_connected) {
-        qDebug() << "Attempting to reconnect to MQTT broker...";
+        Logger::LogInfo("Attempting to reconnect to MQTT broker...");
         connectToBroker();
     }
 }
@@ -356,13 +362,17 @@ void SSRRCClient::setupSubscriptions()
 void SSRRCClient::publishCommand(const QString& command, const QString& payload)
 {
     if(!m_connected) {
+        Logger::LogError("Not connected to MQTT broker");
         emit errorOccurred("Not connected to MQTT broker");
         return;
     }
 
     QMqttTopicName topic = getFullTopic(command);
     if(m_client->publish(topic, payload.toUtf8(), 1, false) == -1) {
+        Logger::LogError(QString("Failed to publish command: %1").arg(command));
         emit errorOccurred(QString("Failed to publish command: %1").arg(command));
+    } else {
+        Logger::LogInfo(QString("Published command: %1, payload: %2").arg(command).arg(payload.isEmpty() ? "[empty]" : payload));
     }
 }
 
