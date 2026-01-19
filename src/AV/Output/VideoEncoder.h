@@ -40,7 +40,7 @@ private:
 #endif
 
 public:
-	VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options);
+	VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options);
 	~VideoEncoder();
 
 	// Returns the required pixel format.
@@ -55,7 +55,7 @@ public:
 
 public:
 	static bool AVCodecIsSupported(const QString& codec_name);
-	static void PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+	static void PrepareStream(AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
 							  unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate);
 
 private:

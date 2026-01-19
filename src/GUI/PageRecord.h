@@ -59,6 +59,7 @@ class SimpleSynth;
 #endif
 class VideoPreviewer;
 class AudioPreviewer;
+class MqttClientInterface;
 
 class PageRecord : public QWidget {
 	Q_OBJECT
@@ -69,7 +70,7 @@ private:
 private:
 	MainWindow *m_main_window;
 
-	bool m_page_started, m_input_started, m_output_started, m_previewing;
+	bool m_page_started, m_input_started, m_output_started, m_output_paused, m_previewing;
 	bool m_recorded_something, m_wait_saving, m_error_occurred;
 
 	bool m_schedule_active;
@@ -133,11 +134,18 @@ private:
 	int64_t m_last_error_sound;
 #endif
 
+	std::unique_ptr<MqttClientInterface> m_mqtt_client;
+	
+	// MQTT session management
+	QString m_session_id;
+	QString m_topic;
+
 	HotkeyCallback m_hotkey_start_pause;
 
 	QPushButton *m_pushbutton_record;
 	QLabel *m_label_schedule_status;
 	QPushButton *m_pushbutton_schedule_activate, *m_pushbutton_schedule_edit;
+	QPushButton *m_pushbutton_mqtt_settings;
 
 	QCheckBox *m_checkbox_hotkey_enable;
 #if SSR_USE_ALSA
@@ -254,6 +262,20 @@ public slots:
 	void OnScheduleActivateDeactivate();
 	void OnScheduleEdit();
 	void OnPreviewStartStop();
+	void OnMqttSettings();
+
+	// MQTT slots
+	void OnMqttRecordingStart();
+	void OnMqttRecordingStop();
+	void OnMqttRecordingToggle();
+	void OnMqttPause();
+	void OnMqttResume();
+	void OnMqttTopicChange(const QString& topic);
+	void OnMqttButtonRecordingPressed();
+	void OnMqttButtonRecordingReleased();
+	void OnMqttButtonOnAirPressed();
+	void OnMqttButtonOnAirReleased();
+	void OnMqttStatusGet();
 
 private slots:
 	void OnStdin();
