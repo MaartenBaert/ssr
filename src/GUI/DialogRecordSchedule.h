@@ -78,6 +78,9 @@ public:
 	inline QDateTime GetTime() { return m_datetimeedit_time->dateTime(); }
 	inline enum_schedule_action GetAction() { return (enum_schedule_action) clamp(m_combobox_action->currentIndex(), 0, (int) SCHEDULE_ACTION_COUNT - 1); }
 
+	QDateTimeEdit* GetDateTimeEdit();
+	void UpdateValidation(const QDateTime& current_time, bool is_valid);
+
 };
 
 class DialogRecordSchedule : public QDialog {
@@ -93,6 +96,9 @@ private:
 	QTimer *m_timer_clock;
 	QDateTime m_clock_time;
 
+	void UpdateAllValidations();
+	int ValidateSchedule(QString& error_message);
+
 public:
 	DialogRecordSchedule(PageRecord* parent);
 	~DialogRecordSchedule();
@@ -104,6 +110,7 @@ private slots:
 	void OnRemove();
 	void OnMoveUp();
 	void OnMoveDown();
-	void OnWriteBack();
+	void OnClose();
+	void OnDateTimeChanged();
 
 };
