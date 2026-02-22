@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sr_SR">
+<TS version="2.1" language="sr_SR">
 <context>
     <name>DialogAbout</name>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="111"/>
         <source>About SimpleScreenRecorder</source>
-        <translation>О SimpleScreenRecorder</translation>
+        <translation>О SimpleScreenRecorder-у</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="120"/>
@@ -26,7 +26,7 @@
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="123"/>
         <source>%1 for the graphical user interface</source>
-        <translation>%1 за графички кориснички интерфејс</translation>
+        <translation>%1 за графичко корисничко сучеље</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="124"/>
@@ -44,7 +44,7 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="35"/>
         <source>OpenGL Settings</source>
-        <translation>OpenGL подешавања</translation>
+        <translation>Подешавања OpenGL-а</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="38"/>
@@ -53,9 +53,9 @@
 &lt;p&gt;Another warning: OpenGL recording is experimental, it may not work or even crash the program you are recording. If you are worried about losing program data, make a backup first!&lt;/p&gt;
 
 &lt;p&gt;If you want to record Steam games, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt;read this first&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Упозорење: OpenGL снимање ради тако што убаците библиотеку у програм који желите да снимате. Ова библиотека ће модификовати поједине системске функције како би ухватила фрејмове пре приказивања на екран. Ако покушавате да снимате игру, која има антихакерску заштиту на клијентској стани, могуће је (теоретски ) да ће игра ово препознати као хак. Ово може довести до избацивања из игре (бан). Добра идеја би била да се прво уверите да Вас програм неће бановати, *пренего* што започнете са снимањем. Упозорени сте :).&lt;/p&gt;
+        <translation>&lt;p&gt;Упозорење: OpenGL снимање ради тако што убаците библиотеку у програм који желите да снимате. Ова библиотека ће изменити поједине функције система како би ухватила кадрове пре приказивања на екран. Ако покушавате да снимате игру, која има антихакерску заштиту на страни клијента, могуће је (теоретски ) да ће игра ово препознати као хак. Ово може довести до избацивања из игре (бан). Тако да је добра идеја да се прво уверите да вас програм неће бановати, *пре него* што започнете са снимањем. Упозорени сте :).&lt;/p&gt;
 
-&lt;p&gt;Још једна важна ствар: OpenGL снимање је експериментално и може довести до престанка рада апликације коју снимате. Ако се плашите да ћете изгубити програмске податке, направите резервну копију!&lt;/p&gt;
+&lt;p&gt;Још једна важна ствар: OpenGL снимање је експериментално и може довести до престанка рада апликације коју снимате. Ако се плашите да ћете изгубити програмске податке, прво направите резерву!&lt;/p&gt;
 
 &lt;p&gt;Ако желите да снимате Steam игре, &lt;a href=&quot;http://www.maartenbaert.be/simplescreenrecorder/recording-steam-games/&quot;&gt; прво ово прочитајте &lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
@@ -67,7 +67,7 @@
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="54"/>
         <source>Channel name:</source>
-        <translation>Име канала:</translation>
+        <translation>Назив канала:</translation>
     </message>
     <message>
         <source>Channel names are used to identify applications. You only need to change this if you want to record multiple applications at the same time.</source>
@@ -77,21 +77,22 @@
         <location filename="../GUI/DialogGLInject.cpp" line="56"/>
         <source>Channel names are used to identify applications. You only need to use this if you want to record multiple applications at the same time.
 If you leave this empty, the default name &apos;channel-YOURUSERNAME&apos; will be used.</source>
-        <translation>Имена канала које користите да идентификујете апликације. Ово мењате једино ако желите да снимате више апликација истовремено.</translation>
+        <translation>Називи канала се користе за препознавање апликација. Ово треба да користите само ако желите да снимате више апликација истовремено.
+Ако ово оставите празно, користиће се подразумевани назив „канал-ВАШЕКОРИСНИЧКОИМЕ“.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="58"/>
         <source>Relax shared memory permissions (insecure)</source>
-        <translation>Релаксирајте права приступа дељеној меморији (несигурно)</translation>
+        <translation>Релаксирај права приступа дељеној меморији (несигурно)</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="59"/>
         <source>If checked, other users on the same machine will be able to attach to the shared memory that&apos;s used for communication with the OpenGL program.
 This means other users can (theoretically) see what you are recording, modify the frames, inject their own frames, or simply disrupt the communication.
 This even applies to users that are logged in remotely (ssh). You should only enable this if you need to record a program that runs as a different user.</source>
-        <translation>Ако је чекирано, други корисници овог рачунара ће моћи да се прикаче на дељену меморију, која се користи за комуникацију са OpenGL програмом.
-То значи, да ће други корисници (теоретски) моћи да виде шта снимате, да промене фрејмове, да убаце њихове фрејмове или просто да Вам прекину комуникацију.
-Ово се односи чак и на кориснике који су пријављени на даљину (преко ssh). Чекирајте ово, само ако треба да снимате програм који се покреће код другог корисника.</translation>
+        <translation>Ако је изабрано, други корисници овог рачунара ће моћи да се прикаче на дељену меморију, која се користи за комуникацију са OpenGL програмом.
+То значи, да ће други корисници (теоретски) моћи да виде шта снимате, да промене кадрове, да убаце њихове кадрове или просто да прекину комуникацију.
+Ово се односи чак и на кориснике који су пријављени на даљину (преко „ssh“). Изаберите ово, само ако треба да снимате програм који се покреће код другог корисника.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="74"/>
@@ -101,22 +102,22 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="76"/>
         <source>Command:</source>
-        <translation>Команда:</translation>
+        <translation>Наредба:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="78"/>
         <source>This command will be executed to start the program that should be recorded.</source>
-        <translation>Ова команда ће се извршити приликом покретања програма који треба да се снима.</translation>
+        <translation>Ова наредба ће се извршити се покрене програм који треба да се снима.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="80"/>
         <source>Working directory:</source>
-        <translation>Радни директоријум:</translation>
+        <translation>Радна фасцикла:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="82"/>
         <source>The command will be executed in this directory. If you leave this empty, the working directory won&apos;t be changed.</source>
-        <translation>Команда ће се извршити у овом директројиму. Ако је оставите празну, радни директоријум ће остати непромењен.</translation>
+        <translation>Наредба ће се извршити у овој фасцикли. Ако је не попуните ово, радна фасцикла ће остати непромењена.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="84"/>
@@ -126,7 +127,7 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="85"/>
         <source>If checked, the application will be launched automatically once you go to the recording page. If not checked, you have to start it manually.</source>
-        <translation>Ако је чекирано, апликација ће се аутоматски покренути, одмах након што одете на страницу за снимање. Ако није чекирано - морате покренути ручно.</translation>
+        <translation>Ако је изабрано, апликација ће се аутоматски покренути, када одете на страницу за снимање. Ако није означено морате покренути ручно.</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="87"/>
@@ -136,20 +137,20 @@ This even applies to users that are logged in remotely (ssh). You should only en
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="108"/>
         <source>Stream settings</source>
-        <translation>Подешавања стрима</translation>
+        <translation>Подешавања тока</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="110"/>
         <source>Limit application frame rate</source>
-        <translation>Ограничите број фрејмова</translation>
+        <translation>Ограничи проток кадрова</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="111"/>
         <source>If checked, the injected library will slow down the application so the frame rate doesn&apos;t become higher than the recording frame rate.
 This stops the application from wasting CPU time for frames that won&apos;t be recorded, and sometimes results in smoother video
 (this depends on the application).</source>
-        <translation>Ако је чекирано, убачена библиотека ће успорити апликацију, број фрејмова неће бити већи од броја фрејмова снимања.
-Ово спречава апликацију да беспотребно троши процесорско време на фрејмове који се неће записати, и понекад ће резултовати течнијим снимком.
+        <translation>Ако је изабрано, убачена библиотека ће успорити апликацију, тако да проток кадрова неће бити већи од протока кадрова снимања.
+Ово спречава апликацију да беспотребно троши време процесора на кадрове који неће бити записани, и понекад ће дати течнији снимак.
 (зависи од саме апликације).</translation>
     </message>
     <message>
@@ -163,52 +164,52 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="78"/>
         <source>Recording schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Заказивање снимања</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="80"/>
         <source>Time zone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Временска зона:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="82"/>
         <source>Local time</source>
-        <translation type="unfinished"></translation>
+        <translation>Месно време</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="83"/>
         <source>UTC</source>
-        <translation type="unfinished"></translation>
+        <translation>КУВ</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="85"/>
         <source>Current time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тренутно време:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="102"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Додај</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="103"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Уклони</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="104"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Помери горе</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="105"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Помери доле</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="107"/>
         <source>Close</source>
-        <translation type="unfinished">Затвори</translation>
+        <translation>Затвори</translation>
     </message>
 </context>
 <context>
@@ -216,17 +217,17 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/FastResampler.cpp" line="124"/>
         <source>Error: Resample ratio is out of range!</source>
-        <translation>Грешка: Скалирани однос је ван опсега</translation>
+        <translation>Грешка: Однос поновног скалирања је ван опсега!</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="128"/>
         <source>Error: Drift ratio is out of range!</source>
-        <translation>Грешка: Број дрифтова је изван опсега</translation>
+        <translation>Грешка: Однос синхронизације је ван опсега!</translation>
     </message>
     <message>
         <location filename="../AV/FastResampler.cpp" line="158"/>
         <source>Resample ratio is %1 (was %2).</source>
-        <translation>Скалирани однос је %1 (био је %2).</translation>
+        <translation>Однос поновног скалирања је %1 (био је %2).</translation>
     </message>
     <message>
         <source>Warning: Pixel format is not supported (%1 -&gt; %2), using swscale instead. This is not a problem, but performance will be worse.</source>
@@ -235,7 +236,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/FastScaler.cpp" line="129"/>
         <source>Warning: No fast pixel format conversion available (%1,%2 -&gt; %3,%4), using swscale instead. This is not a problem, but performance will be worse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Упозорење: Брзо претварање формата поксела није доступно (%1,%2 → %3,%4), користим „swscale“. Ово није проблем, али ће перформансе бити лошије.</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="138"/>
@@ -243,7 +244,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../Benchmark.cpp" line="205"/>
         <source>Error: Can&apos;t get swscale context!</source>
         <comment>Don&apos;t translate &apos;swscale&apos;</comment>
-        <translation>Грешка: Не можемо да добијемо swscale садржај!</translation>
+        <translation>Грешка: Не могу да добавим „swscale“ садржај!</translation>
     </message>
     <message>
         <location filename="../AV/FastScaler.cpp" line="160"/>
@@ -254,25 +255,25 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/FastScaler.cpp" line="279"/>
         <source>Warning: Memory is not properly aligned for SSE, using fallback converter instead. This is not a problem, but performance will be worse.</source>
         <comment>Don&apos;t translate &apos;fallback&apos;</comment>
-        <translation>Упозорење: Меморија није правилно поравната за SSE, користи резервни конвертер. Ово није проблем, али перформансе ће бити лошије.</translation>
+        <translation>Упозорење: Меморија није правилно поравната за SSE, користим „fallback“ (резервни) конвертер. Ово није проблем, али перформансе ће бити лошије.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="35"/>
         <source>Warning: An overrun has occurred, some samples were lost.</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation>Упозорење: Дошло је до overrun (прекорачења), неки узорци су изгубљени.</translation>
+        <translation>Упозорење: Дошло је до прекорачења (overrun), неки узорци су изгубљени.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="37"/>
         <source>Error: Can&apos;t recover device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation>Грешка: Не можемо да опоравимо уређај после overrun (прекорачења)!</translation>
+        <translation>Грешка: Не могу да опоравим уређај после прекорачења (overrun)!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="41"/>
         <source>Error: Can&apos;t start PCM device after overrun!</source>
         <comment>Don&apos;t translate &apos;overrun&apos;</comment>
-        <translation>Грешка: Не можемо да покренемо PCM после overrun (прекорачења)!</translation>
+        <translation>Грешка: Не могу да покренем PCM после прекорачења (overrun)!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="71"/>
@@ -281,18 +282,18 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/V4L2Input.cpp" line="66"/>
         <location filename="../AV/Input/X11Input.cpp" line="214"/>
         <source>Stopping input thread ...</source>
-        <translation>Заустављање улазне нити...</translation>
+        <translation>Заустављам улазну нит...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="102"/>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="237"/>
         <source>Generating source list ...</source>
-        <translation>Генерисање изворне листе...</translation>
+        <translation>Стварам списак извора...</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="121"/>
         <source>Error: Could not update ALSA configuration!</source>
-        <translation>Грешка: Не можемо да ажурирамо ALSA конфигурацију!</translation>
+        <translation>Грешка: Не могу да ажурирам ALSA конфигурацију!</translation>
     </message>
     <message>
         <source>Warning: Could not find PCM plugins.</source>
@@ -305,12 +306,12 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="181"/>
         <source>Warning: Could not open sound card %1.</source>
-        <translation>Упозорење: Не можемо да приступимо звучној карти %1 </translation>
+        <translation>Упозорење: Не могу да отворим звучну картицу „%1“.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="187"/>
         <source>Warning: Could not get info for sound card %1.</source>
-        <translation>Упозорење: Не можемо да добијемо информације о звучној карти %1.</translation>
+        <translation>Упозорење: Не могу да добавим информације о звучној картици „%1“.</translation>
     </message>
     <message>
         <source>Found card %1 = %2.</source>
@@ -323,104 +324,104 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="168"/>
         <source>Found plugin: [%1] %2</source>
-        <translation>Пронађен прикључак (plugin): [%1] %2</translation>
+        <translation>Пронађох прикључак: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="191"/>
         <source>Found card: [%1] %2</source>
-        <translation>Пронађена карта: [%1] %2</translation>
+        <translation>Пронађох картицу: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="216"/>
         <source>Found device: [%1] %2</source>
-        <translation>Пронађен уређај: [%1] %2</translation>
+        <translation>Пронађох уређај: [%1] %2</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="271"/>
         <location filename="../AV/SimpleSynth.cpp" line="124"/>
         <source>Error: Can&apos;t open PCM device!</source>
-        <translation>Грешка: Не можемо да приступимо PCM уређају !</translation>
+        <translation>Грешка: Не могу да приступим PCM уређају!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="275"/>
         <location filename="../AV/SimpleSynth.cpp" line="128"/>
         <source>Error: Can&apos;t get PCM hardware parameters!</source>
-        <translation>Грешка: Не можемо да добијемо PCМ хардверске параметре!</translation>
+        <translation>Грешка: Не могу да добавим параметре PCМ хардвера!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="281"/>
         <location filename="../AV/SimpleSynth.cpp" line="134"/>
         <source>Error: Can&apos;t set access type!</source>
-        <translation>Грешка: Не можемо да задамо приступни тип!</translation>
+        <translation>Грешка: Не могу да поставим тип приступа!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="292"/>
         <source>Error: Can&apos;t set sample format mask!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Не могу поставим маску формата узорка!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="297"/>
         <location filename="../AV/SimpleSynth.cpp" line="140"/>
         <source>Error: Can&apos;t set sample format!</source>
-        <translation>Грешка: Не можемо да задамо тип узорка!</translation>
+        <translation>Грешка: Не могу да поставим формат узорка!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="330"/>
         <location filename="../AV/SimpleSynth.cpp" line="147"/>
         <source>Error: Can&apos;t set sample rate!</source>
-        <translation>Грешка: Не можемо да задамо број узорака!</translation>
+        <translation>Грешка: Не могу да поставим проток узорака!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="334"/>
         <location filename="../AV/SimpleSynth.cpp" line="151"/>
         <source>Warning: Sample rate %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation>Упозорење: Број узорака %1 није подржан, уместо њега користи %2. Ово није проблем.</translation>
+        <translation>Упозорење: Проток узорака %1 није подржан, користићу %2. Ово није проблем.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="343"/>
         <location filename="../AV/SimpleSynth.cpp" line="159"/>
         <source>Error: Can&apos;t set channel count!</source>
-        <translation>Грешка: Број канала се не може задати!</translation>
+        <translation>Грешка: Не могу да поставим број канала!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="347"/>
         <source>Warning: Channel count %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation>Упозорење: Број канала %1 није подржан, уместо њега користити %2. Ово није проблем.</translation>
+        <translation>Упозорење: Број канала %1 није подржан, користићу %2. Ово није проблем.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="356"/>
         <location filename="../AV/SimpleSynth.cpp" line="166"/>
         <source>Error: Can&apos;t set period size!</source>
-        <translation>Грешка: Дужина периода се не може задати !</translation>
+        <translation>Грешка: Не могу да поставим дужину периода!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="360"/>
         <location filename="../AV/SimpleSynth.cpp" line="170"/>
         <source>Warning: Period size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation>Упозорење: Дужина периода %1 није подржана, уместо тога користити %2. Ово није проблем.</translation>
+        <translation>Упозорење: Дужина периода %1 није подржана, користићу %2. Ово није проблем.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="369"/>
         <location filename="../AV/SimpleSynth.cpp" line="179"/>
         <source>Error: Can&apos;t set buffer size!</source>
-        <translation>Грешка: Не може се задати величина бафера!</translation>
+        <translation>Грешка: Не могу да поставим величину међумеморије!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="373"/>
         <location filename="../AV/SimpleSynth.cpp" line="183"/>
         <source>Warning: Buffer size %1 is not supported, using %2 instead. This is not a problem.</source>
-        <translation>Упозорење: Величина бафера неподржана %1, уместо њега користити %2. Ово није проблем.</translation>
+        <translation>Упозорење: Величина међумеморије није подржана %1, користићу %2. Ово није проблем.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="381"/>
         <location filename="../AV/SimpleSynth.cpp" line="191"/>
         <source>Error: Can&apos;t apply PCM hardware parameters!</source>
-        <translation>Грешка: Не можемо прихватити хардверске параметре РСМ !</translation>
+        <translation>Грешка: Не могу да применим параметре РСМ хардвера!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="407"/>
         <source>Error: Can&apos;t start PCM device!</source>
-        <translation>Грешка: Не можемо покренути РСМ уређај!</translation>
+        <translation>Грешка: Не могу да покренем РСМ уређај!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="428"/>
@@ -430,17 +431,17 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/V4L2Input.cpp" line="263"/>
         <location filename="../AV/Input/X11Input.cpp" line="465"/>
         <source>Input thread started.</source>
-        <translation>Улазна нит покренута.</translation>
+        <translation>Покренута је улазна нит.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="452"/>
         <source>Error: Can&apos;t wait for new samples!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Не могу да чекам на нове узорке!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="469"/>
         <source>Error: Can&apos;t read samples!</source>
-        <translation>Грешка: Не можемо да прочитамо узорке!</translation>
+        <translation>Грешка: Не могу да прочитам узорке!</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="500"/>
@@ -450,7 +451,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/V4L2Input.cpp" line="294"/>
         <location filename="../AV/Input/X11Input.cpp" line="585"/>
         <source>Input thread stopped.</source>
-        <translation>Улазна нит заустављена.</translation>
+        <translation>Улазна нит је заустављена.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="504"/>
@@ -460,7 +461,7 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
         <location filename="../AV/Input/V4L2Input.cpp" line="298"/>
         <location filename="../AV/Input/X11Input.cpp" line="589"/>
         <source>Exception &apos;%1&apos; in input thread.</source>
-        <translation>Изузетак &apos;%1&apos; у улазној нити.</translation>
+        <translation>Изузетак „%1“ у улазној нити.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="507"/>
@@ -475,121 +476,121 @@ This stops the application from wasting CPU time for frames that won&apos;t be r
     <message>
         <location filename="../AV/Input/GLInjectInput.cpp" line="259"/>
         <source>Error: Could not read stream, this usually means that the stream was already gone.</source>
-        <translation>Грешка: Не можемо да прочитамо стрим, ово често значи да је стрим већ завршио своје.</translation>
+        <translation>Грешка: Не могу да прочитам ток, ово обично значи да је ток већ нестао.</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="75"/>
         <source>Error: Could not connect to JACK!</source>
-        <translation>Грешка: Не можемо да се конектујемо на JACK!</translation>
+        <translation>Грешка: Не могу да се повежем на JACK!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="84"/>
         <source>Error: Could not create JACK port!</source>
-        <translation>Грешка: Не можемо да креирамо JACK порт!</translation>
+        <translation>Грешка: Не могу да створим JACK порт!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="100"/>
         <source>Error: Could not set JACK process callback!</source>
-        <translation>Грешка: Не можемо да задамо JACK process callback!</translation>
+        <translation>Грешка: Не могу да поставим повратни позив JACK процеса!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="104"/>
         <source>Error: Could not set JACK sample rate callback!</source>
-        <translation>Грешка: Не можемо да задамо број узроака JACK callback!</translation>
+        <translation>Грешка: Не могу да поставим повратни позив протока узорака JACK-а!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="108"/>
         <source>Error: Could not set JACK xrun callback!</source>
-        <translation>Грешка: Не можемо да задамо JACK xrun callback!</translation>
+        <translation>Грешка: Не могу да поставим JACK xrun повратни позив!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="112"/>
         <source>Error: Could not set JACK port connect callback!</source>
-        <translation>Грешка: Не можемо да задамо порт за JACK connect callback!</translation>
+        <translation>Грешка: Не могу да поставим повратни позив повезивања JACK порта!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="117"/>
         <source>Error: Could not activate JACK client!</source>
-        <translation>Error: Не можемо да активирамо JACK клијента !</translation>
+        <translation>Error: Не могу да активирам JACK клијента!</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="125"/>
         <location filename="../AV/Input/JACKInput.cpp" line="136"/>
         <location filename="../AV/Input/JACKInput.cpp" line="265"/>
         <source>Connecting port %1 to %2.</source>
-        <translation>Конектовање порта %1 на %2.</translation>
+        <translation>Повезујем порт %1 на %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/JACKInput.cpp" line="269"/>
         <source>Disconnecting port %1 from %2.</source>
-        <translation>Дисконектовање порта %1 од %2.</translation>
+        <translation>Прекидам везу порта %1 са %2.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="34"/>
         <source>Error: pa_mainloop_prepare failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_prepare&apos;</comment>
-        <translation>Грешка: pa_mainloop_prepare пао!</translation>
+        <translation>Грешка: није успело „pa_mainloop_prepare“!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="38"/>
         <source>Error: pa_mainloop_poll failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_poll&apos;</comment>
-        <translation>Грешка: pa_mainloop_poll пао!</translation>
+        <translation>Грешка: није успело „pa_mainloop_poll“!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="42"/>
         <source>Error: pa_mainloop_dispatch failed!</source>
         <comment>Don&apos;t translate &apos;pa_mainloop_dispatch&apos;</comment>
-        <translation>Грешка: pa_mainloop_dispatch пао!</translation>
+        <translation>Грешка: није успело „pa_mainloop_dispatch“!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="52"/>
         <source>Error: Could not create main loop!</source>
-        <translation>Грешка: Не можемо да креирамо главну петљу!</translation>
+        <translation>Грешка: Не могу да створим главну петљу!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="59"/>
         <source>Error: Could not create context!</source>
-        <translation>Грешка: Не можемо да креирамо контекст!</translation>
+        <translation>Грешка: Не могу да створим контекст!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="64"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio. Try using the ALSA backend instead.</source>
-        <translation>Грешка: Не можемо да се конектујемо! Разлог: %1
-Могуће је да Ваш систем не користи PulseAudio. Уместо тога пробајте да користите ALSA backend.</translation>
+        <translation>Грешка: Не могу да се повежем! Разлог: %1
+Могуће је да систем не користи PulseAudio. Пробајте да користите ALSA позадинца.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="68"/>
         <source>Error: Could not connect! Reason: %1
 It is possible that your system doesn&apos;t use PulseAudio.</source>
-        <translation>Грешка: Не можемо да се конектујемо! Разлог: %1
-Могуће је да Ваш систем не користи PulseAudio.</translation>
+        <translation>Грешка: Не могу да се повежем! Разлог: %1
+Могуће је да систем не користи PulseAudio.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="82"/>
         <source>Error: Connection attempt failed! Reason: %1</source>
-        <translation>Грешка: Покушај конекције неуспешан! Разлог: %1</translation>
+        <translation>Грешка: Покушај повезивања није успео! Разлог: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="119"/>
         <source>Error: Could not create stream! Reason: %1</source>
-        <translation>Грешка: Не можемо да креирамо стрим! Разлог: %1</translation>
+        <translation>Грешка: Не могу да створим ток! Разлог: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="126"/>
         <source>Error: Could not connect stream! Reason: %1</source>
-        <translation>Грешка: Не можемо да се конектујемо на стрим! Разлог: %1</translation>
+        <translation>Грешка: Не могу да повежем ток! Разлог: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="137"/>
         <source>Error: Stream connection attempt failed! Reason: %1</source>
-        <translation>Грешка: Захтев за стрим конекцијом неуспешан! Разлог: %1</translation>
+        <translation>Грешка: Покушај повезивања тока није успео! Разлог: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="228"/>
         <source>Found source: [%1] %2</source>
-        <translation>Пронађен извор: [%1] %2</translation>
+        <translation>Пронађох извор: [%1] %2</translation>
     </message>
     <message>
         <source>Got %1 = %2.</source>
@@ -598,168 +599,168 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="249"/>
         <source>Error: Could not get names of sources! Reason: %1</source>
-        <translation>Грешка: Не можемо да добијемо имена извора! Разлог: %1</translation>
+        <translation>Грешка: Не могу да добавим називе извора! Разлог: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="297"/>
         <source>Error: Could not get source info! Reason: %1</source>
-        <translation>Грешка: Не можемо да добијемо информације о извору! Разлог: %1</translation>
+        <translation>Грешка: Не могу да добавим информације о извору! Разлог: %1</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="302"/>
         <source>Stream is a monitor.</source>
-        <translation>Стрим је монитор.</translation>
+        <translation>Ток је монитор.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="304"/>
         <source>Stream is not a monitor.</source>
-        <translation>Стрим није монитор.</translation>
+        <translation>Ток није монитор.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="349"/>
         <source>Error: pa_stream_peek failed!</source>
         <comment>Don&apos;t translate &apos;pa_stream_peek&apos;</comment>
-        <translation>Грешка: pa_stream_peek пао!</translation>
+        <translation>Грешка: није успело „pa_stream_peek“!</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="416"/>
         <source>Warning: Audio source was suspended. The current segment will be stopped until the source is resumed.</source>
-        <translation>Упозорење: Аудио извор је суспендован. Текући сегмент ће бити заустављен док се извор не поврати.</translation>
+        <translation>Упозорење: Аудио извор је обустављен. Текући сегмент биће заустављен док се извор не поврати.</translation>
     </message>
     <message>
         <location filename="../AV/Input/PulseAudioInput.cpp" line="421"/>
         <source>Warning: Stream was moved to a different source.</source>
-        <translation>Упозорење: Стрим је померен на други извор.</translation>
+        <translation>Упозорење: Ток је премештен на други извор.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="64"/>
         <source>Created video stream reader.</source>
-        <translation>Креиран видео стрим читач.</translation>
+        <translation>Створен је читач видео тока.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="69"/>
         <source>Error: Can&apos;t open video stream file!</source>
-        <translation>Грешка: Не можемо да отворимо видео стрим датотеку ( фајл)!</translation>
+        <translation>Грешка: Не могу да отворим датотеку видео тока!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="76"/>
         <source>Error: Can&apos;t resize video stream file!</source>
-        <translation>Грешка: Не можемо да променимо величину видео стрим датотеке ( фајла)!</translation>
+        <translation>Грешка: Не могу да променим величину датотеке видео тока!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="83"/>
         <source>Error: Can&apos;t memory-map video stream file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Не могу да мапирам у меморији датотеку видео тока!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="92"/>
         <source>Error: Can&apos;t open video frame file!</source>
-        <translation>Грешка: Не можемо отворити видео фрејм датотеку</translation>
+        <translation>Грешка: Не могу да отворим датотеку видео кадра!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="142"/>
         <source>Destroyed video stream reader.</source>
-        <translation>Уништен видео стрим читач.</translation>
+        <translation>Уништен је читач видео тока.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="238"/>
         <source>Error: Size of video frame file is incorrect!</source>
-        <translation>Грешка: Величина датотеке видео фрејма је нетачна!</translation>
+        <translation>Грешка: Величина датотеке видео кадра је нетачна!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamReader.cpp" line="247"/>
         <source>Error: Can&apos;t memory-map video frame file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Не могу да мапирам у меморију датотеку видео кадра!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="94"/>
         <source>Error: Can&apos;t create channel directory!</source>
-        <translation>Грешка: Не можемо да креирамо директоријум за канал!</translation>
+        <translation>Грешка: Не могу да створим директоријум канала!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="102"/>
         <source>Error: Can&apos;t stat channel directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Не могу да добавим податке директоријума канала!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="106"/>
         <source>Error: Channel directory is not a regular directory!</source>
-        <translation>Грешка: Директоријум канала није регуларан!</translation>
+        <translation>Грешка: Директоријум канала није уобичајен директоријум!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="111"/>
         <source>Error: Can&apos;t set channel directory mode!</source>
-        <translation>Грешка: Не можео да задамо режим директоријума канала!</translation>
+        <translation>Грешка: Не могу да поставим режим директоријума канала!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="116"/>
         <source>Error: Channel directory is owned by a different user! Choose a different channel name, or enable relaxed file permissions to use it anyway.</source>
-        <translation>Грешка: Директоријум канала је у власништву другог корисника! Изаберите друго име за канал или релаксирајте права приступа датотеци како бисте је користили.</translation>
+        <translation>Грешка: Директоријум канала је у власништву другог корисника! Изаберите други назив за канал или релаксирајте права приступа датотеци како бисте је користили.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="126"/>
         <source>Error: Can&apos;t initialize inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation>Грешка: Не можемо да иницијализујемо inotify!</translation>
+        <translation>Грешка: Не могу да покренем „inotify“!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="132"/>
         <source>Error: Can&apos;t watch channel directory!</source>
-        <translation>Грешка: Не можемо да погледамо директоријум ( фолдер) канала!</translation>
+        <translation>Грешка: Не могу да погледам директоријум канала!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="144"/>
         <source>Error: Can&apos;t open channel directory!</source>
-        <translation>Грешка: Не можемо да отворимо директоријум (фолдер) канала!</translation>
+        <translation>Грешка: Не могу да отворим директоријум канала!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="162"/>
         <source>Added pre-existing stream %1.</source>
-        <translation>Додат претходно постојећи стрим %1.</translation>
+        <translation>Додат је претходно постојећи ток %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="197"/>
         <source>Error: Can&apos;t get read length from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation>Грешка: Не можемо да добијемо дужину читања од inotify!</translation>
+        <translation>Грешка: Не могу да добавим величину читања од „inotify“-а!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="205"/>
         <source>Error: Can&apos;t read from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation>Грешка: Не можемо да прочитамо inotify!</translation>
+        <translation>Грешка: Не могу да читам из „inotify“-а!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="215"/>
         <source>Error: Received partial event from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation>Грешка: Добијен парцијални догађај од inotify!</translation>
+        <translation>Грешка: Примих делимични догађај од „inotify“-а!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="227"/>
         <source>Error: Received partial name from inotify!</source>
         <comment>don&apos;t translate &apos;inotify&apos;</comment>
-        <translation>Грешка: Добијено парцијално име од inotify!</translation>
+        <translation>Грешка: Примих делимичан назив од „inotify“-а!</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="241"/>
         <source>Added stream %1.</source>
-        <translation>Стрим %1 је додат.</translation>
+        <translation>Додат је ток %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="249"/>
         <source>Removed stream %1.</source>
-        <translation>Стрим %1 је избрисан .</translation>
+        <translation>Уклоњен је ток %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/SSRVideoStreamWatcher.cpp" line="275"/>
         <source>Deleted abandoned stream %1.</source>
-        <translation>Избрисан напуштен %1 стрим.</translation>
+        <translation>Избрисан је напуштен ток %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="68"/>
         <source>Error: Unsupported X11 image pixel format!</source>
-        <translation>Грешка: Неподржан Х11 формат пиксел слике!</translation>
+        <translation>Грешка: Неподржан формат пиксела Х11 слике!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="41"/>
@@ -773,170 +774,170 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <location filename="../AV/Input/X11Input.cpp" line="197"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="122"/>
         <source>Error: Width or height is too large, the maximum width and height is %1!</source>
-        <translation>Грешка: Ширина или висина је сувише велика, максимална ширина и висина су %1!</translation>
+        <translation>Грешка: Ширина или висина је сувише велика, највећа ширина и висина су %1!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="99"/>
         <source>Error: Can&apos;t open V4L2 device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Не могу да отворим V4L2 уређај!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="107"/>
         <source>Error: Can&apos;t read capabilities of V4L2 device!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Не могу да прочитам могућности V4L2 уређаја!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="111"/>
         <source>Error: V4L2 device does not support video capture!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: V4L2 урешај не подржава видео снимање!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="115"/>
         <source>Error: V4L2 device does not support streaming io!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: V4L2 уређај не подржава улаз/излаз утакања!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="132"/>
         <source>Error: Can&apos;t set capture format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Не могу да поставим формат снимања!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="136"/>
         <source>Error: V4L2 device does not support YUYV pixel format!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: V4L2 уређај не подржава формат YUYV пиксела!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="140"/>
         <source>Warning: Resolution %1x%2 is not supported, using %3x%4 instead. The video will be scaled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Упозорење: Резолуција %1x%2 није подржана, користићу %3x%4. Видеу ће бити промењене димензије.</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="183"/>
         <source>Using color space %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Користим простор боја %1.</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="193"/>
         <source>Error: Buffer request failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Није успео захтев за међумеморију!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="203"/>
         <source>Error: Buffer query failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Није успео упит за међумеморију!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="209"/>
         <source>Error: Buffer mmap failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Није успео „mmap“ за међумеморију!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="222"/>
         <source>Error: Buffer queue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Није успело заказивање међумеморије!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="230"/>
         <source>Error: Failed to start stream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Нисам успео да покренем ток!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="273"/>
         <source>Error: Buffer dequeue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Није успело уклањање међумеморије из заказаног!</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="288"/>
         <source>Error: Buffer requeue failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Поновно стављање међумеморије у ред није успело!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="257"/>
         <location filename="../GUI/HotkeyListener.cpp" line="115"/>
         <source>Error: Can&apos;t open X display!</source>
         <comment>Don&apos;t translate &apos;display&apos;</comment>
-        <translation>Грешка: Не можемо да отворимо X екран!</translation>
+        <translation>Грешка: Не могу да отворим X екран!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="266"/>
         <source>Using X11 shared memory.</source>
-        <translation>Користимо Х11 дељену меморију.</translation>
+        <translation>Користим Х11 дељену меморију.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="313"/>
         <source>Error: Can&apos;t create shared image!</source>
-        <translation>Грешка: Не може да креирамо дељену слику!</translation>
+        <translation>Грешка: Не могу да створим дељену слику!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="318"/>
         <source>Error: Can&apos;t get shared memory!</source>
-        <translation>Грешка: Не можемо да добијемо дељену меморију!</translation>
+        <translation>Грешка: Не могу да добијем дељену меморију!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="323"/>
         <source>Error: Can&apos;t attach to shared memory!</source>
-        <translation>Грешка: Не можемо се накачити на дељену меморију!</translation>
+        <translation>Грешка: Не могу да прикачим на дељену меморију!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="268"/>
         <source>Not using X11 shared memory.</source>
-        <translation>Не користити Х11 дељену меморију.</translation>
+        <translation>Не користим Х11 дељену меморију.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="275"/>
         <source>Warning: XFixes is not supported by X server, the cursor has been hidden.</source>
         <comment>Don&apos;t translate &apos;XFixes&apos;</comment>
-        <translation>Упозорење: XFixes није подржан од стране X сервера, курсор је сакривен.</translation>
+        <translation>Упозорење: XFixes није подржано од стране X сервера, курсор је сакривен.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="355"/>
         <source>Detecting screen configuration ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Откривам подешавање екрана...</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="373"/>
         <source>Warning: Xinerama is not supported by X server, multi-monitor support may not work properly.</source>
         <comment>Don&apos;t translate &apos;Xinerama&apos;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Упозорење: Xinerama није подржано од X сервера, подршка више монитора можда неће радити исправно.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="379"/>
         <source>Warning: No monitors detected, multi-monitor support may not work properly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Упозорење: Нема откривених монитора, подршка више монитора можда неће радити исправно.</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="386"/>
         <source>Screen %1:</source>
-        <translation type="unfinished">Екран %1:</translation>
+        <translation>Екран %1:</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="406"/>
         <source>Error: Invalid screen bounding box!</source>
-        <translation>Грешка: Невалидан гранични оквир екрана!</translation>
+        <translation>Грешка: Неисправан гранични оквир екрана!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="328"/>
         <source>Error: Can&apos;t attach server to shared memory!</source>
-        <translation>Грешка: Не можемо да прикачимо сервер на дељену меморију!</translation>
+        <translation>Грешка: Не могу да прикачим сервер на дељену меморију!</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="450"/>
         <source>Dead space %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мртав простор %1:</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="536"/>
         <source>Error: Can&apos;t get image (using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation>Грешка: Не можемо да добијемо слику ( коришћењем дељене меморије)!
-    Ово обично заничи да снимана област није комплетно обухваћена унутар екрана. Или сте можда променули резолуцију?</translation>
+        <translation>Грешка: Не могу да добавим слику (користећи дељену меморију)!
+    Ово обично значи да снимана област није потпуно унутар екрана. Или сте можда променули резолуцију екрана?</translation>
     </message>
     <message>
         <location filename="../AV/Input/X11Input.cpp" line="547"/>
         <source>Error: Can&apos;t get image (not using shared memory)!
     Usually this means the recording area is not completely inside the screen. Or did you change the screen resolution?</source>
-        <translation>Грешка: Не можемо да добијемо слику ( коришћењем дељене меморије)!
-    Ово обично заничи да снимана област није комплетно обухваћена унутар екрана. Или сте можда променули резолуцију?</translation>
+        <translation>Грешка: Не могу да добавим слику (користећи дељену меморију)!
+    Ово обично заничи да снимана област није потпуно унутар екрана. Или сте можда променули резолуцију екрана?</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="100"/>
@@ -946,13 +947,13 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="104"/>
         <source>Error: Sample rate is zero.</source>
-        <translation>Грешка: Број узрорака је нула.</translation>
+        <translation>Грешка: Проток узорака је нула.</translation>
     </message>
     <message>
         <location filename="../AV/Input/ALSAInput.cpp" line="325"/>
         <location filename="../AV/Output/AudioEncoder.cpp" line="142"/>
         <source>Using sample format %1.</source>
-        <translation>Користимо формат узорка %1.</translation>
+        <translation>Користим формат узорка %1.</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="147"/>
@@ -962,167 +963,167 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="176"/>
         <source>Error: Sending of audio frame failed!</source>
-        <translation>Грешка: Неуспешно слање аудио фрејма!</translation>
+        <translation>Грешка: Слање аудио кадра није успело!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="197"/>
         <source>Error: Receiving of audio packet failed!</source>
-        <translation>Грешка: Неуспешно примање аудио пакета!</translation>
+        <translation>Грешка: Примање аудио пакета није успело!</translation>
     </message>
     <message>
         <location filename="../AV/Output/AudioEncoder.cpp" line="210"/>
         <location filename="../AV/Output/AudioEncoder.cpp" line="232"/>
         <source>Error: Encoding of audio frame failed!</source>
-        <translation>Грешка: Неуспешно кодирање аудио фрејмова!</translation>
+        <translation>Грешка: Кодирање аудио кадра није успело!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="30"/>
         <location filename="../AV/Output/BaseEncoder.cpp" line="39"/>
         <source>Error: Option &apos;%1&apos; could not be parsed!</source>
-        <translation>Грешка: Опција &apos;%1&apos; се не може парсирати!</translation>
+        <translation>Грешка: Не могу да разложим опцију „%1“!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="96"/>
         <source>Stopping encoder thread ...</source>
-        <translation>Заустављање кодер нити...</translation>
+        <translation>Заустављам нит шифрера...</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="164"/>
         <source>Error: Can&apos;t open codec!</source>
-        <translation>Грешка: Не можемо отворити кодек!</translation>
+        <translation>Грешка: Не могу да отворим кодек!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="172"/>
         <source>Warning: Codec option &apos;%1&apos; was not recognised!</source>
-        <translation>Упозорење: Опција кодека &apos;%1&apos; није препозната!</translation>
+        <translation>Упозорење: Опција кодека „%1“ није препозната!</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="188"/>
         <source>Encoder thread started.</source>
-        <translation>Кодер нит је покренута.</translation>
+        <translation>Нит шифрера је покренута.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="217"/>
         <source>Flushing encoder ...</source>
-        <translation>Флашовање кодера ...</translation>
+        <translation>Испуњавам шифрер...</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="228"/>
         <source>Encoder thread stopped.</source>
-        <translation>Кодер нит заустављена.</translation>
+        <translation>Нит шифрера је заустављена.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="232"/>
         <source>Exception &apos;%1&apos; in encoder thread.</source>
-        <translation>Изузетак &apos;%1&apos; у кодер нити.</translation>
+        <translation>Изузетак „%1“ нити шифрера.</translation>
     </message>
     <message>
         <location filename="../AV/Output/BaseEncoder.cpp" line="235"/>
         <source>Unknown exception in encoder thread.</source>
-        <translation>Непознати изузетак у кодер нити.</translation>
+        <translation>Непознати изузетак у нити шифрера.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="70"/>
         <source>Stopping encoders ...</source>
-        <translation>Заустављам кодирање...</translation>
+        <translation>Заустављам шифрере...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="77"/>
         <source>Waiting for muxer thread to stop ...</source>
-        <translation>Чекамо да нит мултиплексера заврши ...</translation>
+        <translation>Чекам да нит мултиплексера заврши...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="100"/>
         <location filename="../AV/Output/Muxer.cpp" line="124"/>
         <source>Error: Can&apos;t copy parameters to stream!</source>
-        <translation>Грешка: Не можемо копирати параметре на стриму</translation>
+        <translation>Грешка: Не могу да умножим параметре у ток!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="146"/>
         <source>Error: Can&apos;t write header!</source>
         <comment>Don&apos;t translate &apos;header&apos;</comment>
-        <translation>Грешка: Не можемо пистаи header!</translation>
+        <translation>Грешка: Не могу да запишем „header“ (заглавље)!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="157"/>
         <source>Finishing encoders ...</source>
-        <translation>Завршавамо кодирање ...</translation>
+        <translation>Завршавам кодирање ...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="199"/>
         <source>Error: Can&apos;t find chosen output format!</source>
-        <translation>Грешка: Не можемо да нађемо одабрани излазни формат!</translation>
+        <translation>Грешка: Не могу да нађем изабрани излазни формат!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="203"/>
         <source>Using format %1 (%2).</source>
-        <translation>Користимо формат %1 (%2).</translation>
+        <translation>Користим формат %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="209"/>
         <source>Error: Can&apos;t allocate format context!</source>
-        <translation>Грешка: Не можемо да алоцирамо формат контекста!</translation>
+        <translation>Грешка: Не могу да доделим формат контекста!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="216"/>
         <source>Error: Can&apos;t open output file!</source>
-        <translation>Грешка: Не можемо да отворимо излазну датотеку!</translation>
+        <translation>Грешка: Не могу да отворим излазну датотеку!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="229"/>
         <source>Error: Can&apos;t write trailer, continuing anyway.</source>
         <comment>Don&apos;t translate &apos;trailer&apos;</comment>
-        <translation>Грешка: Не можемо писати trailer, настави у сваком случају.</translation>
+        <translation>Грешка: Не могу да запишем „trailer“, ипак настављам.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="267"/>
         <source>Error: Can&apos;t find codec!</source>
-        <translation>Грешка: Не можемо да нађемо кодек!</translation>
+        <translation>Грешка: Не могу да нађем кодек!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="277"/>
         <source>Using codec %1 (%2).</source>
-        <translation>Користимо кодек %1 (%2).</translation>
+        <translation>Користим кодек %1 (%2).</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="288"/>
         <source>Error: Can&apos;t create new stream!</source>
-        <translation>Грешка: Не можемо да креирамо нови стрим!</translation>
+        <translation>Грешка: Не могу да створим нови ток!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="295"/>
         <source>Error: Can&apos;t create new codec context!</source>
-        <translation>Грешка: Не можемо да креирамо нови контекст кодека!</translation>
+        <translation>Грешка: Не могу да створим нови контекст кодека!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="307"/>
         <source>Error: Can&apos;t get codec context defaults!</source>
-        <translation>Грешка: Не можемо да добијемо подразумевани контекст кодека!</translation>
+        <translation>Грешка: Не могу да добавим основности контекста кодека!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="320"/>
         <source>Warning: This codec is considered experimental by libav/ffmpeg.</source>
-        <translation>Упозорење: Овај кодек се сматра експерименталним од стране libav/ffmpeg.</translation>
+        <translation>Упозорење: „libav/ffmpeg“ сматра овај кодек  експерименталним.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="336"/>
         <source>Muxer thread started.</source>
-        <translation>Покренута нит мултиплексера.</translation>
+        <translation>Покренута је нит мултиплексера.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="396"/>
         <source>Error: Can&apos;t write frame to muxer!</source>
-        <translation>Грешка: Не можемо да упишемо фрејм у мултиплексер!</translation>
+        <translation>Грешка: Не могу да запишем кадар у мултиплексер!</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="424"/>
         <source>Muxer thread stopped.</source>
-        <translation>Заустављен нит мултиплексера.</translation>
+        <translation>Заустављена је нит мултиплексера.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="428"/>
         <source>Exception &apos;%1&apos; in muxer thread.</source>
-        <translation>Изузетак &apos;%1&apos; у нити мултиплексера!</translation>
+        <translation>Изузетак „%1“ у нити мултиплексера.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Muxer.cpp" line="431"/>
@@ -1132,32 +1133,32 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="220"/>
         <source>Stopping synchronizer thread ...</source>
-        <translation>Заустављање синхронизатора нити ...</translation>
+        <translation>Заустављање нити синхронизатора...</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="328"/>
         <source>Warning: Received video frame with non-monotonic timestamp.</source>
-        <translation>Упозорење: Примљен видео фрејм са немонотонским временским одсечком.</translation>
+        <translation>Упозорење: Примих видео кадар са немонотонском временском ознаком.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="355"/>
         <source>Warning: Video buffer overflow, some frames will be lost. The audio input seems to be too slow.</source>
-        <translation>Упозорење: Видео бафер је препун, неки фрејмови ће бити изгубљени. Изгледа да је аудио улаз сувише спор.</translation>
+        <translation>Упозорење: Видео међумеморија је препуна, неки кадрови биће изгубљени. Изгледа да је аудио улаз сувише спор.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="412"/>
         <source>Warning: Received audio samples with non-monotonic timestamp.</source>
-        <translation>Упозорење: Примљени аудио узорци са немонотонским временским одсечком</translation>
+        <translation>Упозорење: Примих аудио узорке са немонотонском временском ознаком.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="437"/>
         <source>Warning: Too many audio samples, dropping samples to keep the audio in sync with the video.</source>
-        <translation>Упозорење: Превише аудио узорака, одбацујемо узорке како бисмо очували синхронизацију звука са видеом.</translation>
+        <translation>Упозорење: Превише аудио узорака, одбацујем узорке како бих очувао синхронизацију звука са видеом.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="443"/>
         <source>Warning: Not enough audio samples, inserting silence to keep the audio in sync with the video.</source>
-        <translation>Упозорење: Немамо довољно аудио узорака, додајемо тишину како бисмо очували синхронизацију звука са видеом.</translation>
+        <translation>Упозорење: Нема довољно аудио узорака, додајем тишину како бих очувао синхронизацију звука са видеом.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="511"/>
@@ -1172,32 +1173,32 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="554"/>
         <source>Warning: Audio buffer overflow, starting new segment to keep the audio in sync with the video (some video and/or audio may be lost). The video input seems to be too slow.</source>
-        <translation>Упозорење: Аудио бафер је препун, покретање новог сегмента како бисмо очували синхронизацију звука са видеом ( неки видеи и/или аудио снимци ће бити изгубљени). Изгледа да је видео улаз сувише спор.</translation>
+        <translation>Упозорење: Аудио међумеморија је препуна, покрећем нови сегмент како бих очувао синхронизацију звука са видеом (неки снимци и/или звук биће изгубљени). Изгледа да је видео улаз сувише спор.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="590"/>
         <source>Warning: Received hole in audio stream, inserting silence to keep the audio in sync with the video.</source>
-        <translation>Упозорење: Примљена руна у аудио стриму, додајемо тишину како бисмо очували синхронизацију видеа.</translation>
+        <translation>Упозорење: Примих празнину у аудио току, додајем тишину како бих очувао синхронизацију аудиа и видеа.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="891"/>
         <source>Synchronizer thread started.</source>
-        <translation>Нит синхронизатора покренута.</translation>
+        <translation>Покренута је нит синхронизатора.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="913"/>
         <source>Synchronizer thread stopped.</source>
-        <translation>Нит синхронизатора заустављена.</translation>
+        <translation>Заустављена је нит синхронизатора.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="917"/>
         <source>Exception &apos;%1&apos; in synchronizer thread.</source>
-        <translation>Изузетак &apos;%1&apos; у нити синхронизатора.</translation>
+        <translation>Изузетак „%1“ у нити синхронизатора.</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="920"/>
         <source>Unknown exception in synchronizer thread.</source>
-        <translation>Непознат изузетак у нити синхронизатора</translation>
+        <translation>Непознат изузетак у нити синхронизатора.</translation>
     </message>
     <message>
         <location filename="../AV/Input/V4L2Input.cpp" line="49"/>
@@ -1208,12 +1209,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="130"/>
         <source>Error: Frame rate is zero!</source>
-        <translation>Грешка: Број фрејмова је нула!</translation>
+        <translation>Грешка: Проток кадрова је нула!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="187"/>
         <source>Using pixel format %1.</source>
-        <translation>Коришћен формат пиксела %1.</translation>
+        <translation>Користим формат пиксела %1.</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="201"/>
@@ -1223,12 +1224,12 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="229"/>
         <source>Error: Sending of video frame failed!</source>
-        <translation>Грешка: Неуспешно слање видео фрејма!</translation>
+        <translation>Грешка: Слање видео кадра није успело!</translation>
     </message>
     <message>
         <location filename="../AV/Output/VideoEncoder.cpp" line="250"/>
         <source>Error: Receiving of video packet failed!</source>
-        <translation>Грешка: Неуспешно примање видео пакета!</translation>
+        <translation>Грешка: Примање видео пакета није успело!</translation>
     </message>
     <message>
         <source>Error: Encoder requires an unsupported pixel format!</source>
@@ -1238,69 +1239,69 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
         <location filename="../AV/Output/VideoEncoder.cpp" line="263"/>
         <location filename="../AV/Output/VideoEncoder.cpp" line="284"/>
         <source>Error: Encoding of video frame failed!</source>
-        <translation>Грешка: Неуспешно кодирање видео фрејма!</translation>
+        <translation>Грешка: Кодирање видео кадра није успело!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="41"/>
         <source>Using real-time priority.</source>
-        <translation>Користимо *real-time* приоритет.</translation>
+        <translation>Користим приоритет стварног времена.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="51"/>
         <source>Using nice priority.</source>
         <comment>Don&apos;t translate &apos;nice&apos;, it&apos;s a UNIX parameter that defines the priority of a process.</comment>
-        <translation>Користимо приоритет *nice*.</translation>
+        <translation>Користим приоритет „nice“.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="56"/>
         <source>Warning: Can&apos;t increase the thread priority.</source>
-        <translation>Упозорење: Не можемо повећати приоритет нити.</translation>
+        <translation>Упозорење: Не могу повећати приоритет нити.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="64"/>
         <source>Error: Can&apos;t recover device after underrun!</source>
         <comment>Don&apos;t translate &apos;underrun&apos;</comment>
-        <translation>Грешка: Не можемо да опоравимо уређај после underrun</translation>
+        <translation>Грешка: Не могу да опоравим уређај после „underrun“-а!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="91"/>
         <source>Stopping synth thread ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Заустављање нити синтонизатора...</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="224"/>
         <source>Synth thread started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нит синтонзатора је покренута.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="277"/>
         <source>Error: Can&apos;t write samples!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Не могу да запишем узорке!</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="285"/>
         <source>Synth thread stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нит синтонизатора је заустављена.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="289"/>
         <source>Exception &apos;%1&apos; in synth thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Изузетак „%1“ у нити синтонизатора.</translation>
     </message>
     <message>
         <location filename="../AV/SimpleSynth.cpp" line="292"/>
         <source>Unknown exception in synth thread.</source>
-        <translation type="unfinished"></translation>
+        <translation>Непознат изузетак у нити синтонизатора.</translation>
     </message>
     <message>
         <location filename="../common/CPUFeatures.cpp" line="45"/>
         <source>CPU features</source>
-        <translation>Функционалности процесора</translation>
+        <translation>Функције процесора</translation>
     </message>
     <message>
         <location filename="../GUI/DialogGLInject.cpp" line="160"/>
         <source>The application could not be launched.</source>
-        <translation>Не можемо да покренемо апликацију.</translation>
+        <translation>Не могу да покренем апликацију.</translation>
     </message>
     <message>
         <location filename="../GUI/HotkeyListener.cpp" line="161"/>
@@ -1311,37 +1312,37 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="90"/>
         <source>Error: Command-line option &apos;%1&apos; requires a value!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Опција линије наредби „%1“ захтева вредност!</translation>
     </message>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="98"/>
         <source>Error: Command-line option &apos;%1&apos; does not take a value!</source>
-        <translation>Грешка: Опција команде линије &apos;%1&apos; не узима вредност!</translation>
+        <translation>Грешка: Опција линије наредби „%1“ не узима вредност!</translation>
     </message>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="195"/>
         <source>Error: Unknown command-line option &apos;%1&apos;!</source>
-        <translation>Грешка: Непозната опција командне линије - &apos;%1&apos;!</translation>
+        <translation>Грешка: Непозната опција линије наредби „%1“!</translation>
     </message>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="203"/>
         <source>Error: Unknown command-line argument &apos;%1&apos;!</source>
-        <translation>Грешка: Непознат аргумент команде линије - &apos;%1&apos;!</translation>
+        <translation>Грешка: Непознат аргумент линије наредби „%1“!</translation>
     </message>
     <message>
         <location filename="../common/CommandLineOptions.cpp" line="253"/>
         <source>Error: Can&apos;t create configuration directory!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: Не могу да створим директоријум подешавања!</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="99"/>
         <source>SSR started</source>
-        <translation>SSR је покренут</translation>
+        <translation>SSR је покренуто</translation>
     </message>
     <message>
         <location filename="../Main.cpp" line="133"/>
         <source>SSR stopped</source>
-        <translation>SSR је заустављен</translation>
+        <translation>SSR је заустављено</translation>
     </message>
     <message>
         <source>Error: Can&apos;t create .ssr directory!</source>
@@ -1350,62 +1351,62 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../Benchmark.cpp" line="165"/>
         <source>BGRA %1 to BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</source>
-        <translation type="unfinished"></translation>
+        <translation>BGRA %1 на BGRA %2  |  SWScale %3 us  |  Fallback %4 us (%5%)  |  SSSE3 %6 us (%7%)</translation>
     </message>
     <message>
         <location filename="../Benchmark.cpp" line="243"/>
         <source>%1 %2 to %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %2 на %3 %4  |  SWScale %5 us  |  Fallback %6 us (%7%)  |  SSSE3 %8 us (%9%)</translation>
     </message>
     <message>
         <location filename="../Benchmark.cpp" line="253"/>
         <source>Starting scaler benchmark ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Покрећем проверу рада измењивача димензија...</translation>
     </message>
     <message>
         <location filename="../Benchmark.cpp" line="260"/>
         <source>Starting converter benchmark ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Покрећем проверу рада претварача...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="70"/>
         <source>Stopping fragment thread ...</source>
-        <translation>Заустављање фрагмента нити ...</translation>
+        <translation>Заустављање нити одломка...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="347"/>
         <source>Fragment thread started.</source>
-        <translation>Фрагмент нити покренут.</translation>
+        <translation>Нит одсечка је покренута.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="365"/>
         <source>Next fragment ...</source>
-        <translation>Следећи фрагмент ...</translation>
+        <translation>Следећи одсечак...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="369"/>
         <source>Finishing ...</source>
-        <translation>Завршавамо ...</translation>
+        <translation>Завршавам...</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="381"/>
         <source>Fragment thread stopped.</source>
-        <translation>Фрагмент нити заустављен.</translation>
+        <translation>Нит одсечка је заустављена.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="385"/>
         <source>Exception &apos;%1&apos; in fragment thread.</source>
-        <translation>Изузетак &apos;%1&apos; у фрагменту нити</translation>
+        <translation>Изузетак „%1“ у нити одсечка.</translation>
     </message>
     <message>
         <location filename="../AV/Output/OutputManager.cpp" line="388"/>
         <source>Unknown exception in fragment thread.</source>
-        <translation>Непознати изузетак у фрагменту нити.</translation>
+        <translation>Непознати изузетак у нити одсечка.</translation>
     </message>
     <message>
         <location filename="../common/ScreenScaling.cpp" line="120"/>
         <source>Detected fractional screen scale factor, scaling was disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Открих разломачки фактор промене сразмере екрана, сразмеравање је искључено.</translation>
     </message>
 </context>
 <context>
@@ -1413,7 +1414,7 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="74"/>
         <source>You are using a non-X11 window system (e.g. Wayland) which is currently not supported by SimpleScreenRecorder. Several features will most likely not work properly. In order to solve this, you should log out, choose a X11/Xorg session at the login screen, and then log back in.</source>
-        <translation type="unfinished"></translation>
+        <translation>Користите систем прозора који није X11 (нпр. Wayland) кога тренутно Једноставан снимач екрана не подржава. Неке функције највероватније неће радити како треба. Да решите ово, треба да се одјавите, изаберете X11/Xorg сесију на екрану за пријављивање, и да се поново пријавите.</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="86"/>
@@ -1421,15 +1422,15 @@ It is possible that your system doesn&apos;t use PulseAudio.</source>
 
 You can also change this option manually in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation>SimpleScreenRecorder је детектовао да користите власнички NVIDIA драјвер са укљученим flipping. Познато је да ово изазива гличеве у току снимања. Препоручено је да се искључи flipping. Да ли желите да ми то урадимо за Вас?
+        <translation>Једноставан снимач екрана је открио да користите власнички NVIDIA драјвер са укљученим „flipping“-ом. Познато је да ово изазива гличеве у току снимања. Препоручљиво је да искључите „flipping“. Да ли желите да ја то урадим за вас?
 
-Ова опција се може променити и ручно у  NVIDIA control panel.</translation>
+Ову опцију можете променити и ручно у NVIDIA управљачком панелу.</translation>
     </message>
     <message>
         <location filename="../GUI/MainWindow.cpp" line="104"/>
         <source>I couldn&apos;t disable flipping for some reason - sorry! Try disabling it in the NVIDIA control panel.</source>
         <comment>Don&apos;t translate &apos;flipping&apos; unless NVIDIA does the same</comment>
-        <translation>Из неког разлога нисмо успели да угасимо flipping - извињавамо се! Пробајте да га угасите у NVIDIA control panel.</translation>
+        <translation>Из неког разлога нисам успело да искључим „flipping“ - извините! Пробајте да га искључите у NVIDIA управљачком панелу.</translation>
     </message>
 </context>
 <context>
@@ -1437,17 +1438,17 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageDone.cpp" line="31"/>
         <source>The recording has been saved. You can edit the video now, or re-encode it with better settings to make the file smaller (the default settings are optimized for quality and speed, not file size).</source>
-        <translation>Снимање је сачувано. Сада можете да модификујете видео или да га прекодирате са бољим подешавањима да бисте га смањили (стандардна подешавања су оптимизована за квалитет и брзину, али не и за величину датотеке).</translation>
+        <translation>Снимање је сачувано. Сада можете да уређујете видео или да га прекодирате са бољим подешавањима да бисте смањили датотеку (основна подешавања су оптимизована за квалитет и брзину, али не и за величину датотеке).</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="35"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Отвори фасциклу</translation>
     </message>
     <message>
         <location filename="../GUI/PageDone.cpp" line="38"/>
         <source>Back to the start screen</source>
-        <translation>Врати се на почетни екран</translation>
+        <translation>Назад на почетни екран</translation>
     </message>
 </context>
 <context>
@@ -1479,7 +1480,7 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="271"/>
         <source>Input profile</source>
-        <translation>Улазни профил</translation>
+        <translation>Профил улаза</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="280"/>
@@ -1489,46 +1490,46 @@ You can also change this option manually in the NVIDIA control panel.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="283"/>
         <source>Record V4L2 device</source>
-        <translation type="unfinished"></translation>
+        <translation>Снимање V4L2 уређаја</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="295"/>
         <source>Select what monitor should be recorded in a multi-monitor configuration.</source>
-        <translation>Изаберите монитор који желите да снимате у мултимониторској конфигурацији.</translation>
+        <translation>Изаберите монитор који желите да снимате у конфигурацији са више монитора.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="296"/>
         <source>Record entire screen with cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Снимај цео екран са курзором</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="297"/>
         <source>Record the entire screen on which the cursor is located, rather than following the cursor position.</source>
-        <translation type="unfinished"></translation>
+        <translation>Снимаће цео екран на коме се налази курзор, уместо да прати положај курзора.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="298"/>
         <source>Select rectangle...</source>
-        <translation>Изберите правоугаону област...</translation>
+        <translation>Избери правоугаону област...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="299"/>
         <source>Use the mouse to select the recorded rectangle.</source>
-        <translation>Употребите миш како бисте изабрали правоугаону област за снимање.</translation>
+        <translation>Користите миша да изаберете правоугаону област за снимање.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="300"/>
         <source>Select window...</source>
-        <translation>Изаберите прозор...</translation>
+        <translation>Изабери прозор...</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="301"/>
         <source>Use the mouse to select a window to record.
 Hint: If you click the border of a window, the entire window will be recorded (including the borders). Otherwise only
 the client area of the window will be recorded.</source>
-        <translation>Користите миш како бисте одабрали прозор за снимање екрана.
-Савет: Ако кликнете на руб прозора, цели прозор ће бити сниман (укључујући и рубове). Иначе ће снимати
-клиентскu област прозора.</translation>
+        <translation>Користите миша да изаберете прозор за снимање.
+Савет: Ако кликнете на руб прозора, цео прозор биће сниман (укључујући и рубове). Иначе ће снимати
+само област прозора клијента.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="305"/>
@@ -1538,12 +1539,12 @@ the client area of the window will be recorded.</source>
     <message>
         <location filename="../GUI/PageInput.cpp" line="306"/>
         <source>Change the settings for OpenGL recording.</source>
-        <translation>Промена подешавања за OpenGL снимање.</translation>
+        <translation>Измените подешавања за OpenGL снимање.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="310"/>
         <source>The V4L2 device to record (e.g. /dev/video0).</source>
-        <translation type="unfinished"></translation>
+        <translation>V4L2 уређај за снимање (нпр. /dev/video0).</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="312"/>
@@ -1555,7 +1556,7 @@ the client area of the window will be recorded.</source>
         <source>The x coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Координата x на горњем левом углу снимане правоугаоне области.
-Савет: Можете да промените вредност х координате скрол точкићем или стрелицама горе/доле.</translation>
+Савет: Можете да промените вредност х-координате точкићем миша или стрелицама горе/доле.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="318"/>
@@ -1567,7 +1568,7 @@ Hint: You can also change this value with the scroll wheel or the up/down arrows
         <source>The y coordinate of the upper-left corner of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Координата y на горњем левом углу снимане правоугаоне области.
-Савет: Можете да промените вредност y координате скрол точкићем или стрелицама горе/доле.</translation>
+Савет: Можете да промените вредност y-координате точкићем миша или стрелицама горе/доле.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="324"/>
@@ -1579,7 +1580,7 @@ Hint: You can also change this value with the scroll wheel or the up/down arrows
         <source>The width of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Ширина снимане правоугаоне области.
-Савет: Можете да промените ширину скрол точкићем или стрелицама горе/доле.</translation>
+Савет: Можете да промените ширину точкићем миша или стрелицама горе/доле.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="330"/>
@@ -1591,42 +1592,42 @@ Hint: You can also change this value with the scroll wheel or the up/down arrows
         <source>The height of the recorded rectangle.
 Hint: You can also change this value with the scroll wheel or the up/down arrows.</source>
         <translation>Висина снимане правоугаоне области.
-Савет: Можете да промените висину скрол точкићем или стрелицама горе/доле.</translation>
+Савет: Можете да промените висину точкићем миша или стрелицама горе/доле.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="336"/>
         <source>Frame rate:</source>
-        <translation>Број фрејмова:</translation>
+        <translation>Проток кадрова:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="340"/>
         <source>The number of frames per second in the final video. Higher frame rates use more CPU time.</source>
-        <translation>Број фрејмова у секунди у крајњем видеу. Већи број фрејмова захтева више процесорског времена.</translation>
+        <translation>Број кадрова у секунди у крајњем видеу. Већи број кадрова захтева више процесорског времена.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="341"/>
         <source>Scale video</source>
-        <translation>Скалирај видео</translation>
+        <translation>Промени димензије видеа</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="342"/>
         <source>Enable or disable scaling. Scaling uses more CPU time, but if the scaled video is smaller, it could make the encoding faster.</source>
-        <translation>Омогући или онемогући скалирање. Скалирање захтева више процесорског времена, ако је скалирани видео мали, може да убрза кодирање.</translation>
+        <translation>Омогућите или онемогућите промену сразмере видеа. Скалирање захтева више процесорског времена, ако је скалирани видео мали, може да убрза кодирање.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="343"/>
         <source>Scaled width:</source>
-        <translation>Скалирана ширина:</translation>
+        <translation>Нова ширина:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="347"/>
         <source>Scaled height:</source>
-        <translation>Скалирана висина:</translation>
+        <translation>Нова висина:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="351"/>
         <source>Record cursor</source>
-        <translation>Снимање курсора</translation>
+        <translation>Снимај курзор</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="441"/>
@@ -1636,25 +1637,25 @@ Hint: You can also change this value with the scroll wheel or the up/down arrows
     <message>
         <location filename="../GUI/PageInput.cpp" line="443"/>
         <source>Record audio</source>
-        <translation>Снимање звука</translation>
+        <translation>Снимај звук</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="444"/>
         <source>Backend:</source>
         <translatorcomment>There&apos;s no real translation for &quot;backend&quot; in german, so i changed it to &quot;Audio-System&quot;. Because &quot;backend&quot; in german means &quot;baking&quot; in english. :-)</translatorcomment>
-        <translation>Бекенд:</translation>
+        <translation>Позадинац:</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="456"/>
         <source>The audio backend that will be used for recording.
 The ALSA backend will also work on systems that use PulseAudio, but it is better to use the PulseAudio backend directly.</source>
-        <translation>Аудио систем који ће се користити за снимање.
-ALSA Бекенд ће такође радити и на системима који користе PulseAudio, али је ипак боље да се директно користи PulseAudio Бекенд.</translation>
+        <translation>Позадинац аудио система који ће се користити за снимање.
+ALSA позадинац ће такође радити и на системима који користе PulseAudio, али је ипак боље да се директно користи PulseAudio позадинац.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="459"/>
         <source>The audio backend that will be used for recording.</source>
-        <translation>Аудио бекенд који ће се користити за снимање.</translation>
+        <translation>Позадинац аудио система који ће се користити за снимање.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="462"/>
@@ -1680,7 +1681,7 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
     <message>
         <location filename="../GUI/PageInput.cpp" line="468"/>
         <source>Refreshes the list of ALSA sources.</source>
-        <translation>Освежи листу ALSA извора.</translation>
+        <translation>Освежите списак ALSA извора.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="474"/>
@@ -1688,32 +1689,32 @@ The default is usually fine. The &apos;shared&apos; sources allow multiple progr
 A &apos;monitor&apos; is a source that records the audio played by other applications.</source>
         <comment>Don&apos;t translate &apos;monitor&apos; unless PulseAudio does this as well</comment>
         <translation>PulseAudio извор ће се користити за снимање.
-&apos;monitor&apos; је извор, снимач звука, репродукован од стране других апликација.</translation>
+„monitor“ је извор који снима звук који пуштају друге апликације.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="477"/>
         <source>Refreshes the list of PulseAudio sources.</source>
-        <translation>Освежи листу PulseAudio извора.</translation>
+        <translation>Освежите списак PulseAudio извора.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="480"/>
         <source>Record system microphone</source>
-        <translation>Систем снимања микрофоном</translation>
+        <translation>Снимај системским микрофоном</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="481"/>
         <source>If checked, the ports will be automatically connected to the system capture ports.</source>
-        <translation>Ако је чекирано, портови ће се аутоматски конектовати на систем за заузимање портова.</translation>
+        <translation>Ако је изабрано, портови ће се аутоматски повезати на систем системске портове снимања.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="482"/>
         <source>Record system speakers</source>
-        <translation>Систем снимања звучника</translation>
+        <translation>Снимај системске звучнике</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="483"/>
         <source>If checked, the ports will be automatically connected to anything that connects to the system playback ports.</source>
-        <translation>Ако је чекирано, портови ће се аутоматски конектовати на било шта што се конектује на плејбек портове</translation>
+        <translation>Ако је изабрано, портови ће се аутоматски повезати на било шта што се повезује на системске портове пуштања.</translation>
     </message>
     <message>
         <location filename="../GUI/PageInput.cpp" line="530"/>
@@ -1754,7 +1755,7 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
         <location filename="../GUI/PageOutput.cpp" line="133"/>
         <source>%1 files</source>
         <comment>This appears in the file dialog, e.g. &apos;MP4 files&apos;</comment>
-        <translation>%1 Датотека ( фајлаова)</translation>
+        <translation>%1 датотеке</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="94"/>
@@ -1766,32 +1767,32 @@ A &apos;monitor&apos; is a source that records the audio played by other applica
     <message>
         <location filename="../GUI/PageOutput.cpp" line="106"/>
         <source>Uncompressed</source>
-        <translation>Без компресије</translation>
+        <translation>Без сажимања</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="173"/>
         <source>Error: Could not find any suitable container in libavformat!</source>
-        <translation>Грешка: Не можемо да нађемо одговарајући контејнер у libavformat!</translation>
+        <translation>Грешка: Не могу да нађем одговарајући контејнер у „libavformat“-у!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="177"/>
         <source>Error: Could not find any suitable video codec in libavcodec!</source>
-        <translation>Грешка: Не можемо да нађемо одговарајући видео кодек libavcodec!</translation>
+        <translation>Грешка: Не могу да нађем одговарајући видео кодек у „libavcodec“!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="181"/>
         <source>Error: Could not find any suitable audio codec in libavcodec!</source>
-        <translation>Грешка: Не можемо да нађемо одговарајући аудио кодек libavcodec!</translation>
+        <translation>Грешка: Не могу да нађем одговарајући аудио кодек у „libavcodec“!</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="189"/>
         <source>Output profile</source>
-        <translation>Излазни профил</translation>
+        <translation>Профил излаза</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="191"/>
         <source>File</source>
-        <translation>Датотека ( фајл)</translation>
+        <translation>Датотека</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="193"/>
@@ -1841,24 +1842,24 @@ Note that not all codecs are supported by all containers, and that not all media
    It supports only VP8 and Vorbis.
 - OGG supports only Theora and Vorbis.</source>
         <translation>Контејнер (формат датотеке), који ће се користити за чување снимака.
-Обратите пажњу да нису сви кодеци подржани од стране свих контејнера, и да немогу сви медија плејери да учитају све формате датотека. 
-- Matroska (MKV) подржава све кодеке, али је мање познат.
-- MP4 је најпознатији формат и може се репродуковати на скоро сваком модерном медија плејеру, али подржава једино H.264 видео
-   (и многи медија плејери подржавају једино AAC звук).
-- WebM је намењен за уградњу видеа у веб сајтове (са HTML5 tag-ом &lt;video&gt;). Креиран је од стране Google.
-   WebM је стандардно подржан од стране Firefox, Chrome и Opera, а за Internet Explorer и Safari има прикључке( pluginove).
+Обратите пажњу да нису сви кодеци подржани од стране свих контејнера, и да немогу сви медијски плејери да учитају све формате датотека. 
+– Matroska (MKV) подржава све кодеке, али је мање познат.
+– MP4 је најпознатији формат и може се репродуковати на скоро сваком модерном медијском плејеру, али подржава једино H.264 видео
+   (и многи медијски плејери подржавају само AAC звук).
+– WebM је намењен за уградњу видеа у веб сајтове (са HTML5 ознаком &lt;video&gt;). Створио га је Google.
+   WebM стандардно подржавају Firefox, Chrome и Opera, а за Internet Explorer и Safari има прикључке.
    Ово подржава само VP8 и Vorbis.
-- OGG подржава само Theora и Vorbis.</translation>
+– OGG подржава само Theora и Vorbis.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="220"/>
         <source>Container name:</source>
-        <translation>Име контејнера:</translation>
+        <translation>Назив контејнера:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="226"/>
         <source>For advanced users. You can use any libav/ffmpeg format, but many of them are not useful or may not work.</source>
-        <translation>За напредне кориснике. Можете користити било који libav/ffmpeg видео кодек, али многи од њих Вам неће користити или неће радити.</translation>
+        <translation>За напредне кориснике. Можете користити било који „libav/ffmpeg“ формат, али многи од њих нису корисни или можда неће радити.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="250"/>
@@ -1877,21 +1878,21 @@ Note that not all codecs are supported by all containers, and that not all media
 - H.264 (libx264) is by far the best codec - high quality and very fast.
 - VP8 (libvpx) is quite good but also quite slow.
 - Theora (libtheora) isn&apos;t really recommended because the quality isn&apos;t very good.</source>
-        <translation>Кодек који ће бити коришћен за компресовање видео стрима.
-- H.264 (libx264) је далеко најбољи кодек - висок квалитет и веома брз.
-- VP8 (libvpx) је доста добар, али помало спор.
-- Theora (libtheora) није препоручљив због лошег квалитета</translation>
+        <translation>Кодек који ће бити коришћен за сажимање видео тока.
+– H.264 (libx264) је далеко најбољи кодек – висок квалитет и веома брз.
+– VP8 (libvpx) је доста добар, али помало спор.
+– Theora (libtheora) није препоручљив због лошег квалитета.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="261"/>
         <location filename="../GUI/PageOutput.cpp" line="345"/>
         <source>Codec name:</source>
-        <translation>Име кодека:</translation>
+        <translation>Назив кодека:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="267"/>
         <source>For advanced users. You can use any libav/ffmpeg video codec, but many of them are not useful or may not work.</source>
-        <translation>За напредне кориснике. Можете користити било који libav/ffmpeg видео кодек, али многи од њих Вам неће користити или неће радити.</translation>
+        <translation>За напредне кориснике. Можете користити било који „libav/ffmpeg“ видео кодек, али многи од њих нису корисни или неће можда радити.</translation>
     </message>
     <message>
         <source>Bit rate (in kbps):</source>
@@ -1900,63 +1901,63 @@ Note that not all codecs are supported by all containers, and that not all media
     <message>
         <location filename="../GUI/PageOutput.cpp" line="198"/>
         <source>If checked, a separate video file will be created every time you pause and resume the recording.If unchecked, all recorded segments will be combined into a single video file.</source>
-        <translation>Ако је чекиран, засебна видео датотека ће бити креирана сваки пут када паузирате видео и наставите са снимањем.Ако није, сви снимани сегменти ће бити комбиновани у једну видео датотеку.</translation>
+        <translation>Ако је изабрано, биће направљена засебна видео датотека сваки пут када паузирате видео и наставите са снимањем.Ако није изабрано, сви снимљени сегменти биће обједињени у једну видео датотеку.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="200"/>
         <source>Add timestamp</source>
-        <translation>Додај временски одсечак</translation>
+        <translation>Додај временски печат</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="201"/>
         <source>If checked, the current date and time will be appended to the file name automatically.
 If the original file name is &apos;test.mkv&apos;, the video will be saved as &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.</source>
-        <translation>Ако је чекирано, тренутно време и датум ће бити аутоматски накачени у назив датотеке. 
-Ако је оригинално име датотеке 	&apos;test.mkv&apos; , видео ће бити сачуван као &apos;test-YYYY-MM-DD_HH.MM.SS.mkv&apos;.	</translation>
+        <translation>Ако је изабрано, тренутно време и датум биће аутоматски придодати називу датотеке. 
+Ако је изворни назив датотеке „test.mkv“ , видео ће бити сачуван као „test-ГГГГ-ММ-ДД_ЧЧ.ММ.СС.mkv&apos;.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="227"/>
         <source>Warning: This format will produce unreadable files if the recording is interrupted! Consider using MKV instead.</source>
-        <translation type="unfinished"></translation>
+        <translation>Упозорење: Овај формат ће дати нечитљиве датотеке ако се снимање прекине! Боље користите MKV.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="268"/>
         <location filename="../GUI/PageOutput.cpp" line="352"/>
         <source>Bit rate (in kbit/s):</source>
-        <translation>Број бита (у кбит/с)</translation>
+        <translation>Број бита (у kbit/s):</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="270"/>
         <source>The video bit rate (in kilobit per second). A higher value means a higher quality.
 If you have no idea where to start, try 5000 and change it if needed.</source>
-        <translation>Број видео битова  (у килобитима у секунди). Већа вредност значи бољи квалитет.
-Ако не знате где да кренете, пробајте са 5000 и промените ако је потребно.</translation>
+        <translation>Проток видео битова  (у килобитима у секунди). Већа вредност значи бољи квалитет.
+Ако не знате одакле да почнете, пробајте са 5000 и промените ако је потребно.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="272"/>
         <source>Constant rate factor:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation>Constant rate factor:</translation>
+        <translation>Чинилац непроменљивог протока:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="277"/>
         <source>This setting changes the video quality. A lower value means a higher quality.
 The allowed range is 0-51 (0 means lossless, the default is 23).</source>
-        <translation>Ова подешавања мењају квалитет видеа. Мања вредност значи бољи квалитет.
+        <translation>Ово подешавање мења квалитет видеа. Мања вредност значи бољи квалитет.
 Дозвољени опсег је 0-51 (0 означава без губитака, стандардно је 23).</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="283"/>
         <source>Preset:</source>
         <comment>libx264 setting: don&apos;t translate this unless you can come up with something sensible</comment>
-        <translation>Унапред подешено:</translation>
+        <translation>Претподешеност:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="288"/>
         <source>The encoding speed. A higher speed uses less CPU (making higher recording frame rates possible),
 but results in larger files. The quality shouldn&apos;t be affected too much.</source>
-        <translation>Кодирана брзина. Већа брзина мање експолатише процесор (правећи већи број фрејмова),
-али ефекат побољшања квалитета у већим датотекама неће бити толико приметан .</translation>
+        <translation>Брзина кодирања. Већа брзина мање користи процесор (чинећи могућим већи проток кадрова снимања),
+али даје веће датотеке. Квалитет неће бити толико приметан.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="290"/>
@@ -1978,25 +1979,25 @@ but results in larger files. The quality shouldn&apos;t be affected too much.</s
         <location filename="../GUI/PageOutput.cpp" line="298"/>
         <source>The encoding speed. A higher value uses *less* CPU time. (I didn&apos;t choose the name, this is the name
 used by the VP8 encoder). Higher values result in lower quality video, unless you increase the bit rate too.</source>
-        <translation>Кодирана брзина. Виша вредност користи *мање* процесорског времена.
-Више вредности смањују квалитет видеа, осим ако неповећате и број бита.</translation>
+        <translation>Брзина кодирања. Већа вредност користи *мање* процесорског времена.
+Веће вредности смањују квалитет видеа, осим ако неповећате и број бита.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="300"/>
         <location filename="../GUI/PageOutput.cpp" line="355"/>
         <source>Custom options:</source>
-        <translation>Корисничке опције:</translation>
+        <translation>Произвољне опције:</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="302"/>
         <location filename="../GUI/PageOutput.cpp" line="357"/>
         <source>Custom codec options separated by commas (e.g. option1=value1,option2=value2,option3=value3)</source>
-        <translation>Корисничке опције кодека се раздвајају зарезима (нпр. опција1=вредност1,опција2=вредност2,опција3=вредност3)</translation>
+        <translation>Произвољне опције кодека се раздвајају зарезима (нпр. опција1=вредност1,опција2=вредност2,опција3=вредност3)</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="303"/>
         <source>Allow frame skipping</source>
-        <translation>Дозволи прескакање фрејмова</translation>
+        <translation>Дозволи прескакање кадрова</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="304"/>
@@ -2004,10 +2005,10 @@ used by the VP8 encoder). Higher values result in lower quality video, unless yo
 lower than the output frame rate. If not checked, input frames will be duplicated to fill the holes.
 This increases the file size and CPU usage, but reduces the latency for live streams in some cases.
 It shouldn&apos;t affect the appearance of the video.</source>
-        <translation>Ако је чекирано, кодеру ће бити омогућено да прескаче фрејмове ако је улазни број фрејмова
-мањи од излазног броја фрејмова. Ако није чекирано, улазни фрејмови биће дуплирани како би се попуниле рупе.
-Ово повећава величину датотеке и коришћење процесора, али у неким случајевима смањује латенцију приликом лајв стримовања.
-Не би требало да утиче на приказ видеа.</translation>
+        <translation>Ако је изабрано, видео шифреру биће омогућено да прескаче кадрове ако је улазни број кадрова
+мањи од излазног броја кадрова. Ако није изабрано, улазни кадрови биће дуплирани како би попунили празнине.
+Ово повећава величину датотеке и коришћење процесора, али у неким случајевима смањује кашњење приликом стримавања уживо.
+Не би требало да утиче на изглед видеа.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="330"/>
@@ -2024,24 +2025,24 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
 - AAC is a good codec, but the implementations used here (libvo_aacenc or the experimental ffmpeg aac encoder)
    are pretty bad. Only use it if you have no other choice.
 - Uncompressed will simply store the sound data without compressing it. The file will be quite large, but it&apos;s very fast.</source>
-        <translation>Кодек који ће се користи за аудио стрим. Ово неби требало много да вас брине, 
+        <translation>Кодек који ће се користи за аудио ток. Ово не би требало много да вас брине, 
 зато што је величина аудио података занемарљива у поређењу са видео подацима.
-Ако снимате само Ваш глас (нпр. без музике), квалитет свакако није толико битан.
-- Vorbis (libvorbis) је веома истакнут и препоручен кодек.
-- MP3 (libmp3lame) је доста добар.
-- AAC је добар кодек, али имплементација која се користи овде (libvo_aacenc или експерименталния ffmpeg aac)
+Ако снимате само ваш глас (нпр. без музике), квалитет свакако није толико битан.
+– Vorbis (libvorbis) је веома истакнут и препоручен кодек.
+– MP3 (libmp3lame) је доста добар.
+– AAC је добар кодек, али имплементација која се користи овде (libvo_aacenc или експериментални ffmpeg aac)
    је доста лоша. Користите га једино ако немате избора.
-- Без компресије, просто ће сачувати податке без компресије. Датотека ће бити позамашно велика али веома брза.</translation>
+– Без сажимања, просто ће сачувати податке без компресије. Датотека ће бити позамашно велика али веома брза.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="351"/>
         <source>For advanced users. You can use any libav/ffmpeg audio codec, but many of them are not useful or may not work.</source>
-        <translation>За напредније кориснике. Можете да користите било који libav/ffmpeg аудио кодек, али многи од њих Вам неће користити или неће радити.</translation>
+        <translation>За напредније кориснике. Можете да користите било који „libav/ffmpeg“ аудио кодек, али многи од њих  нису корисни или неће радити.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="354"/>
         <source>The audio bit rate (in kilobit per second). A higher value means a higher quality. The typical value is 128.</source>
-        <translation>Број аудио битова ( килобити у секуни). Већа вредност значи бољи квалитет. Типична вредност је 128.</translation>
+        <translation>Проток аудио битова (килобити у секуни). Већа вредност значи бољи квалитет. Уобичајена вредност је 128.</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="379"/>
@@ -2063,7 +2064,7 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
         <location filename="../GUI/PageOutput.cpp" line="639"/>
         <location filename="../GUI/PageOutput.cpp" line="647"/>
         <source>not supported by container</source>
-        <translation>није подржан од стране контејнера</translation>
+        <translation>контејнер га не подржава</translation>
     </message>
     <message>
         <location filename="../GUI/PageOutput.cpp" line="690"/>
@@ -2090,34 +2091,36 @@ And if you&apos;re only recording your own voice (i.e. no music), the quality wo
     <message>
         <location filename="../GUI/PageRecord.cpp" line="182"/>
         <source>Edit schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Уреди заказивање</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="183"/>
         <source>The recording schedule can be used to automatically start or pause the recording at a predefined time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Заказивање снимања се може користити да самостално покрене или паузира снимање у предодређеном времену.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="185"/>
         <source>Enable recording hotkey</source>
-        <translation>Омогући снимање уз помоћ брзих тастера</translation>
+        <translation>Омогући снимање помоћу брзих тастера</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="186"/>
         <source>The recording hotkey is a global keyboard shortcut that can be used to start or pause the recording at any time,
 even when the SimpleScreenRecorder window is not visible. This way you can create recordings without having the
 SimpleScreenRecorder window show up in the final video.</source>
-        <translation type="unfinished"></translation>
+        <translation>Брзи тастер снимања је општа пречица тастатуре која се може користити за покретање или заустављање снимања у било које време,
+чак и када прозор програма није видљив. На овај начин можете да створите снимања а да се прозор Једноставног снимача екрана
+не прикаже у коначном видеу.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="190"/>
         <source>Enable sound notifications</source>
-        <translation>Омогући звучне нотификације</translation>
+        <translation>Омогући звучна обавештења</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="191"/>
         <source>When enabled, a sound will be played when the recording is started or paused, or when an error occurs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Када је укључено, биће пуштен звук када се снимање започне или паузира или када дође до грешке.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="193"/>
@@ -2148,8 +2151,8 @@ SimpleScreenRecorder window show up in the final video.</source>
         <location filename="../GUI/PageRecord.cpp" line="199"/>
         <source>The key that you have to press (combined with the given modifiers) to start or pause recording.
 The program that you are recording will not receive the key press.</source>
-        <translation>Тастер који треба да притиснете (комбинован са датим модификаторима), за покретање или паузирање снимања.
-Програм, који снимамо, неће регистровати притиснути тастер.</translation>
+        <translation>Тастер који треба да притиснете (заједно са датим измењивачима), за покретање или паузирање снимања.
+Програм који снимате неће регистровати притиснути тастер.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="252"/>
@@ -2164,12 +2167,12 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="256"/>
         <source>FPS in:</source>
-        <translation>Улазни FPS:</translation>
+        <translation>Број кадрова/сек. на улазу:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="258"/>
         <source>FPS out:</source>
-        <translation>Излазни FPS:</translation>
+        <translation>Број кадрова/сек. на излазу:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="260"/>
@@ -2184,12 +2187,12 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="264"/>
         <source>File name:</source>
-        <translation>Назив датотеке(фајла):</translation>
+        <translation>Назив датотеке:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="267"/>
         <source>File size:</source>
-        <translation>Величина датотеке(фајла):</translation>
+        <translation>Величина датотеке:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="269"/>
@@ -2199,27 +2202,27 @@ The program that you are recording will not receive the key press.</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="271"/>
         <source>Show recording area</source>
-        <translation type="unfinished"></translation>
+        <translation>Прикажи област снимања</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="272"/>
         <source>When enabled, the recorded area is marked on the screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Када је укључено, област снимања бива означена на екрану.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="297"/>
         <source>Preview</source>
-        <translation>Преглед </translation>
+        <translation>Претпреглед</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="301"/>
         <source>Preview frame rate:</source>
-        <translation>Преглед броја фрејмова:</translation>
+        <translation>Број кадрова претпрегледа:</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="305"/>
         <source>Note: Previewing requires extra CPU time (especially at high frame rates).</source>
-        <translation>Забележи: Преглед захтева додатно процесорско време ( посебно при високом броју фрејмова).</translation>
+        <translation>Напомена: Претпреглед захтева додатно процесорско време ( посебно при великом броју кадрова).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="354"/>
@@ -2247,13 +2250,13 @@ The program that you are recording will not receive the key press.</source>
         <location filename="../GUI/PageRecord.cpp" line="435"/>
         <source>You have not saved the current recording yet, if you quit now it will be lost.
 Are you sure that you want to quit?</source>
-        <translation>Нисте сачували тренутни снимак. Ако сад изађете, снимак ће се изгубити.
-Да ли сте сигурни да желите да изађете?</translation>
+        <translation>Нисте сачували тренутни снимак. Ако сад изађете, снимак ће бити изгубљен.
+Да ли сигурно желите да изађете?</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="447"/>
         <source>Hide window</source>
-        <translation>Сакри прозор</translation>
+        <translation>Сакриј прозор</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="449"/>
@@ -2263,14 +2266,14 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="659"/>
         <source>Starting page ...</source>
-        <translation>Покретање странице</translation>
+        <translation>Покрећем страницу...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="681"/>
         <location filename="../GUI/PageRecord.cpp" line="858"/>
         <location filename="../GUI/PageRecord.cpp" line="961"/>
         <source>Error: Something went wrong during initialization.</source>
-        <translation>Грешка: Нешто се десило приликом иницијализације.</translation>
+        <translation>Грешка: Нешто се десило приликом покретања.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="690"/>
@@ -2282,70 +2285,70 @@ Are you sure that you want to quit?</source>
         <location filename="../GUI/PageRecord.cpp" line="723"/>
         <source>Stopping page ...</source>
         <translatorcomment>Where does this appear? Log only?</translatorcomment>
-        <translation>Заустављање странице ...</translation>
+        <translation>Заустављам страницу ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="793"/>
         <source>Output file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Излазна датотека: %1</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1022"/>
         <source>Encoding remaining data ...</source>
-        <translation>Кодирање преосталих података ...</translation>
+        <translation>Кодирам преостале податке ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1281"/>
         <source>You haven&apos;t recorded anything, there is nothing to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нисте снимили ништа, нема ничега за чување.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1298"/>
         <source>Triggering scheduled action &apos;%1&apos; ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Окидам заказану радњу „%1“ ...</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1309"/>
         <source>Schedule: %1 in %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Заказивање: %1 у %2</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1316"/>
         <source>Schedule: (none)</source>
-        <translation type="unfinished"></translation>
+        <translation>Заказивање: (ништа)</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1320"/>
         <source>Schedule: (inactive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Заказивање: (неактивно)</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1384"/>
         <location filename="../GUI/PageRecord.cpp" line="1401"/>
         <source>Standard input read error (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандардна грешка читања улаза (%1).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1389"/>
         <location filename="../GUI/PageRecord.cpp" line="1406"/>
         <source>Standard input closed (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандардни улаз је затворен (%1).</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1419"/>
         <source>Received command &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Примљена наредба „%1“.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1439"/>
         <source>Unknown command.</source>
-        <translation type="unfinished"></translation>
+        <translation>Непозната наредба.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="750"/>
         <source>Stopped page.</source>
         <translatorcomment>Where does this appear?</translatorcomment>
-        <translation>Заустављена страница.</translation>
+        <translation>Страница је заустављена.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="779"/>
@@ -2355,12 +2358,12 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="804"/>
         <source>Error: Could not get the size of the OpenGL application because the GLInject input has not been created.</source>
-        <translation>Грешка: Не можемо да добијемо величину OpenGL апликације, зато што улаз GLInject није креиран.</translation>
+        <translation>Грешка: Не могу да добавим величину OpenGL апликације, зато што GLInject улаз није створен.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="809"/>
         <source>Error: Could not get the size of the OpenGL application. Either the application wasn&apos;t started correctly, or the application hasn&apos;t created an OpenGL window yet. If you want to start recording before starting the application, you have to enable scaling and enter the video size manually.</source>
-        <translation>Грешка: Не можемо да добијемо величину OpenGL апликације. Или апликација није добро покренута или апликација још увек није креирала OpenGL прозор. Ако желите да снимате пре покретања апликације, треба да омогућите скалирање и ручно унесете резолуцију видеа.</translation>
+        <translation>Грешка: Не могу да добавим величину OpenGL апликације. Или апликација није исправно покренута или апликација још увек није створила OpenGL прозор. Ако желите да снимате пре покретања апликације, треба да омогућите скалирање и да ручно унесете резолуцију видеа.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="848"/>
@@ -2385,12 +2388,12 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="930"/>
         <source>Error: Could not start the GLInject input because it has not been created.</source>
-        <translation>Грешка: Не можемо да покреном GLInject улаз зато што није креиран.</translation>
+        <translation>Грешка: Не могу да покренем GLInject улаз зато што није створен.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="956"/>
         <source>Started input.</source>
-        <translation>Покрени улаз.</translation>
+        <translation>Покренут улаз.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="988"/>
@@ -2400,7 +2403,7 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1006"/>
         <source>Stopped input.</source>
-        <translation>Заустављен улаз</translation>
+        <translation>Заустављен улаз.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1116"/>
@@ -2417,32 +2420,32 @@ Are you sure that you want to quit?</source>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1137"/>
         <source>Deactivate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Заустави заказано</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1147"/>
         <source>Activate schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Покрени заказано</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1156"/>
         <source>Stop preview</source>
-        <translation>Зауставите преглед</translation>
+        <translation>Заустави претпреглед</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1159"/>
         <source>Start preview</source>
-        <translation>Покрените преглед</translation>
+        <translation>Покрени претпреглед</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1200"/>
         <source>Error: Something went wrong while creating the synth.</source>
-        <translation>Грешка: Нешто се десило приликом креирања синта.</translation>
+        <translation>Грешка: Нешто је пошло наопако приликом стварања синтонизације.</translation>
     </message>
     <message>
         <location filename="../GUI/PageRecord.cpp" line="1264"/>
         <source>Are you sure that you want to cancel this recording?</source>
-        <translation>Да ли сте сигурни да желите да прекинете снимање?</translation>
+        <translation>Да ли сигурно желите да откажете снимање?</translation>
     </message>
     <message>
         <source>You haven&apos;t recorded anything, there is nothing to save.
@@ -2465,7 +2468,7 @@ The start button is at the top ;).</source>
 %1&lt;/p&gt;</source>
         <translation>&lt;p&gt;Добро дошли у SimpleScreenRecorder!&lt;/p&gt;
 
-&lt;p&gt;Упркос имену (превод - просто снимање екрана), овај програм има много опција. Ипак немојте да се бринете, има само две ствари које треба да знате. Прво - стандардна подешавања су углавном добра. Ако не знате шта нешто ради, користите подразумевана подешавања. Друго, скоро свака ставка има тултипове. Само пређите мишем преко нечега што Вас занима и сазнајте шта ради.&lt;/p&gt;
+&lt;p&gt;Упркос називу (Једноставан снимач екрана), овај програм има много опција. Ипак без бриге, има само две ствари које треба да знате. Прво, основна подешавања су углавном добра. Ако не знате шта нешто ради, користите подразумевана подешавања. Друго, скоро свака поставка има облачић објашњења. Само пређите мишем преко нечега што вас занима и сазнајте шта ради.&lt;/p&gt;
 
 &lt;p&gt;За више информација:&lt;br&gt;
 %1&lt;/p&gt;</translation>
@@ -2473,22 +2476,22 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="51"/>
         <source>About SimpleScreenRecorder</source>
-        <translation>О SimpleScreenRecorder</translation>
+        <translation>О Једноставном снимачу екрана</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="52"/>
         <source>Skip this page next time</source>
-        <translation type="unfinished"></translation>
+        <translation>Прескочи ову страну следећи пут</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="53"/>
         <source>Go directly to the input page when the program is started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Идите одмах на улазну страну када се покрене програм.</translation>
     </message>
     <message>
         <location filename="../GUI/PageWelcome.cpp" line="76"/>
         <source>Continue</source>
-        <translation>Наставите</translation>
+        <translation>Настави</translation>
     </message>
 </context>
 <context>
@@ -2510,17 +2513,17 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="39"/>
         <source>New</source>
-        <translation>Нов</translation>
+        <translation>Нови</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="40"/>
         <source>Create a new profile with the current settings.</source>
-        <translation>Креирајте профил са текућим подешавањима.</translation>
+        <translation>Направите нови профил са текућим подешавањима.</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="41"/>
         <source>Delete</source>
-        <translation>Избришите</translation>
+        <translation>Избриши</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="42"/>
@@ -2530,32 +2533,32 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="96"/>
         <source>(none)</source>
-        <translation>(без)</translation>
+        <translation>(ништа)</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="139"/>
         <source>Error: Can&apos;t load profile!</source>
-        <translation>Грешка: Не можемо да учитамо профил!</translation>
+        <translation>Грешка: Не могу да учитам профил!</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="147"/>
         <source>Are you sure that you want to overwrite this profile?</source>
-        <translation>Да ли сте сигурни да желите да прегазите овај профил?</translation>
+        <translation>Да ли сигурно желите да препишете овај профил?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="159"/>
         <source>Enter a name for the new profile:</source>
-        <translation> Упишите име за нови профил:</translation>
+        <translation>Упишите име за нови профил:</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="165"/>
         <source>A profile with the same name already exists. Are you sure that you want to replace it?</source>
-        <translation>Профил са овим именом већ постоји. Да ли сте сигурни да желите да га прегазите?</translation>
+        <translation>Профил са овим именом већ постоји. Да ли сигурно желите да га замените?</translation>
     </message>
     <message>
         <location filename="../GUI/ProfileBox.cpp" line="181"/>
         <source>Are you sure that you want to delete this profile?</source>
-        <translation>Да ли сте сигурни да желите да избришете профил?</translation>
+        <translation>Да ли сигурно желите да избришете овај профил?</translation>
     </message>
 </context>
 <context>
@@ -2625,22 +2628,22 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="39"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Почни</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="40"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Застани</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="46"/>
         <source>Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Време:</translation>
     </message>
     <message>
         <location filename="../GUI/DialogRecordSchedule.cpp" line="51"/>
         <source>Action:</source>
-        <translation type="unfinished"></translation>
+        <translation>Радња:</translation>
     </message>
 </context>
 <context>
@@ -2648,7 +2651,7 @@ The start button is at the top ;).</source>
     <message>
         <location filename="../AV/Output/SyncDiagram.cpp" line="50"/>
         <source>Synchronization Diagram</source>
-        <translation>Синхронизација диаграма</translation>
+        <translation>Дијаграм синхронизације</translation>
     </message>
     <message>
         <location filename="../AV/Output/Synchronizer.cpp" line="257"/>
