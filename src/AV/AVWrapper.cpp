@@ -145,7 +145,8 @@ bool AVCodecIsInstalled(const QString& codec_name) {
 }
 
 bool AVCodecSupportsPixelFormat(const AVCodec* codec, AVPixelFormat pixel_fmt) {
-	const AVPixelFormat *p = codec->pix_fmts;
+	const AVPixelFormat *p;
+	avcodec_get_supported_config(NULL, codec, AV_CODEC_CONFIG_PIX_FORMAT, 0, (const void**) &p, NULL);
 	if(p == NULL)
 		return true; // NULL means 'unknown' or 'any', assume it is supported
 	while(*p != AV_PIX_FMT_NONE) {
@@ -157,7 +158,8 @@ bool AVCodecSupportsPixelFormat(const AVCodec* codec, AVPixelFormat pixel_fmt) {
 }
 
 bool AVCodecSupportsSampleFormat(const AVCodec* codec, AVSampleFormat sample_fmt) {
-	const AVSampleFormat *p = codec->sample_fmts;
+	const AVSampleFormat *p;
+	avcodec_get_supported_config(NULL, codec, AV_CODEC_CONFIG_SAMPLE_FORMAT, 0, (const void**) &p, NULL);
 	if(p == NULL)
 		return true; // NULL means 'unknown' or 'any', assume it is supported
 	while(*p != AV_SAMPLE_FMT_NONE) {
