@@ -144,6 +144,7 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 	codec_context->sample_aspect_ratio.num = 1;
 	codec_context->sample_aspect_ratio.den = 1;
 	stream->sample_aspect_ratio = codec_context->sample_aspect_ratio;
+	const bool is_libx265 = (codec != NULL && QString(codec->name) == "libx265");
 	codec_context->thread_count = std::max(1, (int) std::thread::hardware_concurrency());
 
 	// parse options
@@ -176,6 +177,10 @@ void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context
 		} else {
 			av_dict_set(options, key.toUtf8().constData(), value.toUtf8().constData(), 0);
 		}
+	}
+	if(is_libx265 && codec_context->thread_count > 8) {
+		Logger::LogInfo("[VideoEncoder::PrepareStream] " + Logger::tr("Limiting libx265 frame threads to %1.").arg(8));
+		codec_context->thread_count = 8;
 	}
 
 	// choose the pixel format

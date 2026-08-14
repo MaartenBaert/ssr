@@ -51,8 +51,13 @@ private:
 	double m_fps_current;
 
 	pw_main_loop *m_loop;
+	pw_thread_loop *m_thread_loop;
+	pw_context *m_context;
+	pw_core *m_core;
 	pw_stream_events m_stream_events;
 	pw_stream *m_stream;
+	bool m_stream_connected;
+	bool m_owns_connection;
 	spa_hook m_stream_listener;
 	std::vector<PipeWireBuffer> m_pw_buffers;
 

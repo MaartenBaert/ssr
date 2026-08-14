@@ -29,6 +29,32 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <spa/pod/builder.h>
 #include <spa/utils/result.h>
 
+#include <cerrno>
+#include <cstdlib>
+#include <unistd.h>
+
+namespace {
+
+pw_thread_loop *g_portal_thread_loop = nullptr;
+pw_context *g_portal_context = nullptr;
+pw_core *g_portal_core = nullptr;
+
+class PipeWireThreadLoopLock {
+public:
+	explicit PipeWireThreadLoopLock(pw_thread_loop *loop) : m_loop(loop) {
+		if(m_loop)
+			pw_thread_loop_lock(m_loop);
+	}
+	~PipeWireThreadLoopLock() {
+		if(m_loop)
+			pw_thread_loop_unlock(m_loop);
+	}
+private:
+	pw_thread_loop *m_loop;
+};
+
+}
+
 PipeWireInput::PipeWireInput(const QString& node_id, unsigned int width, unsigned int height, unsigned int frame_rate) {
 
 	m_node_id = node_id;
@@ -40,7 +66,12 @@ PipeWireInput::PipeWireInput(const QString& node_id, unsigned int width, unsigne
 	m_buffers = 4;
 
 	m_loop = nullptr;
+	m_thread_loop = nullptr;
+	m_context = nullptr;
+	m_core = nullptr;
 	m_stream = nullptr;
+	m_stream_connected = false;
+	m_owns_connection = true;
 
 	if(m_width == 0 || m_height == 0) {
 		Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Width or height is zero!"));
@@ -100,9 +131,72 @@ void PipeWireInput::Init() {
 
 	pw_init(nullptr, nullptr);
 
-	m_loop = pw_main_loop_new(nullptr);
-	if(!m_loop) {
-		Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to create main loop!"));
+	const char *remote_fd_env = std::getenv("SSR_PIPEWIRE_REMOTE_FD");
+	if(remote_fd_env != nullptr && remote_fd_env[0] != '\0') {
+		if(!g_portal_core) {
+			m_thread_loop = pw_thread_loop_new("ssr-portal-pipewire", nullptr);
+			if(!m_thread_loop) {
+				Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to create PipeWire thread loop!"));
+				throw PipeWireException();
+			}
+
+			m_context = pw_context_new(pw_thread_loop_get_loop(m_thread_loop), nullptr, 0);
+			if(!m_context) {
+				Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to create PipeWire context!"));
+				throw PipeWireException();
+			}
+
+			char *end = nullptr;
+			errno = 0;
+			long remote_fd = std::strtol(remote_fd_env, &end, 10);
+			if(errno != 0 || end == remote_fd_env || *end != '\0' || remote_fd < 0 || remote_fd > INT_MAX) {
+				Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Invalid PipeWire portal remote fd!"));
+				throw PipeWireException();
+			}
+			int remote_fd_copy = dup((int) remote_fd);
+			if(remote_fd_copy < 0) {
+				Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to duplicate PipeWire portal remote fd!"));
+				throw PipeWireException();
+			}
+			Logger::LogInfo("[PipeWireInput::Init] " + Logger::tr("Using PipeWire portal remote fd."));
+			m_core = pw_context_connect_fd(m_context, remote_fd_copy, nullptr, 0);
+			if(!m_core) {
+				Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to connect to PipeWire!"));
+				throw PipeWireException();
+			}
+			int result = pw_thread_loop_start(m_thread_loop);
+			if(result < 0) {
+				Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to start PipeWire thread loop: %1").arg(spa_strerror(result)));
+				throw PipeWireException();
+			}
+			m_owns_connection = false;
+			g_portal_thread_loop = m_thread_loop;
+			g_portal_context = m_context;
+			g_portal_core = m_core;
+		} else {
+			m_owns_connection = false;
+			Logger::LogInfo("[PipeWireInput::Init] " + Logger::tr("Reusing PipeWire portal remote connection."));
+			m_thread_loop = g_portal_thread_loop;
+			m_context = g_portal_context;
+			m_core = g_portal_core;
+		}
+	} else {
+		m_loop = pw_main_loop_new(nullptr);
+		if(!m_loop) {
+			Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to create main loop!"));
+			throw PipeWireException();
+		}
+
+		m_context = pw_context_new(pw_main_loop_get_loop(m_loop), nullptr, 0);
+		if(!m_context) {
+			Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to create PipeWire context!"));
+			throw PipeWireException();
+		}
+
+		m_core = pw_context_connect(m_context, nullptr, 0);
+	}
+	if(!m_core) {
+		Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to connect to PipeWire!"));
 		throw PipeWireException();
 	}
 
@@ -110,21 +204,6 @@ void PipeWireInput::Init() {
 	m_stream_events.version = PW_VERSION_STREAM_EVENTS;
 	m_stream_events.process = &PipeWireInput::OnProcess;
 	m_stream_events.param_changed = &PipeWireInput::OnParamChange;
-
-	m_stream = pw_stream_new_simple(
-		pw_main_loop_get_loop(m_loop),
-		"SimpleScreenRecorder",
-		pw_properties_new(
-			PW_KEY_MEDIA_TYPE, "Video",
-			PW_KEY_MEDIA_CATEGORY, "Capture",
-			nullptr), // TODO memory leak?
-		&m_stream_events,
-		this);
-
-	if(!m_stream) {
-		Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to create stream!"));
-		throw PipeWireException();
-	}
 
 	// pw_properties_set(props, PW_KEY_TARGET_OBJECT, argv[1]); // TODO
 
@@ -159,15 +238,34 @@ void PipeWireInput::Init() {
 		SPA_FORMAT_VIDEO_size, SPA_POD_CHOICE_RANGE_Rectangle(&temp_size, &temp_size_min, &temp_size_max),
 		SPA_FORMAT_VIDEO_framerate, SPA_POD_CHOICE_RANGE_Fraction(&temp_framerate, &temp_framerate_min, &temp_framerate_max));
 
-	int res = pw_stream_connect(m_stream,
-		PW_DIRECTION_INPUT,
-		pw_properties_parse_int(m_node_id.toUtf8().constData()),
-		(pw_stream_flags) (PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_MAP_BUFFERS),
-		params, 1);
-	if(res != 0) {
-		Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to connect stream!"));
-		throw PipeWireException();
+	{
+		PipeWireThreadLoopLock lock(m_thread_loop);
+
+		m_stream = pw_stream_new(
+			m_core,
+			"SimpleScreenRecorder",
+			pw_properties_new(
+				PW_KEY_MEDIA_TYPE, "Video",
+				PW_KEY_MEDIA_CATEGORY, "Capture",
+				nullptr)); // TODO memory leak?
+
+		if(!m_stream) {
+			Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to create stream!"));
+			throw PipeWireException();
+		}
+		pw_stream_add_listener(m_stream, &m_stream_listener, &m_stream_events, this);
+
+		int res = pw_stream_connect(m_stream,
+			PW_DIRECTION_INPUT,
+			pw_properties_parse_int(m_node_id.toUtf8().constData()),
+			(pw_stream_flags) (PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_MAP_BUFFERS),
+			params, 1);
+		if(res != 0) {
+			Logger::LogError("[PipeWireInput::Init] " + Logger::tr("Error: Failed to connect stream!"));
+			throw PipeWireException();
+		}
 	}
+	m_stream_connected = true;
 
 	// initialize frame counter
 	m_frame_counter = 0;
@@ -178,20 +276,87 @@ void PipeWireInput::Init() {
 	// start input thread
 	m_should_stop = false;
 	m_error_occurred = false;
-	m_thread = std::thread(&PipeWireInput::InputThread, this);
+	if(!m_thread_loop)
+		m_thread = std::thread(&PipeWireInput::InputThread, this);
 
 }
 
 void PipeWireInput::Free() {
 	if(m_stream) {
-		pw_stream_destroy(m_stream);
-		m_stream = nullptr;
+		if(m_thread_loop) {
+			PipeWireThreadLoopLock lock(m_thread_loop);
+			if(m_stream_connected) {
+				Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Disconnecting PipeWire stream ..."));
+				int res = pw_stream_disconnect(m_stream);
+				if(res < 0) {
+					Logger::LogWarning("[PipeWireInput::Free] " + Logger::tr("Warning: Failed to disconnect PipeWire stream: %1").arg(spa_strerror(res)));
+				}
+				m_stream_connected = false;
+				Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Disconnected PipeWire stream."));
+			}
+			Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Destroying PipeWire stream ..."));
+			pw_stream_destroy(m_stream);
+			m_stream = nullptr;
+			Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Destroyed PipeWire stream."));
+		} else {
+			if(m_stream_connected) {
+				Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Disconnecting PipeWire stream ..."));
+				int res = pw_stream_disconnect(m_stream);
+				if(res < 0) {
+					Logger::LogWarning("[PipeWireInput::Free] " + Logger::tr("Warning: Failed to disconnect PipeWire stream: %1").arg(spa_strerror(res)));
+				}
+				m_stream_connected = false;
+				Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Disconnected PipeWire stream."));
+			}
+			Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Destroying PipeWire stream ..."));
+			pw_stream_destroy(m_stream);
+			m_stream = nullptr;
+			Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Destroyed PipeWire stream."));
+		}
+	}
+	if(m_thread_loop) {
+		if(m_owns_connection) {
+			{
+				PipeWireThreadLoopLock lock(m_thread_loop);
+				if(m_core) {
+					Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Disconnecting PipeWire core ..."));
+					pw_core_disconnect(m_core);
+					m_core = nullptr;
+					Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Disconnected PipeWire core."));
+				}
+				if(m_context) {
+					Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Destroying PipeWire context ..."));
+					pw_context_destroy(m_context);
+					m_context = nullptr;
+					Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Destroyed PipeWire context."));
+				}
+			}
+			pw_thread_loop_stop(m_thread_loop);
+			pw_thread_loop_destroy(m_thread_loop);
+		}
+		m_core = nullptr;
+		m_context = nullptr;
+		m_thread_loop = nullptr;
+		return;
+	}
+	if(m_core) {
+		Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Disconnecting PipeWire core ..."));
+		pw_core_disconnect(m_core);
+		m_core = nullptr;
+		Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Disconnected PipeWire core."));
+	}
+	if(m_context) {
+		Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Destroying PipeWire context ..."));
+		pw_context_destroy(m_context);
+		m_context = nullptr;
+		Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Destroyed PipeWire context."));
 	}
 	if(m_loop) {
+		Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Destroying PipeWire main loop ..."));
 		pw_main_loop_destroy(m_loop);
 		m_loop = nullptr;
+		Logger::LogInfo("[PipeWireInput::Free] " + Logger::tr("Destroyed PipeWire main loop."));
 	}
-	pw_deinit();
 }
 
 void PipeWireInput::InputThread() {
@@ -208,6 +373,27 @@ void PipeWireInput::InputThread() {
 			} else if(result == 0) {
 				PushVideoPing(hrt_time_micro() - 100000);
 			}
+		}
+
+		if(m_stream && m_stream_connected) {
+			Logger::LogInfo("[PipeWireInput::InputThread] " + Logger::tr("Disconnecting PipeWire stream ..."));
+			int result = pw_stream_disconnect(m_stream);
+			if(result < 0) {
+				Logger::LogWarning("[PipeWireInput::InputThread] " + Logger::tr("Warning: Failed to disconnect PipeWire stream: %1").arg(spa_strerror(result)));
+			}
+			m_stream_connected = false;
+			for(unsigned int i = 0; i < 5; ++i) {
+				result = pw_loop_iterate(loop, 0);
+				if(result < 0)
+					break;
+			}
+			Logger::LogInfo("[PipeWireInput::InputThread] " + Logger::tr("Disconnected PipeWire stream."));
+		}
+		if(m_stream) {
+			Logger::LogInfo("[PipeWireInput::InputThread] " + Logger::tr("Destroying PipeWire stream ..."));
+			pw_stream_destroy(m_stream);
+			m_stream = nullptr;
+			Logger::LogInfo("[PipeWireInput::InputThread] " + Logger::tr("Destroyed PipeWire stream."));
 		}
 
 		Logger::LogInfo("[PipeWireInput::InputThread] " + Logger::tr("Input thread stopped."));

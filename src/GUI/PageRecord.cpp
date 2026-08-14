@@ -825,6 +825,12 @@ void PageRecord::StartOutput() {
 			if(m_x11_input != NULL)
 				m_x11_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 
+#if SSR_USE_PIPEWIRE
+			// for PipeWire recording, update the video size after format negotiation
+			if(m_pipewire_input != NULL)
+				m_pipewire_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+#endif
+
 #if SSR_USE_OPENGL_RECORDING
 			// for OpenGL recording, detect the video size
 			if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT && !m_video_scaling) {
@@ -1533,6 +1539,11 @@ void PageRecord::OnUpdateInformation() {
 		// for OpenGL recording, update the video size
 		if(m_gl_inject_input != NULL)
 			m_gl_inject_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+#endif
+#if SSR_USE_PIPEWIRE
+		// for PipeWire recording, update the video size
+		if(m_pipewire_input != NULL)
+			m_pipewire_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 #endif
 
 		m_label_info_total_time->setText(ReadableTime(total_time));
