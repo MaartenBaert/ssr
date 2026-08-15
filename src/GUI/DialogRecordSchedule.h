@@ -64,9 +64,9 @@ public:
 	~RecordScheduleEntryWidget();
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-	inline void Print(const QString& str) { qDebug() << "timezone" << str << m_datetimeedit_time->dateTime() << m_datetimeedit_time->timeZone(); }
-	inline void SetTimeZone(QTimeZone spec) { m_datetimeedit_time->setTimeZone(spec); m_datetimeedit_time->setDateTime(m_datetimeedit_time->dateTime()); }
-	inline void SetTime(const QDateTime& time) { m_datetimeedit_time->setTimeZone(time.timeZone()); m_datetimeedit_time->setDateTime(time); }
+	inline void Print(const QString& str) { qDebug() << "timezone" << str << m_datetimeedit_time->dateTime() << m_datetimeedit_time->dateTime().timeZone(); }
+	inline void SetTimeZone(const QTimeZone& zone) { QDateTime dt = m_datetimeedit_time->dateTime(); dt.setTimeZone(zone); m_datetimeedit_time->setDateTime(dt); }
+	inline void SetTime(const QDateTime& time) { m_datetimeedit_time->setDateTime(time); }
 #else
 	inline void Print(const QString& str) { qDebug() << "timespec" << str << m_datetimeedit_time->dateTime() << m_datetimeedit_time->timeSpec(); }
 	inline void SetTimeSpec(Qt::TimeSpec spec) { m_datetimeedit_time->setTimeSpec(spec); m_datetimeedit_time->setDateTime(m_datetimeedit_time->dateTime()); }

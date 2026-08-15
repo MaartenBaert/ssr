@@ -33,8 +33,8 @@ ENUMSTRINGS(enum_schedule_action) = {
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 const QTimeZone SCHEDULE_TIME_ZONE_QTIMEZONES[SCHEDULE_TIME_ZONE_COUNT] = {
-	QTimeZone::LocalTime,
-	QTimeZone::UTC,
+	QTimeZone::systemTimeZone(),
+	QTimeZone::utc(),
 };
 #else
 const Qt::TimeSpec SCHEDULE_TIME_ZONE_QTIMESPECS[SCHEDULE_TIME_ZONE_COUNT] = {
