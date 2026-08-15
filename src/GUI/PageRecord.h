@@ -208,6 +208,7 @@ private:
 public:
 	inline enum_schedule_time_zone GetScheduleTimeZone() { return m_schedule_time_zone; }
 	inline std::vector<ScheduleEntry> GetScheduleEntries() { return m_schedule_entries; }
+	inline bool IsScheduleActive() { return m_schedule_active; }
 	inline bool IsHotkeyEnabled() { return m_checkbox_hotkey_enable->isChecked(); }
 	inline bool IsHotkeyCtrlEnabled() { return m_checkbox_hotkey_ctrl->isChecked(); }
 	inline bool IsHotkeyShiftEnabled() { return m_checkbox_hotkey_shift->isChecked(); }

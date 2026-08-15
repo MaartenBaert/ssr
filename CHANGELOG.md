@@ -4,7 +4,11 @@ SimpleScreenRecorder changes
 Git master
 ----------
 
-- ?
+- Added visual validation to recording schedule with red highlighting for invalid dates.
+- Schedule dates now highlight in red when in the past, more than 4 weeks in the future, or not in chronological order.
+- Added validation on schedule close to prevent invalid configurations.
+- Schedule now allows editing while recording is active without warnings about past dates.
+- Improved schedule validation to only check past dates when schedule is inactive.
 
 Version 0.4.4
 -------------

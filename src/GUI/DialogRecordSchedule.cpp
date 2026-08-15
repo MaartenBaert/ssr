@@ -72,8 +72,29 @@ RecordScheduleEntryWidget::RecordScheduleEntryWidget(QWidget* parent)
 
 }
 
+QDateTimeEdit* RecordScheduleEntryWidget::GetDateTimeEdit() {
+	return m_datetimeedit_time;
+}
+
 RecordScheduleEntryWidget::~RecordScheduleEntryWidget() {
 	// nothing
+}
+
+void RecordScheduleEntryWidget::UpdateValidation(const QDateTime& current_time, bool is_valid) {
+	QDateTime entry_time = m_datetimeedit_time->dateTime();
+	qint64 secs_diff = current_time.secsTo(entry_time);
+	
+	// Check if in past or more than 4 weeks in future
+	bool is_invalid = (secs_diff < 0) || (secs_diff > 4 * 7 * 24 * 60 * 60);
+	
+	// Also mark invalid if the parent says it's not in chronological order
+	is_invalid = is_invalid || !is_valid;
+	
+	if(is_invalid) {
+		m_datetimeedit_time->setStyleSheet("QDateTimeEdit { background-color: #ffcccc; }");
+	} else {
+		m_datetimeedit_time->setStyleSheet("");
+	}
 }
 
 DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
@@ -103,6 +124,7 @@ DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
 			RecordScheduleEntryWidget *widget = new RecordScheduleEntryWidget(m_widgetrack_schedule->viewport());
 			widget->SetTime(schedule[i].time);
 			widget->SetAction(schedule[i].action);
+			connect(widget->GetDateTimeEdit(), SIGNAL(dateTimeChanged(const QDateTime&)), this, SLOT(OnDateTimeChanged()));
 			m_widgetrack_schedule->AddWidget(i, widget);
 		}
 	}
@@ -120,9 +142,7 @@ DialogRecordSchedule::DialogRecordSchedule(PageRecord* parent)
 	connect(pushbutton_remove, SIGNAL(clicked()), this, SLOT(OnRemove()));
 	connect(pushbutton_move_up, SIGNAL(clicked()), this, SLOT(OnMoveUp()));
 	connect(pushbutton_move_down, SIGNAL(clicked()), this, SLOT(OnMoveDown()));
-	connect(pushbutton_close, SIGNAL(clicked()), this, SLOT(accept()));
-	connect(this, SIGNAL(accepted()), this, SLOT(OnWriteBack()));
-	connect(this, SIGNAL(rejected()), this, SLOT(OnWriteBack()));
+	connect(pushbutton_close, SIGNAL(clicked()), this, SLOT(OnClose()));
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	{
@@ -198,6 +218,8 @@ void DialogRecordSchedule::OnUpdateTime() {
 #endif
 	m_clock_time = m_clock_time.addSecs(1);
 	m_timer_clock->start(now.msecsTo(m_clock_time));
+	
+	UpdateAllValidations();
 }
 
 void DialogRecordSchedule::OnAdd() {
@@ -220,9 +242,11 @@ void DialogRecordSchedule::OnAdd() {
 	} else {
 		widget->SetTime(static_cast<RecordScheduleEntryWidget*>(m_widgetrack_schedule->GetWidget(selected))->GetTime());
 	}
+	connect(widget->GetDateTimeEdit(), SIGNAL(dateTimeChanged(const QDateTime&)), this, SLOT(OnDateTimeChanged()));
 	m_widgetrack_schedule->AddWidget(index, widget);
 	m_widgetrack_schedule->SetSelected(index);
 	m_widgetrack_schedule->MakeVisible(widget);
+	UpdateAllValidations();
 }
 
 void DialogRecordSchedule::OnRemove() {
@@ -234,6 +258,7 @@ void DialogRecordSchedule::OnRemove() {
 		} else if(m_widgetrack_schedule->GetWidgetCount() != 0) {
 			m_widgetrack_schedule->SetSelected(m_widgetrack_schedule->GetWidgetCount() - 1);
 		}
+		UpdateAllValidations();
 	}
 }
 
@@ -242,6 +267,7 @@ void DialogRecordSchedule::OnMoveUp() {
 	if(selected != WidgetRack::NO_SELECTION && selected > 0) {
 		m_widgetrack_schedule->MoveWidget(selected, selected - 1);
 		m_widgetrack_schedule->MakeVisible(m_widgetrack_schedule->GetWidget(selected - 1));
+		UpdateAllValidations();
 	}
 }
 
@@ -250,10 +276,35 @@ void DialogRecordSchedule::OnMoveDown() {
 	if(selected != WidgetRack::NO_SELECTION && selected < m_widgetrack_schedule->GetWidgetCount() - 1) {
 		m_widgetrack_schedule->MoveWidget(selected, selected + 1);
 		m_widgetrack_schedule->MakeVisible(m_widgetrack_schedule->GetWidget(selected + 1));
+		UpdateAllValidations();
 	}
 }
 
-void DialogRecordSchedule::OnWriteBack() {
+void DialogRecordSchedule::OnClose() {
+	// Validate the schedule
+	QString error_message;
+	int validation_result = ValidateSchedule(error_message);
+	
+	// validation_result: 0 = error (past/chronological/cancelled), 1 = success
+	if(validation_result == 0) {
+		// Show error if there's a message
+		if(!error_message.isEmpty()) {
+			QMessageBox::warning(this, tr("Recording schedule"), error_message);
+		}
+		// Write back data and close
+		m_parent->SetScheduleTimeZone((enum_schedule_time_zone) m_combobox_timezone->currentIndex());
+		std::vector<ScheduleEntry> schedule(m_widgetrack_schedule->GetWidgetCount());
+		for(unsigned int i = 0; i < m_widgetrack_schedule->GetWidgetCount(); ++i) {
+			RecordScheduleEntryWidget *widget = static_cast<RecordScheduleEntryWidget*>(m_widgetrack_schedule->GetWidget(i));
+			schedule[i].time = widget->GetTime();
+			schedule[i].action = widget->GetAction();
+		}
+		m_parent->SetScheduleEntries(schedule);
+		accept();
+		return;
+	}
+	
+	// Write back data
 	m_parent->SetScheduleTimeZone((enum_schedule_time_zone) m_combobox_timezone->currentIndex());
 	std::vector<ScheduleEntry> schedule(m_widgetrack_schedule->GetWidgetCount());
 	for(unsigned int i = 0; i < m_widgetrack_schedule->GetWidgetCount(); ++i) {
@@ -262,4 +313,97 @@ void DialogRecordSchedule::OnWriteBack() {
 		schedule[i].action = widget->GetAction();
 	}
 	m_parent->SetScheduleEntries(schedule);
+	accept();
+}
+
+void DialogRecordSchedule::OnDateTimeChanged() {
+	UpdateAllValidations();
+}
+
+void DialogRecordSchedule::UpdateAllValidations() {
+	QDateTime now = QDateTime::currentDateTimeUtc();
+	
+	for(unsigned int i = 0; i < m_widgetrack_schedule->GetWidgetCount(); ++i) {
+		RecordScheduleEntryWidget *widget = static_cast<RecordScheduleEntryWidget*>(m_widgetrack_schedule->GetWidget(i));
+		QDateTime entry_time = widget->GetTime();
+		
+		// Check if this entry is in chronological order
+		bool is_valid = true;
+		if(i > 0) {
+			RecordScheduleEntryWidget *prev_widget = static_cast<RecordScheduleEntryWidget*>(m_widgetrack_schedule->GetWidget(i - 1));
+			QDateTime prev_time = prev_widget->GetTime();
+			if(entry_time <= prev_time) {
+				is_valid = false;
+			}
+		}
+		
+		widget->UpdateValidation(now, is_valid);
+	}
+}
+
+int DialogRecordSchedule::ValidateSchedule(QString& error_message) {
+	QDateTime now = QDateTime::currentDateTimeUtc();
+	bool has_past_dates = false;
+	bool has_chronological_issues = false;
+	bool has_far_future_dates = false;
+	
+	// Check if schedule is currently active
+	bool schedule_is_active = m_parent->IsScheduleActive();
+	
+	for(unsigned int i = 0; i < m_widgetrack_schedule->GetWidgetCount(); ++i) {
+		RecordScheduleEntryWidget *widget = static_cast<RecordScheduleEntryWidget*>(m_widgetrack_schedule->GetWidget(i));
+		QDateTime entry_time = widget->GetTime();
+		
+		qint64 secs_diff = now.secsTo(entry_time);
+		
+		// Check if in past (only if schedule is not active)
+		if(!schedule_is_active && secs_diff < 0) {
+			has_past_dates = true;
+		}
+		
+		// Check if more than 4 weeks in future
+		if(secs_diff > 4 * 7 * 24 * 60 * 60) {
+			has_far_future_dates = true;
+		}
+		
+		// Check chronological order
+		if(i > 0) {
+			RecordScheduleEntryWidget *prev_widget = static_cast<RecordScheduleEntryWidget*>(m_widgetrack_schedule->GetWidget(i - 1));
+			QDateTime prev_time = prev_widget->GetTime();
+			if(entry_time <= prev_time) {
+				has_chronological_issues = true;
+			}
+		}
+	}
+	
+	// Check for critical errors first
+	if(has_past_dates || has_chronological_issues) {
+		if(has_past_dates && has_chronological_issues) {
+			error_message = tr("There are dates in the past and dates are not in chronological order.");
+		} else if(has_past_dates) {
+			error_message = tr("There are dates in the past.");
+		} else {
+			error_message = tr("Dates are not in chronological order.");
+		}
+		return 0; // Error
+	}
+	
+	// Check for warning about far future dates
+	if(has_far_future_dates) {
+		QMessageBox::StandardButton reply = QMessageBox::question(
+			this,
+			tr("Recording schedule"),
+			tr("Some dates are more than four weeks in the future. Are you sure this is correct?"),
+			QMessageBox::Yes | QMessageBox::No
+		);
+		if(reply == QMessageBox::Yes) {
+			return 1; // Success
+		} else {
+			// User clicked No, don't save and don't show additional error
+			error_message = "";
+			return 0; // User cancelled
+		}
+	}
+	
+	return 1; // Success
 }
