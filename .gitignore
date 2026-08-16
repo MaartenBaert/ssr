@@ -29,3 +29,7 @@ src/simplescreenrecorder
 
 private-*
 .vscode
+
+# Build artifacts and local notes
+*.deb
+How to install.txt

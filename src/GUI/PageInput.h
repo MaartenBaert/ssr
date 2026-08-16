@@ -121,6 +121,8 @@ public:
 		VIDEO_X11_AREA_SCREEN,
 		VIDEO_X11_AREA_FIXED,
 		VIDEO_X11_AREA_CURSOR,
+		VIDEO_X11_AREA_ACTIVE_WINDOW,
+		VIDEO_X11_AREA_WINDOW_UNDER_CURSOR,
 		VIDEO_X11_AREA_COUNT // must be last
 	};
 	enum enum_audio_backend {
@@ -165,8 +167,10 @@ private:
 
 	QComboBox *m_combobox_video_backend;
 	QButtonGroup *m_buttongroup_video_x11_area;
-	QRadioButton *m_radio_area_screen, *m_radio_area_fixed, *m_radio_area_cursor;
+	QRadioButton *m_radio_area_screen, *m_radio_area_fixed, *m_radio_area_cursor, *m_radio_area_active_window, *m_radio_area_window_under_cursor;
 	QComboBoxWithSignal *m_combobox_x11_screens;
+	QLabel *m_label_video_x11_screen_follow;
+	QComboBox *m_combobox_x11_screens_follow;
 	QCheckBox *m_checkbox_video_x11_follow_fullscreen;
 	QPushButton *m_pushbutton_video_x11_select_rectangle, *m_pushbutton_video_x11_select_window;
 	QLabel *m_label_video_x11_x, *m_label_video_x11_y, *m_label_video_x11_width, *m_label_video_x11_height;
@@ -291,6 +295,7 @@ public:
 	inline enum_video_backend GetVideoBackend() { return (enum_video_backend) clamp(m_combobox_video_backend->currentIndex(), 0, VIDEO_BACKEND_COUNT - 1); }
 	inline enum_video_x11_area GetVideoX11Area() { return (enum_video_x11_area) clamp(m_buttongroup_video_x11_area->checkedId(), 0, VIDEO_X11_AREA_COUNT - 1); }
 	inline unsigned int GetVideoX11Screen() { return m_combobox_x11_screens->currentIndex(); }
+	inline unsigned int GetVideoX11ScreenFollow() { return m_combobox_x11_screens_follow->currentIndex(); }
 	inline bool GetVideoX11FollowFullscreen() { return m_checkbox_video_x11_follow_fullscreen->isChecked(); }
 	inline unsigned int GetVideoX11X() { return m_spinbox_video_x11_x->value(); }
 	inline unsigned int GetVideoX11Y() { return m_spinbox_video_x11_y->value(); }
@@ -336,6 +341,7 @@ public:
 	inline void SetVideoBackend(enum_video_backend backend) { m_combobox_video_backend->setCurrentIndex(clamp((int) backend, 0, VIDEO_BACKEND_COUNT - 1)); }
 	inline void SetVideoX11Area(enum_video_x11_area area) { QAbstractButton *b = m_buttongroup_video_x11_area->button(area); if(b != NULL) b->setChecked(true); }
 	inline void SetVideoX11Screen(unsigned int screen) { m_combobox_x11_screens->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_x11_screens->count() - 1)); }
+	inline void SetVideoX11ScreenFollow(unsigned int screen) { m_combobox_x11_screens_follow->setCurrentIndex(clamp(screen, 0u, (unsigned int) m_combobox_x11_screens_follow->count() - 1)); }
 	inline void SetVideoX11FollowFullscreen(bool follow_fulscreen) { m_checkbox_video_x11_follow_fullscreen->setChecked(follow_fulscreen); }
 	inline void SetVideoX11X(unsigned int x) { m_spinbox_video_x11_x->setValue(x); }
 	inline void SetVideoX11Y(unsigned int y) { m_spinbox_video_x11_y->setValue(y); }

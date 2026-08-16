@@ -2,5 +2,6 @@
 	<qresource prefix="/">
 		<file>header.png</file>
 		<file>about.htm</file>
+		<file>private_window.png</file>
 	</qresource>
 </RCC>

@@ -212,6 +212,7 @@ void OutputManager::Init() {
 			m_output_format.m_video_frame_rate = lock->m_video_encoder->GetFrameRate();
 			m_output_format.m_video_pixel_format = lock->m_video_encoder->GetPixelFormat();
 			m_output_format.m_video_colorspace = lock->m_video_encoder->GetColorSpace();
+			m_output_format.m_video_letterbox = m_output_settings.video_letterbox;
 		} else {
 			m_output_format.m_video_enabled = false;
 		}

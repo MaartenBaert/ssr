@@ -31,6 +31,7 @@ struct OutputSettings {
 	unsigned int video_width, video_height;
 	unsigned int video_frame_rate;
 	bool video_allow_frame_skipping;
+	bool video_letterbox;
 
 	QString audio_codec_avname;
 	unsigned int audio_kbit_rate;
@@ -46,6 +47,7 @@ struct OutputFormat {
 	unsigned int m_video_frame_rate;
 	AVPixelFormat m_video_pixel_format;
 	int m_video_colorspace;
+	bool m_video_letterbox;
 
 	bool m_audio_enabled;
 	unsigned int m_audio_channels, m_audio_sample_rate;

@@ -150,6 +150,110 @@ static std::unique_ptr<AVFrameWrapper> CreateVideoFrame(unsigned int width, unsi
 
 }
 
+// Clears a video frame to black, handling common pixel formats.
+static void ClearVideoFrameToBlack(AVFrame* frame, AVPixelFormat format, unsigned int width, unsigned int height) {
+	switch(format) {
+		case AV_PIX_FMT_YUV444P:
+		case AV_PIX_FMT_YUV422P:
+		case AV_PIX_FMT_YUV420P: {
+			// Y plane to 0, U/V planes to 128
+			memset(frame->data[0], 0, frame->linesize[0] * height);
+			unsigned int chroma_h = (format == AV_PIX_FMT_YUV420P)? height / 2 : height;
+			memset(frame->data[1], 128, frame->linesize[1] * chroma_h);
+			memset(frame->data[2], 128, frame->linesize[2] * chroma_h);
+			break;
+		}
+		case AV_PIX_FMT_NV12: {
+			memset(frame->data[0], 0, frame->linesize[0] * height);
+			memset(frame->data[1], 128, frame->linesize[1] * height / 2);
+			break;
+		}
+		case AV_PIX_FMT_BGRA: {
+			memset(frame->data[0], 0, frame->linesize[0] * height);
+			break;
+		}
+		case AV_PIX_FMT_BGR24:
+		case AV_PIX_FMT_RGB24: {
+			memset(frame->data[0], 0, frame->linesize[0] * height);
+			break;
+		}
+		default: break;
+	}
+}
+
+// Copies a source frame into the center of a destination frame.
+static void CopyFrameCentered(AVFrame* dst, AVPixelFormat format, unsigned int dst_w, unsigned int dst_h,
+							   AVFrame* src, unsigned int src_w, unsigned int src_h) {
+	unsigned int offset_x = (dst_w - src_w) / 2;
+	unsigned int offset_y = (dst_h - src_h) / 2;
+	switch(format) {
+		case AV_PIX_FMT_YUV444P: {
+			for(unsigned int y = 0; y < src_h; ++y) {
+				memcpy(dst->data[0] + dst->linesize[0] * (offset_y + y) + offset_x,
+					   src->data[0] + src->linesize[0] * y, src_w);
+				memcpy(dst->data[1] + dst->linesize[1] * (offset_y + y) + offset_x,
+					   src->data[1] + src->linesize[1] * y, src_w);
+				memcpy(dst->data[2] + dst->linesize[2] * (offset_y + y) + offset_x,
+					   src->data[2] + src->linesize[2] * y, src_w);
+			}
+			break;
+		}
+		case AV_PIX_FMT_YUV422P: {
+			for(unsigned int y = 0; y < src_h; ++y) {
+				memcpy(dst->data[0] + dst->linesize[0] * (offset_y + y) + offset_x,
+					   src->data[0] + src->linesize[0] * y, src_w);
+			}
+			for(unsigned int y = 0; y < src_h; ++y) {
+				memcpy(dst->data[1] + dst->linesize[1] * (offset_y + y) + offset_x / 2,
+					   src->data[1] + src->linesize[1] * y, src_w / 2);
+				memcpy(dst->data[2] + dst->linesize[2] * (offset_y + y) + offset_x / 2,
+					   src->data[2] + src->linesize[2] * y, src_w / 2);
+			}
+			break;
+		}
+		case AV_PIX_FMT_YUV420P: {
+			for(unsigned int y = 0; y < src_h; ++y) {
+				memcpy(dst->data[0] + dst->linesize[0] * (offset_y + y) + offset_x,
+					   src->data[0] + src->linesize[0] * y, src_w);
+			}
+			for(unsigned int y = 0; y < src_h / 2; ++y) {
+				memcpy(dst->data[1] + dst->linesize[1] * (offset_y / 2 + y) + offset_x / 2,
+					   src->data[1] + src->linesize[1] * y, src_w / 2);
+				memcpy(dst->data[2] + dst->linesize[2] * (offset_y / 2 + y) + offset_x / 2,
+					   src->data[2] + src->linesize[2] * y, src_w / 2);
+			}
+			break;
+		}
+		case AV_PIX_FMT_NV12: {
+			for(unsigned int y = 0; y < src_h; ++y) {
+				memcpy(dst->data[0] + dst->linesize[0] * (offset_y + y) + offset_x,
+					   src->data[0] + src->linesize[0] * y, src_w);
+			}
+			for(unsigned int y = 0; y < src_h / 2; ++y) {
+				memcpy(dst->data[1] + dst->linesize[1] * (offset_y / 2 + y) + offset_x,
+					   src->data[1] + src->linesize[1] * y, src_w);
+			}
+			break;
+		}
+		case AV_PIX_FMT_BGRA: {
+			for(unsigned int y = 0; y < src_h; ++y) {
+				memcpy(dst->data[0] + dst->linesize[0] * (offset_y + y) + offset_x * 4,
+					   src->data[0] + src->linesize[0] * y, src_w * 4);
+			}
+			break;
+		}
+		case AV_PIX_FMT_BGR24:
+		case AV_PIX_FMT_RGB24: {
+			for(unsigned int y = 0; y < src_h; ++y) {
+				memcpy(dst->data[0] + dst->linesize[0] * (offset_y + y) + offset_x * 3,
+					   src->data[0] + src->linesize[0] * y, src_w * 3);
+			}
+			break;
+		}
+		default: break;
+	}
+}
+
 static std::unique_ptr<AVFrameWrapper> CreateAudioFrame(unsigned int channels, unsigned int sample_rate, unsigned int samples, unsigned int planes, AVSampleFormat sample_format) {
 
 	// get required sample size
@@ -345,10 +449,40 @@ void Synchronizer::ReadVideoFrame(unsigned int width, unsigned int height, const
 	// create the converted frame
 	std::unique_ptr<AVFrameWrapper> converted_frame = CreateVideoFrame(m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format, NULL);
 
-	// scale and convert the frame to the right format
-	videolock->m_fast_scaler.Scale(width, height, format, colorspace, data, stride,
-			m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format, m_output_format->m_video_colorspace,
-			converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
+	if(m_output_format->m_video_letterbox && (width != m_output_format->m_video_width || height != m_output_format->m_video_height)) {
+		// calculate aspect-ratio-preserving dimensions that fit inside the output frame
+		double scale_x = (double) m_output_format->m_video_width / (double) width;
+		double scale_y = (double) m_output_format->m_video_height / (double) height;
+		double scale = std::min(scale_x, scale_y);
+		unsigned int scaled_w = (unsigned int) (scale * width + 0.5);
+		unsigned int scaled_h = (unsigned int) (scale * height + 0.5);
+		// ensure even dimensions for YUV formats
+		if(m_output_format->m_video_pixel_format == AV_PIX_FMT_YUV420P || m_output_format->m_video_pixel_format == AV_PIX_FMT_NV12 ||
+		   m_output_format->m_video_pixel_format == AV_PIX_FMT_YUV422P) {
+			scaled_w = scaled_w / 2 * 2;
+			scaled_h = scaled_h / 2 * 2;
+		}
+		if(scaled_w == m_output_format->m_video_width && scaled_h == m_output_format->m_video_height) {
+			// exact fit, use direct scaling
+			videolock->m_fast_scaler.Scale(width, height, format, colorspace, data, stride,
+					m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format, m_output_format->m_video_colorspace,
+					converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
+		} else {
+			// scale to temp frame, then center with black bars
+			std::unique_ptr<AVFrameWrapper> scaled_frame = CreateVideoFrame(scaled_w, scaled_h, m_output_format->m_video_pixel_format, NULL);
+			videolock->m_fast_scaler.Scale(width, height, format, colorspace, data, stride,
+					scaled_w, scaled_h, m_output_format->m_video_pixel_format, m_output_format->m_video_colorspace,
+					scaled_frame->GetFrame()->data, scaled_frame->GetFrame()->linesize);
+			ClearVideoFrameToBlack(converted_frame->GetFrame(), m_output_format->m_video_pixel_format, m_output_format->m_video_width, m_output_format->m_video_height);
+			CopyFrameCentered(converted_frame->GetFrame(), m_output_format->m_video_pixel_format, m_output_format->m_video_width, m_output_format->m_video_height,
+							  scaled_frame->GetFrame(), scaled_w, scaled_h);
+		}
+	} else {
+		// scale and convert the frame to the right format
+		videolock->m_fast_scaler.Scale(width, height, format, colorspace, data, stride,
+				m_output_format->m_video_width, m_output_format->m_video_height, m_output_format->m_video_pixel_format, m_output_format->m_video_colorspace,
+				converted_frame->GetFrame()->data, converted_frame->GetFrame()->linesize);
+	}
 
 	SharedLock lock(&m_shared_data);
 

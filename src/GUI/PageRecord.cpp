@@ -556,6 +556,7 @@ void PageRecord::StartPage() {
 	// get the video input settings
 	m_video_backend = page_input->GetVideoBackend();
 	m_video_x11_area = page_input->GetVideoX11Area();
+	m_video_x11_screen_follow = page_input->GetVideoX11ScreenFollow();
 	m_video_x11_follow_fullscreen = page_input->GetVideoX11FollowFullscreen();
 #if SSR_USE_V4L2
 	m_v4l2_device = page_input->GetVideoV4L2Device();
@@ -822,7 +823,10 @@ void PageRecord::StartOutput() {
 			}
 
 			// for X11 recording, update the video size (if possible)
-			if(m_x11_input != NULL)
+			// skip this for window-follow modes so the output stays at the monitor dimensions
+			if(m_x11_input != NULL &&
+			   !(m_video_x11_area == PageInput::VIDEO_X11_AREA_ACTIVE_WINDOW ||
+			     m_video_x11_area == PageInput::VIDEO_X11_AREA_WINDOW_UNDER_CURSOR))
 				m_x11_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 
 #if SSR_USE_OPENGL_RECORDING
@@ -859,12 +863,18 @@ void PageRecord::StartOutput() {
 				// One missing row/column of pixels is probably better than a blurry video (and scaling is SLOW).
 				m_video_in_width = m_video_in_width / 2 * 2;
 				m_video_in_height = m_video_in_height / 2 * 2;
-				m_output_settings.video_width = m_video_in_width;
-				m_output_settings.video_height = m_video_in_height;
-			}
+			m_output_settings.video_width = m_video_in_width;
+			m_output_settings.video_height = m_video_in_height;
+		}
 
-			// start the output
-			m_output_manager.reset(new OutputManager(m_output_settings));
+		// enable letterboxing for window-follow modes when scaling is disabled
+		m_output_settings.video_letterbox = (!m_video_scaling &&
+			m_video_backend == PageInput::VIDEO_BACKEND_X11 &&
+			(m_video_x11_area == PageInput::VIDEO_X11_AREA_ACTIVE_WINDOW ||
+			 m_video_x11_area == PageInput::VIDEO_X11_AREA_WINDOW_UNDER_CURSOR));
+
+		// start the output
+		m_output_manager.reset(new OutputManager(m_output_settings));
 
 		} else {
 
@@ -949,7 +959,10 @@ void PageRecord::StartInput() {
 		// start the video input
 		if(m_video_backend == PageInput::VIDEO_BACKEND_X11) {
 			m_x11_input.reset(new X11Input(m_video_x, m_video_y, m_video_in_width, m_video_in_height, m_video_record_cursor,
-										   m_video_x11_area == PageInput::VIDEO_X11_AREA_CURSOR, m_video_x11_follow_fullscreen));
+										   m_video_x11_area == PageInput::VIDEO_X11_AREA_CURSOR, m_video_x11_follow_fullscreen,
+										   m_video_x11_area == PageInput::VIDEO_X11_AREA_ACTIVE_WINDOW,
+										   m_video_x11_area == PageInput::VIDEO_X11_AREA_WINDOW_UNDER_CURSOR,
+										   m_video_x11_screen_follow));
 			connect(m_x11_input.get(), SIGNAL(CurrentRectangleChanged()), this, SLOT(OnUpdateRecordingFrame()), Qt::QueuedConnection);
 		}
 #if SSR_USE_OPENGL_RECORDING

@@ -23,6 +23,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "SourceSink.h"
 #include "MutexDataPair.h"
 
+#include <QImage>
+
 class X11Input : public QObject, public VideoSource {
 	Q_OBJECT
 
@@ -39,7 +41,8 @@ private:
 
 private:
 	unsigned int m_x, m_y, m_width, m_height;
-	bool m_record_cursor, m_follow_cursor, m_follow_fullscreen;
+	bool m_record_cursor, m_follow_cursor, m_follow_fullscreen, m_follow_active_window, m_follow_window_under_cursor;
+	unsigned int m_follow_screen;
 
 	std::atomic<uint32_t> m_frame_counter;
 	int64_t m_fps_last_timestamp;
@@ -60,12 +63,29 @@ private:
 	std::vector<Rect> m_screen_rects;
 	std::vector<Rect> m_screen_dead_space;
 
+	Window m_last_target_window;
+	bool m_has_last_target;
+	bool m_in_transition;
+	int64_t m_transition_start_time;
+	unsigned int m_transition_start_x, m_transition_start_y, m_transition_start_w, m_transition_start_h;
+	unsigned int m_transition_target_x, m_transition_target_y, m_transition_target_w, m_transition_target_h;
+
+	// overlay fade state for window-follow modes with per-monitor selection
+	QImage m_overlay_image;
+	QImage m_overlay_scaled;
+	unsigned int m_overlay_scaled_w, m_overlay_scaled_h;
+	bool m_overlay_active;
+	bool m_overlay_fading;
+	bool m_overlay_fade_in;
+	int64_t m_overlay_fade_start;
+	double m_overlay_opacity;
+
 	std::thread m_thread;
 	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
-	X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor, bool follow_fullscreen);
+	X11Input(unsigned int x, unsigned int y, unsigned int width, unsigned int height, bool record_cursor, bool follow_cursor, bool follow_fullscreen, bool follow_active_window = false, bool follow_window_under_cursor = false, unsigned int follow_screen = 0);
 	~X11Input();
 
 	// Reads the current recording rectangle.
@@ -92,6 +112,7 @@ private:
 	void AllocateImage(unsigned int width, unsigned int height);
 	void FreeImage();
 	void UpdateScreenConfiguration();
+	void CompositeOverlay(unsigned int width, unsigned int height);
 
 private:
 	void InputThread();
