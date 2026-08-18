@@ -69,6 +69,13 @@ If you are using the proprietary NVIDIA driver, first figure out where the fglrx
 
 Note that the full name of the 'nvidia' subdirectory includes the driver version number, so you will need to fix these symlinks whenever the driver has been updated.
 
+
+For 2026+ and Trixi Debian updated please also run:
+sudo apt update
+sudo apt install libpipewire-0.3-dev
+
+#*enjoy  11/05/2026
+
 If you want to compile step-by-step (without `simple-build-and-install`), you can use the following steps:
 
     mkdir build-release
