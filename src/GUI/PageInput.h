@@ -109,6 +109,9 @@ public:
 #if SSR_USE_OPENGL_RECORDING
 		VIDEO_BACKEND_GLINJECT,
 #endif
+#if SSR_USE_VULKAN_RECORDING
+		VIDEO_BACKEND_VULKAN,
+#endif
 #if SSR_USE_V4L2
 		VIDEO_BACKEND_V4L2,
 #endif
@@ -173,6 +176,9 @@ private:
 	QSpinBoxWithSignal *m_spinbox_video_x11_x, *m_spinbox_video_x11_y, *m_spinbox_video_x11_width, *m_spinbox_video_x11_height;
 #if SSR_USE_OPENGL_RECORDING
 	QPushButton *m_pushbutton_video_opengl_settings;
+#endif
+#if SSR_USE_VULKAN_RECORDING
+	QPushButton *m_pushbutton_video_vulkan_settings;
 #endif
 #if SSR_USE_V4L2
 	QLabel *m_label_video_v4l2_device;

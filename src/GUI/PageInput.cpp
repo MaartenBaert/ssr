@@ -32,6 +32,9 @@ ENUMSTRINGS(PageInput::enum_video_backend) = {
 #if SSR_USE_OPENGL_RECORDING
 	{PageInput::VIDEO_BACKEND_GLINJECT, "glinject"},
 #endif
+#if SSR_USE_VULKAN_RECORDING
+	{PageInput::VIDEO_BACKEND_VULKAN, "vulkan"},
+#endif
 #if SSR_USE_V4L2
 	{PageInput::VIDEO_BACKEND_V4L2, "v4l2"},
 #endif
@@ -298,6 +301,9 @@ PageInput::PageInput(MainWindow* main_window)
 #if SSR_USE_OPENGL_RECORDING
 			m_combobox_video_backend->addItem("OpenGL");
 #endif
+#if SSR_USE_VULKAN_RECORDING
+			m_combobox_video_backend->addItem("Record Vulkan");
+#endif
 #if SSR_USE_V4L2
 			m_combobox_video_backend->addItem("V4L2");
 #endif
@@ -349,6 +355,10 @@ PageInput::PageInput(MainWindow* main_window)
 #if SSR_USE_OPENGL_RECORDING
 			m_pushbutton_video_opengl_settings = new QPushButton(tr("OpenGL settings..."), groupbox_video);
 			m_pushbutton_video_opengl_settings->setToolTip(tr("Change the settings for OpenGL recording."));
+#endif
+#if SSR_USE_VULKAN_RECORDING
+			m_pushbutton_video_vulkan_settings = new QPushButton(tr("Vulkan settings..."), groupbox_video);
+			m_pushbutton_video_vulkan_settings->setToolTip(tr("Change the settings for Vulkan recording."));
 #endif
 #if SSR_USE_V4L2
 			m_label_video_v4l2_device = new QLabel(tr("V4L2 device:"), groupbox_video);
@@ -424,6 +434,9 @@ PageInput::PageInput(MainWindow* main_window)
 #if SSR_USE_OPENGL_RECORDING
 			connect(m_pushbutton_video_opengl_settings, SIGNAL(clicked()), this, SLOT(OnGLInjectDialog()));
 #endif
+#if SSR_USE_VULKAN_RECORDING
+			connect(m_pushbutton_video_vulkan_settings, SIGNAL(clicked()), this, SLOT(OnGLInjectDialog()));
+#endif
 			connect(m_checkbox_scale, SIGNAL(clicked()), this, SLOT(OnUpdateVideoScaleFields()));
 
 			QVBoxLayout *layout = new QVBoxLayout(groupbox_video);
@@ -453,6 +466,9 @@ PageInput::PageInput(MainWindow* main_window)
 				layout2->addWidget(m_pushbutton_video_x11_select_window);
 #if SSR_USE_OPENGL_RECORDING
 				layout2->addWidget(m_pushbutton_video_opengl_settings);
+#endif
+#if SSR_USE_VULKAN_RECORDING
+				layout2->addWidget(m_pushbutton_video_vulkan_settings);
 #endif
 				layout2->addStretch();
 			}
@@ -1129,6 +1145,11 @@ void PageInput::OnUpdateVideoAreaFields() {
 			m_pushbutton_video_opengl_settings,
 		}, (backend == VIDEO_BACKEND_GLINJECT)},
 #endif
+#if SSR_USE_VULKAN_RECORDING
+		{{
+			m_pushbutton_video_vulkan_settings,
+		}, (backend == VIDEO_BACKEND_VULKAN)},
+#endif
 #if SSR_USE_V4L2
 		{{
 			m_label_video_v4l2_device, m_lineedit_video_v4l2_device,
@@ -1142,8 +1163,15 @@ void PageInput::OnUpdateVideoAreaFields() {
 		}, (backend == VIDEO_BACKEND_PIPEWIRE)},
 #endif
 	});
+#if SSR_USE_OPENGL_RECORDING || SSR_USE_VULKAN_RECORDING
+	GroupEnabled({m_checkbox_record_cursor}, (backend == VIDEO_BACKEND_X11
 #if SSR_USE_OPENGL_RECORDING
-	GroupEnabled({m_checkbox_record_cursor}, (backend == VIDEO_BACKEND_X11 || backend == VIDEO_BACKEND_GLINJECT));
+		|| backend == VIDEO_BACKEND_GLINJECT
+#endif
+#if SSR_USE_VULKAN_RECORDING
+		|| backend == VIDEO_BACKEND_VULKAN
+#endif
+	));
 #else
 	GroupEnabled({m_checkbox_record_cursor}, (backend == VIDEO_BACKEND_X11));
 #endif

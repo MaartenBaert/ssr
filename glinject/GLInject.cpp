@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 #include "GLInject.h"
 
 #include "GLXFrameGrabber.h"
+#include "VKFrameGrabber.h"
 
 GLInject::GLInject() {
 
@@ -26,6 +27,10 @@ GLInject::~GLInject() {
 	while(!m_glx_frame_grabbers.empty()) {
 		delete m_glx_frame_grabbers.back();
 		m_glx_frame_grabbers.pop_back();
+	}
+	while(!m_vk_frame_grabbers.empty()) {
+		delete m_vk_frame_grabbers.back();
+		m_vk_frame_grabbers.pop_back();
 	}
 
 	GLINJECT_PRINT("[SSR-GLInject] GLInject stopped.");
@@ -67,6 +72,45 @@ void GLInject::DeleteGLXFrameGrabberByDrawable(Display* display, GLXDrawable dra
 			delete m_glx_frame_grabbers[i];
 			m_glx_frame_grabbers[i] = m_glx_frame_grabbers.back();
 			m_glx_frame_grabbers.pop_back();
+		}
+	}
+}
+
+VKFrameGrabber* GLInject::NewVKFrameGrabber(VkDevice device, VkPhysicalDevice physical_device, uint32_t queue_family, VkSwapchainKHR swapchain, VkFormat format, uint32_t width, uint32_t height, Display* x11_display, Window x11_window) {
+	VKFrameGrabber *fg = FindVKFrameGrabber(swapchain);
+	if(fg == NULL) {
+		fg = new VKFrameGrabber(device, physical_device, queue_family, swapchain, format, width, height, x11_display, x11_window);
+		m_vk_frame_grabbers.push_back(fg);
+	}
+	return fg;
+}
+
+VKFrameGrabber* GLInject::FindVKFrameGrabber(VkSwapchainKHR swapchain) {
+	for(unsigned int i = 0; i < m_vk_frame_grabbers.size(); ++i) {
+		if(m_vk_frame_grabbers[i]->GetSwapchain() == swapchain)
+			return m_vk_frame_grabbers[i];
+	}
+	return NULL;
+}
+
+void GLInject::DeleteVKFrameGrabberBySwapchain(VkSwapchainKHR swapchain) {
+	for(unsigned int i = m_vk_frame_grabbers.size(); i > 0; ) {
+		--i;
+		if(m_vk_frame_grabbers[i]->GetSwapchain() == swapchain) {
+			delete m_vk_frame_grabbers[i];
+			m_vk_frame_grabbers[i] = m_vk_frame_grabbers.back();
+			m_vk_frame_grabbers.pop_back();
+		}
+	}
+}
+
+void GLInject::DeleteVKFrameGrabberByDevice(VkDevice device) {
+	for(unsigned int i = m_vk_frame_grabbers.size(); i > 0; ) {
+		--i;
+		if(m_vk_frame_grabbers[i]->GetDevice() == device) {
+			delete m_vk_frame_grabbers[i];
+			m_vk_frame_grabbers[i] = m_vk_frame_grabbers.back();
+			m_vk_frame_grabbers.pop_back();
 		}
 	}
 }

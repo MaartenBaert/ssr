@@ -10,6 +10,8 @@ set(sources
 	Global.h
 	GLXFrameGrabber.cpp
 	GLXFrameGrabber.h
+	VKFrameGrabber.cpp
+	VKFrameGrabber.h
 	Hook.cpp
 	plthook_elf.c
 	plthook.h
