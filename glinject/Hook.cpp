@@ -10,13 +10,21 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 #include "GLInject.h"
 #include "GLXFrameGrabber.h"
+#include "VKFrameGrabber.h"
 #include "plthook.h"
 
 #include <dlfcn.h>
 #include <link.h>
+#include <map>
 
 #include <GL/glx.h>
+#include <X11/Xlib.h>
 #include <X11/X.h>
+#include <xcb/xcb.h>
+
+#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_xlib.h>
+#include <vulkan/vulkan_xcb.h>
 
 // global variable from the standard library that holds all environment variables
 extern char **environ;
@@ -43,29 +51,50 @@ void          glinject_hook_glXSwapBuffers(Display* dpy, GLXDrawable drawable);
 GLXextFuncPtr glinject_hook_glXGetProcAddress(const GLubyte *proc_name);
 GLXextFuncPtr glinject_hook_glXGetProcAddressARB(const GLubyte *proc_name);
 
+VkResult           glinject_hook_vkCreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkInstance* pInstance);
+VkResult           glinject_hook_vkCreateDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDevice* pDevice);
+void               glinject_hook_vkDestroyDevice(VkDevice device, const VkAllocationCallbacks* pAllocator);
+VkResult           glinject_hook_vkCreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchain);
+void               glinject_hook_vkDestroySwapchainKHR(VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks* pAllocator);
+VkResult           glinject_hook_vkQueuePresentKHR(VkQueue queue, const VkPresentInfoKHR* pPresentInfo);
+PFN_vkVoidFunction glinject_hook_vkGetInstanceProcAddr(VkInstance instance, const char* pName);
+PFN_vkVoidFunction glinject_hook_vkGetDeviceProcAddr(VkDevice device, const char* pName);
+VkResult           glinject_hook_vkCreateXlibSurfaceKHR(VkInstance instance, const VkXlibSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface);
+VkResult           glinject_hook_vkCreateXcbSurfaceKHR(VkInstance instance, const VkXcbSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface);
+
 // hook table
 struct GLInjectHook {
 	const char *name;
 	void *address;
 };
 std::initializer_list<GLInjectHook> glinject_hook_table = {
-	{"dlopen"              , (void*) &glinject_hook_dlopen},
-	{"dlmopen"             , (void*) &glinject_hook_dlmopen},
-	{"dlsym"               , (void*) &glinject_hook_dlsym},
-	{"dlvsym"              , (void*) &glinject_hook_dlvsym},
-	{"execl"               , (void*) &glinject_hook_execl},
-	{"execlp"              , (void*) &glinject_hook_execlp},
-	{"execle"              , (void*) &glinject_hook_execle},
-	{"execv"               , (void*) &glinject_hook_execv},
-	{"execvp"              , (void*) &glinject_hook_execvp},
-	{"execve"              , (void*) &glinject_hook_execve},
-	{"execvpe"             , (void*) &glinject_hook_execvpe},
-	{"glXCreateWindow"     , (void*) &glinject_hook_glXCreateWindow},
-	{"glXDestroyWindow"    , (void*) &glinject_hook_glXDestroyWindow},
-	{"XDestroyWindow"      , (void*) &glinject_hook_XDestroyWindow},
-	{"glXSwapBuffers"      , (void*) &glinject_hook_glXSwapBuffers},
-	{"glXGetProcAddress"   , (void*) &glinject_hook_glXGetProcAddress},
-	{"glXGetProcAddressARB", (void*) &glinject_hook_glXGetProcAddressARB},
+	{"dlopen"                , (void*) &glinject_hook_dlopen},
+	{"dlmopen"               , (void*) &glinject_hook_dlmopen},
+	{"dlsym"                 , (void*) &glinject_hook_dlsym},
+	{"dlvsym"                , (void*) &glinject_hook_dlvsym},
+	{"execl"                 , (void*) &glinject_hook_execl},
+	{"execlp"                , (void*) &glinject_hook_execlp},
+	{"execle"                , (void*) &glinject_hook_execle},
+	{"execv"                 , (void*) &glinject_hook_execv},
+	{"execvp"                , (void*) &glinject_hook_execvp},
+	{"execve"                , (void*) &glinject_hook_execve},
+	{"execvpe"               , (void*) &glinject_hook_execvpe},
+	{"glXCreateWindow"       , (void*) &glinject_hook_glXCreateWindow},
+	{"glXDestroyWindow"      , (void*) &glinject_hook_glXDestroyWindow},
+	{"XDestroyWindow"        , (void*) &glinject_hook_XDestroyWindow},
+	{"glXSwapBuffers"        , (void*) &glinject_hook_glXSwapBuffers},
+	{"glXGetProcAddress"     , (void*) &glinject_hook_glXGetProcAddress},
+	{"glXGetProcAddressARB"  , (void*) &glinject_hook_glXGetProcAddressARB},
+	{"vkCreateInstance"      , (void*) &glinject_hook_vkCreateInstance},
+	{"vkCreateDevice"        , (void*) &glinject_hook_vkCreateDevice},
+	{"vkDestroyDevice"       , (void*) &glinject_hook_vkDestroyDevice},
+	{"vkCreateSwapchainKHR"  , (void*) &glinject_hook_vkCreateSwapchainKHR},
+	{"vkDestroySwapchainKHR" , (void*) &glinject_hook_vkDestroySwapchainKHR},
+	{"vkQueuePresentKHR"     , (void*) &glinject_hook_vkQueuePresentKHR},
+	{"vkGetInstanceProcAddr" , (void*) &glinject_hook_vkGetInstanceProcAddr},
+	{"vkGetDeviceProcAddr"   , (void*) &glinject_hook_vkGetDeviceProcAddr},
+	{"vkCreateXlibSurfaceKHR", (void*) &glinject_hook_vkCreateXlibSurfaceKHR},
+	{"vkCreateXcbSurfaceKHR" , (void*) &glinject_hook_vkCreateXcbSurfaceKHR},
 };
 
 // list of executables that should not be hooked
@@ -89,6 +118,8 @@ const char* g_glinject_filtered_libs[] = {
 	"libnvidia-", // more nvidia libraries including libnvidia-glcore.so
 	"libOpenGL.so",
 	"libX11.so",
+	"libvulkan.so",
+	"libvulkan_",
 };
 
 bool GLInjectShouldFilterExec(const char* filename) {
@@ -141,7 +172,6 @@ bool GLInjectHookAdvanced_Init() {
 		return false;
 	}
 }
-
 bool GLInjectHookDebug() {
 	static bool debug = GLInjectHookDebug_Init();
 	return debug;
@@ -264,9 +294,9 @@ void GLInjectFree() {
 	}
 }
 
+static thread_local bool g_in_real_resolve = false;
+
 void* glinject_hook_dlopen(const char* filename, int flags) {
-	// const char *str = "(In glinject_hook_dlopen)\n";
-	// write(2, str, strlen(str));
 	if(GLInjectHookDebug())
 		GLINJECT_PRINT("Captured glinject_hook_dlopen(" << filename << ")");
 	void *res = dlopen(filename, flags);
@@ -275,14 +305,11 @@ void* glinject_hook_dlopen(const char* filename, int flags) {
 			GLINJECT_PRINT("Refreshing hooks ...");
 		std::lock_guard<std::mutex> lock(g_hook_mutex);
 		GLInjectHookAll();
-		//GLInjectHookByHandle(res);
 	}
 	return res;
 }
 
 void* glinject_hook_dlmopen(Lmid_t lmid, const char* filename, int flags) {
-	// const char *str = "(In glinject_hook_dlmopen)\n";
-	// write(2, str, strlen(str));
 	if(GLInjectHookDebug())
 		GLINJECT_PRINT("Captured glinject_hook_dlmopen(" << filename << ")");
 	void *res = dlmopen(lmid, filename, flags);
@@ -291,98 +318,74 @@ void* glinject_hook_dlmopen(Lmid_t lmid, const char* filename, int flags) {
 			GLINJECT_PRINT("Refreshing hooks ...");
 		std::lock_guard<std::mutex> lock(g_hook_mutex);
 		GLInjectHookAll();
-		//GLInjectHookByHandle(res);
 	}
 	return res;
 }
 
 void* glinject_hook_dlsym(void* handle, const char* symbol) {
-	// const char *str = "(In glinject_hook_dlsym)\n";
-	// write(2, str, strlen(str));
-	for(const GLInjectHook &hook : glinject_hook_table) {
-		if(strcmp(hook.name, symbol) == 0) {
-			if(GLInjectHookDebug())
-				GLINJECT_PRINT("Hooked dlsym(" << symbol << ").");
-			return hook.address;
+	if(!g_in_real_resolve) {
+		for(const GLInjectHook &hook : glinject_hook_table) {
+			if(strcmp(hook.name, symbol) == 0) {
+				if(GLInjectHookDebug())
+					GLINJECT_PRINT("Hooked dlsym(" << symbol << ").");
+				return hook.address;
+			}
 		}
 	}
 	return dlsym(handle, symbol);
 }
 
 void* glinject_hook_dlvsym(void* handle, const char* symbol, const char* version) {
-	// const char *str = "(In glinject_hook_dlvsym)\n";
-	// write(2, str, strlen(str));
-	for(const GLInjectHook &hook : glinject_hook_table) {
-		if(strcmp(hook.name, symbol) == 0) {
-			if(GLInjectHookDebug())
-				GLINJECT_PRINT("Hooked dlvsym(" << symbol << ").");
-			return hook.address;
+	if(!g_in_real_resolve) {
+		for(const GLInjectHook &hook : glinject_hook_table) {
+			if(strcmp(hook.name, symbol) == 0) {
+				if(GLInjectHookDebug())
+					GLINJECT_PRINT("Hooked dlvsym(" << symbol << ").");
+				return hook.address;
+			}
 		}
 	}
 	return dlvsym(handle, symbol, version);
 }
 
 int glinject_hook_execl(const char* filename, const char* arg, ...) {
-	// const char *str = "(In glinject_hook_execl)\n";
-	// write(2, str, strlen(str));
-	std::vector<char*> args;
-	args.push_back((char*) arg);
-	va_list vl;
-	va_start(vl, arg);
-	while(args.back() != NULL) {
-		args.push_back(va_arg(vl, char*));
+	va_list args;
+	va_start(args, arg);
+	std::vector<const char*> argv;
+	argv.push_back(arg);
+	while(argv.back() != NULL) {
+		argv.push_back(va_arg(args, const char*));
 	}
-	va_end(vl);
-	if(GLInjectShouldFilterExec(filename)) {
-		std::vector<char*> filtered_env = GLInjectFilterEnv(environ);
-		return execve(filename, args.data(), filtered_env.data());
-	} else {
-		return execv(filename, args.data());
-	}
+	va_end(args);
+	return glinject_hook_execv(filename, (char* const*) argv.data());
 }
 
 int glinject_hook_execlp(const char* filename, const char* arg, ...) {
-	// const char *str = "(In glinject_hook_execlp)\n";
-	// write(2, str, strlen(str));
-	std::vector<char*> args;
-	args.push_back((char*) arg);
-	va_list vl;
-	va_start(vl, arg);
-	while(args.back() != NULL) {
-		args.push_back(va_arg(vl, char*));
+	va_list args;
+	va_start(args, arg);
+	std::vector<const char*> argv;
+	argv.push_back(arg);
+	while(argv.back() != NULL) {
+		argv.push_back(va_arg(args, const char*));
 	}
-	va_end(vl);
-	if(GLInjectShouldFilterExec(filename)) {
-		std::vector<char*> filtered_env = GLInjectFilterEnv(environ);
-		return execvpe(filename, args.data(), filtered_env.data());
-	} else {
-		return execvp(filename, args.data());
-	}
+	va_end(args);
+	return glinject_hook_execvp(filename, (char* const*) argv.data());
 }
 
 int glinject_hook_execle(const char* filename, const char* arg, ...) {
-	// const char *str = "(In glinject_hook_execle)\n";
-	// write(2, str, strlen(str));
-	std::vector<char*> args;
-	args.push_back((char*) arg);
-	va_list vl;
-	va_start(vl, arg);
-	while(args.back() != NULL) {
-		args.push_back(va_arg(vl, char*));
+	va_list args;
+	va_start(args, arg);
+	std::vector<const char*> argv;
+	argv.push_back(arg);
+	while(argv.back() != NULL) {
+		argv.push_back(va_arg(args, const char*));
 	}
-	char *const *envp = va_arg(vl, char* const*);
-	va_end(vl);
-	if(GLInjectShouldFilterExec(filename)) {
-		std::vector<char*> filtered_env = GLInjectFilterEnv(envp);
-		return execve(filename, args.data(), filtered_env.data());
-	} else {
-		return execve(filename, args.data(), envp);
-	}
+	char* const* envp = va_arg(args, char* const*);
+	va_end(args);
+	return glinject_hook_execve(filename, (char* const*) argv.data(), envp);
 }
 
 int glinject_hook_execv(const char* filename, char* const argv[]) {
-	// const char *str = "(In glinject_hook_execv)\n";
-	// write(2, str, strlen(str));
 	if(GLInjectShouldFilterExec(filename)) {
 		std::vector<char*> filtered_env = GLInjectFilterEnv(environ);
 		return execve(filename, argv, filtered_env.data());
@@ -392,8 +395,6 @@ int glinject_hook_execv(const char* filename, char* const argv[]) {
 }
 
 int glinject_hook_execvp(const char* filename, char* const argv[]) {
-	// const char *str = "(In glinject_hook_execvp)\n";
-	// write(2, str, strlen(str));
 	if(GLInjectShouldFilterExec(filename)) {
 		std::vector<char*> filtered_env = GLInjectFilterEnv(environ);
 		return execvpe(filename, argv, filtered_env.data());
@@ -403,8 +404,6 @@ int glinject_hook_execvp(const char* filename, char* const argv[]) {
 }
 
 int glinject_hook_execve(const char* filename, char* const argv[], char* const envp[]) {
-	// const char *str = "(In glinject_hook_execve)\n";
-	// write(2, str, strlen(str));
 	if(GLInjectShouldFilterExec(filename)) {
 		std::vector<char*> filtered_env = GLInjectFilterEnv(envp);
 		return execve(filename, argv, filtered_env.data());
@@ -414,8 +413,6 @@ int glinject_hook_execve(const char* filename, char* const argv[], char* const e
 }
 
 int glinject_hook_execvpe(const char* filename, char* const argv[], char* const envp[]) {
-	// const char *str = "(In glinject_hook_execvpe)\n";
-	// write(2, str, strlen(str));
 	if(GLInjectShouldFilterExec(filename)) {
 		std::vector<char*> filtered_env = GLInjectFilterEnv(envp);
 		return execvpe(filename, argv, filtered_env.data());
@@ -425,8 +422,6 @@ int glinject_hook_execvpe(const char* filename, char* const argv[], char* const 
 }
 
 GLXWindow glinject_hook_glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list) {
-	// const char *str = "(In glinject_hook_glXCreateWindow)\n";
-	// write(2, str, strlen(str));
 	GLXWindow res = glXCreateWindow(dpy, config, win, attrib_list);
 	if(res == 0)
 		return 0;
@@ -439,8 +434,6 @@ GLXWindow glinject_hook_glXCreateWindow(Display* dpy, GLXFBConfig config, Window
 }
 
 void glinject_hook_glXDestroyWindow(Display* dpy, GLXWindow win) {
-	// const char *str = "(In glinject_hook_glXDestroyWindow)\n";
-	// write(2, str, strlen(str));
 	glXDestroyWindow(dpy, win);
 	{
 		std::lock_guard<std::mutex> lock(g_glinject_mutex);
@@ -450,8 +443,6 @@ void glinject_hook_glXDestroyWindow(Display* dpy, GLXWindow win) {
 }
 
 int glinject_hook_XDestroyWindow(Display* dpy, Window win) {
-	// const char *str = "(In glinject_hook_XDestroyWindow)\n";
-	// write(2, str, strlen(str));
 	int res = XDestroyWindow(dpy, win);
 	{
 		std::lock_guard<std::mutex> lock(g_glinject_mutex);
@@ -462,8 +453,6 @@ int glinject_hook_XDestroyWindow(Display* dpy, Window win) {
 }
 
 void glinject_hook_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
-	// const char *str = "(In glinject_hook_glXSwapBuffers)\n";
-	// write(2, str, strlen(str));
 	{
 		std::lock_guard<std::mutex> lock(g_glinject_mutex);
 		GLInjectInit();
@@ -478,8 +467,6 @@ void glinject_hook_glXSwapBuffers(Display* dpy, GLXDrawable drawable) {
 }
 
 GLXextFuncPtr glinject_hook_glXGetProcAddress(const GLubyte *proc_name) {
-	// const char *str = "(In glinject_hook_glXGetProcAddress)\n";
-	// write(2, str, strlen(str));
 	for(const GLInjectHook &hook : glinject_hook_table) {
 		if(strcmp(hook.name, (const char*) proc_name) == 0) {
 			std::lock_guard<std::mutex> lock(g_glinject_mutex);
@@ -492,8 +479,6 @@ GLXextFuncPtr glinject_hook_glXGetProcAddress(const GLubyte *proc_name) {
 }
 
 GLXextFuncPtr glinject_hook_glXGetProcAddressARB(const GLubyte *proc_name) {
-	// const char *str = "(In glinject_hook_glXGetProcAddressARB)\n";
-	// write(2, str, strlen(str));
 	for(const GLInjectHook &hook : glinject_hook_table) {
 		if(strcmp(hook.name, (const char*) proc_name) == 0) {
 			std::lock_guard<std::mutex> lock(g_glinject_mutex);
@@ -503,4 +488,281 @@ GLXextFuncPtr glinject_hook_glXGetProcAddressARB(const GLubyte *proc_name) {
 		}
 	}
 	return glXGetProcAddressARB(proc_name);
+}
+
+// -----------------------------------------------------------------------------
+// Vulkan Hooks
+// -----------------------------------------------------------------------------
+
+static void* g_vulkan_handle = NULL;
+static PFN_vkGetInstanceProcAddr g_real_vkGetInstanceProcAddr = NULL;
+static PFN_vkGetDeviceProcAddr   g_real_vkGetDeviceProcAddr = NULL;
+static PFN_vkCreateInstance      g_real_vkCreateInstance = NULL;
+static PFN_vkCreateDevice        g_real_vkCreateDevice = NULL;
+static PFN_vkDestroyDevice       g_real_vkDestroyDevice = NULL;
+static PFN_vkCreateSwapchainKHR  g_real_vkCreateSwapchainKHR = NULL;
+static PFN_vkDestroySwapchainKHR g_real_vkDestroySwapchainKHR = NULL;
+static PFN_vkQueuePresentKHR     g_real_vkQueuePresentKHR = NULL;
+static PFN_vkCreateXlibSurfaceKHR g_real_vkCreateXlibSurfaceKHR = NULL;
+static PFN_vkCreateXcbSurfaceKHR  g_real_vkCreateXcbSurfaceKHR = NULL;
+
+static void VulkanInitPointers() {
+	if(g_vulkan_handle == NULL) {
+		g_vulkan_handle = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_LOCAL);
+		if(!g_vulkan_handle)
+			g_vulkan_handle = dlopen("libvulkan.so", RTLD_NOW | RTLD_LOCAL);
+	}
+	g_in_real_resolve = true;
+#define RESOLVE_REAL_VK(name) \
+	if(!g_real_##name) { \
+		if(g_vulkan_handle) g_real_##name = (PFN_##name) dlsym(g_vulkan_handle, #name); \
+		if(!g_real_##name) g_real_##name = (PFN_##name) dlsym(RTLD_NEXT, #name); \
+	}
+
+	RESOLVE_REAL_VK(vkGetInstanceProcAddr);
+	RESOLVE_REAL_VK(vkGetDeviceProcAddr);
+	RESOLVE_REAL_VK(vkCreateInstance);
+	RESOLVE_REAL_VK(vkCreateDevice);
+	RESOLVE_REAL_VK(vkDestroyDevice);
+	RESOLVE_REAL_VK(vkCreateSwapchainKHR);
+	RESOLVE_REAL_VK(vkDestroySwapchainKHR);
+	RESOLVE_REAL_VK(vkQueuePresentKHR);
+	RESOLVE_REAL_VK(vkCreateXlibSurfaceKHR);
+	RESOLVE_REAL_VK(vkCreateXcbSurfaceKHR);
+	g_in_real_resolve = false;
+}
+
+struct VKDeviceInfo {
+	VkPhysicalDevice physical_device;
+	uint32_t queue_family_index;
+	VKDeviceInfo(VkPhysicalDevice pd = VK_NULL_HANDLE, uint32_t q = 0) : physical_device(pd), queue_family_index(q) {}
+};
+static std::map<VkDevice, VKDeviceInfo> g_vk_devices;
+static std::mutex g_vk_mutex;
+
+struct VKSurfaceInfo {
+	Display *display;
+	Window window;
+	VKSurfaceInfo(Display *d = NULL, Window w = 0) : display(d), window(w) {}
+};
+static std::map<VkSurfaceKHR, VKSurfaceInfo> g_vk_surfaces;
+static Display *g_x11_shared_display = NULL;
+
+VkResult glinject_hook_vkCreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkInstance* pInstance) {
+	VulkanInitPointers();
+	if(!g_real_vkCreateInstance)
+		return VK_ERROR_INITIALIZATION_FAILED;
+	return g_real_vkCreateInstance(pCreateInfo, pAllocator, pInstance);
+}
+
+VkResult glinject_hook_vkCreateDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDevice* pDevice) {
+	VulkanInitPointers();
+	PFN_vkCreateDevice real_fn = g_real_vkCreateDevice;
+	if(!real_fn) {
+		g_in_real_resolve = true;
+		real_fn = (PFN_vkCreateDevice) dlsym(RTLD_NEXT, "vkCreateDevice");
+		g_in_real_resolve = false;
+	}
+	if(!real_fn)
+		return VK_ERROR_INITIALIZATION_FAILED;
+
+	VkResult res = real_fn(physicalDevice, pCreateInfo, pAllocator, pDevice);
+	if(res == VK_SUCCESS && pDevice != NULL) {
+		uint32_t qfam = 0;
+		if(pCreateInfo != NULL && pCreateInfo->queueCreateInfoCount > 0 && pCreateInfo->pQueueCreateInfos != NULL)
+			qfam = pCreateInfo->pQueueCreateInfos[0].queueFamilyIndex;
+		std::lock_guard<std::mutex> lock(g_vk_mutex);
+		g_vk_devices[*pDevice] = VKDeviceInfo(physicalDevice, qfam);
+	}
+	return res;
+}
+
+void glinject_hook_vkDestroyDevice(VkDevice device, const VkAllocationCallbacks* pAllocator) {
+	VulkanInitPointers();
+	{
+		std::lock_guard<std::mutex> lock(g_vk_mutex);
+		g_vk_devices.erase(device);
+	}
+	{
+		std::lock_guard<std::mutex> lock(g_glinject_mutex);
+		if(g_glinject != NULL)
+			g_glinject->DeleteVKFrameGrabberByDevice(device);
+	}
+	if(g_real_vkDestroyDevice)
+		g_real_vkDestroyDevice(device, pAllocator);
+}
+
+VkResult glinject_hook_vkCreateXlibSurfaceKHR(VkInstance instance, const VkXlibSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) {
+	VulkanInitPointers();
+	PFN_vkCreateXlibSurfaceKHR real_fn = g_real_vkCreateXlibSurfaceKHR;
+	if(!real_fn && g_real_vkGetInstanceProcAddr)
+		real_fn = (PFN_vkCreateXlibSurfaceKHR) g_real_vkGetInstanceProcAddr(instance, "vkCreateXlibSurfaceKHR");
+	if(!real_fn)
+		return VK_ERROR_INITIALIZATION_FAILED;
+
+	VkResult res = real_fn(instance, pCreateInfo, pAllocator, pSurface);
+	if(res == VK_SUCCESS && pSurface != NULL && pCreateInfo != NULL) {
+		std::lock_guard<std::mutex> lock(g_vk_mutex);
+		g_vk_surfaces[*pSurface] = VKSurfaceInfo(pCreateInfo->dpy, pCreateInfo->window);
+	}
+	return res;
+}
+
+VkResult glinject_hook_vkCreateXcbSurfaceKHR(VkInstance instance, const VkXcbSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) {
+	VulkanInitPointers();
+	PFN_vkCreateXcbSurfaceKHR real_fn = g_real_vkCreateXcbSurfaceKHR;
+	if(!real_fn && g_real_vkGetInstanceProcAddr)
+		real_fn = (PFN_vkCreateXcbSurfaceKHR) g_real_vkGetInstanceProcAddr(instance, "vkCreateXcbSurfaceKHR");
+	if(!real_fn)
+		return VK_ERROR_INITIALIZATION_FAILED;
+
+	VkResult res = real_fn(instance, pCreateInfo, pAllocator, pSurface);
+	if(res == VK_SUCCESS && pSurface != NULL && pCreateInfo != NULL) {
+		std::lock_guard<std::mutex> lock(g_vk_mutex);
+		if(g_x11_shared_display == NULL)
+			g_x11_shared_display = XOpenDisplay(NULL);
+		g_vk_surfaces[*pSurface] = VKSurfaceInfo(g_x11_shared_display, (Window) pCreateInfo->window);
+	}
+	return res;
+}
+
+VkResult glinject_hook_vkCreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchain) {
+	VulkanInitPointers();
+	PFN_vkCreateSwapchainKHR real_fn = g_real_vkCreateSwapchainKHR;
+	if(!real_fn && g_real_vkGetDeviceProcAddr)
+		real_fn = (PFN_vkCreateSwapchainKHR) g_real_vkGetDeviceProcAddr(device, "vkCreateSwapchainKHR");
+	if(!real_fn)
+		return VK_ERROR_INITIALIZATION_FAILED;
+
+	VkSwapchainCreateInfoKHR modified = *pCreateInfo;
+	modified.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+	VkResult res = real_fn(device, &modified, pAllocator, pSwapchain);
+	if(res != VK_SUCCESS) {
+		// Fallback to original createInfo if driver rejected modified imageUsage
+		res = real_fn(device, pCreateInfo, pAllocator, pSwapchain);
+	}
+
+	if(res == VK_SUCCESS && pSwapchain != NULL) {
+		VKDeviceInfo devInfo;
+		VKSurfaceInfo surfInfo;
+		{
+			std::lock_guard<std::mutex> lock(g_vk_mutex);
+			auto it_dev = g_vk_devices.find(device);
+			if(it_dev != g_vk_devices.end())
+				devInfo = it_dev->second;
+			auto it_surf = g_vk_surfaces.find(pCreateInfo->surface);
+			if(it_surf != g_vk_surfaces.end())
+				surfInfo = it_surf->second;
+		}
+		std::lock_guard<std::mutex> lock(g_glinject_mutex);
+		GLInjectInit();
+		g_glinject->NewVKFrameGrabber(device, devInfo.physical_device, devInfo.queue_family_index, *pSwapchain, pCreateInfo->imageFormat, pCreateInfo->imageExtent.width, pCreateInfo->imageExtent.height, surfInfo.display, surfInfo.window);
+	}
+	return res;
+}
+
+void glinject_hook_vkDestroySwapchainKHR(VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks* pAllocator) {
+	VulkanInitPointers();
+	{
+		std::lock_guard<std::mutex> lock(g_glinject_mutex);
+		if(g_glinject != NULL)
+			g_glinject->DeleteVKFrameGrabberBySwapchain(swapchain);
+	}
+	PFN_vkDestroySwapchainKHR real_fn = g_real_vkDestroySwapchainKHR;
+	if(!real_fn && g_real_vkGetDeviceProcAddr)
+		real_fn = (PFN_vkDestroySwapchainKHR) g_real_vkGetDeviceProcAddr(device, "vkDestroySwapchainKHR");
+	if(real_fn)
+		real_fn(device, swapchain, pAllocator);
+}
+
+VkResult glinject_hook_vkQueuePresentKHR(VkQueue queue, const VkPresentInfoKHR* pPresentInfo) {
+	VulkanInitPointers();
+	if(pPresentInfo != NULL && pPresentInfo->pSwapchains != NULL && pPresentInfo->pImageIndices != NULL) {
+		std::lock_guard<std::mutex> lock(g_glinject_mutex);
+		GLInjectInit();
+		for(uint32_t i = 0; i < pPresentInfo->swapchainCount; ++i) {
+			VKFrameGrabber *fg = g_glinject->FindVKFrameGrabber(pPresentInfo->pSwapchains[i]);
+			if(fg != NULL) {
+				fg->GrabFrame(queue, pPresentInfo->pImageIndices[i]);
+			}
+		}
+	}
+	PFN_vkQueuePresentKHR real_fn = g_real_vkQueuePresentKHR;
+	if(!real_fn) {
+		g_in_real_resolve = true;
+		real_fn = (PFN_vkQueuePresentKHR) dlsym(RTLD_NEXT, "vkQueuePresentKHR");
+		g_in_real_resolve = false;
+	}
+	if(!real_fn)
+		return VK_ERROR_INITIALIZATION_FAILED;
+	return real_fn(queue, pPresentInfo);
+}
+
+PFN_vkVoidFunction glinject_hook_vkGetInstanceProcAddr(VkInstance instance, const char* pName) {
+	VulkanInitPointers();
+	if(pName != NULL) {
+		if(strcmp(pName, "vkGetInstanceProcAddr") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkGetInstanceProcAddr;
+		if(strcmp(pName, "vkGetDeviceProcAddr") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkGetDeviceProcAddr;
+		if(strcmp(pName, "vkCreateInstance") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkCreateInstance;
+		if(strcmp(pName, "vkCreateDevice") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkCreateDevice;
+		if(strcmp(pName, "vkDestroyDevice") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkDestroyDevice;
+		if(strcmp(pName, "vkCreateSwapchainKHR") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkCreateSwapchainKHR;
+		if(strcmp(pName, "vkDestroySwapchainKHR") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkDestroySwapchainKHR;
+		if(strcmp(pName, "vkQueuePresentKHR") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkQueuePresentKHR;
+		if(strcmp(pName, "vkCreateXlibSurfaceKHR") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkCreateXlibSurfaceKHR;
+		if(strcmp(pName, "vkCreateXcbSurfaceKHR") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkCreateXcbSurfaceKHR;
+	}
+	if(g_real_vkGetInstanceProcAddr)
+		return g_real_vkGetInstanceProcAddr(instance, pName);
+	return NULL;
+}
+
+PFN_vkVoidFunction glinject_hook_vkGetDeviceProcAddr(VkDevice device, const char* pName) {
+	VulkanInitPointers();
+	if(pName != NULL) {
+		if(strcmp(pName, "vkGetDeviceProcAddr") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkGetDeviceProcAddr;
+		if(strcmp(pName, "vkDestroyDevice") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkDestroyDevice;
+		if(strcmp(pName, "vkCreateSwapchainKHR") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkCreateSwapchainKHR;
+		if(strcmp(pName, "vkDestroySwapchainKHR") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkDestroySwapchainKHR;
+		if(strcmp(pName, "vkQueuePresentKHR") == 0) return (PFN_vkVoidFunction) &glinject_hook_vkQueuePresentKHR;
+	}
+	if(g_real_vkGetDeviceProcAddr)
+		return g_real_vkGetDeviceProcAddr(device, pName);
+	return NULL;
+}
+
+// Export functions for direct linking / LD_PRELOAD
+extern "C" {
+
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkInstance* pInstance) {
+	return glinject_hook_vkCreateInstance(pCreateInfo, pAllocator, pInstance);
+}
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDevice* pDevice) {
+	return glinject_hook_vkCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
+}
+VKAPI_ATTR void VKAPI_CALL vkDestroyDevice(VkDevice device, const VkAllocationCallbacks* pAllocator) {
+	glinject_hook_vkDestroyDevice(device, pAllocator);
+}
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchain) {
+	return glinject_hook_vkCreateSwapchainKHR(device, pCreateInfo, pAllocator, pSwapchain);
+}
+VKAPI_ATTR void VKAPI_CALL vkDestroySwapchainKHR(VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks* pAllocator) {
+	glinject_hook_vkDestroySwapchainKHR(device, swapchain, pAllocator);
+}
+VKAPI_ATTR VkResult VKAPI_CALL vkQueuePresentKHR(VkQueue queue, const VkPresentInfoKHR* pPresentInfo) {
+	return glinject_hook_vkQueuePresentKHR(queue, pPresentInfo);
+}
+VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetInstanceProcAddr(VkInstance instance, const char* pName) {
+	return glinject_hook_vkGetInstanceProcAddr(instance, pName);
+}
+VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetDeviceProcAddr(VkDevice device, const char* pName) {
+	return glinject_hook_vkGetDeviceProcAddr(device, pName);
+}
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateXlibSurfaceKHR(VkInstance instance, const VkXlibSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) {
+	return glinject_hook_vkCreateXlibSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
+}
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateXcbSurfaceKHR(VkInstance instance, const VkXcbSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) {
+	return glinject_hook_vkCreateXcbSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
+}
+
 }

@@ -688,9 +688,16 @@ void PageRecord::StartPage() {
 
 	try {
 
+#if SSR_USE_OPENGL_RECORDING || SSR_USE_VULKAN_RECORDING
+		// for OpenGL / Vulkan recording, create the input now
+		if(false
 #if SSR_USE_OPENGL_RECORDING
-		// for OpenGL recording, create the input now
-		if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT) {
+			|| m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT
+#endif
+#if SSR_USE_VULKAN_RECORDING
+			|| m_video_backend == PageInput::VIDEO_BACKEND_VULKAN
+#endif
+		) {
 			if(glinject_auto_launch)
 				GLInjectInput::LaunchApplication(glinject_channel, glinject_relax_permissions, glinject_command, glinject_working_directory);
 			m_gl_inject_input.reset(new GLInjectInput(glinject_channel, glinject_relax_permissions, m_video_record_cursor, glinject_limit_fps, m_video_frame_rate));
@@ -825,17 +832,24 @@ void PageRecord::StartOutput() {
 			if(m_x11_input != NULL)
 				m_x11_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 
+#if SSR_USE_OPENGL_RECORDING || SSR_USE_VULKAN_RECORDING
+			// for OpenGL / Vulkan recording, detect the video size
+			if((false
 #if SSR_USE_OPENGL_RECORDING
-			// for OpenGL recording, detect the video size
-			if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT && !m_video_scaling) {
+				|| m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT
+#endif
+#if SSR_USE_VULKAN_RECORDING
+				|| m_video_backend == PageInput::VIDEO_BACKEND_VULKAN
+#endif
+			) && !m_video_scaling) {
 				if(m_gl_inject_input == NULL) {
-					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application because the GLInject input has not been created."));
+					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the application because the GLInject input has not been created."));
 					throw GLInjectException();
 				}
 				m_gl_inject_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
 				if(m_video_in_width == 0 && m_video_in_height == 0) {
-					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the OpenGL application. Either the "
-									 "application wasn't started correctly, or the application hasn't created an OpenGL window yet. If "
+					Logger::LogError("[PageRecord::StartOutput] " + tr("Error: Could not get the size of the application. Either the "
+									 "application wasn't started correctly, or the application hasn't created a window yet. If "
 									 "you want to start recording before starting the application, you have to enable scaling and enter "
 									 "the video size manually."));
 					throw GLInjectException();
@@ -848,9 +862,16 @@ void PageRecord::StartOutput() {
 				// Only even width and height is allowed because some pixel formats (e.g. YUV420) require this.
 				m_output_settings.video_width = m_video_scaled_width / 2 * 2;
 				m_output_settings.video_height = m_video_scaled_height / 2 * 2;
+#if SSR_USE_OPENGL_RECORDING || SSR_USE_VULKAN_RECORDING
+			} else if(false
 #if SSR_USE_OPENGL_RECORDING
-			} else if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT) {
-				// The input size is the size of the OpenGL application and can't be changed. The output size is set to the current size of the application.
+				|| m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT
+#endif
+#if SSR_USE_VULKAN_RECORDING
+				|| m_video_backend == PageInput::VIDEO_BACKEND_VULKAN
+#endif
+			) {
+				// The input size is the size of the application and can't be changed. The output size is set to the current size of the application.
 				m_output_settings.video_width = m_video_in_width / 2 * 2;
 				m_output_settings.video_height = m_video_in_height / 2 * 2;
 #endif
@@ -952,8 +973,15 @@ void PageRecord::StartInput() {
 										   m_video_x11_area == PageInput::VIDEO_X11_AREA_CURSOR, m_video_x11_follow_fullscreen));
 			connect(m_x11_input.get(), SIGNAL(CurrentRectangleChanged()), this, SLOT(OnUpdateRecordingFrame()), Qt::QueuedConnection);
 		}
+#if SSR_USE_OPENGL_RECORDING || SSR_USE_VULKAN_RECORDING
+		if(false
 #if SSR_USE_OPENGL_RECORDING
-		if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT) {
+			|| m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT
+#endif
+#if SSR_USE_VULKAN_RECORDING
+			|| m_video_backend == PageInput::VIDEO_BACKEND_VULKAN
+#endif
+		) {
 			if(m_gl_inject_input == NULL) {
 				Logger::LogError("[PageRecord::StartInput] " + tr("Error: Could not start the GLInject input because it has not been created."));
 				throw GLInjectException();
@@ -1093,8 +1121,15 @@ void PageRecord::UpdateInput() {
 	AudioSource *audio_source = NULL;
 	if(m_video_backend == PageInput::VIDEO_BACKEND_X11)
 		video_source = m_x11_input.get();
+#if SSR_USE_OPENGL_RECORDING || SSR_USE_VULKAN_RECORDING
+	if(false
 #if SSR_USE_OPENGL_RECORDING
-	if(m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT)
+		|| m_video_backend == PageInput::VIDEO_BACKEND_GLINJECT
+#endif
+#if SSR_USE_VULKAN_RECORDING
+		|| m_video_backend == PageInput::VIDEO_BACKEND_VULKAN
+#endif
+	)
 		video_source = m_gl_inject_input.get();
 #endif
 #if SSR_USE_V4L2

@@ -32,7 +32,12 @@ DialogGLInject::DialogGLInject(PageInput* parent)
 
 	m_parent = parent;
 
-	setWindowTitle(tr("OpenGL Settings"));
+#if SSR_USE_VULKAN_RECORDING
+	if(m_parent->GetVideoBackend() == PageInput::VIDEO_BACKEND_VULKAN)
+		setWindowTitle(tr("Vulkan Settings"));
+	else
+#endif
+		setWindowTitle(tr("OpenGL Settings"));
 
 	QLabel *label_info = new QLabel(this);
 	label_info->setText(tr("<p>Warning: OpenGL recording works by injecting a library into the program that will be recorded. "

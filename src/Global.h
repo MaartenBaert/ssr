@@ -205,6 +205,11 @@ extern "C" {
 #error SSR_USE_OPENGL_RECORDING should be defined!
 #endif
 
+// Whether Vulkan recording should be used.
+#ifndef SSR_USE_VULKAN_RECORDING
+#define SSR_USE_VULKAN_RECORDING 1
+#endif
+
 // Whether V4L2 should be used.
 #ifndef SSR_USE_V4L2
 #error SSR_USE_V4L2 should be defined!
