@@ -289,6 +289,9 @@ inline void atomic_thread_fence_replacement(memory_order) {
 // avformat_free_context: lavf 52.96.0 / 52.96.0
 #define SSR_USE_AVFORMAT_FREE_CONTEXT              TEST_AV_VERSION(LIBAVFORMAT, 52, 96, 52, 96)
 
+// avcodec_get_supported_config: lavc 61.13.100 / ???
+// AVCodec::pix_fmts and AVCodec::sample_fmts were deprecated at the same time and removed in lavc 63
+#define SSR_USE_AVCODEC_GET_SUPPORTED_CONFIG       TEST_AV_VERSION(LIBAVCODEC, 61, 13, 999, 999)
 // avcodec_close deprecated: lavc 60.39.100 / ???
 // - ffmpeg: missing, commit: https://github.com/FFmpeg/FFmpeg/commit/1cc24d749569a42510399a29b034f7a77bdec34e
 #define SSR_USE_AVCODEC_CLOSE_DEPRECATED           TEST_AV_VERSION(LIBAVCODEC, 60, 39, 999, 999)

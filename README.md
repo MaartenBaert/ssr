@@ -1,6 +1,8 @@
 SimpleScreenRecorder
 ====================
 
+**Warning: The site simplescreenrecorder.com is FAKE and in no way affiliated with this project. Do NOT download SimpleScreenRecorder from that website, as it may contain malware. The only official webpage of the SimpleScreenRecorder project is [maartenbaert.be/simplescreenrecorder](https://www.maartenbaert.be/simplescreenrecorder/). See [this issue](https://github.com/MaartenBaert/ssr/issues/1086) for details.**
+
 SimpleScreenRecorder is a screen recorder for Linux. Despite the name, this program is actually quite complex. It's 'simple' in the sense that it's easier to use than ffmpeg/avconv or VLC :).
 
 There is a separate repository for SimpleScreenRecorder packages:
