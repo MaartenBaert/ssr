@@ -81,7 +81,7 @@ void OutputManager::Finish() {
 
 	// stop the synchronizer
 	if(m_synchronizer != NULL) {
-		m_synchronizer->NewSegment(); // needed to make sure that all data is sent to the encoders
+		m_synchronizer->NewSegment(false); // needed to make sure that all data is sent to the encoders
 		m_synchronizer.reset();
 	}
 

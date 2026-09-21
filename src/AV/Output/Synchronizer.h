@@ -107,6 +107,7 @@ private:
 	MutexDataPair<AudioData> m_audio_data;
 	MutexDataPair<SharedData> m_shared_data;
 	std::atomic<bool> m_should_stop, m_error_occurred;
+	std::atomic<bool> m_paused;
 
 public:
 	// The arguments 'video_encoder' and 'audio_encoder' can be NULL to disable video or audio.
@@ -124,11 +125,23 @@ public:
 	// This function has no effect if there are no frames in the current segment, so it is safe to call this multiple times.
 	// This function is thread-safe, but for best results you should still make sure that no input is running
 	// while this function is called, because otherwise frames may end up in the wrong segment.
-	void NewSegment();
+	void NewSegment(bool is_pause = false);
+
+	// Pause the synchronizer - prevents flushing buffers to output
+	// This function is thread-safe.
+	void Pause();
+
+	// Resume the synchronizer - allows flushing buffers to output again
+	// This function is thread-safe.
+	void Resume();
 
 	// Returns the total recording time (in microseconds).
 	// This function is thread-safe.
 	int64_t GetTotalTime();
+
+	// Resets the last video frame data to prevent duplicate frame insertion during pause.
+	// This function is thread-safe.
+	void ResetLastVideoFrame();
 
 	// Returns whether an error has occurred in the synchronizer thread.
 	// This function is thread-safe.
@@ -147,7 +160,7 @@ public: // internal
 private:
 	void InitAudioSegment(AudioData* audiolock);
 	double GetAudioDrift(AudioData* audiolock, unsigned int extra_samples = 0);
-	void NewSegment(SharedData* lock);
+	void NewSegment(SharedData* lock, bool is_pause = false);
 	void InitSegment(SharedData* lock);
 	int64_t GetTotalTime(SharedData* lock);
 	void GetSegmentStartStop(SharedData* lock, int64_t* segment_start_time, int64_t* segment_stop_time);

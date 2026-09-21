@@ -51,7 +51,7 @@ private:
 	std::atomic<bool> m_should_stop, m_should_finish, m_is_done, m_error_occurred;
 
 protected:
-	BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options);
+	BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options);
 
 public:
 	virtual ~BaseEncoder(); // encoders will be deleted by Muxer, don't delete them yourself!
@@ -117,7 +117,7 @@ protected:
 	void IncrementPacketCounter();
 
 private:
-	void Init(AVCodec* codec, AVDictionary** options);
+	void Init(const AVCodec* codec, AVDictionary** options);
 	void Free();
 
 	void EncoderThread();
