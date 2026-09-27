@@ -71,6 +71,7 @@ private:
 
 	bool m_page_started, m_input_started, m_output_started, m_previewing;
 	bool m_recorded_something, m_wait_saving, m_error_occurred;
+	bool m_wait_input, m_input_wait_failed;
 
 	bool m_schedule_active;
 	unsigned int m_schedule_position;
@@ -117,6 +118,11 @@ private:
 #endif
 #if SSR_USE_PIPEWIRE
 	std::unique_ptr<PipeWireInput> m_pipewire_input;
+#endif
+#if SSR_USE_PORTAL
+	uint m_wayland_request = 0;
+	bool m_wayland_pending = false;
+	bool m_wayland_start_output = false;
 #endif
 #if SSR_USE_ALSA
 	std::unique_ptr<ALSAInput> m_alsa_input;
@@ -196,6 +202,17 @@ public:
 	void StopInput();
 
 private:
+#if SSR_USE_PIPEWIRE
+	bool UsesPipeWire();
+	void CheckPipeWireInput();
+	void WaitForPipeWireFormat();
+#endif
+#if SSR_USE_PORTAL
+	void OnWaylandSourceReady();
+	void OnWaylandRemoteReady(int fd, quint32 node_id, uint request_id);
+	void OnWaylandSourceFailed();
+#endif
+	bool IsRecordingRequested();
 	void FinishOutput();
 	void UpdateInput();
 	void UpdateSysTray();

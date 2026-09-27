@@ -210,6 +210,14 @@ extern "C" {
 #error SSR_USE_V4L2 should be defined!
 #endif
 
+// Whether the XDG Desktop Portal (in-app screen/window selection for Wayland) should be used.
+#ifndef SSR_USE_PORTAL
+#error SSR_USE_PORTAL should be defined!
+#endif
+#if SSR_USE_PORTAL && !SSR_USE_PIPEWIRE
+#error SSR_USE_PORTAL requires SSR_USE_PIPEWIRE
+#endif
+
 // Whether ALSA should be used.
 #ifndef SSR_USE_ALSA
 #error SSR_USE_ALSA should be defined!
@@ -394,6 +402,14 @@ class PipeWireException : public std::exception {
 public:
 	inline virtual const char* what() const throw() override {
 		return "PipeWireException";
+	}
+};
+#endif
+#if SSR_USE_PORTAL
+class PortalException : public std::exception {
+public:
+	inline virtual const char* what() const throw() override {
+		return "PortalException";
 	}
 };
 #endif

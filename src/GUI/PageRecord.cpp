@@ -44,6 +44,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #if SSR_USE_PIPEWIRE
 #include "PipeWireInput.h"
 #endif
+#if SSR_USE_PORTAL
+#include "XdgDesktopPortal.h"
+#endif
 #if SSR_USE_ALSA
 #include "ALSAInput.h"
 #endif
@@ -166,6 +169,8 @@ PageRecord::PageRecord(MainWindow* main_window)
 	m_input_started = false;
 	m_output_started = false;
 	m_previewing = false;
+	m_wait_input = false;
+	m_input_wait_failed = false;
 
 	m_schedule_active = false;
 	m_schedule_time_zone = SCHEDULE_TIME_ZONE_LOCAL;
@@ -417,6 +422,18 @@ PageRecord::PageRecord(MainWindow* main_window)
 	connect(&m_hotkey_start_pause, SIGNAL(Triggered()), this, SLOT(OnRecordStartPause()), Qt::QueuedConnection);
 	connect(Logger::GetInstance(), SIGNAL(NewLine(Logger::enum_type,QString)), this, SLOT(OnNewLogLine(Logger::enum_type,QString)), Qt::QueuedConnection);
 
+#if SSR_USE_PORTAL
+	connect(XdgDesktopPortal::GetInstance(), &XdgDesktopPortal::SourceReady, this, &PageRecord::OnWaylandSourceReady);
+	connect(XdgDesktopPortal::GetInstance(), &XdgDesktopPortal::RemoteReady, this, &PageRecord::OnWaylandRemoteReady);
+	connect(XdgDesktopPortal::GetInstance(), &XdgDesktopPortal::SourceFailed, this, &PageRecord::OnWaylandSourceFailed);
+	connect(XdgDesktopPortal::GetInstance(), &XdgDesktopPortal::SourceCancelled, this, [this]() {
+		if(m_page_started && m_video_backend == PageInput::VIDEO_BACKEND_WAYLAND) {
+			Logger::LogError("[PageRecord] " + tr("Error: Screen/window selection was cancelled."));
+			OnWaylandSourceFailed();
+		}
+	});
+#endif
+
 	UpdateSysTray();
 	UpdateRecordButton();
 	UpdateSchedule();
@@ -433,6 +450,8 @@ PageRecord::~PageRecord() {
 }
 
 bool PageRecord::ShouldBlockClose() {
+	if(m_wait_input)
+		return true;
 	if(m_output_manager != NULL) {
 		enum_button answer = MessageBox(QMessageBox::Warning, this, MainWindow::WINDOW_CAPTION,
 					  tr("You have not saved the current recording yet, if you quit now it will be lost.\n"
@@ -519,6 +538,114 @@ void PageRecord::SaveSettings(QSettings *settings) {
 		settings->setValue(QString("record/schedule_entry%1_action").arg(i), EnumToString(m_schedule_entries[i].action));
 	}
 }
+
+#if SSR_USE_PIPEWIRE
+bool PageRecord::UsesPipeWire() {
+	return m_video_backend == PageInput::VIDEO_BACKEND_PIPEWIRE
+#if SSR_USE_PORTAL
+		|| m_video_backend == PageInput::VIDEO_BACKEND_WAYLAND
+#endif
+		;
+}
+
+void PageRecord::CheckPipeWireInput() {
+	if(UsesPipeWire() && (m_pipewire_input == NULL || m_pipewire_input->HasErrorOccurred())) {
+		Logger::LogError("[PageRecord] " + tr("Error: Video capture is unavailable because input initialization failed or the source was closed. Return to the recording page to try again."));
+		throw PipeWireException();
+	}
+}
+
+void PageRecord::WaitForPipeWireFormat() {
+	assert(!m_wait_input);
+	m_wait_input = true;
+	m_input_wait_failed = false;
+	struct WaitGuard {
+		bool& waiting;
+		~WaitGuard() { waiting = false; }
+	} wait_guard{m_wait_input};
+
+	QProgressDialog dialog(tr("Preparing screen capture ..."), QString(), 0, 0, this);
+	dialog.setWindowTitle(MainWindow::WINDOW_CAPTION);
+	dialog.setWindowModality(Qt::WindowModal);
+	dialog.setCancelButton(NULL);
+	dialog.setMinimumDuration(500);
+
+	QElapsedTimer timer;
+	timer.start();
+	bool format_known = false;
+	while(!m_input_wait_failed && !m_pipewire_input->HasErrorOccurred()) {
+		qint64 remaining = 5000 - timer.elapsed();
+		if(remaining <= 0)
+			break;
+		if(m_pipewire_input->WaitUntilFormatKnown(std::min<qint64>(20, remaining))) {
+			format_known = true;
+			break;
+		}
+		if(timer.elapsed() >= 500) {
+			if(!dialog.isVisible())
+				dialog.show();
+			// An indeterminate progress bar has no changing value to pump events.
+			// Command handlers are guarded by m_wait_input, and portal failure
+			// callbacks leave the input alive until this wait has unwound.
+			QCoreApplication::processEvents();
+		}
+	}
+	if(!format_known || m_input_wait_failed || m_pipewire_input->HasErrorOccurred()) {
+		Logger::LogError("[PageRecord] " + (m_input_wait_failed
+			? tr("Error: The screen capture session closed while preparing video capture.")
+			: m_pipewire_input->HasErrorOccurred()
+			? tr("Error: PipeWire failed while negotiating the video format.")
+			: tr("Error: Timed out while waiting for the PipeWire video format.")));
+		throw PipeWireException();
+	}
+	m_pipewire_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+}
+#endif
+
+#if SSR_USE_PORTAL
+void PageRecord::OnWaylandSourceReady() {
+	if(m_page_started && m_video_backend == PageInput::VIDEO_BACKEND_WAYLAND && m_wayland_pending)
+		XdgDesktopPortal::GetInstance()->OpenPipeWireRemote(m_wayland_request);
+}
+
+void PageRecord::OnWaylandRemoteReady(int fd, quint32 node_id, uint request_id) {
+	if(m_wait_input || !m_page_started || !m_wayland_pending || request_id != m_wayland_request) {
+		::close(fd);
+		return;
+	}
+	m_wayland_pending = false;
+	bool start_output = m_wayland_start_output;
+	m_wayland_start_output = false;
+	UpdateRecordButton();
+	UpdateSysTray();
+	try {
+		// The compositor chooses the actual size. These are only negotiation defaults.
+		m_pipewire_input.reset(new PipeWireInput(fd, node_id, 800, 600, m_video_frame_rate));
+		WaitForPipeWireFormat();
+	} catch(...) {
+		m_pipewire_input.reset();
+		Logger::LogError("[PageRecord] " + tr("Error: Could not initialize Wayland video capture."));
+	}
+	if(start_output)
+		StartOutput();
+	UpdateInput();
+}
+
+void PageRecord::OnWaylandSourceFailed() {
+	if(!m_page_started || m_video_backend != PageInput::VIDEO_BACKEND_WAYLAND)
+		return;
+	++m_wayland_request;
+	m_wayland_pending = false;
+	m_wayland_start_output = false;
+	if(m_wait_input)
+		m_input_wait_failed = true;
+	else
+		m_pipewire_input.reset();
+	UpdateRecordButton();
+	UpdateSysTray();
+	// Keep output running, following the normal recording-page error policy.
+}
+#endif
 
 bool PageRecord::TryStartPage() {
 	if(m_page_started)
@@ -705,6 +832,13 @@ void PageRecord::StartPage() {
 		}
 #endif
 
+#if SSR_USE_PIPEWIRE
+		if(m_video_backend == PageInput::VIDEO_BACKEND_PIPEWIRE) {
+			m_pipewire_input.reset(new PipeWireInput(m_pipewire_source, m_video_in_width, m_video_in_height, m_video_frame_rate));
+			WaitForPipeWireFormat();
+		}
+#endif
+
 	} catch(...) {
 		Logger::LogError("[PageRecord::StartPage] " + tr("Error: Something went wrong during initialization."));
 #if SSR_USE_OPENGL_RECORDING
@@ -712,6 +846,9 @@ void PageRecord::StartPage() {
 #endif
 #if SSR_USE_JACK
 		m_jack_input.reset();
+#endif
+#if SSR_USE_PIPEWIRE
+		m_pipewire_input.reset();
 #endif
 	}
 
@@ -724,6 +861,21 @@ void PageRecord::StartPage() {
 	UpdateSysTray();
 #if SSR_USE_ALSA
 	OnUpdateSoundNotifications();
+#endif
+
+#if SSR_USE_PORTAL
+	++m_wayland_request;
+	m_wayland_pending = (m_video_backend == PageInput::VIDEO_BACKEND_WAYLAND);
+	m_wayland_start_output = false;
+	if(m_wayland_pending) {
+		XdgDesktopPortal *portal = XdgDesktopPortal::GetInstance();
+		if(portal->IsActive() && portal->GetRecordCursor() != m_video_record_cursor)
+			portal->RequestSource(m_main_window, XdgDesktopPortal::SOURCETYPE_ANY, m_video_record_cursor, true);
+		else if(portal->HasSource())
+			OnWaylandSourceReady();
+		else if(!portal->IsActive())
+			portal->RequestSource(m_main_window, XdgDesktopPortal::SOURCETYPE_ANY, m_video_record_cursor);
+	}
 #endif
 
 	UpdateInput();
@@ -741,6 +893,12 @@ void PageRecord::StopPage(bool save) {
 
 	if(!m_page_started)
 		return;
+
+#if SSR_USE_PORTAL
+	++m_wayland_request;
+	m_wayland_pending = false;
+	m_wayland_start_output = false;
+#endif
 
 	m_schedule_active = false;
 	UpdateSchedule();
@@ -775,6 +933,11 @@ void PageRecord::StopPage(bool save) {
 	m_jack_input.reset();
 #endif
 
+#if SSR_USE_PIPEWIRE
+	// stop PipeWire input (it was started when the page was started)
+	m_pipewire_input.reset();
+#endif
+
 	Logger::LogInfo("[PageRecord::StopPage] " + tr("Stopped page."));
 
 	m_page_started = false;
@@ -795,6 +958,15 @@ void PageRecord::StartOutput() {
 	if(m_output_started)
 		return;
 
+#if SSR_USE_PORTAL
+	if(m_wayland_pending) {
+		m_wayland_start_output = true;
+		UpdateRecordButton();
+		UpdateSysTray();
+		return;
+	}
+#endif
+
 #if SSR_USE_ALSA
 	if(m_simple_synth != NULL) {
 		m_simple_synth->PlaySequence(SEQUENCE_RECORD_START.data(), SEQUENCE_RECORD_START.size());
@@ -803,6 +975,12 @@ void PageRecord::StartOutput() {
 #endif
 
 	try {
+
+#if SSR_USE_PIPEWIRE
+		CheckPipeWireInput();
+		if(UsesPipeWire())
+			m_pipewire_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
+#endif
 
 		Logger::LogInfo("[PageRecord::StartOutput] " + tr("Starting output ..."));
 
@@ -890,6 +1068,11 @@ void PageRecord::StartOutput() {
 
 void PageRecord::StopOutput(bool final) {
 	assert(m_page_started);
+#if SSR_USE_PORTAL
+	m_wayland_start_output = false;
+	UpdateRecordButton();
+	UpdateSysTray();
+#endif
 
 	if(!m_output_started)
 		return;
@@ -933,6 +1116,11 @@ void PageRecord::StartInput() {
 
 	if(m_input_started)
 		return;
+#if SSR_USE_PORTAL
+	if(m_wayland_pending)
+		return;
+#endif
+
 
 	assert(m_x11_input == NULL);
 #if SSR_USE_ALSA
@@ -968,10 +1156,7 @@ void PageRecord::StartInput() {
 		}
 #endif
 #if SSR_USE_PIPEWIRE
-		if(m_video_backend == PageInput::VIDEO_BACKEND_PIPEWIRE) {
-			m_pipewire_input.reset(new PipeWireInput(m_pipewire_source, m_video_in_width, m_video_in_height, m_video_frame_rate));
-			m_pipewire_input->GetCurrentSize(&m_video_in_width, &m_video_in_height);
-		}
+		CheckPipeWireInput();
 #endif
 
 		// start the audio input
@@ -1001,9 +1186,7 @@ void PageRecord::StartInput() {
 #if SSR_USE_V4L2
 		m_v4l2_input.reset();
 #endif
-#if SSR_USE_PIPEWIRE
-		m_pipewire_input.reset();
-#endif
+		// PipeWire input shouldn't stop until the page stops
 #if SSR_USE_ALSA
 		m_alsa_input.reset();
 #endif
@@ -1032,9 +1215,7 @@ void PageRecord::StopInput() {
 #if SSR_USE_V4L2
 	m_v4l2_input.reset();
 #endif
-#if SSR_USE_PIPEWIRE
-	m_pipewire_input.reset();
-#endif
+	// PipeWire input shouldn't stop until the page stops
 #if SSR_USE_ALSA
 	m_alsa_input.reset();
 #endif
@@ -1102,7 +1283,7 @@ void PageRecord::UpdateInput() {
 		video_source = m_v4l2_input.get();
 #endif
 #if SSR_USE_PIPEWIRE
-	if(m_video_backend == PageInput::VIDEO_BACKEND_PIPEWIRE)
+	if(UsesPipeWire())
 		video_source = m_pipewire_input.get();
 #endif
 	if(m_audio_enabled) {
@@ -1155,7 +1336,7 @@ void PageRecord::UpdateSysTray() {
 	} else {
 		m_systray_icon->setIcon(g_icon_ssr_idle);
 	}
-	if(m_page_started && m_output_started) {
+	if(m_page_started && IsRecordingRequested()) {
 		m_systray_action_start_pause->setIcon(g_icon_pause);
 		m_systray_action_start_pause->setText(tr("Pause recording"));
 	} else {
@@ -1164,8 +1345,16 @@ void PageRecord::UpdateSysTray() {
 	}
 }
 
+bool PageRecord::IsRecordingRequested() {
+	return m_output_started
+#if SSR_USE_PORTAL
+		|| m_wayland_start_output
+#endif
+		;
+}
+
 void PageRecord::UpdateRecordButton() {
-	if(m_output_started) {
+	if(IsRecordingRequested()) {
 		m_pushbutton_record->setIcon(g_icon_pause);
 		m_pushbutton_record->setText(tr("Pause recording"));
 	} else {
@@ -1267,6 +1456,8 @@ void PageRecord::OnUpdateRecordingFrame() {
 }
 
 void PageRecord::OnRecordStart() {
+	if(m_wait_input)
+		return;
 	if(m_main_window->IsBusy())
 		return;
 	if(!TryStartPage())
@@ -1278,18 +1469,19 @@ void PageRecord::OnRecordStart() {
 }
 
 void PageRecord::OnRecordPause() {
+	if(m_wait_input)
+		return;
 	if(m_main_window->IsBusy())
 		return;
 	if(!m_page_started)
 		return;
 	if(m_wait_saving)
 		return;
-	if(m_output_started)
-		StopOutput(false);
+	StopOutput(false);
 }
 
 void PageRecord::OnRecordStartPause() {
-	if(m_page_started && m_output_started) {
+	if(m_page_started && IsRecordingRequested()) {
 		OnRecordPause();
 	} else {
 		OnRecordStart();
@@ -1298,6 +1490,8 @@ void PageRecord::OnRecordStartPause() {
 
 
 void PageRecord::OnRecordCancel(bool confirm) {
+	if(m_wait_input)
+		return;
 	if(m_main_window->IsBusy())
 		return;
 	if(!m_page_started)
@@ -1315,6 +1509,8 @@ void PageRecord::OnRecordCancel(bool confirm) {
 }
 
 void PageRecord::OnRecordSave(bool confirm) {
+	if(m_wait_input)
+		return;
 	if(m_main_window->IsBusy())
 		return;
 	if(!m_page_started)
@@ -1331,6 +1527,10 @@ void PageRecord::OnRecordSave(bool confirm) {
 }
 
 void PageRecord::OnScheduleTimer() {
+	if(m_wait_input) {
+		m_timer_schedule->start(20);
+		return;
+	}
 	if(!m_page_started)
 		return;
 	if(m_schedule_active) {
@@ -1367,6 +1567,8 @@ void PageRecord::OnScheduleTimer() {
 }
 
 void PageRecord::OnScheduleActivate() {
+	if(m_wait_input)
+		return;
 	if(m_main_window->IsBusy())
 		return;
 	if(!TryStartPage())
@@ -1378,6 +1580,8 @@ void PageRecord::OnScheduleActivate() {
 }
 
 void PageRecord::OnScheduleDeactivate() {
+	if(m_wait_input)
+		return;
 	if(m_main_window->IsBusy())
 		return;
 	if(!m_page_started)
@@ -1397,12 +1601,16 @@ void PageRecord::OnScheduleActivateDeactivate() {
 }
 
 void PageRecord::OnScheduleEdit() {
+	if(m_wait_input)
+		return;
 	DialogRecordSchedule dialog(this);
 	dialog.exec();
 	UpdateSchedule();
 }
 
 void PageRecord::OnPreviewStartStop() {
+	if(m_wait_input)
+		return;
 	if(!m_page_started)
 		return;
 	if(m_wait_saving)
@@ -1478,7 +1686,8 @@ void PageRecord::OnStdin() {
 			} else if(command == "window-hide") {
 				m_main_window->OnHide();
 			} else if(command == "quit") {
-				m_main_window->Quit();
+				if(!m_wait_input)
+					m_main_window->Quit();
 			} else {
 				Logger::LogError("[PageRecord::OnStdin] " + tr("Unknown command."));
 			}

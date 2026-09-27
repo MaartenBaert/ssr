@@ -27,6 +27,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "Logger.h"
 #include "MainWindow.h"
 #include "ScreenScaling.h"
+#if SSR_USE_PORTAL
+#include "XdgDesktopPortal.h"
+#endif
 
 int main(int argc, char* argv[]) {
 
@@ -126,6 +129,12 @@ int main(int argc, char* argv[]) {
 		// create hotkey listener
 		HotkeyListener hotkey_listener;
 		Q_UNUSED(hotkey_listener);
+
+#if SSR_USE_PORTAL
+		// create XDG desktop portal controller (used for Wayland screen/window selection)
+		XdgDesktopPortal xdg_desktop_portal;
+		Q_UNUSED(xdg_desktop_portal);
+#endif
 
 		// create main window
 		MainWindow mainwindow;

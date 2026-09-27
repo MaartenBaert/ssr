@@ -119,6 +119,8 @@ You will need the following packages to compile SimpleScreenRecorder:
 - cmake
 - pkg-config
 - Qt4 (4.8 or newer) or Qt5 (5.7 or newer)
+- QtDBus (for desktop portal support; disable with -DWITH_PORTAL=FALSE)
+- Qt GUI private development headers, wayland-client, wayland-protocols and wayland-scanner (optional, automatically enable native Wayland portal dialog parenting when available; disable with -DWITH_WAYLAND_PARENTING=FALSE). Without these, portal capture still works, but native Wayland picker dialogs are unparented. X11/XWayland parenting does not require these dependencies.
 - ffmpeg or libav (libavformat, libavcodec, libavutil, libswscale)
 - ALSA library
 - PulseAudio library (optional, disable with -DWITH_PULSEAUDIO=FALSE)

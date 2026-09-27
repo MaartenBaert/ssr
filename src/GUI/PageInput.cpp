@@ -26,6 +26,10 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "HiddenScrollArea.h"
 #include "Icons.h"
 #include "MainWindow.h"
+#if SSR_USE_PIPEWIRE && SSR_USE_PORTAL
+#include "XdgDesktopPortal.h"
+#include <unistd.h>
+#endif
 
 ENUMSTRINGS(PageInput::enum_video_backend) = {
 	{PageInput::VIDEO_BACKEND_X11, "x11"},
@@ -37,6 +41,9 @@ ENUMSTRINGS(PageInput::enum_video_backend) = {
 #endif
 #if SSR_USE_PIPEWIRE
 	{PageInput::VIDEO_BACKEND_PIPEWIRE, "pipewire"},
+#endif
+#if SSR_USE_PORTAL
+	{PageInput::VIDEO_BACKEND_WAYLAND, "wayland"},
 #endif
 };
 
@@ -302,7 +309,10 @@ PageInput::PageInput(MainWindow* main_window)
 			m_combobox_video_backend->addItem("V4L2");
 #endif
 #if SSR_USE_PIPEWIRE
-			m_combobox_video_backend->addItem("PipeWire");
+			m_combobox_video_backend->addItem(tr("PipeWire (manual)"));
+#endif
+#if SSR_USE_PORTAL
+			m_combobox_video_backend->addItem(tr("Wayland"));
 #endif
 			m_combobox_video_backend->setToolTip(tr("The video backend that will be used for recording."));
 			m_buttongroup_video_x11_area = new QButtonGroup(groupbox_video);
@@ -379,6 +389,12 @@ PageInput::PageInput(MainWindow* main_window)
 			m_spinbox_video_pipewire_height->setRange(0, SSR_MAX_IMAGE_SIZE);
 			m_spinbox_video_pipewire_height->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_spinbox_video_pipewire_height->setToolTip(tr("The height of the video."));
+#if SSR_USE_PORTAL
+			m_pushbutton_video_pipewire_portal = new QPushButton(tr("Select screen/window..."), groupbox_video);
+			m_pushbutton_video_pipewire_portal->setToolTip(tr("Select a screen or window to record."));
+			m_label_video_pipewire_portal_status = new QLabel(groupbox_video);
+			m_label_video_pipewire_portal_status->setWordWrap(true);
+#endif
 #endif
 			QLabel *label_frame_rate = new QLabel(tr("Frame rate:"), groupbox_video);
 			m_spinbox_video_frame_rate = new QSpinBox(groupbox_video);
@@ -423,6 +439,13 @@ PageInput::PageInput(MainWindow* main_window)
 			connect(m_pushbutton_video_x11_select_window, SIGNAL(clicked()), this, SLOT(OnStartSelectWindow()));
 #if SSR_USE_OPENGL_RECORDING
 			connect(m_pushbutton_video_opengl_settings, SIGNAL(clicked()), this, SLOT(OnGLInjectDialog()));
+#endif
+#if SSR_USE_PIPEWIRE && SSR_USE_PORTAL
+			connect(m_checkbox_record_cursor, SIGNAL(toggled(bool)), this, SLOT(OnWaylandCursorChanged()));
+			connect(m_pushbutton_video_pipewire_portal, SIGNAL(clicked()), this, SLOT(OnSelectPipeWireSourcePortal()));
+			connect(XdgDesktopPortal::GetInstance(), SIGNAL(SourceReady()), this, SLOT(OnPipeWireSourceReady()));
+			connect(XdgDesktopPortal::GetInstance(), SIGNAL(SourceCancelled()), this, SLOT(OnPipeWireSourceCancelled()));
+			connect(XdgDesktopPortal::GetInstance(), SIGNAL(SourceFailed(QString)), this, SLOT(OnPipeWireSourceFailed(QString)));
 #endif
 			connect(m_checkbox_scale, SIGNAL(clicked()), this, SLOT(OnUpdateVideoScaleFields()));
 
@@ -500,6 +523,16 @@ PageInput::PageInput(MainWindow* main_window)
 				layout2->addWidget(m_spinbox_video_pipewire_height, 1, 3);
 			}
 #endif
+			layout->addWidget(m_checkbox_record_cursor);
+#if SSR_USE_PORTAL
+			{
+				QHBoxLayout *layout2 = new QHBoxLayout();
+				layout->addLayout(layout2);
+				layout2->addWidget(m_pushbutton_video_pipewire_portal);
+				layout2->addStretch();
+			}
+			layout->addWidget(m_label_video_pipewire_portal_status);
+#endif
 			{
 				QGridLayout *layout2 = new QGridLayout();
 				layout->addLayout(layout2);
@@ -515,7 +548,6 @@ PageInput::PageInput(MainWindow* main_window)
 				layout2->addWidget(m_label_video_scaled_height, 0, 2);
 				layout2->addWidget(m_spinbox_video_scaled_height, 0, 3);
 			}
-			layout->addWidget(m_checkbox_record_cursor);
 		}
 		QGroupBox *groupbox_audio = new QGroupBox(tr("Audio input"), scrollarea_contents);
 		{
@@ -1141,12 +1173,19 @@ void PageInput::OnUpdateVideoAreaFields() {
 			m_label_video_pipewire_width, m_label_video_pipewire_height, m_spinbox_video_pipewire_width, m_spinbox_video_pipewire_height,
 		}, (backend == VIDEO_BACKEND_PIPEWIRE)},
 #endif
-	});
-#if SSR_USE_OPENGL_RECORDING
-	GroupEnabled({m_checkbox_record_cursor}, (backend == VIDEO_BACKEND_X11 || backend == VIDEO_BACKEND_GLINJECT));
-#else
-	GroupEnabled({m_checkbox_record_cursor}, (backend == VIDEO_BACKEND_X11));
+#if SSR_USE_PORTAL
+		{{m_pushbutton_video_pipewire_portal}, (backend == VIDEO_BACKEND_WAYLAND)},
+		{{m_label_video_pipewire_portal_status}, (backend == VIDEO_BACKEND_WAYLAND && !m_label_video_pipewire_portal_status->text().isEmpty())},
 #endif
+	});
+	GroupEnabled({m_checkbox_record_cursor}, (backend == VIDEO_BACKEND_X11
+#if SSR_USE_OPENGL_RECORDING
+		|| backend == VIDEO_BACKEND_GLINJECT
+#endif
+#if SSR_USE_PORTAL
+		|| backend == VIDEO_BACKEND_WAYLAND
+#endif
+	));
 	if(GetVideoBackend() == VIDEO_BACKEND_X11) {
 		switch(GetVideoX11Area()) {
 			case VIDEO_X11_AREA_SCREEN: {
@@ -1313,6 +1352,41 @@ void PageInput::OnGLInjectDialog() {
 	DialogGLInject dialog(this);
 	dialog.exec();
 }
+#endif
+
+#if SSR_USE_PIPEWIRE
+#if SSR_USE_PORTAL
+void PageInput::SetWaylandStatus(const QString& text) {
+	m_label_video_pipewire_portal_status->setText(text);
+	m_label_video_pipewire_portal_status->setVisible(GetVideoBackend() == VIDEO_BACKEND_WAYLAND && !text.isEmpty());
+}
+
+void PageInput::OnSelectPipeWireSourcePortal() {
+	SetWaylandStatus(tr("Waiting for the desktop portal ..."));
+	XdgDesktopPortal::GetInstance()->RequestSource(m_main_window, XdgDesktopPortal::SOURCETYPE_ANY, GetVideoRecordCursor());
+}
+
+void PageInput::OnWaylandCursorChanged() {
+	XdgDesktopPortal *portal = XdgDesktopPortal::GetInstance();
+	if(GetVideoBackend() == VIDEO_BACKEND_WAYLAND && portal->IsActive() && portal->GetRecordCursor() != GetVideoRecordCursor()) {
+		SetWaylandStatus(tr("Updating cursor setting ..."));
+		portal->RequestSource(m_main_window, XdgDesktopPortal::SOURCETYPE_ANY, GetVideoRecordCursor(), true);
+	}
+}
+
+void PageInput::OnPipeWireSourceReady() {
+	SetWaylandStatus(tr("Screen/window selected."));
+}
+
+void PageInput::OnPipeWireSourceCancelled() {
+	SetWaylandStatus(QString());
+}
+
+void PageInput::OnPipeWireSourceFailed(QString error_message) {
+	SetWaylandStatus(tr("Error: %1").arg(error_message));
+}
+
+#endif
 #endif
 
 void PageInput::OnContinue() {

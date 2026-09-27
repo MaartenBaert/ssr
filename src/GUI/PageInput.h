@@ -115,6 +115,9 @@ public:
 #if SSR_USE_PIPEWIRE
 		VIDEO_BACKEND_PIPEWIRE,
 #endif
+#if SSR_USE_PORTAL
+		VIDEO_BACKEND_WAYLAND,
+#endif
 		VIDEO_BACKEND_COUNT // must be last
 	};
 	enum enum_video_x11_area {
@@ -185,6 +188,10 @@ private:
 	QLineEdit *m_lineedit_video_pipewire_source;
 	QLabel *m_label_video_pipewire_width, *m_label_video_pipewire_height;
 	QSpinBoxWithSignal *m_spinbox_video_pipewire_width, *m_spinbox_video_pipewire_height;
+#if SSR_USE_PORTAL
+	QPushButton *m_pushbutton_video_pipewire_portal;
+	QLabel *m_label_video_pipewire_portal_status;
+#endif
 #endif
 	QSpinBox *m_spinbox_video_frame_rate;
 	QCheckBox *m_checkbox_scale;
@@ -259,6 +266,10 @@ private:
 	void LoadPulseAudioSources();
 #endif
 
+#if SSR_USE_PORTAL
+	void SetWaylandStatus(const QString& text);
+#endif
+
 public slots:
 	void OnUpdateRecordingFrame();
 	void OnUpdateVideoAreaFields();
@@ -283,6 +294,13 @@ private slots:
 	void OnStartSelectWindow();
 #if SSR_USE_OPENGL_RECORDING
 	void OnGLInjectDialog();
+#endif
+#if SSR_USE_PORTAL
+	void OnSelectPipeWireSourcePortal();
+	void OnWaylandCursorChanged();
+	void OnPipeWireSourceReady();
+	void OnPipeWireSourceCancelled();
+	void OnPipeWireSourceFailed(QString error_message);
 #endif
 	void OnContinue();
 

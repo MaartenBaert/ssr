@@ -30,6 +30,8 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <spa/param/props.h>
 #include <spa/debug/types.h>
 
+#include <condition_variable>
+
 class PipeWireInput : public VideoSource {
 
 private:
@@ -39,7 +41,8 @@ private:
 	};
 
 private:
-	QString m_node_id;
+	uint32_t m_target_node_id; // resolved from either the manual text field or the portal-provided node id
+	int m_portal_fd; // >= 0 if connecting through an XDG desktop portal remote, -1 for the default/manual connection
 	unsigned int m_width, m_height, m_frame_rate;
 	AVPixelFormat m_pixel_format;
 	int m_colorspace;
@@ -50,7 +53,17 @@ private:
 	uint32_t m_fps_last_counter;
 	double m_fps_current;
 
+	// Guards m_width/m_height/m_pixel_format/m_format_known, which are written
+	// from the PipeWire thread (OnParamChange) and read from the GUI thread.
+	std::mutex m_format_mutex;
+	std::condition_variable m_format_cv;
+	bool m_format_known;
+
 	pw_main_loop *m_loop;
+	pw_context *m_context;
+	pw_core *m_core;
+	spa_hook m_core_listener;
+	pw_core_events m_core_events;
 	pw_stream_events m_stream_events;
 	pw_stream *m_stream;
 	spa_hook m_stream_listener;
@@ -60,12 +73,27 @@ private:
 	std::atomic<bool> m_should_stop, m_error_occurred;
 
 public:
+	// Manual/advanced mode: connects to the default PipeWire session and a
+	// user-specified numeric node id.
 	PipeWireInput(const QString& node_id, unsigned int width, unsigned int height, unsigned int frame_rate);
+
+	// Portal mode: connects to the PipeWire remote opened by the XDG desktop
+	// portal (see XdgDesktopPortal). Takes ownership of portal_fd, which will
+	// be closed by pw_context_connect_fd() (even on failure).
+	PipeWireInput(int portal_fd, uint32_t node_id, unsigned int width, unsigned int height, unsigned int frame_rate);
+
 	~PipeWireInput();
 
 	// Reads the current size of the stream.
 	// This function is thread-safe.
 	void GetCurrentSize(unsigned int* width, unsigned int* height);
+
+	// Blocks until the PipeWire stream has negotiated a format (so GetCurrentSize
+	// returns the actual negotiated size rather than the initially requested
+	// size), an error occurs, or the timeout elapses. Returns whether the format
+	// is known. This function is thread-safe, but must not be called from the
+	// PipeWire thread itself.
+	bool WaitUntilFormatKnown(unsigned int timeout_ms);
 
 	// Returns the total number of captured frames.
 	// This function is thread-safe.
@@ -76,7 +104,7 @@ public:
 	inline bool HasErrorOccurred() { return m_error_occurred; }
 
 private:
-	void Init();
+	void Init(const QString& manual_node_id, uint32_t portal_node_id, bool use_portal);
 	void Free();
 
 private:
@@ -87,6 +115,8 @@ private:
 	void InputThread();
 	static void OnProcess(void *userdata);
 	static void OnParamChange(void *userdata, uint32_t id, const struct spa_pod *param);
+	static void OnStreamStateChanged(void *userdata, enum pw_stream_state old_state, enum pw_stream_state state, const char *error);
+	static void OnCoreError(void *userdata, uint32_t id, int seq, int res, const char *message);
 
 };
 
