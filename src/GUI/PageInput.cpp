@@ -898,6 +898,7 @@ void PageInput::mousePressEvent(QMouseEvent* event) {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 					auto *x11_app = qGuiApp->nativeInterface<QNativeInterface::QX11Application>();
 					display = x11_app->display();
+					app_root = DefaultRootWindow(display);
 #else
 					display = QX11Info::display();
 					app_root = QX11Info::appRootWindow();
