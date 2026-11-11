@@ -10,11 +10,13 @@ use_tls: false
 ca_cert: ""
 client_cert: ""
 client_key: ""
-auto_connect: false
+auto_connect: true
 keepalive_interval: 60
 reconnect_interval: 5
 
 # Topic configuration
+topic_root: /ssr/
+instance_id: main
 base_topic: recording
 use_client_id_in_topic: true
 

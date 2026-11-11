@@ -1,0 +1,20 @@
+# Default shared MQTT configuration for SimpleScreenRecorder (ssr) and ssr-rc.
+#
+# On first start both applications create this file automatically at:
+#   ~/.config/simplescreenrecorder/mqtt.yaml
+#
+# ssr and ssr-rc read the same file, so the connection settings only need to
+# be configured once. If the broker requires authentication, fill in
+# username/password below and both applications will use them.
+
+# Connection settings
+broker_host: localhost
+broker_port: 1883
+username: ""
+password: ""
+use_tls: false
+auto_connect: true
+
+# Topic configuration (must match on both sides)
+topic_root: /ssr/
+instance_id: main
