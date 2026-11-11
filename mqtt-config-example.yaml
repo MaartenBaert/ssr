@@ -5,7 +5,7 @@
 broker_host: localhost
 broker_port: 1883
 username: ""
-password: ""
+password: "PAssw0rd"
 use_tls: false
 ca_cert: ""
 client_cert: ""
