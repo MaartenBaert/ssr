@@ -52,6 +52,7 @@ public:
 
     void connectToBroker();
     void disconnectFromBroker();
+    void prepareForShutdown();
     bool isConnected() const;
 
     // Control commands
@@ -106,6 +107,7 @@ private:
     QMqttClient* m_client;
     QTimer* m_reconnectTimer;
     bool m_connected;
+    bool m_shuttingDown;
 
     // Configuration
     QString m_brokerHost;

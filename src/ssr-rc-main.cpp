@@ -32,8 +32,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <csignal>
 #include <cstdlib>
 
-// Global pointer to QApplication for signal handler
+// Global pointers for the signal handler
 static QApplication* g_app = nullptr;
+static SSRRCWindow* g_window = nullptr;
 
 // Signal handler for graceful shutdown
 static void signalHandler(int signal)
@@ -50,8 +51,12 @@ static void signalHandler(int signal)
 
     // Use QTimer to safely quit the application from main thread
     if(g_app) {
-        // This is safe because QTimer::singleShot uses the event loop
-        QTimer::singleShot(0, g_app, &QCoreApplication::quit);
+        QTimer::singleShot(0, g_app, []() {
+            if(g_window) {
+                g_window->prepareForShutdown();
+            }
+            QCoreApplication::quit();
+        });
     }
 }
 
@@ -122,6 +127,7 @@ int main(int argc, char *argv[])
     QSettings settings(configFile, QSettings::IniFormat);
 
     SSRRCWindow window(&settings, mqttConfigFile);
+    g_window = &window;
 
     if(parser.isSet(minimalOption)) {
         window.showMinimized();
@@ -132,8 +138,9 @@ int main(int argc, char *argv[])
     }
 
     // Connect to aboutToQuit signal to ensure proper cleanup
-    QObject::connect(&app, &QApplication::aboutToQuit, []() {
+    QObject::connect(&app, &QApplication::aboutToQuit, &window, [&window]() {
         Logger::LogInfo("Application about to quit, performing cleanup...");
+        window.prepareForShutdown();
     });
 
     int ret = app.exec();

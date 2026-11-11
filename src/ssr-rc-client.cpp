@@ -33,6 +33,7 @@ SSRRCClient::SSRRCClient(QObject* parent)
     , m_client(new QMqttClient(this))
     , m_reconnectTimer(new QTimer(this))
     , m_connected(false)
+    , m_shuttingDown(false)
     , m_brokerHost("localhost")
     , m_brokerPort(1883)
     , m_topicRoot("/ssr/")
@@ -65,7 +66,20 @@ SSRRCClient::SSRRCClient(QObject* parent)
 SSRRCClient::~SSRRCClient()
 {
     Logger::LogInfo("SSRRCClient destructor called, disconnecting from broker...");
+    m_shuttingDown = true;
+    m_autoConnect = false;
+    m_reconnectTimer->stop();
     disconnectFromBroker();
+}
+
+void SSRRCClient::prepareForShutdown()
+{
+    if(m_shuttingDown) {
+        return;
+    }
+    m_shuttingDown = true;
+    m_autoConnect = false;
+    m_reconnectTimer->stop();
 }
 
 void SSRRCClient::checkTopicRoot()
@@ -145,9 +159,10 @@ void SSRRCClient::disconnectFromBroker()
 
     if(m_client->state() != QMqttClient::Disconnected) {
         Logger::LogInfo("Disconnecting from MQTT broker...");
-        m_client->disconnectFromHost();
 
-        // Wait for disconnection with timeout
+        // Wait for disconnection with timeout. Subscribe *before* requesting the
+        // disconnect, otherwise a synchronous state change is missed and we
+        // always have to wait for the timeout.
         QEventLoop loop;
         QTimer timeoutTimer;
         timeoutTimer.setSingleShot(true);
@@ -162,7 +177,10 @@ void SSRRCClient::disconnectFromBroker()
         QObject::connect(&timeoutTimer, &QTimer::timeout, &loop, &QEventLoop::quit);
 
         timeoutTimer.start(5000); // 5 second timeout
-        loop.exec();
+        m_client->disconnectFromHost();
+        if(m_client->state() != QMqttClient::Disconnected) {
+            loop.exec();
+        }
 
         QObject::disconnect(connection);
 
@@ -297,8 +315,8 @@ void SSRRCClient::onDisconnected()
 
     Logger::LogInfo("Disconnected from MQTT broker");
 
-    // Try to reconnect if auto-connect is enabled
-    if(m_autoConnect) {
+    // Try to reconnect if auto-connect is enabled (but not during shutdown)
+    if(m_autoConnect && !m_shuttingDown) {
         m_reconnectTimer->start();
     }
 
@@ -307,6 +325,11 @@ void SSRRCClient::onDisconnected()
 
 void SSRRCClient::onErrorChanged(QMqttClient::ClientError error)
 {
+    // Errors during shutdown are expected (transport is torn down on purpose)
+    if(m_shuttingDown) {
+        return;
+    }
+
     if(error != QMqttClient::NoError) {
         QString errorStr;
         switch(error) {

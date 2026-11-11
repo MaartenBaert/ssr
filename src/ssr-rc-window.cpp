@@ -40,6 +40,7 @@ SSRRCWindow::SSRRCWindow(QSettings* settings, const QString& mqttConfigPath, QWi
     , m_mqttConfigPath(mqttConfigPath)
     , m_isRecording(false)
     , m_loadingSettings(false)
+    , m_shuttingDown(false)
 {
     setupUi();
     createTrayIcon();
@@ -48,7 +49,7 @@ SSRRCWindow::SSRRCWindow(QSettings* settings, const QString& mqttConfigPath, QWi
 
     // Add keyboard shortcut for quitting (Ctrl+Q)
     QShortcut *quitShortcut = new QShortcut(QKeySequence("Ctrl+Q"), this);
-    connect(quitShortcut, &QShortcut::activated, qApp, &QApplication::quit);
+    connect(quitShortcut, &QShortcut::activated, this, &SSRRCWindow::quitApplication);
 
     // Connect signals
     connect(m_mqttClient, &SSRRCClient::statusUpdated,
@@ -70,6 +71,17 @@ SSRRCWindow::~SSRRCWindow()
 {
     Logger::LogInfo("SSRRCWindow destructor called");
     saveSettings();
+}
+
+void SSRRCWindow::prepareForShutdown()
+{
+    if(m_shuttingDown) {
+        return;
+    }
+    m_shuttingDown = true;
+    if(m_mqttClient) {
+        m_mqttClient->prepareForShutdown();
+    }
 }
 
 void SSRRCWindow::setupUi()
@@ -461,6 +473,12 @@ void SSRRCWindow::closeEvent(QCloseEvent* event)
 {
     Logger::LogInfo("Close event received");
 
+    // During shutdown there is no point in asking what to do with the tray
+    if(m_shuttingDown) {
+        event->accept();
+        return;
+    }
+
     if(m_trayIcon && m_trayIcon->isVisible()) {
         // If tray icon is visible, ask user what to do
         QMessageBox msgBox(this);
@@ -485,6 +503,7 @@ void SSRRCWindow::closeEvent(QCloseEvent* event)
         } else if(clickedButton == quitButton) {
             // Quit application
             Logger::LogInfo("Quitting application");
+            prepareForShutdown();
             event->accept();
             qApp->quit();
         } else {
@@ -495,6 +514,7 @@ void SSRRCWindow::closeEvent(QCloseEvent* event)
     } else {
         // No tray icon, just quit
         Logger::LogInfo("Quitting application (no tray icon)");
+        prepareForShutdown();
         event->accept();
     }
 }
@@ -606,6 +626,12 @@ void SSRRCWindow::onConnectionStateChanged(bool connected)
 void SSRRCWindow::onErrorOccurred(const QString& error)
 {
     Logger::LogError(QString("Error occurred: %1").arg(error));
+
+    // Don't pop up modal dialogs while the application is shutting down
+    if(m_shuttingDown) {
+        return;
+    }
+
     QMessageBox::warning(this, "SSR Remote Control Error", error);
 
     if(m_trayIcon) {
@@ -635,6 +661,7 @@ void SSRRCWindow::quitApplication()
     Logger::LogInfo("Quit requested from tray menu");
     // Save settings before quitting
     saveSettings();
+    prepareForShutdown();
     qApp->quit();
 }
 

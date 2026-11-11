@@ -44,6 +44,8 @@ public:
     SSRRCWindow(QSettings* settings, const QString& mqttConfigPath = QString(), QWidget* parent = nullptr);
     ~SSRRCWindow();
 
+    void prepareForShutdown();
+
 protected:
     void closeEvent(QCloseEvent* event) override;
 
@@ -81,6 +83,7 @@ private:
     QString m_mqttConfigPath;
     bool m_isRecording;
     bool m_loadingSettings;
+    bool m_shuttingDown;
 
     // UI elements
     QWidget* m_centralWidget;
