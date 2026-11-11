@@ -56,6 +56,7 @@ private:
 	QTimer* m_reconnect_timer;
 	QTimer* m_keepalive_timer;
 	bool m_connected;
+	bool m_auto_connect;
 	QString m_client_id;
 	QString m_broker_host;
 	int m_broker_port;

@@ -117,6 +117,11 @@ public:
 	QString getConfigPath() const { return m_config_path; }
 	static QString getDefaultConfigPath();
 
+	// Create the shared config with sane, mutually compatible defaults if it
+	// does not exist yet. Used on first start so that ssr and ssr-rc talk to
+	// the same broker/topic without any manual configuration.
+	static bool ensureDefaultConfig(const QString& config_path = QString());
+
 	// Validation
 	bool validateConfig() const;
 	QStringList getValidationErrors() const;
@@ -137,9 +142,9 @@ private:
 	static QStringList serializeYamlMap(const QVariantMap& map, int indent = 0);
 
 	// Configuration file helpers
-	bool ensureConfigDirExists(const QString& config_path);
-	QString readFileContent(const QString& file_path);
-	bool writeFileContent(const QString& file_path, const QString& content);
+	static bool ensureConfigDirExists(const QString& config_path);
+	static QString readFileContent(const QString& file_path);
+	static bool writeFileContent(const QString& file_path, const QString& content);
 
 	// Type conversion
 	static QVariantMap configToVariantMap(const ConnectionConfig& config);

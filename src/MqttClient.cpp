@@ -42,6 +42,7 @@ MqttClient::MqttClient(PageRecord* page_record)
 	  m_reconnect_timer(nullptr),
 	  m_keepalive_timer(nullptr),
 	  m_connected(false),
+	  m_auto_connect(false),
 	  m_broker_host("localhost"),
 	  m_broker_port(1883),
 	  m_use_tls(false),
@@ -99,13 +100,14 @@ void MqttClient::LoadSettings(QSettings* settings) {
 	m_instance_id = settings->value("instance_id", "main").toString();
 	m_topic_architecture = settings->value("topic_architecture", "legacy").toString();
 
-	bool auto_connect = settings->value("auto_connect", false).toBool();
+	m_auto_connect = settings->value("auto_connect", false).toBool();
 	settings->endGroup();
 
 	// Override with the shared MQTT configuration (mqtt.yaml) if it exists, so that
 	// SimpleScreenRecorder and ssr-rc use exactly the same connection settings.
 	{
 		const QString shared_path = MqttConfig::getDefaultConfigPath();
+		MqttConfig::ensureDefaultConfig(shared_path);
 		if (QFile::exists(shared_path)) {
 			MqttConfig shared;
 			if (shared.loadConfig(shared_path)) {
@@ -120,7 +122,7 @@ void MqttClient::LoadSettings(QSettings* settings) {
 				if (!cfg.client_key.isEmpty()) m_client_key = cfg.client_key;
 				if (!cfg.topic_root.isEmpty()) m_topic_root = cfg.topic_root;
 				if (!cfg.instance_id.isEmpty()) m_instance_id = cfg.instance_id;
-				auto_connect = auto_connect || cfg.auto_connect;
+				m_auto_connect = m_auto_connect || cfg.auto_connect;
 				Logger::LogInfo("[MQTT] Loaded shared configuration from: " + shared_path);
 			}
 		}
@@ -145,7 +147,7 @@ void MqttClient::LoadSettings(QSettings* settings) {
 	}
 
 	// Auto-connect if enabled
-	if (auto_connect && cmd->GetMqttAutoConnect() && !m_broker_host.isEmpty()) {
+	if (m_auto_connect && cmd->GetMqttAutoConnect() && !m_broker_host.isEmpty()) {
 		Connect();
 	}
 }
@@ -183,7 +185,7 @@ void MqttClient::SaveSettings(QSettings* settings) {
 	settings->setValue("instance_id", m_instance_id);
 	settings->setValue("topic_architecture", m_topic_architecture);
 
-	settings->setValue("auto_connect", IsConnected() || m_reconnect_timer->isActive());
+	settings->setValue("auto_connect", m_auto_connect);
 
 	settings->endGroup();
 
@@ -212,7 +214,7 @@ void MqttClient::SaveSettings(QSettings* settings) {
 		cfg.client_key = m_client_key;
 		cfg.topic_root = m_topic_root;
 		cfg.instance_id = m_instance_id;
-		cfg.auto_connect = IsConnected() || m_reconnect_timer->isActive();
+		cfg.auto_connect = m_auto_connect;
 		shared.setConfig(cfg);
 		shared.saveConfig();
 		Logger::LogInfo("[MQTT] Saved shared configuration to: " + shared.getConfigPath());

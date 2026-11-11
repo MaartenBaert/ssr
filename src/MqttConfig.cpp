@@ -124,6 +124,40 @@ QString MqttConfig::getDefaultConfigPath() {
 	return config_dir + "/mqtt.yaml";
 }
 
+bool MqttConfig::ensureDefaultConfig(const QString& config_path) {
+	QString path = config_path;
+	if (path.isEmpty()) {
+		path = getDefaultConfigPath();
+	}
+
+	if (QFile::exists(path)) {
+		return true;
+	}
+
+	// First start: create a shared config that both ssr and ssr-rc can use
+	// without any manual setup. Broker credentials are intentionally left
+	// empty; if the broker requires authentication, it is enough to fill them
+	// in once in this file.
+	ConnectionConfig config = defaultConfig();
+	config.broker_host = "localhost";
+	config.broker_port = 1883;
+	config.auto_connect = true;
+	config.topic_root = "/ssr/";
+	config.instance_id = "main";
+
+	if (!ensureConfigDirExists(path)) {
+		Logger::LogError("[MQTT Config] Failed to create configuration directory for: " + path);
+		return false;
+	}
+	if (!writeFileContent(path, toYaml(config))) {
+		Logger::LogError("[MQTT Config] Failed to write default configuration: " + path);
+		return false;
+	}
+
+	Logger::LogInfo("[MQTT Config] Created default configuration: " + path);
+	return true;
+}
+
 bool MqttConfig::validateConfig() const {
 	return m_config.isValid();
 }

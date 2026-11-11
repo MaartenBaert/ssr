@@ -317,6 +317,10 @@ void SSRRCWindow::loadSettingsFromMQTTYaml(bool showErrors)
         configPath = MqttConfig::getDefaultConfigPath();
     }
 
+    // On first start create the shared config with defaults so that no manual
+    // setup is needed.
+    MqttConfig::ensureDefaultConfig(configPath);
+
     // Suppress auto-save while we populate the UI from the shared config
     bool prev_loading = m_loadingSettings;
     m_loadingSettings = true;
