@@ -4,7 +4,7 @@
 # Connection settings
 broker_host: localhost
 broker_port: 1883
-username: ""
+username: "user"
 password: "PAssw0rd"
 use_tls: false
 ca_cert: ""

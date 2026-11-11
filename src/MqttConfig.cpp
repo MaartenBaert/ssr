@@ -143,7 +143,7 @@ bool MqttConfig::ensureDefaultConfig(const QString& config_path) {
 	config.broker_port = 1883;
 	// Default credentials for a fresh installation. Change them in the created
 	// file if your broker uses a different account.
-	config.username = "";
+	config.username = "user";
 	config.password = "PAssw0rd";
 	config.auto_connect = true;
 	config.topic_root = "/ssr/";
