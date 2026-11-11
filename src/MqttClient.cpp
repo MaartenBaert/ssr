@@ -21,6 +21,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include "PageRecord.h"
 #include "Logger.h"
 #include "CommandLineOptions.h"
+#include "MqttConfig.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -101,6 +102,30 @@ void MqttClient::LoadSettings(QSettings* settings) {
 	bool auto_connect = settings->value("auto_connect", false).toBool();
 	settings->endGroup();
 
+	// Override with the shared MQTT configuration (mqtt.yaml) if it exists, so that
+	// SimpleScreenRecorder and ssr-rc use exactly the same connection settings.
+	{
+		const QString shared_path = MqttConfig::getDefaultConfigPath();
+		if (QFile::exists(shared_path)) {
+			MqttConfig shared;
+			if (shared.loadConfig(shared_path)) {
+				const MqttConfig::ConnectionConfig& cfg = shared.config();
+				if (!cfg.broker_host.isEmpty()) m_broker_host = cfg.broker_host;
+				if (cfg.broker_port > 0) m_broker_port = cfg.broker_port;
+				if (!cfg.username.isEmpty()) m_username = cfg.username;
+				if (!cfg.password.isEmpty()) m_password = cfg.password;
+				m_use_tls = cfg.use_tls;
+				if (!cfg.ca_cert.isEmpty()) m_ca_cert = cfg.ca_cert;
+				if (!cfg.client_cert.isEmpty()) m_client_cert = cfg.client_cert;
+				if (!cfg.client_key.isEmpty()) m_client_key = cfg.client_key;
+				if (!cfg.topic_root.isEmpty()) m_topic_root = cfg.topic_root;
+				if (!cfg.instance_id.isEmpty()) m_instance_id = cfg.instance_id;
+				auto_connect = auto_connect || cfg.auto_connect;
+				Logger::LogInfo("[MQTT] Loaded shared configuration from: " + shared_path);
+			}
+		}
+	}
+
 	// Override with command line options if provided
 	CommandLineOptions* cmd = CommandLineOptions::GetInstance();
 	if (!cmd->GetMqttBroker().isEmpty()) {
@@ -161,6 +186,37 @@ void MqttClient::SaveSettings(QSettings* settings) {
 	settings->setValue("auto_connect", IsConnected() || m_reconnect_timer->isActive());
 
 	settings->endGroup();
+
+	// Mirror the connection settings into the shared MQTT configuration (mqtt.yaml).
+	{
+		MqttConfig shared;
+		shared.loadConfig();
+		MqttConfig::ConnectionConfig cfg = shared.config();
+		if (cmd->GetMqttBroker().isEmpty()) {
+			cfg.broker_host = m_broker_host;
+		}
+		if (cmd->GetMqttPort() == 1883) {
+			cfg.broker_port = m_broker_port;
+		}
+		if (cmd->GetMqttUsername().isEmpty()) {
+			cfg.username = m_username;
+		}
+		if (cmd->GetMqttPassword().isEmpty()) {
+			cfg.password = m_password;
+		}
+		if (!cmd->GetMqttTls()) {
+			cfg.use_tls = m_use_tls;
+		}
+		cfg.ca_cert = m_ca_cert;
+		cfg.client_cert = m_client_cert;
+		cfg.client_key = m_client_key;
+		cfg.topic_root = m_topic_root;
+		cfg.instance_id = m_instance_id;
+		cfg.auto_connect = IsConnected() || m_reconnect_timer->isActive();
+		shared.setConfig(cfg);
+		shared.saveConfig();
+		Logger::LogInfo("[MQTT] Saved shared configuration to: " + shared.getConfigPath());
+	}
 }
 
 bool MqttClient::IsEnabled() const {

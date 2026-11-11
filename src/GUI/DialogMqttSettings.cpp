@@ -19,6 +19,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DialogMqttSettings.h"
 #include "MqttClientInterface.h"
+#include "MqttConfig.h"
 #include "Icons.h"
 #include "Dialogs.h"
 #include "Logger.h"
@@ -257,6 +258,32 @@ void DialogMqttSettings::SaveSettings() {
 	}
 
 	settings.endGroup();
+
+	// Mirror the edited connection settings into the shared mqtt.yaml so that
+	// ssr-rc automatically picks up the same connection.
+	{
+		MqttConfig shared;
+		shared.loadConfig();
+		MqttConfig::ConnectionConfig cfg = shared.config();
+		cfg.broker_host = m_edit_broker_host->text();
+		cfg.broker_port = m_spinbox_broker_port->value();
+		cfg.use_tls = m_checkbox_use_tls->isChecked();
+		cfg.username = m_edit_username->text();
+		cfg.password = m_edit_password->text();
+		cfg.ca_cert = m_edit_ca_cert->text();
+		cfg.client_cert = m_edit_client_cert->text();
+		cfg.client_key = m_edit_client_key->text();
+		if (edit_topic_root) {
+			cfg.topic_root = edit_topic_root->text();
+		}
+		if (edit_instance_id) {
+			cfg.instance_id = edit_instance_id->text();
+		}
+		cfg.auto_connect = true;
+		shared.setConfig(cfg);
+		shared.saveConfig();
+		Logger::LogInfo("[MQTT] Saved shared configuration to: " + shared.getConfigPath());
+	}
 
 	// Reload settings into MQTT client
 	m_mqtt_client->LoadSettings(&settings);

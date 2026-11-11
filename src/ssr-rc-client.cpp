@@ -271,6 +271,15 @@ void SSRRCClient::onConnected()
     // Request initial status
     requestStatus();
 
+    // Notify the recorder that a remote client is now connected
+    {
+        QJsonObject json;
+        json["session"] = m_instanceId.isEmpty() ? "main" : m_instanceId;
+        json["status"] = "connected";
+        QJsonDocument doc(json);
+        publishCommand("control/client/connected", doc.toJson());
+    }
+
     Logger::LogInfo(QString("Connected to MQTT broker at %1:%2").arg(m_brokerHost).arg(m_brokerPort));
     emit connectionStateChanged(true);
 }

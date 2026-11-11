@@ -69,7 +69,9 @@ private:
     void loadSettings();
     void saveSettings();
     void updateUiState();
-    void loadSettingsFromMQTTYaml();
+    void updateOnAirButton();
+    void loadSettingsFromMQTTYaml(bool showErrors = true);
+    void saveSettingsToMQTTYaml();
 
 private:
     QSettings* m_settings;
@@ -77,6 +79,8 @@ private:
     QSystemTrayIcon* m_trayIcon;
     QMenu* m_trayMenu;
     QString m_mqttConfigPath;
+    bool m_isRecording;
+    bool m_loadingSettings;
 
     // UI elements
     QWidget* m_centralWidget;
@@ -99,6 +103,7 @@ private:
     // Control group
     QGroupBox* m_controlGroup;
     QVBoxLayout* m_controlLayout;
+    QPushButton* m_onAirButton;
     QPushButton* m_startButton;
     QPushButton* m_stopButton;
     QPushButton* m_toggleButton;

@@ -29,6 +29,7 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QApplication>
 #include <QIntValidator>
 #include <QDir>
+#include <QFont>
 
 SSRRCWindow::SSRRCWindow(QSettings* settings, const QString& mqttConfigPath, QWidget* parent)
     : QMainWindow(parent)
@@ -37,10 +38,13 @@ SSRRCWindow::SSRRCWindow(QSettings* settings, const QString& mqttConfigPath, QWi
     , m_trayIcon(nullptr)
     , m_trayMenu(nullptr)
     , m_mqttConfigPath(mqttConfigPath)
+    , m_isRecording(false)
+    , m_loadingSettings(false)
 {
     setupUi();
     createTrayIcon();
     loadSettings();
+    updateOnAirButton();
 
     // Add keyboard shortcut for quitting (Ctrl+Q)
     QShortcut *quitShortcut = new QShortcut(QKeySequence("Ctrl+Q"), this);
@@ -148,11 +152,22 @@ void SSRRCWindow::setupUi()
     m_controlGroup = new QGroupBox("Recording Control", m_centralWidget);
     m_controlLayout = new QVBoxLayout(m_controlGroup);
 
+    // Big "On Air" button: reflects (and toggles) the recording state.
+    m_onAirButton = new QPushButton(tr("ON AIR"), m_controlGroup);
+    m_onAirButton->setMinimumHeight(64);
+    QFont onAirFont = m_onAirButton->font();
+    onAirFont.setPointSize(onAirFont.pointSize() + 10);
+    onAirFont.setBold(true);
+    m_onAirButton->setFont(onAirFont);
+    m_onAirButton->setToolTip(tr("Toggle recording (red = on air, blue = off air)"));
+    m_onAirButton->setFocusPolicy(Qt::NoFocus);
+
     m_startButton = new QPushButton("Start Recording", m_controlGroup);
     m_stopButton = new QPushButton("Stop Recording", m_controlGroup);
     m_toggleButton = new QPushButton("Toggle Recording", m_controlGroup);
     m_statusButton = new QPushButton("Get Status", m_controlGroup);
 
+    m_controlLayout->addWidget(m_onAirButton);
     m_controlLayout->addWidget(m_startButton);
     m_controlLayout->addWidget(m_stopButton);
     m_controlLayout->addWidget(m_toggleButton);
@@ -161,6 +176,8 @@ void SSRRCWindow::setupUi()
     m_mainLayout->addWidget(m_controlGroup);
 
     // Connect control buttons
+    connect(m_onAirButton, &QPushButton::clicked,
+            this, &SSRRCWindow::onToggleRecordingClicked);
     connect(m_startButton, &QPushButton::clicked,
             this, &SSRRCWindow::onStartRecordingClicked);
     connect(m_stopButton, &QPushButton::clicked,
@@ -242,6 +259,8 @@ void SSRRCWindow::createTrayIcon()
 
 void SSRRCWindow::loadSettings()
 {
+    m_loadingSettings = true;
+
     m_settings->beginGroup("MQTT");
     m_hostEdit->setText(m_settings->value("host", "localhost").toString());
     m_portEdit->setText(m_settings->value("port", "1883").toString());
@@ -253,6 +272,12 @@ void SSRRCWindow::loadSettings()
     m_settings->endGroup();
 
     m_mqttClient->loadSettings(m_settings);
+
+    // Load the shared mqtt.yaml (used by both ssr and ssr-rc) so that the local
+    // connection is picked up automatically without pressing any button.
+    loadSettingsFromMQTTYaml(false);
+
+    m_loadingSettings = false;
 
     // Window geometry
     m_settings->beginGroup("Window");
@@ -270,21 +295,28 @@ void SSRRCWindow::loadSettings()
     }
 }
 
-void SSRRCWindow::loadSettingsFromMQTTYaml()
+void SSRRCWindow::loadSettingsFromMQTTYaml(bool showErrors)
 {
     // Использовать путь из командной строки, если передан
     QString configPath = m_mqttConfigPath;
 
     // Если путь не передан, использовать путь по умолчанию
     if(configPath.isEmpty()) {
-        configPath = QDir::homePath() + "/.config/simplescreenrecorder/mqtt.yaml";
+        configPath = MqttConfig::getDefaultConfigPath();
     }
+
+    // Suppress auto-save while we populate the UI from the shared config
+    bool prev_loading = m_loadingSettings;
+    m_loadingSettings = true;
 
     // Проверить существование файла
     QFileInfo configInfo(configPath);
     if(!configInfo.exists()) {
         Logger::LogWarning(QString("MQTT YAML config file not found: %1").arg(configPath));
-        QMessageBox::critical(this, "Error", "MQTT YAML config file not found:'" + configPath + "'.");
+        if(showErrors) {
+            QMessageBox::critical(this, "Error", "MQTT YAML config file not found:'" + configPath + "'.");
+        }
+        m_loadingSettings = prev_loading;
         return;
     }
 
@@ -299,6 +331,10 @@ void SSRRCWindow::loadSettingsFromMQTTYaml()
         m_usernameEdit->setText(config.username);
         m_passwordEdit->setText(config.password);
         m_topicRootEdit->setText(config.topic_root);
+        if(!config.instance_id.isEmpty()) {
+            m_instanceIdEdit->setText(config.instance_id);
+        }
+        m_autoConnectCheck->setChecked(config.auto_connect);
 
         // Загрузить в MQTT клиент
         m_mqttClient->setBrokerHost(config.broker_host);
@@ -306,8 +342,40 @@ void SSRRCWindow::loadSettingsFromMQTTYaml()
         m_mqttClient->setUsername(config.username);
         m_mqttClient->setPassword(config.password);
         m_mqttClient->setTopicRoot(config.topic_root);
+        if(!config.instance_id.isEmpty()) {
+            m_mqttClient->setInstanceId(config.instance_id);
+        }
         m_mqttClient->setAutoConnect(config.auto_connect);
+
+        Logger::LogInfo(QString("Loaded shared MQTT settings from: %1").arg(configPath));
     }
+
+    m_loadingSettings = prev_loading;
+}
+
+void SSRRCWindow::saveSettingsToMQTTYaml()
+{
+    QString configPath = m_mqttConfigPath;
+    if(configPath.isEmpty()) {
+        configPath = MqttConfig::getDefaultConfigPath();
+    }
+
+    MqttConfig mqttConfig;
+    mqttConfig.loadConfig(configPath);
+    MqttConfig::ConnectionConfig config = mqttConfig.getConfig();
+
+    config.broker_host = m_hostEdit->text();
+    config.broker_port = m_portEdit->text().toInt();
+    config.username = m_usernameEdit->text();
+    config.password = m_passwordEdit->text();
+    config.topic_root = m_topicRootEdit->text();
+    if(!m_instanceIdEdit->text().isEmpty()) {
+        config.instance_id = m_instanceIdEdit->text();
+    }
+    config.auto_connect = m_autoConnectCheck->isChecked();
+
+    mqttConfig.setConfig(config);
+    mqttConfig.saveConfig(configPath);
 }
 
 void SSRRCWindow::saveSettings()
@@ -330,6 +398,9 @@ void SSRRCWindow::saveSettings()
     m_settings->setValue("state", saveState());
     m_settings->endGroup();
 
+    // Keep the shared mqtt.yaml in sync so ssr uses the same connection
+    saveSettingsToMQTTYaml();
+
     m_settings->sync();
 }
 
@@ -340,6 +411,9 @@ void SSRRCWindow::updateUiState()
     m_connectButton->setEnabled(!connected);
     m_disconnectButton->setEnabled(connected);
 
+    if(m_onAirButton) {
+        m_onAirButton->setEnabled(connected);
+    }
     m_startButton->setEnabled(connected);
     m_stopButton->setEnabled(connected);
     m_toggleButton->setEnabled(connected);
@@ -360,6 +434,26 @@ void SSRRCWindow::updateUiState()
     } else {
         m_connectionStatusLabel->setText("Disconnected");
         m_connectionStatusLabel->setStyleSheet("color: red;");
+    }
+}
+
+void SSRRCWindow::updateOnAirButton()
+{
+    if(!m_onAirButton) {
+        return;
+    }
+    if(m_isRecording) {
+        // On air: red background, black text
+        m_onAirButton->setText(tr("ON AIR"));
+        m_onAirButton->setStyleSheet(
+            "QPushButton { background-color: #c62828; color: black; font-weight: bold;"
+            " border: 2px solid #7f0000; border-radius: 6px; }");
+    } else {
+        // Off air: dark blue background, white text
+        m_onAirButton->setText(tr("OFF AIR"));
+        m_onAirButton->setStyleSheet(
+            "QPushButton { background-color: #1a237e; color: white; font-weight: bold;"
+            " border: 2px solid #0d133f; border-radius: 6px; }");
     }
 }
 
@@ -418,7 +512,6 @@ void SSRRCWindow::onConnectClicked()
 
     Logger::LogInfo(QString("Connecting to MQTT broker: %1:%2").arg(m_hostEdit->text()).arg(m_portEdit->text()));
     m_mqttClient->connectToBroker();
-    m_mqttClient->clientConnected();
 }
 
 void SSRRCWindow::onDisconnectClicked()
@@ -460,6 +553,14 @@ void SSRRCWindow::onStatusUpdated(const QString& status, const QString& sessionI
     m_sessionIdLabel->setText(sessionId);
     m_topicLabel->setText(topic);
 
+    // Drive the On Air button from the recorder status
+    if(status == "recording") {
+        m_isRecording = true;
+    } else if(status == "idle" || status == "stopped" || status == "error") {
+        m_isRecording = false;
+    }
+    updateOnAirButton();
+
     // Update status color
     if(status == "idle") {
         m_ssrStatusLabel->setStyleSheet("color: blue;");
@@ -477,6 +578,8 @@ void SSRRCWindow::onStatusUpdated(const QString& status, const QString& sessionI
 void SSRRCWindow::onRecordingStateChanged(bool recording)
 {
     Logger::LogInfo(QString("Recording state changed: %1").arg(recording ? "Recording" : "Stopped"));
+    m_isRecording = recording;
+    updateOnAirButton();
     if(recording) {
         m_recordingStatusLabel->setText("Recording");
         m_recordingStatusLabel->setStyleSheet("color: green;");
@@ -537,6 +640,9 @@ void SSRRCWindow::quitApplication()
 
 void SSRRCWindow::onSettingsChanged()
 {
+    if(m_loadingSettings) {
+        return;
+    }
     saveSettings();
 }
 

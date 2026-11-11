@@ -24,6 +24,9 @@ along with SimpleScreenRecorder.  If not, see <http://www.gnu.org/licenses/>.
 #include <QStandardPaths>
 #include <QRegularExpression>
 #include <QDateTime>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QStringConverter>
+#endif
 
 MqttConfig::MqttConfig(QObject* parent)
 	: QObject(parent),
@@ -305,17 +308,17 @@ QString MqttConfig::serializeYamlValue(const QVariant& value) {
 		return "null";
 	}
 	
-	switch (value.type()) {
-		case QVariant::Bool:
+	switch (value.userType()) {
+		case QMetaType::Bool:
 			return value.toBool() ? "true" : "false";
-		case QVariant::Int:
-		case QVariant::UInt:
-		case QVariant::LongLong:
-		case QVariant::ULongLong:
+		case QMetaType::Int:
+		case QMetaType::UInt:
+		case QMetaType::LongLong:
+		case QMetaType::ULongLong:
 			return QString::number(value.toInt());
-		case QVariant::Double:
+		case QMetaType::Double:
 			return QString::number(value.toDouble());
-		case QVariant::String:
+		case QMetaType::QString:
 			// Quote strings that contain special characters
 			{
 				QString str = value.toString();
@@ -409,7 +412,7 @@ QStringList MqttConfig::serializeYamlMap(const QVariantMap& map, int indent) {
 		const QString& key = it.key();
 		const QVariant& value = it.value();
 		
-		if (value.type() == QVariant::Map) {
+		if (value.userType() == QMetaType::QVariantMap) {
 			// Nested map
 			lines.append(indent_str + key + ":");
 			lines.append(serializeYamlMap(value.toMap(), indent + 2));
@@ -440,7 +443,11 @@ QString MqttConfig::readFileContent(const QString& file_path) {
 	}
 	
 	QTextStream stream(&file);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	stream.setEncoding(QStringConverter::Utf8);
+#else
 	stream.setCodec("UTF-8");
+#endif
 	return stream.readAll();
 }
 
@@ -451,7 +458,11 @@ bool MqttConfig::writeFileContent(const QString& file_path, const QString& conte
 	}
 	
 	QTextStream stream(&file);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	stream.setEncoding(QStringConverter::Utf8);
+#else
 	stream.setCodec("UTF-8");
+#endif
 	stream << content;
 	
 	return stream.status() == QTextStream::Ok;
@@ -474,6 +485,8 @@ QVariantMap MqttConfig::configToVariantMap(const ConnectionConfig& config) {
 	if (config.reconnect_interval != 5) map["reconnect_interval"] = config.reconnect_interval;
 	
 	// Topic configuration
+	map["topic_root"] = config.topic_root;
+	map["instance_id"] = config.instance_id;
 	if (config.base_topic != "recording") map["base_topic"] = config.base_topic;
 	if (!config.use_client_id_in_topic) map["use_client_id_in_topic"] = config.use_client_id_in_topic;
 	
@@ -525,6 +538,8 @@ MqttConfig::ConnectionConfig MqttConfig::variantMapToConfig(const QVariantMap& m
 	if (map.contains("reconnect_interval")) config.reconnect_interval = map["reconnect_interval"].toInt();
 	
 	// Topic configuration
+	if (map.contains("topic_root")) config.topic_root = map["topic_root"].toString();
+	if (map.contains("instance_id")) config.instance_id = map["instance_id"].toString();
 	if (map.contains("base_topic")) config.base_topic = map["base_topic"].toString();
 	if (map.contains("use_client_id_in_topic")) config.use_client_id_in_topic = map["use_client_id_in_topic"].toBool();
 	
