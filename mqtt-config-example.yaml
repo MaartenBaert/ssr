@@ -1,0 +1,68 @@
+# MQTT Configuration for SimpleScreenRecorder
+# This file should be placed at: ~/.config/simplescreenrecorder/mqtt.yaml
+
+# Connection settings
+broker_host: localhost
+broker_port: 1883
+username: ""
+password: ""
+use_tls: false
+ca_cert: ""
+client_cert: ""
+client_key: ""
+auto_connect: false
+keepalive_interval: 60
+reconnect_interval: 5
+
+# Topic configuration
+base_topic: recording
+use_client_id_in_topic: true
+
+# Publishing configuration
+publish_recording_state: true
+publish_recording_events: true
+publish_led_states: true
+publish_status: true
+publish_keepalive: true
+
+# Subscription configuration
+subscribe_recording_control: true
+subscribe_topic_change: true
+subscribe_button_events: true
+
+# QoS levels (0=at most once, 1=at least once, 2=exactly once)
+qos_status: 1
+qos_recording_state: 1
+qos_recording_events: 1
+qos_led_states: 1
+qos_control_messages: 1
+
+# Retained messages
+retain_recording_state: true
+retain_led_states: true
+retain_connection_state: true
+
+# Logging
+log_mqtt_messages: false
+log_level: 1  # 0=error, 1=warning, 2=info, 3=debug
+
+# Advanced configuration example with TLS:
+# broker_host: mqtt.example.com
+# broker_port: 8883
+# use_tls: true
+# ca_cert: /path/to/ca.crt
+# client_cert: /path/to/client.crt
+# client_key: /path/to/client.key
+# username: myuser
+# password: mypassword
+# auto_connect: true
+
+# Example with custom topic structure:
+# base_topic: home/studio
+# use_client_id_in_topic: false
+# This would result in topics like: home/studio/recording/state
+
+# Example with different QoS levels:
+# qos_status: 0          # Status messages don't need guaranteed delivery
+# qos_recording_state: 2 # Recording state needs exactly-once delivery
+# qos_control_messages: 1 # Control messages need at-least-once delivery
